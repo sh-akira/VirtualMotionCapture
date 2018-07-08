@@ -23,3 +23,6 @@ VRMモデル読み込みを押して、任意のVRMモデルを読み込んで�
 リリースページ：[https://github.com/sh-akira/OVRCharacterController/releases]
 ダウンロードはリリースページからOVRCharacterController.zipをダウンロードしてください。
 解凍後Build.exeを実行で開始します。
+
+
+(ソースコードは準備中です)
