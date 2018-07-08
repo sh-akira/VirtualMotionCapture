@@ -19,3 +19,7 @@ VRMモデル読み込みを押して、任意のVRMモデルを読み込んで�
 キャラクタが表示されている画面をマウスで操作するとカメラがコントロールできます。
 ホイール：ズーム
 右クリック＋ドラッグ：カメラの移動
+
+リリースページ：[https://github.com/sh-akira/OVRCharacterController/releases]
+ダウンロードはリリースページからOVRCharacterController.zipをダウンロードしてください。
+解凍後Build.exeを実行で開始します。
