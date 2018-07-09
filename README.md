@@ -38,8 +38,8 @@ OS: Windows 10 (1803)
 CPU:Core i7 8700k  
 GPU: Geforce GTX1080Ti  
 Mem: 16GB  
-VR: Vive  
-  
+VR: HTC Vive + 3 tracker  
+(Oculus Rift+Touchの3点と+Kinectでの6点での動作報告があります)  
 (GTX1080 での動作も確認済み)  
   
   
