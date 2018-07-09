@@ -1,4 +1,4 @@
-# バーチャルモーションキャプチャー (OVRCharacterController)  
+# バーチャルモーションキャプチャー (VirtualMotionCapture)  
 VRゲーム中にモデルをコントロール  
   
 VRMのモデルファイルを読み込んで、フルトラッキングで操作するアプリです。  
@@ -28,7 +28,7 @@ VRMモデル読み込みを押して、任意のVRMモデルを読み込んで�
 右クリック＋ドラッグ：カメラの移動  
   
 # ダウンロード
-リリースページ：[https://github.com/sh-akira/OVRCharacterController/releases]  
+リリースページ：[https://github.com/sh-akira/VirtualMotionCapture/releases]  
 ダウンロードはリリースページからOVRCharacterController.zipをダウンロードしてください。  
 解凍後Build.exeを実行で開始します。  
   
