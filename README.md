@@ -30,13 +30,6 @@ VRMモデル読み込みを押して、任意のVRMモデルを読み込んで�
 解凍後Build.exeを実行で開始します。
 
 
-(ソースコードは準備中です)
-
-まだテスト版です。テストが不十分の可能性が大いにあります。
-何か問題があった際は、Twitterでお問い合わせください。
-下記の問題は把握しています。
-[@sh_akira](https://twitter.com/sh_akira)
-
 テスト環境：
 OS: Windows 10 (1803)
 CPU:Core i7 8700k
@@ -44,6 +37,50 @@ GPU: Geforce GTX1080Ti
 Mem: 16GB
 VR: Vive
 
+(GTX1080 での動作も確認済み)
 
-見つかった問題
+
+まだテスト版です。テストが不十分の可能性が大いにあります。
+何か問題があった際は、Twitterでお問い合わせください。
+動作環境スペック報告もお待ちしています。
+[@sh_akira](https://twitter.com/sh_akira)
+下記の問題は把握しています。
+
+
+●見つかった問題
 ・腰のトラッカーのみでトラッキングした際に、地に足付かない。
+・設定読み込み時にチェックボックスが反映されない
+・複数起動時、ドラッグの挙動が怪しい
+
+●実装予定
+・リップシンク
+・カメラ設定時のグリッド
+・キャリブレーションの保存(複数起動を楽にしたい)
+
+●将来の実装予定
+・自身の状態をVR内にオーバーレイ表示
+
+
+
+# ビルド手順
+ビルド環境：Unity 2018.1.6f1 / Visual Studio 2017 (Windowsデスクトップ開発パッケージ)
+
+
+・このリポジトリをクローンかダウンロードしてUnityで開いてください。
+・Unity 2018.1.6f1で開いてください。
+・Assets直下にExternalPluginsフォルダを作って、その下に
+　・OVRTracking (OVRTrackingライブラリ - 入れてあります)
+　・RootMotion ([Final IK](https://assetstore.unity.com/packages/tools/animation/final-ik-14290))
+　・SteamVR ([SteamVR Plugin](https://assetstore.unity.com/packages/templates/systems/steamvr-plugin-32647))
+　・VRM ([UniVRM-0.38.unitypackage](https://github.com/dwango/UniVRM/releases))
+　・VRM.Samples ([UniVRM-RuntimeLoaderSample-0.38.unitypackage](https://github.com/dwango/UniVRM/releases))
+以上のようなフォルダになるように各アセットをインポートしてください。
+・ControlWindow/ControlWindow.slnをVisual Studio 2017で開きます。
+・そのままビルドをするとdllが作成され自動でAsset/Plugins/ControlWindow.dllにコピーされます
+・UnityのPlayer Settingsを開き、Other SettingsのScripting Runtime Version を .NET 4.x Equivalent にして再起動
+・実行
+
+
+# FAQ
+Q.アプリを使うのに表記はいりますか？
+A.特にいりませんが、あると嬉しいです。その場合はTwitterをお願いします。
