@@ -10,9 +10,9 @@ Assets/ExternalPlugins/VRM*
 Assets/ExternalPlugins/VRM.Samples*
 Assets/ExternalPlugins/StreamingAssets*
 ControlWindowSeparateThreadBackup*
-ProjectSettings*
 Assembly*.csproj
 OVR*.sln
+VirtualMotionCapture.sln
 ControlWindow/bin*
 ControlWindow/ControlWindowTester/bin*
 
