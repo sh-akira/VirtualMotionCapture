@@ -39,6 +39,8 @@ namespace ControlWindow
         public Action SaveSettings;                // void SaveSettings() { }
         public Action LoadSettings;                // void LoadSettings() { }
         public Action<float, float, float> LoadCustomBackgroundColor;   // void LoadCustomBackgroundColor(float r, float g, float b) { } /*Unity to Forms*/
+        public Action<bool> LoadHideBorder;     //void LoadHideBorder(bool enable) { } /*Unity to Forms*/
+        public Action<bool> LoadIsTopMost;      //void LoadIsTopMost(bool enable) { } /*Unity to Forms*/
 
         public Action<CameraTypes> ChangeCamera; //void ChangeCamera(CameraTypes type) { }
 

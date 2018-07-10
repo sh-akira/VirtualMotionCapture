@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using UnityEngine;
 using VRM;
 
@@ -394,6 +395,7 @@ public class ControlWinFormsWindow : MonoBehaviour
         {
             SetCameraEnable(BackCamera);
         }
+        CurrentSettings.CameraType = type;
     }
 
     private void SetCameraEnable(Camera camera)
@@ -618,6 +620,8 @@ public class ControlWinFormsWindow : MonoBehaviour
         public StoreTransform FreeCameraTransform = null;
         public LookTargetSettings FrontCameraLookTargetSettings = null;
         public LookTargetSettings BackCameraLookTargetSettings = null;
+        [OptionalField]
+        public CameraTypes? CameraType = null;
     }
 
     private Settings CurrentSettings = new Settings();
@@ -653,14 +657,16 @@ public class ControlWinFormsWindow : MonoBehaviour
             }
             if (CurrentSettings.CustomBackgroundColor != null)
             {
-                WindowLoader.Instance.LoadCustomBackgroundColor(CurrentSettings.CustomBackgroundColor.r, CurrentSettings.CustomBackgroundColor.g, CurrentSettings.CustomBackgroundColor.b);
+                WindowLoader.Instance.LoadCustomBackgroundColor?.Invoke(CurrentSettings.CustomBackgroundColor.r, CurrentSettings.CustomBackgroundColor.g, CurrentSettings.CustomBackgroundColor.b);
             }
             if (CurrentSettings.IsTransparent)
             {
                 SetBackgroundTransparent();
             }
             SetWindowBorder(CurrentSettings.HideBorder);
+            WindowLoader.Instance.LoadHideBorder?.Invoke(CurrentSettings.HideBorder);
             SetWindowTopMost(CurrentSettings.IsTopMost);
+            WindowLoader.Instance.LoadIsTopMost?.Invoke(CurrentSettings.IsTopMost);
             if (CurrentSettings.FreeCameraTransform != null)
             {
                 CurrentSettings.FreeCameraTransform.ToLocalTransform(FreeCamera.transform);
@@ -673,7 +679,10 @@ public class ControlWinFormsWindow : MonoBehaviour
             {
                 CurrentSettings.BackCameraLookTargetSettings.ApplyTo(BackCamera);
             }
-
+            if (CurrentSettings.CameraType.HasValue)
+            {
+                ChangeCamera(CurrentSettings.CameraType.Value);
+            }
         }
 
     }

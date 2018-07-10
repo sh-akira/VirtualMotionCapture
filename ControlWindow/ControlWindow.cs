@@ -21,6 +21,8 @@ namespace ControlWindow
         {
             this.Show();
             WindowLoader.Instance.LoadCustomBackgroundColor = LoadCustomBackgroundColor;
+            WindowLoader.Instance.LoadHideBorder = LoadHideBorder;
+            WindowLoader.Instance.LoadIsTopMost = LoadIsTopMost;
         }
 
         private void ImportVRMButton_Click(object sender, EventArgs e)
@@ -100,6 +102,18 @@ namespace ControlWindow
         private void TopMostCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             WindowLoader.Instance.SetWindowTopMost?.Invoke(TopMostCheckBox.Checked);
+        }
+
+        private void LoadHideBorder(bool enable) {
+            WindowBorderCheckBox.CheckedChanged -= WindowBorderCheckBox_CheckedChanged;
+            WindowBorderCheckBox.Checked = enable;
+            WindowBorderCheckBox.CheckedChanged += WindowBorderCheckBox_CheckedChanged;
+        }
+
+        private void LoadIsTopMost(bool enable) {
+            TopMostCheckBox.CheckedChanged -= TopMostCheckBox_CheckedChanged;
+            TopMostCheckBox.Checked = true;
+            TopMostCheckBox.CheckedChanged += TopMostCheckBox_CheckedChanged;
         }
 
         private void FrontCameraButton_Click(object sender, EventArgs e)
