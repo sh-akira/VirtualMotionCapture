@@ -513,20 +513,20 @@ public class ControlWinFormsWindow : MonoBehaviour
             { // 注視点
                 if (currentCameraLookTarget == null) //フリーカメラ
                 {
-                    currentCamera.transform.Translate(-diff * Time.deltaTime * 0.5f);
+                    currentCamera.transform.Translate(-diff * Time.deltaTime * 1.1f);
                     if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
                     CurrentSettings.FreeCameraTransform.SetPosition(currentCamera.transform);
                 }
                 else //固定カメラ
                 {
-                    currentCameraLookTarget.Offset += new Vector3(0, -diff.y, 0) * 0.005f;
+                    currentCameraLookTarget.Offset += new Vector3(0, -diff.y, 0) * Time.deltaTime * 1.1f;
                     SaveLookTarget(currentCamera);
                 }
             }
             else if (Input.GetMouseButton((int)MouseButtons.Right))
             { // 回転
-                currentCamera.transform.RotateAround(currentCamera.transform.position, currentCamera.transform.right, -diff.y * 0.3f);
-                currentCamera.transform.RotateAround(currentCamera.transform.position, Vector3.up, diff.x * 0.3f);
+                currentCamera.transform.RotateAround(currentCamera.transform.position, currentCamera.transform.right, -diff.y * Time.deltaTime * 30.0f);
+                currentCamera.transform.RotateAround(currentCamera.transform.position, Vector3.up, diff.x * Time.deltaTime * 30.0f);
                 if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
                 CurrentSettings.FreeCameraTransform.SetRotation(currentCamera.transform);
             }
