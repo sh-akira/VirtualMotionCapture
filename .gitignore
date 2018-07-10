@@ -15,6 +15,7 @@ OVR*.sln
 VirtualMotionCapture.sln
 ControlWindow/bin*
 ControlWindow/ControlWindowTester/bin*
+VirtualMotionCapture/
 
 # Visual Studio cache directory
 .vs/

@@ -54,6 +54,14 @@ public class ControlWinFormsWindow : MonoBehaviour
         public int X;
         public int Y;
     }
+    [StructLayout(LayoutKind.Sequential)]
+    private struct RECT
+    {
+        public int left;
+        public int top;
+        public int right;
+        public int bottom;
+    }
 
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
@@ -81,6 +89,8 @@ public class ControlWinFormsWindow : MonoBehaviour
 
     [DllImport("user32.dll", SetLastError = true)]
     private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, SetWindowPosFlags uFlags);
+    [DllImport("user32.dll")]
+    private static extern bool GetWindowRect(IntPtr hWnd, out RECT rect);
     private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
     private static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
     private static readonly IntPtr HWND_TOP = new IntPtr(0);
@@ -106,6 +116,7 @@ public class ControlWinFormsWindow : MonoBehaviour
         NoFlag = 0x0000,
         IgnoreMoveAndResize = IgnoreMove | IgnoreResize,
     }
+    private static RECT GetUnityWindowPosition() {RECT r; GetWindowRect(GetUnityWindowHandle(), out r); return r; }
     private static void SetUnityWindowPosition(int x, int y) => SetWindowPos(GetUnityWindowHandle(), IntPtr.Zero, x, y, 0, 0, SetWindowPosFlags.IgnoreResize);
     private static void SetUnityWindowSize(int width, int height) => SetWindowPos(GetUnityWindowHandle(), IntPtr.Zero, 0, 0, width, height, SetWindowPosFlags.IgnoreMove);
     private static void SetUnityWindowTopMost(bool enable) => SetWindowPos(GetUnityWindowHandle(), enable ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SetWindowPosFlags.IgnoreMoveAndResize);
@@ -761,6 +772,9 @@ public class ControlWinFormsWindow : MonoBehaviour
         //ドラッグ開始
         if (Input.GetMouseButtonDown(0))
         {
+            var r = GetUnityWindowPosition();
+            WindowX = r.left;
+            WindowY = r.top;
             OldMousePos = GetWindowsMousePosition();
         }
 
