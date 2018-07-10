@@ -300,6 +300,13 @@ public class ControlWinFormsWindow : MonoBehaviour
         VRIKCalibrator.Calibrate(vrik, new VRIKCalibrator.Settings() { headOffset = new Vector3(0f, -0.15f, -0.15f), handOffset = new Vector3(0f, -0.03f, -0.07f) }, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
         VRIKCalibrator.Calibrate(vrik, new VRIKCalibrator.Settings() { headOffset = new Vector3(0f, -0.15f, -0.15f), handOffset = new Vector3(0f, -0.03f, -0.07f) }, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
         VRIKCalibrator.Calibrate(vrik, new VRIKCalibrator.Settings() { headOffset = new Vector3(0f, -0.15f, -0.15f), handOffset = new Vector3(0f, -0.03f, -0.07f) }, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
+        if (handler.Trackers.Count == 1)
+        {
+            vrik.solver.plantFeet = true;
+            vrik.solver.locomotion.weight = 1.0f;
+            var rootController = vrik.references.root.GetComponent<VRIKRootController>();
+            if (rootController != null) GameObject.Destroy(rootController);
+        }
         CurrentSettings.headTracker = StoreTransform.Create(headTracker);
         CurrentSettings.bodyTracker = StoreTransform.Create(bodyTracker);
         CurrentSettings.leftHandTracker = StoreTransform.Create(leftHandTracker);
