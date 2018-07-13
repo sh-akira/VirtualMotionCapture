@@ -23,6 +23,8 @@ public class ControlWinFormsWindow : MonoBehaviour
 
     public Renderer BackgroundRenderer;
 
+    public GameObject GridCanvas;
+
     private GameObject CurrentModel = null;
 
     private VRIK vrik = null;
@@ -150,6 +152,7 @@ public class ControlWinFormsWindow : MonoBehaviour
         win.SetWindowTopMost = SetWindowTopMost;
 
         win.ChangeCamera = ChangeCamera;
+        win.SetGridVisible = SetGridVisible;
 
         win.LoadSettings = LoadSettings;
         win.SaveSettings = SaveSettings;
@@ -536,7 +539,11 @@ public class ControlWinFormsWindow : MonoBehaviour
         return;
     }
 
-
+    private void SetGridVisible(bool enable)
+    {
+        GridCanvas?.SetActive(enable);
+        CurrentSettings.ShowCameraGrid = enable;
+    }
 
     #endregion
 
@@ -640,6 +647,8 @@ public class ControlWinFormsWindow : MonoBehaviour
         public LookTargetSettings BackCameraLookTargetSettings = null;
         [OptionalField]
         public CameraTypes? CameraType = null;
+        [OptionalField]
+        public bool ShowCameraGrid = false;
     }
 
     private Settings CurrentSettings = new Settings();
@@ -701,6 +710,8 @@ public class ControlWinFormsWindow : MonoBehaviour
             {
                 ChangeCamera(CurrentSettings.CameraType.Value);
             }
+            SetGridVisible(CurrentSettings.ShowCameraGrid);
+            WindowLoader.Instance.LoadShowCameraGrid?.Invoke(CurrentSettings.ShowCameraGrid);
         }
 
     }

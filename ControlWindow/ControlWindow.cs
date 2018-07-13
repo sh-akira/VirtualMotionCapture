@@ -23,6 +23,7 @@ namespace ControlWindow
             WindowLoader.Instance.LoadCustomBackgroundColor = LoadCustomBackgroundColor;
             WindowLoader.Instance.LoadHideBorder = LoadHideBorder;
             WindowLoader.Instance.LoadIsTopMost = LoadIsTopMost;
+            WindowLoader.Instance.LoadShowCameraGrid = LoadShowCameraGrid;
         }
 
         private void ImportVRMButton_Click(object sender, EventArgs e)
@@ -112,7 +113,7 @@ namespace ControlWindow
 
         private void LoadIsTopMost(bool enable) {
             TopMostCheckBox.CheckedChanged -= TopMostCheckBox_CheckedChanged;
-            TopMostCheckBox.Checked = true;
+            TopMostCheckBox.Checked = enable;
             TopMostCheckBox.CheckedChanged += TopMostCheckBox_CheckedChanged;
         }
 
@@ -139,6 +140,18 @@ namespace ControlWindow
         private void SaveSettingsButton_Click(object sender, EventArgs e)
         {
             WindowLoader.Instance.SaveSettings?.Invoke();
+        }
+
+        private void CameraGridCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            WindowLoader.Instance.SetGridVisible?.Invoke(CameraGridCheckBox.Checked);
+        }
+
+        void LoadShowCameraGrid(bool enable)
+        {
+            CameraGridCheckBox.CheckedChanged -= CameraGridCheckBox_CheckedChanged;
+            CameraGridCheckBox.Checked = enable;
+            CameraGridCheckBox.CheckedChanged += CameraGridCheckBox_CheckedChanged;
         }
     }
 }

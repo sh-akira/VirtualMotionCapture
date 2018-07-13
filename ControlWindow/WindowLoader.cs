@@ -41,8 +41,10 @@ namespace ControlWindow
         public Action<float, float, float> LoadCustomBackgroundColor;   // void LoadCustomBackgroundColor(float r, float g, float b) { } /*Unity to Forms*/
         public Action<bool> LoadHideBorder;     //void LoadHideBorder(bool enable) { } /*Unity to Forms*/
         public Action<bool> LoadIsTopMost;      //void LoadIsTopMost(bool enable) { } /*Unity to Forms*/
+        public Action<bool> LoadShowCameraGrid;      //void LoadShowCameraGrid(bool enable) { } /*Unity to Forms*/
 
         public Action<CameraTypes> ChangeCamera; //void ChangeCamera(CameraTypes type) { }
+        public Action<bool> SetGridVisible;    //void SetGridVisible(bool enable) { }
 
         public Action<int, Action> RunAfterMs; // void RunAfterMs(int ms, Action action) { }
         public Action<Action> RunOnUnity;       // void RunOnUnity(Action action) { }

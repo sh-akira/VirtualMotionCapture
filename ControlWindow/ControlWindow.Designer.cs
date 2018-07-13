@@ -31,21 +31,22 @@
             this.ImportVRMButton = new System.Windows.Forms.Button();
             this.CalibrationButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.SaveSettingsButton = new System.Windows.Forms.Button();
+            this.LoadSettingsButton = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.TopMostCheckBox = new System.Windows.Forms.CheckBox();
             this.WindowBorderCheckBox = new System.Windows.Forms.CheckBox();
+            this.TopMostCheckBox = new System.Windows.Forms.CheckBox();
             this.ColorTransparentButton = new System.Windows.Forms.Button();
             this.ColorCustom1Button = new System.Windows.Forms.Button();
             this.ColorWhiteButton = new System.Windows.Forms.Button();
             this.ColorBlueButton = new System.Windows.Forms.Button();
             this.ColorGreenButton = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.FreeCameraButton = new System.Windows.Forms.Button();
             this.BackCameraButton = new System.Windows.Forms.Button();
             this.FrontCameraButton = new System.Windows.Forms.Button();
-            this.LoadSettingsButton = new System.Windows.Forms.Button();
-            this.SaveSettingsButton = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.CameraGridCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -86,6 +87,28 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "設定";
             // 
+            // SaveSettingsButton
+            // 
+            this.SaveSettingsButton.Location = new System.Drawing.Point(109, 35);
+            this.SaveSettingsButton.Margin = new System.Windows.Forms.Padding(4);
+            this.SaveSettingsButton.Name = "SaveSettingsButton";
+            this.SaveSettingsButton.Size = new System.Drawing.Size(90, 62);
+            this.SaveSettingsButton.TabIndex = 1;
+            this.SaveSettingsButton.Text = "保存";
+            this.SaveSettingsButton.UseVisualStyleBackColor = true;
+            this.SaveSettingsButton.Click += new System.EventHandler(this.SaveSettingsButton_Click);
+            // 
+            // LoadSettingsButton
+            // 
+            this.LoadSettingsButton.Location = new System.Drawing.Point(11, 35);
+            this.LoadSettingsButton.Margin = new System.Windows.Forms.Padding(4);
+            this.LoadSettingsButton.Name = "LoadSettingsButton";
+            this.LoadSettingsButton.Size = new System.Drawing.Size(90, 62);
+            this.LoadSettingsButton.TabIndex = 0;
+            this.LoadSettingsButton.Text = "読込";
+            this.LoadSettingsButton.UseVisualStyleBackColor = true;
+            this.LoadSettingsButton.Click += new System.EventHandler(this.LoadSettingsButton_Click);
+            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.WindowBorderCheckBox);
@@ -102,27 +125,29 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "背景色(カスタム変更は右クリック)";
             // 
-            // TopMostCheckBox
-            // 
-            this.TopMostCheckBox.AutoSize = true;
-            this.TopMostCheckBox.Location = new System.Drawing.Point(7, 104);
-            this.TopMostCheckBox.Name = "TopMostCheckBox";
-            this.TopMostCheckBox.Size = new System.Drawing.Size(279, 32);
-            this.TopMostCheckBox.TabIndex = 9;
-            this.TopMostCheckBox.Text = "ウインドウを常に手前に表示";
-            this.TopMostCheckBox.UseVisualStyleBackColor = true;
-            this.TopMostCheckBox.CheckedChanged += new System.EventHandler(this.TopMostCheckBox_CheckedChanged);
-            // 
             // WindowBorderCheckBox
             // 
             this.WindowBorderCheckBox.AutoSize = true;
+            this.WindowBorderCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.WindowBorderCheckBox.Location = new System.Drawing.Point(286, 104);
             this.WindowBorderCheckBox.Name = "WindowBorderCheckBox";
             this.WindowBorderCheckBox.Size = new System.Drawing.Size(224, 32);
             this.WindowBorderCheckBox.TabIndex = 10;
             this.WindowBorderCheckBox.Text = "ウインドウ枠の非表示";
-            this.WindowBorderCheckBox.UseVisualStyleBackColor = true;
+            this.WindowBorderCheckBox.UseVisualStyleBackColor = false;
             this.WindowBorderCheckBox.CheckedChanged += new System.EventHandler(this.WindowBorderCheckBox_CheckedChanged);
+            // 
+            // TopMostCheckBox
+            // 
+            this.TopMostCheckBox.AutoSize = true;
+            this.TopMostCheckBox.BackColor = System.Drawing.Color.Transparent;
+            this.TopMostCheckBox.Location = new System.Drawing.Point(7, 104);
+            this.TopMostCheckBox.Name = "TopMostCheckBox";
+            this.TopMostCheckBox.Size = new System.Drawing.Size(279, 32);
+            this.TopMostCheckBox.TabIndex = 9;
+            this.TopMostCheckBox.Text = "ウインドウを常に手前に表示";
+            this.TopMostCheckBox.UseVisualStyleBackColor = false;
+            this.TopMostCheckBox.CheckedChanged += new System.EventHandler(this.TopMostCheckBox_CheckedChanged);
             // 
             // ColorTransparentButton
             // 
@@ -185,25 +210,17 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.CameraGridCheckBox);
             this.groupBox3.Controls.Add(this.FreeCameraButton);
             this.groupBox3.Controls.Add(this.BackCameraButton);
             this.groupBox3.Controls.Add(this.FrontCameraButton);
             this.groupBox3.Controls.Add(this.label1);
             this.groupBox3.Location = new System.Drawing.Point(12, 276);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(521, 162);
+            this.groupBox3.Size = new System.Drawing.Size(521, 169);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "カメラコントロール";
-            // 
-            // label1
-            // 
-            this.label1.Font = new System.Drawing.Font("Meiryo UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label1.Location = new System.Drawing.Point(6, 101);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(515, 53);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "フリーカメラの移動は画面上でマウスホイールのスクロール・ドラッグと右クリックでドラッグ";
             // 
             // FreeCameraButton
             // 
@@ -238,33 +255,34 @@
             this.FrontCameraButton.UseVisualStyleBackColor = true;
             this.FrontCameraButton.Click += new System.EventHandler(this.FrontCameraButton_Click);
             // 
-            // LoadSettingsButton
+            // label1
             // 
-            this.LoadSettingsButton.Location = new System.Drawing.Point(11, 35);
-            this.LoadSettingsButton.Margin = new System.Windows.Forms.Padding(4);
-            this.LoadSettingsButton.Name = "LoadSettingsButton";
-            this.LoadSettingsButton.Size = new System.Drawing.Size(90, 62);
-            this.LoadSettingsButton.TabIndex = 0;
-            this.LoadSettingsButton.Text = "読込";
-            this.LoadSettingsButton.UseVisualStyleBackColor = true;
-            this.LoadSettingsButton.Click += new System.EventHandler(this.LoadSettingsButton_Click);
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Meiryo UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.label1.Location = new System.Drawing.Point(6, 101);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(515, 53);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "フリーカメラの移動は画面上でマウスホイールのスクロール・ドラッグと右クリックでドラッグ";
             // 
-            // SaveSettingsButton
+            // CameraGridCheckBox
             // 
-            this.SaveSettingsButton.Location = new System.Drawing.Point(109, 35);
-            this.SaveSettingsButton.Margin = new System.Windows.Forms.Padding(4);
-            this.SaveSettingsButton.Name = "SaveSettingsButton";
-            this.SaveSettingsButton.Size = new System.Drawing.Size(90, 62);
-            this.SaveSettingsButton.TabIndex = 1;
-            this.SaveSettingsButton.Text = "保存";
-            this.SaveSettingsButton.UseVisualStyleBackColor = true;
-            this.SaveSettingsButton.Click += new System.EventHandler(this.SaveSettingsButton_Click);
+            this.CameraGridCheckBox.AutoSize = true;
+            this.CameraGridCheckBox.BackColor = System.Drawing.Color.Transparent;
+            this.CameraGridCheckBox.Location = new System.Drawing.Point(350, 131);
+            this.CameraGridCheckBox.Name = "CameraGridCheckBox";
+            this.CameraGridCheckBox.Size = new System.Drawing.Size(159, 32);
+            this.CameraGridCheckBox.TabIndex = 14;
+            this.CameraGridCheckBox.Text = "グリッドの表示";
+            this.CameraGridCheckBox.UseVisualStyleBackColor = false;
+            this.CameraGridCheckBox.CheckedChanged += new System.EventHandler(this.CameraGridCheckBox_CheckedChanged);
             // 
             // ControlWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 28F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(541, 451);
+            this.AutoSize = true;
+            this.ClientSize = new System.Drawing.Size(541, 455);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -278,6 +296,7 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -302,5 +321,6 @@
         private System.Windows.Forms.Button FrontCameraButton;
         private System.Windows.Forms.Button SaveSettingsButton;
         private System.Windows.Forms.Button LoadSettingsButton;
+        private System.Windows.Forms.CheckBox CameraGridCheckBox;
     }
 }
