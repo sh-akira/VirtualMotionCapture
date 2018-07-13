@@ -24,6 +24,7 @@ namespace ControlWindow
             WindowLoader.Instance.LoadHideBorder = LoadHideBorder;
             WindowLoader.Instance.LoadIsTopMost = LoadIsTopMost;
             WindowLoader.Instance.LoadShowCameraGrid = LoadShowCameraGrid;
+            WindowLoader.Instance.LoadSetWindowClickThrough = LoadSetWindowClickThrough;
         }
 
         private void ImportVRMButton_Click(object sender, EventArgs e)
@@ -152,6 +153,19 @@ namespace ControlWindow
             CameraGridCheckBox.CheckedChanged -= CameraGridCheckBox_CheckedChanged;
             CameraGridCheckBox.Checked = enable;
             CameraGridCheckBox.CheckedChanged += CameraGridCheckBox_CheckedChanged;
+        }
+
+        private void WindowClickThroughCheckBox_CheckedChanged(object sender, EventArgs e)
+        {            
+            WindowLoader.Instance.SetWindowClickThrough?.Invoke(WindowClickThroughCheckBox.Checked);
+            if (TopMostCheckBox.Checked == false) TopMostCheckBox.Checked = true;
+        }
+
+        void LoadSetWindowClickThrough(bool enable)
+        {
+            WindowClickThroughCheckBox.CheckedChanged -= WindowClickThroughCheckBox_CheckedChanged;
+            WindowClickThroughCheckBox.Checked = enable;
+            WindowClickThroughCheckBox.CheckedChanged += WindowClickThroughCheckBox_CheckedChanged;
         }
     }
 }

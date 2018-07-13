@@ -83,6 +83,7 @@ public class ControlWinFormsWindow : MonoBehaviour
     private static IntPtr GetUnityWindowHandle() => FindWindow(null, Application.productName);
 
     private uint defaultWindowStyle;
+    private uint defaultExWindowStyle;
 
     [DllImport("user32.dll")]
     private static extern int SetWindowLong(IntPtr hWnd, int nIndex, uint dwNewLong); /*x uint o int unchecked*/
@@ -134,6 +135,9 @@ public class ControlWinFormsWindow : MonoBehaviour
     const int GWL_STYLE = -16;
     const uint WS_POPUP = 0x80000000;
     const uint WS_VISIBLE = 0x10000000;
+    const int GWL_EXSTYLE = -20;
+    const uint WS_EX_LAYERED = 0x00080000;
+    const uint WS_EX_TRANSPARENT = 0x00000020;
     #endregion
 
     // Use this for initialization
@@ -150,6 +154,7 @@ public class ControlWinFormsWindow : MonoBehaviour
         win.SetBackgroundTransparent = SetBackgroundTransparent;
         win.SetWindowBorder = SetWindowBorder;
         win.SetWindowTopMost = SetWindowTopMost;
+        win.SetWindowClickThrough = SetWindowClickThrough;
 
         win.ChangeCamera = ChangeCamera;
         win.SetGridVisible = SetGridVisible;
@@ -383,6 +388,23 @@ public class ControlWinFormsWindow : MonoBehaviour
         CurrentSettings.IsTopMost = enable;
 #if !UNITY_EDITOR   // エディタ上では動きません。
         SetUnityWindowTopMost(enable);
+#endif
+    }
+
+    void SetWindowClickThrough(bool enable)
+    {
+        CurrentSettings.HideBorder = enable;
+#if !UNITY_EDITOR   // エディタ上では動きません。
+        var hwnd = GetUnityWindowHandle();
+        //var hwnd = GetActiveWindow();
+        if (enable)
+        {
+            SetWindowLong(hwnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_TRANSPARENT); //クリックを透過する
+        }
+        else
+        {
+            SetWindowLong(hwnd, GWL_EXSTYLE, defaultExWindowStyle);
+        }
 #endif
     }
 
@@ -649,6 +671,8 @@ public class ControlWinFormsWindow : MonoBehaviour
         public CameraTypes? CameraType = null;
         [OptionalField]
         public bool ShowCameraGrid = false;
+        [OptionalField]
+        public bool WindowClickThrough;
     }
 
     private Settings CurrentSettings = new Settings();
@@ -712,8 +736,9 @@ public class ControlWinFormsWindow : MonoBehaviour
             }
             SetGridVisible(CurrentSettings.ShowCameraGrid);
             WindowLoader.Instance.LoadShowCameraGrid?.Invoke(CurrentSettings.ShowCameraGrid);
+            SetWindowClickThrough(CurrentSettings.WindowClickThrough);
+            WindowLoader.Instance.LoadSetWindowClickThrough?.Invoke(CurrentSettings.WindowClickThrough);
         }
-
     }
 
     #endregion
@@ -721,6 +746,7 @@ public class ControlWinFormsWindow : MonoBehaviour
     private void Awake()
     {
         defaultWindowStyle = GetWindowLong(GetUnityWindowHandle(), GWL_STYLE);
+        defaultExWindowStyle = GetWindowLong(GetUnityWindowHandle(), GWL_EXSTYLE);
     }
 
     private void TestEvent(object temp)

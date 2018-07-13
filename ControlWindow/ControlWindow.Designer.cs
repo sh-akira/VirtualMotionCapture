@@ -42,11 +42,12 @@
             this.ColorBlueButton = new System.Windows.Forms.Button();
             this.ColorGreenButton = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.CameraGridCheckBox = new System.Windows.Forms.CheckBox();
             this.FreeCameraButton = new System.Windows.Forms.Button();
             this.BackCameraButton = new System.Windows.Forms.Button();
             this.FrontCameraButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.CameraGridCheckBox = new System.Windows.Forms.CheckBox();
+            this.WindowClickThroughCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -111,6 +112,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.WindowClickThroughCheckBox);
             this.groupBox2.Controls.Add(this.WindowBorderCheckBox);
             this.groupBox2.Controls.Add(this.TopMostCheckBox);
             this.groupBox2.Controls.Add(this.ColorTransparentButton);
@@ -120,7 +122,7 @@
             this.groupBox2.Controls.Add(this.ColorGreenButton);
             this.groupBox2.Location = new System.Drawing.Point(12, 128);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(521, 142);
+            this.groupBox2.Size = new System.Drawing.Size(521, 176);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "背景色(カスタム変更は右クリック)";
@@ -215,12 +217,24 @@
             this.groupBox3.Controls.Add(this.BackCameraButton);
             this.groupBox3.Controls.Add(this.FrontCameraButton);
             this.groupBox3.Controls.Add(this.label1);
-            this.groupBox3.Location = new System.Drawing.Point(12, 276);
+            this.groupBox3.Location = new System.Drawing.Point(12, 310);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(521, 169);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "カメラコントロール";
+            // 
+            // CameraGridCheckBox
+            // 
+            this.CameraGridCheckBox.AutoSize = true;
+            this.CameraGridCheckBox.BackColor = System.Drawing.Color.Transparent;
+            this.CameraGridCheckBox.Location = new System.Drawing.Point(350, 131);
+            this.CameraGridCheckBox.Name = "CameraGridCheckBox";
+            this.CameraGridCheckBox.Size = new System.Drawing.Size(159, 32);
+            this.CameraGridCheckBox.TabIndex = 14;
+            this.CameraGridCheckBox.Text = "グリッドの表示";
+            this.CameraGridCheckBox.UseVisualStyleBackColor = false;
+            this.CameraGridCheckBox.CheckedChanged += new System.EventHandler(this.CameraGridCheckBox_CheckedChanged);
             // 
             // FreeCameraButton
             // 
@@ -265,24 +279,24 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "フリーカメラの移動は画面上でマウスホイールのスクロール・ドラッグと右クリックでドラッグ";
             // 
-            // CameraGridCheckBox
+            // WindowClickThroughCheckBox
             // 
-            this.CameraGridCheckBox.AutoSize = true;
-            this.CameraGridCheckBox.BackColor = System.Drawing.Color.Transparent;
-            this.CameraGridCheckBox.Location = new System.Drawing.Point(350, 131);
-            this.CameraGridCheckBox.Name = "CameraGridCheckBox";
-            this.CameraGridCheckBox.Size = new System.Drawing.Size(159, 32);
-            this.CameraGridCheckBox.TabIndex = 14;
-            this.CameraGridCheckBox.Text = "グリッドの表示";
-            this.CameraGridCheckBox.UseVisualStyleBackColor = false;
-            this.CameraGridCheckBox.CheckedChanged += new System.EventHandler(this.CameraGridCheckBox_CheckedChanged);
+            this.WindowClickThroughCheckBox.AutoSize = true;
+            this.WindowClickThroughCheckBox.BackColor = System.Drawing.Color.Transparent;
+            this.WindowClickThroughCheckBox.Location = new System.Drawing.Point(7, 138);
+            this.WindowClickThroughCheckBox.Name = "WindowClickThroughCheckBox";
+            this.WindowClickThroughCheckBox.Size = new System.Drawing.Size(193, 32);
+            this.WindowClickThroughCheckBox.TabIndex = 11;
+            this.WindowClickThroughCheckBox.Text = "マウス操作を透過";
+            this.WindowClickThroughCheckBox.UseVisualStyleBackColor = false;
+            this.WindowClickThroughCheckBox.CheckedChanged += new System.EventHandler(this.WindowClickThroughCheckBox_CheckedChanged);
             // 
             // ControlWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 28F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(541, 455);
+            this.ClientSize = new System.Drawing.Size(541, 491);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -322,5 +336,6 @@
         private System.Windows.Forms.Button SaveSettingsButton;
         private System.Windows.Forms.Button LoadSettingsButton;
         private System.Windows.Forms.CheckBox CameraGridCheckBox;
+        private System.Windows.Forms.CheckBox WindowClickThroughCheckBox;
     }
 }

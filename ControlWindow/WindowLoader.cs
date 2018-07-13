@@ -34,6 +34,7 @@ namespace ControlWindow
         public Action SetBackgroundTransparent;                // void SetBackgroundTransparent() { }
         public Action<bool> SetWindowBorder;    //void SetWindowBorder(bool enable) { }
         public Action<bool> SetWindowTopMost;    //void SetWindowTopMost(bool enable) { }
+        public Action<bool> SetWindowClickThrough;    //void SetWindowClickThrough(bool enable) { }
 
 
         public Action SaveSettings;                // void SaveSettings() { }
@@ -41,6 +42,7 @@ namespace ControlWindow
         public Action<float, float, float> LoadCustomBackgroundColor;   // void LoadCustomBackgroundColor(float r, float g, float b) { } /*Unity to Forms*/
         public Action<bool> LoadHideBorder;     //void LoadHideBorder(bool enable) { } /*Unity to Forms*/
         public Action<bool> LoadIsTopMost;      //void LoadIsTopMost(bool enable) { } /*Unity to Forms*/
+        public Action<bool> LoadSetWindowClickThrough;      //void LoadShowCameraGrid(bool enable) { } /*Unity to Forms*/
         public Action<bool> LoadShowCameraGrid;      //void LoadShowCameraGrid(bool enable) { } /*Unity to Forms*/
 
         public Action<CameraTypes> ChangeCamera; //void ChangeCamera(CameraTypes type) { }
