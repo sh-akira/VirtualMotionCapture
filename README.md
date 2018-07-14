@@ -30,7 +30,7 @@ VRMモデル読み込みを押して、任意のVRMモデルを読み込んで�
   
 # ダウンロード
 リリースページ：[https://github.com/sh-akira/VirtualMotionCapture/releases]  
-ダウンロードはリリースページからVirtualMotionCapture0.02.zipをダウンロードしてください。  
+ダウンロードはリリースページからVirtualMotionCapture0.03.zipをダウンロードしてください。  
 解凍後VirtualMotionCapture.exeを実行で開始します。  
   
   
@@ -51,17 +51,19 @@ VR: HTC Vive + 3 tracker
   
   
 ●実装予定  
-・リップシンク  
-・カメラ設定時のグリッド  
 ・キャリブレーションの保存(複数起動を楽にしたい)  
 ・足トラッカーがない場合の歩幅等の設定  
 ・コントローラーのボタンで手と表情の制御  
-・ウインドウのマウス操作の透過(透過ウインドウ時に下のウインドウを操作できるように)  
   
 ●将来の実装予定  
 ・自身の状態をVR内にオーバーレイ表示  
   
 # 更新履歴
+Ver 0.03  
+・リップシンクに対応しました(低遅延・動きの設定が可能)  
+・カメラのグリッド表示に対応  
+・ウインドウのマウス操作の透過(透過ウインドウ時に下のウインドウを操作できるように)  
+  
 Ver 0.02  
 ・バーチャルモーションキャプチャー(命名:[ねこます](https://twitter.com/kemomimi_oukoku)さん)にすべて名称変更  
 ・設定読み込み時にチェックボックスが反映されない問題修正  
@@ -83,6 +85,7 @@ Ver 0.02
 　・SteamVR ([SteamVR Plugin](https://assetstore.unity.com/packages/templates/systems/steamvr-plugin-32647))  
 　・VRM ([UniVRM-0.38.unitypackage](https://github.com/dwango/UniVRM/releases))  
 　・VRM.Samples ([UniVRM-RuntimeLoaderSample-0.38.unitypackage](https://github.com/dwango/UniVRM/releases))  
+　・OVRLipSync ([OVRLipSync.unitypackage](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/))  
 以上のようなフォルダになるように各アセットをインポートしてください。  
 ・ControlWindow/ControlWindow.slnをVisual Studio 2017で開きます。  
 ・そのままビルドをするとdllが作成され自動でAsset/Plugins/ControlWindow.dllにコピーされます  
