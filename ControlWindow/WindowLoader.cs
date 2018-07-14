@@ -30,6 +30,14 @@ namespace ControlWindow
         public Action Calibrate;                // void Calibrate() { }
         public Action EndCalibrate;                // void EndCalibrate() { }
 
+        public Action<bool> SetLipSyncEnable;       //void LipSyncEnable(bool enable) { }
+        public Func<string[]> GetLipSyncDevices;    // string[] GetLipSyncDevices() { }
+        public Action<string> SetLipSyncDevice;     //void SetLipSyncDevice(string device) { }
+        public Action<float> SetLipSyncGain;        //void SetLipSyncGain(float gain) { }
+        public Action<bool> SetLipSyncMaxWeightEnable;        //void SetLipSyncMaxWeightEnable(bool enable) { }
+        public Action<float> SetLipSyncWeightThreashold;        //void SetLipSyncWeightThreashold(float threashold) { }
+        public Action<bool> SetLipSyncMaxWeightEmphasis;        //void SetLipSyncMaxWeightEmphasis(bool enable) { }
+
         public Action<float, float, float, bool> ChangeBackgroundColor;   // void ChangeBackgroundColor(float r, float g, float b, bool isCustom) { }
         public Action SetBackgroundTransparent;                // void SetBackgroundTransparent() { }
         public Action<bool> SetWindowBorder;    //void SetWindowBorder(bool enable) { }
@@ -44,6 +52,12 @@ namespace ControlWindow
         public Action<bool> LoadIsTopMost;      //void LoadIsTopMost(bool enable) { } /*Unity to Forms*/
         public Action<bool> LoadSetWindowClickThrough;      //void LoadShowCameraGrid(bool enable) { } /*Unity to Forms*/
         public Action<bool> LoadShowCameraGrid;      //void LoadShowCameraGrid(bool enable) { } /*Unity to Forms*/
+        public Action<bool> LoadLipSyncEnable;      //void LoadLipSyncEnable(bool enable) { } /*Unity to Forms*/
+        public Action<string> LoadLipSyncDevice;    //void LoadLipSyncDevice(string device) { } /*Unity to Forms*/
+        public Action<float> LoadLipSyncGain;        //void LoadLipSyncGain(float gain) { } /*Unity to Forms*/
+        public Action<bool> LoadLipSyncMaxWeightEnable;      //void LoadLipSyncMaxWeightEnable(bool enable) { } /*Unity to Forms*/
+        public Action<float> LoadLipSyncWeightThreashold;      //void LoadLipSyncWeightThreashold(float threashold) { } /*Unity to Forms*/
+        public Action<bool> LoadLipSyncMaxWeightEmphasis;      //void LoadLipSyncMaxWeightEmphasis(bool enable) { } /*Unity to Forms*/
 
         public Action<CameraTypes> ChangeCamera; //void ChangeCamera(CameraTypes type) { }
         public Action<bool> SetGridVisible;    //void SetGridVisible(bool enable) { }

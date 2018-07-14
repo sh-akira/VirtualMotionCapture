@@ -25,6 +25,8 @@ public class ControlWinFormsWindow : MonoBehaviour
 
     public GameObject GridCanvas;
 
+    public DynamicOVRLipSync LipSync;
+
     private GameObject CurrentModel = null;
 
     private VRIK vrik = null;
@@ -150,6 +152,14 @@ public class ControlWinFormsWindow : MonoBehaviour
         win.Calibrate = Calibrate;
         win.EndCalibrate = EndCalibrate;
 
+        win.SetLipSyncEnable = SetLipSyncEnable;
+        win.GetLipSyncDevices = GetLipSyncDevices;
+        win.SetLipSyncDevice = SetLipSyncDevice;
+        win.SetLipSyncGain = SetLipSyncGain;
+        win.SetLipSyncMaxWeightEnable = SetLipSyncMaxWeightEnable;
+        win.SetLipSyncWeightThreashold = SetLipSyncWeightThreashold;
+        win.SetLipSyncMaxWeightEmphasis = SetLipSyncMaxWeightEmphasis;
+
         win.ChangeBackgroundColor = ChangeBackgroundColor;
         win.SetBackgroundTransparent = SetBackgroundTransparent;
         win.SetWindowBorder = SetWindowBorder;
@@ -245,6 +255,9 @@ public class ControlWinFormsWindow : MonoBehaviour
         }
         // ParseしたJSONをシーンオブジェクトに変換していく
         CurrentModel = await VRMImporter.LoadVrmAsync(context);
+
+        //LipSync
+        LipSync.ImportVRMmodel(CurrentModel);
 
         CurrentModel.transform.SetParent(transform, false);
 
@@ -343,6 +356,53 @@ public class ControlWinFormsWindow : MonoBehaviour
 
         SetCameraLookTarget();
         //SetTrackersToVRIK();
+    }
+
+    #endregion
+
+    #region LipSync
+
+    private void SetLipSyncEnable(bool enable)
+    {
+        LipSync.EnableLipSync = enable;
+        CurrentSettings.LipSyncEnable = enable;
+    }
+
+    private string[] GetLipSyncDevices()
+    {
+        return LipSync.GetMicrophoneDevices();
+    }
+
+    private void SetLipSyncDevice(string device)
+    {
+        LipSync.SetMicrophoneDevice(device);
+        CurrentSettings.LipSyncDevice = device;
+    }
+
+    private void SetLipSyncGain(float gain)
+    {
+        if (gain < 1.0f) gain = 1.0f;
+        if (gain > 256.0f) gain = 256.0f;
+        LipSync.Gain = gain;
+        CurrentSettings.LipSyncGain = gain;
+    }
+
+    private void SetLipSyncMaxWeightEnable(bool enable)
+    {
+        LipSync.MaxWeightEnable = enable;
+        CurrentSettings.LipSyncMaxWeightEnable = enable;
+    }
+
+    private void SetLipSyncWeightThreashold(float threashold)
+    {
+        LipSync.WeightThreashold = threashold;
+        CurrentSettings.LipSyncWeightThreashold = threashold;
+    }
+
+    private void SetLipSyncMaxWeightEmphasis(bool enable)
+    {
+        LipSync.MaxWeightEmphasis = enable;
+        CurrentSettings.LipSyncMaxWeightEmphasis = enable;
     }
 
     #endregion
@@ -673,6 +733,18 @@ public class ControlWinFormsWindow : MonoBehaviour
         public bool ShowCameraGrid = false;
         [OptionalField]
         public bool WindowClickThrough;
+        [OptionalField]
+        public bool LipSyncEnable;
+        [OptionalField]
+        public string LipSyncDevice;
+        [OptionalField]
+        public float LipSyncGain;
+        [OptionalField]
+        public bool LipSyncMaxWeightEnable;
+        [OptionalField]
+        public float LipSyncWeightThreashold;
+        [OptionalField]
+        public bool LipSyncMaxWeightEmphasis;
     }
 
     private Settings CurrentSettings = new Settings();
@@ -738,6 +810,18 @@ public class ControlWinFormsWindow : MonoBehaviour
             WindowLoader.Instance.LoadShowCameraGrid?.Invoke(CurrentSettings.ShowCameraGrid);
             SetWindowClickThrough(CurrentSettings.WindowClickThrough);
             WindowLoader.Instance.LoadSetWindowClickThrough?.Invoke(CurrentSettings.WindowClickThrough);
+            SetLipSyncEnable(CurrentSettings.LipSyncEnable);
+            WindowLoader.Instance.LoadLipSyncEnable?.Invoke(CurrentSettings.LipSyncEnable);
+            SetLipSyncDevice(CurrentSettings.LipSyncDevice);
+            WindowLoader.Instance.LoadLipSyncDevice?.Invoke(CurrentSettings.LipSyncDevice);
+            SetLipSyncGain(CurrentSettings.LipSyncGain);
+            WindowLoader.Instance.LoadLipSyncGain(CurrentSettings.LipSyncGain);
+            SetLipSyncMaxWeightEnable(CurrentSettings.LipSyncMaxWeightEnable);
+            WindowLoader.Instance.LoadLipSyncMaxWeightEnable?.Invoke(CurrentSettings.LipSyncMaxWeightEnable);
+            SetLipSyncWeightThreashold(CurrentSettings.LipSyncWeightThreashold);
+            WindowLoader.Instance.LoadLipSyncWeightThreashold?.Invoke(CurrentSettings.LipSyncWeightThreashold);
+            SetLipSyncMaxWeightEmphasis(CurrentSettings.LipSyncMaxWeightEmphasis);
+            WindowLoader.Instance.LoadLipSyncMaxWeightEmphasis?.Invoke(CurrentSettings.LipSyncMaxWeightEmphasis);
         }
     }
 

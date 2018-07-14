@@ -9,6 +9,7 @@ Assets/ExternalPlugins/SteamVR*
 Assets/ExternalPlugins/VRM*
 Assets/ExternalPlugins/VRM.Samples*
 Assets/ExternalPlugins/StreamingAssets*
+Assets/ExternalPlugins/OVRLipSync*
 ControlWindowSeparateThreadBackup*
 Assembly*.csproj
 OVR*.sln
