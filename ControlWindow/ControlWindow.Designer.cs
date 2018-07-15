@@ -52,23 +52,45 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label2 = new System.Windows.Forms.Label();
-            this.LipSyncDeviceComboBox = new System.Windows.Forms.ComboBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.GainScrollBar = new System.Windows.Forms.HScrollBar();
-            this.GainLabel = new System.Windows.Forms.Label();
-            this.LipSyncDeviceRefreshButton = new System.Windows.Forms.Button();
-            this.WeightThreasholdLabel = new System.Windows.Forms.Label();
-            this.WeightThreasholdScrollBar = new System.Windows.Forms.HScrollBar();
-            this.label5 = new System.Windows.Forms.Label();
-            this.MaxWeightCheckBox = new System.Windows.Forms.CheckBox();
             this.MaxWeightEmphasisCheckBox = new System.Windows.Forms.CheckBox();
+            this.MaxWeightCheckBox = new System.Windows.Forms.CheckBox();
+            this.WeightThreasholdScrollBar = new System.Windows.Forms.HScrollBar();
+            this.GainScrollBar = new System.Windows.Forms.HScrollBar();
+            this.LipSyncDeviceRefreshButton = new System.Windows.Forms.Button();
+            this.LipSyncDeviceComboBox = new System.Windows.Forms.ComboBox();
+            this.WeightThreasholdLabel = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.GainLabel = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.DefaultFaceComboBox = new System.Windows.Forms.ComboBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.OpenAnimationTimeScrollBar = new System.Windows.Forms.HScrollBar();
+            this.CloseAnimationTimeScrollBar = new System.Windows.Forms.HScrollBar();
+            this.label6 = new System.Windows.Forms.Label();
+            this.OpenAnimationTimeLabel = new System.Windows.Forms.Label();
+            this.CloseAnimationTimeLabel = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.BlinkTimeMaxScrollBar = new System.Windows.Forms.HScrollBar();
+            this.BlinkTimeMinScrollBar = new System.Windows.Forms.HScrollBar();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.ClosingTimeScrollBar = new System.Windows.Forms.HScrollBar();
+            this.ClosingTimeLabel = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.BlinkTimeMaxLabel = new System.Windows.Forms.Label();
+            this.BlinkTimeMinLabel = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.AutoBlinkCheckBox = new System.Windows.Forms.CheckBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
+            this.tabPage5.SuspendLayout();
             this.SuspendLayout();
             // 
             // ImportVRMButton
@@ -288,6 +310,7 @@
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage4);
+            this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -305,7 +328,7 @@
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(526, 152);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "設定 　";
+            this.tabPage1.Text = "設定 ";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // tabPage2
@@ -323,7 +346,7 @@
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(526, 152);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "背景色 　";
+            this.tabPage2.Text = "背景色 ";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // tabPage3
@@ -337,7 +360,7 @@
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Size = new System.Drawing.Size(526, 152);
             this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "カメラ 　";
+            this.tabPage3.Text = "カメラ ";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // tabPage4
@@ -358,94 +381,21 @@
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Size = new System.Drawing.Size(526, 152);
             this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "リップシンク 　";
+            this.tabPage4.Text = "リップシンク ";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
-            // label2
+            // MaxWeightEmphasisCheckBox
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(8, 48);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(162, 28);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "使用するデバイス";
-            // 
-            // LipSyncDeviceComboBox
-            // 
-            this.LipSyncDeviceComboBox.FormattingEnabled = true;
-            this.LipSyncDeviceComboBox.Location = new System.Drawing.Point(176, 45);
-            this.LipSyncDeviceComboBox.Name = "LipSyncDeviceComboBox";
-            this.LipSyncDeviceComboBox.Size = new System.Drawing.Size(264, 36);
-            this.LipSyncDeviceComboBox.TabIndex = 6;
-            this.toolTip1.SetToolTip(this.LipSyncDeviceComboBox, "リップシンクに使用する音声入力デバイスを選択してください");
-            this.LipSyncDeviceComboBox.SelectedIndexChanged += new System.EventHandler(this.LipSyncDeviceComboBox_SelectedIndexChanged);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(8, 82);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(126, 28);
-            this.label3.TabIndex = 7;
-            this.label3.Text = "ゲイン(感度)";
-            // 
-            // GainScrollBar
-            // 
-            this.GainScrollBar.Location = new System.Drawing.Point(176, 84);
-            this.GainScrollBar.Maximum = 2560;
-            this.GainScrollBar.Minimum = 10;
-            this.GainScrollBar.Name = "GainScrollBar";
-            this.GainScrollBar.Size = new System.Drawing.Size(264, 26);
-            this.GainScrollBar.TabIndex = 8;
-            this.toolTip1.SetToolTip(this.GainScrollBar, "入力の感度設定です。反応が悪い場合にあげてください");
-            this.GainScrollBar.Value = 10;
-            this.GainScrollBar.ValueChanged += new System.EventHandler(this.GainScrollBar_ValueChanged);
-            // 
-            // GainLabel
-            // 
-            this.GainLabel.Location = new System.Drawing.Point(441, 82);
-            this.GainLabel.Name = "GainLabel";
-            this.GainLabel.Size = new System.Drawing.Size(82, 30);
-            this.GainLabel.TabIndex = 9;
-            this.GainLabel.Text = "1.0";
-            this.GainLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // LipSyncDeviceRefreshButton
-            // 
-            this.LipSyncDeviceRefreshButton.Location = new System.Drawing.Point(446, 45);
-            this.LipSyncDeviceRefreshButton.Name = "LipSyncDeviceRefreshButton";
-            this.LipSyncDeviceRefreshButton.Size = new System.Drawing.Size(70, 36);
-            this.LipSyncDeviceRefreshButton.TabIndex = 10;
-            this.LipSyncDeviceRefreshButton.Text = "更新";
-            this.LipSyncDeviceRefreshButton.UseVisualStyleBackColor = true;
-            this.LipSyncDeviceRefreshButton.Click += new System.EventHandler(this.LipSyncDeviceRefreshButton_Click);
-            // 
-            // WeightThreasholdLabel
-            // 
-            this.WeightThreasholdLabel.Location = new System.Drawing.Point(436, 112);
-            this.WeightThreasholdLabel.Name = "WeightThreasholdLabel";
-            this.WeightThreasholdLabel.Size = new System.Drawing.Size(87, 40);
-            this.WeightThreasholdLabel.TabIndex = 13;
-            this.WeightThreasholdLabel.Text = "0.000";
-            this.WeightThreasholdLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // WeightThreasholdScrollBar
-            // 
-            this.WeightThreasholdScrollBar.Location = new System.Drawing.Point(176, 114);
-            this.WeightThreasholdScrollBar.Name = "WeightThreasholdScrollBar";
-            this.WeightThreasholdScrollBar.Size = new System.Drawing.Size(264, 26);
-            this.WeightThreasholdScrollBar.TabIndex = 12;
-            this.toolTip1.SetToolTip(this.WeightThreasholdScrollBar, "音素の最小レベルを設定します。ノイズで口が開いてしまうのを防ぎます");
-            this.WeightThreasholdScrollBar.ValueChanged += new System.EventHandler(this.WeightThreasholdScrollBar_ValueChanged);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(8, 112);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(118, 28);
-            this.label5.TabIndex = 11;
-            this.label5.Text = "音素の最小";
+            this.MaxWeightEmphasisCheckBox.AutoSize = true;
+            this.MaxWeightEmphasisCheckBox.BackColor = System.Drawing.Color.Transparent;
+            this.MaxWeightEmphasisCheckBox.Location = new System.Drawing.Point(334, 7);
+            this.MaxWeightEmphasisCheckBox.Name = "MaxWeightEmphasisCheckBox";
+            this.MaxWeightEmphasisCheckBox.Size = new System.Drawing.Size(188, 32);
+            this.MaxWeightEmphasisCheckBox.TabIndex = 15;
+            this.MaxWeightEmphasisCheckBox.Text = "最大音素の強調";
+            this.toolTip1.SetToolTip(this.MaxWeightEmphasisCheckBox, "最大の音素(あいうえお)を強調して、はっきりと動くようにします。");
+            this.MaxWeightEmphasisCheckBox.UseVisualStyleBackColor = false;
+            this.MaxWeightEmphasisCheckBox.CheckedChanged += new System.EventHandler(this.MaxWeightEmphasisCheckBox_CheckedChanged);
             // 
             // MaxWeightCheckBox
             // 
@@ -460,18 +410,323 @@
             this.MaxWeightCheckBox.UseVisualStyleBackColor = false;
             this.MaxWeightCheckBox.CheckedChanged += new System.EventHandler(this.MaxWeightCheckBox_CheckedChanged);
             // 
-            // MaxWeightEmphasisCheckBox
+            // WeightThreasholdScrollBar
             // 
-            this.MaxWeightEmphasisCheckBox.AutoSize = true;
-            this.MaxWeightEmphasisCheckBox.BackColor = System.Drawing.Color.Transparent;
-            this.MaxWeightEmphasisCheckBox.Location = new System.Drawing.Point(334, 7);
-            this.MaxWeightEmphasisCheckBox.Name = "MaxWeightEmphasisCheckBox";
-            this.MaxWeightEmphasisCheckBox.Size = new System.Drawing.Size(188, 32);
-            this.MaxWeightEmphasisCheckBox.TabIndex = 15;
-            this.MaxWeightEmphasisCheckBox.Text = "最大音素の強調";
-            this.toolTip1.SetToolTip(this.MaxWeightEmphasisCheckBox, "最大の音素(あいうえお)を強調して、はっきりと動くようにします。");
-            this.MaxWeightEmphasisCheckBox.UseVisualStyleBackColor = false;
-            this.MaxWeightEmphasisCheckBox.CheckedChanged += new System.EventHandler(this.MaxWeightEmphasisCheckBox_CheckedChanged);
+            this.WeightThreasholdScrollBar.Location = new System.Drawing.Point(176, 114);
+            this.WeightThreasholdScrollBar.Name = "WeightThreasholdScrollBar";
+            this.WeightThreasholdScrollBar.Size = new System.Drawing.Size(264, 26);
+            this.WeightThreasholdScrollBar.TabIndex = 12;
+            this.toolTip1.SetToolTip(this.WeightThreasholdScrollBar, "音素の最小レベルを設定します。ノイズで口が開いてしまうのを防ぎます");
+            this.WeightThreasholdScrollBar.ValueChanged += new System.EventHandler(this.WeightThreasholdScrollBar_ValueChanged);
+            // 
+            // GainScrollBar
+            // 
+            this.GainScrollBar.Location = new System.Drawing.Point(176, 84);
+            this.GainScrollBar.Maximum = 2560;
+            this.GainScrollBar.Minimum = 10;
+            this.GainScrollBar.Name = "GainScrollBar";
+            this.GainScrollBar.Size = new System.Drawing.Size(264, 26);
+            this.GainScrollBar.TabIndex = 8;
+            this.toolTip1.SetToolTip(this.GainScrollBar, "入力の感度設定です。反応が悪い場合にあげてください");
+            this.GainScrollBar.Value = 10;
+            this.GainScrollBar.ValueChanged += new System.EventHandler(this.GainScrollBar_ValueChanged);
+            // 
+            // LipSyncDeviceRefreshButton
+            // 
+            this.LipSyncDeviceRefreshButton.Location = new System.Drawing.Point(446, 45);
+            this.LipSyncDeviceRefreshButton.Name = "LipSyncDeviceRefreshButton";
+            this.LipSyncDeviceRefreshButton.Size = new System.Drawing.Size(70, 36);
+            this.LipSyncDeviceRefreshButton.TabIndex = 10;
+            this.LipSyncDeviceRefreshButton.Text = "更新";
+            this.LipSyncDeviceRefreshButton.UseVisualStyleBackColor = true;
+            this.LipSyncDeviceRefreshButton.Click += new System.EventHandler(this.LipSyncDeviceRefreshButton_Click);
+            // 
+            // LipSyncDeviceComboBox
+            // 
+            this.LipSyncDeviceComboBox.FormattingEnabled = true;
+            this.LipSyncDeviceComboBox.Location = new System.Drawing.Point(176, 45);
+            this.LipSyncDeviceComboBox.Name = "LipSyncDeviceComboBox";
+            this.LipSyncDeviceComboBox.Size = new System.Drawing.Size(264, 36);
+            this.LipSyncDeviceComboBox.TabIndex = 6;
+            this.toolTip1.SetToolTip(this.LipSyncDeviceComboBox, "リップシンクに使用する音声入力デバイスを選択してください");
+            this.LipSyncDeviceComboBox.SelectedIndexChanged += new System.EventHandler(this.LipSyncDeviceComboBox_SelectedIndexChanged);
+            // 
+            // WeightThreasholdLabel
+            // 
+            this.WeightThreasholdLabel.Location = new System.Drawing.Point(436, 112);
+            this.WeightThreasholdLabel.Name = "WeightThreasholdLabel";
+            this.WeightThreasholdLabel.Size = new System.Drawing.Size(87, 40);
+            this.WeightThreasholdLabel.TabIndex = 13;
+            this.WeightThreasholdLabel.Text = "0.000";
+            this.WeightThreasholdLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(8, 112);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(118, 28);
+            this.label5.TabIndex = 11;
+            this.label5.Text = "音素の最小";
+            // 
+            // GainLabel
+            // 
+            this.GainLabel.Location = new System.Drawing.Point(441, 82);
+            this.GainLabel.Name = "GainLabel";
+            this.GainLabel.Size = new System.Drawing.Size(82, 30);
+            this.GainLabel.TabIndex = 9;
+            this.GainLabel.Text = "1.0";
+            this.GainLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(8, 82);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(126, 28);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "ゲイン(感度)";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(8, 48);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(162, 28);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "使用するデバイス";
+            // 
+            // tabPage5
+            // 
+            this.tabPage5.Controls.Add(this.ClosingTimeScrollBar);
+            this.tabPage5.Controls.Add(this.OpenAnimationTimeScrollBar);
+            this.tabPage5.Controls.Add(this.CloseAnimationTimeScrollBar);
+            this.tabPage5.Controls.Add(this.BlinkTimeMaxScrollBar);
+            this.tabPage5.Controls.Add(this.BlinkTimeMinScrollBar);
+            this.tabPage5.Controls.Add(this.DefaultFaceComboBox);
+            this.tabPage5.Controls.Add(this.label17);
+            this.tabPage5.Controls.Add(this.label6);
+            this.tabPage5.Controls.Add(this.OpenAnimationTimeLabel);
+            this.tabPage5.Controls.Add(this.CloseAnimationTimeLabel);
+            this.tabPage5.Controls.Add(this.label16);
+            this.tabPage5.Controls.Add(this.label15);
+            this.tabPage5.Controls.Add(this.label14);
+            this.tabPage5.Controls.Add(this.label13);
+            this.tabPage5.Controls.Add(this.ClosingTimeLabel);
+            this.tabPage5.Controls.Add(this.label12);
+            this.tabPage5.Controls.Add(this.BlinkTimeMaxLabel);
+            this.tabPage5.Controls.Add(this.BlinkTimeMinLabel);
+            this.tabPage5.Controls.Add(this.label8);
+            this.tabPage5.Controls.Add(this.AutoBlinkCheckBox);
+            this.tabPage5.Location = new System.Drawing.Point(4, 37);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Size = new System.Drawing.Size(526, 152);
+            this.tabPage5.TabIndex = 4;
+            this.tabPage5.Text = "表情制御 ";
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // DefaultFaceComboBox
+            // 
+            this.DefaultFaceComboBox.FormattingEnabled = true;
+            this.DefaultFaceComboBox.Items.AddRange(new object[] {
+            "通常(NEUTRAL)",
+            "喜(JOY)",
+            "怒(ANGRY)",
+            "哀(SORROW)",
+            "楽(FUN)",
+            "上見(LOOKUP)",
+            "下見(LOOKDOWN)",
+            "左見(LOOKLEFT)",
+            "右見(LOOKRIGHT)"});
+            this.DefaultFaceComboBox.Location = new System.Drawing.Point(378, 5);
+            this.DefaultFaceComboBox.Name = "DefaultFaceComboBox";
+            this.DefaultFaceComboBox.Size = new System.Drawing.Size(143, 36);
+            this.DefaultFaceComboBox.TabIndex = 37;
+            this.DefaultFaceComboBox.Text = "通常(NEUTRAL)";
+            this.DefaultFaceComboBox.SelectedIndexChanged += new System.EventHandler(this.DefaultFaceComboBox_SelectedIndexChanged);
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(216, 8);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(156, 28);
+            this.label17.TabIndex = 36;
+            this.label17.Text = "デフォルトの表情";
+            // 
+            // OpenAnimationTimeScrollBar
+            // 
+            this.OpenAnimationTimeScrollBar.Location = new System.Drawing.Point(316, 90);
+            this.OpenAnimationTimeScrollBar.Maximum = 200;
+            this.OpenAnimationTimeScrollBar.Name = "OpenAnimationTimeScrollBar";
+            this.OpenAnimationTimeScrollBar.Size = new System.Drawing.Size(120, 26);
+            this.OpenAnimationTimeScrollBar.TabIndex = 33;
+            this.toolTip1.SetToolTip(this.OpenAnimationTimeScrollBar, "まぶたが開くまでにかかる時間です");
+            this.OpenAnimationTimeScrollBar.Value = 3;
+            this.OpenAnimationTimeScrollBar.ValueChanged += new System.EventHandler(this.OpenAnimationTimeScrollBar_ValueChanged);
+            // 
+            // CloseAnimationTimeScrollBar
+            // 
+            this.CloseAnimationTimeScrollBar.Location = new System.Drawing.Point(316, 64);
+            this.CloseAnimationTimeScrollBar.Maximum = 200;
+            this.CloseAnimationTimeScrollBar.Name = "CloseAnimationTimeScrollBar";
+            this.CloseAnimationTimeScrollBar.Size = new System.Drawing.Size(120, 26);
+            this.CloseAnimationTimeScrollBar.TabIndex = 31;
+            this.toolTip1.SetToolTip(this.CloseAnimationTimeScrollBar, "まぶたが閉じるまでにかかる時間です");
+            this.CloseAnimationTimeScrollBar.Value = 6;
+            this.CloseAnimationTimeScrollBar.ValueChanged += new System.EventHandler(this.CloseAnimationTimeScrollBar_ValueChanged);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(263, 88);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(51, 28);
+            this.label6.TabIndex = 35;
+            this.label6.Text = "開き";
+            // 
+            // OpenAnimationTimeLabel
+            // 
+            this.OpenAnimationTimeLabel.Location = new System.Drawing.Point(439, 88);
+            this.OpenAnimationTimeLabel.Name = "OpenAnimationTimeLabel";
+            this.OpenAnimationTimeLabel.Size = new System.Drawing.Size(82, 30);
+            this.OpenAnimationTimeLabel.TabIndex = 34;
+            this.OpenAnimationTimeLabel.Text = "0.03";
+            this.OpenAnimationTimeLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // CloseAnimationTimeLabel
+            // 
+            this.CloseAnimationTimeLabel.Location = new System.Drawing.Point(439, 62);
+            this.CloseAnimationTimeLabel.Name = "CloseAnimationTimeLabel";
+            this.CloseAnimationTimeLabel.Size = new System.Drawing.Size(82, 30);
+            this.CloseAnimationTimeLabel.TabIndex = 32;
+            this.CloseAnimationTimeLabel.Text = "0.06";
+            this.CloseAnimationTimeLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(263, 62);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(50, 28);
+            this.label16.TabIndex = 30;
+            this.label16.Text = "閉じ";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(263, 38);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(209, 28);
+            this.label15.TabIndex = 29;
+            this.label15.Text = "アニメーション時間(秒)";
+            // 
+            // BlinkTimeMaxScrollBar
+            // 
+            this.BlinkTimeMaxScrollBar.Location = new System.Drawing.Point(57, 90);
+            this.BlinkTimeMaxScrollBar.Maximum = 6000;
+            this.BlinkTimeMaxScrollBar.Name = "BlinkTimeMaxScrollBar";
+            this.BlinkTimeMaxScrollBar.Size = new System.Drawing.Size(120, 26);
+            this.BlinkTimeMaxScrollBar.TabIndex = 17;
+            this.toolTip1.SetToolTip(this.BlinkTimeMaxScrollBar, "まばたきをする最長の時間です。これより遅くまばたきしません");
+            this.BlinkTimeMaxScrollBar.Value = 100;
+            this.BlinkTimeMaxScrollBar.ValueChanged += new System.EventHandler(this.BlinkTimeMaxScrollBar_ValueChanged);
+            // 
+            // BlinkTimeMinScrollBar
+            // 
+            this.BlinkTimeMinScrollBar.Location = new System.Drawing.Point(57, 64);
+            this.BlinkTimeMinScrollBar.Maximum = 6000;
+            this.BlinkTimeMinScrollBar.Name = "BlinkTimeMinScrollBar";
+            this.BlinkTimeMinScrollBar.Size = new System.Drawing.Size(120, 26);
+            this.BlinkTimeMinScrollBar.TabIndex = 15;
+            this.toolTip1.SetToolTip(this.BlinkTimeMinScrollBar, "まばたきをする最短の時間です。これより早くまばたきしません");
+            this.BlinkTimeMinScrollBar.Value = 10;
+            this.BlinkTimeMinScrollBar.ValueChanged += new System.EventHandler(this.BlinkTimeMinScrollBar_ValueChanged);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(4, 38);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(199, 28);
+            this.label14.TabIndex = 28;
+            this.label14.Text = "次のまばたきまで(秒)";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(4, 88);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(56, 28);
+            this.label13.TabIndex = 27;
+            this.label13.Text = "最長";
+            // 
+            // ClosingTimeScrollBar
+            // 
+            this.ClosingTimeScrollBar.Location = new System.Drawing.Point(316, 120);
+            this.ClosingTimeScrollBar.Maximum = 200;
+            this.ClosingTimeScrollBar.Name = "ClosingTimeScrollBar";
+            this.ClosingTimeScrollBar.Size = new System.Drawing.Size(120, 26);
+            this.ClosingTimeScrollBar.TabIndex = 24;
+            this.toolTip1.SetToolTip(this.ClosingTimeScrollBar, "まぶたが閉じたまま何秒待つかの設定です");
+            this.ClosingTimeScrollBar.Value = 10;
+            this.ClosingTimeScrollBar.ValueChanged += new System.EventHandler(this.ClosingTimeScrollBar_ValueChanged);
+            // 
+            // ClosingTimeLabel
+            // 
+            this.ClosingTimeLabel.Location = new System.Drawing.Point(439, 118);
+            this.ClosingTimeLabel.Name = "ClosingTimeLabel";
+            this.ClosingTimeLabel.Size = new System.Drawing.Size(82, 30);
+            this.ClosingTimeLabel.TabIndex = 26;
+            this.ClosingTimeLabel.Text = "0.10";
+            this.ClosingTimeLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(109, 118);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(205, 28);
+            this.label12.TabIndex = 25;
+            this.label12.Text = "閉じたままの時間(秒)";
+            // 
+            // BlinkTimeMaxLabel
+            // 
+            this.BlinkTimeMaxLabel.Location = new System.Drawing.Point(180, 92);
+            this.BlinkTimeMaxLabel.Name = "BlinkTimeMaxLabel";
+            this.BlinkTimeMaxLabel.Size = new System.Drawing.Size(82, 30);
+            this.BlinkTimeMaxLabel.TabIndex = 18;
+            this.BlinkTimeMaxLabel.Text = "10.0";
+            this.BlinkTimeMaxLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // BlinkTimeMinLabel
+            // 
+            this.BlinkTimeMinLabel.Location = new System.Drawing.Point(180, 66);
+            this.BlinkTimeMinLabel.Name = "BlinkTimeMinLabel";
+            this.BlinkTimeMinLabel.Size = new System.Drawing.Size(82, 30);
+            this.BlinkTimeMinLabel.TabIndex = 16;
+            this.BlinkTimeMinLabel.Text = "1.0";
+            this.BlinkTimeMinLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(4, 62);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(56, 28);
+            this.label8.TabIndex = 14;
+            this.label8.Text = "最短";
+            // 
+            // AutoBlinkCheckBox
+            // 
+            this.AutoBlinkCheckBox.AutoSize = true;
+            this.AutoBlinkCheckBox.Location = new System.Drawing.Point(13, 7);
+            this.AutoBlinkCheckBox.Name = "AutoBlinkCheckBox";
+            this.AutoBlinkCheckBox.Size = new System.Drawing.Size(152, 32);
+            this.AutoBlinkCheckBox.TabIndex = 0;
+            this.AutoBlinkCheckBox.Text = "自動まばたき";
+            this.AutoBlinkCheckBox.UseVisualStyleBackColor = true;
+            this.AutoBlinkCheckBox.CheckedChanged += new System.EventHandler(this.AutoBlinkCheckBox_CheckedChanged);
             // 
             // ControlWindow
             // 
@@ -494,6 +749,8 @@
             this.tabPage3.PerformLayout();
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
+            this.tabPage5.ResumeLayout(false);
+            this.tabPage5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -535,5 +792,26 @@
         private System.Windows.Forms.Label WeightThreasholdLabel;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckBox MaxWeightEmphasisCheckBox;
+        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.HScrollBar BlinkTimeMaxScrollBar;
+        private System.Windows.Forms.Label BlinkTimeMaxLabel;
+        private System.Windows.Forms.HScrollBar BlinkTimeMinScrollBar;
+        private System.Windows.Forms.Label BlinkTimeMinLabel;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.CheckBox AutoBlinkCheckBox;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.HScrollBar ClosingTimeScrollBar;
+        private System.Windows.Forms.Label ClosingTimeLabel;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.HScrollBar OpenAnimationTimeScrollBar;
+        private System.Windows.Forms.HScrollBar CloseAnimationTimeScrollBar;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label OpenAnimationTimeLabel;
+        private System.Windows.Forms.Label CloseAnimationTimeLabel;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.ComboBox DefaultFaceComboBox;
+        private System.Windows.Forms.Label label17;
     }
 }

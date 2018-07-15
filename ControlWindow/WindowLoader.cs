@@ -44,6 +44,13 @@ namespace ControlWindow
         public Action<bool> SetWindowTopMost;    //void SetWindowTopMost(bool enable) { }
         public Action<bool> SetWindowClickThrough;    //void SetWindowClickThrough(bool enable) { }
 
+        public Action<bool> SetAutoBlinkEnable;       //void SetAutoBlinkEnable(bool enable) { }
+        public Action<float> SetBlinkTimeMin;         //void SetBlinkTimeMin(float time) { }
+        public Action<float> SetBlinkTimeMax;         //void SetBlinkTimeMax(float time) { }
+        public Action<float> SetCloseAnimationTime;   //void SetCloseAnimationTime(float time) { }
+        public Action<float> SetOpenAnimationTime;    //void SetOpenAnimationTime(float time) { }
+        public Action<float> SetClosingTime;          //void SetClosingTime(float time) { }
+        public Action<string> SetDefaultFace;         //void SetDefaultFace(string face) { }
 
         public Action SaveSettings;                // void SaveSettings() { }
         public Action LoadSettings;                // void LoadSettings() { }
@@ -58,6 +65,13 @@ namespace ControlWindow
         public Action<bool> LoadLipSyncMaxWeightEnable;      //void LoadLipSyncMaxWeightEnable(bool enable) { } /*Unity to Forms*/
         public Action<float> LoadLipSyncWeightThreashold;      //void LoadLipSyncWeightThreashold(float threashold) { } /*Unity to Forms*/
         public Action<bool> LoadLipSyncMaxWeightEmphasis;      //void LoadLipSyncMaxWeightEmphasis(bool enable) { } /*Unity to Forms*/
+        public Action<bool> LoadAutoBlinkEnable;       //void LoadAutoBlinkEnable(bool enable) { } /*Unity to Forms*/
+        public Action<float> LoadBlinkTimeMin;         //void LoadBlinkTimeMin(float time) { } /*Unity to Forms*/
+        public Action<float> LoadBlinkTimeMax;         //void LoadBlinkTimeMax(float time) { } /*Unity to Forms*/
+        public Action<float> LoadCloseAnimationTime;   //void LoadCloseAnimationTime(float time) { } /*Unity to Forms*/
+        public Action<float> LoadOpenAnimationTime;    //void LoadOpenAnimationTime(float time) { } /*Unity to Forms*/
+        public Action<float> LoadClosingTime;          //void LoadClosingTime(float time) { } /*Unity to Forms*/
+        public Action<string> LoadDefaultFace;         //void LoadDefaultFace(string face) { } /*Unity to Forms*/
 
         public Action<CameraTypes> ChangeCamera; //void ChangeCamera(CameraTypes type) { }
         public Action<bool> SetGridVisible;    //void SetGridVisible(bool enable) { }

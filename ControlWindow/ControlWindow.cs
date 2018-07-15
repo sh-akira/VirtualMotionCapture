@@ -33,6 +33,14 @@ namespace ControlWindow
             WindowLoader.Instance.LoadLipSyncMaxWeightEnable = LoadLipSyncMaxWeightEnable;
             WindowLoader.Instance.LoadLipSyncWeightThreashold = LoadLipSyncWeightThreashold;
             WindowLoader.Instance.LoadLipSyncMaxWeightEmphasis = LoadLipSyncMaxWeightEmphasis;
+            WindowLoader.Instance.LoadAutoBlinkEnable = LoadAutoBlinkEnable;
+            WindowLoader.Instance.LoadBlinkTimeMin = LoadBlinkTimeMin;
+            WindowLoader.Instance.LoadBlinkTimeMax = LoadBlinkTimeMax;
+            WindowLoader.Instance.LoadCloseAnimationTime = LoadCloseAnimationTime;
+            WindowLoader.Instance.LoadOpenAnimationTime = LoadOpenAnimationTime;
+            WindowLoader.Instance.LoadClosingTime = LoadClosingTime;
+            WindowLoader.Instance.LoadDefaultFace = LoadDefaultFace;
+            
             GetLipSyncDevices();
         }
 
@@ -115,16 +123,38 @@ namespace ControlWindow
             WindowLoader.Instance.SetWindowTopMost?.Invoke(TopMostCheckBox.Checked);
         }
 
-        private void LoadHideBorder(bool enable) {
-            WindowBorderCheckBox.CheckedChanged -= WindowBorderCheckBox_CheckedChanged;
-            WindowBorderCheckBox.Checked = enable;
-            WindowBorderCheckBox.CheckedChanged += WindowBorderCheckBox_CheckedChanged;
+        private void SilentChangeChecked(CheckBox checkBox, bool enable, EventHandler handler)
+        {
+            checkBox.CheckedChanged -= handler;
+            checkBox.Checked = enable;
+            checkBox.CheckedChanged += handler;
         }
 
-        private void LoadIsTopMost(bool enable) {
-            TopMostCheckBox.CheckedChanged -= TopMostCheckBox_CheckedChanged;
-            TopMostCheckBox.Checked = enable;
-            TopMostCheckBox.CheckedChanged += TopMostCheckBox_CheckedChanged;
+        private void LoadScrollBar(float setvalue, float multiply, ScrollBar scrollbar)
+        {
+            int min = scrollbar.Minimum;
+            int max = scrollbar.Maximum;
+            int value = (int)Math.Round(setvalue * multiply);
+            if (value < min) value = min;
+            if (value > max) value = max;
+            scrollbar.Value = value;
+        }
+
+        void ScrollBarValueChanged(ScrollBar scrollbar, Label label, float multiple, Action<float> action)
+        {
+            float value = scrollbar.Value / multiple;
+            label.Text = value.ToString("#." + multiple.ToString().Substring(1));
+            action?.Invoke(value);
+        }
+
+        private void LoadHideBorder(bool enable)
+        {
+            SilentChangeChecked(WindowBorderCheckBox, enable, WindowBorderCheckBox_CheckedChanged);
+        }
+
+        private void LoadIsTopMost(bool enable)
+        {
+            SilentChangeChecked(TopMostCheckBox, enable, TopMostCheckBox_CheckedChanged);
         }
 
         private void FrontCameraButton_Click(object sender, EventArgs e)
@@ -159,22 +189,18 @@ namespace ControlWindow
 
         void LoadShowCameraGrid(bool enable)
         {
-            CameraGridCheckBox.CheckedChanged -= CameraGridCheckBox_CheckedChanged;
-            CameraGridCheckBox.Checked = enable;
-            CameraGridCheckBox.CheckedChanged += CameraGridCheckBox_CheckedChanged;
+            SilentChangeChecked(CameraGridCheckBox, enable, CameraGridCheckBox_CheckedChanged);
         }
 
         private void WindowClickThroughCheckBox_CheckedChanged(object sender, EventArgs e)
-        {            
+        {
             WindowLoader.Instance.SetWindowClickThrough?.Invoke(WindowClickThroughCheckBox.Checked);
             if (TopMostCheckBox.Checked == false) TopMostCheckBox.Checked = true;
         }
 
         void LoadSetWindowClickThrough(bool enable)
         {
-            WindowClickThroughCheckBox.CheckedChanged -= WindowClickThroughCheckBox_CheckedChanged;
-            WindowClickThroughCheckBox.Checked = enable;
-            WindowClickThroughCheckBox.CheckedChanged += WindowClickThroughCheckBox_CheckedChanged;
+            SilentChangeChecked(WindowClickThroughCheckBox, enable, WindowClickThroughCheckBox_CheckedChanged);
         }
 
         private void GetLipSyncDevices()
@@ -183,8 +209,11 @@ namespace ControlWindow
             var devices = WindowLoader.Instance.GetLipSyncDevices?.Invoke();
             var selectedItem = LipSyncDeviceComboBox.SelectedItem;
             LipSyncDeviceComboBox.Items.Clear();
-            LipSyncDeviceComboBox.Items.AddRange(devices);
-            if (selectedItem != null) LoadLipSyncDevice(selectedItem.ToString());
+            if (devices != null)
+            {
+                LipSyncDeviceComboBox.Items.AddRange(devices);
+                if (selectedItem != null) LoadLipSyncDevice(selectedItem.ToString());
+            }
             LipSyncDeviceComboBox.SelectedIndexChanged += LipSyncDeviceComboBox_SelectedIndexChanged;
         }
 
@@ -195,9 +224,7 @@ namespace ControlWindow
 
         void LoadLipSyncEnable(bool enable)
         {
-            LipSyncCheckBox.CheckedChanged -= LipSyncCheckBox_CheckedChanged;
-            LipSyncCheckBox.Checked = enable;
-            LipSyncCheckBox.CheckedChanged += LipSyncCheckBox_CheckedChanged;
+            SilentChangeChecked(LipSyncCheckBox, enable, LipSyncCheckBox_CheckedChanged);
         }
 
         private void LipSyncDeviceComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -222,17 +249,12 @@ namespace ControlWindow
 
         private void GainScrollBar_ValueChanged(object sender, EventArgs e)
         {
-            float gain = GainScrollBar.Value / 10.0f;
-            GainLabel.Text = gain.ToString("##.0");
-            WindowLoader.Instance.SetLipSyncGain?.Invoke(gain);
+            ScrollBarValueChanged(GainScrollBar, GainLabel, 10.0f, WindowLoader.Instance.SetLipSyncGain);
         }
 
         void LoadLipSyncGain(float gain)
         {
-            int value = (int)(gain * 10.0f);
-            if (value < 10) value = 10;
-            if (value > 2560) value = 2560;
-            GainScrollBar.Value = value;
+            LoadScrollBar(gain, 10.0f, GainScrollBar);
         }
 
         private void LipSyncDeviceRefreshButton_Click(object sender, EventArgs e)
@@ -247,24 +269,17 @@ namespace ControlWindow
 
         void LoadLipSyncMaxWeightEnable(bool enable)
         {
-            MaxWeightCheckBox.CheckedChanged -= MaxWeightCheckBox_CheckedChanged;
-            MaxWeightCheckBox.Checked = enable;
-            MaxWeightCheckBox.CheckedChanged += MaxWeightCheckBox_CheckedChanged;
+            SilentChangeChecked(MaxWeightCheckBox, enable, MaxWeightCheckBox_CheckedChanged);
         }
 
         private void WeightThreasholdScrollBar_ValueChanged(object sender, EventArgs e)
         {
-            float threashold = WeightThreasholdScrollBar.Value / 1000.0f;
-            WeightThreasholdLabel.Text = threashold.ToString("#.000");
-            WindowLoader.Instance.SetLipSyncWeightThreashold?.Invoke(threashold);
+            ScrollBarValueChanged(WeightThreasholdScrollBar, WeightThreasholdLabel, 1000.0f, WindowLoader.Instance.SetLipSyncWeightThreashold);
         }
 
-        void LoadLipSyncWeightThreashold(float gain)
+        void LoadLipSyncWeightThreashold(float threashold)
         {
-            int value = (int)(gain * 1000.0f);
-            if (value < 0) value = 0;
-            if (value > 1000) value = 1000;
-            WeightThreasholdScrollBar.Value = value;
+            LoadScrollBar(threashold, 1000.0f, WeightThreasholdScrollBar);
         }
 
         private void MaxWeightEmphasisCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -274,9 +289,86 @@ namespace ControlWindow
 
         void LoadLipSyncMaxWeightEmphasis(bool enable)
         {
-            MaxWeightEmphasisCheckBox.CheckedChanged -= MaxWeightEmphasisCheckBox_CheckedChanged;
-            MaxWeightEmphasisCheckBox.Checked = enable;
-            MaxWeightEmphasisCheckBox.CheckedChanged += MaxWeightEmphasisCheckBox_CheckedChanged;
+            SilentChangeChecked(MaxWeightEmphasisCheckBox, enable, MaxWeightEmphasisCheckBox_CheckedChanged);
+        }
+
+        private void AutoBlinkCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            WindowLoader.Instance.SetAutoBlinkEnable?.Invoke(AutoBlinkCheckBox.Checked);
+        }
+
+        void LoadAutoBlinkEnable(bool enable)
+        {
+            SilentChangeChecked(AutoBlinkCheckBox, enable, AutoBlinkCheckBox_CheckedChanged);
+        }
+
+        private void BlinkTimeMinScrollBar_ValueChanged(object sender, EventArgs e)
+        {
+            ScrollBarValueChanged(BlinkTimeMinScrollBar, BlinkTimeMinLabel, 10.0f, WindowLoader.Instance.SetBlinkTimeMin);
+        }
+
+        void LoadBlinkTimeMin(float time)
+        {
+            LoadScrollBar(time, 10.0f, BlinkTimeMinScrollBar);
+        }
+
+        private void BlinkTimeMaxScrollBar_ValueChanged(object sender, EventArgs e)
+        {
+            ScrollBarValueChanged(BlinkTimeMaxScrollBar, BlinkTimeMaxLabel, 10.0f, WindowLoader.Instance.SetBlinkTimeMax);
+        }
+
+        void LoadBlinkTimeMax(float time)
+        {
+            LoadScrollBar(time, 10.0f, BlinkTimeMaxScrollBar);
+        }
+
+        private void CloseAnimationTimeScrollBar_ValueChanged(object sender, EventArgs e)
+        {
+            ScrollBarValueChanged(CloseAnimationTimeScrollBar, CloseAnimationTimeLabel, 100.0f, WindowLoader.Instance.SetCloseAnimationTime);
+        }
+
+        void LoadCloseAnimationTime(float time)
+        {
+            LoadScrollBar(time, 100.0f, CloseAnimationTimeScrollBar);
+        }
+
+        private void OpenAnimationTimeScrollBar_ValueChanged(object sender, EventArgs e)
+        {
+            ScrollBarValueChanged(OpenAnimationTimeScrollBar, OpenAnimationTimeLabel, 100.0f, WindowLoader.Instance.SetOpenAnimationTime);
+        }
+
+        void LoadOpenAnimationTime(float time)
+        {
+            LoadScrollBar(time, 100.0f, OpenAnimationTimeScrollBar);
+        }
+
+        private void ClosingTimeScrollBar_ValueChanged(object sender, EventArgs e)
+        {
+            ScrollBarValueChanged(ClosingTimeScrollBar, ClosingTimeLabel, 100.0f, WindowLoader.Instance.SetClosingTime);
+        }
+
+        void LoadClosingTime(float time)
+        {
+            LoadScrollBar(time, 100.0f, ClosingTimeScrollBar);
+        }
+
+        private void DefaultFaceComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (DefaultFaceComboBox.SelectedItem == null) return;
+            WindowLoader.Instance.SetDefaultFace?.Invoke(DefaultFaceComboBox.SelectedItem.ToString());
+        }
+
+        void LoadDefaultFace(string face)
+        {
+            if (string.IsNullOrEmpty(face)) return;
+            if (DefaultFaceComboBox.Items.Contains(face))
+            {
+                DefaultFaceComboBox.SelectedItem = face;
+            }
+            else
+            {
+                DefaultFaceComboBox.Items.Insert(0, face);
+            }
         }
     }
 }

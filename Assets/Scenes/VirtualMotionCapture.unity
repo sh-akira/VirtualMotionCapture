@@ -150,6 +150,52 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &69806224
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 69806226}
+  - component: {fileID: 69806225}
+  m_Layer: 0
+  m_Name: AnimationController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &69806225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 69806224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 048dafb4b2df62845b41beb4ea5e67c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnableBlink: 0
+  BlinkTimeMin: 1
+  BlinkTimeMax: 10
+  CloseAnimationTime: 0.06
+  OpenAnimationTime: 0.03
+  ClosingTime: 0.1
+--- !u!4 &69806226
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 69806224}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -267.16342, y: -320.7936, z: -1107.1271}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &131724274
 GameObject:
   m_ObjectHideFlags: 0
@@ -215,6 +261,9 @@ MonoBehaviour:
   Gain: 1
   AudioMute: 1
   DelayCompensate: 0
+  MaxWeightEmphasis: 0
+  WeightThreashold: 0
+  MaxWeightEnable: 0
   selectedDevice: 
 --- !u!82 &144144639
 AudioSource:
@@ -1577,6 +1626,7 @@ MonoBehaviour:
   BackgroundRenderer: {fileID: 892957809}
   GridCanvas: {fileID: 814726118}
   LipSync: {fileID: 144144637}
+  blinkController: {fileID: 69806225}
   FreeCamera: {fileID: 282840813}
   FrontCamera: {fileID: 1404284882}
   BackCamera: {fileID: 462948920}

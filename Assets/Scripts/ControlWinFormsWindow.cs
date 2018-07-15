@@ -27,6 +27,8 @@ public class ControlWinFormsWindow : MonoBehaviour
 
     public DynamicOVRLipSync LipSync;
 
+    public BlinkController blinkController;
+
     private GameObject CurrentModel = null;
 
     private VRIK vrik = null;
@@ -121,7 +123,7 @@ public class ControlWinFormsWindow : MonoBehaviour
         NoFlag = 0x0000,
         IgnoreMoveAndResize = IgnoreMove | IgnoreResize,
     }
-    private static RECT GetUnityWindowPosition() {RECT r; GetWindowRect(GetUnityWindowHandle(), out r); return r; }
+    private static RECT GetUnityWindowPosition() { RECT r; GetWindowRect(GetUnityWindowHandle(), out r); return r; }
     private static void SetUnityWindowPosition(int x, int y) => SetWindowPos(GetUnityWindowHandle(), IntPtr.Zero, x, y, 0, 0, SetWindowPosFlags.IgnoreResize);
     private static void SetUnityWindowSize(int width, int height) => SetWindowPos(GetUnityWindowHandle(), IntPtr.Zero, 0, 0, width, height, SetWindowPosFlags.IgnoreMove);
     private static void SetUnityWindowTopMost(bool enable) => SetWindowPos(GetUnityWindowHandle(), enable ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SetWindowPosFlags.IgnoreMoveAndResize);
@@ -168,6 +170,14 @@ public class ControlWinFormsWindow : MonoBehaviour
 
         win.ChangeCamera = ChangeCamera;
         win.SetGridVisible = SetGridVisible;
+
+        win.SetAutoBlinkEnable = SetAutoBlinkEnable;
+        win.SetBlinkTimeMin = SetBlinkTimeMin;
+        win.SetBlinkTimeMax = SetBlinkTimeMax;
+        win.SetCloseAnimationTime = SetCloseAnimationTime;
+        win.SetOpenAnimationTime = SetOpenAnimationTime;
+        win.SetClosingTime = SetClosingTime;
+        win.SetDefaultFace = SetDefaultFace;
 
         win.LoadSettings = LoadSettings;
         win.SaveSettings = SaveSettings;
@@ -258,6 +268,8 @@ public class ControlWinFormsWindow : MonoBehaviour
 
         //LipSync
         LipSync.ImportVRMmodel(CurrentModel);
+        //まばたき
+        blinkController.ImportVRMmodel(CurrentModel);
 
         CurrentModel.transform.SetParent(transform, false);
 
@@ -629,6 +641,71 @@ public class ControlWinFormsWindow : MonoBehaviour
 
     #endregion
 
+    #region BlinkControl
+    void SetAutoBlinkEnable(bool enable)
+    {
+        blinkController.EnableBlink = enable;
+        CurrentSettings.AutoBlinkEnable = enable;
+    }
+    void SetBlinkTimeMin(float time)
+    {
+        blinkController.BlinkTimeMin = time;
+        CurrentSettings.BlinkTimeMin = time;
+    }
+    void SetBlinkTimeMax(float time)
+    {
+        blinkController.BlinkTimeMax = time;
+        CurrentSettings.BlinkTimeMax = time;
+    }
+    void SetCloseAnimationTime(float time)
+    {
+        blinkController.CloseAnimationTime = time;
+        CurrentSettings.CloseAnimationTime = time;
+    }
+    void SetOpenAnimationTime(float time)
+    {
+        blinkController.OpenAnimationTime = time;
+        CurrentSettings.OpenAnimationTime = time;
+    }
+    void SetClosingTime(float time)
+    {
+        blinkController.ClosingTime = time;
+        CurrentSettings.ClosingTime = time;
+    }
+
+    private Dictionary<string, BlendShapePreset> BlendShapeNameDictionary = new Dictionary<string, BlendShapePreset>
+    {
+        { "通常(NEUTRAL)", BlendShapePreset.Neutral },
+        { "喜(JOY)", BlendShapePreset.Joy },
+        { "怒(ANGRY)", BlendShapePreset.Angry },
+        { "哀(SORROW)", BlendShapePreset.Sorrow },
+        { "楽(FUN)", BlendShapePreset.Fun },
+        { "上見(LOOKUP)", BlendShapePreset.LookUp },
+        { "下見(LOOKDOWN)", BlendShapePreset.LookDown },
+        { "左見(LOOKLEFT)", BlendShapePreset.LookLeft },
+        { "右見(LOOKRIGHT)", BlendShapePreset.LookRight },
+    };
+
+    void SetDefaultFace(string face)
+    {
+        if (string.IsNullOrEmpty(face))
+        {
+            blinkController.DefaultFace = BlendShapePreset.Neutral;
+            blinkController.FacePresetName = null;
+        }
+        else if (BlendShapeNameDictionary.ContainsKey(face))
+        {
+            blinkController.DefaultFace = BlendShapeNameDictionary[face];
+            blinkController.FacePresetName = null;
+        }
+        else
+        {
+            blinkController.DefaultFace = BlendShapePreset.Unknown;
+            blinkController.FacePresetName = face;
+        }
+    }
+    #endregion
+
     #region Setting
 
     [Serializable]
@@ -745,6 +822,32 @@ public class ControlWinFormsWindow : MonoBehaviour
         public float LipSyncWeightThreashold;
         [OptionalField]
         public bool LipSyncMaxWeightEmphasis;
+        [OptionalField]
+        public bool AutoBlinkEnable = false;
+        [OptionalField]
+        public float BlinkTimeMin = 1.0f;
+        [OptionalField]
+        public float BlinkTimeMax = 10.0f;
+        [OptionalField]
+        public float CloseAnimationTime = 0.06f;
+        [OptionalField]
+        public float OpenAnimationTime = 0.03f;
+        [OptionalField]
+        public float ClosingTime = 0.1f;
+        [OptionalField]
+        public string DefaultFace = "通常(NEUTRAL)";
+
+        //初期値
+        [OnDeserializing()]
+        internal void OnDeserializingMethod(StreamingContext context)
+        {
+            BlinkTimeMin = 1.0f;
+            BlinkTimeMax = 10.0f;
+            CloseAnimationTime = 0.06f;
+            OpenAnimationTime = 0.03f;
+            ClosingTime = 0.1f;
+            DefaultFace = "通常(NEUTRAL)";
+        }
     }
 
     private Settings CurrentSettings = new Settings();
@@ -822,6 +925,21 @@ public class ControlWinFormsWindow : MonoBehaviour
             WindowLoader.Instance.LoadLipSyncWeightThreashold?.Invoke(CurrentSettings.LipSyncWeightThreashold);
             SetLipSyncMaxWeightEmphasis(CurrentSettings.LipSyncMaxWeightEmphasis);
             WindowLoader.Instance.LoadLipSyncMaxWeightEmphasis?.Invoke(CurrentSettings.LipSyncMaxWeightEmphasis);
+
+            SetAutoBlinkEnable(CurrentSettings.AutoBlinkEnable);
+            WindowLoader.Instance.LoadAutoBlinkEnable?.Invoke(CurrentSettings.AutoBlinkEnable);
+            SetBlinkTimeMin(CurrentSettings.BlinkTimeMin);
+            WindowLoader.Instance.LoadBlinkTimeMin?.Invoke(CurrentSettings.BlinkTimeMin);
+            SetBlinkTimeMax(CurrentSettings.BlinkTimeMax);
+            WindowLoader.Instance.LoadBlinkTimeMax?.Invoke(CurrentSettings.BlinkTimeMax);
+            SetCloseAnimationTime(CurrentSettings.CloseAnimationTime);
+            WindowLoader.Instance.LoadCloseAnimationTime?.Invoke(CurrentSettings.CloseAnimationTime);
+            SetOpenAnimationTime(CurrentSettings.OpenAnimationTime);
+            WindowLoader.Instance.LoadOpenAnimationTime?.Invoke(CurrentSettings.OpenAnimationTime);
+            SetClosingTime(CurrentSettings.ClosingTime);
+            WindowLoader.Instance.LoadClosingTime?.Invoke(CurrentSettings.ClosingTime);
+            SetDefaultFace(CurrentSettings.DefaultFace);
+            WindowLoader.Instance.LoadDefaultFace?.Invoke(CurrentSettings.DefaultFace);
         }
     }
 
