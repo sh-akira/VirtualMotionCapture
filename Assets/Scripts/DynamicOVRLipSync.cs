@@ -44,9 +44,9 @@ public class DynamicOVRLipSync : OVRLipSyncContextBase
     {
         StopMicrophone();
         micSelected = false;
+        if (GetMicrophoneDevices().Contains(device) == false) device = null;
         selectedDevice = device;
         if (string.IsNullOrEmpty(device)) return;
-        StartMicrophone();
         micSelected = true;
     }
 
@@ -145,38 +145,41 @@ public class DynamicOVRLipSync : OVRLipSyncContextBase
                 }
             }
 
-            audioSource.volume = (sourceVolume / 100);
-            if (!Microphone.IsRecording(selectedDevice))
-                StartMicrophone();
-
-            if (EnableLowLatency)
+            if (string.IsNullOrEmpty(selectedDevice) == false)
             {
-                var position = Microphone.GetPosition(selectedDevice);
-                if (position < 0 || head == position)
-                {
-                    return;
-                }
+                audioSource.volume = (sourceVolume / 100);
+                if (!Microphone.IsRecording(selectedDevice))
+                    StartMicrophone();
 
-                audioSource.clip.GetData(microphoneBuffer, 0);
-                while (GetDataLength(microphoneBuffer.Length, head, position) > processBuffer.Length)
+                if (EnableLowLatency)
                 {
-                    var remain = microphoneBuffer.Length - head;
-                    if (remain < processBuffer.Length)
+                    var position = Microphone.GetPosition(selectedDevice);
+                    if (position < 0 || head == position)
                     {
-                        Array.Copy(microphoneBuffer, head, processBuffer, 0, remain);
-                        Array.Copy(microphoneBuffer, 0, processBuffer, remain, processBuffer.Length - remain);
-                    }
-                    else
-                    {
-                        Array.Copy(microphoneBuffer, head, processBuffer, 0, processBuffer.Length);
+                        return;
                     }
 
-                    OVRLipSync.ProcessFrame(Context, processBuffer, OVRLipSync.Flags.None, Frame);
-
-                    head += processBuffer.Length;
-                    if (head > microphoneBuffer.Length)
+                    audioSource.clip.GetData(microphoneBuffer, 0);
+                    while (GetDataLength(microphoneBuffer.Length, head, position) > processBuffer.Length)
                     {
-                        head -= microphoneBuffer.Length;
+                        var remain = microphoneBuffer.Length - head;
+                        if (remain < processBuffer.Length)
+                        {
+                            Array.Copy(microphoneBuffer, head, processBuffer, 0, remain);
+                            Array.Copy(microphoneBuffer, 0, processBuffer, remain, processBuffer.Length - remain);
+                        }
+                        else
+                        {
+                            Array.Copy(microphoneBuffer, head, processBuffer, 0, processBuffer.Length);
+                        }
+
+                        OVRLipSync.ProcessFrame(Context, processBuffer, OVRLipSync.Flags.None, Frame);
+
+                        head += processBuffer.Length;
+                        if (head > microphoneBuffer.Length)
+                        {
+                            head -= microphoneBuffer.Length;
+                        }
                     }
                 }
             }
