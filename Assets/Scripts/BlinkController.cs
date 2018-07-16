@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using VRM;
 
@@ -43,7 +44,7 @@ public class BlinkController : MonoBehaviour
     }
     public string FacePresetName = null;
 
-    Coroutine m_coroutine;
+    private AnimationController animationController;
 
     public void ImportVRMmodel(GameObject vrmmodel)
     {
@@ -51,64 +52,20 @@ public class BlinkController : MonoBehaviour
         proxy = null;
     }
 
-    IEnumerator BlinkRoutine()
-    {
-        while (true)
-        {
-            while (EnableBlink)
-            {
-                while (proxy == null)
-                {
-                    yield return null;
-                }
-                var nextBlinkTime = Time.time + BlinkTimeMin + Random.value * (BlinkTimeMax - BlinkTimeMin);
-                while (nextBlinkTime > Time.time)
-                {
-                    yield return null;
-                }
-
-                // 閉じる
-                var value = 0.0f;
-                var closeSpeed = 1.0f / CloseAnimationTime;
-                while (true)
-                {
-                    value += Time.deltaTime * closeSpeed;
-                    if (value >= 1.0f)
-                    {
-                        break;
-                    }
-
-                    proxy.SetValue(BlendShapePreset.Blink, value);
-                    yield return null;
-                }
-                proxy.SetValue(BlendShapePreset.Blink, 1.0f);
-
-                // wait...
-                yield return new WaitForSeconds(ClosingTime);
-
-                // open
-                value = 1.0f;
-                var openSpeed = 1.0f / OpenAnimationTime;
-                while (true)
-                {
-                    value -= Time.deltaTime * openSpeed;
-                    if (value < 0)
-                    {
-                        break;
-                    }
-
-                    proxy.SetValue(BlendShapePreset.Blink, value);
-                    yield return null;
-                }
-                proxy.SetValue(BlendShapePreset.Blink, 0);
-            }
-            yield return null; //EnableBlink == false
-        }
-    }
-
     private void Start()
     {
-        m_coroutine = StartCoroutine(BlinkRoutine());
+        CreateAnimation();
+    }
+
+    private void CreateAnimation()
+    {
+        if (animationController == null) animationController = new AnimationController();
+        animationController.ClearAnimations();
+        animationController.AddResetAction(() => proxy.SetValue(BlendShapePreset.Blink, 0.0f));
+        animationController.AddWait(null, () => BlinkTimeMin + Random.value * (BlinkTimeMax - BlinkTimeMin));
+        animationController.AddAnimation(CloseAnimationTime, 0.0f, 1.0f, v => proxy.SetValue(BlendShapePreset.Blink, v));
+        animationController.AddWait(ClosingTime);
+        animationController.AddAnimation(OpenAnimationTime, 1.0f, 0.0f, v => proxy.SetValue(BlendShapePreset.Blink, v));
     }
 
     // Update is called once per frame
@@ -123,6 +80,14 @@ public class BlinkController : MonoBehaviour
                     proxy = VRMmodel.GetComponent<VRMBlendShapeProxy>();
                 }
             }
+            if (animationController?.Next() == false)
+            {//最後まで行ったら値更新のためにアニメーション作り直す
+                CreateAnimation();
+            }
+        }
+        else
+        {
+            animationController?.Reset();
         }
 
         if (DefaultFace != BlendShapePreset.Neutral && proxy != null)
