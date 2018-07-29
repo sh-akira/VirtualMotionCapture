@@ -43,6 +43,7 @@ Mem: 16GB
 VR: HTC Vive + 3 tracker  
 (Oculus Rift+Touchの3点と+Kinectでの6点での動作報告があります)  
 (GTX1080 での動作も確認済み)  
+(Vive Pro,i7-4790K,GTX980,Mem 8G, Win10 Proで動作確認されました)  
   
   
 まだテスト版です。テストが不十分の可能性が大いにあります。  
