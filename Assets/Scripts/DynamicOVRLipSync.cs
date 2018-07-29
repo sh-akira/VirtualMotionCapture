@@ -81,7 +81,7 @@ public class DynamicOVRLipSync : OVRLipSyncContextBase
             {
                 if (proxy == null)
                 {
-                    proxy = VRMmodel.GetComponent<VRMBlendShapeProxy>();
+                    proxy = VRMmodel?.GetComponent<VRMBlendShapeProxy>();
                 }
                 else
                 {

@@ -1,0 +1,535 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using UnityNamedPipe;
+
+namespace ControlWindowWPF
+{
+    /// <summary>
+    /// MainWindow.xaml の相互作用ロジック
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        private ObservableCollection<string> DefaultFaces = new ObservableCollection<string> {
+            "通常(NEUTRAL)",
+            "喜(JOY)",
+            "怒(ANGRY)",
+            "哀(SORROW)",
+            "楽(FUN)",
+            "上見(LOOKUP)",
+            "下見(LOOKDOWN)",
+            "左見(LOOKLEFT)",
+            "右見(LOOKRIGHT)",
+        };
+
+        private ObservableCollection<string> LipSyncDevices = new ObservableCollection<string>();
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            if (App.CommandLineArgs == null || App.CommandLineArgs.Length < 2 || App.CommandLineArgs.First().StartsWith("/pipeName") == false)
+            {
+                this.Close();
+                return;
+            }
+            Globals.Connect(App.CommandLineArgs[1]);
+            Globals.Client.ReceivedEvent += Client_Received;
+            DefaultFaceComboBox.ItemsSource = DefaultFaces;
+            LipSyncDeviceComboBox.ItemsSource = LipSyncDevices;
+        }
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            await GetLipSyncDevice();
+            while(Globals.Client.IsConnected != true)
+            {
+                await Task.Delay(100);
+            }
+            await Globals.Client.SendCommandAsync(new PipeCommands.LoadCurrentSettings());
+        }
+
+        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            try
+            {
+                await Globals.Client?.SendCommandAsync(new PipeCommands.ExitControlPanel { });
+            }
+            catch { }
+            Application.Current.Windows.Cast<Window>().ToList().ForEach(d => { if (d != this) d.Close(); });
+        }
+
+        private void SilentChangeChecked(CheckBox checkBox, bool enable, RoutedEventHandler checkedHandler, RoutedEventHandler uncheckedHandler)
+        {
+            checkBox.Checked -= checkedHandler;
+            checkBox.Unchecked -= uncheckedHandler;
+            checkBox.IsChecked = enable;
+            checkBox.Unchecked += uncheckedHandler;
+            checkBox.Checked += checkedHandler;
+        }
+
+        private void LoadSlider(float setvalue, float multiply, Slider slider)
+        {
+            var min = (int)slider.Minimum;
+            var max = (int)slider.Maximum;
+            int value = (int)Math.Round(setvalue * multiply);
+            if (value < min) value = min;
+            if (value > max) value = max;
+            slider.Value = value;
+        }
+
+        private async Task SliderValueChanged(object slider, TextBlock textBlock, float multiple, PipeCommands.SetFloatValueBase command)
+        {
+            if (textBlock == null) return;
+            float value = (float)(slider as Slider).Value / multiple;
+            textBlock.Text = value.ToString("#." + multiple.ToString().Substring(1));
+            command.value = value;
+            await Globals.Client.SendCommandAsync(command);
+        }
+
+        private void Client_Received(object sender, DataReceivedEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                //"設定"
+                if (e.CommandType == typeof(PipeCommands.LoadVRMPath))
+                {
+                    var d = (PipeCommands.LoadVRMPath)e.Data;
+                    Globals.CurrentVRMFilePath = d.Path;
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadControllerTouchPadPoints))
+                {
+                    var d = (PipeCommands.LoadControllerTouchPadPoints)e.Data;
+                    Globals.LeftControllerPoints = d.LeftPoints;
+                    Globals.LeftControllerCenterEnable = d.LeftCenterEnable;
+                    Globals.RightControllerPoints = d.RightPoints;
+                    Globals.RightControllerCenterEnable = d.RightCenterEnable;
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadKeyActions))
+                {
+                    var d = (PipeCommands.LoadKeyActions)e.Data;
+                    Globals.KeyActions = d.KeyActions;
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadHandRotations))
+                {
+                    var d = (PipeCommands.LoadHandRotations)e.Data;
+                    Globals.LeftHandRotation = d.LeftHandRotation;
+                    Globals.RightHandRotation = d.RightHandRotation;
+                }
+                //"背景色"
+                else if (e.CommandType == typeof(PipeCommands.LoadCustomBackgroundColor))
+                {
+                    var d = (PipeCommands.LoadCustomBackgroundColor)e.Data;
+                    customColor = Color.FromArgb(255, (byte)(d.r * 255f), (byte)(d.g * 255f), (byte)(d.b * 255f));
+                    ColorCustomButton.Background = new SolidColorBrush(customColor);
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadIsTopMost))
+                {
+                    var d = (PipeCommands.LoadIsTopMost)e.Data;
+                    SilentChangeChecked(TopMostCheckBox, d.enable, TopMostCheckBox_Checked, TopMostCheckBox_Unchecked);
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadHideBorder))
+                {
+                    var d = (PipeCommands.LoadHideBorder)e.Data;
+                    SilentChangeChecked(WindowBorderCheckBox, d.enable, WindowBorderCheckBox_Checked, WindowBorderCheckBox_Unchecked);
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadSetWindowClickThrough))
+                {
+                    var d = (PipeCommands.LoadSetWindowClickThrough)e.Data;
+                    SilentChangeChecked(WindowClickThroughCheckBox, d.enable, WindowClickThroughCheckBox_Checked, WindowClickThroughCheckBox_Unchecked);
+                }
+                //"カメラ"
+                else if (e.CommandType == typeof(PipeCommands.LoadShowCameraGrid))
+                {
+                    var d = (PipeCommands.LoadShowCameraGrid)e.Data;
+                    SilentChangeChecked(CameraGridCheckBox, d.enable, CameraGridCheckBox_Checked, CameraGridCheckBox_Unchecked);
+                }
+                //"リップシンク"
+                else if (e.CommandType == typeof(PipeCommands.LoadLipSyncEnable))
+                {
+                    var d = (PipeCommands.LoadLipSyncEnable)e.Data;
+                    SilentChangeChecked(LipSyncCheckBox, d.enable, LipSyncCheckBox_Checked, LipSyncCheckBox_Unchecked);
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadLipSyncMaxWeightEnable))
+                {
+                    var d = (PipeCommands.LoadLipSyncMaxWeightEnable)e.Data;
+                    SilentChangeChecked(MaxWeightCheckBox, d.enable, MaxWeightCheckBox_Checked, MaxWeightCheckBox_Unchecked);
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadLipSyncMaxWeightEmphasis))
+                {
+                    var d = (PipeCommands.LoadLipSyncMaxWeightEmphasis)e.Data;
+                    SilentChangeChecked(MaxWeightEmphasisCheckBox, d.enable, MaxWeightEmphasisCheckBox_Checked, MaxWeightEmphasisCheckBox_Unchecked);
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadLipSyncDevice))
+                {
+                    var d = (PipeCommands.LoadLipSyncDevice)e.Data;
+                    LoadLipSyncDevice(d.device);
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadLipSyncGain))
+                {
+                    var d = (PipeCommands.LoadLipSyncGain)e.Data;
+                    LoadSlider(d.gain, 10.0f, GainSlider);
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadLipSyncWeightThreashold))
+                {
+                    var d = (PipeCommands.LoadLipSyncWeightThreashold)e.Data;
+                    LoadSlider(d.threashold, 1000.0f, WeightThreasholdSlider);
+                }
+                //"表情制御"
+                else if (e.CommandType == typeof(PipeCommands.LoadAutoBlinkEnable))
+                {
+                    var d = (PipeCommands.LoadAutoBlinkEnable)e.Data;
+                    SilentChangeChecked(AutoBlinkCheckBox, d.enable, AutoBlinkCheckBox_Checked, AutoBlinkCheckBox_Unchecked);
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadDefaultFace))
+                {
+                    var d = (PipeCommands.LoadDefaultFace)e.Data;
+                    if (string.IsNullOrEmpty(d.face)) return;
+                    if (DefaultFaceComboBox.Items.Contains(d.face) == false)
+                    {
+                        DefaultFaces.Insert(0, d.face);
+                    }
+                    DefaultFaceComboBox.SelectedItem = d.face;
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadBlinkTimeMin))
+                {
+                    var d = (PipeCommands.LoadBlinkTimeMin)e.Data;
+                    LoadSlider(d.time, 10.0f, BlinkTimeMinSlider);
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadBlinkTimeMax))
+                {
+                    var d = (PipeCommands.LoadBlinkTimeMax)e.Data;
+                    LoadSlider(d.time, 10.0f, BlinkTimeMaxSlider);
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadCloseAnimationTime))
+                {
+                    var d = (PipeCommands.LoadCloseAnimationTime)e.Data;
+                    LoadSlider(d.time, 100.0f, CloseAnimationTimeSlider);
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadOpenAnimationTime))
+                {
+                    var d = (PipeCommands.LoadOpenAnimationTime)e.Data;
+                    LoadSlider(d.time, 100.0f, OpenAnimationTimeSlider);
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadClosingTime))
+                {
+                    var d = (PipeCommands.LoadClosingTime)e.Data;
+                    LoadSlider(d.time, 100.0f, ClosingTimeSlider);
+                }
+                //for Debug
+                else if (e.CommandType == typeof(PipeCommands.KeyDown))
+                {
+                    var d = (PipeCommands.KeyDown)e.Data;
+                    logKeyConfig(d.Config, true);
+                }
+                else if (e.CommandType == typeof(PipeCommands.KeyUp))
+                {
+                    var d = (PipeCommands.KeyUp)e.Data;
+                    logKeyConfig(d.Config, false);
+                }
+            });
+        }
+
+        private void logKeyConfig(KeyConfig key, bool isDown)
+        {
+            var updown = isDown ? "Down" : "Up  ";
+            var leftright = key.isLeft ? "Left " : "Right";
+            var facehand = key.actionType == KeyActionTypes.Face ? "Face" : "Hand";
+            var type = key.type == KeyTypes.Controller ? "Controller" : key.type == KeyTypes.Keyboard ? "Keyboard  " : "Mouse     ";
+            System.Diagnostics.Debug.WriteLine($"Key{updown} {facehand} {leftright} {type} {key.keyCode} {key.keyIndex}");
+        }
+
+        #region "設定"
+
+        private async void LoadSettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.LoadSettings());
+        }
+
+        private async void SaveSettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SaveSettings());
+        }
+
+        private void ImportVRMButton_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new VRMImportWindow();
+            win.ShowDialog();
+        }
+
+        private void CalibrationButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(Globals.CurrentVRMFilePath))
+            {
+                MessageBox.Show("VRMモデルが読み込まれていません。先に読み込んでください。", "エラー");
+                return;
+            }
+            var win = new CalibrationWindow();
+            win.ShowDialog();
+        }
+
+        private void ShortcutKeyButton_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new ShortcutKeyWindow();
+            win.ShowDialog();
+        }
+
+        private void SettingButton_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new SettingWindow();
+            win.ShowDialog();
+        }
+
+        #endregion
+
+        #region "背景色"
+
+        private async void ColorGreenButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.ChangeBackgroundColor { r = 0.0f, g = 1.0f, b = 0.0f, isCustom = false });
+        }
+
+        private async void ColorBlueButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.ChangeBackgroundColor { r = 0.0f, g = 0.0f, b = 1.0f, isCustom = false });
+        }
+
+        private async void ColorWhiteButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.ChangeBackgroundColor { r = 0.9375f, g = 0.9375f, b = 0.9375f, isCustom = false });
+        }
+
+        private Color customColor = Color.FromArgb(255, 174, 212, 255);
+
+        private async void ColorCustomButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.ChangeBackgroundColor { r = customColor.R / 255f, g = customColor.G / 255f, b = customColor.B / 255f, isCustom = true });
+        }
+
+        private void ColorCustomButton_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var dialog = new System.Windows.Forms.ColorDialog();
+            dialog.AllowFullOpen = true;
+            dialog.AnyColor = true;
+            dialog.Color = System.Drawing.Color.FromArgb(customColor.A, customColor.R, customColor.G, customColor.B);
+            dialog.FullOpen = true;
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                customColor = Color.FromArgb(dialog.Color.A, dialog.Color.R, dialog.Color.G, dialog.Color.B);
+                ColorCustomButton.Background = new SolidColorBrush(customColor);
+            }
+        }
+
+        private async void ColorTransparentButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (WindowBorderCheckBox.IsChecked == false) WindowBorderCheckBox.IsChecked = true;
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetBackgroundTransparent());
+        }
+
+        private async void TopMostCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetWindowTopMost { enable = true });
+        }
+
+        private async void TopMostCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetWindowTopMost { enable = false });
+        }
+
+        private async void WindowBorderCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetWindowBorder { enable = true });
+        }
+
+        private async void WindowBorderCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetWindowBorder { enable = false });
+        }
+
+        private async void WindowClickThroughCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetWindowClickThrough { enable = true });
+        }
+
+        private async void WindowClickThroughCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetWindowClickThrough { enable = false });
+        }
+
+        #endregion
+
+        #region "カメラ"
+
+        private async void FrontCameraButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.ChangeCamera { type = CameraTypes.Front });
+        }
+
+        private async void BackCameraButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.ChangeCamera { type = CameraTypes.Back });
+        }
+
+        private async void FreeCameraButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.ChangeCamera { type = CameraTypes.Free });
+        }
+
+        private async void CameraGridCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetGridVisible { enable = true });
+        }
+
+        private async void CameraGridCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetGridVisible { enable = false });
+        }
+
+        #endregion
+
+        #region "リップシンク"
+
+        private async void LipSyncCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetLipSyncEnable { enable = true });
+        }
+
+        private async void LipSyncCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetLipSyncEnable { enable = false });
+        }
+
+        private async void MaxWeightCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetLipSyncMaxWeightEnable { enable = true });
+        }
+
+        private async void MaxWeightCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetLipSyncMaxWeightEnable { enable = false });
+        }
+
+        private async void MaxWeightEmphasisCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetLipSyncMaxWeightEmphasis { enable = true });
+        }
+
+        private async void MaxWeightEmphasisCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetLipSyncMaxWeightEmphasis { enable = false });
+        }
+
+        private async void LipSyncDeviceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (LipSyncDeviceComboBox.SelectedItem == null) return;
+            if (LipSyncDeviceComboBox.SelectedItem.ToString().StartsWith("エラー:")) return;
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetLipSyncDevice { device = LipSyncDeviceComboBox.SelectedItem.ToString() });
+        }
+
+        private async void LipSyncDeviceRefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            await GetLipSyncDevice();
+        }
+
+        private async Task GetLipSyncDevice()
+        {
+            LipSyncDeviceComboBox.SelectionChanged -= LipSyncDeviceComboBox_SelectionChanged;
+            await Globals.Client.SendCommandWaitAsync(new PipeCommands.GetLipSyncDevices(), d =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    var ret = (PipeCommands.ReturnGetLipSyncDevices)d;
+                    var selectedItem = LipSyncDeviceComboBox.SelectedItem;
+                    LipSyncDevices.Clear();
+                    if (ret.Devices != null)
+                    {
+                        ret.Devices.ToList().ForEach(LipSyncDevices.Add);
+                        if (selectedItem != null) LoadLipSyncDevice(selectedItem.ToString());
+                    }
+                    LipSyncDeviceComboBox.SelectionChanged += LipSyncDeviceComboBox_SelectionChanged;
+                });
+            });
+        }
+
+        void LoadLipSyncDevice(string device)
+        {
+            if (string.IsNullOrEmpty(device)) return;
+            if (LipSyncDevices.Contains(device))
+            {
+                LipSyncDeviceComboBox.SelectedItem = device;
+            }
+            else
+            {
+                LipSyncDevices.Insert(0, device.StartsWith("エラー:") ? device : "エラー:" + device);
+            }
+        }
+
+        private async void GainSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            await SliderValueChanged(GainSlider, GainTextBlock, 10.0f, new PipeCommands.SetLipSyncGain());
+        }
+
+        private async void WeightThreasholdSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            await SliderValueChanged(WeightThreasholdSlider, WeightThreasholdTextBlock, 1000.0f, new PipeCommands.SetLipSyncWeightThreashold());
+        }
+
+        #endregion
+
+        #region "表情制御"
+
+        private async void AutoBlinkCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetAutoBlinkEnable { enable = true });
+        }
+
+        private async void AutoBlinkCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetAutoBlinkEnable { enable = false });
+        }
+
+        private async void DefaultFaceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DefaultFaceComboBox.SelectedItem == null) return;
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetDefaultFace { face = DefaultFaceComboBox.SelectedItem.ToString() });
+        }
+
+        private async void BlinkTimeMinSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            await SliderValueChanged(sender, BlinkTimeMinTextBlock, 10.0f, new PipeCommands.SetBlinkTimeMin());
+        }
+
+        private async void BlinkTimeMaxSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            await SliderValueChanged(sender, BlinkTimeMaxTextBlock, 10.0f, new PipeCommands.SetBlinkTimeMax());
+        }
+
+        private async void CloseAnimationTimeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            await SliderValueChanged(sender, CloseAnimationTimeTextBlock, 100.0f, new PipeCommands.SetCloseAnimationTime());
+        }
+
+        private async void OpenAnimationTimeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            await SliderValueChanged(sender, OpenAnimationTimeTextBlock, 100.0f, new PipeCommands.SetOpenAnimationTime());
+        }
+
+        private async void ClosingTimeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            await SliderValueChanged(sender, ClosingTimeTextBlock, 100.0f, new PipeCommands.SetClosingTime());
+        }
+
+        #endregion
+    }
+}

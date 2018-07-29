@@ -21,7 +21,7 @@ namespace sh_akira.OVRTracking
         public event EventHandler<OVRConnectedEventArgs> OnOVRConnected;
         public event EventHandler<OVREventArgs> OnOVREvent;
 
-        private CVRSystem openVR { get; set; } = null;
+        public CVRSystem openVR { get; set; } = null;
 
         public bool Setup()
         {

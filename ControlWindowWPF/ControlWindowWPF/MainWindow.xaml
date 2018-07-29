@@ -1,0 +1,130 @@
+﻿<Window x:Class="ControlWindowWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ControlWindowWPF"
+        mc:Ignorable="d" Width="360" Height="185"
+        Title="コントロールパネル" FontSize="14" ResizeMode="CanMinimize" Background="#2A2A2A" Loaded="Window_Loaded" Closing="Window_Closing">
+    <Grid>
+        <TabControl Margin="5">
+            <TabItem Header="設定">
+                <UniformGrid Rows="2" Columns="3">
+                    <Button Content="設定の読込" Name="LoadSettingsButton" Click="LoadSettingsButton_Click" ToolTip="全ての設定をファイルから読み込みます"/>
+                    <Button Content="VRM読込" Name="ImportVRMButton" Click="ImportVRMButton_Click" ToolTip="VRMモデルを読み込みます"/>
+                    <Button Content="ショートカットキー" Name="ShortcutKeyButton" Click="ShortcutKeyButton_Click" ToolTip="コントローラーやキーボードで操作する機能を設定します"/>
+                    <Button Content="設定の保存" Name="SaveSettingsButton" Click="SaveSettingsButton_Click" ToolTip="全ての設定をファイルへ保存します"/>
+                    <Button Content="キャリブレーション" Name="CalibrationButton" Click="CalibrationButton_Click" ToolTip="モデル操作のキャリブレーションを行います"/>
+                    <Button Content="詳細設定" Name="SettingButton" Click="SettingButton_Click" ToolTip="その他の詳細な設定を開きます"/>
+                </UniformGrid>
+            </TabItem>
+            <TabItem Header="背景色">
+                <StackPanel Orientation="Vertical">
+                    <UniformGrid Rows="1" Columns="5">
+                        <Button Content="GB" Background="#00FF00" Foreground="Black" Name="ColorGreenButton" Click="ColorGreenButton_Click" ToolTip="背景色をグリーンバックにします"/>
+                        <Button Content="BB" Background="#0000FF" Foreground="White" Name="ColorBlueButton" Click="ColorBlueButton_Click" ToolTip="背景色をブルーバックにします"/>
+                        <Button Content="白240" Background="#F0F0F0" Foreground="Black" Name="ColorWhiteButton" Click="ColorWhiteButton_Click" ToolTip="背景色を白色(RGB:240,240,240)に変更します"/>
+                        <Button Content="カスタム" Background="#AED4FF" Foreground="Black" Name="ColorCustomButton" Click="ColorCustomButton_Click" MouseRightButtonDown="ColorCustomButton_MouseRightButtonDown" ToolTip="背景色をカスタム色に設定します。右クリックで色の変更が可能です"/>
+                        <Button Content="透過" Name="ColorTransparentButton" Click="ColorTransparentButton_Click" ToolTip="背景を透過して下のウインドウが見えるようにします。自動でウインドウ枠が非表示になります"/>
+                    </UniformGrid>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox Content="ウインドウを常に手前に表示" Name="TopMostCheckBox" Checked="TopMostCheckBox_Checked" Unchecked="TopMostCheckBox_Unchecked" ToolTip="ウインドウを常に手前に表示してほかのウインドウの下に隠れないようにします"/>
+                        <CheckBox Content="ウインドウ枠の非表示" Name="WindowBorderCheckBox" Checked="WindowBorderCheckBox_Checked" Unchecked="WindowBorderCheckBox_Unchecked" ToolTip="ウインドウの枠を非表示にしてキャプチャーの邪魔にならないようにします"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox Content="マウス操作を透過" Name="WindowClickThroughCheckBox" Checked="WindowClickThroughCheckBox_Checked" Unchecked="WindowClickThroughCheckBox_Unchecked" ToolTip="マウス操作(クリック等)を透過して、下のウインドウを操作できるようにします。(ショートカットキー設定でコントロールパネルを再表示するキーを設定することをお勧めします)"/>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="カメラ">
+                <StackPanel Orientation="Vertical">
+                    <UniformGrid Rows="1" Columns="3">
+                        <Button Content="フロント" Name="FrontCameraButton" Click="FrontCameraButton_Click" ToolTip="フロントカメラ(モデルを常に中心に表示・マウス中ボタンドラッグとスクロール可能)"/>
+                        <Button Content="バック" Name="BackCameraButton" Click="BackCameraButton_Click" ToolTip="バックカメラ(モデルを常に中心に表示・マウス中ボタンドラッグとスクロール可能)"/>
+                        <Button Content="フリー" Name="FreeCameraButton" Click="FreeCameraButton_Click" ToolTip="フリーカメラ(画面上でマウス中ボタンドラッグ、スクロール、右ボタンドラッグで自由に移動できます)"/>
+                    </UniformGrid>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="カメラは画面をクリックしてアクティブにしてから操作できます"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <CheckBox Content="グリッドの表示" Name="CameraGridCheckBox" Checked="CameraGridCheckBox_Checked" Unchecked="CameraGridCheckBox_Unchecked" ToolTip="画面上にグリッドを表示してカメラ位置を設定しやすくします"/>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="リップシンク">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <CheckBox Content="リップシンク" Name="LipSyncCheckBox" Checked="LipSyncCheckBox_Checked" Unchecked="LipSyncCheckBox_Unchecked" ToolTip="音声でのリップシンクを有効にします"/>
+                        <CheckBox Content="最大の音素のみ" Name="MaxWeightCheckBox" Checked="MaxWeightCheckBox_Checked" Unchecked="MaxWeightCheckBox_Unchecked" ToolTip="あいうえおの中で検出した最も大きい音素のみ使用して口をはっきりと動かします"/>
+                        <CheckBox Content="最大音素の強調" Name="MaxWeightEmphasisCheckBox" Checked="MaxWeightEmphasisCheckBox_Checked" Unchecked="MaxWeightEmphasisCheckBox_Unchecked" ToolTip="あいうえおの中で検出した最も大きい音素を強調して口がしっかりと開くようにします"/>
+                    </StackPanel>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="使用するデバイス" Grid.Row="0" Grid.Column="0"/>
+                        <ComboBox Name="LipSyncDeviceComboBox" Grid.Row="0" Grid.Column="1" SelectionChanged="LipSyncDeviceComboBox_SelectionChanged" ToolTip="音声入力に使用するデバイスを選択します"/>
+                        <Button Content="更新" Margin="2" Height="20" Name="LipSyncDeviceRefreshButton" Grid.Row="0" Grid.Column="2" Click="LipSyncDeviceRefreshButton_Click" ToolTip="デバイスの一覧を更新します"/>
+                        <TextBlock Text="ゲイン(感度)" Grid.Row="1" Grid.Column="0"/>
+                        <Slider Name="GainSlider" Grid.Row="1" Grid.Column="1" Minimum="10" Value="10" Maximum="2560" SmallChange="1" ValueChanged="GainSlider_ValueChanged" ToolTip="ゲイン(感度)を調整します。声が小さくうまく反応しない場合大きくしてください"/>
+                        <TextBlock Text="1.0" Name="GainTextBlock" Grid.Row="1" Grid.Column="2" TextAlignment="Center"/>
+                        <TextBlock Text="音素の最小" Grid.Row="2" Grid.Column="0"/>
+                        <Slider Name="WeightThreasholdSlider" Grid.Row="2" Grid.Column="1" Minimum="0" Value="0" Maximum="100" SmallChange="1" ValueChanged="WeightThreasholdSlider_ValueChanged" ToolTip="あいうえおの音素の最小レベルを設定します。ノイズで口が動いてしまう場合に大きくしてください"/>
+                        <TextBlock Text="0.00" Name="WeightThreasholdTextBlock" Grid.Row="2" Grid.Column="2" TextAlignment="Center"/>
+
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="表情制御">
+                <StackPanel Orientation="Vertical">
+                    <DockPanel Margin="0">
+                        <CheckBox Content="自動まばたき" Margin="0" Name="AutoBlinkCheckBox" Checked="AutoBlinkCheckBox_Checked" Unchecked="AutoBlinkCheckBox_Unchecked" ToolTip="自動でまばたきする機能を有効にします"/>
+                        <ComboBox Name="DefaultFaceComboBox" DockPanel.Dock="Right" Width="110" SelectionChanged="DefaultFaceComboBox_SelectionChanged" ToolTip="デフォルトの表情をNEUTRALから別の表情に置き換えます"/>
+                        <TextBlock Text="デフォルトの表情" VerticalAlignment="Center" DockPanel.Dock="Right" TextAlignment="Right"/>
+                    </DockPanel>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="次のまばたきまで(秒)" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"/>
+                        <TextBlock Text="最短" Grid.Row="1" Grid.Column="0"/>
+                        <Slider Name="BlinkTimeMinSlider" Grid.Row="1" Grid.Column="1" Minimum="0" Value="10" Maximum="6000" ValueChanged="BlinkTimeMinSlider_ValueChanged" SmallChange="1" ToolTip="次にまばたきが発生するまでの最小秒数を指定します。最短から最長までの間の時間でランダムにまばたきします"/>
+                        <TextBlock Text="1.0" Name="BlinkTimeMinTextBlock" Grid.Row="1" Grid.Column="2" TextAlignment="Center"/>
+                        <TextBlock Text="最長" Grid.Row="2" Grid.Column="0"/>
+                        <Slider Name="BlinkTimeMaxSlider" Grid.Row="2" Grid.Column="1" Minimum="0" Value="100" Maximum="6000" ValueChanged="BlinkTimeMaxSlider_ValueChanged" SmallChange="1" ToolTip="次にまばたきが発生するまでの最大秒数を指定します。最短から最長までの間の時間でランダムにまばたきします"/>
+                        <TextBlock Text="10.0" Name="BlinkTimeMaxTextBlock" Grid.Row="2" Grid.Column="2" TextAlignment="Center"/>
+
+                        <TextBlock Text="アニメーション時間(秒)" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="3"/>
+                        <TextBlock Text="閉じ" Grid.Row="1" Grid.Column="3" Margin="5,0,0,0"/>
+                        <Slider Name="CloseAnimationTimeSlider" Grid.Row="1" Grid.Column="4" Minimum="0" Value="6" Maximum="200" ValueChanged="CloseAnimationTimeSlider_ValueChanged" SmallChange="1" ToolTip="まぶたが閉じるアニメーションの時間を設定します。大きくするとゆっくりまぶたを閉じます"/>
+                        <TextBlock Text="0.06" Name="CloseAnimationTimeTextBlock" Grid.Row="1" Grid.Column="5" TextAlignment="Center"/>
+                        <TextBlock Text="開き" Grid.Row="2" Grid.Column="3" Margin="5,0,0,0"/>
+                        <Slider Name="OpenAnimationTimeSlider" Grid.Row="2" Grid.Column="4" Minimum="0" Value="3" Maximum="200" ValueChanged="OpenAnimationTimeSlider_ValueChanged" SmallChange="1" ToolTip="まぶたが開くアニメーションの時間を設定します。大きくするとゆっくりまぶたが開きます"/>
+                        <TextBlock Text="0.03" Name="OpenAnimationTimeTextBlock" Grid.Row="2" Grid.Column="5" TextAlignment="Center"/>
+                        <TextBlock Text="閉じたままの時間(秒)" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Right"/>
+                        <Slider Name="ClosingTimeSlider" Grid.Row="3" Grid.Column="4" Minimum="0" Value="3" Maximum="200" ValueChanged="ClosingTimeSlider_ValueChanged" SmallChange="1" ToolTip="まぶたを閉じて開くまでの時間を設定します。大きくするとしばらくまぶたを閉じたままになります"/>
+                        <TextBlock Text="0.10" Name="ClosingTimeTextBlock" Grid.Row="3" Grid.Column="5" TextAlignment="Center"/>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

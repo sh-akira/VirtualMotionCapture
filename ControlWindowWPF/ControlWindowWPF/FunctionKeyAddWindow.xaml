@@ -1,0 +1,30 @@
+﻿<Window x:Class="ControlWindowWPF.FunctionKeyAddWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ControlWindowWPF"
+        mc:Ignorable="d"
+        Title="機能キー設定" SizeToContent="Height" Width="450" Loaded="Window_Loaded" Closing="Window_Closing">
+    <DockPanel>
+        <GroupBox Header="使用キー(空欄を選択してコントローラーのボタンを押してください)" DockPanel.Dock="Top">
+            <DockPanel>
+                <CheckBox Content="離した時" Name="KeyUpCheckBox" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="5,0" ToolTip="指定したキーを離した時にイベントを発生させます"/>
+                <Button Content="クリア" DockPanel.Dock="Right" Height="20" Width="50" Name="KeyClearButton" Click="KeyClearButton_Click" ToolTip="使用キーをクリアします。余計なキーが入ってしまった場合に押して再度キーを入力してください"/>
+                <TextBox VerticalAlignment="Center" IsReadOnly="True" Name="KeysTextBox" GotFocus="KeysTextBox_GotFocus" LostFocus="KeysTextBox_LostFocus" ToolTip="使用するキー一覧です。複数の場合同時押しになります"/>
+            </DockPanel>
+        </GroupBox>
+
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+            <Button Content="登録" Width="100" Name="ApplyButton" Click="ApplyButton_Click" ToolTip="設定を登録します"/>
+            <Button Content="キャンセル" Width="100" Name="IgnoreButton" Click="IgnoreButton_Click" ToolTip="設定をキャンセルします"/>
+        </StackPanel>
+        <DockPanel>
+            <GroupBox Header="割り当て機能選択" DockPanel.Dock="Top">
+                <StackPanel Orientation="Vertical">
+                    <ComboBox Name="FunctionComboBox" ToolTip="キーに割り当てる機能を選択します"/>
+                </StackPanel>
+            </GroupBox>
+        </DockPanel>
+    </DockPanel>
+</Window>

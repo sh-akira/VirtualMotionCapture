@@ -71,6 +71,8 @@ public class AnimationController
 
     public void Reset()
     {
+        isStart = false;
+        lastitem = null;
         ResetAction?.Invoke();
     }
 
@@ -78,6 +80,8 @@ public class AnimationController
     {
         AnimationItems.Clear();
     }
+
+    private AnimationItem lastitem = null;
 
     public bool Next()
     {
@@ -90,7 +94,6 @@ public class AnimationController
 
         var elapsedTime = Time.time - startTime;
         var addTime = 0.0f;
-        AnimationItem lastitem = null;
         foreach (var item in CurrentAnimationItems)
         {
             addTime = item.Key + item.Value.Time; //すべてのアニメーションの時間+今のアニメーション時間
@@ -102,7 +105,13 @@ public class AnimationController
                     EndLastItem = lastitem;
                 }
                 if (CurrentItem != item.Value)
-                {//新しいアニメーションになったときには時間にかかわらずきちんと最初の値を使う
+                {
+                    if (lastitem != null)
+                    {//前回のアニメーションが終わりまで行ってない場合があるので100％で実行
+                        lastitem.RunAction(lastitem.EndValue);
+                        EndLastItem = lastitem;
+                    }
+                    //新しいアニメーションになったときには時間にかかわらずきちんと最初の値を使う
                     item.Value.RunAction(item.Value.StartValue);
                     CurrentItem = item.Value;
                 }

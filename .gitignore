@@ -17,6 +17,12 @@ VirtualMotionCapture.sln
 ControlWindow/bin*
 ControlWindow/ControlWindowTester/bin*
 VirtualMotionCapture/
+HandPresets/
+VMCPipeServerTest/
+ShortcutKeyPresets/
+UnityNamedPipe.dll
+default.json
+ControlWindowWPF.exe
 
 # Visual Studio cache directory
 .vs/

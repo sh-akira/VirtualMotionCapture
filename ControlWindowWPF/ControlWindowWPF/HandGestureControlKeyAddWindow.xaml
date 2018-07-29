@@ -1,0 +1,169 @@
+﻿<Window x:Class="ControlWindowWPF.HandGestureControlKeyAddWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ControlWindowWPF"
+        mc:Ignorable="d"
+        Title="ハンドジェスチャー設定" Width="640" SizeToContent="Height" ResizeMode="CanMinimize" Loaded="Window_Loaded" Closing="Window_Closing">
+    <StackPanel Orientation="Vertical">
+        <DockPanel>
+            <GroupBox Header="操作する手">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <RadioButton Content="右手" Name="RightHandRadioButton" Checked="HandRadioButton_Checked_Unchecked" IsChecked="True" ToolTip="モデルの右手を操作します"/>
+                    <RadioButton Content="左手" Name="LeftHandRadioButton" Checked="HandRadioButton_Checked_Unchecked" ToolTip="モデルの左手を操作します"/>
+                    <RadioButton Content="両手" Name="BothHandRadioButton" Checked="HandRadioButton_Checked_Unchecked" ToolTip="モデルの両手を同時に操作します"/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="角度制限" DockPanel.Dock="Left">
+                <CheckBox Content="オン" IsChecked="True" Name="AngleLimitCheckBox" Checked="AngleLimitCheckBox_Checked" Unchecked="AngleLimitCheckBox_Unchecked" VerticalAlignment="Center" Margin="5,0" ToolTip="操作バーの上限下限を無理のない動作範囲に制限します。モデルによってはオフの方が自由に調整ができます"/>
+            </GroupBox>
+            <GroupBox Header="使用キー(空欄を選択してコントローラーのボタンを押してください)">
+                <DockPanel>
+                    <CheckBox Content="離した時" Name="KeyUpCheckBox" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="5,0" ToolTip="指定したキーを離した時にイベントを発生させます"/>
+                    <Button Content="クリア" DockPanel.Dock="Right" Height="20" Width="50" Name="KeyClearButton" Click="KeyClearButton_Click" ToolTip="使用キーをクリアします。余計なキーが入ってしまった場合に押して再度キーを入力してください"/>
+                    <TextBox VerticalAlignment="Center" IsReadOnly="True" Name="KeysTextBox" GotFocus="KeysTextBox_GotFocus" LostFocus="KeysTextBox_LostFocus" ToolTip="使用するキー一覧です。複数の場合同時押しになります"/>
+                </DockPanel>
+            </GroupBox>
+        </DockPanel>
+        <UniformGrid Rows="1" Columns="5">
+            <GroupBox Header="小指">
+                <StackPanel Orientation="Vertical">
+                    <DockPanel Margin="0,5,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="ValueTextBlock01"/>
+                        <TextBlock Text="第一関節"/>
+                    </DockPanel>
+                    <Slider Minimum="-180" Maximum="180" Value="0" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" x:Name="ValueSlider01" ToolTip="小指の第一関節(指先から一つ目の関節)の角度を指定します"/>
+                    <DockPanel Margin="0,10,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="ValueTextBlock02"/>
+                        <TextBlock Text="第二関節"/>
+                    </DockPanel>
+                    <Slider Minimum="-180" Maximum="180" Value="0" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" x:Name="ValueSlider02" ToolTip="小指の第二関節(指先から二つ目の関節)の角度を指定します"/>
+                    <DockPanel Margin="0,10,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="ValueTextBlock03"/>
+                        <TextBlock Text="第三関節"/>
+                    </DockPanel>
+                    <Slider Minimum="-180" Maximum="180" Value="0" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" x:Name="ValueSlider03" ToolTip="小指の第三関節(指先から三つ目の関節)の角度を指定します"/>
+                    <DockPanel Margin="0,10,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="ValueTextBlock04"/>
+                        <TextBlock Text="第三関節(横)"/>
+                    </DockPanel>
+                    <Slider Minimum="-180" Maximum="180" Value="0" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" x:Name="ValueSlider04" Margin="0,0,0,5" ToolTip="小指の第三関節(指先から三つ目の関節)の横方向の角度を指定します"/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="薬指">
+                <StackPanel Orientation="Vertical">
+                    <DockPanel Margin="0,5,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="ValueTextBlock05"/>
+                        <TextBlock Text="第一関節"/>
+                    </DockPanel>
+                    <Slider Minimum="-180" Maximum="180" Value="0" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" x:Name="ValueSlider05" ToolTip="薬指の第一関節(指先から一つ目の関節)の角度を指定します"/>
+                    <DockPanel Margin="0,10,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="ValueTextBlock06"/>
+                        <TextBlock Text="第二関節"/>
+                    </DockPanel>
+                    <Slider Minimum="-180" Maximum="180" Value="0" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" x:Name="ValueSlider06" ToolTip="薬指の第二関節(指先から二つ目の関節)の角度を指定します"/>
+                    <DockPanel Margin="0,10,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="ValueTextBlock07"/>
+                        <TextBlock Text="第三関節"/>
+                    </DockPanel>
+                    <Slider Minimum="-180" Maximum="180" Value="0" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" x:Name="ValueSlider07" ToolTip="薬指の第三関節(指先から三つ目の関節)の角度を指定します"/>
+                    <DockPanel Margin="0,10,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="ValueTextBlock08"/>
+                        <TextBlock Text="第三関節(横)"/>
+                    </DockPanel>
+                    <Slider Minimum="-180" Maximum="180" Value="0" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" x:Name="ValueSlider08" Margin="0,0,0,5" ToolTip="薬指の第三関節(指先から三つ目の関節)の横方向の角度を指定します"/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="中指">
+                <StackPanel Orientation="Vertical">
+                    <DockPanel Margin="0,5,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="ValueTextBlock09"/>
+                        <TextBlock Text="第一関節"/>
+                    </DockPanel>
+                    <Slider Minimum="-180" Maximum="180" Value="0" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" x:Name="ValueSlider09" ToolTip="中指の第一関節(指先から一つ目の関節)の角度を指定します"/>
+                    <DockPanel Margin="0,10,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="ValueTextBlock10"/>
+                        <TextBlock Text="第二関節"/>
+                    </DockPanel>
+                    <Slider Minimum="-180" Maximum="180" Value="0" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" x:Name="ValueSlider10" ToolTip="中指の第二関節(指先から二つ目の関節)の角度を指定します"/>
+                    <DockPanel Margin="0,10,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="ValueTextBlock11"/>
+                        <TextBlock Text="第三関節"/>
+                    </DockPanel>
+                    <Slider Minimum="-180" Maximum="180" Value="0" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" x:Name="ValueSlider11" ToolTip="中指の第三関節(指先から三つ目の関節)の角度を指定します"/>
+                    <DockPanel Margin="0,10,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="ValueTextBlock12"/>
+                        <TextBlock Text="第三関節(横)"/>
+                    </DockPanel>
+                    <Slider Minimum="-180" Maximum="180" Value="0" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" x:Name="ValueSlider12" Margin="0,0,0,5" ToolTip="中指の第三関節(指先から三つ目の関節)の横方向の角度を指定します"/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="人差し指">
+                <StackPanel Orientation="Vertical">
+                    <DockPanel Margin="0,5,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="ValueTextBlock13"/>
+                        <TextBlock Text="第一関節"/>
+                    </DockPanel>
+                    <Slider Minimum="-180" Maximum="180" Value="0" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" x:Name="ValueSlider13" ToolTip="人差し指の第一関節(指先から一つ目の関節)の角度を指定します"/>
+                    <DockPanel Margin="0,10,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="ValueTextBlock14"/>
+                        <TextBlock Text="第二関節"/>
+                    </DockPanel>
+                    <Slider Minimum="-180" Maximum="180" Value="0" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" x:Name="ValueSlider14" ToolTip="人差し指の第二関節(指先から二つ目の関節)の角度を指定します"/>
+                    <DockPanel Margin="0,10,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="ValueTextBlock15"/>
+                        <TextBlock Text="第三関節"/>
+                    </DockPanel>
+                    <Slider Minimum="-180" Maximum="180" Value="0" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" x:Name="ValueSlider15" ToolTip="人差し指の第三関節(指先から三つ目の関節)の角度を指定します"/>
+                    <DockPanel Margin="0,10,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="ValueTextBlock16"/>
+                        <TextBlock Text="第三関節(横)"/>
+                    </DockPanel>
+                    <Slider Minimum="-180" Maximum="180" Value="0" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" x:Name="ValueSlider16" Margin="0,0,0,5" ToolTip="人差し指の第三関節(指先から三つ目の関節)の横方向の角度を指定します"/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="親指">
+                <StackPanel Orientation="Vertical">
+                    <DockPanel Margin="0,5,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="ValueTextBlock17"/>
+                        <TextBlock Text="第一関節"/>
+                    </DockPanel>
+                    <Slider Minimum="-180" Maximum="180" Value="0" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" x:Name="ValueSlider17" ToolTip="親指の第一関節(指先から一つ目の関節)の角度を指定します"/>
+                    <DockPanel Margin="0,10,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="ValueTextBlock18"/>
+                        <TextBlock Text="第二関節"/>
+                    </DockPanel>
+                    <Slider Minimum="-180" Maximum="180" Value="0" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" x:Name="ValueSlider18" ToolTip="親指の第二関節(指先から二つ目の関節)の角度を指定します"/>
+                    <DockPanel Margin="0,10,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="ValueTextBlock19"/>
+                        <TextBlock Text="第三関節"/>
+                    </DockPanel>
+                    <Slider Minimum="-180" Maximum="180" Value="0" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" x:Name="ValueSlider19" ToolTip="親指の第三関節(指先から三つ目の関節・手首の付け根)の角度を指定します"/>
+                    <DockPanel Margin="0,10,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="ValueTextBlock20"/>
+                        <TextBlock Text="第三関節(横)"/>
+                    </DockPanel>
+                    <Slider Minimum="-180" Maximum="180" Value="0" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" x:Name="ValueSlider20" Margin="0,0,0,5" ToolTip="親指の第三関節(指先からつ目の関節・手首の付け根)の横方向の角度を指定します"/>
+                </StackPanel>
+            </GroupBox>
+        </UniformGrid>
+        <DockPanel>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                <Button Content="登録" Width="100" Name="ApplyButton" Click="ApplyButton_Click" ToolTip="設定を登録します"/>
+                <Button Content="キャンセル" Width="100" Name="IgnoreButton" Click="IgnoreButton_Click" ToolTip="設定をキャンセルします"/>
+            </StackPanel>
+            <UniformGrid Rows="1" Columns="2">
+                <GroupBox Header="プリセットから選択">
+                    <ComboBox VerticalAlignment="Center" Name="PresetComboBox" SelectionChanged="PresetComboBox_SelectionChanged" ToolTip="定義済みのプリセットから手の形を読み込みます。変更は失われますので注意してください"/>
+                </GroupBox>
+                <GroupBox Header="カスタム名称(保存でプリセットへ追加)">
+                    <DockPanel>
+                        <Button Content="保存" DockPanel.Dock="Right" Height="20" Width="50" Name="CustomSaveButton" Click="CustomSaveButton_Click" ToolTip="現在の手の形をプリセットに保存します"/>
+                        <TextBox VerticalAlignment="Center" Name="CustomNameTextBox" ToolTip="プリセットに保存する名称を指定してください"/>
+                    </DockPanel>
+                </GroupBox>
+            </UniformGrid>
+        </DockPanel>
+    </StackPanel>
+</Window>

@@ -1,9 +1,10 @@
 # バーチャルモーションキャプチャー (VirtualMotionCapture)  
 VRゲーム中にモデルをコントロール  
   
-VRMのモデルファイルを読み込んで、フルトラッキングで操作するアプリです。  
-追加のモーションキャプチャーがなくても、動いている姿を見せることができます。
-
+VRMのモデルファイルを読み込んで、3点～フルトラッキングで操作するアプリです。  
+追加のモーションキャプチャーがなくても、動いている姿を見せることができます。  
+もちろんVRゲーム中以外でも使用することができます。  
+  
   
 # VRゲーム中にも同時起動可能  
   
@@ -30,7 +31,7 @@ VRMモデル読み込みを押して、任意のVRMモデルを読み込んで�
   
 # ダウンロード
 リリースページ：[https://github.com/sh-akira/VirtualMotionCapture/releases]  
-ダウンロードはリリースページからVirtualMotionCapture0.04.zipをダウンロードしてください。  
+ダウンロードはリリースページからVirtualMotionCapture0.05.zipをダウンロードしてください。  
 解凍後VirtualMotionCapture.exeを実行で開始します。  
   
   
@@ -53,17 +54,26 @@ VR: HTC Vive + 3 tracker
 ●実装予定  
 ・キャリブレーションの保存(複数起動を楽にしたい)  
 ・足トラッカーがない場合の歩幅等の設定  
-・コントローラーのボタンで手と表情の制御  
-・閉じてしまったコントロールパネルを再表示するキー操作  
   
 ●将来の実装予定  
 ・自身の状態をVR内にオーバーレイ表示  
   
 # 更新履歴
+Ver 0.05  
+・ショートカットキー機能  
+・ハンドジェスチャー設定  
+・表情設定  
+・機能キー設定  
+・手の角度の補正機能  
+・キャリブレーション時にコントローラーのトリガーで開始できるように  
+・UIをWinFormsからWPFの別アプリに変更  
+・自動まばたきが完全に閉じなかったり開かなかったりする問題修正  
+・使用しているVRIKCalibrator.csが直接編集されてしまっていたので修正  
+  
 Ver 0.04  
 ・自動まばたき機能追加(まばたきの細かいアニメーション時間設定ができます)  
 ・デフォルトの表情変更追加  
-
+  
 Ver 0.03  
 ・リップシンクに対応しました(低遅延・動きの設定が可能)  
 ・カメラのグリッド表示に対応  
@@ -86,16 +96,18 @@ Ver 0.02
 ・Unity 2018.1.6f1で開いてください。  
 ・Assets直下にExternalPluginsフォルダを作って、その下に  
 　・OVRTracking (OVRTrackingライブラリ - 入れてあります)  
+　・UnityNamedPipe (名前付きパイプライブラリ - 入れてあります)  
 　・RootMotion ([Final IK](https://assetstore.unity.com/packages/tools/animation/final-ik-14290))  
 　・SteamVR ([SteamVR Plugin](https://assetstore.unity.com/packages/templates/systems/steamvr-plugin-32647))  
 　・VRM ([UniVRM-0.38.unitypackage](https://github.com/dwango/UniVRM/releases))  
 　・VRM.Samples ([UniVRM-RuntimeLoaderSample-0.38.unitypackage](https://github.com/dwango/UniVRM/releases))  
 　・OVRLipSync ([OVRLipSync.unitypackage](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/))  
 以上のようなフォルダになるように各アセットをインポートしてください。  
-・ControlWindow/ControlWindow.slnをVisual Studio 2017で開きます。  
-・そのままビルドをするとdllが作成され自動でAsset/Plugins/ControlWindow.dllにコピーされます  
+・ControlWindowWPF/ControlWindowWPF.slnをVisual Studio 2017で開きます。  
+・そのままビルドをするとexeが作成されます  
 ・UnityのPlayer Settingsを開き、Other SettingsのScripting Runtime Version を .NET 4.x Equivalent にして再起動  
-・実行  
+・Unity側の実行  
+・先ほどビルドしたexeを実行  
   
   
 # FAQ  

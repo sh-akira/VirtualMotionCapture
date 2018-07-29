@@ -1,0 +1,22 @@
+﻿<Window x:Class="ControlWindowWPF.SettingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ControlWindowWPF"
+        mc:Ignorable="d"
+        Title="設定" Height="150" Width="300" ResizeMode="CanMinimize">
+    <StackPanel Orientation="Vertical">
+        <GroupBox Header="手の角度調整" DockPanel.Dock="Top">
+            <UniformGrid Rows="1" Columns="2">
+                <GroupBox Header="左手">
+                    <ComboBox Name="LeftHandRotateComboBox" SelectionChanged="LeftHandRotateComboBox_SelectionChanged" ToolTip="左手の回転を調整します。実際の手とモデルの手の回転がずれている場合に変更してください"/>
+                </GroupBox>
+                <GroupBox Header="右手">
+                    <ComboBox Name="RightHandRotateComboBox" SelectionChanged="RightHandRotateComboBox_SelectionChanged" ToolTip="右手の回転を調整します。実際の手とモデルの手の回転がずれている場合に変更してください"/>
+                </GroupBox>
+            </UniformGrid>
+        </GroupBox>
+        <Button Content="閉じる" HorizontalAlignment="Right" Width="100" Name="CloseButton" Click="CloseButton_Click" ToolTip="設定を閉じます"/>
+    </StackPanel>
+</Window>

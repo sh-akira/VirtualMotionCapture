@@ -1,0 +1,81 @@
+﻿<Window x:Class="ControlWindowWPF.ShortcutKeyWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ControlWindowWPF"
+        mc:Ignorable="d"
+        Title="ショートカットキー設定" SizeToContent="Height" Width="800">
+    <DockPanel>
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Right">
+            <GroupBox Header="タッチパッドの割り当て状態">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Vertical">
+                            <GroupBox Header="左コントローラー">
+                                <Grid>
+                                    <Image Width="150" Height="150" Name="LeftImage"/>
+                                    <Canvas Name="LeftCanvas" ToolTip="左タッチパッドの分割領域を設定します。四角いつまみをドラッグして大きさの変更ができます"/>
+                                </Grid>
+                            </GroupBox>
+                            <CheckBox Content="センターキー" Name="LeftCenterKeyCheckBox" Checked="LeftCenterKeyCheckBox_Checked" Unchecked="LeftCenterKeyCheckBox_Unchecked" ToolTip="左タッチパッドの中心を円形のキーとして独立させます"/>
+                            <DockPanel>
+                                <TextBlock Text="分割数：" Margin="10,0,0,0"/>
+                                <ScrollBar Height="30" Minimum="1" Maximum="30" Value="1" DockPanel.Dock="Right" Name="LeftTouchPadUpDown" ValueChanged="LeftTouchPadUpDown_ValueChanged" SmallChange="1" ToolTip="左コントローラーのタッチパッド分割数を指定します">
+                                    <ScrollBar.LayoutTransform>
+                                        <RotateTransform Angle="180"/>
+                                    </ScrollBar.LayoutTransform>
+                                </ScrollBar>
+                                <TextBlock Text="1" Margin="0,0,5,0" TextAlignment="Right" Name="LeftTouchPadUpDownTextBlock"/>
+                            </DockPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical">
+                            <GroupBox Header="右コントローラー">
+                                <Grid>
+                                    <Image Width="150" Height="150" Name="RightImage"/>
+                                    <Canvas Name="RightCanvas" ToolTip="右タッチパッドの分割領域を設定します。四角いつまみをドラッグして大きさの変更ができます"/>
+                                </Grid>
+                            </GroupBox>
+                            <CheckBox Content="センターキー" Name="RightCenterKeyCheckBox" Checked="RightCenterKeyCheckBox_Checked" Unchecked="RightCenterKeyCheckBox_Unchecked" ToolTip="右タッチパッドの中心を円形のキーとして独立させます"/>
+                            <DockPanel>
+                                <TextBlock Text="分割数：" Margin="10,0,0,0"/>
+                                <ScrollBar Height="30" Minimum="1" Maximum="30" Value="1" DockPanel.Dock="Right" Name="RightTouchPadUpDown" ValueChanged="RightTouchPadUpDown_ValueChanged" SmallChange="1" ToolTip="右コントローラーのタッチパッド分割数を指定します">
+                                    <ScrollBar.LayoutTransform>
+                                        <RotateTransform Angle="180"/>
+                                    </ScrollBar.LayoutTransform>
+                                </ScrollBar>
+                                <TextBlock Text="1" Margin="0,0,5,0" TextAlignment="Right" Name="RightTouchPadUpDownTextBlock"/>
+                            </DockPanel>
+                        </StackPanel>
+                    </StackPanel>
+                    <Button Content="適用" Name="TouchPadApplyButton" Click="TouchPadApplyButton_Click" HorizontalAlignment="Right" Width="100" IsEnabled="False" ToolTip="指定したタッチパッドの割り当てを保存します(保存しないと有効になりません)"/>
+                </StackPanel>
+            </GroupBox>
+            <UniformGrid Rows="2" Columns="2">
+                <Button Content="ハンドジェスチャー追加" Name="HandGestureAddButton" Click="HandGestureAddButton_Click" ToolTip="指の形を変更するショートカットキーを追加します"/>
+                <Button Content="表情追加" Name="FaceAddButton" Click="FaceAddButton_Click" ToolTip="表情を変更するショートカットキーを追加します"/>
+                <Button Content="機能追加" Name="FunctionAddButton" Click="FunctionAddButton_Click" ToolTip="機能を実行するショートカットキーを追加します"/>
+            </UniformGrid>
+            <GroupBox Header="プリセットから選択">
+                <ComboBox VerticalAlignment="Center" Name="PresetComboBox" SelectionChanged="PresetComboBox_SelectionChanged" ToolTip="プリセットからショートカットキー一覧を読み込みます。現在の設定は上書きされますので注意してください"/>
+            </GroupBox>
+            <GroupBox Header="カスタム名称(保存でプリセットへ追加)">
+                <DockPanel>
+                    <Button Content="保存" DockPanel.Dock="Right" Height="20" Width="50" Name="CustomSaveButton" Click="CustomSaveButton_Click" ToolTip="現在のショートカットキー一覧をプリセットに保存します"/>
+                    <TextBox VerticalAlignment="Center" Name="CustomNameTextBox" ToolTip="プリセットに保存する名称を指定してください"/>
+                </DockPanel>
+            </GroupBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
+            <Button Content="編集" Width="100" Name="EditButton" Click="EditButton_Click" ToolTip="選択されているショートカットキーを編集します"/>
+            <Button Content="削除" Width="100" Name="RemoveButton" Click="RemoveButton_Click" ToolTip="選択されているショートカットキーを削除します"/>
+        </StackPanel>
+        <DataGrid CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" SelectionMode="Single" Name="KeysDataGrid" AutoGenerateColumns="False" ToolTip="登録されているショートカットキー一覧です">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="種別" Binding="{Binding TypeStr}" MinWidth="40"/>
+                <DataGridTextColumn Header="名称" Binding="{Binding NameStr}" MinWidth="100"/>
+                <DataGridTextColumn Header="使用キー" Binding="{Binding KeysStr}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>
