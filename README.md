@@ -31,7 +31,7 @@ VRMモデル読み込みを押して、任意のVRMモデルを読み込んで�
   
 # ダウンロード
 リリースページ：[https://github.com/sh-akira/VirtualMotionCapture/releases]  
-ダウンロードはリリースページからVirtualMotionCapture0.05.zipをダウンロードしてください。  
+ダウンロードはリリースページからVirtualMotionCapture0.06.zipをダウンロードしてください。  
 解凍後VirtualMotionCapture.exeを実行で開始します。  
   
   
@@ -60,6 +60,9 @@ VR: HTC Vive + 3 tracker
 ・自身の状態をVR内にオーバーレイ表示  
   
 # 更新履歴
+Ver 0.06  
+・externalcamera.cfgファイルの読み込みに対応  
+
 Ver 0.05  
 ・ショートカットキー機能  
 ・ハンドジェスチャー設定  
@@ -113,8 +116,19 @@ Ver 0.02
   
 # FAQ  
 Q.アプリを使うのに表記はいりますか？  
-A.特にいりませんが、あると嬉しいです。その場合はTwitterをお願いします。  
+A.特にいりませんが、あると嬉しいです。その場合は[Twitter](https://twitter.com/sh_akira)をお願いします。  
   ソースコードを使用する場合はMITライセンスです。  
   
 Q.Oculus Homeからゲームを起動しようとすると、SteamVRを閉じてしまう  
 A.Homeは使用せずにゲームのインストールフォルダから直接exeを実行で回避できる報告がありました  
+  
+Q.externalcamera.cfgはどうやって設定するの？  
+A.みゅみゅさんの記事[【HTC Vive】コントローラ２本でクロマキー合成をする方法](https://qiita.com/miyumiyu/items/25deb3542e913750f519)を参照してください。  
+バーチャルモーションキャプチャーのカメラ標準はfov=60です。  
+  
+Q.externalcamera.cfgの位置がおかしい  
+A.ベースステーション番号を変更して再度ファイルを開いてみてください。  
+  
+Q.支援先を教えてください  
+A.[欲しいものリスト](https://t.co/KPJRzn6sVR) ギフト送付先(akira.satoh.sh[アットマーク]gmail.com)  
+  近々BOOTHでの公開も予定しています。ありがとうございます
