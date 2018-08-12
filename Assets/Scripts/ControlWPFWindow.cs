@@ -339,6 +339,22 @@ public class ControlWPFWindow : MonoBehaviour
                 CurrentSettings.RightHandRotation = d.RightHandRotation;
                 UpdateHandRotation();
             }
+            else if (e.CommandType == typeof(PipeCommands.SetExternalCameraConfig))
+            {
+                var d = (PipeCommands.SetExternalCameraConfig)e.Data;
+                //フリーカメラに変更
+                ChangeCamera(CameraTypes.Free);
+                //externalcamera.cfgはベースステーション基準のポジション
+                //いったんベースステーションの子にして座標指定したら、
+                currentCamera.transform.SetParent(handler.BaseStations[d.BaseStationIndex].transform);
+                currentCamera.transform.localPosition = new Vector3(d.x, d.y, d.z);
+                currentCamera.transform.localRotation = Quaternion.Euler(d.rx, d.ry, d.rz);
+                currentCamera.fieldOfView = d.fov;
+                //座標を維持したままルートに配置しなおす
+                currentCamera.transform.SetParent(null, true);
+                if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
+                CurrentSettings.FreeCameraTransform.SetPosition(currentCamera.transform);
+            }
             else if (e.CommandType == typeof(PipeCommands.LoadCurrentSettings))
             {
                 if (isFirstTimeExecute)

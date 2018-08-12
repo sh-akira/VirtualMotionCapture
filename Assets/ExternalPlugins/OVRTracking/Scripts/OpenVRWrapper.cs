@@ -67,6 +67,7 @@ namespace sh_akira.OVRTracking
             positions.Add(ETrackedDeviceClass.HMD, new List<SteamVR_Utils.RigidTransform>());
             positions.Add(ETrackedDeviceClass.Controller, new List<SteamVR_Utils.RigidTransform>());
             positions.Add(ETrackedDeviceClass.GenericTracker, new List<SteamVR_Utils.RigidTransform>());
+            positions.Add(ETrackedDeviceClass.TrackingReference, new List<SteamVR_Utils.RigidTransform>());
             TrackedDevicePose_t[] allPoses = new TrackedDevicePose_t[OpenVR.k_unMaxTrackedDeviceCount];
             //TODO: TrackingUniverseStanding??
             openVR.GetDeviceToAbsoluteTrackingPose(ETrackingUniverseOrigin.TrackingUniverseStanding, 0, allPoses);
@@ -75,7 +76,7 @@ namespace sh_akira.OVRTracking
                 var pose = allPoses[i];
                 //0:HMD 1:LeftHand 2:RightHand ??
                 var deviceClass = openVR.GetTrackedDeviceClass(i);
-                if (pose.bDeviceIsConnected && (deviceClass == ETrackedDeviceClass.HMD || deviceClass == ETrackedDeviceClass.Controller || deviceClass == ETrackedDeviceClass.GenericTracker))
+                if (pose.bDeviceIsConnected && (deviceClass == ETrackedDeviceClass.HMD || deviceClass == ETrackedDeviceClass.Controller || deviceClass == ETrackedDeviceClass.GenericTracker || deviceClass == ETrackedDeviceClass.TrackingReference))
                 {
                     positions[deviceClass].Add(new SteamVR_Utils.RigidTransform(pose.mDeviceToAbsoluteTracking));
                 }

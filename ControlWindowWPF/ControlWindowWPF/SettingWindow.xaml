@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ControlWindowWPF"
         mc:Ignorable="d"
-        Title="設定" Height="150" Width="300" ResizeMode="CanMinimize">
+        Title="設定" SizeToContent="Height" Width="300" ResizeMode="CanMinimize">
     <StackPanel Orientation="Vertical">
         <GroupBox Header="手の角度調整" DockPanel.Dock="Top">
             <UniformGrid Rows="1" Columns="2">
@@ -16,6 +16,16 @@
                     <ComboBox Name="RightHandRotateComboBox" SelectionChanged="RightHandRotateComboBox_SelectionChanged" ToolTip="右手の回転を調整します。実際の手とモデルの手の回転がずれている場合に変更してください"/>
                 </GroupBox>
             </UniformGrid>
+        </GroupBox>
+        <GroupBox Header="externalcamera.cfg(フリーカメラ座標を設定)">
+            <DockPanel>
+                <Button DockPanel.Dock="Bottom" Content="externalcamera.cfgを開く" Name="ExternalCameraConigButton" Click="ExternalCameraConigButton_Click" ToolTip="VRゲームにモデルを合成するためのexternalcamera.cfgを読み込んでフリーカメラに設定します"/>
+                <TextBlock Text="基準ベースステーション："/>
+                <ComboBox Name="BaseStationComboBox" SelectedIndex="0" ToolTip="externalcameraの基準になるベースステーションを選択(カメラがずれているときに変更してcfgファイルを開きなおしてください)">
+                    <ComboBoxItem>1</ComboBoxItem>
+                    <ComboBoxItem>2</ComboBoxItem>
+                </ComboBox>
+            </DockPanel>
         </GroupBox>
         <Button Content="閉じる" HorizontalAlignment="Right" Width="100" Name="CloseButton" Click="CloseButton_Click" ToolTip="設定を閉じます"/>
     </StackPanel>

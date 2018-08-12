@@ -14,6 +14,10 @@ namespace sh_akira.OVRTracking
         [System.NonSerialized]
         public List<GameObject> Trackers = new List<GameObject>();
         public List<GameObject> TrackersObject = new List<GameObject>();
+        [System.NonSerialized]
+        public List<GameObject> BaseStations = new List<GameObject>();
+        public List<GameObject> BaseStationsObject = new List<GameObject>();
+        public bool DisableBaseStationRotation = true;
 
         // Use this for initialization
         void Start()
@@ -53,11 +57,24 @@ namespace sh_akira.OVRTracking
                 var trackerPositions = positions[ETrackedDeviceClass.GenericTracker];
                 if (trackerPositions.Any())
                 {
-
                     for (int i = 0; i < trackerPositions.Count && i < TrackersObject.Count; i++)
                     {
                         TrackersObject[i].transform.SetPositionAndRotation(trackerPositions[i]);
                         if (Trackers.Contains(TrackersObject[i]) == false) Trackers.Add(TrackersObject[i]);
+                    }
+                }
+
+                var baseStationPositions = positions[ETrackedDeviceClass.TrackingReference];
+                if (baseStationPositions.Any())
+                {
+                    for (int i = 0; i < baseStationPositions.Count && i < BaseStationsObject.Count; i++)
+                    {
+                        BaseStationsObject[i].transform.SetPositionAndRotation(baseStationPositions[i]);
+                        if (DisableBaseStationRotation)
+                        {
+                            BaseStationsObject[i].transform.rotation = Quaternion.Euler(0, BaseStationsObject[i].transform.eulerAngles.y, 0);
+                        }
+                        if (BaseStations.Contains(BaseStationsObject[i]) == false) BaseStations.Add(BaseStationsObject[i]);
                     }
                 }
             }

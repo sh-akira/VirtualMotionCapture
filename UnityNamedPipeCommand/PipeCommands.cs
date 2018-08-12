@@ -169,6 +169,18 @@ namespace UnityNamedPipe
 
         public class SetHandRotations { public float LeftHandRotation { get; set; } public float RightHandRotation { get; set; } }
 
+        public class SetExternalCameraConfig
+        {
+            public float x { get; set; }
+            public float y { get; set; }
+            public float z { get; set; }
+            public float rx { get; set; }
+            public float ry { get; set; }
+            public float rz { get; set; }
+            public float fov { get; set; }
+            public int BaseStationIndex { get; set; }
+        }
+
         public class ExitControlPanel { }
     }
 
