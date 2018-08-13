@@ -60,8 +60,9 @@ VR: HTC Vive + 3 tracker
 ・自身の状態をVR内にオーバーレイ表示  
   
 # 更新履歴
-Ver 0.06  
+Ver 0.07  
 ・externalcamera.cfgの設定先コントローラー変更に対応  
+・カメラが近づいたときに顔が非表示になってしまう時がある問題修正  
   
 Ver 0.06  
 ・externalcamera.cfgファイルの読み込みに対応  
