@@ -20,10 +20,12 @@
         <GroupBox Header="externalcamera.cfg(フリーカメラ座標を設定)">
             <DockPanel>
                 <Button DockPanel.Dock="Bottom" Content="externalcamera.cfgを開く" Name="ExternalCameraConigButton" Click="ExternalCameraConigButton_Click" ToolTip="VRゲームにモデルを合成するためのexternalcamera.cfgを読み込んでフリーカメラに設定します"/>
-                <TextBlock Text="基準ベースステーション："/>
-                <ComboBox Name="BaseStationComboBox" SelectedIndex="0" ToolTip="externalcameraの基準になるベースステーションを選択(カメラがずれているときに変更してcfgファイルを開きなおしてください)">
+                <TextBlock Text="コントローラー番号："/>
+                <ComboBox Name="ControllerComboBox" SelectedIndex="0" ToolTip="externalcameraの基準になるコントローラーを選択(変更する際はcfgファイルを開きなおしてください)">
                     <ComboBoxItem>1</ComboBoxItem>
                     <ComboBoxItem>2</ComboBoxItem>
+                    <ComboBoxItem>3</ComboBoxItem>
+                    <ComboBoxItem>4</ComboBoxItem>
                 </ComboBox>
             </DockPanel>
         </GroupBox>

@@ -82,7 +82,7 @@ namespace ControlWindowWPF
                 var rz = GetFloat("rz");
                 var fov = GetFloat("fov");
 
-                await Globals.Client?.SendCommandAsync(new PipeCommands.SetExternalCameraConfig { x = x, y = y, z = z, rx = rx, ry = ry, rz = rz, fov = fov, BaseStationIndex = BaseStationComboBox.SelectedIndex });
+                await Globals.Client?.SendCommandAsync(new PipeCommands.SetExternalCameraConfig { x = x, y = y, z = z, rx = rx, ry = ry, rz = rz, fov = fov, ControllerIndex = ControllerComboBox.SelectedIndex });
             }
         }
     }

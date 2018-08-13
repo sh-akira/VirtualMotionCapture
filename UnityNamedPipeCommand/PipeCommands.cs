@@ -178,7 +178,7 @@ namespace UnityNamedPipe
             public float ry { get; set; }
             public float rz { get; set; }
             public float fov { get; set; }
-            public int BaseStationIndex { get; set; }
+            public int ControllerIndex { get; set; }
         }
 
         public class ExitControlPanel { }

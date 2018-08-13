@@ -31,7 +31,7 @@ VRMモデル読み込みを押して、任意のVRMモデルを読み込んで�
   
 # ダウンロード
 リリースページ：[https://github.com/sh-akira/VirtualMotionCapture/releases]  
-ダウンロードはリリースページからVirtualMotionCapture0.06.zipをダウンロードしてください。  
+ダウンロードはリリースページからVirtualMotionCapture0.07.zipをダウンロードしてください。  
 解凍後VirtualMotionCapture.exeを実行で開始します。  
   
   
@@ -61,8 +61,11 @@ VR: HTC Vive + 3 tracker
   
 # 更新履歴
 Ver 0.06  
+・externalcamera.cfgの設定先コントローラー変更に対応  
+  
+Ver 0.06  
 ・externalcamera.cfgファイルの読み込みに対応  
-
+  
 Ver 0.05  
 ・ショートカットキー機能  
 ・ハンドジェスチャー設定  
@@ -125,6 +128,7 @@ A.Homeは使用せずにゲームのインストールフォルダから直接ex
 Q.externalcamera.cfgはどうやって設定するの？  
 A.みゅみゅさんの記事[【HTC Vive】コントローラ２本でクロマキー合成をする方法](https://qiita.com/miyumiyu/items/25deb3542e913750f519)を参照してください。  
 バーチャルモーションキャプチャーのカメラ標準はfov=60です。  
+実際にコントローラーを3つ繋いでいる場合は、3本目のコントローラーをカメラ代わりにすることができます。  
   
 Q.externalcamera.cfgの位置がおかしい  
 A.ベースステーション番号を変更して再度ファイルを開いてみてください。  

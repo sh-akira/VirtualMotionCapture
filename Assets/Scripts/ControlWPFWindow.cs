@@ -344,16 +344,16 @@ public class ControlWPFWindow : MonoBehaviour
                 var d = (PipeCommands.SetExternalCameraConfig)e.Data;
                 //フリーカメラに変更
                 ChangeCamera(CameraTypes.Free);
-                //externalcamera.cfgはベースステーション基準のポジション
-                //いったんベースステーションの子にして座標指定したら、
-                currentCamera.transform.SetParent(handler.BaseStations[d.BaseStationIndex].transform);
+                //externalcamera.cfgは3つ目のコントローラー基準のポジション
+                handler.CameraControllerIndex = d.ControllerIndex;
+                //指定のコントローラーの子にして座標指定
+                currentCamera.transform.SetParent(handler.CameraControllerObject.transform);
                 currentCamera.transform.localPosition = new Vector3(d.x, d.y, d.z);
                 currentCamera.transform.localRotation = Quaternion.Euler(d.rx, d.ry, d.rz);
                 currentCamera.fieldOfView = d.fov;
-                //座標を維持したままルートに配置しなおす
-                currentCamera.transform.SetParent(null, true);
-                if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
-                CurrentSettings.FreeCameraTransform.SetPosition(currentCamera.transform);
+                //コントローラーは動くのでカメラ位置の保存はできない
+                //if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
+                //CurrentSettings.FreeCameraTransform.SetPosition(currentCamera.transform);
             }
             else if (e.CommandType == typeof(PipeCommands.LoadCurrentSettings))
             {
@@ -454,6 +454,12 @@ public class ControlWPFWindow : MonoBehaviour
         }
         // ParseしたJSONをシーンオブジェクトに変換していく
         CurrentModel = await VRMImporter.LoadVrmAsync(context);
+
+        //モデルのSkinnedMeshRendererがカリングされないように、すべてのオプション変更
+        foreach(var renderer in CurrentModel.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+        {
+            renderer.updateWhenOffscreen = true;
+        }
 
         //LipSync
         LipSync.ImportVRMmodel(CurrentModel);

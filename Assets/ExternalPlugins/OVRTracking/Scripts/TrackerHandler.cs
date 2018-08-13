@@ -11,6 +11,9 @@ namespace sh_akira.OVRTracking
         public GameObject HMDObject;
         public GameObject LeftControllerObject;
         public GameObject RightControllerObject;
+        public GameObject CameraControllerObject;
+        [System.NonSerialized]
+        public int CameraControllerIndex = -1;
         [System.NonSerialized]
         public List<GameObject> Trackers = new List<GameObject>();
         public List<GameObject> TrackersObject = new List<GameObject>();
@@ -48,6 +51,12 @@ namespace sh_akira.OVRTracking
                 var controllerPositions = positions[ETrackedDeviceClass.Controller];
                 if (controllerPositions.Any())
                 {
+                    //externalcamera.cfg用のコントローラー設定
+                    if (CameraControllerIndex >= 0 && CameraControllerIndex < controllerPositions.Count)
+                    {
+                        CameraControllerObject.transform.SetPositionAndRotation(controllerPositions[CameraControllerIndex]);
+                        controllerPositions.RemoveAt(CameraControllerIndex);
+                    }
                     LeftControllerObject.transform.SetPositionAndRotation(controllerPositions.FirstOrDefault());
                     if (controllerPositions.Count > 1)
                     {
