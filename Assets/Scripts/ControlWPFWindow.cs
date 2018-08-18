@@ -53,6 +53,8 @@ public class ControlWPFWindow : MonoBehaviour
 
     private Animator animator = null;
 
+    private bool IsOculus { get { return SteamVR.instance.hmd_TrackingSystemName.ToLower().Contains("oculus"); } }
+
     private enum MouseButtons
     {
         Left = 0,
@@ -160,7 +162,7 @@ public class ControlWPFWindow : MonoBehaviour
 
             else if (e.CommandType == typeof(PipeCommands.Calibrate))
             {
-                Calibrate();
+                StartCoroutine(Calibrate());
             }
             else if (e.CommandType == typeof(PipeCommands.EndCalibrate))
             {
@@ -456,7 +458,7 @@ public class ControlWPFWindow : MonoBehaviour
         CurrentModel = await VRMImporter.LoadVrmAsync(context);
 
         //モデルのSkinnedMeshRendererがカリングされないように、すべてのオプション変更
-        foreach(var renderer in CurrentModel.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+        foreach (var renderer in CurrentModel.GetComponentsInChildren<SkinnedMeshRenderer>(true))
         {
             renderer.updateWhenOffscreen = true;
         }
@@ -542,7 +544,7 @@ public class ControlWPFWindow : MonoBehaviour
     Transform leftHandTracker = null;
     Transform rightHandTracker = null;
 
-    private void Calibrate()
+    private IEnumerator Calibrate()
     {
         Transform headTracker = handler.HMDObject.transform;// AddCalibrateTransform(handler.HMDObject.transform, TrackerNums.Zero);
         var controllerTransforms = (new Transform[] { handler.LeftControllerObject.transform, handler.RightControllerObject.transform }).Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.transform.position - headTracker.position), transform = d.transform }).OrderBy(d => d.pos.x).Select(d => d.transform);
@@ -570,8 +572,22 @@ public class ControlWPFWindow : MonoBehaviour
         //DoCalibrate(vrik, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
         //DoCalibrate2(vrik, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
         vrik.solver.IKPositionWeight = 1.0f;
-        var settings = new RootMotion.FinalIK.VRIKCalibrator.Settings() { headOffset = new Vector3(0f, -0.15f, -0.15f), handOffset = new Vector3(0f, -0.03f, -0.07f) };
+        var settings = new RootMotion.FinalIK.VRIKCalibrator.Settings() { headOffset = new Vector3(0f, -0.15f, -0.15f), handOffset = new Vector3(0f, 0f, 0f) };
+        ////モデルのスケールを両手に合わせて拡大
+        //if (animator != null)
+        //{
+        //    var leftHand = animator.GetBoneTransform(HumanBodyBones.LeftHand); //手首のポジション
+        //    var rightHand = animator.GetBoneTransform(HumanBodyBones.RightHand);
+        //    var realLeftHand = leftHandTracker; //コントローラーの先端(メニューボタンの上あたり)のポジション
+        //    var realRightHand = rightHandTracker;
+        //    var handDistance = Vector3.Distance(leftHand.position, rightHand.position);
+        //    var realHandDistance = Vector3.Distance(realLeftHand.position, realRightHand.position) - 0.1f; //片手15cm(コントローラー分)引く
+        //    var scale = handDistance / realHandDistance;
+        //    CurrentModel.transform.localScale = new Vector3(scale, scale, scale);
+        //    yield return new WaitForEndOfFrame();
+        //}
         Calibrator.Calibrate(vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
+        yield return new WaitForEndOfFrame();
         Calibrator.Calibrate(vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
         Calibrator.Calibrate(vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
         if (handler.Trackers.Count == 1)
@@ -965,6 +981,7 @@ public class ControlWPFWindow : MonoBehaviour
         config.keyIndex = e.IsAxis == false ? -1 : e.ButtonId == Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad ? NearestPointIndex(e.IsLeft, e.Axis.x, e.Axis.y) : 0;
         if (e.IsAxis)
         {
+            if (config.keyIndex < 0) return;
             if (e.IsLeft) lastLeftAxisPoint = config.keyIndex;
             else lastRightAxisPoint = config.keyIndex;
         }
@@ -989,6 +1006,7 @@ public class ControlWPFWindow : MonoBehaviour
             if (doKeyConfig) await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
             else CheckKey(config, false);
             config.keyIndex = newindex;
+            if (config.keyIndex < 0) return;
             //新しいキーを押す
             if (doKeyConfig) await server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
             else CheckKey(config, true);
@@ -1054,13 +1072,14 @@ public class ControlWPFWindow : MonoBehaviour
         var points = isLeft ? CurrentSettings.LeftTouchPadPoints : CurrentSettings.RightTouchPadPoints;
         if (points == null) return 0; //未設定時は一つ
         var centerEnable = isLeft ? CurrentSettings.LeftCenterEnable : CurrentSettings.RightCenterEnable;
-        if (centerEnable) //センターキー有効時
+        if (centerEnable || IsOculus) //センターキー有効時(Oculusの場合はスティックなので、センター無効にする)
         {
             var point_distance = x * x + y * y;
             var r = 2.0f / 5.0f; //半径
             var r2 = r * r;
             if (point_distance < r2) //円内
             {
+                if (IsOculus) return -1;
                 index = points.Count + 1;
                 return index;
             }

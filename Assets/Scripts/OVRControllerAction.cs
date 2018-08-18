@@ -169,17 +169,34 @@ public class OVRControllerAction : MonoBehaviour
         }
     }
 
-    EVRButtonId[] buttonIds = new EVRButtonId[] {
+    EVRButtonId[] buttonIds_vive = new EVRButtonId[] {
         EVRButtonId.k_EButton_ApplicationMenu,
         EVRButtonId.k_EButton_Grip,
         EVRButtonId.k_EButton_SteamVR_Touchpad,
         //EVRButtonId.k_EButton_SteamVR_Trigger
     };
 
-    EVRButtonId[] axisIds = new EVRButtonId[] {
+    EVRButtonId[] axisIds_vive = new EVRButtonId[] {
         EVRButtonId.k_EButton_SteamVR_Touchpad,
         //EVRButtonId.k_EButton_SteamVR_Trigger
     };
+
+    EVRButtonId[] buttonIds_oculus = new EVRButtonId[] {
+        EVRButtonId.k_EButton_SteamVR_Trigger, //人差し指トリガー
+        EVRButtonId.k_EButton_SteamVR_Touchpad, //スティック
+        EVRButtonId.k_EButton_Grip, //中指トリガー
+        EVRButtonId.k_EButton_A, //A/Xボタン (ちゃんと認識される？)
+        EVRButtonId.k_EButton_ApplicationMenu, //B/Yボタン
+    };
+
+    EVRButtonId[] axisIds_oculus = new EVRButtonId[] {
+        EVRButtonId.k_EButton_SteamVR_Trigger, //人差し指トリガー
+        EVRButtonId.k_EButton_SteamVR_Touchpad, //スティック
+        EVRButtonId.k_EButton_A, //A/Xボタン (ちゃんと認識される？)
+        EVRButtonId.k_EButton_ApplicationMenu, //B/Yボタン
+    };
+
+    private bool IsOculus { get { return SteamVR.instance.hmd_TrackingSystemName.ToLower().Contains("oculus"); } }
 
     void Update()
     {
@@ -196,6 +213,8 @@ public class OVRControllerAction : MonoBehaviour
     private void CheckControllerStatus(int index, bool isLeft)
     {
         var name = isLeft ? " Left:" : "Right:";
+        var buttonIds = IsOculus ? buttonIds_oculus : buttonIds_vive;
+        var axisIds = IsOculus ? axisIds_oculus : axisIds_vive;
         foreach (var buttonId in buttonIds)
         {
             if (SteamVR_Controller.Input(index).GetPressDown(buttonId))
