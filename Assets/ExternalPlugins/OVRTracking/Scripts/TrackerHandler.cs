@@ -46,7 +46,7 @@ namespace sh_akira.OVRTracking
                 var hmdPositions = positions[ETrackedDeviceClass.HMD];
                 if (hmdPositions.Any())
                 {
-                    HMDObject.transform.SetPositionAndRotation(hmdPositions.FirstOrDefault());
+                    HMDObject.transform.SetPositionAndRotationLocal(hmdPositions.FirstOrDefault());
                 }
                 var controllerPositions = positions[ETrackedDeviceClass.Controller];
                 if (controllerPositions.Any())
@@ -54,13 +54,13 @@ namespace sh_akira.OVRTracking
                     //externalcamera.cfg用のコントローラー設定
                     if (CameraControllerIndex >= 0 && CameraControllerIndex < controllerPositions.Count)
                     {
-                        CameraControllerObject.transform.SetPositionAndRotation(controllerPositions[CameraControllerIndex]);
+                        CameraControllerObject.transform.SetPositionAndRotationLocal(controllerPositions[CameraControllerIndex]);
                         controllerPositions.RemoveAt(CameraControllerIndex);
                     }
-                    LeftControllerObject.transform.SetPositionAndRotation(controllerPositions.FirstOrDefault());
+                    LeftControllerObject.transform.SetPositionAndRotationLocal(controllerPositions.FirstOrDefault());
                     if (controllerPositions.Count > 1)
                     {
-                        RightControllerObject.transform.SetPositionAndRotation(controllerPositions[1]);
+                        RightControllerObject.transform.SetPositionAndRotationLocal(controllerPositions[1]);
                     }
                 }
                 var trackerPositions = positions[ETrackedDeviceClass.GenericTracker];
@@ -68,7 +68,7 @@ namespace sh_akira.OVRTracking
                 {
                     for (int i = 0; i < trackerPositions.Count && i < TrackersObject.Count; i++)
                     {
-                        TrackersObject[i].transform.SetPositionAndRotation(trackerPositions[i]);
+                        TrackersObject[i].transform.SetPositionAndRotationLocal(trackerPositions[i]);
                         if (Trackers.Contains(TrackersObject[i]) == false) Trackers.Add(TrackersObject[i]);
                     }
                 }
@@ -78,7 +78,7 @@ namespace sh_akira.OVRTracking
                 {
                     for (int i = 0; i < baseStationPositions.Count && i < BaseStationsObject.Count; i++)
                     {
-                        BaseStationsObject[i].transform.SetPositionAndRotation(baseStationPositions[i]);
+                        BaseStationsObject[i].transform.SetPositionAndRotationLocal(baseStationPositions[i]);
                         if (DisableBaseStationRotation)
                         {
                             BaseStationsObject[i].transform.rotation = Quaternion.Euler(0, BaseStationsObject[i].transform.eulerAngles.y, 0);
@@ -100,6 +100,15 @@ namespace sh_akira.OVRTracking
         public static void SetPositionAndRotation(this Transform t, SteamVR_Utils.RigidTransform mat)
         {
             if (mat != null) t.SetPositionAndRotation(mat.pos, mat.rot);
+        }
+
+        public static void SetPositionAndRotationLocal(this Transform t, SteamVR_Utils.RigidTransform mat)
+        {
+            if (mat != null)
+            {
+                t.localPosition = mat.pos;
+                t.localRotation = mat.rot;
+            }
         }
     }
 }

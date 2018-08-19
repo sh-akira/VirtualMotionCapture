@@ -19,6 +19,8 @@ using UnityEditor;
 public class ControlWPFWindow : MonoBehaviour
 {
     public TrackerHandler handler = null;
+    public Transform LeftWristTransform = null;
+    public Transform RightWristTransform = null;
 
     public CameraLookTarget CalibrationCamera;
 
@@ -468,7 +470,7 @@ public class ControlWPFWindow : MonoBehaviour
         //まばたき
         faceController.ImportVRMmodel(CurrentModel);
 
-        CurrentModel.transform.SetParent(transform, false);
+        //CurrentModel.transform.SetParent(transform, false);
 
         SetVRIK(CurrentModel);
         animator = CurrentModel.GetComponent<Animator>();
@@ -547,7 +549,7 @@ public class ControlWPFWindow : MonoBehaviour
     private IEnumerator Calibrate()
     {
         Transform headTracker = handler.HMDObject.transform;// AddCalibrateTransform(handler.HMDObject.transform, TrackerNums.Zero);
-        var controllerTransforms = (new Transform[] { handler.LeftControllerObject.transform, handler.RightControllerObject.transform }).Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.transform.position - headTracker.position), transform = d.transform }).OrderBy(d => d.pos.x).Select(d => d.transform);
+        var controllerTransforms = (new Transform[] { LeftWristTransform, RightWristTransform }).Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.transform.position - headTracker.position), transform = d.transform }).OrderBy(d => d.pos.x).Select(d => d.transform);
         leftHandTracker = controllerTransforms.ElementAtOrDefault(0);// AddCalibrateTransform(handler.LeftControllerObject.transform, TrackerNums.Zero);
         rightHandTracker = controllerTransforms.ElementAtOrDefault(1);// AddCalibrateTransform(handler.RightControllerObject.transform, TrackerNums.Zero);
         var trackerTransforms = handler.Trackers.Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.transform.position - headTracker.position), transform = d.transform }).ToList();
@@ -571,7 +573,6 @@ public class ControlWPFWindow : MonoBehaviour
         }
         //DoCalibrate(vrik, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
         //DoCalibrate2(vrik, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
-        vrik.solver.IKPositionWeight = 1.0f;
         var settings = new RootMotion.FinalIK.VRIKCalibrator.Settings() { headOffset = new Vector3(0f, -0.15f, -0.15f), handOffset = new Vector3(0f, 0f, 0f) };
         ////モデルのスケールを両手に合わせて拡大
         //if (animator != null)
@@ -586,10 +587,13 @@ public class ControlWPFWindow : MonoBehaviour
         //    CurrentModel.transform.localScale = new Vector3(scale, scale, scale);
         //    yield return new WaitForEndOfFrame();
         //}
-        Calibrator.Calibrate(vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
+        //Calibrator.Calibrate(vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
         yield return new WaitForEndOfFrame();
-        Calibrator.Calibrate(vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
-        Calibrator.Calibrate(vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
+        //Calibrator.Calibrate(vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
+        //Calibrator.Calibrate(vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
+        yield return Calibrator.CalibrateScaled(handler.gameObject.transform, vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
+
+        vrik.solver.IKPositionWeight = 1.0f;
         if (handler.Trackers.Count == 1)
         {
             vrik.solver.plantFeet = true;
@@ -1661,10 +1665,10 @@ public class ControlWPFWindow : MonoBehaviour
         Transform leftHandAdjusterTransform = vrik.solver.leftArm.target;
         Transform rightHandAdjusterTransform = vrik.solver.rightArm.target;
         if (leftHandAdjusterTransform == null || rightHandAdjusterTransform == null) return;
-        var angles = leftHandAdjusterTransform.localRotation.eulerAngles;
-        leftHandAdjusterTransform.localRotation = Quaternion.Euler(CurrentSettings.LeftHandRotation, angles.y, angles.z);
-        angles = rightHandAdjusterTransform.localRotation.eulerAngles;
-        rightHandAdjusterTransform.localRotation = Quaternion.Euler(CurrentSettings.RightHandRotation, angles.y, angles.z);
+        var angles = leftHandAdjusterTransform.localEulerAngles;
+        leftHandAdjusterTransform.localEulerAngles = new Vector3(CurrentSettings.LeftHandRotation, angles.y, angles.z);
+        angles = rightHandAdjusterTransform.localEulerAngles;
+        rightHandAdjusterTransform.localEulerAngles = new Vector3(CurrentSettings.RightHandRotation, angles.y, angles.z);
     }
 
     private void Awake()

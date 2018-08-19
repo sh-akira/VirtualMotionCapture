@@ -5,10 +5,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using Valve.VR;
 
 public class OVRControllerAction : MonoBehaviour
 {
+    public InputField inputField;
 
     public EventHandler<OVRKeyEventArgs> KeyDownEvent;
     public EventHandler<OVRKeyEventArgs> KeyUpEvent;
@@ -185,14 +187,14 @@ public class OVRControllerAction : MonoBehaviour
         EVRButtonId.k_EButton_SteamVR_Trigger, //人差し指トリガー
         EVRButtonId.k_EButton_SteamVR_Touchpad, //スティック
         EVRButtonId.k_EButton_Grip, //中指トリガー
-        EVRButtonId.k_EButton_A, //A/Xボタン (ちゃんと認識される？)
+        EVRButtonId.k_EButton_A, //A/Xボタン
         EVRButtonId.k_EButton_ApplicationMenu, //B/Yボタン
     };
 
     EVRButtonId[] axisIds_oculus = new EVRButtonId[] {
         EVRButtonId.k_EButton_SteamVR_Trigger, //人差し指トリガー
         EVRButtonId.k_EButton_SteamVR_Touchpad, //スティック
-        EVRButtonId.k_EButton_A, //A/Xボタン (ちゃんと認識される？)
+        EVRButtonId.k_EButton_A, //A/Xボタン
         EVRButtonId.k_EButton_ApplicationMenu, //B/Yボタン
     };
 
@@ -213,6 +215,48 @@ public class OVRControllerAction : MonoBehaviour
     private void CheckControllerStatus(int index, bool isLeft)
     {
         var name = isLeft ? " Left:" : "Right:";
+        /*
+        foreach (var buttonId in buttonIds_oculus)
+        {
+            if (SteamVR_Controller.Input(index).GetPressDown(buttonId))
+            {
+                inputField.text = (name + buttonId + " GetPressDown") + "\n" + inputField.text;
+            }
+            if (SteamVR_Controller.Input(index).GetPressUp(buttonId))
+            {
+                inputField.text = (name + buttonId + " GetPressUp") + "\n" + inputField.text;
+            }
+        }
+        if (SteamVR_Controller.Input(index).GetHairTriggerDown())
+        {
+            inputField.text = (name + EVRButtonId.k_EButton_SteamVR_Trigger + " GetHairTriggerDown") + "\n" + inputField.text;
+        }
+
+        if (SteamVR_Controller.Input(index).GetHairTriggerUp())
+        {
+            inputField.text = (name + EVRButtonId.k_EButton_SteamVR_Trigger + " GetHairTriggerUp") + "\n" + inputField.text;
+        }
+
+        foreach (var buttonId in axisIds_oculus)
+        {
+            if (SteamVR_Controller.Input(index).GetTouchDown(buttonId))
+            {
+                var axis = SteamVR_Controller.Input(index).GetAxis(buttonId);
+                inputField.text = (name + buttonId + " GetTouchDown axis: " + axis) + "\n" + inputField.text;
+            }
+            if (SteamVR_Controller.Input(index).GetTouchUp(buttonId))
+            {
+                var axis = SteamVR_Controller.Input(index).GetAxis(buttonId);
+                inputField.text = (name + buttonId + " GetTouchUp axis: " + axis) + "\n" + inputField.text;
+            }
+            if (SteamVR_Controller.Input(index).GetTouch(buttonId))
+            {
+                var axis = SteamVR_Controller.Input(index).GetAxis(buttonId);
+                inputField.text = (name + buttonId + " GetTouch axis: " + axis) + "\n" + inputField.text;
+            }
+        }
+        */
+
         var buttonIds = IsOculus ? buttonIds_oculus : buttonIds_vive;
         var axisIds = IsOculus ? axisIds_oculus : axisIds_vive;
         foreach (var buttonId in buttonIds)

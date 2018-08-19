@@ -1,6 +1,7 @@
 ﻿using RootMotion;
 using RootMotion.FinalIK;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -171,5 +172,135 @@ public class Calibrator
         */
         leg.bendGoal = null;
         leg.bendGoalWeight = 0f;
+    }
+    
+    public static IEnumerator CalibrateScaled(Transform trackerRoot, VRIK ik, Settings settings, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null)
+    {
+        if (!ik.solver.initiated)
+        {
+            Debug.LogError("Can not calibrate before VRIK has initiated.");
+            yield break;
+        }
+
+        if (HMDTransform == null)
+        {
+            Debug.LogError("Can not calibrate VRIK without the head tracker.");
+            yield break;
+        }
+
+        // モデルのポジションを手と手の中心位置に移動
+        var centerposition = Vector3.Lerp(LeftHandTransform.position, RightHandTransform.position, 0.5f);
+        ik.references.root.position = new Vector3(centerposition.x, ik.references.root.position.y, centerposition.z);
+        Vector3 hmdForwardAngle = HMDTransform.rotation * settings.headTrackerForward;
+        hmdForwardAngle.y = 0f;
+        ik.references.root.rotation = Quaternion.LookRotation(hmdForwardAngle);
+
+        yield return new WaitForEndOfFrame();
+
+        //モデルを手の高さで比較してスケールアップさせる
+        //なるべく現実の身長に近づけて現実のコントローラー座標とのずれをなくす
+        //ずれが大きいとexternalcamera.cfgとの合成時に手がずれすぎておかしくなる
+        var modelHandHeight = (ik.references.leftHand.position.y + ik.references.rightHand.position.y) / 2f;
+        var realHandHeight = (LeftHandTransform.position.y + RightHandTransform.position.y) / 2f;
+        var hscale = realHandHeight / modelHandHeight;
+        ik.references.root.localScale = new Vector3(hscale, hscale, hscale);
+
+
+        // トラッカー全体のスケールを手の位置に合わせる
+        var modelHandDistance = Vector3.Distance(ik.references.leftHand.position, ik.references.rightHand.position);
+        var realHandDistance = Vector3.Distance(LeftHandTransform.position, RightHandTransform.position);
+        var wscale = modelHandDistance / realHandDistance;
+        modelHandHeight = (ik.references.leftHand.position.y + ik.references.rightHand.position.y) / 2f;
+        realHandHeight = (LeftHandTransform.position.y + RightHandTransform.position.y) / 2f;
+        hscale = modelHandHeight / realHandHeight;
+        trackerRoot.localScale = new Vector3(wscale, hscale, wscale);
+
+        yield return new WaitForEndOfFrame();
+        //yield break;
+
+        // Head
+        Transform hmdAdjusterTransform = ik.solver.spine.headTarget == null ? (new GameObject("hmdAdjuster")).transform : ik.solver.spine.headTarget;
+        hmdAdjusterTransform.parent = HMDTransform;
+        hmdAdjusterTransform.position = HMDTransform.position + HMDTransform.rotation * Quaternion.LookRotation(settings.headTrackerForward, settings.headTrackerUp) * settings.headOffset;
+        hmdAdjusterTransform.rotation = ik.references.head.rotation;
+        ik.solver.spine.headTarget = hmdAdjusterTransform;
+
+
+        // Body
+        if (PelvisTransform != null)
+        {
+            Transform pelvisAdjusterTransform = ik.solver.spine.pelvisTarget == null ? (new GameObject("pelvisAdjuster")).transform : ik.solver.spine.pelvisTarget;
+            pelvisAdjusterTransform.parent = PelvisTransform;
+            pelvisAdjusterTransform.position = ik.references.pelvis.position;
+            pelvisAdjusterTransform.rotation = ik.references.pelvis.rotation;
+            ik.solver.spine.pelvisTarget = pelvisAdjusterTransform;
+            ik.solver.spine.pelvisPositionWeight = 1f;
+            ik.solver.spine.pelvisRotationWeight = 1f;
+
+            ik.solver.plantFeet = false;
+            ik.solver.spine.neckStiffness = 0f;
+            ik.solver.spine.maxRootAngle = 180f;
+        }
+        else if (LeftFootTransform != null && RightFootTransform != null)
+        {
+            ik.solver.spine.maxRootAngle = 0f;
+        }
+
+        // Left Hand
+        if (LeftHandTransform != null)
+        {
+            Transform leftHandAdjusterTransform = ik.solver.leftArm.target == null ? (new GameObject("leftHandAdjuster")).transform : ik.solver.leftArm.target;
+            leftHandAdjusterTransform.parent = LeftHandTransform;
+            leftHandAdjusterTransform.position = LeftHandTransform.position + LeftHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp) * settings.handOffset;
+            Vector3 leftHandUp = Vector3.Cross(ik.solver.leftArm.wristToPalmAxis, ik.solver.leftArm.palmToThumbAxis);
+            leftHandAdjusterTransform.rotation = QuaTools.MatchRotation(LeftHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.leftArm.wristToPalmAxis, leftHandUp);
+            ik.solver.leftArm.target = leftHandAdjusterTransform;
+        }
+        else
+        {
+            ik.solver.leftArm.positionWeight = 0f;
+            ik.solver.leftArm.rotationWeight = 0f;
+        }
+
+        // Right Hand
+        if (RightHandTransform != null)
+        {
+            Transform rightHandAdjusterTransform = ik.solver.rightArm.target == null ? (new GameObject("rightHandAdjuster")).transform : ik.solver.rightArm.target;
+            rightHandAdjusterTransform.parent = RightHandTransform;
+            rightHandAdjusterTransform.position = RightHandTransform.position + RightHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp) * settings.handOffset;
+            Vector3 rightHandUp = -Vector3.Cross(ik.solver.rightArm.wristToPalmAxis, ik.solver.rightArm.palmToThumbAxis);
+            rightHandAdjusterTransform.rotation = QuaTools.MatchRotation(RightHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.rightArm.wristToPalmAxis, rightHandUp);
+            ik.solver.rightArm.target = rightHandAdjusterTransform;
+        }
+        else
+        {
+            ik.solver.rightArm.positionWeight = 0f;
+            ik.solver.rightArm.rotationWeight = 0f;
+        }
+
+        // Legs
+        if (LeftFootTransform != null) CalibrateLeg(settings, LeftFootTransform, ik.solver.leftLeg, (ik.references.leftToes != null ? ik.references.leftToes : ik.references.leftFoot), ik.references.root.forward, true);
+        if (RightFootTransform != null) CalibrateLeg(settings, RightFootTransform, ik.solver.rightLeg, (ik.references.rightToes != null ? ik.references.rightToes : ik.references.rightFoot), ik.references.root.forward, false);
+
+        // Root controller
+        bool addRootController = PelvisTransform != null || (LeftFootTransform != null && RightFootTransform != null);
+        var rootController = ik.references.root.GetComponent<VRIKRootController>();
+
+        if (addRootController)
+        {
+            if (rootController == null) rootController = ik.references.root.gameObject.AddComponent<VRIKRootController>();
+            rootController.pelvisTarget = ik.solver.spine.pelvisTarget;
+            rootController.leftFootTarget = ik.solver.leftLeg.target;
+            rootController.rightFootTarget = ik.solver.rightLeg.target;
+            rootController.Calibrate();
+        }
+        else
+        {
+            if (rootController != null) GameObject.Destroy(rootController);
+        }
+
+        // Additional solver settings
+        ik.solver.spine.minHeadHeight = 0f;
+        ik.solver.locomotion.weight = PelvisTransform == null && LeftFootTransform == null && RightFootTransform == null ? 1f : 0f;
     }
 }
