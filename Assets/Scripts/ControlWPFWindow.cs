@@ -312,11 +312,13 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 doKeyConfig = true;
                 faceController.StartSetting();
+                CurrentKeyConfigs.Clear();
             }
             else if (e.CommandType == typeof(PipeCommands.EndKeyConfig))
             {
                 faceController.EndSetting();
                 doKeyConfig = false;
+                CurrentKeyConfigs.Clear();
             }
             else if (e.CommandType == typeof(PipeCommands.SetKeyActions))
             {
@@ -983,6 +985,8 @@ public class ControlWPFWindow : MonoBehaviour
         config.keyCode = (int)e.ButtonId;
         config.isLeft = e.IsLeft;
         config.keyIndex = e.IsAxis == false ? -1 : e.ButtonId == Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad ? NearestPointIndex(e.IsLeft, e.Axis.x, e.Axis.y) : 0;
+        config.isOculus = IsOculus;
+        config.isTouch = e.IsTouch;
         if (e.IsAxis)
         {
             if (config.keyIndex < 0) return;
@@ -1002,12 +1006,14 @@ public class ControlWPFWindow : MonoBehaviour
         config.keyCode = (int)e.ButtonId;
         config.isLeft = e.IsLeft;
         config.keyIndex = e.IsAxis == false ? -1 : e.ButtonId == Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad ? NearestPointIndex(e.IsLeft, e.Axis.x, e.Axis.y) : 0;
+        config.isOculus = IsOculus;
+        config.isTouch = e.IsTouch;
         if (e.IsAxis && config.keyIndex != (e.IsLeft ? lastLeftAxisPoint : lastRightAxisPoint))
         {//タッチパッド離した瞬間違うポイントだった場合
             var newindex = config.keyIndex;
             config.keyIndex = (e.IsLeft ? lastLeftAxisPoint : lastRightAxisPoint);
             //前のキーを離す
-            if (doKeyConfig) await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
+            if (doKeyConfig) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
             else CheckKey(config, false);
             config.keyIndex = newindex;
             if (config.keyIndex < 0) return;
@@ -1015,12 +1021,14 @@ public class ControlWPFWindow : MonoBehaviour
             if (doKeyConfig) await server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
             else CheckKey(config, true);
         }
-        if (doKeyConfig) await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
+        if (doKeyConfig) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
         else CheckKey(config, false);
     }
 
     private int lastLeftAxisPoint = -1;
     private int lastRightAxisPoint = -1;
+
+    private bool isSendingKey = false;
     //タッチパッドやアナログスティックの変動
     private async void ControllerAction_AxisChanged(object sender, OVRKeyEventArgs e)
     {
@@ -1034,12 +1042,22 @@ public class ControlWPFWindow : MonoBehaviour
             config.keyCode = (int)e.ButtonId;
             config.isLeft = e.IsLeft;
             config.keyIndex = (e.IsLeft ? lastLeftAxisPoint : lastRightAxisPoint);
+            config.isOculus = IsOculus;
+            config.isTouch = e.IsTouch;
             //前のキーを離す
-            if (doKeyConfig) await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
+            if (doKeyConfig) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
             else CheckKey(config, false);
             config.keyIndex = newindex;
             //新しいキーを押す
-            if (doKeyConfig) await server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
+            if (doKeyConfig)
+            {
+                if (isSendingKey == false)
+                {
+                    isSendingKey = true;
+                    await server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
+                    isSendingKey = false;
+                }
+            }
             else CheckKey(config, true);
             if (e.IsLeft) lastLeftAxisPoint = newindex;
             else lastRightAxisPoint = newindex;
@@ -1058,14 +1076,14 @@ public class ControlWPFWindow : MonoBehaviour
         else CheckKey(config, true);
     }
 
-    private async void KeyboardAction_KeyUp(object sender, KeyboardEventArgs e)
+    private /*async*/ void KeyboardAction_KeyUp(object sender, KeyboardEventArgs e)
     {
         var config = new KeyConfig();
         config.type = KeyTypes.Keyboard;
         config.actionType = KeyActionTypes.Face;
         config.keyCode = e.KeyCode;
         config.keyName = e.KeyName;
-        if (doKeyConfig) await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
+        if (doKeyConfig) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
         else CheckKey(config, false);
     }
 

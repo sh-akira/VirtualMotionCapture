@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -209,6 +210,7 @@ namespace UnityNamedPipe
         Hand,
     }
 
+    [Serializable]
     public class KeyConfig
     {
         public KeyTypes type;
@@ -217,24 +219,67 @@ namespace UnityNamedPipe
         public string keyName;
         public bool isLeft;
         public int keyIndex;
+        [OptionalField]
+        public bool isOculus;
+        [OptionalField]
+        public bool isTouch;
 
         public bool IsEqual(KeyConfig k)
         {
-            return type == k.type && actionType == k.actionType && keyCode == k.keyCode && isLeft == k.isLeft && keyIndex == k.keyIndex;
+            return type == k.type && actionType == k.actionType && keyCode == k.keyCode && isLeft == k.isLeft && keyIndex == k.keyIndex && isOculus == k.isOculus && isTouch == k.isTouch;
         }
 
         public bool IsEqualKeyCode(KeyConfig k)
         {
-            return type == k.type && keyCode == k.keyCode && isLeft == k.isLeft && keyIndex == k.keyIndex;
+            return type == k.type && keyCode == k.keyCode && isLeft == k.isLeft && keyIndex == k.keyIndex && isOculus == k.isOculus && isTouch == k.isTouch;
         }
+
+        private static Dictionary<int, string> EVRButtonIdString = new Dictionary<int, string>
+        {
+            { 0, "システム" },
+            { 1, "メニュー" },
+            { 2, "グリップ" },
+            { 3, "パッド左" },
+            { 4, "パッド上" },
+            { 5, "パッド右" },
+            { 6, "パッド下" },
+            { 7, "Aボタン" },
+            { 31, "近接センサ" },
+            { 32, "タッチパッド" },
+            { 33, "トリガー" },
+            { 34, "軸2" },
+            { 35, "軸3" },
+            { 36, "軸4" },
+            { 64, "最大値" }
+        };
+
+        private static Dictionary<int, string> EVRButtonIdString_Oculus = new Dictionary<int, string>
+        {
+            { 0, "システム" },
+            { 1, "B/Yボタン" },
+            { 2, "中指トリガー" },
+            { 3, "パッド左" },
+            { 4, "パッド上" },
+            { 5, "パッド右" },
+            { 6, "パッド下" },
+            { 7, "A/Xボタン" },
+            { 31, "近接センサ" },
+            { 32, "スティック" },
+            { 33, "人差し指トリガー" },
+            { 34, "軸2" },
+            { 35, "軸3" },
+            { 36, "軸4" },
+            { 64, "最大値" }
+        };
 
         public override string ToString()
         {
             var isLeftStr = type == KeyTypes.Controller ? (isLeft ? "左" : "右") : "";
-            var keyCodeStr = type == KeyTypes.Controller ? ((EVRButtonIdString)keyCode).ToString() : keyName;
+            var keyCodeStr = type == KeyTypes.Controller ? (isOculus ? EVRButtonIdString_Oculus[keyCode] : EVRButtonIdString[keyCode]) : keyName;
             var indexStr = keyIndex > 0 ? $"{keyIndex}" : "";
             var keyTypesString = type == KeyTypes.Controller ? "コントローラー" : type == KeyTypes.Keyboard ? "キーボード" : "マウス";
-            return $"{isLeftStr}{keyTypesString}[{keyCodeStr}{indexStr}]";
+            var isTouchStr = type == KeyTypes.Controller ? (isTouch ? "タッチ" : "") : "";
+            return $"{isLeftStr}{keyTypesString}[{keyCodeStr}{indexStr}{isTouchStr}]";
         }
     }
 
@@ -309,28 +354,6 @@ namespace UnityNamedPipe
         k_EButton_SteamVR_Trigger = 33,
         //k_EButton_Dashboard_Back = 2,
         k_EButton_Max = 64,
-    }
-
-    public enum EVRButtonIdString
-    {
-        システム = 0,
-        メニュー = 1,
-        グリップ = 2,
-        パッド左 = 3,
-        パッド上 = 4,
-        パッド右 = 5,
-        パッド下 = 6,
-        Aボタン = 7,
-        近接センサ = 31,
-        軸0 = 32,
-        軸1 = 33,
-        軸2 = 34,
-        軸3 = 35,
-        軸4 = 36,
-        タッチパッド = 32,
-        トリガー = 33,
-        //戻る = 2,
-        最大値 = 64,
     }
 
     public class VRMData

@@ -686,17 +686,18 @@ namespace ControlWindowWPF
                     return;
                 }
             }
-            File.WriteAllText(path, Json.Serializer.Serialize(Globals.KeyActions));
+            File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(Globals.KeyActions)));
             PresetComboBox.ItemsSource = Directory.EnumerateFiles(Globals.GetCurrentAppDir() + PresetDirectory, "*.json").Select(d => System.IO.Path.GetFileNameWithoutExtension(d));
         }
 
-        private void PresetComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void PresetComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (PresetComboBox.SelectedItem == null) return;
 
             var path = Globals.GetCurrentAppDir() + PresetDirectory + "\\" + PresetComboBox.SelectedItem.ToString() + ".json";
             Globals.KeyActions = Json.Serializer.Deserialize<List<KeyAction>>(File.ReadAllText(path));
             UpdateKeyList();
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetKeyActions { KeyActions = Globals.KeyActions });
         }
     }
 }

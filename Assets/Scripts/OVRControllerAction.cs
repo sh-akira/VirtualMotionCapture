@@ -264,12 +264,12 @@ public class OVRControllerAction : MonoBehaviour
             if (SteamVR_Controller.Input(index).GetPressDown(buttonId))
             {
                 Debug.Log(name + buttonId + " Press down");
-                KeyDownEvent?.Invoke(this, new OVRKeyEventArgs(buttonId, Vector2.zero, isLeft, false));
+                KeyDownEvent?.Invoke(this, new OVRKeyEventArgs(buttonId, Vector2.zero, isLeft, false, false));
             }
             if (SteamVR_Controller.Input(index).GetPressUp(buttonId))
             {
                 Debug.Log(name + buttonId + " Press up");
-                KeyUpEvent?.Invoke(this, new OVRKeyEventArgs(buttonId, Vector2.zero, isLeft, false));
+                KeyUpEvent?.Invoke(this, new OVRKeyEventArgs(buttonId, Vector2.zero, isLeft, false, false));
             }
             //if (SteamVR_Controller.Input(index).GetPress(buttonId))
             //    Debug.Log(name + buttonId);
@@ -278,13 +278,13 @@ public class OVRControllerAction : MonoBehaviour
         if (SteamVR_Controller.Input(index).GetHairTriggerDown())
         {
             Debug.Log(name + EVRButtonId.k_EButton_SteamVR_Trigger + " Press down");
-            KeyDownEvent?.Invoke(this, new OVRKeyEventArgs(EVRButtonId.k_EButton_SteamVR_Trigger, Vector2.zero, isLeft, false));
+            KeyDownEvent?.Invoke(this, new OVRKeyEventArgs(EVRButtonId.k_EButton_SteamVR_Trigger, Vector2.zero, isLeft, false, false));
         }
 
         if (SteamVR_Controller.Input(index).GetHairTriggerUp())
         {
             Debug.Log(name + EVRButtonId.k_EButton_SteamVR_Trigger + " Press down");
-            KeyUpEvent?.Invoke(this, new OVRKeyEventArgs(EVRButtonId.k_EButton_SteamVR_Trigger, Vector2.zero, isLeft, false));
+            KeyUpEvent?.Invoke(this, new OVRKeyEventArgs(EVRButtonId.k_EButton_SteamVR_Trigger, Vector2.zero, isLeft, false, false));
         }
 
         if (LastAxis.ContainsKey(index) == false) LastAxis.Add(index, new Dictionary<EVRButtonId, Vector2>());
@@ -296,7 +296,7 @@ public class OVRControllerAction : MonoBehaviour
                 Debug.Log(name + buttonId + " touch down");
                 var axis = SteamVR_Controller.Input(index).GetAxis(buttonId);
                 Debug.Log(name + "axis: " + axis);
-                KeyDownEvent?.Invoke(this, new OVRKeyEventArgs(buttonId, axis, isLeft, true));
+                KeyDownEvent?.Invoke(this, new OVRKeyEventArgs(buttonId, axis, isLeft, !IsOculus, IsOculus));
             }
             if (SteamVR_Controller.Input(index).GetTouchUp(buttonId))
             {
@@ -305,15 +305,18 @@ public class OVRControllerAction : MonoBehaviour
                 if (LastAxis[index].ContainsKey(buttonId) == false) LastAxis[index].Add(buttonId, axis);
                 else axis = LastAxis[index][buttonId];
                 Debug.Log(name + "axis: " + axis);
-                KeyUpEvent?.Invoke(this, new OVRKeyEventArgs(buttonId, axis, isLeft, true));
+                KeyUpEvent?.Invoke(this, new OVRKeyEventArgs(buttonId, axis, isLeft, !IsOculus, IsOculus));
             }
-            if (SteamVR_Controller.Input(index).GetTouch(buttonId))
+            if (buttonId == EVRButtonId.k_EButton_SteamVR_Touchpad)
             {
-                var axis = SteamVR_Controller.Input(index).GetAxis(buttonId);
-                if (LastAxis[index].ContainsKey(buttonId) == false) LastAxis[index].Add(buttonId, axis);
-                else LastAxis[index][buttonId] = axis;
-                //Debug.Log(name + "axis: " + axis);
-                AxisChangedEvent?.Invoke(this, new OVRKeyEventArgs(buttonId, axis, isLeft, true));
+                if (SteamVR_Controller.Input(index).GetTouch(buttonId))
+                {
+                    var axis = SteamVR_Controller.Input(index).GetAxis(buttonId);
+                    if (LastAxis[index].ContainsKey(buttonId) == false) LastAxis[index].Add(buttonId, axis);
+                    else LastAxis[index][buttonId] = axis;
+                    //Debug.Log(name + "axis: " + axis);
+                    AxisChangedEvent?.Invoke(this, new OVRKeyEventArgs(buttonId, axis, isLeft, true, false));
+                }
             }
         }
     }
@@ -325,9 +328,10 @@ public class OVRKeyEventArgs : EventArgs
     public Vector2 Axis { get; }
     public bool IsLeft { get; }
     public bool IsAxis { get; }
+    public bool IsTouch { get; }
 
-    public OVRKeyEventArgs(EVRButtonId buttonId, Vector2 axis, bool isLeft, bool isTouch) : base()
+    public OVRKeyEventArgs(EVRButtonId buttonId, Vector2 axis, bool isLeft, bool isAxis, bool isTouch) : base()
     {
-        ButtonId = buttonId; Axis = axis; IsLeft = isLeft; IsAxis = isTouch;
+        ButtonId = buttonId; Axis = axis; IsLeft = isLeft; IsAxis = isAxis; IsTouch = isTouch;
     }
 }
