@@ -31,7 +31,7 @@ VRMモデル読み込みを押して、任意のVRMモデルを読み込んで�
   
 # ダウンロード
 リリースページ：[https://github.com/sh-akira/VirtualMotionCapture/releases]  
-ダウンロードはリリースページからVirtualMotionCapture0.07.zipをダウンロードしてください。  
+ダウンロードはリリースページからVirtualMotionCapture0.10.zipをダウンロードしてください。  
 解凍後VirtualMotionCapture.exeを実行で開始します。  
   
   
@@ -52,14 +52,19 @@ VR: HTC Vive + 3 tracker
 [@sh_akira](https://twitter.com/sh_akira)  
   
   
-●実装予定  
-・キャリブレーションの保存(複数起動を楽にしたい)  
-・足トラッカーがない場合の歩幅等の設定  
-  
-●将来の実装予定  
-・自身の状態をVR内にオーバーレイ表示  
   
 # 更新履歴
+Ver 0.10  
+・キャリブレーションの処理を変更しモデルのスケールをコントローラー位置にスケーリングするように  
+・Oculus Touchの入力とプリセットを追加  
+・キーの同時押しをしながら一部キーを離したときの処理を修正  
+  
+Ver 0.09  
+・Oculus Touch確認のためにログ出力を入れた(テスト版)  
+  
+Ver 0.08  
+・Oculus Touchの入力を暫定で入れた  
+  
 Ver 0.07  
 ・externalcamera.cfgの設定先コントローラー変更に対応  
 ・カメラが近づいたときに顔が非表示になってしまう時がある問題修正  
@@ -132,7 +137,10 @@ A.みゅみゅさんの記事[【HTC Vive】コントローラ２本でクロマ
 実際にコントローラーを3つ繋いでいる場合は、3本目のコントローラーをカメラ代わりにすることができます。  
   
 Q.externalcamera.cfgの位置がおかしい  
-A.ベースステーション番号を変更して再度ファイルを開いてみてください。  
+A.コントローラー番号を変更して再度ファイルを開いてみてください。  
+  
+Q.起動後に操作するとフリーズする  
+A.VirtualMotionCaputre.exeと同じフォルダにあるdefault.jsonを別のフォルダに移動し、起動後に設定の読込ボタンからdefault.jsonを開くようにすると回避できる場合があります  
   
 Q.支援先を教えてください  
 A.[欲しいものリスト](https://t.co/KPJRzn6sVR) ギフト送付先(akira.satoh.sh[アットマーク]gmail.com)  

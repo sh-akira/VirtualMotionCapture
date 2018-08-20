@@ -8,20 +8,20 @@
         Title="ショートカットキー設定" SizeToContent="Height" Width="800">
     <DockPanel>
         <StackPanel Orientation="Vertical" DockPanel.Dock="Right">
-            <GroupBox Header="タッチパッドの割り当て状態">
+            <GroupBox Header="タッチパッド/スティックの割り当て状態">
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal">
                         <StackPanel Orientation="Vertical">
                             <GroupBox Header="左コントローラー">
                                 <Grid>
                                     <Image Width="150" Height="150" Name="LeftImage"/>
-                                    <Canvas Name="LeftCanvas" ToolTip="左タッチパッドの分割領域を設定します。四角いつまみをドラッグして大きさの変更ができます"/>
+                                    <Canvas Name="LeftCanvas" ToolTip="左タッチパッド/スティックの分割領域を設定します。四角いつまみをドラッグして大きさの変更ができます"/>
                                 </Grid>
                             </GroupBox>
-                            <CheckBox Content="センターキー" Name="LeftCenterKeyCheckBox" Checked="LeftCenterKeyCheckBox_Checked" Unchecked="LeftCenterKeyCheckBox_Unchecked" ToolTip="左タッチパッドの中心を円形のキーとして独立させます"/>
+                            <CheckBox Content="センターキー" Name="LeftCenterKeyCheckBox" Checked="LeftCenterKeyCheckBox_Checked" Unchecked="LeftCenterKeyCheckBox_Unchecked" ToolTip="左タッチパッドの中心を円形のキーとして独立させます/Oculus Touchの無反応領域"/>
                             <DockPanel>
                                 <TextBlock Text="分割数：" Margin="10,0,0,0"/>
-                                <ScrollBar Height="30" Minimum="1" Maximum="30" Value="1" DockPanel.Dock="Right" Name="LeftTouchPadUpDown" ValueChanged="LeftTouchPadUpDown_ValueChanged" SmallChange="1" ToolTip="左コントローラーのタッチパッド分割数を指定します">
+                                <ScrollBar Height="30" Minimum="1" Maximum="30" Value="1" DockPanel.Dock="Right" Name="LeftTouchPadUpDown" ValueChanged="LeftTouchPadUpDown_ValueChanged" SmallChange="1" ToolTip="左コントローラーのタッチパッド/スティック分割数を指定します">
                                     <ScrollBar.LayoutTransform>
                                         <RotateTransform Angle="180"/>
                                     </ScrollBar.LayoutTransform>
@@ -33,13 +33,13 @@
                             <GroupBox Header="右コントローラー">
                                 <Grid>
                                     <Image Width="150" Height="150" Name="RightImage"/>
-                                    <Canvas Name="RightCanvas" ToolTip="右タッチパッドの分割領域を設定します。四角いつまみをドラッグして大きさの変更ができます"/>
+                                    <Canvas Name="RightCanvas" ToolTip="右タッチパッド/スティックの分割領域を設定します。四角いつまみをドラッグして大きさの変更ができます"/>
                                 </Grid>
                             </GroupBox>
-                            <CheckBox Content="センターキー" Name="RightCenterKeyCheckBox" Checked="RightCenterKeyCheckBox_Checked" Unchecked="RightCenterKeyCheckBox_Unchecked" ToolTip="右タッチパッドの中心を円形のキーとして独立させます"/>
+                            <CheckBox Content="センターキー" Name="RightCenterKeyCheckBox" Checked="RightCenterKeyCheckBox_Checked" Unchecked="RightCenterKeyCheckBox_Unchecked" ToolTip="右タッチパッドの中心を円形のキーとして独立させます/Oculus Touchの無反応領域"/>
                             <DockPanel>
                                 <TextBlock Text="分割数：" Margin="10,0,0,0"/>
-                                <ScrollBar Height="30" Minimum="1" Maximum="30" Value="1" DockPanel.Dock="Right" Name="RightTouchPadUpDown" ValueChanged="RightTouchPadUpDown_ValueChanged" SmallChange="1" ToolTip="右コントローラーのタッチパッド分割数を指定します">
+                                <ScrollBar Height="30" Minimum="1" Maximum="30" Value="1" DockPanel.Dock="Right" Name="RightTouchPadUpDown" ValueChanged="RightTouchPadUpDown_ValueChanged" SmallChange="1" ToolTip="右コントローラーのタッチパッド/スティック分割数を指定します">
                                     <ScrollBar.LayoutTransform>
                                         <RotateTransform Angle="180"/>
                                     </ScrollBar.LayoutTransform>
@@ -48,7 +48,10 @@
                             </DockPanel>
                         </StackPanel>
                     </StackPanel>
-                    <Button Content="適用" Name="TouchPadApplyButton" Click="TouchPadApplyButton_Click" HorizontalAlignment="Right" Width="100" IsEnabled="False" ToolTip="指定したタッチパッドの割り当てを保存します(保存しないと有効になりません)"/>
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Content="適用" Name="TouchPadApplyButton" Click="TouchPadApplyButton_Click" Width="100" IsEnabled="False" ToolTip="指定したタッチパッドの割り当てを保存します(保存しないと有効になりません)"/>
+                        <TextBlock Text="Oculus Touchはセンターキー領域がスティックの無反応領域になります" TextWrapping="Wrap" Width="170" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                    </DockPanel>
                 </StackPanel>
             </GroupBox>
             <UniformGrid Rows="2" Columns="2">

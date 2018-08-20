@@ -173,7 +173,7 @@ public class Calibrator
         leg.bendGoal = null;
         leg.bendGoalWeight = 0f;
     }
-    
+
     public static IEnumerator CalibrateScaled(Transform trackerRoot, VRIK ik, Settings settings, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null)
     {
         if (!ik.solver.initiated)
@@ -187,6 +187,9 @@ public class Calibrator
             Debug.LogError("Can not calibrate VRIK without the head tracker.");
             yield break;
         }
+
+        //トラッカーのルートスケールを初期値に戻す
+        trackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 
         // モデルのポジションを手と手の中心位置に移動
         var centerposition = Vector3.Lerp(LeftHandTransform.position, RightHandTransform.position, 0.5f);

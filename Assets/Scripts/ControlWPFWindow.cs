@@ -1196,7 +1196,57 @@ public class ControlWPFWindow : MonoBehaviour
                 }
                 if (enable)
                 {
-                    DoKeyAction(action);
+                    //手の操作の場合、別の手の操作キーが押されたままだったらそちらを優先して、離す処理は飛ばす
+                    var skipKeyUp = false;
+
+                    var doKeyActions = new List<KeyAction>();
+                    foreach (var downaction in CurrentSettings.KeyActions?.OrderBy(d => d.KeyConfigs.Count()).Where(d => d.FaceAction == action.FaceAction && d.HandAction == action.HandAction && d.FunctionAction == action.FunctionAction))
+                    {//キーの少ない順に実行して、同時押しと被ったとき同時押しを後から実行して上書きさせる
+                     //if (action.KeyConfigs.Count == CurrentKeyConfigs.Count)
+                     //{ //別々の機能を同時に押す場合もあるのでキーの数は見てはいけない
+                        var downenable = true;
+                        foreach (var key in downaction.KeyConfigs)
+                        {
+                            if (CurrentKeyConfigs.Where(d => d.IsEqualKeyCode(key) == true).Any() == false)
+                            {
+                                //キーが含まれてないとき
+                                downenable = false;
+                            }
+                        }
+                        if (downenable)
+                        {//現在押してるキーの中にすべてのキーが含まれていた
+                            if (downaction.IsKeyUp)
+                            {
+                                //キーを離す操作の時はキューに入れておく
+                                CurrentKeyUpActions.Add(downaction);
+                            }
+                            else
+                            {
+                                doKeyActions.Add(downaction);
+                            }
+                        }
+                        //}
+                    }
+                    if (doKeyActions.Any())
+                    {
+                        skipKeyUp = true; //優先処理があったので、KeyUpのActionは無効
+                        var tmpDownActions = new List<KeyAction>(doKeyActions);
+                        foreach (var downaction in tmpDownActions)
+                        {
+                            foreach (var target in tmpActions.Where(d => d != downaction))
+                            {
+                                if (target.KeyConfigs.ContainsArray(downaction.KeyConfigs))
+                                {//更に複数押しのキー設定が有効な場合、少ないほうは無効(上書きされてしまうため)
+                                    doKeyActions.Remove(downaction);
+                                }
+                            }
+                        }
+                        foreach (var downaction in doKeyActions)
+                        {//残った処理だけ実行
+                            DoKeyAction(downaction);
+                        }
+                    }
+                    if (skipKeyUp == false) DoKeyAction(action);
                     CurrentKeyUpActions.Remove(action);
                 }
             }

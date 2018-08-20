@@ -10,7 +10,7 @@ using Valve.VR;
 
 public class OVRControllerAction : MonoBehaviour
 {
-    public InputField inputField;
+   // public InputField inputField;
 
     public EventHandler<OVRKeyEventArgs> KeyDownEvent;
     public EventHandler<OVRKeyEventArgs> KeyUpEvent;
