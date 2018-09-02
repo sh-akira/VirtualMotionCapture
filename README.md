@@ -35,8 +35,8 @@ VRoid製のモデルを使用する場合、リップシンクが表情と競合
 左クリック＋ドラッグ：ウィンドウの移動  
   
 # ダウンロード
-リリースページ：[https://github.com/sh-akira/VirtualMotionCapture/releases]  
-ダウンロードはリリースページからVirtualMotionCapture0.11.zipをダウンロードしてください。  
+ダウンロードページ：[https://sh-akira.booth.pm/items/999760]  
+ダウンロードページかリリースページからVirtualMotionCapture0.xx.zipをダウンロードしてください。  
 解凍後VirtualMotionCapture.exeを実行で開始します。  
   
   
