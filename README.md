@@ -23,6 +23,11 @@ VRMモデル読み込みを押して、任意のVRMモデルを読み込んで�
 モデルのライセンスが表示されますので、問題なければ同意しますを押してください。  
 その後、モデル読み込みウインドウを閉じて、キャリブレーションボタンを押します。  
 画面の指示通りに進めてください。  
+デフォルトのキー設定はHTC Vive用になっていますので、  
+Oculus Touchをお使いの場合はショートカットキー設定を開き、  
+プリセットをOculusの物に変更してください。  
+VRoid製のモデルを使用する場合、リップシンクが表情と競合しますので  
+同様にショートカットキー設定を開き、VRoidのプリセットを使用してください  
   
 モデルが表示されている画面をマウスで操作するとカメラがコントロールできます。  
 ホイール：ズーム  
@@ -31,7 +36,7 @@ VRMモデル読み込みを押して、任意のVRMモデルを読み込んで�
   
 # ダウンロード
 リリースページ：[https://github.com/sh-akira/VirtualMotionCapture/releases]  
-ダウンロードはリリースページからVirtualMotionCapture0.10.zipをダウンロードしてください。  
+ダウンロードはリリースページからVirtualMotionCapture0.11.zipをダウンロードしてください。  
 解凍後VirtualMotionCapture.exeを実行で開始します。  
   
   
@@ -54,6 +59,19 @@ VR: HTC Vive + 3 tracker
   
   
 # 更新履歴
+Ver 0.11  
+・キャリブレーション(頭と腰のスケール)修正  
+・手首のねじれが起きないように補正するように  
+・コントローラーの手首位置オフセットを少し修正  
+・ハンドジェスチャーを設定時間アニメーションするように  
+・足のトラッカーがない場合(3点や４点トラッキング)の時の歩幅や開き具合を調整  
+・4点トラッキング(腰追加時)のフロント/バックカメラの追尾位置修正  
+・ハンドジェスチャー設定時にVRoidモデルの手が画面に入りきらない問題修正  
+・表情設定にリップシンク抑制追加(口を開けた表情/VRoid向け)  
+・キャリブレーション開始時複数回トリガー押せないように  
+・Oculus Touchのキャリブレーション開始トリガー修正  
+・UniVRMを0.42に更新  
+
 Ver 0.10  
 ・キャリブレーションの処理を変更しモデルのスケールをコントローラー位置にスケーリングするように  
 ・Oculus Touchの入力とプリセットを追加  
@@ -112,8 +130,8 @@ Ver 0.02
 　・UnityNamedPipe (名前付きパイプライブラリ - 入れてあります)  
 　・RootMotion ([Final IK](https://assetstore.unity.com/packages/tools/animation/final-ik-14290))  
 　・SteamVR ([SteamVR Plugin](https://assetstore.unity.com/packages/templates/systems/steamvr-plugin-32647))  
-　・VRM ([UniVRM-0.38.unitypackage](https://github.com/dwango/UniVRM/releases))  
-　・VRM.Samples ([UniVRM-RuntimeLoaderSample-0.38.unitypackage](https://github.com/dwango/UniVRM/releases))  
+　・VRM ([UniVRM-0.42_fcba.unitypackage](https://github.com/dwango/UniVRM/releases))  
+　・VRM.Samples ([UniVRM-RuntimeLoaderSample-0.42_fcba.unitypackage](https://github.com/dwango/UniVRM/releases))  
 　・OVRLipSync ([OVRLipSync.unitypackage](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/))  
 以上のようなフォルダになるように各アセットをインポートしてください。  
 ・ControlWindowWPF/ControlWindowWPF.slnをVisual Studio 2017で開きます。  
