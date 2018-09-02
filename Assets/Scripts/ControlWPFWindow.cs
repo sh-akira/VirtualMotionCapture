@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityNamedPipe;
 using VRM;
 using static Assets.Scripts.NativeMethods;
+using RootMotion.FinalIK;
 #if UNITY_EDITOR   // エディタ上でしか動きません。
 using UnityEditor;
 #endif
@@ -38,10 +39,17 @@ public class ControlWPFWindow : MonoBehaviour
     public DynamicOVRLipSync LipSync;
 
     public FaceController faceController;
+    public HandController handController;
 
     public OVRControllerAction controllerAction;
 
     public MainThreadInvoker mainThreadInvoker;
+
+    public WristRotationFix wristRotationFix;
+
+    public Transform HandTrackerRoot;
+    public Transform HeadTrackerRoot;
+    public Transform FootTrackerRoot;
 
     private NamedPipeServer server;
     private string pipeName = Guid.NewGuid().ToString();
@@ -84,6 +92,8 @@ public class ControlWPFWindow : MonoBehaviour
 #if !UNITY_EDITOR
         ExecuteControlPanel();
 #endif
+
+        Application.targetFrameRate = 60;
 
         currentCamera = FreeCamera;
 
@@ -306,7 +316,7 @@ public class ControlWPFWindow : MonoBehaviour
             else if (e.CommandType == typeof(PipeCommands.SetHandAngle))
             {
                 var d = (PipeCommands.SetHandAngle)e.Data;
-                SetHandAngle(d.LeftEnable, d.RightEnable, d.HandAngles);
+                handController.SetHandEulerAngles(d.LeftEnable, d.RightEnable, handController.CalcHandEulerAngles(d.HandAngles));
             }
             else if (e.CommandType == typeof(PipeCommands.StartKeyConfig))
             {
@@ -390,12 +400,12 @@ public class ControlWPFWindow : MonoBehaviour
         }
         var vrmdata = new VRMData();
         vrmdata.FilePath = path;
-        var context = new VRMImporterContext(path);
+        var context = new VRMImporterContext(UniGLTF.UnityPath.FromFullpath(path));
 
         var bytes = File.ReadAllBytes(path);
 
         // GLB形式でJSONを取得しParseします
-        context.ParseVrm(bytes);
+        context.ParseGlb(bytes);
 
         // metaを取得
         var meta = context.ReadMeta(true);
@@ -432,16 +442,20 @@ public class ControlWPFWindow : MonoBehaviour
         */
         return vrmdata;
     }
+    public float LeftLowerArmAngle = -60f;
+    public float RightLowerArmAngle = -60f;
+    public float LeftUpperArmAngle = -60f;
+    public float RightUpperArmAngle = -60f;
 
     private async void ImportVRM(string path, bool ImportForCalibration)
     {
         CurrentSettings.VRMPath = path;
-        var context = new VRMImporterContext(path);
+        var context = new VRMImporterContext(UniGLTF.UnityPath.FromFullpath(path));
 
         var bytes = File.ReadAllBytes(path);
 
         // GLB形式でJSONを取得しParseします
-        context.ParseVrm(bytes);
+        context.ParseGlb(bytes);
 
         if (CurrentModel != null)
         {
@@ -474,39 +488,31 @@ public class ControlWPFWindow : MonoBehaviour
 
         //CurrentModel.transform.SetParent(transform, false);
 
-        SetVRIK(CurrentModel);
         animator = CurrentModel.GetComponent<Animator>();
+        SetVRIK(CurrentModel);
         if (animator != null)
-        {//指のデフォルト角度取得
-            FingerTransforms.Clear();
-            FingerDefaultVectors.Clear();
-            foreach (var bone in FingerBones)
-            {
-                var transform = animator.GetBoneTransform(bone);
-                FingerTransforms.Add(transform);
-                if (transform == null)
-                {
-                    FingerDefaultVectors.Add(Vector3.zero);
-                }
-                else
-                {
-                    FingerDefaultVectors.Add(new Vector3(transform.rotation.x, transform.rotation.y, transform.rotation.z));
-                }
-            }
+        {
+            animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).eulerAngles = new Vector3(LeftLowerArmAngle, 0, 0);
+            animator.GetBoneTransform(HumanBodyBones.RightLowerArm).eulerAngles = new Vector3(RightLowerArmAngle, 0, 0);
+            animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).eulerAngles = new Vector3(LeftUpperArmAngle, 0, 0);
+            animator.GetBoneTransform(HumanBodyBones.RightUpperArm).eulerAngles = new Vector3(RightUpperArmAngle, 0, 0);
+            wristRotationFix.SetVRIK(vrik);
+
+            handController.SetDefaultAngle(animator);
 
             //設定用両手のカメラをモデルにアタッチ
             if (LeftHandCamera != null)
             {
                 LeftHandCamera.transform.SetParent(animator.GetBoneTransform(HumanBodyBones.LeftHand));
-                LeftHandCamera.transform.localPosition = new Vector3(-0.05f, -0.09f, 0.1f);
-                LeftHandCamera.transform.rotation = Quaternion.Euler(-140f, 0f, 90f);
+                LeftHandCamera.transform.localPosition = new Vector3(-0.07f, -0.13f, 0.14f);
+                LeftHandCamera.transform.localRotation = Quaternion.Euler(-140f, 0f, 90f);
                 LeftHandCamera.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             }
             if (RightHandCamera != null)
             {
                 RightHandCamera.transform.SetParent(animator.GetBoneTransform(HumanBodyBones.RightHand));
-                RightHandCamera.transform.localPosition = new Vector3(0.05f, -0.09f, 0.1f);
-                RightHandCamera.transform.rotation = Quaternion.Euler(-140f, 0f, -90f);
+                RightHandCamera.transform.localPosition = new Vector3(0.07f, -0.13f, 0.14f);
+                RightHandCamera.transform.localRotation = Quaternion.Euler(-140f, 0f, -90f);
                 RightHandCamera.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             }
 
@@ -540,6 +546,15 @@ public class ControlWPFWindow : MonoBehaviour
         vrik.solver.leftArm.stretchCurve = new AnimationCurve();
         vrik.solver.rightArm.stretchCurve = new AnimationCurve();
         vrik.UpdateSolverExternal();
+        //if (animator != null)
+        //{
+        //    var leftWrist = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).gameObject;
+        //    var rightWrist = animator.GetBoneTransform(HumanBodyBones.RightLowerArm).gameObject;
+        //    var leftRelaxer = leftWrist.AddComponent<TwistRelaxer>();
+        //    var rightRelaxer = rightWrist.AddComponent<TwistRelaxer>();
+        //    leftRelaxer.ik = vrik;
+        //    rightRelaxer.ik = vrik;
+        //}
     }
 
     Transform bodyTracker = null;
@@ -593,7 +608,7 @@ public class ControlWPFWindow : MonoBehaviour
         yield return new WaitForEndOfFrame();
         //Calibrator.Calibrate(vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
         //Calibrator.Calibrate(vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
-        yield return Calibrator.CalibrateScaled(handler.gameObject.transform, vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
+        yield return Calibrator.CalibrateScaled(HandTrackerRoot, HeadTrackerRoot, FootTrackerRoot, vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
 
         vrik.solver.IKPositionWeight = 1.0f;
         if (handler.Trackers.Count == 1)
@@ -603,6 +618,15 @@ public class ControlWPFWindow : MonoBehaviour
             var rootController = vrik.references.root.GetComponent<RootMotion.FinalIK.VRIKRootController>();
             if (rootController != null) GameObject.Destroy(rootController);
         }
+
+        vrik.solver.locomotion.footDistance = 0.06f;
+        vrik.solver.locomotion.stepThreshold = 0.2f;
+        vrik.solver.locomotion.angleThreshold = 45f;
+        vrik.solver.locomotion.maxVelocity = 0.04f;
+        vrik.solver.locomotion.velocityFactor = 0.04f;
+        vrik.solver.locomotion.rootSpeed = 40;
+        vrik.solver.locomotion.stepSpeed = 2;
+
         CurrentSettings.headTracker = StoreTransform.Create(headTracker);
         CurrentSettings.bodyTracker = StoreTransform.Create(bodyTracker);
         CurrentSettings.leftHandTracker = StoreTransform.Create(leftHandTracker);
@@ -801,7 +825,7 @@ public class ControlWPFWindow : MonoBehaviour
             var gameObject = new GameObject("CameraLook");
             gameObject.transform.position = calcPosition;
             gameObject.transform.rotation = spineTransform.rotation;
-            gameObject.transform.parent = CurrentModel.transform;
+            gameObject.transform.parent = bodyTracker == null ? animator.GetBoneTransform(HumanBodyBones.Spine) : CurrentModel.transform;
             var lookTarget = FrontCamera.GetComponent<CameraLookTarget>();
             if (lookTarget != null)
             {
@@ -1200,7 +1224,8 @@ public class ControlWPFWindow : MonoBehaviour
                     var skipKeyUp = false;
 
                     var doKeyActions = new List<KeyAction>();
-                    foreach (var downaction in CurrentSettings.KeyActions?.OrderBy(d => d.KeyConfigs.Count()).Where(d => d.FaceAction == action.FaceAction && d.HandAction == action.HandAction && d.FunctionAction == action.FunctionAction))
+                    //手の操作時は左手と右手は分けて処理しないと、右がおしっぱで左を離したときに戻らなくなる
+                    foreach (var downaction in CurrentSettings.KeyActions?.OrderBy(d => d.KeyConfigs.Count()).Where(d => d.FaceAction == action.FaceAction && d.HandAction == action.HandAction && d.Hand == action.Hand && d.FunctionAction == action.FunctionAction))
                     {//キーの少ない順に実行して、同時押しと被ったとき同時押しを後から実行して上書きさせる
                      //if (action.KeyConfigs.Count == CurrentKeyConfigs.Count)
                      //{ //別々の機能を同時に押す場合もあるのでキーの数は見てはいけない
@@ -1217,8 +1242,6 @@ public class ControlWPFWindow : MonoBehaviour
                         {//現在押してるキーの中にすべてのキーが含まれていた
                             if (downaction.IsKeyUp)
                             {
-                                //キーを離す操作の時はキューに入れておく
-                                CurrentKeyUpActions.Add(downaction);
                             }
                             else
                             {
@@ -1258,10 +1281,11 @@ public class ControlWPFWindow : MonoBehaviour
     {
         if (action.HandAction)
         {
-            SetHandAngle(action.Hand == Hands.Left || action.Hand == Hands.Both, action.Hand == Hands.Right || action.Hand == Hands.Both, action.HandAngles);
+            handController.SetHandAngle(action.Hand == Hands.Left || action.Hand == Hands.Both, action.Hand == Hands.Right || action.Hand == Hands.Both, action.HandAngles, action.HandChangeTime);
         }
         else if (action.FaceAction)
         {
+            LipSync.MaxLevel = action.LipSyncMaxLevel;
             faceController.SetFace(action.FaceNames, action.FaceStrength, action.StopBlink);
         }
         else if (action.FunctionAction)
@@ -1299,145 +1323,6 @@ public class ControlWPFWindow : MonoBehaviour
         }
     }
 
-
-    private List<HumanBodyBones> FingerBones = new List<HumanBodyBones>
-    {
-        HumanBodyBones.LeftLittleDistal,
-        HumanBodyBones.LeftLittleIntermediate,
-        HumanBodyBones.LeftLittleProximal,
-        HumanBodyBones.LeftRingDistal,
-        HumanBodyBones.LeftRingIntermediate,
-        HumanBodyBones.LeftRingProximal,
-        HumanBodyBones.LeftMiddleDistal,
-        HumanBodyBones.LeftMiddleIntermediate,
-        HumanBodyBones.LeftMiddleProximal,
-        HumanBodyBones.LeftIndexDistal,
-        HumanBodyBones.LeftIndexIntermediate,
-        HumanBodyBones.LeftIndexProximal,
-        HumanBodyBones.LeftThumbDistal,
-        HumanBodyBones.LeftThumbIntermediate,
-        HumanBodyBones.LeftThumbProximal,
-        HumanBodyBones.RightLittleDistal,
-        HumanBodyBones.RightLittleIntermediate,
-        HumanBodyBones.RightLittleProximal,
-        HumanBodyBones.RightRingDistal,
-        HumanBodyBones.RightRingIntermediate,
-        HumanBodyBones.RightRingProximal,
-        HumanBodyBones.RightMiddleDistal,
-        HumanBodyBones.RightMiddleIntermediate,
-        HumanBodyBones.RightMiddleProximal,
-        HumanBodyBones.RightIndexDistal,
-        HumanBodyBones.RightIndexIntermediate,
-        HumanBodyBones.RightIndexProximal,
-        HumanBodyBones.RightThumbDistal,
-        HumanBodyBones.RightThumbIntermediate,
-        HumanBodyBones.RightThumbProximal,
-    };
-
-    private List<Transform> FingerTransforms = new List<Transform>();
-    private List<Vector3> FingerDefaultVectors = new List<Vector3>();
-
-    private void SetHandAngle(bool LeftEnable, bool RightEnable, List<int> angles)
-    {
-        if (animator != null)
-        {
-            var handBonesCount = FingerBones.Count / 2;
-            if (LeftEnable)
-            {
-                for (int i = 0; i < handBonesCount; i += 3)
-                {
-                    if (i >= 12)
-                    { //親指
-                        var vector = FingerDefaultVectors[i + 2]; //第三関節
-                        var angle = (-angles[(i / 3) * 4 + 2]) / 90.0f; //-90が1.0 -45は0.5 -180は2.0
-                        var sideangle = angles[(i / 3) * 4 + 3];
-                        var ax = angle * 0.0f;
-                        var ay = angle * 0.0f + sideangle;
-                        var az = (float)angles[(i / 3) * 4 + 2];
-                        if (FingerTransforms[i + 2] != null) FingerTransforms[i + 2].localRotation = Quaternion.Euler(vector.x + ax, vector.y - ay, vector.z - az);
-
-                        vector = FingerDefaultVectors[i + 1]; //第二関節
-                        angle = (-angles[(i / 3) * 4 + 1]) / 90.0f;
-                        ax = angle * 38f;
-                        ay = angle * 38f;
-                        az = angle * -15f;
-                        if (FingerTransforms[i + 1] != null) FingerTransforms[i + 1].localRotation = Quaternion.Euler(vector.x + ax, vector.y - ay, vector.z - az);
-
-                        vector = FingerDefaultVectors[i]; //第一関節
-                        angle = (-angles[(i / 3) * 4]) / 90.0f;
-                        ax = angle * 34f;
-                        ay = angle * 56f;
-                        az = angle * -7f;
-                        if (FingerTransforms[i] != null) FingerTransforms[i].localRotation = Quaternion.Euler(vector.x + ax, vector.y - ay, vector.z - az);
-                    }
-                    else
-                    {
-                        var vector = FingerDefaultVectors[i + 2]; //第三関節
-                        var angle = angles[(i / 3) * 4 + 2];
-                        var sideangle = angles[(i / 3) * 4 + 3];
-                        if (FingerTransforms[i + 2] != null) FingerTransforms[i + 2].localRotation = Quaternion.Euler(vector.x, vector.y - sideangle, vector.z - angle);
-
-                        vector = FingerDefaultVectors[i + 1]; //第二関節
-                        angle = angles[(i / 3) * 4 + 1];
-                        if (FingerTransforms[i + 1] != null) FingerTransforms[i + 1].localRotation = Quaternion.Euler(vector.x, vector.y/* - sideangle*/, vector.z - angle);
-
-                        vector = FingerDefaultVectors[i]; //第一関節
-                        angle = angles[(i / 3) * 4];
-                        if (FingerTransforms[i] != null) FingerTransforms[i].localRotation = Quaternion.Euler(vector.x, vector.y/* - sideangle*/, vector.z - angle);
-
-
-                    }
-                }
-            }
-            if (RightEnable)
-            {
-                for (int i = 0; i < handBonesCount; i += 3)
-                {
-                    if (i >= 12)
-                    { //親指
-                        var vector = FingerDefaultVectors[i + 2]; //第三関節
-                        var angle = (-angles[(i / 3) * 4 + 2]) / 90.0f; //-90が1.0 -45は0.5 -180は2.0
-                        var sideangle = angles[(i / 3) * 4 + 3];
-                        var ax = angle * 0.0f;
-                        var ay = angle * 0.0f + sideangle;
-                        var az = (float)angles[(i / 3) * 4 + 2];
-                        if (FingerTransforms[i + handBonesCount + 2] != null) FingerTransforms[i + handBonesCount + 2].localRotation = Quaternion.Euler(vector.x + ax, vector.y + ay, vector.z + az);
-
-                        vector = FingerDefaultVectors[i + 1]; //第二関節
-                        angle = (-angles[(i / 3) * 4 + 1]) / 90.0f;
-                        ax = angle * 38f;
-                        ay = angle * 38f;
-                        az = angle * -15f;
-                        if (FingerTransforms[i + handBonesCount + 1] != null) FingerTransforms[i + handBonesCount + 1].localRotation = Quaternion.Euler(vector.x + ax, vector.y + ay, vector.z + az);
-
-                        vector = FingerDefaultVectors[i]; //第一関節
-                        angle = (-angles[(i / 3) * 4]) / 90.0f;
-                        ax = angle * 34f;
-                        ay = angle * 56f;
-                        az = angle * -7f;
-                        if (FingerTransforms[i + handBonesCount] != null) FingerTransforms[i + handBonesCount].localRotation = Quaternion.Euler(vector.x + ax, vector.y + ay, vector.z + az);
-                    }
-                    else
-                    {
-                        var vector = FingerDefaultVectors[i + 2]; //第三関節
-                        var angle = angles[(i / 3) * 4 + 2];
-                        var sideangle = angles[(i / 3) * 4 + 3];
-                        if (FingerTransforms[i + handBonesCount + 2] != null) FingerTransforms[i + handBonesCount + 2].localRotation = Quaternion.Euler(vector.x, vector.y + sideangle, vector.z + angle);
-
-                        vector = FingerDefaultVectors[i + 1]; //第二関節
-                        angle = angles[(i / 3) * 4 + 1];
-                        if (FingerTransforms[i + handBonesCount + 1] != null) FingerTransforms[i + handBonesCount + 1].localRotation = Quaternion.Euler(vector.x, vector.y/* + sideangle*/, vector.z + angle);
-
-                        vector = FingerDefaultVectors[i]; //第一関節
-                        angle = angles[(i / 3) * 4];
-                        if (FingerTransforms[i + handBonesCount] != null) FingerTransforms[i + handBonesCount].localRotation = Quaternion.Euler(vector.x, vector.y/* + sideangle*/, vector.z + angle);
-
-
-                    }
-                }
-            }
-        }
-    }
 
     #endregion
 

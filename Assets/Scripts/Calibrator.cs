@@ -174,7 +174,7 @@ public class Calibrator
         leg.bendGoalWeight = 0f;
     }
 
-    public static IEnumerator CalibrateScaled(Transform trackerRoot, VRIK ik, Settings settings, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null)
+    public static IEnumerator CalibrateScaled(Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, Settings settings, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null)
     {
         if (!ik.solver.initiated)
         {
@@ -189,7 +189,9 @@ public class Calibrator
         }
 
         //トラッカーのルートスケールを初期値に戻す
-        trackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        handTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        headTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        footTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 
         // モデルのポジションを手と手の中心位置に移動
         var centerposition = Vector3.Lerp(LeftHandTransform.position, RightHandTransform.position, 0.5f);
@@ -209,25 +211,47 @@ public class Calibrator
         ik.references.root.localScale = new Vector3(hscale, hscale, hscale);
 
 
-        // トラッカー全体のスケールを手の位置に合わせる
+        // 手のトラッカー全体のスケールを手の位置に合わせる
         var modelHandDistance = Vector3.Distance(ik.references.leftHand.position, ik.references.rightHand.position);
         var realHandDistance = Vector3.Distance(LeftHandTransform.position, RightHandTransform.position);
         var wscale = modelHandDistance / realHandDistance;
         modelHandHeight = (ik.references.leftHand.position.y + ik.references.rightHand.position.y) / 2f;
         realHandHeight = (LeftHandTransform.position.y + RightHandTransform.position.y) / 2f;
         hscale = modelHandHeight / realHandHeight;
-        trackerRoot.localScale = new Vector3(wscale, hscale, wscale);
+        handTrackerRoot.localScale = new Vector3(wscale, hscale, wscale);
 
+        // モデルのポジションを再度手と手の中心位置に移動
+        centerposition = Vector3.Lerp(LeftHandTransform.position, RightHandTransform.position, 0.5f);
+        ik.references.root.position = new Vector3(centerposition.x, ik.references.root.position.y, centerposition.z);
+        hmdForwardAngle = HMDTransform.rotation * settings.headTrackerForward;
+        hmdForwardAngle.y = 0f;
+        ik.references.root.rotation = Quaternion.LookRotation(hmdForwardAngle);
+
+        // 頭のトラッカー全体のスケールを頭の位置に合わせる
+        var modelHeadHeight = ik.references.head.position.y;
+        var realHeadHeight = HMDTransform.position.y;
+        var headHscale = modelHeadHeight / realHeadHeight;
+        headTrackerRoot.localScale = new Vector3(wscale, hscale, wscale);
+
+        // 腰のトラッカー全体のスケールを腰の位置に合わせる
+        if (PelvisTransform != null)
+        {
+            var modelPelvisHeight = ik.references.pelvis.position.y;
+            var realPelvisHeight = PelvisTransform.position.y;
+            var pelvisHscale = modelPelvisHeight / realPelvisHeight;
+            footTrackerRoot.localScale = new Vector3(wscale, pelvisHscale, wscale);
+        }
         yield return new WaitForEndOfFrame();
         //yield break;
 
         // Head
         Transform hmdAdjusterTransform = ik.solver.spine.headTarget == null ? (new GameObject("hmdAdjuster")).transform : ik.solver.spine.headTarget;
         hmdAdjusterTransform.parent = HMDTransform;
-        hmdAdjusterTransform.position = HMDTransform.position + HMDTransform.rotation * Quaternion.LookRotation(settings.headTrackerForward, settings.headTrackerUp) * settings.headOffset;
+        hmdAdjusterTransform.position = ik.references.head.position; //HMDTransform.position + HMDTransform.rotation * Quaternion.LookRotation(settings.headTrackerForward, settings.headTrackerUp) * settings.headOffset;
+        //hmdAdjusterTransform.localPosition = new Vector3(0, hmdAdjusterTransform.localPosition.y, -0.15f);
         hmdAdjusterTransform.rotation = ik.references.head.rotation;
         ik.solver.spine.headTarget = hmdAdjusterTransform;
-
+        ik.solver.spine.headClampWeight = 0.38f;
 
         // Body
         if (PelvisTransform != null)

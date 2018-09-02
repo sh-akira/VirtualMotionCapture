@@ -202,12 +202,18 @@ public class OVRControllerAction : MonoBehaviour
 
     void Update()
     {
-        var leftid = OpenVRWrapper.Instance.openVR.GetTrackedDeviceIndexForControllerRole(ETrackedControllerRole.LeftHand);
-        var rightid = OpenVRWrapper.Instance.openVR.GetTrackedDeviceIndexForControllerRole(ETrackedControllerRole.RightHand);
+        if (OpenVRWrapper.Instance.openVR == null)
+        {
+            OpenVRWrapper.Instance.Setup();
+        }
+        else
+        {
+            var leftid = OpenVRWrapper.Instance.openVR.GetTrackedDeviceIndexForControllerRole(ETrackedControllerRole.LeftHand);
+            var rightid = OpenVRWrapper.Instance.openVR.GetTrackedDeviceIndexForControllerRole(ETrackedControllerRole.RightHand);
 
-        if (leftid != OpenVR.k_unTrackedDeviceIndexInvalid) CheckControllerStatus((int)leftid, true);
-        if (rightid != OpenVR.k_unTrackedDeviceIndexInvalid) CheckControllerStatus((int)rightid, false);
-
+            if (leftid != OpenVR.k_unTrackedDeviceIndexInvalid) CheckControllerStatus((int)leftid, true);
+            if (rightid != OpenVR.k_unTrackedDeviceIndexInvalid) CheckControllerStatus((int)rightid, false);
+        }
     }
 
     private Dictionary<int, Dictionary<EVRButtonId, Vector2>> LastAxis = new Dictionary<int, Dictionary<EVRButtonId, Vector2>>();

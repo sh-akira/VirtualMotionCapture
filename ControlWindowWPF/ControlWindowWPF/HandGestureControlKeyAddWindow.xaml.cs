@@ -64,6 +64,8 @@ namespace ControlWindowWPF
                 textblock.Text = slider.Value.ToString();
                 handAngles[(int)slider.Tag - 1] = (int)slider.Value;
             }
+            AnimationTimeSlider.Value = action.HandChangeTime;
+            AnimationTimeTextBlock.Text = action.HandChangeTime.ToString("0.00");
             isLoading = false;
 
             KeyConfigs.AddRange(action.KeyConfigs);
@@ -207,6 +209,7 @@ namespace ControlWindowWPF
             action.HandAngles = handAngles;
             action.Hand = BothHandRadioButton.IsChecked == true ? Hands.Both : (RightHandRadioButton.IsChecked == true ? Hands.Right : Hands.Left);
             action.IsKeyUp = KeyUpCheckBox.IsChecked.Value;
+            action.HandChangeTime = (float)AnimationTimeSlider.Value;
 
             if (Globals.KeyActions == null) Globals.KeyActions = new List<KeyAction>();
             Globals.KeyActions.Add(action);
@@ -258,6 +261,12 @@ namespace ControlWindowWPF
             if (BothHandRadioButton.IsChecked == true) command.LeftEnable = command.RightEnable = true;
             await Globals.Client.SendCommandAsync(command);
             CustomNameTextBox.Text = "";
+        }
+
+        private void AnimationTimeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (isLoading || AnimationTimeTextBlock == null) return;
+            AnimationTimeTextBlock.Text = AnimationTimeSlider.Value.ToString("0.00");
         }
     }
 }

@@ -25,6 +25,7 @@ public class DynamicOVRLipSync : OVRLipSyncContextBase
 
     public bool EnableLipSync = false;
 
+    public float MaxLevel = 1.0f;
 
     public float Gain = 1.0f;
     public bool AudioMute = true;
@@ -136,6 +137,7 @@ public class DynamicOVRLipSync : OVRLipSyncContextBase
 
                         for (int i = 0; i < presets.Length; i++)
                         {
+                            visemes[i] *= MaxLevel;
                             proxy.SetValue(presets[i], visemes[i]);
                         }
 

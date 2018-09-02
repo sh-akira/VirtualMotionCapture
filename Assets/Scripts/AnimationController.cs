@@ -71,14 +71,19 @@ public class AnimationController
 
     public void Reset()
     {
-        isStart = false;
-        lastitem = null;
+        StopAnimations();
         ResetAction?.Invoke();
     }
 
     public void ClearAnimations()
     {
         AnimationItems.Clear();
+    }
+
+    public void StopAnimations()
+    {
+        isStart = false;
+        lastitem = null;
     }
 
     private AnimationItem lastitem = null;
@@ -99,6 +104,7 @@ public class AnimationController
             addTime = item.Key + item.Value.Time; //すべてのアニメーションの時間+今のアニメーション時間
             if (addTime >= elapsedTime)
             {//経過時間がまだアニメーションの終了時間に届いていない間(アニメーション中)
+                //Debug.Log($"AnimationTime:{elapsedTime}");
                 if (lastitem != null && EndLastItem != lastitem)
                 {//前回のアニメーションが終わりまで行ってない場合があるので100％で実行
                     lastitem.RunAction(lastitem.EndValue);

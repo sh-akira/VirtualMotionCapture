@@ -148,6 +148,13 @@
                 </StackPanel>
             </GroupBox>
         </UniformGrid>
+        <GroupBox Header="アニメーション時間(指の変化にかける時間)">
+            <DockPanel>
+                <Slider Minimum="0" Maximum="3" Value="0.1" SmallChange="0.01" LargeChange="0.01" Width="300" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="0.01" Foreground="Transparent" Name="AnimationTimeSlider" Margin="0,0,0,0" ValueChanged="AnimationTimeSlider_ValueChanged" ToolTip="指の変化にかける時間"/>
+                <TextBlock Text="0.10" Name="AnimationTimeTextBlock" Margin="10,0,3,0"/>
+                <TextBlock Text="秒"/>
+            </DockPanel>
+        </GroupBox>
         <DockPanel>
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                 <Button Content="登録" Width="100" Name="ApplyButton" Click="ApplyButton_Click" ToolTip="設定を登録します"/>

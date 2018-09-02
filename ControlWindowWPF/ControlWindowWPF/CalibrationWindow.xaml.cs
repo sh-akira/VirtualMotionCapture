@@ -38,7 +38,7 @@ namespace ControlWindowWPF
             if (e.CommandType == typeof(PipeCommands.KeyDown))
             {
                 var d = (PipeCommands.KeyDown)e.Data;
-                if (d.Config.keyCode == (int)EVRButtonId.k_EButton_SteamVR_Trigger && d.Config.type == KeyTypes.Controller)
+                if (d.Config.keyCode == (int)EVRButtonId.k_EButton_SteamVR_Trigger && d.Config.type == KeyTypes.Controller && d.Config.isTouch == false) //タッチに反応しないように(Oculus Touch)
                 {
                     Dispatcher.Invoke(() =>
                     {
@@ -50,6 +50,7 @@ namespace ControlWindowWPF
 
         private async void CalibrationButton_Click(object sender, RoutedEventArgs e)
         {
+            if (CalibrationButton.IsEnabled == false) return; //何度も実行しないように
             CalibrationButton.IsEnabled = false;
             int timercount = 5;
             do

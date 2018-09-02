@@ -32,6 +32,8 @@ namespace ControlWindowWPF
             {
                 faceItems.Add(new FaceItem { Key = action.FaceNames[i], Value = action.FaceStrength[i] });
             }
+            LipSyncMaxLevelTextBlock.Text = action.LipSyncMaxLevel.ToString("0.00");
+            LipSyncMaxLevelSlider.Value = action.LipSyncMaxLevel;
             AutoBlinkCheckBox.IsChecked = action.StopBlink;
             CustomNameTextBox.Text = action.Name;
             KeyUpCheckBox.IsChecked = action.IsKeyUp;
@@ -154,6 +156,7 @@ namespace ControlWindowWPF
             action.FaceStrength = faceItems.Select(d => d.Value).ToList();
             action.StopBlink = AutoBlinkCheckBox.IsChecked.Value;
             action.IsKeyUp = KeyUpCheckBox.IsChecked.Value;
+            action.LipSyncMaxLevel = (float)LipSyncMaxLevelSlider.Value;
 
             if (Globals.KeyActions == null) Globals.KeyActions = new List<KeyAction>();
             Globals.KeyActions.Add(action);
@@ -165,6 +168,11 @@ namespace ControlWindowWPF
         {
             this.DialogResult = false;
             this.Close();
+        }
+
+        private void LipSyncMaxLevelSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (LipSyncMaxLevelTextBlock != null) LipSyncMaxLevelTextBlock.Text = LipSyncMaxLevelSlider.Value.ToString("0.00");
         }
     }
 }
