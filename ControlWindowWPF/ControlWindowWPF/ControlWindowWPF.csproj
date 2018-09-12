@@ -75,6 +75,10 @@
     <Compile Include="ShortcutKeyWindow.xaml.cs">
       <DependentUpon>ShortcutKeyWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TrackerConfigWindow.xaml.cs">
+      <DependentUpon>TrackerConfigWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModelBase.cs" />
     <Compile Include="VRMImportWindow.xaml.cs">
       <DependentUpon>VRMImportWindow.xaml</DependentUpon>
     </Compile>
@@ -114,6 +118,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ShortcutKeyWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TrackerConfigWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

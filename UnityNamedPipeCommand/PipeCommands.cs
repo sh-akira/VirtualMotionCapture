@@ -183,12 +183,43 @@ namespace UnityNamedPipe
         }
 
         public class ExitControlPanel { }
+
+        public class GetTrackerSerialNumbers { }
+        public class ReturnTrackerSerialNumbers
+        {
+            public List<Tuple<string, string>> List { get; set; }
+            public SetTrackerSerialNumbers CurrentSetting { get; set; }
+        }
+
+        public class TrackerMoved
+        {
+            public string SerialNumber { get; set; }
+        }
+
+        public class SetTrackerSerialNumbers
+        {
+            public Tuple<string, string> Head { get; set; }
+            public Tuple<string, string> LeftHand { get; set; }
+            public Tuple<string, string> RightHand { get; set; }
+            public Tuple<string, string> Pelvis { get; set; }
+            public Tuple<string, string> LeftFoot { get; set; }
+            public Tuple<string, string> RightFoot { get; set; }
+        }
+
+        public class GetTrackerOffsets { }
+        public class SetTrackerOffsets
+        {
+            public float LeftHandTrackerOffsetToBottom { get; set; }
+            public float LeftHandTrackerOffsetToBodySide { get; set; }
+            public float RightHandTrackerOffsetToBottom { get; set; }
+            public float RightHandTrackerOffsetToBodySide { get; set; }
+        }
     }
 
 
     public enum CameraTypes
     {
-        Free, Front, Back
+        Free, Front, Back, PositionFixed
     }
 
     public struct UPoint
@@ -328,6 +359,7 @@ namespace UnityNamedPipe
         FrontCamera = 6,
         BackCamera = 7,
         FreeCamera = 8,
+        PositionFixedCamera = 9,
     }
 
     public enum Hands

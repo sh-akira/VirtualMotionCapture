@@ -386,6 +386,11 @@ namespace ControlWindowWPF
             await Globals.Client.SendCommandAsync(new PipeCommands.ChangeCamera { type = CameraTypes.Free });
         }
 
+        private async void PositionFixedCameraButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.ChangeCamera { type = CameraTypes.PositionFixed });
+        }
+
         private async void CameraGridCheckBox_Checked(object sender, RoutedEventArgs e)
         {
             await Globals.Client.SendCommandAsync(new PipeCommands.SetGridVisible { enable = true });

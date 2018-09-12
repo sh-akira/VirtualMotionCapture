@@ -13,6 +13,7 @@ using UnityNamedPipe;
 using VRM;
 using static Assets.Scripts.NativeMethods;
 using RootMotion.FinalIK;
+using Valve.VR;
 #if UNITY_EDITOR   // エディタ上でしか動きません。
 using UnityEditor;
 #endif
@@ -31,6 +32,9 @@ public class ControlWPFWindow : MonoBehaviour
     public Camera FreeCamera;
     public Camera FrontCamera;
     public Camera BackCamera;
+    public Camera PositionFixedCamera;
+
+    public PositionFixedCamera positionFixedCamera;
 
     public Renderer BackgroundRenderer;
 
@@ -106,7 +110,11 @@ public class ControlWPFWindow : MonoBehaviour
 
         KeyboardAction.KeyDownEvent += KeyboardAction_KeyDown;
         KeyboardAction.KeyUpEvent += KeyboardAction_KeyUp;
+    }
 
+    private async void TransformExtensions_TrackerMovedEvent(object sender, string e)
+    {
+        await server.SendCommandAsync(new PipeCommands.TrackerMoved { SerialNumber = e });
     }
 
     private bool ControlPanelExecuted = false;
@@ -371,6 +379,26 @@ public class ControlWPFWindow : MonoBehaviour
                 //if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
                 //CurrentSettings.FreeCameraTransform.SetPosition(currentCamera.transform);
             }
+            else if (e.CommandType == typeof(PipeCommands.GetTrackerSerialNumbers))
+            {
+                await server.SendCommandAsync(new PipeCommands.ReturnTrackerSerialNumbers { List = GetTrackerSerialNumbers(), CurrentSetting = GetCurrentTrackerSettings() }, e.RequestId);
+            }
+            else if (e.CommandType == typeof(PipeCommands.SetTrackerSerialNumbers))
+            {
+                var d = (PipeCommands.SetTrackerSerialNumbers)e.Data;
+                SetTrackerSerialNumbers(d);
+
+            }
+            else if (e.CommandType == typeof(PipeCommands.GetTrackerOffsets))
+            {
+                await server.SendCommandAsync(new PipeCommands.SetTrackerOffsets
+                {
+                    LeftHandTrackerOffsetToBodySide = CurrentSettings.LeftHandTrackerOffsetToBodySide,
+                    LeftHandTrackerOffsetToBottom = CurrentSettings.LeftHandTrackerOffsetToBottom,
+                    RightHandTrackerOffsetToBodySide = CurrentSettings.RightHandTrackerOffsetToBodySide,
+                    RightHandTrackerOffsetToBottom = CurrentSettings.RightHandTrackerOffsetToBottom
+                }, e.RequestId);
+            }
             else if (e.CommandType == typeof(PipeCommands.LoadCurrentSettings))
             {
                 if (isFirstTimeExecute)
@@ -378,6 +406,7 @@ public class ControlWPFWindow : MonoBehaviour
                     isFirstTimeExecute = false;
                     //起動時は初期設定ロード
                     LoadSettings(true, true);
+                    TransformExtensions.TrackerMovedEvent += TransformExtensions_TrackerMovedEvent;
                 }
                 else
                 {
@@ -563,52 +592,271 @@ public class ControlWPFWindow : MonoBehaviour
     Transform leftHandTracker = null;
     Transform rightHandTracker = null;
 
+    private List<Tuple<string, string>> GetTrackerSerialNumbers()
+    {
+        var list = new List<Tuple<string, string>>();
+        if (handler.HMDObject != null)
+        {
+            list.Add(Tuple.Create("HMD", handler.HMDObject.transform.name));
+        }
+        if (handler.LeftControllerObject != null)
+        {
+            list.Add(Tuple.Create("コントローラー", handler.LeftControllerObject.transform.name));
+        }
+        if (handler.RightControllerObject != null)
+        {
+            list.Add(Tuple.Create("コントローラー", handler.RightControllerObject.transform.name));
+        }
+        foreach (var tracker in handler.Trackers)
+        {
+            list.Add(Tuple.Create("トラッカー", tracker.transform.name));
+        }
+        return list;
+    }
+
+    private PipeCommands.SetTrackerSerialNumbers GetCurrentTrackerSettings()
+    {
+        var deviceDictionary = new Dictionary<ETrackedDeviceClass, string>
+        {
+            {ETrackedDeviceClass.HMD, "HMD"},
+            {ETrackedDeviceClass.Controller, "コントローラー"},
+            {ETrackedDeviceClass.GenericTracker, "トラッカー"},
+            {ETrackedDeviceClass.TrackingReference, "ベースステーション"},
+            {ETrackedDeviceClass.Invalid, "割り当てしない"},
+        };
+        return new PipeCommands.SetTrackerSerialNumbers
+        {
+            Head = Tuple.Create(deviceDictionary[CurrentSettings.Head.Item1], CurrentSettings.Head.Item2),
+            LeftHand = Tuple.Create(deviceDictionary[CurrentSettings.LeftHand.Item1], CurrentSettings.LeftHand.Item2),
+            RightHand = Tuple.Create(deviceDictionary[CurrentSettings.RightHand.Item1], CurrentSettings.RightHand.Item2),
+            Pelvis = Tuple.Create(deviceDictionary[CurrentSettings.Pelvis.Item1], CurrentSettings.Pelvis.Item2),
+            LeftFoot = Tuple.Create(deviceDictionary[CurrentSettings.LeftFoot.Item1], CurrentSettings.LeftFoot.Item2),
+            RightFoot = Tuple.Create(deviceDictionary[CurrentSettings.RightFoot.Item1], CurrentSettings.RightFoot.Item2),
+        };
+    }
+
+    private void SetTrackerSerialNumbers(PipeCommands.SetTrackerSerialNumbers data)
+    {
+        var deviceDictionary = new Dictionary<string, ETrackedDeviceClass>
+        {
+            {"HMD", ETrackedDeviceClass.HMD },
+            {"コントローラー", ETrackedDeviceClass.Controller },
+            {"トラッカー", ETrackedDeviceClass.GenericTracker },
+            {"ベースステーション", ETrackedDeviceClass.TrackingReference },
+            {"割り当てしない", ETrackedDeviceClass.Invalid },
+        };
+
+        CurrentSettings.Head = Tuple.Create(deviceDictionary[data.Head.Item1], data.Head.Item2);
+        CurrentSettings.LeftHand = Tuple.Create(deviceDictionary[data.LeftHand.Item1], data.LeftHand.Item2);
+        CurrentSettings.RightHand = Tuple.Create(deviceDictionary[data.RightHand.Item1], data.RightHand.Item2);
+        CurrentSettings.Pelvis = Tuple.Create(deviceDictionary[data.Pelvis.Item1], data.Pelvis.Item2);
+        CurrentSettings.LeftFoot = Tuple.Create(deviceDictionary[data.LeftFoot.Item1], data.LeftFoot.Item2);
+        CurrentSettings.RightFoot = Tuple.Create(deviceDictionary[data.RightFoot.Item1], data.RightFoot.Item2);
+        SetVRIKTargetTrackers();
+    }
+
+    private enum TargetType
+    {
+        Head, Pelvis, LeftArm, RightArm, LeftLeg, RightLeg
+    }
+
+    private Transform GetTrackerTransformBySerialNumber(Tuple<ETrackedDeviceClass, string> serial, TargetType setTo, Transform headTracker = null)
+    {
+        if (serial.Item1 == ETrackedDeviceClass.HMD && handler.HMDObject != null)
+        {
+            if (handler.HMDObject.transform.name == serial.Item2 || string.IsNullOrEmpty(serial.Item2))
+            {
+                return handler.HMDObject.transform;
+            }
+        }
+        else if (serial.Item1 == ETrackedDeviceClass.Controller)
+        {
+            var controllers = new GameObject[] { handler.LeftControllerObject, handler.RightControllerObject };
+            Transform ret = null;
+            foreach (var controller in controllers)
+            {
+                if (controller != null && controller.transform.name == serial.Item2)
+                {
+                    if (setTo == TargetType.LeftArm || setTo == TargetType.RightArm)
+                    {
+                        ret = controller.transform;
+                        break;
+                    }
+                    return controller.transform;
+                }
+            }
+            if (ret == null)
+            {
+                var controllerTransforms = controllers.Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.transform.position - headTracker.position), transform = d.transform })
+                                                       .OrderBy(d => d.pos.x)
+                                                       .Select(d => d.transform);
+                if (setTo == TargetType.LeftArm) ret = controllerTransforms.ElementAtOrDefault(0);
+                if (setTo == TargetType.RightArm) ret = controllerTransforms.ElementAtOrDefault(1);
+            }
+            return ret;
+        }
+        else if (serial.Item1 == ETrackedDeviceClass.GenericTracker)
+        {
+            foreach (var tracker in handler.Trackers)
+            {
+                if (tracker != null && tracker.transform.name == serial.Item2)
+                {
+                    return tracker.transform;
+                }
+            }
+            if (string.IsNullOrEmpty(serial.Item2) == false) return null; //Serialあるのに見つからなかったらnull
+
+            var trackerIds = new List<string>();
+
+            if (CurrentSettings.Head.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.Head.Item2);
+            if (CurrentSettings.LeftHand.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.LeftHand.Item2);
+            if (CurrentSettings.RightHand.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.RightHand.Item2);
+            if (CurrentSettings.Pelvis.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.Pelvis.Item2);
+            if (CurrentSettings.LeftFoot.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.LeftFoot.Item2);
+            if (CurrentSettings.RightFoot.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.RightFoot.Item2);
+
+            //ここに来るときは腰か足のトラッカー自動認識になってるとき
+            //割り当てられていないトラッカーリスト
+            var autoTrackers = handler.Trackers.Where(d => trackerIds.Contains(d.transform.name) == false).Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.transform.position - headTracker.position), transform = d.transform });
+            if (autoTrackers.Any())
+            {
+                var count = autoTrackers.Count();
+                if (count >= 3)
+                {
+                    if (setTo == TargetType.Pelvis)
+                    { //腰は一番高い位置にあるトラッカー
+                        return autoTrackers.OrderByDescending(d => d.pos.y).Select(d => d.transform).First();
+                    }
+                }
+                if (count >= 2)
+                {
+                    if (setTo == TargetType.LeftLeg)
+                    {
+                        return autoTrackers.OrderBy(d => d.pos.y).Take(2).OrderBy(d => d.pos.x).Select(d => d.transform).First();
+                    }
+                    else if (setTo == TargetType.RightLeg)
+                    {
+                        return autoTrackers.OrderBy(d => d.pos.y).Take(2).OrderByDescending(d => d.pos.x).Select(d => d.transform).First();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private void SetVRIKTargetTrackers()
+    {
+        vrik.solver.spine.headTarget = GetTrackerTransformBySerialNumber(CurrentSettings.Head, TargetType.Head);
+        vrik.solver.spine.headClampWeight = 0.38f;
+
+        vrik.solver.spine.pelvisTarget = GetTrackerTransformBySerialNumber(CurrentSettings.Pelvis, TargetType.Pelvis, vrik.solver.spine.headTarget);
+        if (vrik.solver.spine.pelvisTarget != null)
+        {
+            vrik.solver.spine.pelvisPositionWeight = 1f;
+            vrik.solver.spine.pelvisRotationWeight = 1f;
+            vrik.solver.plantFeet = false;
+            vrik.solver.spine.neckStiffness = 0f;
+            vrik.solver.spine.maxRootAngle = 180f;
+        }
+        else
+        {
+            vrik.solver.spine.pelvisPositionWeight = 0f;
+            vrik.solver.spine.pelvisRotationWeight = 0f;
+            vrik.solver.plantFeet = true;
+            vrik.solver.spine.neckStiffness = 1f;
+            vrik.solver.spine.maxRootAngle = 0f;
+        }
+
+        vrik.solver.leftArm.target = GetTrackerTransformBySerialNumber(CurrentSettings.LeftHand, TargetType.LeftArm, vrik.solver.spine.headTarget);
+        if (vrik.solver.leftArm.target != null)
+        {
+            vrik.solver.leftArm.positionWeight = 1f;
+            vrik.solver.leftArm.rotationWeight = 1f;
+        }
+        else
+        {
+            vrik.solver.leftArm.positionWeight = 0f;
+            vrik.solver.leftArm.rotationWeight = 0f;
+        }
+
+        vrik.solver.rightArm.target = GetTrackerTransformBySerialNumber(CurrentSettings.RightHand, TargetType.RightArm, vrik.solver.spine.headTarget);
+        if (vrik.solver.rightArm.target != null)
+        {
+            vrik.solver.rightArm.positionWeight = 1f;
+            vrik.solver.rightArm.rotationWeight = 1f;
+        }
+        else
+        {
+            vrik.solver.rightArm.positionWeight = 0f;
+            vrik.solver.rightArm.rotationWeight = 0f;
+        }
+
+        vrik.solver.leftLeg.target = GetTrackerTransformBySerialNumber(CurrentSettings.LeftFoot, TargetType.LeftLeg, vrik.solver.spine.headTarget);
+        if (vrik.solver.leftLeg.target != null)
+        {
+            vrik.solver.leftLeg.positionWeight = 1f;
+            vrik.solver.leftLeg.rotationWeight = 1f;
+        }
+        else
+        {
+            vrik.solver.leftLeg.positionWeight = 0f;
+            vrik.solver.leftLeg.rotationWeight = 0f;
+        }
+
+        vrik.solver.rightLeg.target = GetTrackerTransformBySerialNumber(CurrentSettings.RightFoot, TargetType.RightLeg, vrik.solver.spine.headTarget);
+        if (vrik.solver.rightLeg.target != null)
+        {
+            vrik.solver.rightLeg.positionWeight = 1f;
+            vrik.solver.rightLeg.rotationWeight = 1f;
+        }
+        else
+        {
+            vrik.solver.rightLeg.positionWeight = 0f;
+            vrik.solver.rightLeg.rotationWeight = 0f;
+        }
+    }
+
+
     private IEnumerator Calibrate()
     {
-        Transform headTracker = handler.HMDObject.transform;// AddCalibrateTransform(handler.HMDObject.transform, TrackerNums.Zero);
-        var controllerTransforms = (new Transform[] { LeftWristTransform, RightWristTransform }).Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.transform.position - headTracker.position), transform = d.transform }).OrderBy(d => d.pos.x).Select(d => d.transform);
-        leftHandTracker = controllerTransforms.ElementAtOrDefault(0);// AddCalibrateTransform(handler.LeftControllerObject.transform, TrackerNums.Zero);
-        rightHandTracker = controllerTransforms.ElementAtOrDefault(1);// AddCalibrateTransform(handler.RightControllerObject.transform, TrackerNums.Zero);
-        var trackerTransforms = handler.Trackers.Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.transform.position - headTracker.position), transform = d.transform }).ToList();
-        if (handler.Trackers.Count >= 3)
-        {
-            //トラッカー3つ以上あれば腰も設定
-            bodyTracker = trackerTransforms.OrderByDescending(d => d.pos.y).Select(d => d.transform).First();// handler.Trackers[0].transform;// AddCalibrateTransform(handler.Trackers[0].transform, TrackerNums.Zero);
-            leftFootTracker = trackerTransforms.OrderBy(d => d.pos.y).Take(2).OrderBy(d => d.pos.x).Select(d => d.transform).First();// handler.Trackers[2].transform;// AddCalibrateTransform(handler.Trackers[2].transform, TrackerNums.Zero);
-            rightFootTracker = trackerTransforms.OrderBy(d => d.pos.y).Take(2).OrderByDescending(d => d.pos.x).Select(d => d.transform).First();// handler.Trackers[1].transform;// AddCalibrateTransform(handler.Trackers[1].transform, TrackerNums.Zero);
-        }
-        else if (handler.Trackers.Count >= 2)
-        {
-            //トラッカーが2つだけなら両足
-            leftFootTracker = trackerTransforms.OrderBy(d => d.pos.y).Take(2).OrderBy(d => d.pos.x).Select(d => d.transform).First();// handler.Trackers[1].transform;// AddCalibrateTransform(handler.Trackers[1].transform, TrackerNums.Zero);
-            rightFootTracker = trackerTransforms.OrderBy(d => d.pos.y).Take(2).OrderByDescending(d => d.pos.x).Select(d => d.transform).First();// handler.Trackers[0].transform;// AddCalibrateTransform(handler.Trackers[0].transform, TrackerNums.Zero);
-        }
-        else if (handler.Trackers.Count >= 1)
-        {
-            //トラッカーが1つだけなら腰だけ
-            bodyTracker = handler.Trackers[0].transform;// AddCalibrateTransform(handler.Trackers[0].transform, TrackerNums.Zero);
-        }
-        //DoCalibrate(vrik, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
-        //DoCalibrate2(vrik, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
-        var settings = new RootMotion.FinalIK.VRIKCalibrator.Settings() { headOffset = new Vector3(0f, -0.15f, -0.15f), handOffset = new Vector3(0f, 0f, 0f) };
-        ////モデルのスケールを両手に合わせて拡大
-        //if (animator != null)
-        //{
-        //    var leftHand = animator.GetBoneTransform(HumanBodyBones.LeftHand); //手首のポジション
-        //    var rightHand = animator.GetBoneTransform(HumanBodyBones.RightHand);
-        //    var realLeftHand = leftHandTracker; //コントローラーの先端(メニューボタンの上あたり)のポジション
-        //    var realRightHand = rightHandTracker;
-        //    var handDistance = Vector3.Distance(leftHand.position, rightHand.position);
-        //    var realHandDistance = Vector3.Distance(realLeftHand.position, realRightHand.position) - 0.1f; //片手15cm(コントローラー分)引く
-        //    var scale = handDistance / realHandDistance;
-        //    CurrentModel.transform.localScale = new Vector3(scale, scale, scale);
-        //    yield return new WaitForEndOfFrame();
-        //}
-        //Calibrator.Calibrate(vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
+        Transform headTracker = GetTrackerTransformBySerialNumber(CurrentSettings.Head, TargetType.Head);
+        leftHandTracker = GetTrackerTransformBySerialNumber(CurrentSettings.LeftHand, TargetType.LeftArm, headTracker);
+        rightHandTracker = GetTrackerTransformBySerialNumber(CurrentSettings.RightHand, TargetType.RightArm, headTracker);
+        bodyTracker = GetTrackerTransformBySerialNumber(CurrentSettings.Pelvis, TargetType.Pelvis, headTracker);
+        leftFootTracker = GetTrackerTransformBySerialNumber(CurrentSettings.LeftFoot, TargetType.LeftLeg, headTracker);
+        rightFootTracker = GetTrackerTransformBySerialNumber(CurrentSettings.RightFoot, TargetType.RightLeg, headTracker);
+
+
+        var settings = new RootMotion.FinalIK.VRIKCalibrator.Settings();
+
         yield return new WaitForEndOfFrame();
-        //Calibrator.Calibrate(vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
-        //Calibrator.Calibrate(vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
-        yield return Calibrator.CalibrateScaled(HandTrackerRoot, HeadTrackerRoot, FootTrackerRoot, vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
+
+        var leftHandOffset = Vector3.zero;
+        var rightHandOffset = Vector3.zero;
+
+        //トラッカー
+        //xをプラス方向に動かすとトラッカーの左(LEDを上に見たとき)に進む
+        //yをプラス方向に動かすとトラッカーの上(LED方向)に進む
+        //zをマイナス方向に動かすとトラッカーの底面に向かって進む
+
+        if (CurrentSettings.LeftHand.Item1 == ETrackedDeviceClass.GenericTracker)
+        {
+            //角度補正(左手なら右のトラッカーに向けた)後
+            //xを＋方向は体の正面に向かって進む
+            //yを＋方向は体の上(天井方向)に向かって進む
+            //zを＋方向は体中心(左手なら右手の方向)に向かって進む
+            leftHandOffset = new Vector3(1.0f, 0.02f, 0.05f); // Vector3 (IsEnable, ToTrackerBottom, ToBodySide)
+        }
+        if (CurrentSettings.RightHand.Item1 == ETrackedDeviceClass.GenericTracker)
+        {
+            //角度補正(左手なら右のトラッカーに向けた)後
+            //xを－方向は体の正面に向かって進む
+            //yを＋方向は体の上(天井方向)に向かって進む
+            //zを＋方向は体中心(左手なら右手の方向)に向かって進む
+            rightHandOffset = new Vector3(1.0f, 0.02f, 0.05f); // Vector3 (IsEnable, ToTrackerBottom, ToBodySide)
+        }
+
+        yield return Calibrator.CalibrateScaled(HandTrackerRoot, HeadTrackerRoot, FootTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
 
         vrik.solver.IKPositionWeight = 1.0f;
         if (handler.Trackers.Count == 1)
@@ -782,6 +1030,10 @@ public class ControlWPFWindow : MonoBehaviour
         {
             SetCameraEnable(BackCamera);
         }
+        else if (type == CameraTypes.PositionFixed)
+        {
+            SetCameraEnable(PositionFixedCamera);
+        }
         CurrentSettings.CameraType = type;
     }
 
@@ -836,6 +1088,11 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 lookTarget.Target = gameObject.transform;
             }
+            if (positionFixedCamera == null) positionFixedCamera = PositionFixedCamera.GetComponent<PositionFixedCamera>();
+            if (positionFixedCamera != null)
+            {
+                positionFixedCamera.Target = gameObject.transform;
+            }
         }
     }
 
@@ -871,11 +1128,19 @@ public class ControlWPFWindow : MonoBehaviour
         float delta = Input.GetAxis("Mouse ScrollWheel");
         if (delta != 0.0f)
         {
-            if (currentCameraLookTarget == null) //フリーカメラ
+            if (CurrentSettings.CameraType == CameraTypes.Free) //フリーカメラ
             {
                 currentCamera.transform.position += currentCamera.transform.forward * delta;
                 if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
                 CurrentSettings.FreeCameraTransform.SetPosition(currentCamera.transform);
+            }
+            else if (CurrentSettings.CameraType == CameraTypes.PositionFixed)
+            {
+                currentCamera.transform.position += currentCamera.transform.forward * delta;
+                if (CurrentSettings.PositionFixedCameraTransform == null) CurrentSettings.PositionFixedCameraTransform = new StoreTransform(currentCamera.transform);
+                CurrentSettings.PositionFixedCameraTransform.SetPosition(currentCamera.transform);
+                positionFixedCamera.UpdatePosition();
+
             }
             else //固定カメラ
             {
@@ -898,11 +1163,18 @@ public class ControlWPFWindow : MonoBehaviour
 
             if (Input.GetMouseButton((int)MouseButtons.Center))
             { // 注視点
-                if (currentCameraLookTarget == null) //フリーカメラ
+                if (CurrentSettings.CameraType == CameraTypes.Free) //フリーカメラ
                 {
                     currentCamera.transform.Translate(-diff * Time.deltaTime * 1.1f);
                     if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
                     CurrentSettings.FreeCameraTransform.SetPosition(currentCamera.transform);
+                }
+                else if (CurrentSettings.CameraType == CameraTypes.PositionFixed)
+                {
+                    currentCamera.transform.Translate(-diff * Time.deltaTime * 1.1f);
+                    if (CurrentSettings.PositionFixedCameraTransform == null) CurrentSettings.PositionFixedCameraTransform = new StoreTransform(currentCamera.transform);
+                    CurrentSettings.PositionFixedCameraTransform.SetPosition(currentCamera.transform);
+                    positionFixedCamera.UpdatePosition();
                 }
                 else //固定カメラ
                 {
@@ -912,10 +1184,21 @@ public class ControlWPFWindow : MonoBehaviour
             }
             else if (Input.GetMouseButton((int)MouseButtons.Right))
             { // 回転
-                currentCamera.transform.RotateAround(currentCamera.transform.position, currentCamera.transform.right, -diff.y * Time.deltaTime * 30.0f);
-                currentCamera.transform.RotateAround(currentCamera.transform.position, Vector3.up, diff.x * Time.deltaTime * 30.0f);
-                if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
-                CurrentSettings.FreeCameraTransform.SetRotation(currentCamera.transform);
+                if (CurrentSettings.CameraType == CameraTypes.Free)
+                {
+                    currentCamera.transform.RotateAround(currentCamera.transform.position, currentCamera.transform.right, -diff.y * Time.deltaTime * 30.0f);
+                    currentCamera.transform.RotateAround(currentCamera.transform.position, Vector3.up, diff.x * Time.deltaTime * 30.0f);
+                    if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
+                    CurrentSettings.FreeCameraTransform.SetRotation(currentCamera.transform);
+                }
+                else if (CurrentSettings.CameraType == CameraTypes.PositionFixed)
+                {
+                    currentCamera.transform.RotateAround(currentCamera.transform.position, currentCamera.transform.right, -diff.y * Time.deltaTime * 30.0f);
+                    currentCamera.transform.RotateAround(currentCamera.transform.position, Vector3.up, diff.x * Time.deltaTime * 30.0f);
+                    if (CurrentSettings.PositionFixedCameraTransform == null) CurrentSettings.PositionFixedCameraTransform = new StoreTransform(currentCamera.transform);
+                    CurrentSettings.PositionFixedCameraTransform.SetRotation(currentCamera.transform);
+                    positionFixedCamera.UpdatePosition();
+                }
             }
 
             this.cameraMouseOldPos = mousePos;
@@ -1319,6 +1602,9 @@ public class ControlWPFWindow : MonoBehaviour
                 case Functions.FreeCamera:
                     ChangeCamera(CameraTypes.Free);
                     break;
+                case Functions.PositionFixedCamera:
+                    ChangeCamera(CameraTypes.PositionFixed);
+                    break;
             }
         }
     }
@@ -1425,6 +1711,8 @@ public class ControlWPFWindow : MonoBehaviour
         public LookTargetSettings FrontCameraLookTargetSettings = null;
         public LookTargetSettings BackCameraLookTargetSettings = null;
         [OptionalField]
+        public StoreTransform PositionFixedCameraTransform = null;
+        [OptionalField]
         public CameraTypes? CameraType = null;
         [OptionalField]
         public bool ShowCameraGrid = false;
@@ -1472,7 +1760,29 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public float LeftHandRotation = -90.0f;
         [OptionalField]
-        public float RightHandRotation = 90.0f;
+        public float RightHandRotation = -90.0f;
+
+        [OptionalField]
+        public Tuple<ETrackedDeviceClass, string> Head = Tuple.Create(ETrackedDeviceClass.HMD, default(string));
+        [OptionalField]
+        public Tuple<ETrackedDeviceClass, string> LeftHand = Tuple.Create(ETrackedDeviceClass.Controller, default(string));
+        [OptionalField]
+        public Tuple<ETrackedDeviceClass, string> RightHand = Tuple.Create(ETrackedDeviceClass.Controller, default(string));
+        [OptionalField]
+        public Tuple<ETrackedDeviceClass, string> Pelvis = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
+        [OptionalField]
+        public Tuple<ETrackedDeviceClass, string> LeftFoot = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
+        [OptionalField]
+        public Tuple<ETrackedDeviceClass, string> RightFoot = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
+
+        [OptionalField]
+        public float LeftHandTrackerOffsetToBottom = 0.02f;
+        [OptionalField]
+        public float LeftHandTrackerOffsetToBodySide = 0.05f;
+        [OptionalField]
+        public float RightHandTrackerOffsetToBottom = 0.02f;
+        [OptionalField]
+        public float RightHandTrackerOffsetToBodySide = 0.05f;
 
         //初期値
         [OnDeserializing()]
@@ -1484,6 +1794,20 @@ public class ControlWPFWindow : MonoBehaviour
             OpenAnimationTime = 0.03f;
             ClosingTime = 0.1f;
             DefaultFace = "通常(NEUTRAL)";
+
+            Head = Tuple.Create(ETrackedDeviceClass.HMD, default(string));
+            LeftHand = Tuple.Create(ETrackedDeviceClass.Controller, default(string));
+            RightHand = Tuple.Create(ETrackedDeviceClass.Controller, default(string));
+            Pelvis = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
+            LeftFoot = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
+            RightFoot = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
+
+            LeftHandTrackerOffsetToBottom = 0.02f;
+            LeftHandTrackerOffsetToBodySide = 0.05f;
+            RightHandTrackerOffsetToBottom = 0.02f;
+            RightHandTrackerOffsetToBodySide = 0.05f;
+
+            PositionFixedCameraTransform = null;
         }
     }
 
@@ -1614,6 +1938,7 @@ public class ControlWPFWindow : MonoBehaviour
 
     private void UpdateHandRotation()
     {
+        return;
         if (vrik == null) return;
         Transform leftHandAdjusterTransform = vrik.solver.leftArm.target;
         Transform rightHandAdjusterTransform = vrik.solver.rightArm.target;

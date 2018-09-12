@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -97,17 +98,44 @@ namespace sh_akira.OVRTracking
 
     public static class TransformExtensions
     {
-        public static void SetPositionAndRotation(this Transform t, SteamVR_Utils.RigidTransform mat)
+        private static Dictionary<string, Vector3> lastPositions = new Dictionary<string, Vector3>();
+
+        public static event EventHandler<string> TrackerMovedEvent;
+
+        private static void CheckPosition(string serial,Vector3 pos)
         {
-            if (mat != null) t.SetPositionAndRotation(mat.pos, mat.rot);
+            if (lastPositions.ContainsKey(serial) == false)
+            {
+                lastPositions.Add(serial, pos);
+            }
+            else
+            {
+                if(Vector3.Distance(lastPositions[serial],pos) > 0.1f)
+                {
+                    TrackerMovedEvent?.Invoke(null, serial);
+                    lastPositions[serial] = pos;
+                }
+            }
         }
 
-        public static void SetPositionAndRotationLocal(this Transform t, SteamVR_Utils.RigidTransform mat)
+        public static void SetPositionAndRotation(this Transform t, KeyValuePair<SteamVR_Utils.RigidTransform, string> mat)
         {
-            if (mat != null)
+            if (mat.Key != null)
             {
-                t.localPosition = mat.pos;
-                t.localRotation = mat.rot;
+                CheckPosition(mat.Value, mat.Key.pos);
+                t.SetPositionAndRotation(mat.Key.pos, mat.Key.rot);
+                t.name = mat.Value;
+            }
+        }
+
+        public static void SetPositionAndRotationLocal(this Transform t, KeyValuePair<SteamVR_Utils.RigidTransform, string> mat)
+        {
+            if (mat.Key != null)
+            {
+                CheckPosition(mat.Value, mat.Key.pos);
+                t.localPosition = mat.Key.pos;
+                t.localRotation = mat.Key.rot;
+                t.name = mat.Value;
             }
         }
     }

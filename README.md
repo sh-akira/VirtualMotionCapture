@@ -49,6 +49,7 @@ VR: HTC Vive + 3 tracker
 (Oculus Rift+Touchの3点と+Kinectでの6点での動作報告があります)  
 (GTX1080 での動作も確認済み)  
 (Vive Pro,i7-4790K,GTX980,Mem 8G, Win10 Proで動作確認されました)  
+WinMR機器での動作確認もされています(必ず両手のコントローラーが必要です)  
   
   
 まだテスト版です。テストが不十分の可能性が大いにあります。  
@@ -59,6 +60,11 @@ VR: HTC Vive + 3 tracker
   
   
 # 更新履歴
+Ver 0.12  
+・頭、両手、腰、両足すべてのトラッカーを自由に選択できるようになりました  
+・座標追従カメラを追加しました  
+・UniVRMを0.43に更新  
+  
 Ver 0.11  
 ・キャリブレーション(頭と腰のスケール)修正  
 ・手首のねじれが起きないように補正するように  
@@ -71,7 +77,7 @@ Ver 0.11
 ・キャリブレーション開始時複数回トリガー押せないように  
 ・Oculus Touchのキャリブレーション開始トリガー修正  
 ・UniVRMを0.42に更新  
-
+  
 Ver 0.10  
 ・キャリブレーションの処理を変更しモデルのスケールをコントローラー位置にスケーリングするように  
 ・Oculus Touchの入力とプリセットを追加  
@@ -130,8 +136,8 @@ Ver 0.02
 　・UnityNamedPipe (名前付きパイプライブラリ - 入れてあります)  
 　・RootMotion ([Final IK](https://assetstore.unity.com/packages/tools/animation/final-ik-14290))  
 　・SteamVR ([SteamVR Plugin](https://assetstore.unity.com/packages/templates/systems/steamvr-plugin-32647))  
-　・VRM ([UniVRM-0.42_fcba.unitypackage](https://github.com/dwango/UniVRM/releases))  
-　・VRM.Samples ([UniVRM-RuntimeLoaderSample-0.42_fcba.unitypackage](https://github.com/dwango/UniVRM/releases))  
+　・VRM ([UniVRM-0.43_4725.unitypackage](https://github.com/dwango/UniVRM/releases))  
+　・VRM.Samples ([UniVRM-RuntimeLoaderSample-0.43_4725.unitypackage](https://github.com/dwango/UniVRM/releases))  
 　・OVRLipSync ([OVRLipSync.unitypackage](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/))  
 以上のようなフォルダになるように各アセットをインポートしてください。  
 ・ControlWindowWPF/ControlWindowWPF.slnをVisual Studio 2017で開きます。  

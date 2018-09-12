@@ -29,6 +29,9 @@
                 </ComboBox>
             </DockPanel>
         </GroupBox>
+        <GroupBox Header="使用トラッカー設定">
+            <Button Content="トラッカー割り当て設定を開く" Name="TrackerConfigButton" Click="TrackerConfigButton_Click"/>
+        </GroupBox>
         <Button Content="閉じる" HorizontalAlignment="Right" Width="100" Name="CloseButton" Click="CloseButton_Click" ToolTip="設定を閉じます"/>
     </StackPanel>
 </Window>

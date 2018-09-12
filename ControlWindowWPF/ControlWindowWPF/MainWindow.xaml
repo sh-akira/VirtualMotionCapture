@@ -38,16 +38,19 @@
             </TabItem>
             <TabItem Header="カメラ">
                 <StackPanel Orientation="Vertical">
-                    <UniformGrid Rows="1" Columns="3">
-                        <Button Content="フロント" Name="FrontCameraButton" Click="FrontCameraButton_Click" ToolTip="フロントカメラ(モデルを常に中心に表示・マウス中ボタンドラッグとスクロール可能)"/>
-                        <Button Content="バック" Name="BackCameraButton" Click="BackCameraButton_Click" ToolTip="バックカメラ(モデルを常に中心に表示・マウス中ボタンドラッグとスクロール可能)"/>
-                        <Button Content="フリー" Name="FreeCameraButton" Click="FreeCameraButton_Click" ToolTip="フリーカメラ(画面上でマウス中ボタンドラッグ、スクロール、右ボタンドラッグで自由に移動できます)"/>
-                    </UniformGrid>
+                    <Grid>
+                        <UniformGrid Rows="2" Columns="3">
+                            <Button Content="フロント" Name="FrontCameraButton" Click="FrontCameraButton_Click" ToolTip="フロントカメラ(モデルを常に中心に表示・正面固定・マウス中ボタンドラッグとスクロール可能)"/>
+                            <Button Content="バック" Name="BackCameraButton" Click="BackCameraButton_Click" ToolTip="バックカメラ(モデルを常に中心に表示・背面固定・マウス中ボタンドラッグとスクロール可能)"/>
+                            <Button Content="フリー" Name="FreeCameraButton" Click="FreeCameraButton_Click" ToolTip="フリーカメラ(画面上でマウス中ボタンドラッグ、スクロール、右ボタンドラッグで自由に移動できます)"/>
+                            <Button Content="座標追従" Name="PositionFixedCameraButton" Click="PositionFixedCameraButton_Click" ToolTip="座標追従カメラ(モデルとカメラの距離と回転を固定・画面上でマウス中ボタンドラッグ、スクロール、右ボタンドラッグで自由に移動できます)"/>
+                        </UniformGrid>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                            <CheckBox Content="グリッドの表示" Name="CameraGridCheckBox" Checked="CameraGridCheckBox_Checked" Unchecked="CameraGridCheckBox_Unchecked" ToolTip="画面上にグリッドを表示してカメラ位置を設定しやすくします"/>
+                        </StackPanel>
+                    </Grid>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="カメラは画面をクリックしてアクティブにしてから操作できます"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <CheckBox Content="グリッドの表示" Name="CameraGridCheckBox" Checked="CameraGridCheckBox_Checked" Unchecked="CameraGridCheckBox_Unchecked" ToolTip="画面上にグリッドを表示してカメラ位置を設定しやすくします"/>
+                        <TextBlock Text="カメラは画面をクリックしてアクティブにしてから操作できます" Margin="0,-3,0,0"/>
                     </StackPanel>
                 </StackPanel>
             </TabItem>

@@ -85,5 +85,11 @@ namespace ControlWindowWPF
                 await Globals.Client?.SendCommandAsync(new PipeCommands.SetExternalCameraConfig { x = x, y = y, z = z, rx = rx, ry = ry, rz = rz, fov = fov, ControllerIndex = ControllerComboBox.SelectedIndex });
             }
         }
+
+        private void TrackerConfigButton_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new TrackerConfigWindow();
+            win.Show();
+        }
     }
 }

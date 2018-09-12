@@ -32,6 +32,7 @@ namespace ControlWindowWPF
             "フロントカメラ",
             "バックカメラ",
             "フリーカメラ",
+            "座標追従カメラ",
         };
         public FunctionKeyAddWindow()
         {

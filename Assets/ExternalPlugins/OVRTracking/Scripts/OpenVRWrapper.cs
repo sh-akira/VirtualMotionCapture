@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using Valve.VR;
 
@@ -61,14 +62,17 @@ namespace sh_akira.OVRTracking
             }
         }
 
-        public Dictionary<ETrackedDeviceClass, List<SteamVR_Utils.RigidTransform>> GetTrackerPositions()
+        private string[] serialNumbers = null;
+
+        public Dictionary<ETrackedDeviceClass, List<KeyValuePair<SteamVR_Utils.RigidTransform, string>>> GetTrackerPositions()
         {
-            var positions = new Dictionary<ETrackedDeviceClass, List<SteamVR_Utils.RigidTransform>>();
-            positions.Add(ETrackedDeviceClass.HMD, new List<SteamVR_Utils.RigidTransform>());
-            positions.Add(ETrackedDeviceClass.Controller, new List<SteamVR_Utils.RigidTransform>());
-            positions.Add(ETrackedDeviceClass.GenericTracker, new List<SteamVR_Utils.RigidTransform>());
-            positions.Add(ETrackedDeviceClass.TrackingReference, new List<SteamVR_Utils.RigidTransform>());
+            var positions = new Dictionary<ETrackedDeviceClass, List<KeyValuePair<SteamVR_Utils.RigidTransform, string>>>();
+            positions.Add(ETrackedDeviceClass.HMD, new List<KeyValuePair<SteamVR_Utils.RigidTransform, string>>());
+            positions.Add(ETrackedDeviceClass.Controller, new List<KeyValuePair<SteamVR_Utils.RigidTransform, string>>());
+            positions.Add(ETrackedDeviceClass.GenericTracker, new List<KeyValuePair<SteamVR_Utils.RigidTransform, string>>());
+            positions.Add(ETrackedDeviceClass.TrackingReference, new List<KeyValuePair<SteamVR_Utils.RigidTransform, string>>());
             TrackedDevicePose_t[] allPoses = new TrackedDevicePose_t[OpenVR.k_unMaxTrackedDeviceCount];
+            if (serialNumbers == null) serialNumbers = new string[OpenVR.k_unMaxTrackedDeviceCount];
             //TODO: TrackingUniverseStanding??
             openVR.GetDeviceToAbsoluteTrackingPose(ETrackingUniverseOrigin.TrackingUniverseStanding, 0, allPoses);
             for (uint i = 0; i < allPoses.Length; i++)
@@ -78,10 +82,26 @@ namespace sh_akira.OVRTracking
                 var deviceClass = openVR.GetTrackedDeviceClass(i);
                 if (pose.bDeviceIsConnected && (deviceClass == ETrackedDeviceClass.HMD || deviceClass == ETrackedDeviceClass.Controller || deviceClass == ETrackedDeviceClass.GenericTracker || deviceClass == ETrackedDeviceClass.TrackingReference))
                 {
-                    positions[deviceClass].Add(new SteamVR_Utils.RigidTransform(pose.mDeviceToAbsoluteTracking));
+                    if (serialNumbers[i] == null)
+                    {
+                        serialNumbers[i] = GetTrackerSerialNumber(i);
+                    }
+                    positions[deviceClass].Add(new KeyValuePair<SteamVR_Utils.RigidTransform, string>(new SteamVR_Utils.RigidTransform(pose.mDeviceToAbsoluteTracking), serialNumbers[i]));
                 }
             }
             return positions;
+        }
+
+        public string GetTrackerSerialNumber(uint deviceIndex)
+        {
+            var buffer = new StringBuilder();
+            var error = default(ETrackedPropertyError);
+            //Capacity取得
+            var capacity = (int)openVR.GetStringTrackedDeviceProperty(deviceIndex, ETrackedDeviceProperty.Prop_SerialNumber_String, null, 0, ref error);
+            if (capacity < 1) return null;// "No Serial Number";
+            openVR.GetStringTrackedDeviceProperty(deviceIndex, ETrackedDeviceProperty.Prop_SerialNumber_String, buffer, (uint)buffer.EnsureCapacity(capacity), ref error);
+            if (error != ETrackedPropertyError.TrackedProp_Success) return null;// "No Serial Number";
+            return buffer.ToString();
         }
 
         public void Close()

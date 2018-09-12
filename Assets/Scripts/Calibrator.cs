@@ -107,8 +107,8 @@ public class Calibrator
         }
 
         // Legs
-        if (LeftFootTransform != null) CalibrateLeg(settings, LeftFootTransform, ik.solver.leftLeg, (ik.references.leftToes != null ? ik.references.leftToes : ik.references.leftFoot), ik.references.root.forward, true);
-        if (RightFootTransform != null) CalibrateLeg(settings, RightFootTransform, ik.solver.rightLeg, (ik.references.rightToes != null ? ik.references.rightToes : ik.references.rightFoot), ik.references.root.forward, false);
+        if (LeftFootTransform != null) CalibrateLeg(settings, LeftFootTransform, ik.solver.leftLeg, (ik.references.leftToes != null ? ik.references.leftToes : ik.references.leftFoot), hmdForwardAngle, ik.references.root.forward, true);
+        if (RightFootTransform != null) CalibrateLeg(settings, RightFootTransform, ik.solver.rightLeg, (ik.references.rightToes != null ? ik.references.rightToes : ik.references.rightFoot), hmdForwardAngle, ik.references.root.forward, false);
 
         // Root controller
         bool addRootController = PelvisTransform != null || (LeftFootTransform != null && RightFootTransform != null);
@@ -132,16 +132,13 @@ public class Calibrator
         ik.solver.locomotion.weight = PelvisTransform == null && LeftFootTransform == null && RightFootTransform == null ? 1f : 0f;
     }
 
-    private static void CalibrateLeg(Settings settings, Transform FootTransform, IKSolverVR.Leg leg, Transform lastBone, Vector3 rootForward, bool isLeft)
+    private static void CalibrateLeg(Settings settings, Transform FootTransform, IKSolverVR.Leg leg, Transform lastBone, Vector3 hmdForwardAngle, Vector3 rootForward, bool isLeft)
     {
         Transform footAdjusterTransform = leg.target == null ? new GameObject(isLeft ? "leftFootAdjuster" : "rightFootAdjuster").transform : leg.target;
         footAdjusterTransform.parent = FootTransform;
 
         // Space of the tracker heading
-        Quaternion frontQuaternion = FootTransform.rotation * Quaternion.LookRotation(settings.footTrackerForward, settings.footTrackerUp);
-        Vector3 frontVector = frontQuaternion * Vector3.forward;
-        frontVector.y = 0f;
-        frontQuaternion = Quaternion.LookRotation(frontVector);
+        Quaternion frontQuaternion = Quaternion.LookRotation(hmdForwardAngle);
 
         // Target position
         float inwardOffset = isLeft ? settings.footInwardOffset : -settings.footInwardOffset;
@@ -154,7 +151,7 @@ public class Calibrator
         // Rotate target forward towards tracker forward
         Vector3 footForward = AxisTools.GetAxisVectorToDirection(lastBone, rootForward);
         if (Vector3.Dot(lastBone.rotation * footForward, rootForward) < 0f) footForward = -footForward;
-        Vector3 fLocal = Quaternion.Inverse(Quaternion.LookRotation(footAdjusterTransform.rotation * footForward)) * frontVector;
+        Vector3 fLocal = Quaternion.Inverse(Quaternion.LookRotation(footAdjusterTransform.rotation * footForward)) * hmdForwardAngle;
         float angle = Mathf.Atan2(fLocal.x, fLocal.z) * Mathf.Rad2Deg;
         float headingOffset = isLeft ? settings.footHeadingOffset : -settings.footHeadingOffset;
         footAdjusterTransform.rotation = Quaternion.AngleAxis(angle + headingOffset, Vector3.up) * footAdjusterTransform.rotation;
@@ -174,7 +171,7 @@ public class Calibrator
         leg.bendGoalWeight = 0f;
     }
 
-    public static IEnumerator CalibrateScaled(Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, Settings settings, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null)
+    public static IEnumerator CalibrateScaled(Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null)
     {
         if (!ik.solver.initiated)
         {
@@ -193,12 +190,84 @@ public class Calibrator
         headTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
         footTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 
+        //それぞれのトラッカーを正しいルートに移動
+        if (HMDTransform != null) HMDTransform.parent = headTrackerRoot;
+        if (LeftHandTransform != null) LeftHandTransform.parent = handTrackerRoot;
+        if (RightHandTransform != null) RightHandTransform.parent = handTrackerRoot;
+        if (PelvisTransform != null) PelvisTransform.parent = footTrackerRoot;
+        if (LeftFootTransform != null) LeftFootTransform.parent = footTrackerRoot;
+        if (RightFootTransform != null) RightFootTransform.parent = footTrackerRoot;
+
+        //コントローラーの場合手首までのオフセットを追加
+        if (LeftHandOffset == Vector3.zero)
+        {
+            var offset = new GameObject("LeftWristOffset");
+            offset.transform.parent = LeftHandTransform;
+            offset.transform.localPosition = new Vector3(-0.04f, 0.04f, -0.15f);
+            offset.transform.localRotation = Quaternion.Euler(60, 0, 90);
+            offset.transform.localScale = Vector3.one;
+            LeftHandTransform = offset.transform;
+        }
+        if (RightHandOffset == Vector3.zero)
+        {
+            var offset = new GameObject("RightWristOffset");
+            offset.transform.parent = RightHandTransform;
+            offset.transform.localPosition = new Vector3(0.04f, 0.04f, -0.15f);
+            offset.transform.localRotation = Quaternion.Euler(60, 0, -90);
+            offset.transform.localScale = Vector3.one;
+            RightHandTransform = offset.transform;
+        }
+
+
         // モデルのポジションを手と手の中心位置に移動
         var centerposition = Vector3.Lerp(LeftHandTransform.position, RightHandTransform.position, 0.5f);
         ik.references.root.position = new Vector3(centerposition.x, ik.references.root.position.y, centerposition.z);
-        Vector3 hmdForwardAngle = HMDTransform.rotation * settings.headTrackerForward;
+
+        yield return new WaitForEndOfFrame();
+
+        //それぞれのトラッカーに手のオフセットを適用
+        //トラッカーの角度は 0,-90,-90 が正位置(手の甲に付けてLED部を外側に向けたとき)
+
+        //トラッカー zをマイナス方向に動かすとトラッカーの底面に向かって進む
+        //角度補正LookAt(左手なら右のトラッカーに向けた)後 zを＋方向は体中心(左手なら右手の方向)に向かって進む
+        //xを－方向は体の正面に向かって進む
+
+        //先にトラッカー底面に向かってのオフセットを両手に適用する
+        var leftWrist = new GameObject("LeftWristOffset").transform;
+        leftWrist.parent = LeftHandTransform;
+        leftWrist.localPosition = new Vector3(0, 0, -LeftHandOffset.y);
+        leftWrist.localRotation = Quaternion.Euler(Vector3.zero);
+
+        var rightWrist = new GameObject("RightWristOffset").transform;
+        rightWrist.parent = RightHandTransform;
+        rightWrist.localPosition = new Vector3(0, 0, -RightHandOffset.y);
+        rightWrist.localRotation = Quaternion.Euler(Vector3.zero);
+
+        //お互いのトラッカー同士を向き合わせてオフセットを適用する
+        leftWrist.LookAt(rightWrist ?? RightHandTransform);
+        leftWrist.localPosition += leftWrist.localRotation * new Vector3(0, 0, LeftHandOffset.z);
+        rightWrist.LookAt(leftWrist ?? LeftHandTransform);
+        rightWrist.localPosition += rightWrist.localRotation * new Vector3(0, 0, RightHandOffset.z);
+
+        //両手のxをマイナス方向が正面なので体を回転させる
+        Vector3 hmdForwardAngle = leftWrist.rotation * new Vector3(-1, 0, 0);
         hmdForwardAngle.y = 0f;
         ik.references.root.rotation = Quaternion.LookRotation(hmdForwardAngle);
+
+
+        //回転した分トラッカーも回転させる
+        if (LeftHandOffset != Vector3.zero) // Vector3 (IsEnable, ToTrackerBottom, ToBodySide)
+        {
+            leftWrist.eulerAngles = new Vector3(0, -90, 90); //トラッカー補正後の角度
+            leftWrist.RotateAround(leftWrist.position, Vector3.up, ik.references.root.rotation.eulerAngles.y); //体の回転分を引く
+            LeftHandTransform = leftWrist;
+        }
+        if (RightHandOffset != Vector3.zero) // Vector3 (IsEnable, ToTrackerBottom, ToBodySide)
+        {
+            rightWrist.eulerAngles = new Vector3(180, -90, 90); //トラッカー補正後の角度
+            rightWrist.RotateAround(rightWrist.position, Vector3.up, ik.references.root.rotation.eulerAngles.y); //体の回転分を引く
+            RightHandTransform = rightWrist;
+        }
 
         yield return new WaitForEndOfFrame();
 
@@ -223,8 +292,8 @@ public class Calibrator
         // モデルのポジションを再度手と手の中心位置に移動
         centerposition = Vector3.Lerp(LeftHandTransform.position, RightHandTransform.position, 0.5f);
         ik.references.root.position = new Vector3(centerposition.x, ik.references.root.position.y, centerposition.z);
-        hmdForwardAngle = HMDTransform.rotation * settings.headTrackerForward;
-        hmdForwardAngle.y = 0f;
+        //hmdForwardAngle = HMDTransform.rotation * settings.headTrackerForward;
+        //hmdForwardAngle.y = 0f;
         ik.references.root.rotation = Quaternion.LookRotation(hmdForwardAngle);
 
         // 頭のトラッカー全体のスケールを頭の位置に合わせる
@@ -273,6 +342,8 @@ public class Calibrator
             ik.solver.spine.maxRootAngle = 0f;
         }
 
+        yield return new WaitForEndOfFrame();
+
         // Left Hand
         if (LeftHandTransform != null)
         {
@@ -306,8 +377,8 @@ public class Calibrator
         }
 
         // Legs
-        if (LeftFootTransform != null) CalibrateLeg(settings, LeftFootTransform, ik.solver.leftLeg, (ik.references.leftToes != null ? ik.references.leftToes : ik.references.leftFoot), ik.references.root.forward, true);
-        if (RightFootTransform != null) CalibrateLeg(settings, RightFootTransform, ik.solver.rightLeg, (ik.references.rightToes != null ? ik.references.rightToes : ik.references.rightFoot), ik.references.root.forward, false);
+        if (LeftFootTransform != null) CalibrateLeg(settings, LeftFootTransform, ik.solver.leftLeg, (ik.references.leftToes != null ? ik.references.leftToes : ik.references.leftFoot), hmdForwardAngle, ik.references.root.forward, true);
+        if (RightFootTransform != null) CalibrateLeg(settings, RightFootTransform, ik.solver.rightLeg, (ik.references.rightToes != null ? ik.references.rightToes : ik.references.rightFoot), hmdForwardAngle, ik.references.root.forward, false);
 
         // Root controller
         bool addRootController = PelvisTransform != null || (LeftFootTransform != null && RightFootTransform != null);
