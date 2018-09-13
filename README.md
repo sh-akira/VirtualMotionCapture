@@ -38,8 +38,11 @@ VRoid製のモデルを使用する場合、リップシンクが表情と競合
 ダウンロードページ：[https://sh-akira.booth.pm/items/999760]  
 ダウンロードページかリリースページからVirtualMotionCapture0.xx.zipをダウンロードしてください。  
 解凍後VirtualMotionCapture.exeを実行で開始します。  
+
+[avast アバスト無料アンチウイルスにブロックされる場合はこちらをご覧ください](https://github.com/sh-akira/VirtualMotionCapture/blob/master/documents/avast.md)
   
-  
+    
+    
 テスト環境：  
 OS: Windows 10 (1803)  
 CPU:Core i7 8700k  
