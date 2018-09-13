@@ -1938,7 +1938,7 @@ public class ControlWPFWindow : MonoBehaviour
 
     private void UpdateHandRotation()
     {
-        return;
+        //return; // return for debug
         if (vrik == null) return;
         Transform leftHandAdjusterTransform = vrik.solver.leftArm.target;
         Transform rightHandAdjusterTransform = vrik.solver.rightArm.target;
