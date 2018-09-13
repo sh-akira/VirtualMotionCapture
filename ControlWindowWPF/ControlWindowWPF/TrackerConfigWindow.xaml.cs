@@ -173,9 +173,9 @@ namespace ControlWindowWPF
             await Globals.Client?.SendCommandAsync(new PipeCommands.SetTrackerOffsets
             {
                 LeftHandTrackerOffsetToBodySide = (float)LeftHandTrackerOffsetToBodySideSlider.Value / 1000.0f,
-                LeftHandTrackerOffsetToBottom = (float)LeftHandTrackerOffsetToBodySideSlider.Value / 1000.0f,
-                RightHandTrackerOffsetToBodySide = (float)LeftHandTrackerOffsetToBodySideSlider.Value / 1000.0f,
-                RightHandTrackerOffsetToBottom = (float)LeftHandTrackerOffsetToBodySideSlider.Value / 1000.0f,
+                LeftHandTrackerOffsetToBottom = (float)LeftHandTrackerOffsetToBottomSlider.Value / 1000.0f,
+                RightHandTrackerOffsetToBodySide = (float)RightHandTrackerOffsetToBodySideSlider.Value / 1000.0f,
+                RightHandTrackerOffsetToBottom = (float)RightHandTrackerOffsetToBottomSlider.Value / 1000.0f,
             });
         }
     }

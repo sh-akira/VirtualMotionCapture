@@ -399,6 +399,15 @@ public class ControlWPFWindow : MonoBehaviour
                     RightHandTrackerOffsetToBottom = CurrentSettings.RightHandTrackerOffsetToBottom
                 }, e.RequestId);
             }
+            else if (e.CommandType == typeof(PipeCommands.SetTrackerOffsets))
+            {
+                var d = (PipeCommands.SetTrackerOffsets)e.Data;
+                CurrentSettings.LeftHandTrackerOffsetToBodySide = d.LeftHandTrackerOffsetToBodySide;
+                CurrentSettings.LeftHandTrackerOffsetToBottom = d.LeftHandTrackerOffsetToBottom;
+                CurrentSettings.RightHandTrackerOffsetToBodySide = d.RightHandTrackerOffsetToBodySide;
+                CurrentSettings.RightHandTrackerOffsetToBottom = d.RightHandTrackerOffsetToBottom;
+
+            }
             else if (e.CommandType == typeof(PipeCommands.LoadCurrentSettings))
             {
                 if (isFirstTimeExecute)
@@ -845,7 +854,7 @@ public class ControlWPFWindow : MonoBehaviour
             //xを＋方向は体の正面に向かって進む
             //yを＋方向は体の上(天井方向)に向かって進む
             //zを＋方向は体中心(左手なら右手の方向)に向かって進む
-            leftHandOffset = new Vector3(1.0f, 0.02f, 0.05f); // Vector3 (IsEnable, ToTrackerBottom, ToBodySide)
+            leftHandOffset = new Vector3(1.0f, CurrentSettings.LeftHandTrackerOffsetToBottom, CurrentSettings.LeftHandTrackerOffsetToBodySide); // Vector3 (IsEnable, ToTrackerBottom, ToBodySide)
         }
         if (CurrentSettings.RightHand.Item1 == ETrackedDeviceClass.GenericTracker)
         {
@@ -853,7 +862,7 @@ public class ControlWPFWindow : MonoBehaviour
             //xを－方向は体の正面に向かって進む
             //yを＋方向は体の上(天井方向)に向かって進む
             //zを＋方向は体中心(左手なら右手の方向)に向かって進む
-            rightHandOffset = new Vector3(1.0f, 0.02f, 0.05f); // Vector3 (IsEnable, ToTrackerBottom, ToBodySide)
+            rightHandOffset = new Vector3(1.0f, CurrentSettings.RightHandTrackerOffsetToBottom, CurrentSettings.RightHandTrackerOffsetToBodySide); // Vector3 (IsEnable, ToTrackerBottom, ToBodySide)
         }
 
         yield return Calibrator.CalibrateScaled(HandTrackerRoot, HeadTrackerRoot, FootTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
