@@ -279,6 +279,17 @@ public class Calibrator
         var hscale = realHandHeight / modelHandHeight;
         ik.references.root.localScale = new Vector3(hscale, hscale, hscale);
 
+        //VRMモデルのコライダーがスケールについてこないため、すべて再設定
+        var springBoneColiderGroups = ik.references.root.GetComponentsInChildren<VRM.VRMSpringBoneColliderGroup>();
+        foreach(var springBoneColiderGroup in springBoneColiderGroups)
+        {
+            foreach(var colider in springBoneColiderGroup.Colliders)
+            {
+                colider.Offset *= hscale;
+                colider.Radius *= hscale;
+            }
+        }
+
 
         // 手のトラッカー全体のスケールを手の位置に合わせる
         var modelHandDistance = Vector3.Distance(ik.references.leftHand.position, ik.references.rightHand.position);

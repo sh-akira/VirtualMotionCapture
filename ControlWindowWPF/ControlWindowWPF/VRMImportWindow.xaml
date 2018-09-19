@@ -23,7 +23,12 @@
         </Style>
     </Window.Resources>
     <DockPanel>
-        <Button Margin="10,10,0,0" Width="150" Height="40" Content="VRM読み込み" Name="LoadVRMButton" Click="LoadVRMButton_Click" DockPanel.Dock="Top" HorizontalAlignment="Left" ToolTip="VRMファイルを読み込みます"/>
+        <DockPanel DockPanel.Dock="Top">
+            <Button Margin="10,10,0,0" Width="150" Height="40" Content="VRM読み込み" Name="LoadVRMButton" Click="LoadVRMButton_Click" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip="VRMファイルを読み込みます"/>
+            <GroupBox Header="取り込みオプション" FontSize="14">
+                <CheckBox Content="NormalMapの自動修正(VRoid向け)" Name="EnableNormalMapFixCheckBox" IsChecked="True" FontSize="14"/>
+            </GroupBox>
+        </DockPanel>
         <GroupBox Header="VRM情報" Margin="10,0,10,10">
             <DockPanel>
                 <StackPanel Orientation="Vertical" Margin="15">

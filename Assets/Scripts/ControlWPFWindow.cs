@@ -177,7 +177,7 @@ public class ControlWPFWindow : MonoBehaviour
             else if (e.CommandType == typeof(PipeCommands.ImportVRM))
             {
                 var d = (PipeCommands.ImportVRM)e.Data;
-                ImportVRM(d.Path, d.ImportForCalibration);
+                ImportVRM(d.Path, d.ImportForCalibration, d.EnableNormalMapFix);
             }
 
             else if (e.CommandType == typeof(PipeCommands.Calibrate))
@@ -485,7 +485,7 @@ public class ControlWPFWindow : MonoBehaviour
     public float LeftUpperArmAngle = -60f;
     public float RightUpperArmAngle = -60f;
 
-    private async void ImportVRM(string path, bool ImportForCalibration)
+    private async void ImportVRM(string path, bool ImportForCalibration, bool EnableNormalMapFix)
     {
         CurrentSettings.VRMPath = path;
         var context = new VRMImporterContext(UniGLTF.UnityPath.FromFullpath(path));
@@ -512,6 +512,13 @@ public class ControlWPFWindow : MonoBehaviour
         }
         // ParseしたJSONをシーンオブジェクトに変換していく
         CurrentModel = await VRMImporter.LoadVrmAsync(context);
+
+        CurrentSettings.EnableNormalMapFix = EnableNormalMapFix;
+        if (EnableNormalMapFix)
+        {
+            //VRoidモデルのNormalMapテカテカを修正する
+            Yashinut.VRoid.CorrectNormalMapImport.CorrectNormalMap(CurrentModel);
+        }
 
         //モデルのSkinnedMeshRendererがカリングされないように、すべてのオプション変更
         foreach (var renderer in CurrentModel.GetComponentsInChildren<SkinnedMeshRenderer>(true))
@@ -1793,6 +1800,9 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public float RightHandTrackerOffsetToBodySide = 0.05f;
 
+        [OptionalField]
+        public bool EnableNormalMapFix = true;
+
         //初期値
         [OnDeserializing()]
         internal void OnDeserializingMethod(StreamingContext context)
@@ -1817,6 +1827,8 @@ public class ControlWPFWindow : MonoBehaviour
             RightHandTrackerOffsetToBodySide = 0.05f;
 
             PositionFixedCameraTransform = null;
+
+            EnableNormalMapFix = true;
         }
     }
 
@@ -1863,7 +1875,7 @@ public class ControlWPFWindow : MonoBehaviour
             if (string.IsNullOrWhiteSpace(CurrentSettings.VRMPath) == false)
             {
                 await server.SendCommandAsync(new PipeCommands.LoadVRMPath { Path = CurrentSettings.VRMPath });
-                ImportVRM(CurrentSettings.VRMPath, false);
+                ImportVRM(CurrentSettings.VRMPath, false, CurrentSettings.EnableNormalMapFix);
             }
             if (CurrentSettings.BackgroundColor != null)
             {

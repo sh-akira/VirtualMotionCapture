@@ -67,7 +67,9 @@ namespace ControlWindowWPF
         private async void ImportButton_Click(object sender, RoutedEventArgs e)
         {
             Globals.CurrentVRMFilePath = CurrentMeta.FilePath;
-            await Globals.Client.SendCommandAsync(new PipeCommands.ImportVRM { Path = CurrentMeta.FilePath, ImportForCalibration = false });
+            await Globals.Client.SendCommandAsync(new PipeCommands.ImportVRM { Path = CurrentMeta.FilePath, ImportForCalibration = false, EnableNormalMapFix = EnableNormalMapFixCheckBox.IsChecked.Value });
+
+            this.Close();
         }
 
         private void IgnoreButton_Click(object sender, RoutedEventArgs e)
