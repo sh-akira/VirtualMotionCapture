@@ -3,10 +3,10 @@
   new_window: false
   highlight: false
 - name: 支援について
-  link: /about/
+  link: /about.html
   new_window: false
   highlight: false
 - name: ダウンロード
-  link: /download/
+  link: /download.html
   new_window: false
   highlight: true

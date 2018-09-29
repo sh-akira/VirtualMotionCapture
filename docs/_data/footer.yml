@@ -2,12 +2,12 @@
   - name: トップに戻る
     link: /
   - name: ダウンロード
-    link: /download/
+    link: /download.html
 - links:
   - name: 操作説明
     link: /manual/
   - name: 支援について
-    link: /about/
+    link: /about.html
 - links:
   - name: GitHub
     link: https://github.com/sh-akira
