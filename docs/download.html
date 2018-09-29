@@ -19,9 +19,9 @@ faq:
   - question: 使用する際に表記は必要ですか？
     answer: 必要ありませんが、して頂けると嬉しいです。
   - question: 質問したいことがあります
-    answer: <a href="https://twitter.com/sh_akira">Twitter</a>でお問い合わせください。
+    answer: <a target="_blank" href="https://twitter.com/sh_akira">Twitter</a>でお問い合わせください。
   - question: 支援先を教えてください
-    answer: <a href="https://www.pixiv.net/fanbox/creator/10267568">pixivFANBOX</a>、<a href="https://sh-akira.booth.pm/items/999760">BOOTH</a>、<a href="https://www.amazon.co.jp/registry/wishlist/331R041P8K6BV/ref=cm_sw_r_cp_ep_ws_CxeJBb6XYBE62">欲しいものリスト</a>があります。
+    answer: <a target="_blank" href="https://www.pixiv.net/fanbox/creator/10267568">pixivFANBOX</a>、<a target="_blank" href="https://sh-akira.booth.pm/items/999760">BOOTH</a>、<a target="_blank" href="https://www.amazon.co.jp/registry/wishlist/331R041P8K6BV/ref=cm_sw_r_cp_ep_ws_CxeJBb6XYBE62">欲しいものリスト</a>があります。
 ---
 <div class="plans">
 	{% for plan in page.pricing_table %}
@@ -34,7 +34,7 @@ faq:
 			{% endfor %}
 
 			{% if plan.call_to_action %}
-				<li class="pricing-cta"><div class="button"><a style="background: #5555f0" href="{{ plan.call_to_action.link }}">{{ plan.call_to_action.text }} &rarr;</a></div></li>
+				<li class="pricing-cta"><div class="button"><a target="_blank" style="background: #5555f0" href="{{ plan.call_to_action.link }}">{{ plan.call_to_action.text }} &rarr;</a></div></li>
 			{% endif %}
 		</ul>
 	{% endfor %}
@@ -45,8 +45,8 @@ faq:
 	<dl class="faq">
 		{% for item in page.faq %}
 			<div>
-				<dt>{{ item.question }}</dt>
-				<dd>{{ item.answer }}</dd>
+				<dt>Q.{{ item.question }}</dt>
+				<dd>A.{{ item.answer }}</dd>
 			</div>
 		{% endfor %}
 	</dl>
