@@ -1,0 +1,12 @@
+- name: 操作方法
+  link: /manual/
+  new_window: false
+  highlight: false
+- name: 支援について
+  link: /about/
+  new_window: false
+  highlight: false
+- name: ダウンロード
+  link: /download/
+  new_window: false
+  highlight: true

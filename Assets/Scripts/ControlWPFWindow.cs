@@ -177,7 +177,7 @@ public class ControlWPFWindow : MonoBehaviour
             else if (e.CommandType == typeof(PipeCommands.ImportVRM))
             {
                 var d = (PipeCommands.ImportVRM)e.Data;
-                ImportVRM(d.Path, d.ImportForCalibration, d.EnableNormalMapFix);
+                ImportVRM(d.Path, d.ImportForCalibration, d.EnableNormalMapFix, d.DeleteHairNormalMap);
             }
 
             else if (e.CommandType == typeof(PipeCommands.Calibrate))
@@ -485,7 +485,7 @@ public class ControlWPFWindow : MonoBehaviour
     public float LeftUpperArmAngle = -60f;
     public float RightUpperArmAngle = -60f;
 
-    private async void ImportVRM(string path, bool ImportForCalibration, bool EnableNormalMapFix)
+    private async void ImportVRM(string path, bool ImportForCalibration, bool EnableNormalMapFix, bool DeleteHairNormalMap)
     {
         CurrentSettings.VRMPath = path;
         var context = new VRMImporterContext(UniGLTF.UnityPath.FromFullpath(path));
@@ -514,10 +514,11 @@ public class ControlWPFWindow : MonoBehaviour
         CurrentModel = await VRMImporter.LoadVrmAsync(context);
 
         CurrentSettings.EnableNormalMapFix = EnableNormalMapFix;
+        CurrentSettings.DeleteHairNormalMap = DeleteHairNormalMap;
         if (EnableNormalMapFix)
         {
             //VRoidモデルのNormalMapテカテカを修正する
-            Yashinut.VRoid.CorrectNormalMapImport.CorrectNormalMap(CurrentModel);
+            Yashinut.VRoid.CorrectNormalMapImport.CorrectNormalMap(CurrentModel, DeleteHairNormalMap);
         }
 
         //モデルのSkinnedMeshRendererがカリングされないように、すべてのオプション変更
@@ -1448,6 +1449,7 @@ public class ControlWPFWindow : MonoBehaviour
 
     private void CheckKey(KeyConfig config, bool isKeyDown)
     {
+        if (CurrentSettings.KeyActions == null) return;
         if (isKeyDown)
         {
             //CurrentKeyConfigs.Clear();
@@ -1802,6 +1804,8 @@ public class ControlWPFWindow : MonoBehaviour
 
         [OptionalField]
         public bool EnableNormalMapFix = true;
+        [OptionalField]
+        public bool DeleteHairNormalMap = true;
 
         //初期値
         [OnDeserializing()]
@@ -1829,6 +1833,7 @@ public class ControlWPFWindow : MonoBehaviour
             PositionFixedCameraTransform = null;
 
             EnableNormalMapFix = true;
+            DeleteHairNormalMap = true;
         }
     }
 
@@ -1875,7 +1880,7 @@ public class ControlWPFWindow : MonoBehaviour
             if (string.IsNullOrWhiteSpace(CurrentSettings.VRMPath) == false)
             {
                 await server.SendCommandAsync(new PipeCommands.LoadVRMPath { Path = CurrentSettings.VRMPath });
-                ImportVRM(CurrentSettings.VRMPath, false, CurrentSettings.EnableNormalMapFix);
+                ImportVRM(CurrentSettings.VRMPath, false, CurrentSettings.EnableNormalMapFix, CurrentSettings.DeleteHairNormalMap);
             }
             if (CurrentSettings.BackgroundColor != null)
             {

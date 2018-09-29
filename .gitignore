@@ -23,6 +23,7 @@ ShortcutKeyPresets/
 UnityNamedPipe.dll
 default.json
 ControlWindowWPF.exe
+docs/vendor*
 
 # Visual Studio cache directory
 .vs/

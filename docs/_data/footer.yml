@@ -1,0 +1,23 @@
+- links:
+  - name: トップに戻る
+    link: /
+  - name: ダウンロード
+    link: /download/
+- links:
+  - name: 操作説明
+    link: /manual/
+  - name: 支援について
+    link: /about/
+- links:
+  - name: GitHub
+    link: https://github.com/sh-akira
+    new_window: true
+    social_icon: GitHub
+  - name: Twitter
+    link: https://twitter.com/sh_akira
+    social_icon: Twitter
+    new_window: true
+  - name: pixivFANBOX
+    link: https://www.pixiv.net/fanbox/creator/10267568
+    social_icon: pixivFANBOX
+    new_window: true

@@ -67,7 +67,7 @@ namespace ControlWindowWPF
         private async void ImportButton_Click(object sender, RoutedEventArgs e)
         {
             Globals.CurrentVRMFilePath = CurrentMeta.FilePath;
-            await Globals.Client.SendCommandAsync(new PipeCommands.ImportVRM { Path = CurrentMeta.FilePath, ImportForCalibration = false, EnableNormalMapFix = EnableNormalMapFixCheckBox.IsChecked.Value });
+            await Globals.Client.SendCommandAsync(new PipeCommands.ImportVRM { Path = CurrentMeta.FilePath, ImportForCalibration = false, EnableNormalMapFix = EnableNormalMapFixCheckBox.IsChecked.Value, DeleteHairNormalMap = DeleteHairNormalMapCheckBox.IsChecked.Value });
 
             this.Close();
         }

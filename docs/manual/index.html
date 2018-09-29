@@ -1,0 +1,25 @@
+---
+title: 操作方法
+description: 用途別操作方法一覧
+---
+
+<div class="text-container">
+	<ul class="blog-posts">
+		{% include list-posts.html posts=paginator.posts %}
+	</ul>
+
+	{% if paginator.total_pages > 1 %}
+		<!-- Pagination links -->
+		<div class="pagination">
+			{% if paginator.previous_page %}
+				<a href="{% include relative-src.html src=paginator.previous_page_path %}" class="previous btn">&larr; 新しい記事</a>
+			{% endif %}
+
+			<span class="page_number ">{{ paginator.page }} of {{ paginator.total_pages }}</span>
+
+			{% if paginator.next_page %}
+				<a href="{% include relative-src.html src=paginator.next_page_path %}" class="next btn">古い記事 &rarr;</a>
+			{% endif %}
+		</div>
+	{% endif %}
+</div>
