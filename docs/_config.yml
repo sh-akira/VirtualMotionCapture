@@ -3,7 +3,7 @@
 
 title: バーチャルモーションキャプチャー
 url: "https://sh-akira.github.io/VirtualMotionCapture/"
-baseurl: "https://sh-akira.github.io/"
+baseurl:
 google_analytics_key:
 google_maps_javascript_api_key:
 disqus_shortname:
