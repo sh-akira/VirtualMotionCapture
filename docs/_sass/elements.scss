@@ -9,7 +9,10 @@ html, body {
 
 @font-face {
 	font-family: 'GenJyuuGothic-P-Bold';
-	src: url(https://sh-akira.github.io/VirtualMotionCapture/font/GenJyuuGothic-P-Bold.ttf);
+    src: url('https://sh-akira.github.io/VirtualMotionCapture/font/GenJyuuGothic-P-Bold-subset.eot');
+    src: url('https://sh-akira.github.io/VirtualMotionCapture/font/GenJyuuGothic-P-Bold-subset.eot?#iefix') format('embedded-opentype'),
+    url('https://sh-akira.github.io/VirtualMotionCapture/font/GenJyuuGothic-P-Bold-subset.ttf') format('truetype'),
+    url('https://sh-akira.github.io/VirtualMotionCapture/font/GenJyuuGothic-P-Bold-subset.woff') format('woff');
 }
 
 body {
