@@ -2,8 +2,8 @@
 # Site
 
 title: バーチャルモーションキャプチャー
-url: "https://proud-alligator.cloudvent.net"
-baseurl:
+url: "https://sh-akira.github.io/VirtualMotionCapture/"
+baseurl: "https://sh-akira.github.io/"
 google_analytics_key:
 google_maps_javascript_api_key:
 disqus_shortname:
