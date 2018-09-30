@@ -66,7 +66,7 @@ jekyll-archives:
 plugins:
   - jekyll-archives
   - jekyll-sitemap
-  - jekyll-seo-tag
+#  - jekyll-seo-tag
   - jekyll-feed
   - jekyll-paginate
 
