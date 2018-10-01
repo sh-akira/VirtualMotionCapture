@@ -184,4 +184,5 @@ A.VirtualMotionCaputre.exeと同じフォルダにあるdefault.jsonを別のフ
   
 Q.支援先を教えてください  
 A.[欲しいものリスト](https://t.co/KPJRzn6sVR) ギフト送付先(akira.satoh.sh[アットマーク]gmail.com)  
-  近々BOOTHでの公開も予定しています。ありがとうございます
+A.[BOOTH](https://sh-akira.booth.pm/items/999760)  
+A.[pixivFANBOX](https://www.pixiv.net/fanbox/creator/10267568)  
