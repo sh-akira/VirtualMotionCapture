@@ -153,7 +153,8 @@ Ver 0.02
 　・SteamVR ([SteamVR Plugin](https://assetstore.unity.com/packages/templates/systems/steamvr-plugin-32647))  
 　・VRM ([UniVRM-0.43_4725.unitypackage](https://github.com/dwango/UniVRM/releases))  
 　・VRM.Samples ([UniVRM-RuntimeLoaderSample-0.43_4725.unitypackage](https://github.com/dwango/UniVRM/releases))  
-　・OVRLipSync ([OVRLipSync.unitypackage](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/))  
+　・Oculus ([OVRLipSync.unitypackage](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/))  
+  ・CorrectNormalMapImport ([CorrectNormalMapImport](https://github.com/d30835nm/CorrectNormalMapImport))
 以上のようなフォルダになるように各アセットをインポートしてください。  
 ・ControlWindowWPF/ControlWindowWPF.slnをVisual Studio 2017で開きます。  
 ・そのままビルドをするとexeが作成されます  
