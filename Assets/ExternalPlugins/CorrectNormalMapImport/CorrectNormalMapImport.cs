@@ -81,19 +81,68 @@ namespace Yashinut.VRoid
 			for (var i = 0; i < pixels.Length; i++)
 			{
 				//各ピクセルごとにNormalMap用の修正を行う。
-				var x = 1f;
-				var y = pixels[i].g;
-				var z = pixels[i].g;
-				var w = pixels[i].r;
-
-				pixels[i] = new Color(x,y,z,w);
+				pixels[i] = DefaultToNormalPixel(pixels[i]);
 			}
-	
+
 			var resultTexture = new Texture2D(defaultNormalTexture.width,defaultNormalTexture.height,TextureFormat.RGBA32,false);
 			resultTexture.SetPixels(pixels);
 			resultTexture.Apply();
 			return resultTexture;
 		}
+
+		private static Color DefaultToNormalPixel(Color defaultPixel)
+		{
+			float x = 0f;
+			float y = 0f;
+			float z = 0f;
+			float w = 0f;
+		
+			//プラットフォーム及びColorSpaceによって変換方法が変わる。
+#if UNITY_ANDROID			
+			
+			switch (QualitySettings.activeColorSpace)
+			{
+				case ColorSpace.Gamma:
+					x = defaultPixel.r;
+					y = defaultPixel.g;
+					z = defaultPixel.b;
+					w = defaultPixel.r;
+					break;
+				case ColorSpace.Linear:
+					x = ChangeTextureType.DefaultToNormalMap[(int) (defaultPixel.r * 255f)] / 255f;
+					y = ChangeTextureType.DefaultToNormalMap[(int) (defaultPixel.g * 255f)] / 255f;
+					z = ChangeTextureType.DefaultToNormalMap[(int) (defaultPixel.b * 255f)] / 255f;
+					w = defaultPixel.r;
+					break;
+				default:
+					Debug.LogError("ColorSpaceが不正です");
+					break;
+			}
+			
+#elif UNITY_STANDALONE_WIN		
+
+			switch (QualitySettings.activeColorSpace)
+			{
+				case ColorSpace.Gamma:
+					x = 1f;
+					y = defaultPixel.g;
+					z = defaultPixel.g;
+					w = defaultPixel.r;
+					break;
+				case ColorSpace.Linear:
+					x = 1f;
+					y = ChangeTextureType.DefaultToNormalMap[(int) (defaultPixel.g * 255f)] / 255f;
+					z = ChangeTextureType.DefaultToNormalMap[(int) (defaultPixel.g * 255f)] / 255f;
+					w = defaultPixel.r;
+					break;
+				default:
+					Debug.LogError("ColorSpaceが不正です");
+					break;
+			}
+	
+#endif	
+
+			return new Color(x,y,z,w);
+		}
 	}
 }
-

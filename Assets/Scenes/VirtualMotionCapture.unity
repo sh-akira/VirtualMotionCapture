@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028377, g: 0.22571409, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028492, g: 0.22571525, b: 0.3069259, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -429,9 +429,9 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 144144642}
-  - component: {fileID: 144144641}
   - component: {fileID: 144144639}
   - component: {fileID: 144144637}
+  - component: {fileID: 144144638}
   m_Layer: 0
   m_Name: OVRLipSync
   m_TagString: Untagged
@@ -462,6 +462,17 @@ MonoBehaviour:
   WeightThreashold: 0
   MaxWeightEnable: 0
   selectedDevice: 
+--- !u!114 &144144638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 144144636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82aa5cb7a870de440baadff9083be41c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!82 &144144639
 AudioSource:
   m_ObjectHideFlags: 0
@@ -557,17 +568,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &144144641
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 144144636}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82aa5cb7a870de440baadff9083be41c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &144144642
 Transform:
   m_ObjectHideFlags: 0
@@ -639,13 +639,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 170076733}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalRotation: {x: 0.76328206, y: -0.3904523, z: -0.024150606, w: 0.5141636}
+  m_LocalPosition: {x: 0.1249, y: 1.5453, z: 0.262}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 130, y: 43, z: 75}
 --- !u!1 &177120142
 GameObject:
   m_ObjectHideFlags: 0
@@ -2715,6 +2715,7 @@ MonoBehaviour:
   FrontCamera: {fileID: 1404284882}
   BackCamera: {fileID: 462948920}
   PositionFixedCamera: {fileID: 680324449}
+  positionFixedCamera: {fileID: 0}
   BackgroundRenderer: {fileID: 892957809}
   GridCanvas: {fileID: 814726118}
   LipSync: {fileID: 144144637}

@@ -175,7 +175,7 @@ public class DynamicOVRLipSync : OVRLipSyncContextBase
                             Array.Copy(microphoneBuffer, head, processBuffer, 0, processBuffer.Length);
                         }
 
-                        OVRLipSync.ProcessFrame(Context, processBuffer, OVRLipSync.Flags.None, Frame);
+                        OVRLipSync.ProcessFrame(Context, processBuffer, Frame);
 
                         head += processBuffer.Length;
                         if (head > microphoneBuffer.Length)
@@ -218,15 +218,15 @@ public class DynamicOVRLipSync : OVRLipSyncContextBase
             {
                 if (Context != 0)
                 {
-                    OVRLipSync.Flags flags = 0;
+                    //OVRLipSync.Flags flags = 0;
 
                     // Set flags to feed into process
-                    if (DelayCompensate == true)
-                        flags |= OVRLipSync.Flags.DelayCompensateAudio;
+                    //if (DelayCompensate == true)
+                    //    flags |= OVRLipSync.Flags.DelayCompensateAudio;
 
                     OVRLipSync.Frame frame = this.Frame;
 
-                    OVRLipSync.ProcessFrameInterleaved(Context, data, flags, frame);
+                    OVRLipSync.ProcessFrameInterleaved(Context, data,/* flags,*/ frame);
                 }
             }
 
