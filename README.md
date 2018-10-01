@@ -154,7 +154,7 @@ Ver 0.02
 　・VRM ([UniVRM-0.43_4725.unitypackage](https://github.com/dwango/UniVRM/releases))  
 　・VRM.Samples ([UniVRM-RuntimeLoaderSample-0.43_4725.unitypackage](https://github.com/dwango/UniVRM/releases))  
 　・Oculus ([OVRLipSync.unitypackage](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/))  
-  ・CorrectNormalMapImport ([CorrectNormalMapImport](https://github.com/d30835nm/CorrectNormalMapImport))
+  ・CorrectNormalMapImport ([CorrectNormalMapImport](https://github.com/d30835nm/CorrectNormalMapImport))  
 以上のようなフォルダになるように各アセットをインポートしてください。  
 ・ControlWindowWPF/ControlWindowWPF.slnをVisual Studio 2017で開きます。  
 ・そのままビルドをするとexeが作成されます  
