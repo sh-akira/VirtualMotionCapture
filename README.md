@@ -66,7 +66,11 @@ WinMR機器での動作確認もされています(必ず両手のコントロ�
   
   
 # 更新履歴
-Ver 0.14
+Ver 0.15  
+・NormalMapのテカテカ再度修正(VRoid v0.2.12向け)  
+・OVRLipSyncを1.28に更新  
+  
+Ver 0.14  
 ・NormalMapのテカテカ修正(主にVRoid向け)  
 ・スケール変更時のコライダー修正  
   
