@@ -281,9 +281,9 @@ public class Calibrator
 
         //VRMモデルのコライダーがスケールについてこないため、すべて再設定
         var springBoneColiderGroups = ik.references.root.GetComponentsInChildren<VRM.VRMSpringBoneColliderGroup>();
-        foreach(var springBoneColiderGroup in springBoneColiderGroups)
+        foreach (var springBoneColiderGroup in springBoneColiderGroups)
         {
-            foreach(var colider in springBoneColiderGroup.Colliders)
+            foreach (var colider in springBoneColiderGroup.Colliders)
             {
                 colider.Offset *= hscale;
                 colider.Radius *= hscale;
@@ -321,6 +321,15 @@ public class Calibrator
             var pelvisHscale = modelPelvisHeight / realPelvisHeight;
             footTrackerRoot.localScale = new Vector3(wscale, pelvisHscale, wscale);
         }
+
+        //腰の子に膝のBendGoal設定用
+        var bendGoalTarget = new GameObject("BendGoalTarget");
+        bendGoalTarget.transform.parent = ik.references.pelvis;
+        bendGoalTarget.transform.localScale = Vector3.one;
+        bendGoalTarget.transform.localPosition = new Vector3(0, 0, 1); //正面1m
+        bendGoalTarget.transform.localRotation = Quaternion.Euler(Vector3.zero);
+
+
         yield return new WaitForEndOfFrame();
         //yield break;
 
@@ -390,6 +399,10 @@ public class Calibrator
         // Legs
         if (LeftFootTransform != null) CalibrateLeg(settings, LeftFootTransform, ik.solver.leftLeg, (ik.references.leftToes != null ? ik.references.leftToes : ik.references.leftFoot), hmdForwardAngle, ik.references.root.forward, true);
         if (RightFootTransform != null) CalibrateLeg(settings, RightFootTransform, ik.solver.rightLeg, (ik.references.rightToes != null ? ik.references.rightToes : ik.references.rightFoot), hmdForwardAngle, ik.references.root.forward, false);
+        ik.solver.leftLeg.bendGoal = bendGoalTarget.transform;
+        ik.solver.leftLeg.bendGoalWeight = 1.0f;
+        ik.solver.rightLeg.bendGoal = bendGoalTarget.transform;
+        ik.solver.rightLeg.bendGoalWeight = 1.0f;
 
         // Root controller
         bool addRootController = PelvisTransform != null || (LeftFootTransform != null && RightFootTransform != null);
