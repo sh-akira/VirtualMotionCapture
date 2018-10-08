@@ -15,7 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using UnityNamedPipe;
 
-namespace ControlWindowWPF
+namespace VirtualMotionCaptureControlPanel
 {
     /// <summary>
     /// MainWindow.xaml の相互作用ロジック
@@ -154,6 +154,11 @@ namespace ControlWindowWPF
                 {
                     var d = (PipeCommands.LoadShowCameraGrid)e.Data;
                     SilentChangeChecked(CameraGridCheckBox, d.enable, CameraGridCheckBox_Checked, CameraGridCheckBox_Unchecked);
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadCameraMirror))
+                {
+                    var d = (PipeCommands.LoadCameraMirror)e.Data;
+                    SilentChangeChecked(CameraMirrorCheckBox, d.enable, CameraMirrorCheckBox_Checked, CameraMirrorCheckBox_Unchecked);
                 }
                 //"リップシンク"
                 else if (e.CommandType == typeof(PipeCommands.LoadLipSyncEnable))
@@ -399,6 +404,16 @@ namespace ControlWindowWPF
         private async void CameraGridCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             await Globals.Client.SendCommandAsync(new PipeCommands.SetGridVisible { enable = false });
+        }
+
+        private async void CameraMirrorCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetCameraMirror { enable = true });
+        }
+
+        private async void CameraMirrorCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetCameraMirror { enable = false });
         }
 
         #endregion

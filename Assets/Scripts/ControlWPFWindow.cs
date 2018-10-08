@@ -177,7 +177,7 @@ public class ControlWPFWindow : MonoBehaviour
             else if (e.CommandType == typeof(PipeCommands.ImportVRM))
             {
                 var d = (PipeCommands.ImportVRM)e.Data;
-                ImportVRM(d.Path, d.ImportForCalibration, d.EnableNormalMapFix, d.DeleteHairNormalMap);
+                ImportVRM(d.Path, d.ImportForCalibration, d.UseCurrentFixSetting ? CurrentSettings.EnableNormalMapFix : d.EnableNormalMapFix, d.UseCurrentFixSetting ? CurrentSettings.DeleteHairNormalMap : d.DeleteHairNormalMap);
             }
 
             else if (e.CommandType == typeof(PipeCommands.Calibrate))
@@ -258,6 +258,11 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 var d = (PipeCommands.SetGridVisible)e.Data;
                 SetGridVisible(d.enable);
+            }
+            else if (e.CommandType == typeof(PipeCommands.SetCameraMirror))
+            {
+                var d = (PipeCommands.SetCameraMirror)e.Data;
+                SetCameraMirror(d.enable);
             }
 
             else if (e.CommandType == typeof(PipeCommands.SetAutoBlinkEnable))
@@ -616,13 +621,9 @@ public class ControlWPFWindow : MonoBehaviour
         {
             list.Add(Tuple.Create("HMD", handler.HMDObject.transform.name));
         }
-        if (handler.LeftControllerObject != null)
+        foreach (var controller in handler.Controllers)
         {
-            list.Add(Tuple.Create("コントローラー", handler.LeftControllerObject.transform.name));
-        }
-        if (handler.RightControllerObject != null)
-        {
-            list.Add(Tuple.Create("コントローラー", handler.RightControllerObject.transform.name));
+            list.Add(Tuple.Create("コントローラー", controller.transform.name));
         }
         foreach (var tracker in handler.Trackers)
         {
@@ -688,7 +689,7 @@ public class ControlWPFWindow : MonoBehaviour
         }
         else if (serial.Item1 == ETrackedDeviceClass.Controller)
         {
-            var controllers = new GameObject[] { handler.LeftControllerObject, handler.RightControllerObject };
+            var controllers = handler.Controllers.Where(d => d != handler.CameraControllerObject);
             Transform ret = null;
             foreach (var controller in controllers)
             {
@@ -1062,8 +1063,14 @@ public class ControlWPFWindow : MonoBehaviour
             if (currentCamera != null && currentCamera != camera) currentCamera.gameObject.SetActive(false);
             currentCamera = camera;
             currentCameraLookTarget = camera.gameObject.GetComponent<CameraLookTarget>();
+            SetCameraMirrorEnable(CurrentSettings.CameraMirrorEnable);
         }
+    }
 
+    private void SetCameraMirrorEnable(bool mirrorEnable)
+    {
+        var mirror = currentCamera.GetComponent<CameraMirror>();
+        if (mirror != null) mirror.MirrorEnable = mirrorEnable;
     }
 
     private Camera saveCurrentCamera = null;
@@ -1173,6 +1180,10 @@ public class ControlWPFWindow : MonoBehaviour
             cameraMouseOldPos = mousePos;
 
         Vector3 diff = mousePos - cameraMouseOldPos;
+        if (CurrentSettings.CameraMirrorEnable)
+        {
+            diff.x *= -1;
+        }
 
         // 差分の長さが極小数より小さかったら、ドラッグしていないと判断する
         if (diff.magnitude >= Vector3.kEpsilon)
@@ -1227,6 +1238,12 @@ public class ControlWPFWindow : MonoBehaviour
     {
         GridCanvas?.SetActive(enable);
         CurrentSettings.ShowCameraGrid = enable;
+    }
+
+    private void SetCameraMirror(bool enable)
+    {
+        CurrentSettings.CameraMirrorEnable = enable;
+        SetCameraMirrorEnable(enable);
     }
 
     #endregion
@@ -1735,6 +1752,8 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public bool ShowCameraGrid = false;
         [OptionalField]
+        public bool CameraMirrorEnable = false;
+        [OptionalField]
         public bool WindowClickThrough;
         [OptionalField]
         public bool LipSyncEnable;
@@ -1834,6 +1853,8 @@ public class ControlWPFWindow : MonoBehaviour
 
             EnableNormalMapFix = true;
             DeleteHairNormalMap = true;
+
+            CameraMirrorEnable = false;
         }
     }
 
@@ -1916,6 +1937,8 @@ public class ControlWPFWindow : MonoBehaviour
             }
             SetGridVisible(CurrentSettings.ShowCameraGrid);
             await server.SendCommandAsync(new PipeCommands.LoadShowCameraGrid { enable = CurrentSettings.ShowCameraGrid });
+            SetCameraMirrorEnable(CurrentSettings.CameraMirrorEnable);
+            await server.SendCommandAsync(new PipeCommands.LoadCameraMirror { enable = CurrentSettings.CameraMirrorEnable });
             SetWindowClickThrough(CurrentSettings.WindowClickThrough);
             await server.SendCommandAsync(new PipeCommands.LoadSetWindowClickThrough { enable = CurrentSettings.WindowClickThrough });
             SetLipSyncEnable(CurrentSettings.LipSyncEnable);

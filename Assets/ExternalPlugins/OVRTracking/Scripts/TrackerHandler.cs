@@ -10,8 +10,8 @@ namespace sh_akira.OVRTracking
     public class TrackerHandler : MonoBehaviour
     {
         public GameObject HMDObject;
-        public GameObject LeftControllerObject;
-        public GameObject RightControllerObject;
+        public List<GameObject> Controllers = new List<GameObject>();
+        public List<GameObject> ControllersObject = new List<GameObject>();
         public GameObject CameraControllerObject;
         [System.NonSerialized]
         public int CameraControllerIndex = -1;
@@ -58,10 +58,10 @@ namespace sh_akira.OVRTracking
                         CameraControllerObject.transform.SetPositionAndRotationLocal(controllerPositions[CameraControllerIndex]);
                         controllerPositions.RemoveAt(CameraControllerIndex);
                     }
-                    LeftControllerObject.transform.SetPositionAndRotationLocal(controllerPositions.FirstOrDefault());
-                    if (controllerPositions.Count > 1)
+                    for (int i = 0; i < controllerPositions.Count && i < ControllersObject.Count; i++)
                     {
-                        RightControllerObject.transform.SetPositionAndRotationLocal(controllerPositions[1]);
+                        ControllersObject[i].transform.SetPositionAndRotationLocal(controllerPositions[i]);
+                        if (Controllers.Contains(ControllersObject[i]) == false) Controllers.Add(ControllersObject[i]);
                     }
                 }
                 var trackerPositions = positions[ETrackedDeviceClass.GenericTracker];

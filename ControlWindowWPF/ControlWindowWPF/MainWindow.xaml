@@ -45,7 +45,8 @@
                             <Button Content="フリー" Name="FreeCameraButton" Click="FreeCameraButton_Click" ToolTip="フリーカメラ(画面上でマウス中ボタンドラッグ、スクロール、右ボタンドラッグで自由に移動できます)"/>
                             <Button Content="座標追従" Name="PositionFixedCameraButton" Click="PositionFixedCameraButton_Click" ToolTip="座標追従カメラ(モデルとカメラの距離と回転を固定・画面上でマウス中ボタンドラッグ、スクロール、右ボタンドラッグで自由に移動できます)"/>
                         </UniformGrid>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                            <CheckBox Content="ミラー表示" Name="CameraMirrorCheckBox" Checked="CameraMirrorCheckBox_Checked" Unchecked="CameraMirrorCheckBox_Unchecked" ToolTip="表示されている映像を左右反転します"/>
                             <CheckBox Content="グリッドの表示" Name="CameraGridCheckBox" Checked="CameraGridCheckBox_Checked" Unchecked="CameraGridCheckBox_Unchecked" ToolTip="画面上にグリッドを表示してカメラ位置を設定しやすくします"/>
                         </StackPanel>
                     </Grid>

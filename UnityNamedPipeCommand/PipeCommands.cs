@@ -35,6 +35,7 @@ namespace UnityNamedPipe
             public bool ImportForCalibration { get; set; }
             public bool EnableNormalMapFix { get; set; }
             public bool DeleteHairNormalMap { get; set; }
+            public bool UseCurrentFixSetting { get; set; }
         }
 
         public class LoadVRMPath
@@ -89,6 +90,7 @@ namespace UnityNamedPipe
         public class LoadIsTopMost { public bool enable { get; set; } }
         public class LoadSetWindowClickThrough { public bool enable { get; set; } }
         public class LoadShowCameraGrid { public bool enable { get; set; } }
+        public class LoadCameraMirror { public bool enable { get; set; } }
         public class LoadLipSyncEnable { public bool enable { get; set; } }
         public class LoadLipSyncDevice { public string device { get; set; } }
         public class LoadLipSyncGain { public float gain { get; set; } }
@@ -116,6 +118,7 @@ namespace UnityNamedPipe
 
         public class ChangeCamera { public CameraTypes type { get; set; } }
         public class SetGridVisible { public bool enable { get; set; } }
+        public class SetCameraMirror { public bool enable { get; set; } }
 
         public class KeyDown
         {
