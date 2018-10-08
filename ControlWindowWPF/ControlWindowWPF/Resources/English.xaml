@@ -136,23 +136,23 @@
 
     
     <!-- SettingWindow -->
-    <system:String x:Key="SettingWindowTitle">設定</system:String>
+    <system:String x:Key="SettingWindowTitle">Settings</system:String>
                           
-    <system:String x:Key="SettingWindow_HandRotate">手の角度調整</system:String>
-    <system:String x:Key="SettingWindow_LeftHand">左手</system:String>
-    <system:String x:Key="SettingWindow_RightHand">右手</system:String>
-    <system:String x:Key="SettingWindow_ExternalCameraConfig">externalcamera.cfg(フリーカメラ座標を設定)</system:String>
-    <system:String x:Key="SettingWindow_ControllerNumber">コントローラー番号：</system:String>
-    <system:String x:Key="SettingWindow_OpenExternalCameraConfig">externalcamera.cfgを開く</system:String>
-    <system:String x:Key="SettingWindow_TrackerConfig">使用トラッカー設定</system:String>
-    <system:String x:Key="SettingWindow_OpenTrackerConfig">トラッカー割り当て設定を開く</system:String>
-    <system:String x:Key="SettingWindow_Close">閉じる</system:String>
-    <system:String x:Key="SettingWindow_LeftHand_ToolTip">左手の回転を調整します。実際の手とモデルの手の回転がずれている場合に変更してください</system:String>
-    <system:String x:Key="SettingWindow_RightHand_ToolTip">右手の回転を調整します。実際の手とモデルの手の回転がずれている場合に変更してください</system:String>
-    <system:String x:Key="SettingWindow_ControllerNumber_ToolTip">externalcameraの基準になるコントローラーを選択(変更する際はcfgファイルを開きなおしてください)</system:String>
-    <system:String x:Key="SettingWindow_OpenExternalCameraConfig_ToolTip">VRゲームにモデルを合成するためのexternalcamera.cfgを読み込んでフリーカメラに設定します</system:String>
-    <system:String x:Key="SettingWindow_Close_ToolTip">設定を閉じます</system:String>
-    <system:String x:Key="SettingWindow_Language">使用言語</system:String>
+    <system:String x:Key="SettingWindow_HandRotate">Hand Rotate Fix</system:String>
+    <system:String x:Key="SettingWindow_LeftHand">Left Hand</system:String>
+    <system:String x:Key="SettingWindow_RightHand">RightHand</system:String>
+    <system:String x:Key="SettingWindow_ExternalCameraConfig">externalcamera.cfg(Set free camera position)</system:String>
+    <system:String x:Key="SettingWindow_ControllerNumber">Controller number：</system:String>
+    <system:String x:Key="SettingWindow_OpenExternalCameraConfig">Open externalcamera.cfg</system:String>
+    <system:String x:Key="SettingWindow_TrackerConfig">Tracker Config</system:String>
+    <system:String x:Key="SettingWindow_OpenTrackerConfig">Open tracker assignment settings</system:String>
+    <system:String x:Key="SettingWindow_Close">Close</system:String>
+    <system:String x:Key="SettingWindow_LeftHand_ToolTip">Adjust the rotation of the left hand. Please change when actual hand rotation and model hand rotation are different.</system:String>
+    <system:String x:Key="SettingWindow_RightHand_ToolTip">Adjust the rotation of the right hand. Please change when actual hand rotation and model hand rotation are different.</system:String>
+    <system:String x:Key="SettingWindow_ControllerNumber_ToolTip">Select controller that becomes the basis of externalcamera (Please reopen cfg file when changing)</system:String>
+    <system:String x:Key="SettingWindow_OpenExternalCameraConfig_ToolTip">Load externalcamera.cfg to synthesize model into VR game and set it to free camera</system:String>
+    <system:String x:Key="SettingWindow_Close_ToolTip">Close Settings</system:String>
+    <system:String x:Key="SettingWindow_Language">Language</system:String>
 
 
     <!-- TrackerConfigWindow -->

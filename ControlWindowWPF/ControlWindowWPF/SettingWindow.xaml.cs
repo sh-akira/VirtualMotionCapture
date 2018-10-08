@@ -91,5 +91,12 @@ namespace VirtualMotionCaptureControlPanel
             var win = new TrackerConfigWindow();
             win.Show();
         }
+
+        private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var language = LanguageComboBox.SelectedItem as string;
+            if (string.IsNullOrWhiteSpace(language)) language = "Japanese";
+            LanguageSelector.ChangeLanguage(language);
+        }
     }
 }

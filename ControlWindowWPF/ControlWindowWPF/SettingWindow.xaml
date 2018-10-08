@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="{DynamicResource SettingWindowTitle}" SizeToContent="Height" Width="300" ResizeMode="CanMinimize">
     <StackPanel Orientation="Vertical">
@@ -31,6 +32,12 @@
         </GroupBox>
         <GroupBox Header="{DynamicResource SettingWindow_TrackerConfig}">
             <Button Content="{DynamicResource SettingWindow_OpenTrackerConfig}" Name="TrackerConfigButton" Click="TrackerConfigButton_Click"/>
+        </GroupBox>
+        <GroupBox Header="{DynamicResource SettingWindow_Language}">
+            <ComboBox Name="LanguageComboBox" SelectedIndex="0" SelectionChanged="LanguageComboBox_SelectionChanged">
+                <system:String>Japanese</system:String>
+                <system:String>English</system:String>
+            </ComboBox>
         </GroupBox>
         <Button Content="{DynamicResource SettingWindow_Close}" HorizontalAlignment="Right" Width="100" Name="CloseButton" Click="CloseButton_Click" ToolTip="{DynamicResource SettingWindow_Close_ToolTip}"/>
     </StackPanel>
