@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using UnityNamedPipe;
 
-namespace ControlWindowWPF
+namespace VirtualMotionCaptureControlPanel
 {
     /// <summary>
     /// CalibrationWindow.xaml の相互作用ロジック
@@ -27,7 +27,7 @@ namespace ControlWindowWPF
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            await Globals.Client.SendCommandAsync(new PipeCommands.ImportVRM { Path = Globals.CurrentVRMFilePath, ImportForCalibration = true });
+            await Globals.Client.SendCommandAsync(new PipeCommands.ImportVRM { Path = Globals.CurrentVRMFilePath, ImportForCalibration = true, UseCurrentFixSetting = true });
             Globals.Client.ReceivedEvent += Client_Received;
             await Globals.Client.SendCommandAsync(new PipeCommands.StartKeyConfig { });
 

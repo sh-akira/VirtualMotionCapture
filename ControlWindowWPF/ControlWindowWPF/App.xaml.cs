@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace ControlWindowWPF
+namespace VirtualMotionCaptureControlPanel
 {
     /// <summary>
     /// App.xaml の相互作用ロジック

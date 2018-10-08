@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{4C96194C-31D2-4780-80BB-FE77F75FAFD0}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>ControlWindowWPF</RootNamespace>
+    <RootNamespace>VirtualMotionCaptureControlPanel</RootNamespace>
     <AssemblyName>VirtualMotionCaptureControlPanel</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -69,6 +69,7 @@
       <DependentUpon>HandGestureControlKeyAddWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="JsonSerializer.cs" />
+    <Compile Include="LanguageSelector.cs" />
     <Compile Include="SettingWindow.xaml.cs">
       <DependentUpon>SettingWindow.xaml</DependentUpon>
     </Compile>
@@ -113,6 +114,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Resources\Japanese.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SettingWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

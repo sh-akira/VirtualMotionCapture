@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using UnityNamedPipe;
 
-namespace ControlWindowWPF
+namespace VirtualMotionCaptureControlPanel
 {
     /// <summary>
     /// HandGestureControlKeyAddWindow.xaml の相互作用ロジック

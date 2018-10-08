@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using UnityNamedPipe;
 
-namespace ControlWindowWPF
+namespace VirtualMotionCaptureControlPanel
 {
     /// <summary>
     /// FaceControlKeyAddWindow.xaml の相互作用ロジック

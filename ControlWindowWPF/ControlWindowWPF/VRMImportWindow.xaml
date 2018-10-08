@@ -1,11 +1,11 @@
-﻿<Window x:Class="ControlWindowWPF.VRMImportWindow"
+﻿<Window x:Class="VirtualMotionCaptureControlPanel.VRMImportWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ControlWindowWPF"
+        xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
         mc:Ignorable="d"
-        Title="VRM読込" Height="565" Width="1120" ResizeMode="CanMinimize">
+        Title="{DynamicResource VRMImportWindowTitle}" Height="565" Width="1120" ResizeMode="CanMinimize">
     <Window.Resources>
         <Style TargetType="Button"/>
         <Style TargetType="TextBox">
@@ -24,19 +24,19 @@
     </Window.Resources>
     <DockPanel>
         <DockPanel DockPanel.Dock="Top">
-            <Button Margin="10,10,0,0" Width="150" Height="40" Content="VRM読み込み" Name="LoadVRMButton" Click="LoadVRMButton_Click" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip="VRMファイルを読み込みます"/>
-            <GroupBox Header="取り込みオプション" FontSize="14">
+            <Button Margin="10,10,0,0" Width="150" Height="40" Content="{DynamicResource VRMImportWindow_VRMImportButton}" Name="LoadVRMButton" Click="LoadVRMButton_Click" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip="{DynamicResource VRMImportWindow_VRMImportButton_ToolTip}"/>
+            <GroupBox Header="{DynamicResource VRMImportWindow_VRMImportOption}" FontSize="14">
                 <StackPanel Orientation="Horizontal">
-                    <CheckBox Content="NormalMapの自動修正(VRoid向け)" Name="EnableNormalMapFixCheckBox" IsChecked="True" FontSize="14"/>
-                    <CheckBox Content="NormalMap修正時に髪の毛のNormalMapを削除(VRoid向け)" Name="DeleteHairNormalMapCheckBox" IsChecked="True" FontSize="14" ToolTip="NormalMapの自動修正がオンの時に有効になります"/>
+                    <CheckBox Content="{DynamicResource VRMImportWindow_NormalMapFix}" Name="EnableNormalMapFixCheckBox" IsChecked="True" FontSize="14"/>
+                    <CheckBox Content="{DynamicResource VRMImportWindow_RemoveHairNormalMap}" Name="DeleteHairNormalMapCheckBox" IsChecked="True" FontSize="14" ToolTip="{DynamicResource VRMImportWindow_RemoveHairNormalMap_ToolTip}"/>
                 </StackPanel>
             </GroupBox>
         </DockPanel>
-        <GroupBox Header="VRM情報" Margin="10,0,10,10">
+        <GroupBox Header="{DynamicResource VRMImportWindow_VRMInformation}" Margin="10,0,10,10">
             <DockPanel>
                 <StackPanel Orientation="Vertical" Margin="15">
                     <Border BorderBrush="Black" BorderThickness="1">
-                        <Image Width="256" Height="256" Name="ThumbnailImage" ToolTip="モデルのサムネイル画像です"/>
+                        <Image Width="256" Height="256" Name="ThumbnailImage" ToolTip="{DynamicResource VRMImportWindow_Thumbnail_ToolTip}"/>
                     </Border>
                     <Grid Margin="0,10,0,0">
                         <Grid.RowDefinitions>
@@ -50,11 +50,11 @@
                             <ColumnDefinition Width="70"/>
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="モデル名" Grid.Row="0" Grid.Column="0"/>
-                        <TextBlock Text="バージョン" Grid.Row="1" Grid.Column="0"/>
-                        <TextBlock Text="作者" Grid.Row="2" Grid.Column="0"/>
-                        <TextBlock Text="参照" Grid.Row="3" Grid.Column="0"/>
-                        <TextBlock Text="連絡先" Grid.Row="4" Grid.Column="0"/>
+                        <TextBlock Text="{DynamicResource VRMImportWindow_ModelTitle}" Grid.Row="0" Grid.Column="0"/>
+                        <TextBlock Text="{DynamicResource VRMImportWindow_ModelVersion}" Grid.Row="1" Grid.Column="0"/>
+                        <TextBlock Text="{DynamicResource VRMImportWindow_ModelAuthor}" Grid.Row="2" Grid.Column="0"/>
+                        <TextBlock Text="{DynamicResource VRMImportWindow_ModelReference}" Grid.Row="3" Grid.Column="0"/>
+                        <TextBlock Text="{DynamicResource VRMImportWindow_ModelContactInformation}" Grid.Row="4" Grid.Column="0"/>
                         <TextBox Text="{Binding Title}" Grid.Row="0" Grid.Column="1"/>
                         <TextBox Text="{Binding Version}" Grid.Row="1" Grid.Column="1"/>
                         <TextBox Text="{Binding Author}" Grid.Row="2" Grid.Column="1"/>
@@ -63,7 +63,7 @@
                     </Grid>
                 </StackPanel>
                 <DockPanel Margin="15">
-                    <TextBlock DockPanel.Dock="Top" Text="アバターの人格に関する許諾範囲" FontSize="18" />
+                    <TextBlock DockPanel.Dock="Top" Text="{DynamicResource VRMImportWindow_PersonationPermission}" FontSize="18" />
                     <Grid DockPanel.Dock="Top">
                         <Grid.Resources>
                             <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
@@ -83,8 +83,8 @@
                             <ColumnDefinition />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="アバターに人格を" Margin="0,10,0,0"/>
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="与えることの許諾範囲" Margin="0,0,0,10"/>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource VRMImportWindow_WhoCanPerform1}" Margin="0,10,0,0"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource VRMImportWindow_WhoCanPerform2}" Margin="0,0,0,10"/>
                         <Border Margin="3" BorderBrush="DarkGray" BorderThickness="1" Grid.Row="2" Grid.Column="0">
                             <StackPanel Orientation="Vertical">
                                 <TextBlock FontSize="98" FontFamily="Meiryo UI" FontWeight="ExtraBold">
@@ -129,8 +129,8 @@
                                 </TextBlock>
                             </StackPanel>
                         </Border>
-                        <TextBlock Grid.Row="0" Grid.Column="1" Text="このアバターを用いて" Margin="0,10,0,0"/>
-                        <TextBlock Grid.Row="1" Grid.Column="1" Text="暴力表現を演じることの許可" Margin="0,0,0,10"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{DynamicResource VRMImportWindow_PerformViolentActs1}" Margin="0,10,0,0"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{DynamicResource VRMImportWindow_PerformViolentActs2}" Margin="0,0,0,10"/>
                         <Border Margin="3" BorderBrush="DarkGray" BorderThickness="1" Grid.Row="2" Grid.Column="1">
                             <StackPanel Orientation="Vertical">
                                 <TextBlock FontSize="98" FontFamily="Meiryo UI" FontWeight="ExtraBold">
@@ -168,8 +168,8 @@
                                 </TextBlock>
                             </StackPanel>
                         </Border>
-                        <TextBlock Grid.Row="0" Grid.Column="2" Text="このアバターを用いて" Margin="0,10,0,0"/>
-                        <TextBlock Grid.Row="1" Grid.Column="2" Text="性的表現を演じることの許可" Margin="0,0,0,10"/>
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="{DynamicResource VRMImportWindow_PerformSexualActs1}" Margin="0,10,0,0"/>
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="{DynamicResource VRMImportWindow_PerformSexualActs2}" Margin="0,0,0,10"/>
                         <Border Margin="3" BorderBrush="DarkGray" BorderThickness="1" Grid.Row="2" Grid.Column="2">
                             <StackPanel Orientation="Vertical">
                                 <TextBlock FontSize="98" FontFamily="Meiryo UI" FontWeight="ExtraBold">
@@ -207,7 +207,7 @@
                                 </TextBlock>
                             </StackPanel>
                         </Border>
-                        <TextBlock Grid.Row="0" Grid.Column="3" Grid.RowSpan="2" Text="商用利用の許可"/>
+                        <TextBlock Grid.Row="0" Grid.Column="3" Grid.RowSpan="2" Text="{DynamicResource VRMImportWindow_ForCommercialUse}"/>
                         <Border Margin="3" BorderBrush="DarkGray" BorderThickness="1" Grid.Row="2" Grid.Column="3">
                             <StackPanel Orientation="Vertical">
                                 <TextBlock FontSize="98" FontFamily="Meiryo UI" FontWeight="ExtraBold">
@@ -261,10 +261,10 @@
                             <ColumnDefinition />
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="1" Text="その他のライセンス条件"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{DynamicResource VRMImportWindow_PersonationOtherLicenseUrl}"/>
                         <TextBox Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" Text="{Binding OtherPermissionUrl}"/>
-                        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Text="再配布・改変に関する許諾範囲" FontSize="18"/>
-                        <TextBlock Grid.Row="2" Grid.Column="1" Text="ライセンスタイプ"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Text="{DynamicResource VRMImportWindow_LicenseRedistributionAndModification}" FontSize="18"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{DynamicResource VRMImportWindow_LicenseType}"/>
                         <TextBox Grid.Row="2" Grid.Column="3" >
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
@@ -301,11 +301,11 @@
                                 </Style>
                             </TextBox.Style>
                         </TextBox>
-                        <TextBlock Grid.Row="3" Grid.Column="1" Text="その他のライセンス条件"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{DynamicResource VRMImportWindow_OtherLicenseUrl}"/>
                         <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding OtherLicenseUrl}"/>
                         <UniformGrid Grid.Row="1" Grid.Column="4" Grid.RowSpan="4" Rows="2" Width="200">
-                            <Button Content="同意して読み込み" Margin="10,10,10,5" Name="ImportButton" Click="ImportButton_Click" ToolTip="必ずモデルのライセンス・許諾範囲を確認して問題なければ使用することができます"/>
-                            <Button Content="同意しない" Margin="10,5,10,10" Name="IgnoreButton" Click="IgnoreButton_Click" ToolTip="読み込みをキャンセルします"/>
+                            <Button Content="{DynamicResource VRMImportWindow_ImportButton}" Margin="10,10,10,5" Name="ImportButton" Click="ImportButton_Click" ToolTip="{DynamicResource VRMImportWindow_ImportButton_ToolTip}"/>
+                            <Button Content="{DynamicResource VRMImportWindow_IgnoreButton}" Margin="10,5,10,10" Name="IgnoreButton" Click="IgnoreButton_Click" ToolTip="{DynamicResource VRMImportWindow_IgnoreButton_ToolTip}"/>
                         </UniformGrid>
                     </Grid>
                 </DockPanel>

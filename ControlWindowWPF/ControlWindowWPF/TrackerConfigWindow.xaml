@@ -1,13 +1,13 @@
-﻿<Window x:Class="ControlWindowWPF.TrackerConfigWindow"
+﻿<Window x:Class="VirtualMotionCaptureControlPanel.TrackerConfigWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ControlWindowWPF"
+        xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
         mc:Ignorable="d"
-        Title="トラッカー割り当て設定" Height="500" Width="800" Loaded="Window_Loaded">
+        Title="{DynamicResource TrackerConfigWindowTitle}" Height="500" Width="800" Loaded="Window_Loaded">
     <DockPanel>
-        <GroupBox Header="トラッカー割り当て" DockPanel.Dock="Top">
+        <GroupBox Header="{DynamicResource TrackerConfigWindow_TrackerConfig}" DockPanel.Dock="Top">
             <Grid>
                 <Grid.Resources>
                     <Style TargetType="ComboBox">
@@ -32,67 +32,67 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Grid.Row="0" Text="頭"/>
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="{DynamicResource TrackerConfigWindow_Head}"/>
                 <ComboBox  Grid.Column="1" Grid.Row="0" Name="HeadTrackerComboBox" VerticalAlignment="Center" Margin="20,5,5,5" ItemsSource="{Binding TrackersList}" SelectionChanged="ComboBox_SelectionChanged"/>
-                <TextBlock Grid.Column="0" Grid.Row="1" Text="左手"/>
+                <TextBlock Grid.Column="0" Grid.Row="1" Text="{DynamicResource TrackerConfigWindow_LeftHand}"/>
                 <ComboBox  Grid.Column="1" Grid.Row="1" Name="LeftHandTrackerComboBox" VerticalAlignment="Center" Margin="20,5,5,5" ItemsSource="{Binding TrackersList}" SelectionChanged="ComboBox_SelectionChanged"/>
-                <TextBlock Grid.Column="0" Grid.Row="2" Text="右手"/>
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="{DynamicResource TrackerConfigWindow_RightHand}"/>
                 <ComboBox  Grid.Column="1" Grid.Row="2" Name="RightHandTrackerComboBox" VerticalAlignment="Center" Margin="20,5,5,5" ItemsSource="{Binding TrackersList}" SelectionChanged="ComboBox_SelectionChanged"/>
-                <TextBlock Grid.Column="0" Grid.Row="3" Text="腰"/>
+                <TextBlock Grid.Column="0" Grid.Row="3" Text="{DynamicResource TrackerConfigWindow_Pelvis}"/>
                 <ComboBox  Grid.Column="1" Grid.Row="3" Name="PelvisTrackerComboBox" VerticalAlignment="Center" Margin="20,5,5,5" ItemsSource="{Binding TrackersList}" SelectionChanged="ComboBox_SelectionChanged"/>
-                <TextBlock Grid.Column="0" Grid.Row="4" Text="左足"/>
+                <TextBlock Grid.Column="0" Grid.Row="4" Text="{DynamicResource TrackerConfigWindow_LeftFoot}"/>
                 <ComboBox  Grid.Column="1" Grid.Row="4" Name="LeftFootTrackerComboBox" VerticalAlignment="Center" Margin="20,5,5,5" ItemsSource="{Binding TrackersList}" SelectionChanged="ComboBox_SelectionChanged"/>
-                <TextBlock Grid.Column="0" Grid.Row="5" Text="右足"/>
+                <TextBlock Grid.Column="0" Grid.Row="5" Text="{DynamicResource TrackerConfigWindow_RightFoot}"/>
                 <ComboBox  Grid.Column="1" Grid.Row="5" Name="RightFootTrackerComboBox" VerticalAlignment="Center" Margin="20,5,5,5" ItemsSource="{Binding TrackersList}" SelectionChanged="ComboBox_SelectionChanged"/>
             </Grid>
         </GroupBox>
         <DockPanel DockPanel.Dock="Bottom">
-            <Button DockPanel.Dock="Right" Content="閉じる" Width="100" Name="CloseButton" Click="CloseButton_Click" ToolTip="設定を閉じます"/>
-            <GroupBox Header="手のトラッカーオフセット設定 (トラッカーの底面のネジ穴から手首の関節中心までの距離を設定)">
+            <Button DockPanel.Dock="Right" Content="{DynamicResource TrackerConfigWindow_Close}" Width="100" Name="CloseButton" Click="CloseButton_Click" ToolTip="設定を閉じます"/>
+            <GroupBox Header="{DynamicResource TrackerConfigWindow_TrackerOffset}">
                 <StackPanel>
                     <UniformGrid Rows="1" Columns="2">
-                        <GroupBox Header="左手">
+                        <GroupBox Header="{DynamicResource TrackerConfigWindow_OffsetLeftHand}">
                             <UniformGrid Rows="1" Columns="2">
                                 <StackPanel>
                                     <DockPanel Margin="0,10,0,0">
                                         <TextBlock Text="20 mm" DockPanel.Dock="Right" x:Name="LeftHandTrackerOffsetToBottomTextBlock"/>
-                                        <TextBlock Text="　トラッカー底面方向"/>
+                                        <TextBlock Text="{DynamicResource TrackerConfigWindow_LeftHandTrackerToBottom}"/>
                                     </DockPanel>
-                                    <Slider Minimum="-200" Maximum="200" Value="20" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" Name="LeftHandTrackerOffsetToBottomSlider" Margin="0,0,0,5" ToolTip="左手に付けるトラッカーの底面方向(マイナスはスイッチ方向)" ValueChanged="TrackerOffsetSlider_ValueChanged"/>
+                                    <Slider Minimum="-200" Maximum="200" Value="20" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" Name="LeftHandTrackerOffsetToBottomSlider" Margin="0,0,0,5" ToolTip="{DynamicResource TrackerConfigWindow_LeftHandTrackerToBottom_ToolTip}" ValueChanged="TrackerOffsetSlider_ValueChanged"/>
                                 </StackPanel>
                                 <StackPanel>
                                     <DockPanel Margin="0,10,0,0">
                                         <TextBlock Text="50 mm" DockPanel.Dock="Right" x:Name="LeftHandTrackerOffsetToBodySideTextBlock"/>
-                                        <TextBlock Text="　肩方向"/>
+                                        <TextBlock Text="{DynamicResource TrackerConfigWindow_LeftHandTrackerToShoulder}"/>
                                     </DockPanel>
-                                    <Slider Minimum="-200" Maximum="200" Value="50" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" Name="LeftHandTrackerOffsetToBodySideSlider" Margin="0,0,0,5" ToolTip="左手に付けるトラッカーの肩方向(マイナスは指先方向)" ValueChanged="TrackerOffsetSlider_ValueChanged"/>
+                                    <Slider Minimum="-200" Maximum="200" Value="50" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" Name="LeftHandTrackerOffsetToBodySideSlider" Margin="0,0,0,5" ToolTip="{DynamicResource TrackerConfigWindow_LeftHandTrackerToShoulder_ToolTip}" ValueChanged="TrackerOffsetSlider_ValueChanged"/>
                                 </StackPanel>
                             </UniformGrid>
                         </GroupBox>
-                        <GroupBox Header="右手">
+                        <GroupBox Header="{DynamicResource TrackerConfigWindow_OffsetRightHand}">
                             <UniformGrid Rows="1" Columns="2">
                                 <StackPanel>
                                     <DockPanel Margin="0,10,0,0">
                                         <TextBlock Text="20 mm" DockPanel.Dock="Right" x:Name="RightHandTrackerOffsetToBottomTextBlock"/>
-                                        <TextBlock Text="　トラッカー底面方向"/>
+                                        <TextBlock Text="{DynamicResource TrackerConfigWindow_RightHandTrackerToBottom}"/>
                                     </DockPanel>
-                                    <Slider Minimum="-200" Maximum="200" Value="20" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" Name="RightHandTrackerOffsetToBottomSlider" Margin="0,0,0,5" ToolTip="右手に付けるトラッカーの底面方向(マイナスはスイッチ方向)" ValueChanged="TrackerOffsetSlider_ValueChanged"/>
+                                    <Slider Minimum="-200" Maximum="200" Value="20" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" Name="RightHandTrackerOffsetToBottomSlider" Margin="0,0,0,5" ToolTip="{DynamicResource TrackerConfigWindow_RightHandTrackerToBottom_ToolTip}" ValueChanged="TrackerOffsetSlider_ValueChanged"/>
                                 </StackPanel>
                                 <StackPanel>
                                     <DockPanel Margin="0,10,0,0">
                                         <TextBlock Text="50 mm" DockPanel.Dock="Right" x:Name="RightHandTrackerOffsetToBodySideTextBlock"/>
-                                        <TextBlock Text="　肩方向"/>
+                                        <TextBlock Text="{DynamicResource TrackerConfigWindow_RightHandTrackerToShoulder}"/>
                                     </DockPanel>
-                                    <Slider Minimum="-200" Maximum="200" Value="50" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" Name="RightHandTrackerOffsetToBodySideSlider" Margin="0,0,0,5" ToolTip="右手に付けるトラッカーの肩方向(マイナスは指先方向)" ValueChanged="TrackerOffsetSlider_ValueChanged"/>
+                                    <Slider Minimum="-200" Maximum="200" Value="50" SmallChange="1" LargeChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Foreground="Transparent" Name="RightHandTrackerOffsetToBodySideSlider" Margin="0,0,0,5" ToolTip="{DynamicResource TrackerConfigWindow_RightHandTrackerToShoulder_ToolTip}" ValueChanged="TrackerOffsetSlider_ValueChanged"/>
                                 </StackPanel>
                             </UniformGrid>
                         </GroupBox>
                     </UniformGrid>
-                    <TextBlock Text="手の甲に付ける場合：20mm,50mm程度  手首(腕)に付ける場合：20mm,-50mm程度"/>
+                    <TextBlock Text="{DynamicResource TrackerConfigWindow_TrackerOffsetDescription}"/>
                 </StackPanel>
             </GroupBox>
         </DockPanel>
-        <GroupBox Header="トラッカー一覧(移動したトラッカーに色が付きます)">
+        <GroupBox Header="{DynamicResource TrackerConfigWindow_TrackersList}">
             <ListBox Name="TrackersListBox" ItemsSource="{Binding TrackersViewList}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>

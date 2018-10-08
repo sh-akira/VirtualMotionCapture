@@ -1,27 +1,27 @@
-﻿<Window x:Class="ControlWindowWPF.SettingWindow"
+﻿<Window x:Class="VirtualMotionCaptureControlPanel.SettingWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ControlWindowWPF"
+        xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
         mc:Ignorable="d"
-        Title="設定" SizeToContent="Height" Width="300" ResizeMode="CanMinimize">
+        Title="{DynamicResource SettingWindowTitle}" SizeToContent="Height" Width="300" ResizeMode="CanMinimize">
     <StackPanel Orientation="Vertical">
-        <GroupBox Header="手の角度調整" DockPanel.Dock="Top">
+        <GroupBox Header="{DynamicResource SettingWindow_HandRotate}" DockPanel.Dock="Top">
             <UniformGrid Rows="1" Columns="2">
-                <GroupBox Header="左手">
-                    <ComboBox Name="LeftHandRotateComboBox" SelectionChanged="LeftHandRotateComboBox_SelectionChanged" ToolTip="左手の回転を調整します。実際の手とモデルの手の回転がずれている場合に変更してください"/>
+                <GroupBox Header="{DynamicResource SettingWindow_LeftHand}">
+                    <ComboBox Name="LeftHandRotateComboBox" SelectionChanged="LeftHandRotateComboBox_SelectionChanged" ToolTip="{DynamicResource SettingWindow_LeftHand_ToolTip}"/>
                 </GroupBox>
-                <GroupBox Header="右手">
-                    <ComboBox Name="RightHandRotateComboBox" SelectionChanged="RightHandRotateComboBox_SelectionChanged" ToolTip="右手の回転を調整します。実際の手とモデルの手の回転がずれている場合に変更してください"/>
+                <GroupBox Header="{DynamicResource SettingWindow_RightHand}">
+                    <ComboBox Name="RightHandRotateComboBox" SelectionChanged="RightHandRotateComboBox_SelectionChanged" ToolTip="{DynamicResource SettingWindow_RightHand_ToolTip}"/>
                 </GroupBox>
             </UniformGrid>
         </GroupBox>
-        <GroupBox Header="externalcamera.cfg(フリーカメラ座標を設定)">
+        <GroupBox Header="{DynamicResource SettingWindow_ExternalCameraConfig}">
             <DockPanel>
-                <Button DockPanel.Dock="Bottom" Content="externalcamera.cfgを開く" Name="ExternalCameraConigButton" Click="ExternalCameraConigButton_Click" ToolTip="VRゲームにモデルを合成するためのexternalcamera.cfgを読み込んでフリーカメラに設定します"/>
-                <TextBlock Text="コントローラー番号："/>
-                <ComboBox Name="ControllerComboBox" SelectedIndex="0" ToolTip="externalcameraの基準になるコントローラーを選択(変更する際はcfgファイルを開きなおしてください)">
+                <Button DockPanel.Dock="Bottom" Content="{DynamicResource SettingWindow_OpenExternalCameraConfig}" Name="ExternalCameraConigButton" Click="ExternalCameraConigButton_Click" ToolTip="{DynamicResource SettingWindow_OpenExternalCameraConfig_ToolTip}"/>
+                <TextBlock Text="{DynamicResource SettingWindow_ControllerNumber}"/>
+                <ComboBox Name="ControllerComboBox" SelectedIndex="0" ToolTip="{DynamicResource SettingWindow_ControllerNumber_ToolTip}">
                     <ComboBoxItem>1</ComboBoxItem>
                     <ComboBoxItem>2</ComboBoxItem>
                     <ComboBoxItem>3</ComboBoxItem>
@@ -29,9 +29,9 @@
                 </ComboBox>
             </DockPanel>
         </GroupBox>
-        <GroupBox Header="使用トラッカー設定">
-            <Button Content="トラッカー割り当て設定を開く" Name="TrackerConfigButton" Click="TrackerConfigButton_Click"/>
+        <GroupBox Header="{DynamicResource SettingWindow_TrackerConfig}">
+            <Button Content="{DynamicResource SettingWindow_OpenTrackerConfig}" Name="TrackerConfigButton" Click="TrackerConfigButton_Click"/>
         </GroupBox>
-        <Button Content="閉じる" HorizontalAlignment="Right" Width="100" Name="CloseButton" Click="CloseButton_Click" ToolTip="設定を閉じます"/>
+        <Button Content="{DynamicResource SettingWindow_Close}" HorizontalAlignment="Right" Width="100" Name="CloseButton" Click="CloseButton_Click" ToolTip="{DynamicResource SettingWindow_Close_ToolTip}"/>
     </StackPanel>
 </Window>

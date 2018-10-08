@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityNamedPipe;
 
-namespace ControlWindowWPF
+namespace VirtualMotionCaptureControlPanel
 {
     public class Globals
     {

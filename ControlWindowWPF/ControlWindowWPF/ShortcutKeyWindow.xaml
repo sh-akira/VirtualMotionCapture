@@ -1,27 +1,27 @@
-﻿<Window x:Class="ControlWindowWPF.ShortcutKeyWindow"
+﻿<Window x:Class="VirtualMotionCaptureControlPanel.ShortcutKeyWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ControlWindowWPF"
+        xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
         mc:Ignorable="d"
-        Title="ショートカットキー設定" SizeToContent="Height" Width="800">
+        Title="{DynamicResource ShortcutKeyWindowTitle}" SizeToContent="Height" Width="800">
     <DockPanel>
         <StackPanel Orientation="Vertical" DockPanel.Dock="Right">
-            <GroupBox Header="タッチパッド/スティックの割り当て状態">
+            <GroupBox Header="{DynamicResource ShortcutKeyWindow_TouchPadStickInfo}">
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal">
                         <StackPanel Orientation="Vertical">
-                            <GroupBox Header="左コントローラー">
+                            <GroupBox Header="{DynamicResource ShortcutKeyWindow_LeftController}">
                                 <Grid>
                                     <Image Width="150" Height="150" Name="LeftImage"/>
-                                    <Canvas Name="LeftCanvas" ToolTip="左タッチパッド/スティックの分割領域を設定します。四角いつまみをドラッグして大きさの変更ができます"/>
+                                    <Canvas Name="LeftCanvas" ToolTip="{DynamicResource ShortcutKeyWindow_LeftController_ToolTip}"/>
                                 </Grid>
                             </GroupBox>
-                            <CheckBox Content="センターキー" Name="LeftCenterKeyCheckBox" Checked="LeftCenterKeyCheckBox_Checked" Unchecked="LeftCenterKeyCheckBox_Unchecked" ToolTip="左タッチパッドの中心を円形のキーとして独立させます/Oculus Touchの無反応領域"/>
+                            <CheckBox Content="{DynamicResource ShortcutKeyWindow_LeftCenterKey}" Name="LeftCenterKeyCheckBox" Checked="LeftCenterKeyCheckBox_Checked" Unchecked="LeftCenterKeyCheckBox_Unchecked" ToolTip="{DynamicResource ShortcutKeyWindow_LeftCenterKey_ToolTip}"/>
                             <DockPanel>
-                                <TextBlock Text="分割数：" Margin="10,0,0,0"/>
-                                <ScrollBar Height="30" Minimum="1" Maximum="30" Value="1" DockPanel.Dock="Right" Name="LeftTouchPadUpDown" ValueChanged="LeftTouchPadUpDown_ValueChanged" SmallChange="1" ToolTip="左コントローラーのタッチパッド/スティック分割数を指定します">
+                                <TextBlock Text="{DynamicResource ShortcutKeyWindow_LeftDivideCount}" Margin="10,0,0,0"/>
+                                <ScrollBar Height="30" Minimum="1" Maximum="30" Value="1" DockPanel.Dock="Right" Name="LeftTouchPadUpDown" ValueChanged="LeftTouchPadUpDown_ValueChanged" SmallChange="1" ToolTip="{DynamicResource ShortcutKeyWindow_LeftDivideCount_ToolTip}">
                                     <ScrollBar.LayoutTransform>
                                         <RotateTransform Angle="180"/>
                                     </ScrollBar.LayoutTransform>
@@ -30,16 +30,16 @@
                             </DockPanel>
                         </StackPanel>
                         <StackPanel Orientation="Vertical">
-                            <GroupBox Header="右コントローラー">
+                            <GroupBox Header="{DynamicResource ShortcutKeyWindow_RightController}">
                                 <Grid>
                                     <Image Width="150" Height="150" Name="RightImage"/>
-                                    <Canvas Name="RightCanvas" ToolTip="右タッチパッド/スティックの分割領域を設定します。四角いつまみをドラッグして大きさの変更ができます"/>
+                                    <Canvas Name="RightCanvas" ToolTip="{DynamicResource ShortcutKeyWindow_RightController_ToolTip}"/>
                                 </Grid>
                             </GroupBox>
-                            <CheckBox Content="センターキー" Name="RightCenterKeyCheckBox" Checked="RightCenterKeyCheckBox_Checked" Unchecked="RightCenterKeyCheckBox_Unchecked" ToolTip="右タッチパッドの中心を円形のキーとして独立させます/Oculus Touchの無反応領域"/>
+                            <CheckBox Content="{DynamicResource ShortcutKeyWindow_RightCenterKey}" Name="RightCenterKeyCheckBox" Checked="RightCenterKeyCheckBox_Checked" Unchecked="RightCenterKeyCheckBox_Unchecked" ToolTip="{DynamicResource ShortcutKeyWindow_RightCenterKey_ToolTip}"/>
                             <DockPanel>
-                                <TextBlock Text="分割数：" Margin="10,0,0,0"/>
-                                <ScrollBar Height="30" Minimum="1" Maximum="30" Value="1" DockPanel.Dock="Right" Name="RightTouchPadUpDown" ValueChanged="RightTouchPadUpDown_ValueChanged" SmallChange="1" ToolTip="右コントローラーのタッチパッド/スティック分割数を指定します">
+                                <TextBlock Text="{DynamicResource ShortcutKeyWindow_RightDivideCount}" Margin="10,0,0,0"/>
+                                <ScrollBar Height="30" Minimum="1" Maximum="30" Value="1" DockPanel.Dock="Right" Name="RightTouchPadUpDown" ValueChanged="RightTouchPadUpDown_ValueChanged" SmallChange="1" ToolTip="{DynamicResource ShortcutKeyWindow_RightDivideCount_ToolTip}">
                                     <ScrollBar.LayoutTransform>
                                         <RotateTransform Angle="180"/>
                                     </ScrollBar.LayoutTransform>
@@ -49,35 +49,35 @@
                         </StackPanel>
                     </StackPanel>
                     <DockPanel>
-                        <Button DockPanel.Dock="Right" Content="適用" Name="TouchPadApplyButton" Click="TouchPadApplyButton_Click" Width="100" IsEnabled="False" ToolTip="指定したタッチパッドの割り当てを保存します(保存しないと有効になりません)"/>
-                        <TextBlock Text="Oculus Touchはセンターキー領域がスティックの無反応領域になります" TextWrapping="Wrap" Width="170" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                        <Button DockPanel.Dock="Right" Content="{DynamicResource ShortcutKeyWindow_Apply}" Name="TouchPadApplyButton" Click="TouchPadApplyButton_Click" Width="100" IsEnabled="False" ToolTip="{DynamicResource ShortcutKeyWindow_Apply_ToolTip}"/>
+                        <TextBlock Text="{DynamicResource ShortcutKeyWindow_OculusTouchDescription}" TextWrapping="Wrap" Width="170" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
                     </DockPanel>
                 </StackPanel>
             </GroupBox>
             <UniformGrid Rows="2" Columns="2">
-                <Button Content="ハンドジェスチャー追加" Name="HandGestureAddButton" Click="HandGestureAddButton_Click" ToolTip="指の形を変更するショートカットキーを追加します"/>
-                <Button Content="表情追加" Name="FaceAddButton" Click="FaceAddButton_Click" ToolTip="表情を変更するショートカットキーを追加します"/>
-                <Button Content="機能追加" Name="FunctionAddButton" Click="FunctionAddButton_Click" ToolTip="機能を実行するショートカットキーを追加します"/>
+                <Button Content="{DynamicResource ShortcutKeyWindow_AddHandGesture}" Name="HandGestureAddButton" Click="HandGestureAddButton_Click" ToolTip="{DynamicResource ShortcutKeyWindow_AddHandGesture_ToolTip}"/>
+                <Button Content="{DynamicResource ShortcutKeyWindow_AddFacingExpression}" Name="FaceAddButton" Click="FaceAddButton_Click" ToolTip="{DynamicResource ShortcutKeyWindow_AddFacingExpression_ToolTip}"/>
+                <Button Content="{DynamicResource ShortcutKeyWindow_AddFunction}" Name="FunctionAddButton" Click="FunctionAddButton_Click" ToolTip="{DynamicResource ShortcutKeyWindow_AddFunction_ToolTip}"/>
             </UniformGrid>
-            <GroupBox Header="プリセットから選択">
-                <ComboBox VerticalAlignment="Center" Name="PresetComboBox" SelectionChanged="PresetComboBox_SelectionChanged" ToolTip="プリセットからショートカットキー一覧を読み込みます。現在の設定は上書きされますので注意してください"/>
+            <GroupBox Header="{DynamicResource ShortcutKeyWindow_SelectPreset}">
+                <ComboBox VerticalAlignment="Center" Name="PresetComboBox" SelectionChanged="PresetComboBox_SelectionChanged" ToolTip="{DynamicResource ShortcutKeyWindow_SelectPreset_ToolTip}"/>
             </GroupBox>
-            <GroupBox Header="カスタム名称(保存でプリセットへ追加)">
+            <GroupBox Header="{DynamicResource ShortcutKeyWindow_CustomName}">
                 <DockPanel>
-                    <Button Content="保存" DockPanel.Dock="Right" Height="20" Width="50" Name="CustomSaveButton" Click="CustomSaveButton_Click" ToolTip="現在のショートカットキー一覧をプリセットに保存します"/>
-                    <TextBox VerticalAlignment="Center" Name="CustomNameTextBox" ToolTip="プリセットに保存する名称を指定してください"/>
+                    <Button Content="{DynamicResource ShortcutKeyWindow_SavePreset}" DockPanel.Dock="Right" Height="20" Width="50" Name="CustomSaveButton" Click="CustomSaveButton_Click" ToolTip="{DynamicResource ShortcutKeyWindow_SavePreset_ToolTip}"/>
+                    <TextBox VerticalAlignment="Center" Name="CustomNameTextBox" ToolTip="{DynamicResource ShortcutKeyWindow_CustomName_ToolTip}"/>
                 </DockPanel>
             </GroupBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
-            <Button Content="編集" Width="100" Name="EditButton" Click="EditButton_Click" ToolTip="選択されているショートカットキーを編集します"/>
-            <Button Content="削除" Width="100" Name="RemoveButton" Click="RemoveButton_Click" ToolTip="選択されているショートカットキーを削除します"/>
+            <Button Content="{DynamicResource ShortcutKeyWindow_Edit}" Width="100" Name="EditButton" Click="EditButton_Click" ToolTip="{DynamicResource ShortcutKeyWindow_Edit_ToolTip}"/>
+            <Button Content="{DynamicResource ShortcutKeyWindow_Remove}" Width="100" Name="RemoveButton" Click="RemoveButton_Click" ToolTip="{DynamicResource ShortcutKeyWindow_Remove_ToolTip}"/>
         </StackPanel>
-        <DataGrid CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" SelectionMode="Single" Name="KeysDataGrid" AutoGenerateColumns="False" ToolTip="登録されているショートカットキー一覧です">
+        <DataGrid CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" SelectionMode="Single" Name="KeysDataGrid" AutoGenerateColumns="False" ToolTip="{DynamicResource ShortcutKeyWindow_ShortcutKeyList_ToolTip}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="種別" Binding="{Binding TypeStr}" MinWidth="40"/>
-                <DataGridTextColumn Header="名称" Binding="{Binding NameStr}" MinWidth="100"/>
-                <DataGridTextColumn Header="使用キー" Binding="{Binding KeysStr}" Width="*"/>
+                <DataGridTextColumn Header="{DynamicResource ShortcutKeyWindow_Type}" Binding="{Binding TypeStr}" MinWidth="40"/>
+                <DataGridTextColumn Header="{DynamicResource ShortcutKeyWindow_Name}" Binding="{Binding NameStr}" MinWidth="100"/>
+                <DataGridTextColumn Header="{DynamicResource ShortcutKeyWindow_UseKey}" Binding="{Binding KeysStr}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>
