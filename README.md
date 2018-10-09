@@ -66,6 +66,14 @@ WinMR機器での動作確認もされています(必ず両手のコントロ�
   
   
 # 更新履歴
+Ver 0.16  
+・膝が内側に曲がる  
+・映像左右反転  
+・English version  
+・キャリブレーション時VRoidテカテカ  
+・トラッカー4つ以上  
+・頭だけ動かしたときにSpringBoneが動いてない  
+  
 Ver 0.15  
 ・NormalMapのテカテカ再度修正(VRoid v0.2.12向け)  
 ・OVRLipSyncを1.28に更新  
