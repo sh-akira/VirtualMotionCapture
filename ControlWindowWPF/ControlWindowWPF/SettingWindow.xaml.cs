@@ -26,7 +26,9 @@ namespace VirtualMotionCaptureControlPanel
         private ObservableCollection<float> RotationItems = new ObservableCollection<float> { -180.0f, -135.0f, -90.0f, -45.0f, 0.0f, 45.0f, 90.0f, 135.0f, 180.0f };
         public SettingWindow()
         {
+            var language = Globals.CurrentLanguage;
             InitializeComponent();
+            LanguageComboBox.SelectedItem = language;
             LeftHandRotateComboBox.ItemsSource = RotationItems;
             RightHandRotateComboBox.ItemsSource = RotationItems;
             if (RotationItems.Contains(Globals.LeftHandRotation)) LeftHandRotateComboBox.SelectedItem = Globals.LeftHandRotation;
@@ -97,6 +99,10 @@ namespace VirtualMotionCaptureControlPanel
             var language = LanguageComboBox.SelectedItem as string;
             if (string.IsNullOrWhiteSpace(language)) language = "Japanese";
             LanguageSelector.ChangeLanguage(language);
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

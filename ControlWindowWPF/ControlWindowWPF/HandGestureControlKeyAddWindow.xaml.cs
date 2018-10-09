@@ -111,7 +111,7 @@ namespace VirtualMotionCaptureControlPanel
             }
             else
             {
-                KeysTextBox.Text = "ここをクリックして、操作するキーを押してください";
+                KeysTextBox.Text = LanguageSelector.Get("KeysWatermark");
             }
         }
 
@@ -153,7 +153,7 @@ namespace VirtualMotionCaptureControlPanel
             if (RightHandRadioButton.IsChecked == true) command.RightEnable = true;
             if (BothHandRadioButton.IsChecked == true) command.LeftEnable = command.RightEnable = true;
             await Globals.Client.SendCommandAsync(command);
-            CustomNameTextBox.Text = "カスタム";
+            CustomNameTextBox.Text = LanguageSelector.Get("Custom");
         }
 
         private List<Slider> Sliders = new List<Slider>();
@@ -188,7 +188,7 @@ namespace VirtualMotionCaptureControlPanel
         {
             if (KeyConfigs.Count == 0)
             {
-                MessageBox.Show("キーが設定されていません。割り当てるキーを設定してください", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(LanguageSelector.Get("KeyNotFoundError"), LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -201,7 +201,7 @@ namespace VirtualMotionCaptureControlPanel
             }
             else
             {
-                name = "カスタム";
+                name = LanguageSelector.Get("Custom");
             }
             action.Name = name;
             action.OnlyPress = false;
@@ -227,13 +227,13 @@ namespace VirtualMotionCaptureControlPanel
         {
             if (Globals.CheckFileNameIsValid(CustomNameTextBox.Text) == false)
             {
-                MessageBox.Show("ファイル名として使用できない文字が含まれています。変更してください", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(LanguageSelector.Get("FileNameIsInvalidError"), LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             var path = Globals.GetCurrentAppDir() + PresetDirectory + "\\" + CustomNameTextBox.Text + ".json";
             if (File.Exists(path))
             {
-                if (MessageBox.Show("既に存在する名前です。上書きしますか？", "確認", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.Cancel)
+                if (MessageBox.Show(LanguageSelector.Get("Overwritten"), LanguageSelector.Get("Confirm"), MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.Cancel)
                 {
                     return;
                 }

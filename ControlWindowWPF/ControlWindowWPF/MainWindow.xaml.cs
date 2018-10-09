@@ -33,6 +33,17 @@ namespace VirtualMotionCaptureControlPanel
             "左見(LOOKLEFT)",
             "右見(LOOKRIGHT)",
         };
+        private ObservableCollection<string> DefaultFacesBase = new ObservableCollection<string> {
+            "NEUTRAL",
+            "JOY",
+            "ANGRY",
+            "SORROW",
+            "FUN",
+            "LOOKUP",
+            "LOOKDOWN",
+            "LOOKLEFT",
+            "LOOKRIGHT",
+        };
 
         private ObservableCollection<string> LipSyncDevices = new ObservableCollection<string>();
 
@@ -46,14 +57,14 @@ namespace VirtualMotionCaptureControlPanel
             }
             Globals.Connect(App.CommandLineArgs[1]);
             Globals.Client.ReceivedEvent += Client_Received;
-            DefaultFaceComboBox.ItemsSource = DefaultFaces;
+            DefaultFaceComboBox.ItemsSource = DefaultFacesBase;
             LipSyncDeviceComboBox.ItemsSource = LipSyncDevices;
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             await GetLipSyncDevice();
-            while(Globals.Client.IsConnected != true)
+            while (Globals.Client.IsConnected != true)
             {
                 await Task.Delay(100);
             }
@@ -201,11 +212,12 @@ namespace VirtualMotionCaptureControlPanel
                 {
                     var d = (PipeCommands.LoadDefaultFace)e.Data;
                     if (string.IsNullOrEmpty(d.face)) return;
-                    if (DefaultFaceComboBox.Items.Contains(d.face) == false)
+                    if (DefaultFaces.Contains(d.face) == false)
                     {
                         DefaultFaces.Insert(0, d.face);
+                        DefaultFacesBase.Insert(0, d.face);
                     }
-                    DefaultFaceComboBox.SelectedItem = d.face;
+                    DefaultFaceComboBox.SelectedIndex = DefaultFaces.IndexOf(d.face);
                 }
                 else if (e.CommandType == typeof(PipeCommands.LoadBlinkTimeMin))
                 {
@@ -277,7 +289,7 @@ namespace VirtualMotionCaptureControlPanel
         {
             if (string.IsNullOrWhiteSpace(Globals.CurrentVRMFilePath))
             {
-                MessageBox.Show("VRMモデルが読み込まれていません。先に読み込んでください。", "エラー");
+                MessageBox.Show(LanguageSelector.Get("MainWindow_ErrorCalibration"), LanguageSelector.Get("Error"));
                 return;
             }
             var win = new CalibrationWindow();
@@ -453,7 +465,7 @@ namespace VirtualMotionCaptureControlPanel
         private async void LipSyncDeviceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (LipSyncDeviceComboBox.SelectedItem == null) return;
-            if (LipSyncDeviceComboBox.SelectedItem.ToString().StartsWith("エラー:")) return;
+            if (LipSyncDeviceComboBox.SelectedItem.ToString().StartsWith(LanguageSelector.Get("Error") + ":")) return;
             await Globals.Client.SendCommandAsync(new PipeCommands.SetLipSyncDevice { device = LipSyncDeviceComboBox.SelectedItem.ToString() });
         }
 
@@ -491,7 +503,7 @@ namespace VirtualMotionCaptureControlPanel
             }
             else
             {
-                LipSyncDevices.Insert(0, device.StartsWith("エラー:") ? device : "エラー:" + device);
+                LipSyncDevices.Insert(0, device.StartsWith(LanguageSelector.Get("Error") + ":") ? device : LanguageSelector.Get("Error") + ":" + device);
             }
         }
 
@@ -522,7 +534,7 @@ namespace VirtualMotionCaptureControlPanel
         private async void DefaultFaceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (DefaultFaceComboBox.SelectedItem == null) return;
-            await Globals.Client.SendCommandAsync(new PipeCommands.SetDefaultFace { face = DefaultFaceComboBox.SelectedItem.ToString() });
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetDefaultFace { face = DefaultFaces[DefaultFaceComboBox.SelectedIndex] });
         }
 
         private async void BlinkTimeMinSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

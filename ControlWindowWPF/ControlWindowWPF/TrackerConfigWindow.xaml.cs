@@ -32,12 +32,10 @@ namespace VirtualMotionCaptureControlPanel
 
         public class TrackerInfo : ViewModelBase
         {
-            private static string auto = "自動検出";
-            private static string notfound = "[未接続]";
             public string TypeName { get { return Getter<string>(); } set { Setter(value); RaisePropertyChanged(nameof(Text)); } }
             public string SerialNumber { get { return Getter<string>(); } set { Setter(value); RaisePropertyChanged(nameof(Text)); } }
             public bool NotFound { get { return Getter<bool>(); } set { Setter(value); RaisePropertyChanged(nameof(Text)); } }
-            public string Text { get { return $"{TypeName} ({SerialNumber ?? auto}){(NotFound ? notfound : string.Empty)}"; } }
+            public string Text { get { return $"{LanguageSelector.GetByTypeName(TypeName)} ({SerialNumber ?? LanguageSelector.Get("AutoDetect")}){(NotFound ? LanguageSelector.Get("NotFound") : string.Empty)}"; } }
             public Brush Background { get { return Getter<Brush>(); } set { Setter(value); } }
 
             public Tuple<string, string> ToTuple()

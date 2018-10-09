@@ -2,6 +2,28 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel.Resources"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <system:String x:Key="Error">エラー</system:String>
+    <system:String x:Key="Confirm">確認</system:String>
+    <system:String x:Key="Custom">カスタム</system:String>
+    <system:String x:Key="KeysWatermark">ここをクリックして、操作するキーを押してください</system:String>
+    <system:String x:Key="KeyNotFoundError">キーが設定されていません。割り当てるキーを設定してください</system:String>
+    <system:String x:Key="FunctionNotFoundError">機能が選択されていません。割り当てる機能を選択してください</system:String>
+    <system:String x:Key="FileNameIsInvalidError">ファイル名として使用できない文字が含まれています。変更してください</system:String>
+    <system:String x:Key="Overwritten">既に存在する名前です。上書きしますか？</system:String>
+    <system:String x:Key="BothHand">両手</system:String>
+    <system:String x:Key="RightHand">右手</system:String>
+    <system:String x:Key="LeftHand">左手</system:String>
+    <system:String x:Key="FacialExpression">表情</system:String>
+    <system:String x:Key="Function">機能</system:String>
+    <system:String x:Key="AutoDetect">自動検出</system:String>
+    <system:String x:Key="NotFound">[未接続]</system:String>
+
+    <system:String x:Key="HMD">HMD</system:String>
+    <system:String x:Key="Controller">コントローラー</system:String>
+    <system:String x:Key="Tracker">トラッカー</system:String>
+    <system:String x:Key="NoAssign">割り当てしない</system:String>
+
     <!-- MainWindow -->
     <system:String x:Key="MainWindowTitle">コントロールパネル</system:String>
     
@@ -91,6 +113,8 @@
     <system:String x:Key="MainWindow_TimeToOpen_ToolTip">まぶたが開くアニメーションの時間を設定します。大きくするとゆっくりまぶたが開きます</system:String>
     <system:String x:Key="MainWindow_ClosedTime_ToolTip">まぶたを閉じて開くまでの時間を設定します。大きくするとしばらくまぶたを閉じたままになります</system:String>
 
+    <system:String x:Key="MainWindow_ErrorCalibration">VRMモデルが読み込まれていません。先に読み込んでください。</system:String>
+
 
     <!-- CalibrationWindow -->
     <system:String x:Key="CalibrationWindowTitle">キャリブレーション</system:String>
@@ -99,6 +123,8 @@
     <system:String x:Key="CalibrationWindow_CalibrationDescription2">正面を向いて画面に表示されているモデルと同じポーズをとってください</system:String>
     <system:String x:Key="CalibrationWindow_CalibrationButton">キャリブレーション</system:String>
     <system:String x:Key="CalibrationWindow_CalibrationButton_ToolTip">キャリブレーションを開始します</system:String>
+    <system:String x:Key="CalibrationWindow_Status_Calibrating">取得中</system:String>
+    <system:String x:Key="CalibrationWindow_Status_Finish">完了</system:String>
 
 
     <!-- VRMImportWindow -->
@@ -134,6 +160,22 @@
     <system:String x:Key="VRMImportWindow_ImportButton_ToolTip">必ずモデルのライセンス・許諾範囲を確認して問題なければ使用することができます</system:String>
     <system:String x:Key="VRMImportWindow_IgnoreButton_ToolTip">読み込みをキャンセルします</system:String>
 
+    <system:String x:Key="Unknown">不明な値です</system:String>
+    <system:String x:Key="OnlyAuthor">作者のみ許可</system:String>
+    <system:String x:Key="OnlyAllowed">許可された人のみ</system:String>
+    <system:String x:Key="AllowAll">全員に許可</system:String>
+    <system:String x:Key="Disallow">不許可</system:String>
+    <system:String x:Key="Allow">許可</system:String>
+    <system:String x:Key="LicenseType_RedistributionProhibited">再配布禁止(Redistribution Prohibited)</system:String>
+    <system:String x:Key="LicenseType_CC0">著作権放棄(CC0)</system:String>
+    <system:String x:Key="LicenseType_CC_BY">Creative Commons CC BYライセンス(CC_BY)</system:String>
+    <system:String x:Key="LicenseType_CC_BY_NC">Creative Commons CC BY NCライセンス(CC_BY_NC)</system:String>
+    <system:String x:Key="LicenseType_CC_BY_SA">Creative Commons CC BY SAライセンス(CC_BY_SA)</system:String>
+    <system:String x:Key="LicenseType_CC_BY_NC_SA">Creative Commons CC BY NC SAライセンス(CC_BY_NC_SA)</system:String>
+    <system:String x:Key="LicenseType_CC_BY_ND">Creative Commons CC BY NDライセンス(CC_BY_ND)</system:String>
+    <system:String x:Key="LicenseType_CC_BY_NC_ND">Creative Commons CC BY NC NDライセンス(CC_BY_NC_ND)</system:String>
+    <system:String x:Key="LicenseType_Other">その他(Other)</system:String>
+    
     
     <!-- SettingWindow -->
     <system:String x:Key="SettingWindowTitle">設定</system:String>
@@ -280,5 +322,16 @@
     <system:String x:Key="FunctionKeyAddWindow_Register">登録</system:String>
     <system:String x:Key="FunctionKeyAddWindow_Cancel">キャンセル</system:String>
     <system:String x:Key="FunctionKeyAddWindow_SelectFunction">割り当て機能選択</system:String>
+
+    <system:String x:Key="Functions_ShowControlPanel">コントロールパネル再表示</system:String>
+    <system:String x:Key="Functions_ColorGreen">背景GB</system:String>
+    <system:String x:Key="Functions_ColorBlue">背景BB</system:String>
+    <system:String x:Key="Functions_ColorWhite">背景白</system:String>
+    <system:String x:Key="Functions_ColorCustom">背景カスタム</system:String>
+    <system:String x:Key="Functions_ColorTransparent">背景透過</system:String>
+    <system:String x:Key="Functions_FrontCamera">フロントカメラ</system:String>
+    <system:String x:Key="Functions_BackCamera">バックカメラ</system:String>
+    <system:String x:Key="Functions_FreeCamera">フリーカメラ</system:String>
+    <system:String x:Key="Functions_PositionFixedCamera">座標追従カメラ</system:String>
 
 </ResourceDictionary>

@@ -86,8 +86,8 @@
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource VRMImportWindow_WhoCanPerform1}" Margin="0,10,0,0"/>
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource VRMImportWindow_WhoCanPerform2}" Margin="0,0,0,10"/>
                         <Border Margin="3" BorderBrush="DarkGray" BorderThickness="1" Grid.Row="2" Grid.Column="0">
-                            <StackPanel Orientation="Vertical">
-                                <TextBlock FontSize="98" FontFamily="Meiryo UI" FontWeight="ExtraBold">
+                            <Grid>
+                                <TextBlock FontSize="98" FontFamily="Meiryo UI" FontWeight="ExtraBold" VerticalAlignment="Top">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
                                             <Setter Property="Text" Value="?"/>
@@ -109,25 +109,25 @@
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
-                                <TextBlock Margin="0,12">
+                                <TextBlock Margin="0,12" VerticalAlignment="Bottom">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                            <Setter Property="Text" Value="不明な値です"/>
+                                            <Setter Property="Text" Value="{DynamicResource Unknown}"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding AllowedUser}" Value="0">
-                                                    <Setter Property="Text" Value="作者のみ許可"/>
+                                                    <Setter Property="Text" Value="{DynamicResource OnlyAuthor}"/>
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding AllowedUser}" Value="1">
-                                                    <Setter Property="Text" Value="許可された人のみ"/>
+                                                    <Setter Property="Text" Value="{DynamicResource OnlyAllowed}"/>
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding AllowedUser}" Value="2">
-                                                    <Setter Property="Text" Value="全員に許可"/>
+                                                    <Setter Property="Text" Value="{DynamicResource AllowAll}"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
-                            </StackPanel>
+                            </Grid>
                         </Border>
                         <TextBlock Grid.Row="0" Grid.Column="1" Text="{DynamicResource VRMImportWindow_PerformViolentActs1}" Margin="0,10,0,0"/>
                         <TextBlock Grid.Row="1" Grid.Column="1" Text="{DynamicResource VRMImportWindow_PerformViolentActs2}" Margin="0,0,0,10"/>
@@ -154,13 +154,13 @@
                                 <TextBlock Margin="0,12">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                            <Setter Property="Text" Value="不明な値です"/>
+                                            <Setter Property="Text" Value="{DynamicResource Unknown}"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding ViolentUssage}" Value="0">
-                                                    <Setter Property="Text" Value="不許可"/>
+                                                    <Setter Property="Text" Value="{DynamicResource Disallow}"/>
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding ViolentUssage}" Value="1">
-                                                    <Setter Property="Text" Value="許可"/>
+                                                    <Setter Property="Text" Value="{DynamicResource Allow}"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -193,13 +193,13 @@
                                 <TextBlock Margin="0,12">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                            <Setter Property="Text" Value="不明な値です"/>
+                                            <Setter Property="Text" Value="{DynamicResource Unknown}"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding SexualUssage}" Value="0">
-                                                    <Setter Property="Text" Value="不許可"/>
+                                                    <Setter Property="Text" Value="{DynamicResource Disallow}"/>
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding SexualUssage}" Value="1">
-                                                    <Setter Property="Text" Value="許可"/>
+                                                    <Setter Property="Text" Value="{DynamicResource Allow}"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -231,13 +231,13 @@
                                 <TextBlock Margin="0,12">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                            <Setter Property="Text" Value="不明な値です"/>
+                                            <Setter Property="Text" Value="{DynamicResource Unknown}"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding CommercialUssage}" Value="0">
-                                                    <Setter Property="Text" Value="不許可"/>
+                                                    <Setter Property="Text" Value="{DynamicResource Disallow}"/>
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding CommercialUssage}" Value="1">
-                                                    <Setter Property="Text" Value="許可"/>
+                                                    <Setter Property="Text" Value="{DynamicResource Allow}"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -268,34 +268,34 @@
                         <TextBox Grid.Row="2" Grid.Column="3" >
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-                                    <Setter Property="Text" Value="不明な値です"/>
+                                    <Setter Property="Text" Value="{DynamicResource Unknown}"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding LicenseType}" Value="0">
-                                            <Setter Property="Text" Value="再配布禁止(Redistribution Prohibited)"/>
+                                            <Setter Property="Text" Value="{DynamicResource LicenseType_RedistributionProhibited}"/>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding LicenseType}" Value="1">
-                                            <Setter Property="Text" Value="著作権放棄(CC0)"/>
+                                            <Setter Property="Text" Value="{DynamicResource LicenseType_CC0}"/>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding LicenseType}" Value="2">
-                                            <Setter Property="Text" Value="Creative Commons CC BYライセンス(CC_BY)"/>
+                                            <Setter Property="Text" Value="{DynamicResource LicenseType_CC_BY}"/>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding LicenseType}" Value="3">
-                                            <Setter Property="Text" Value="Creative Commons CC BY NCライセンス(CC_BY_NC)"/>
+                                            <Setter Property="Text" Value="{DynamicResource LicenseType_CC_BY_NC}"/>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding LicenseType}" Value="4">
-                                            <Setter Property="Text" Value="Creative Commons CC BY SAライセンス(CC_BY_SA)"/>
+                                            <Setter Property="Text" Value="{DynamicResource LicenseType_CC_BY_SA}"/>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding LicenseType}" Value="5">
-                                            <Setter Property="Text" Value="Creative Commons CC BY NC SAライセンス(CC_BY_NC_SA)"/>
+                                            <Setter Property="Text" Value="{DynamicResource LicenseType_CC_BY_NC_SA}"/>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding LicenseType}" Value="6">
-                                            <Setter Property="Text" Value="Creative Commons CC BY NDライセンス(CC_BY_ND)"/>
+                                            <Setter Property="Text" Value="{DynamicResource LicenseType_CC_BY_ND}"/>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding LicenseType}" Value="7">
-                                            <Setter Property="Text" Value="Creative Commons CC BY NC NDライセンス(CC_BY_NC_ND)"/>
+                                            <Setter Property="Text" Value="{DynamicResource LicenseType_CC_BY_NC_ND}"/>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding LicenseType}" Value="8">
-                                            <Setter Property="Text" Value="その他(Other)"/>
+                                            <Setter Property="Text" Value="{DynamicResource LicenseType_Other}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

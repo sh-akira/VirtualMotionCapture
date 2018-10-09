@@ -58,10 +58,10 @@ namespace VirtualMotionCaptureControlPanel
                 StatusTextBlock.Text = timercount.ToString();
                 await Task.Delay(1000);
             } while (timercount-- > 0);
-            StatusTextBlock.Text = "取得中";
+            StatusTextBlock.Text = LanguageSelector.Get("CalibrationWindow_Status_Calibrating");
             await Globals.Client.SendCommandAsync(new PipeCommands.Calibrate());
             await Task.Delay(1000);
-            StatusTextBlock.Text = "完了";
+            StatusTextBlock.Text = LanguageSelector.Get("CalibrationWindow_Status_Finish");
             await Task.Delay(1000);
             Close();
         }

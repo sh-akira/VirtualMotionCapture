@@ -17,6 +17,7 @@ namespace VirtualMotionCaptureControlPanel
         private void Application_Startup(object sender, StartupEventArgs e) {
             if (e.Args.Length == 0) return;
             CommandLineArgs = e.Args;
+            LanguageSelector.SetAutoLanguage();
         }
     }
 }

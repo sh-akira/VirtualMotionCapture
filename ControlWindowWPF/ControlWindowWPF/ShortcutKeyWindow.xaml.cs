@@ -367,17 +367,17 @@ namespace VirtualMotionCaptureControlPanel
                 var typestr = "";
                 if (key.HandAction)
                 {
-                    if (key.Hand == Hands.Both) typestr += "両手";
-                    else if (key.Hand == Hands.Right) typestr += "右手";
-                    else typestr += "左手";
+                    if (key.Hand == Hands.Both) typestr += LanguageSelector.Get("BothHand");
+                    else if (key.Hand == Hands.Right) typestr += LanguageSelector.Get("RightHand");
+                    else typestr += LanguageSelector.Get("LeftHand");
                 }
                 if (key.FaceAction)
                 {
-                    typestr += "表情";
+                    typestr += LanguageSelector.Get("FacialExpression");
                 }
                 if (key.FunctionAction)
                 {
-                    typestr += "機能";
+                    typestr += LanguageSelector.Get("Function");
                 }
 
                 var keysstr = "";
@@ -675,13 +675,13 @@ namespace VirtualMotionCaptureControlPanel
         {
             if (Globals.CheckFileNameIsValid(CustomNameTextBox.Text) == false)
             {
-                MessageBox.Show("ファイル名として使用できない文字が含まれています。変更してください", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(LanguageSelector.Get("FileNameIsInvalidError"), LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             var path = Globals.GetCurrentAppDir() + PresetDirectory + "\\" + CustomNameTextBox.Text + ".json";
             if (File.Exists(path))
             {
-                if (MessageBox.Show("既に存在する名前です。上書きしますか？", "確認", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.Cancel)
+                if (MessageBox.Show(LanguageSelector.Get("Overwritten"), LanguageSelector.Get("Confirm"), MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.Cancel)
                 {
                     return;
                 }

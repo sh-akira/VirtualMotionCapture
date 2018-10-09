@@ -1,143 +1,184 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel.Resources"
-                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+                    xmlns:system="clr-namespace:System;assembly=mscorlib"
+                    xml:space="preserve">
+
+    <system:String x:Key="Error">Error</system:String>
+    <system:String x:Key="Confirm">Confirm</system:String>
+    <system:String x:Key="Custom">Custom</system:String>
+    <system:String x:Key="KeysWatermark">Click here and press controller button</system:String>
+    <system:String x:Key="KeyNotFoundError">Key is not set. Please set Keys</system:String>
+    <system:String x:Key="FunctionNotFoundError">Function is not set. Please set function</system:String>
+    <system:String x:Key="FileNameIsInvalidError">Characters that can not be used as file names are included. Please change</system:String>
+    <system:String x:Key="Overwritten">It is a name that already exists. Do you want to overwrite?</system:String>
+    <system:String x:Key="BothHand">Both</system:String>
+    <system:String x:Key="RightHand">Right</system:String>
+    <system:String x:Key="LeftHand">Left</system:String>
+    <system:String x:Key="FacialExpression">Face</system:String>
+    <system:String x:Key="Function">Func</system:String>
+    <system:String x:Key="AutoDetect">AutoDetect</system:String>
+    <system:String x:Key="NotFound">[NotFound]</system:String>
+
+    <system:String x:Key="HMD">HMD</system:String>
+    <system:String x:Key="Controller">Controller</system:String>
+    <system:String x:Key="Tracker">Tracker</system:String>
+    <system:String x:Key="NoAssign">No Assign</system:String>
+
     <!-- MainWindow -->
-    <system:String x:Key="MainWindowTitle">コントロールパネル</system:String>
-    
-    <system:String x:Key="MainWindow_Setting">設定</system:String>
-    <system:String x:Key="MainWindow_LoadSetting">設定の読込</system:String>
-    <system:String x:Key="MainWindow_ImportVRM">VRM読込</system:String>
-    <system:String x:Key="MainWindow_ShortcutKey">ショートカットキー</system:String>
-    <system:String x:Key="MainWindow_SaveSetting">設定の保存</system:String>
-    <system:String x:Key="MainWindow_Calibration">キャリブレーション</system:String>
-    <system:String x:Key="MainWindow_AdvancedSetting">詳細設定</system:String>
-    <system:String x:Key="MainWindow_Setting_ToolTip">設定</system:String>
-    <system:String x:Key="MainWindow_LoadSetting_ToolTip">全ての設定をファイルから読み込みます</system:String>
-    <system:String x:Key="MainWindow_ImportVRM_ToolTip">VRMモデルを読み込みます</system:String>
-    <system:String x:Key="MainWindow_ShortcutKey_ToolTip">コントローラーやキーボードで操作する機能を設定します</system:String>
-    <system:String x:Key="MainWindow_SaveSetting_ToolTip">全ての設定をファイルへ保存します</system:String>
-    <system:String x:Key="MainWindow_Calibration_ToolTip">モデル操作のキャリブレーションを行います</system:String>
-    <system:String x:Key="MainWindow_AdvancedSetting_ToolTip">その他の詳細な設定を開きます</system:String>
-                          
-    <system:String x:Key="MainWindow_Background">背景色</system:String>
+    <system:String x:Key="MainWindowTitle">Control panel</system:String>
+
+    <system:String x:Key="MainWindow_Setting">Settings</system:String>
+    <system:String x:Key="MainWindow_LoadSetting">Open settings</system:String>
+    <system:String x:Key="MainWindow_ImportVRM">Open VRM</system:String>
+    <system:String x:Key="MainWindow_ShortcutKey">Shortcut key</system:String>
+    <system:String x:Key="MainWindow_SaveSetting">Save settings</system:String>
+    <system:String x:Key="MainWindow_Calibration">Calibration</system:String>
+    <system:String x:Key="MainWindow_AdvancedSetting">Setting</system:String>
+    <system:String x:Key="MainWindow_Setting_ToolTip">Settings</system:String>
+    <system:String x:Key="MainWindow_LoadSetting_ToolTip">Read all settings from json file</system:String>
+    <system:String x:Key="MainWindow_ImportVRM_ToolTip">Load VRM model</system:String>
+    <system:String x:Key="MainWindow_ShortcutKey_ToolTip">Set the function to operate with controller and keyboard</system:String>
+    <system:String x:Key="MainWindow_SaveSetting_ToolTip">Save all settings to json file</system:String>
+    <system:String x:Key="MainWindow_Calibration_ToolTip">Calibrate the model operation</system:String>
+    <system:String x:Key="MainWindow_AdvancedSetting_ToolTip">Open other detailed settings</system:String>
+
+    <system:String x:Key="MainWindow_Background">Background</system:String>
     <system:String x:Key="MainWindow_GB">GB</system:String>
     <system:String x:Key="MainWindow_BB">BB</system:String>
-    <system:String x:Key="MainWindow_White240">白240</system:String>
-    <system:String x:Key="MainWindow_Custom">カスタム</system:String>
-    <system:String x:Key="MainWindow_Transparent">透過</system:String>
-    <system:String x:Key="MainWindow_WindowAlwaysTopMost">ウインドウを常に手前に表示</system:String>
-    <system:String x:Key="MainWindow_HideWindowBorder">ウインドウ枠の非表示</system:String>
-    <system:String x:Key="MainWindow_MouseInputPassThrough">マウス操作を透過</system:String>
-    <system:String x:Key="MainWindow_Background_ToolTip">背景色</system:String>
-    <system:String x:Key="MainWindow_GB_ToolTip">背景色をグリーンバックにします</system:String>
-    <system:String x:Key="MainWindow_BB_ToolTip">背景色をブルーバックにします</system:String>
-    <system:String x:Key="MainWindow_White240_ToolTip">背景色を白色(RGB:240,240,240)に変更します</system:String>
-    <system:String x:Key="MainWindow_Custom_ToolTip">背景色をカスタム色に設定します。右クリックで色の変更が可能です</system:String>
-    <system:String x:Key="MainWindow_Transparent_ToolTip">背景を透過して下のウインドウが見えるようにします。自動でウインドウ枠が非表示になります</system:String>
-    <system:String x:Key="MainWindow_WindowAlwaysTopMost_ToolTip">ウインドウを常に手前に表示してほかのウインドウの下に隠れないようにします</system:String>
-    <system:String x:Key="MainWindow_HideWindowBorder_ToolTip">ウインドウの枠を非表示にしてキャプチャーの邪魔にならないようにします</system:String>
-    <system:String x:Key="MainWindow_MouseInputPassThrough_ToolTip">マウス操作(クリック等)を透過して、下のウインドウを操作できるようにします。(ショートカットキー設定でコントロールパネルを再表示するキーを設定することをお勧めします)</system:String>
-                          
-    <system:String x:Key="MainWindow_Camera">カメラ</system:String>
-    <system:String x:Key="MainWindow_Front">フロント</system:String>
-    <system:String x:Key="MainWindow_Back">バック</system:String>
-    <system:String x:Key="MainWindow_Free">フリー</system:String>
-    <system:String x:Key="MainWindow_PositionFixed">座標追従</system:String>
-    <system:String x:Key="MainWindow_Mirror">ミラー</system:String>
-    <system:String x:Key="MainWindow_ShowGrid">グリッドの表示</system:String>
-    <system:String x:Key="MainWindow_CameraDescription">カメラは画面をクリックしてアクティブにしてから操作できます</system:String>
-    <system:String x:Key="MainWindow_Camera_ToolTip">カメラ</system:String>
-    <system:String x:Key="MainWindow_Front_ToolTip">フロントカメラ(モデルを常に中心に表示・正面固定・マウス中ボタンドラッグとスクロール可能)</system:String>
-    <system:String x:Key="MainWindow_Back_ToolTip">バックカメラ(モデルを常に中心に表示・背面固定・マウス中ボタンドラッグとスクロール可能)</system:String>
-    <system:String x:Key="MainWindow_Free_ToolTip">フリーカメラ(画面上でマウス中ボタンドラッグ、スクロール、右ボタンドラッグで自由に移動できます)</system:String>
-    <system:String x:Key="MainWindow_PositionFixed_ToolTip">座標追従カメラ(モデルとカメラの距離と回転を固定・画面上でマウス中ボタンドラッグ、スクロール、右ボタンドラッグで自由に移動できます)</system:String>
-    <system:String x:Key="MainWindow_Mirror_ToolTip">表示されている映像を左右反転します</system:String>
-    <system:String x:Key="MainWindow_ShowGrid_ToolTip">画面上にグリッドを表示してカメラ位置を設定しやすくします</system:String>
-                          
-    <system:String x:Key="MainWindow_LipSync">リップシンク</system:String>
-    <system:String x:Key="MainWindow_EnableLipSync">リップシンク</system:String>
-    <system:String x:Key="MainWindow_MaxWeight">最大の音素のみ</system:String>
-    <system:String x:Key="MainWindow_MaxWeightEmphasis">最大音素の協調</system:String>
-    <system:String x:Key="MainWindow_Device">使用するデバイス</system:String>
-    <system:String x:Key="MainWindow_DeviceRefresh">更新</system:String>
-    <system:String x:Key="MainWindow_Gain">ゲイン(感度)</system:String>
-    <system:String x:Key="MainWindow_WeightThreashold">音素の最小</system:String>
-    <system:String x:Key="MainWindow_LipSync_ToolTip">リップシンク</system:String>
-    <system:String x:Key="MainWindow_EnableLipSync_ToolTip">音声でのリップシンクを有効にします</system:String>
-    <system:String x:Key="MainWindow_MaxWeight_ToolTip">あいうえおの中で検出した最も大きい音素のみ使用して口をはっきりと動かします</system:String>
-    <system:String x:Key="MainWindow_MaxWeightEmphasis_ToolTip">あいうえおの中で検出した最も大きい音素を強調して口がしっかりと開くようにします</system:String>
-    <system:String x:Key="MainWindow_Device_ToolTip">音声入力に使用するデバイスを選択します</system:String>
-    <system:String x:Key="MainWindow_DeviceRefresh_ToolTip">デバイスの一覧を更新します</system:String>
-    <system:String x:Key="MainWindow_Gain_ToolTip">ゲイン(感度)を調整します。声が小さくうまく反応しない場合大きくしてください</system:String>
-    <system:String x:Key="MainWindow_WeightThreashold_ToolTip">あいうえおの音素の最小レベルを設定します。ノイズで口が動いてしまう場合に大きくしてください</system:String>
-                          
-    <system:String x:Key="MainWindow_Face">表情制御</system:String>
-    <system:String x:Key="MainWindow_AutoBlink">自動まばたき</system:String>
-    <system:String x:Key="MainWindow_DefaultFace">デフォルトの表情</system:String>
-    <system:String x:Key="MainWindow_TimeToNextBlink">次のまばたきまで(秒)</system:String>
-    <system:String x:Key="MainWindow_MinTime">最短</system:String>
-    <system:String x:Key="MainWindow_MaxTime">最長</system:String>
-    <system:String x:Key="MainWindow_AnimationTime">アニメーション時間(秒)</system:String>
-    <system:String x:Key="MainWindow_TimeToClose">閉じ</system:String>
-    <system:String x:Key="MainWindow_TimeToOpen">開き</system:String>
-    <system:String x:Key="MainWindow_ClosedTime">閉じたままの時間(秒)</system:String>
-    <system:String x:Key="MainWindow_Face_ToolTip">表情制御</system:String>
-    <system:String x:Key="MainWindow_AutoBlink_ToolTip">自動でまばたきする機能を有効にします</system:String>
-    <system:String x:Key="MainWindow_DefaultFace_ToolTip">デフォルトの表情をNEUTRALから別の表情に置き換えます</system:String>
-    <system:String x:Key="MainWindow_MinTime_ToolTip">次にまばたきが発生するまでの最小秒数を指定します。最短から最長までの間の時間でランダムにまばたきします</system:String>
-    <system:String x:Key="MainWindow_MaxTime_ToolTip">次にまばたきが発生するまでの最大秒数を指定します。最短から最長までの間の時間でランダムにまばたきします</system:String>
-    <system:String x:Key="MainWindow_TimeToClose_ToolTip">まぶたが閉じるアニメーションの時間を設定します。大きくするとゆっくりまぶたを閉じます</system:String>
-    <system:String x:Key="MainWindow_TimeToOpen_ToolTip">まぶたが開くアニメーションの時間を設定します。大きくするとゆっくりまぶたが開きます</system:String>
-    <system:String x:Key="MainWindow_ClosedTime_ToolTip">まぶたを閉じて開くまでの時間を設定します。大きくするとしばらくまぶたを閉じたままになります</system:String>
+    <system:String x:Key="MainWindow_White240">White</system:String>
+    <system:String x:Key="MainWindow_Custom">Custom</system:String>
+    <system:String x:Key="MainWindow_Transparent">None</system:String>
+    <system:String x:Key="MainWindow_WindowAlwaysTopMost">Window Always TopMost</system:String>
+    <system:String x:Key="MainWindow_HideWindowBorder">Hide Window Border</system:String>
+    <system:String x:Key="MainWindow_MouseInputPassThrough">Mouse input pass through</system:String>
+    <system:String x:Key="MainWindow_Background_ToolTip">Background color</system:String>
+    <system:String x:Key="MainWindow_GB_ToolTip">Set background color to green</system:String>
+    <system:String x:Key="MainWindow_BB_ToolTip">Set background color to blue</system:String>
+    <system:String x:Key="MainWindow_White240_ToolTip">Set background color to white (RGB: 240, 240, 240)</system:String>
+    <system:String x:Key="MainWindow_Custom_ToolTip">Set background color to custom color. You can change the color by right click</system:String>
+    <system:String x:Key="MainWindow_Transparent_ToolTip">Set background color to transparent background. The window border is automatically hidden</system:String>
+    <system:String x:Key="MainWindow_WindowAlwaysTopMost_ToolTip">Always show the window in front</system:String>
+    <system:String x:Key="MainWindow_HideWindowBorder_ToolTip">Hide the border of the window</system:String>
+    <system:String x:Key="MainWindow_MouseInputPassThrough_ToolTip">Pass through mouse operation (click etc.) so that you can operate the window below. (It is recommended to set the key to redisplay the control panel in shortcut key setting)</system:String>
+
+    <system:String x:Key="MainWindow_Camera">Camera</system:String>
+    <system:String x:Key="MainWindow_Front">Front</system:String>
+    <system:String x:Key="MainWindow_Back">Back</system:String>
+    <system:String x:Key="MainWindow_Free">Free</system:String>
+    <system:String x:Key="MainWindow_PositionFixed">Position Fixed</system:String>
+    <system:String x:Key="MainWindow_Mirror">Mirror</system:String>
+    <system:String x:Key="MainWindow_ShowGrid">Show Grid</system:String>
+    <system:String x:Key="MainWindow_CameraDescription">Camera can be operated when window is active</system:String>
+    <system:String x:Key="MainWindow_Camera_ToolTip">Camera</system:String>
+    <system:String x:Key="MainWindow_Front_ToolTip">Front camera (Model always displayed at the center, Fixed in front. Middle mouse button drag and scroll)</system:String>
+    <system:String x:Key="MainWindow_Back_ToolTip">Back camera (Model always displayed at the center, Fixed on the back. Middle mouse button drag and scroll)</system:String>
+    <system:String x:Key="MainWindow_Free_ToolTip">Free camera (You can freely move by middle mouse button drag, scroll, right button drag on the screen)</system:String>
+    <system:String x:Key="MainWindow_PositionFixed_ToolTip">Position fixed camera (Fixed distance and rotation of model and camera. You can freely move by dragging the middle mouse button, scrolling, right button drag on the screen)</system:String>
+    <system:String x:Key="MainWindow_Mirror_ToolTip">Horizontal inversion of the displayed image</system:String>
+    <system:String x:Key="MainWindow_ShowGrid_ToolTip">It makes it easy to set the camera position by displaying the grid on the screen</system:String>
+
+    <system:String x:Key="MainWindow_LipSync">LipSync</system:String>
+    <system:String x:Key="MainWindow_EnableLipSync">LipSync</system:String>
+    <system:String x:Key="MainWindow_MaxWeight">Only largest</system:String>
+    <system:String x:Key="MainWindow_MaxWeightEmphasis">Max coordination</system:String>
+    <system:String x:Key="MainWindow_Device">Device</system:String>
+    <system:String x:Key="MainWindow_DeviceRefresh">Update</system:String>
+    <system:String x:Key="MainWindow_Gain">Gain (sensitivity)</system:String>
+    <system:String x:Key="MainWindow_WeightThreashold">Min phoneme</system:String>
+    <system:String x:Key="MainWindow_LipSync_ToolTip">LipSync</system:String>
+    <system:String x:Key="MainWindow_EnableLipSync_ToolTip">Enable lip sync by audio</system:String>
+    <system:String x:Key="MainWindow_MaxWeight_ToolTip">Move mouth clearly using only the largest phoneme</system:String>
+    <system:String x:Key="MainWindow_MaxWeightEmphasis_ToolTip">Emphasize the largest phoneme so that the mouth will open steadily</system:String>
+    <system:String x:Key="MainWindow_Device_ToolTip">Select the device to use for voice input</system:String>
+    <system:String x:Key="MainWindow_DeviceRefresh_ToolTip">Update device list</system:String>
+    <system:String x:Key="MainWindow_Gain_ToolTip">Adjust the gain (sensitivity). Please make it big if your voice does not respond well</system:String>
+    <system:String x:Key="MainWindow_WeightThreashold_ToolTip">Set the minimum level of a phoneme. Please enlarge if mouth moves due to noise</system:String>
+
+    <system:String x:Key="MainWindow_Face">Face</system:String>
+    <system:String x:Key="MainWindow_AutoBlink">Auto Blink</system:String>
+    <system:String x:Key="MainWindow_DefaultFace">Default face</system:String>
+    <system:String x:Key="MainWindow_TimeToNextBlink">Until next blink (sec)</system:String>
+    <system:String x:Key="MainWindow_MinTime">Min</system:String>
+    <system:String x:Key="MainWindow_MaxTime">Max</system:String>
+    <system:String x:Key="MainWindow_AnimationTime">Animation time (sec)</system:String>
+    <system:String x:Key="MainWindow_TimeToClose">To close</system:String>
+    <system:String x:Key="MainWindow_TimeToOpen">To open</system:String>
+    <system:String x:Key="MainWindow_ClosedTime">Closed time (sec)</system:String>
+    <system:String x:Key="MainWindow_Face_ToolTip">Facial expression control</system:String>
+    <system:String x:Key="MainWindow_AutoBlink_ToolTip">Enable automatic blinking function</system:String>
+    <system:String x:Key="MainWindow_DefaultFace_ToolTip">Replace the default expression from NEUTRAL with another expression</system:String>
+    <system:String x:Key="MainWindow_MinTime_ToolTip">Specify the minimum seconds until the next blink occurs. Blink randomly in the time between Min and Max</system:String>
+    <system:String x:Key="MainWindow_MaxTime_ToolTip">Specify the maximum seconds until the next blink occurs. Blink randomly in the time between Min and Max</system:String>
+    <system:String x:Key="MainWindow_TimeToClose_ToolTip">Set the animation time when eyelid close. Eyelids close slowly as you enlarge</system:String>
+    <system:String x:Key="MainWindow_TimeToOpen_ToolTip">Set the animation time when eyelid open. Eyelids open slowly as you enlarge</system:String>
+    <system:String x:Key="MainWindow_ClosedTime_ToolTip">Set the time eyelid is closed. If it is enlarged it will keep the eyelid closed for a while</system:String>
+
+    <system:String x:Key="MainWindow_ErrorCalibration">VRM model has not been loaded. Please import first.</system:String>
 
 
     <!-- CalibrationWindow -->
-    <system:String x:Key="CalibrationWindowTitle">キャリブレーション</system:String>
+    <system:String x:Key="CalibrationWindowTitle">Calibration</system:String>
 
-    <system:String x:Key="CalibrationWindow_CalibrationDescription1">ボタンを押すかコントローラーのトリガーを引いてから5秒後にキャリブレーションされます</system:String>
-    <system:String x:Key="CalibrationWindow_CalibrationDescription2">正面を向いて画面に表示されているモデルと同じポーズをとってください</system:String>
-    <system:String x:Key="CalibrationWindow_CalibrationButton">キャリブレーション</system:String>
-    <system:String x:Key="CalibrationWindow_CalibrationButton_ToolTip">キャリブレーションを開始します</system:String>
-
+    <system:String x:Key="CalibrationWindow_CalibrationDescription1">Calibrate 5 seconds after push button or pull trigger on controller</system:String>
+    <system:String x:Key="CalibrationWindow_CalibrationDescription2">Turn to the front and take the same pose as the model displayed on the screen</system:String>
+    <system:String x:Key="CalibrationWindow_CalibrationButton">Calibration</system:String>
+    <system:String x:Key="CalibrationWindow_CalibrationButton_ToolTip">Start Calibration</system:String>
+    <system:String x:Key="CalibrationWindow_Status_Calibrating">取得中</system:String>
+    <system:String x:Key="CalibrationWindow_Status_Finish">完了</system:String>
 
     <!-- VRMImportWindow -->
-    <system:String x:Key="VRMImportWindowTitle">VRM読込</system:String>
+    <system:String x:Key="VRMImportWindowTitle">Import VRM</system:String>
 
-    <system:String x:Key="VRMImportWindow_VRMImportButton">VRM読み込み</system:String>
-    <system:String x:Key="VRMImportWindow_VRMImportOption">取り込みオプション</system:String>
-    <system:String x:Key="VRMImportWindow_NormalMapFix">NormalMapの自動修正(VRoid向け)</system:String>
-    <system:String x:Key="VRMImportWindow_RemoveHairNormalMap">NormalMap修正時に髪の毛のNormalMapを削除(VRoid向け)</system:String>
-    <system:String x:Key="VRMImportWindow_VRMInformation">VRM情報</system:String>
-    <system:String x:Key="VRMImportWindow_ModelTitle">モデル名</system:String>
-    <system:String x:Key="VRMImportWindow_ModelVersion">バージョン</system:String>
-    <system:String x:Key="VRMImportWindow_ModelAuthor">作者</system:String>
-    <system:String x:Key="VRMImportWindow_ModelReference">参照</system:String>
-    <system:String x:Key="VRMImportWindow_ModelContactInformation">連絡先</system:String>
-    <system:String x:Key="VRMImportWindow_PersonationPermission">アバターの人格に関する許諾範囲</system:String>
-    <system:String x:Key="VRMImportWindow_WhoCanPerform1">アバターに人格を</system:String>
-    <system:String x:Key="VRMImportWindow_WhoCanPerform2">与えることの許諾範囲</system:String>
-    <system:String x:Key="VRMImportWindow_PerformViolentActs1">このアバターを用いて</system:String>
-    <system:String x:Key="VRMImportWindow_PerformViolentActs2">暴力表現を演じることの許可</system:String>
-    <system:String x:Key="VRMImportWindow_PerformSexualActs1">このアバターを用いて</system:String>
-    <system:String x:Key="VRMImportWindow_PerformSexualActs2">性的表現を演じることの許可</system:String>
-    <system:String x:Key="VRMImportWindow_ForCommercialUse">商用利用の許可</system:String>
-    <system:String x:Key="VRMImportWindow_PersonationOtherLicenseUrl">その他のライセンス条件</system:String>
-    <system:String x:Key="VRMImportWindow_LicenseRedistributionAndModification">再配布・改変に関する許諾範囲</system:String>
-    <system:String x:Key="VRMImportWindow_LicenseType">ライセンスタイプ</system:String>
-    <system:String x:Key="VRMImportWindow_OtherLicenseUrl">その他のライセンス条件</system:String>
-    <system:String x:Key="VRMImportWindow_ImportButton">同意して読み込み</system:String>
-    <system:String x:Key="VRMImportWindow_IgnoreButton">同意しない</system:String>
-    <system:String x:Key="VRMImportWindow_VRMImportButton_ToolTip">VRMファイルを読み込みます</system:String>
-    <system:String x:Key="VRMImportWindow_RemoveHairNormalMap_ToolTip">NormalMapの自動修正がオンの時に有効になります</system:String>
-    <system:String x:Key="VRMImportWindow_Thumbnail_ToolTip">モデルのサムネイル画像です</system:String>
-    <system:String x:Key="VRMImportWindow_ImportButton_ToolTip">必ずモデルのライセンス・許諾範囲を確認して問題なければ使用することができます</system:String>
-    <system:String x:Key="VRMImportWindow_IgnoreButton_ToolTip">読み込みをキャンセルします</system:String>
+    <system:String x:Key="VRMImportWindow_VRMImportButton">Import VRM</system:String>
+    <system:String x:Key="VRMImportWindow_VRMImportOption">Import options</system:String>
+    <system:String x:Key="VRMImportWindow_NormalMapFix">Automatic NormalMap fix (for VRoid)</system:String>
+    <system:String x:Key="VRMImportWindow_RemoveHairNormalMap">Remove NormalMap of hair when automatic fix (for VRoid)</system:String>
+    <system:String x:Key="VRMImportWindow_VRMInformation">VRM information</system:String>
+    <system:String x:Key="VRMImportWindow_ModelTitle">Name</system:String>
+    <system:String x:Key="VRMImportWindow_ModelVersion">Version</system:String>
+    <system:String x:Key="VRMImportWindow_ModelAuthor">Author</system:String>
+    <system:String x:Key="VRMImportWindow_ModelReference">Reference</system:String>
+    <system:String x:Key="VRMImportWindow_ModelContactInformation">Contact</system:String>
+    <system:String x:Key="VRMImportWindow_PersonationPermission">Personation / Characterization Permission</system:String>
+    <system:String x:Key="VRMImportWindow_WhoCanPerform1">A person who can</system:String>
+    <system:String x:Key="VRMImportWindow_WhoCanPerform2">perform with this avatar</system:String>
+    <system:String x:Key="VRMImportWindow_PerformViolentActs1">Violent acts</system:String>
+    <system:String x:Key="VRMImportWindow_PerformViolentActs2">using this avatar</system:String>
+    <system:String x:Key="VRMImportWindow_PerformSexualActs1">Sexuality acts</system:String>
+    <system:String x:Key="VRMImportWindow_PerformSexualActs2">using this avatar</system:String>
+    <system:String x:Key="VRMImportWindow_ForCommercialUse">For commercial use</system:String>
+    <system:String x:Key="VRMImportWindow_PersonationOtherLicenseUrl">Other license URL</system:String>
+    <system:String x:Key="VRMImportWindow_LicenseRedistributionAndModification">Redistribution / Modifications License</system:String>
+    <system:String x:Key="VRMImportWindow_LicenseType">License Type</system:String>
+    <system:String x:Key="VRMImportWindow_OtherLicenseUrl">Other license URL</system:String>
+    <system:String x:Key="VRMImportWindow_ImportButton">Agree / Import</system:String>
+    <system:String x:Key="VRMImportWindow_IgnoreButton">Disagree</system:String>
+    <system:String x:Key="VRMImportWindow_VRMImportButton_ToolTip">Load VRM file</system:String>
+    <system:String x:Key="VRMImportWindow_RemoveHairNormalMap_ToolTip">It is enabled when automatic fix of NormalMap is on</system:String>
+    <system:String x:Key="VRMImportWindow_Thumbnail_ToolTip">Thumbnail image of the model</system:String>
+    <system:String x:Key="VRMImportWindow_ImportButton_ToolTip">Always be sure to check the license of the model, you can use it if there is no problem</system:String>
+    <system:String x:Key="VRMImportWindow_IgnoreButton_ToolTip">Cancel loading</system:String>
 
-    
+    <system:String x:Key="Unknown">Unknown</system:String>
+    <system:String x:Key="OnlyAuthor">Only Author</system:String>
+    <system:String x:Key="OnlyAllowed">　  Explicitly&#xa;Licensed Person</system:String>
+    <system:String x:Key="AllowAll">Everyone</system:String>
+    <system:String x:Key="Disallow">Disallow</system:String>
+    <system:String x:Key="Allow">Allow</system:String>
+    <system:String x:Key="LicenseType_RedistributionProhibited">Redistribution Prohibited</system:String>
+    <system:String x:Key="LicenseType_CC0">CC0</system:String>
+    <system:String x:Key="LicenseType_CC_BY">Creative Commons CC BY License(CC_BY)</system:String>
+    <system:String x:Key="LicenseType_CC_BY_NC">Creative Commons CC BY NC License(CC_BY_NC)</system:String>
+    <system:String x:Key="LicenseType_CC_BY_SA">Creative Commons CC BY SA License(CC_BY_SA)</system:String>
+    <system:String x:Key="LicenseType_CC_BY_NC_SA">Creative Commons CC BY NC SA License(CC_BY_NC_SA)</system:String>
+    <system:String x:Key="LicenseType_CC_BY_ND">Creative Commons CC BY ND License(CC_BY_ND)</system:String>
+    <system:String x:Key="LicenseType_CC_BY_NC_ND">Creative Commons CC BY NC ND License(CC_BY_NC_ND)</system:String>
+    <system:String x:Key="LicenseType_Other">Other</system:String>
+
     <!-- SettingWindow -->
     <system:String x:Key="SettingWindowTitle">Settings</system:String>
-                          
+
     <system:String x:Key="SettingWindow_HandRotate">Hand Rotate Fix</system:String>
     <system:String x:Key="SettingWindow_LeftHand">Left Hand</system:String>
     <system:String x:Key="SettingWindow_RightHand">RightHand</system:String>
@@ -156,129 +197,140 @@
 
 
     <!-- TrackerConfigWindow -->
-    <system:String x:Key="TrackerConfigWindowTitle">トラッカー割り当て設定</system:String>
+    <system:String x:Key="TrackerConfigWindowTitle">Tracker assignment setting</system:String>
 
-    <system:String x:Key="TrackerConfigWindow_TrackerConfig">トラッカー割り当て</system:String>
-    <system:String x:Key="TrackerConfigWindow_Head">頭</system:String>
-    <system:String x:Key="TrackerConfigWindow_LeftHand">左手</system:String>
-    <system:String x:Key="TrackerConfigWindow_RightHand">右手</system:String>
-    <system:String x:Key="TrackerConfigWindow_Pelvis">腰</system:String>
-    <system:String x:Key="TrackerConfigWindow_LeftFoot">左足</system:String>
-    <system:String x:Key="TrackerConfigWindow_RightFoot">右足</system:String>
-    <system:String x:Key="TrackerConfigWindow_TrackersList">トラッカー一覧(移動したトラッカーに色が付きます)</system:String>
-    <system:String x:Key="TrackerConfigWindow_TrackerOffset">手のトラッカーオフセット設定(トラッカーの底面のネジ穴から手首の関節中心までの距離を設定)</system:String>
-    <system:String x:Key="TrackerConfigWindow_OffsetLeftHand">左手</system:String>
-    <system:String x:Key="TrackerConfigWindow_LeftHandTrackerToBottom">　トラッカー底面方向</system:String>
-    <system:String x:Key="TrackerConfigWindow_LeftHandTrackerToShoulder">　肩方向</system:String>
-    <system:String x:Key="TrackerConfigWindow_OffsetRightHand">右手</system:String>
-    <system:String x:Key="TrackerConfigWindow_RightHandTrackerToBottom">　トラッカー底面方向</system:String>
-    <system:String x:Key="TrackerConfigWindow_RightHandTrackerToShoulder">　肩方向</system:String>
-    <system:String x:Key="TrackerConfigWindow_TrackerOffsetDescription">手の甲に付ける場合：20mm,50mm程度  手首(腕)に付ける場合：20mm,-50mm程度</system:String>
-    <system:String x:Key="TrackerConfigWindow_Close">閉じる</system:String>
-    <system:String x:Key="TrackerConfigWindow_LeftHandTrackerToBottom_ToolTip">左手に付けるトラッカーの底面方向(マイナスはスイッチ方向)</system:String>
-    <system:String x:Key="TrackerConfigWindow_LeftHandTrackerToShoulder_ToolTip">左手に付けるトラッカーの肩方向(マイナスは指先方向)</system:String>
-    <system:String x:Key="TrackerConfigWindow_RightHandTrackerToBottom_ToolTip">右手に付けるトラッカーの底面方向(マイナスはスイッチ方向)</system:String>
-    <system:String x:Key="TrackerConfigWindow_RightHandTrackerToShoulder_ToolTip">右手に付けるトラッカーの肩方向(マイナスは指先方向)</system:String>
+    <system:String x:Key="TrackerConfigWindow_TrackerConfig">Tracker assignment</system:String>
+    <system:String x:Key="TrackerConfigWindow_Head">Head</system:String>
+    <system:String x:Key="TrackerConfigWindow_LeftHand">Left hand</system:String>
+    <system:String x:Key="TrackerConfigWindow_RightHand">Right hand</system:String>
+    <system:String x:Key="TrackerConfigWindow_Pelvis">Waist</system:String>
+    <system:String x:Key="TrackerConfigWindow_LeftFoot">Left foot</system:String>
+    <system:String x:Key="TrackerConfigWindow_RightFoot">Right foot</system:String>
+    <system:String x:Key="TrackerConfigWindow_TrackersList">Tracker list (If tracker is moving, background will be green)</system:String>
+    <system:String x:Key="TrackerConfigWindow_TrackerOffset">Set the tracker offset of the hand (Set distance from screw hole on bottom of tracker to joint center of wrist)</system:String>
+    <system:String x:Key="TrackerConfigWindow_OffsetLeftHand">Left hand</system:String>
+    <system:String x:Key="TrackerConfigWindow_LeftHandTrackerToBottom">　To bottom</system:String>
+    <system:String x:Key="TrackerConfigWindow_LeftHandTrackerToShoulder">　To shoulder</system:String>
+    <system:String x:Key="TrackerConfigWindow_OffsetRightHand">Right hand</system:String>
+    <system:String x:Key="TrackerConfigWindow_RightHandTrackerToBottom">　To bottom</system:String>
+    <system:String x:Key="TrackerConfigWindow_RightHandTrackerToShoulder">　To shoulder</system:String>
+    <system:String x:Key="TrackerConfigWindow_TrackerOffsetDescription">When attaching to the back of the hand: About 20 mm, 50 mm / to the wrist (arm): About 20 mm, -50 mm</system:String>
+    <system:String x:Key="TrackerConfigWindow_Close">Close</system:String>
+    <system:String x:Key="TrackerConfigWindow_LeftHandTrackerToBottom_ToolTip">The bottom direction of the tracker to be attached to the left hand (minus is switch direction)</system:String>
+    <system:String x:Key="TrackerConfigWindow_LeftHandTrackerToShoulder_ToolTip">The direction of the shoulder of the tracker to be attached to the left hand (minus toward the fingertip)</system:String>
+    <system:String x:Key="TrackerConfigWindow_RightHandTrackerToBottom_ToolTip">The bottom direction of the tracker attached to the right hand (minus is the switch direction)</system:String>
+    <system:String x:Key="TrackerConfigWindow_RightHandTrackerToShoulder_ToolTip">The direction of the shoulder of the tracker to be attached to the right hand (negative toward the fingertip)</system:String>
 
 
     <!-- ShortcutKeyWindow -->
-    <system:String x:Key="ShortcutKeyWindowTitle">設定</system:String>
+    <system:String x:Key="ShortcutKeyWindowTitle">Shortcut Key Config</system:String>
 
-    <system:String x:Key="ShortcutKeyWindow_Type">種別</system:String>
-    <system:String x:Key="ShortcutKeyWindow_Name">名称</system:String>
-    <system:String x:Key="ShortcutKeyWindow_UseKey">使用キー</system:String>
-    <system:String x:Key="ShortcutKeyWindow_TouchPadStickInfo">タッチパッド/スティックの割り当て状態</system:String>
-    <system:String x:Key="ShortcutKeyWindow_LeftController">左コントローラー</system:String>
-    <system:String x:Key="ShortcutKeyWindow_RightController">右コントローラー</system:String>
-    <system:String x:Key="ShortcutKeyWindow_LeftCenterKey">センターキー</system:String>
-    <system:String x:Key="ShortcutKeyWindow_LeftDivideCount">分割数：</system:String>
-    <system:String x:Key="ShortcutKeyWindow_RightCenterKey">センターキー</system:String>
-    <system:String x:Key="ShortcutKeyWindow_RightDivideCount">分割数：</system:String>
-    <system:String x:Key="ShortcutKeyWindow_OculusTouchDescription">Oculus Touchはセンターキー領域がスティックの無反応領域になります</system:String>
-    <system:String x:Key="ShortcutKeyWindow_Apply">適用</system:String>
-    <system:String x:Key="ShortcutKeyWindow_AddHandGesture">ハンドジェスチャー追加</system:String>
-    <system:String x:Key="ShortcutKeyWindow_AddFacingExpression">表情追加</system:String>
-    <system:String x:Key="ShortcutKeyWindow_AddFunction">機能追加</system:String>
-    <system:String x:Key="ShortcutKeyWindow_SelectPreset">プリセットから選択</system:String>
-    <system:String x:Key="ShortcutKeyWindow_CustomName">カスタム名称(保存でプリセットへ追加)</system:String>
-    <system:String x:Key="ShortcutKeyWindow_SavePreset">保存</system:String>
-    <system:String x:Key="ShortcutKeyWindow_Edit">編集</system:String>
-    <system:String x:Key="ShortcutKeyWindow_Remove">削除</system:String>
+    <system:String x:Key="ShortcutKeyWindow_Type">Type</system:String>
+    <system:String x:Key="ShortcutKeyWindow_Name">Name</system:String>
+    <system:String x:Key="ShortcutKeyWindow_UseKey">UseKey</system:String>
+    <system:String x:Key="ShortcutKeyWindow_TouchPadStickInfo">Touch pad / stick assignment</system:String>
+    <system:String x:Key="ShortcutKeyWindow_LeftController">Left controller</system:String>
+    <system:String x:Key="ShortcutKeyWindow_RightController">Right controller</system:String>
+    <system:String x:Key="ShortcutKeyWindow_LeftCenterKey">Center key</system:String>
+    <system:String x:Key="ShortcutKeyWindow_LeftDivideCount">Divide:</system:String>
+    <system:String x:Key="ShortcutKeyWindow_RightCenterKey">Center key</system:String>
+    <system:String x:Key="ShortcutKeyWindow_RightDivideCount">Divide:</system:String>
+    <system:String x:Key="ShortcutKeyWindow_OculusTouchDescription">In Oculus Touch the center key area becomes the non-responsive area of the stick</system:String>
+    <system:String x:Key="ShortcutKeyWindow_Apply">Apply</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddHandGesture">Add Hand gesture</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddFacingExpression">Add Face expression</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddFunction">Add Function</system:String>
+    <system:String x:Key="ShortcutKeyWindow_SelectPreset">Select from preset</system:String>
+    <system:String x:Key="ShortcutKeyWindow_CustomName">Custom name (added to preset by saving)</system:String>
+    <system:String x:Key="ShortcutKeyWindow_SavePreset">Save</system:String>
+    <system:String x:Key="ShortcutKeyWindow_Edit">Edit</system:String>
+    <system:String x:Key="ShortcutKeyWindow_Remove">Remove</system:String>
 
-    <system:String x:Key="ShortcutKeyWindow_LeftController_ToolTip">左タッチパッド/スティックの分割領域を設定します。四角いつまみをドラッグして大きさの変更ができます</system:String>
-    <system:String x:Key="ShortcutKeyWindow_RightController_ToolTip">右タッチパッド/スティックの分割領域を設定します。四角いつまみをドラッグして大きさの変更ができます</system:String>
-    <system:String x:Key="ShortcutKeyWindow_LeftCenterKey_ToolTip">左タッチパッドの中心を円形のキーとして独立させます/Oculus Touchの無反応領域</system:String>
-    <system:String x:Key="ShortcutKeyWindow_LeftDivideCount_ToolTip">左コントローラーのタッチパッド/スティック分割数を指定します</system:String>
-    <system:String x:Key="ShortcutKeyWindow_RightCenterKey_ToolTip">右タッチパッドの中心を円形のキーとして独立させます/Oculus Touchの無反応領域</system:String>
-    <system:String x:Key="ShortcutKeyWindow_RightDivideCount_ToolTip">右コントローラーのタッチパッド/スティック分割数を指定します</system:String>
-    <system:String x:Key="ShortcutKeyWindow_Apply_ToolTip">指定したタッチパッドの割り当てを保存します(保存しないと有効になりません)</system:String>
-    <system:String x:Key="ShortcutKeyWindow_AddHandGesture_ToolTip">指の形を変更するショートカットキーを追加します</system:String>
-    <system:String x:Key="ShortcutKeyWindow_AddFacingExpression_ToolTip">表情を変更するショートカットキーを追加します</system:String>
-    <system:String x:Key="ShortcutKeyWindow_AddFunction_ToolTip">機能を実行するショートカットキーを追加します</system:String>
-    <system:String x:Key="ShortcutKeyWindow_SelectPreset_ToolTip">プリセットからショートカットキー一覧を読み込みます。現在の設定は上書きされますので注意してください</system:String>
-    <system:String x:Key="ShortcutKeyWindow_CustomName_ToolTip">プリセットに保存する名称を指定してください</system:String>
-    <system:String x:Key="ShortcutKeyWindow_SavePreset_ToolTip">現在のショートカットキー一覧をプリセットに保存します</system:String>
-    <system:String x:Key="ShortcutKeyWindow_Edit_ToolTip">選択されているショートカットキーを編集します</system:String>
-    <system:String x:Key="ShortcutKeyWindow_Remove_ToolTip">選択されているショートカットキーを削除します</system:String>
-    <system:String x:Key="ShortcutKeyWindow_ShortcutKeyList_ToolTip">登録されているショートカットキー一覧です</system:String>
+    <system:String x:Key="ShortcutKeyWindow_LeftController_ToolTip">Sets the division area of the left touch pad / stick. You can change the size by dragging the square knob.</system:String>
+    <system:String x:Key="ShortcutKeyWindow_RightController_ToolTip">Sets the division area of the right touch pad / stick You can change the size by dragging the square knob.</system:String>
+    <system:String x:Key="ShortcutKeyWindow_LeftCenterKey_ToolTip">Make the center of the left touchpad independent as a circular key / no response area of Oculus Touch.</system:String>
+    <system:String x:Key="ShortcutKeyWindow_LeftDivideCount_ToolTip">Specify the number of divisions of the touch pad / stick of the left controller.</system:String>
+    <system:String x:Key="ShortcutKeyWindow_RightCenterKey_ToolTip">Make the center of the right touchpad independent as a circular key / no response area of Oculus Touch.</system:String>
+    <system:String x:Key="ShortcutKeyWindow_RightDivideCount_ToolTip">Specify the number of divisions of the touch pad / stick of the right controller.</system:String>
+    <system:String x:Key="ShortcutKeyWindow_Apply_ToolTip">Save the division area of the specified touchpad (It will not become valid until you save it).</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddHandGesture_ToolTip">Add shortcut keys to change finger shape.</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddFacingExpression_ToolTip">Add shortcut keys to change facial expressions.</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddFunction_ToolTip">Add a shortcut key to execute the function.</system:String>
+    <system:String x:Key="ShortcutKeyWindow_SelectPreset_ToolTip">Load shortcut key list from preset. Please note that the current setting will be overwritten.</system:String>
+    <system:String x:Key="ShortcutKeyWindow_CustomName_ToolTip">Please specify the name to be saved in the preset.</system:String>
+    <system:String x:Key="ShortcutKeyWindow_SavePreset_ToolTip">Save the current shortcut key list to the preset.</system:String>
+    <system:String x:Key="ShortcutKeyWindow_Edit_ToolTip">Edit the selected shortcut key.</system:String>
+    <system:String x:Key="ShortcutKeyWindow_Remove_ToolTip">Remove the selected shortcut key.</system:String>
+    <system:String x:Key="ShortcutKeyWindow_ShortcutKeyList_ToolTip">List of registered shortcut keys.</system:String>
 
 
     <!-- HandGestureControlKeyAddWindow -->
-    <system:String x:Key="HandGestureControlKeyAddWindowTitle">ハンドジェスチャー設定</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindowTitle">Hand gesture setting</system:String>
 
-    <system:String x:Key="HandGestureControlKeyAddWindow_HandSelect">操作する手</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_RightHand">右手</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_LeftHand">左手</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_BothHand">両手</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_AngleLimit">角度制限</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_On">オン</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_UseKey">使用キー(空欄を選択してコントローラーのボタンを押してください)</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_KeyUp">離した時</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_Clear">クリア</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_LittleFinger">小指</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_RingFinger">薬指</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_MiddleFinger">中指</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_IndexFinger">人差し指</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_Thumb">親指</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_FirstJoint">第一関節</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_SecondJoint">第二関節</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_ThirdJoint">第三関節</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_ThirdJointSide">第三関節(横)</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_AnimationTime">アニメーション時間(指の変化にかける時間)</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_Second">秒</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_Preset">プリセットから選択</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_CustomName">カスタム名称(保存でプリセットへ追加)</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_Save">保存</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_Register">登録</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_Cancel">キャンセル</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_HandSelect">Hands to control</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_RightHand">Right</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_LeftHand">Left</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_BothHand">Both</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_AngleLimit">Angle limit</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_On">On</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_UseKey">Use key (Please select blank and press controller button)</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_KeyUp">When KeyUp</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_Clear">Clear</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_LittleFinger">Little finger</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_RingFinger">Ring finger</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_MiddleFinger">Middle finger</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_IndexFinger">Index finger</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_Thumb">Thumb</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_FirstJoint">First joint</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_SecondJoint">Second joint</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_ThirdJoint">Third joint</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_ThirdJointSide">Third joint (side)</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_AnimationTime">Animation time (time to change fingers)</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_Second">sec</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_Preset">Select from preset</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_CustomName">Custom name (add to preset)</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_Save">Save</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_Register">Register</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_Cancel">Cancel</system:String>
 
 
     <!-- FaceControlKeyAddWindow -->
-    <system:String x:Key="FaceControlKeyAddWindowTitle">表情コントロール設定</system:String>
+    <system:String x:Key="FaceControlKeyAddWindowTitle">Facial expression control setting</system:String>
 
-    <system:String x:Key="FaceControlKeyAddWindow_UseKey">使用キー(空欄を選択してコントローラーのボタンを押してください)</system:String>
-    <system:String x:Key="FaceControlKeyAddWindow_KeyUp">離した時</system:String>
-    <system:String x:Key="FaceControlKeyAddWindow_Clear">クリア</system:String>
-    <system:String x:Key="FaceControlKeyAddWindow_AddFacial">表情追加</system:String>
-    <system:String x:Key="FaceControlKeyAddWindow_Add">追加</system:String>
-    <system:String x:Key="FaceControlKeyAddWindow_DisableBlinking">自動まばたきを無効にする</system:String>
-    <system:String x:Key="FaceControlKeyAddWindow_LipSyncSuppression">リップシンク抑制(口の開きすぎを防ぐ)</system:String>
-    <system:String x:Key="FaceControlKeyAddWindow_LipSyncMaxLevel">最大値を設定(0で無効)</system:String>
-    <system:String x:Key="FaceControlKeyAddWindow_Register">登録</system:String>
-    <system:String x:Key="FaceControlKeyAddWindow_Cancel">キャンセル</system:String>
-    <system:String x:Key="FaceControlKeyAddWindow_SaveName">保存名称</system:String>
-    <system:String x:Key="FaceControlKeyAddWindow_Key">キー</system:String>
-    <system:String x:Key="FaceControlKeyAddWindow_Weight">強さ</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_UseKey">Use key (Please select blank and press controller button)</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_KeyUp">When KeyUp</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_Clear">Clear</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_AddFacial">Add expression</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_Add">Add</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_DisableBlinking">Disable Auto blinking</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_LipSyncSuppression">LipSync suppression</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_LipSyncMaxLevel">Set the max value (0 is disable)</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_Register">Register</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_Cancel">Cancel</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_SaveName">Save name</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_Key">Key</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_Weight">Weight</system:String>
 
 
     <!-- FunctionKeyAddWindow -->
-    <system:String x:Key="FunctionKeyAddWindowTitle">機能キー設定</system:String>
+    <system:String x:Key="FunctionKeyAddWindowTitle">Function key setting</system:String>
 
-    <system:String x:Key="FunctionKeyAddWindow_UseKey">使用キー(空欄を選択してコントローラーのボタンを押してください)</system:String>
-    <system:String x:Key="FunctionKeyAddWindow_KeyUp">離した時</system:String>
-    <system:String x:Key="FunctionKeyAddWindow_Clear">クリア</system:String>
-    <system:String x:Key="FunctionKeyAddWindow_Register">登録</system:String>
-    <system:String x:Key="FunctionKeyAddWindow_Cancel">キャンセル</system:String>
-    <system:String x:Key="FunctionKeyAddWindow_SelectFunction">割り当て機能選択</system:String>
+    <system:String x:Key="FunctionKeyAddWindow_UseKey">Use key (Please select blank and press controller button)</system:String>
+    <system:String x:Key="FunctionKeyAddWindow_KeyUp">When KeyUp</system:String>
+    <system:String x:Key="FunctionKeyAddWindow_Clear">Clear</system:String>
+    <system:String x:Key="FunctionKeyAddWindow_Register">Register</system:String>
+    <system:String x:Key="FunctionKeyAddWindow_Cancel">Cancel</system:String>
+    <system:String x:Key="FunctionKeyAddWindow_SelectFunction">Select Function</system:String>
 
+    <system:String x:Key="Functions_ShowControlPanel">ShowControlPanel</system:String>
+    <system:String x:Key="Functions_ColorGreen">ColorGreen</system:String>
+    <system:String x:Key="Functions_ColorBlue">ColorBlue</system:String>
+    <system:String x:Key="Functions_ColorWhite">ColorWhite</system:String>
+    <system:String x:Key="Functions_ColorCustom">ColorCustom</system:String>
+    <system:String x:Key="Functions_ColorTransparent">ColorTransparent</system:String>
+    <system:String x:Key="Functions_FrontCamera">FrontCamera</system:String>
+    <system:String x:Key="Functions_BackCamera">BackCamera</system:String>
+    <system:String x:Key="Functions_FreeCamera">FreeCamera</system:String>
+    <system:String x:Key="Functions_PositionFixedCamera">PositionFixedCamera</system:String>
+    
 </ResourceDictionary>

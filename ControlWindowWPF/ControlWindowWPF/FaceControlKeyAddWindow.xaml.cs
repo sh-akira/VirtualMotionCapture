@@ -86,7 +86,7 @@ namespace VirtualMotionCaptureControlPanel
             }
             else
             {
-                KeysTextBox.Text = "ここをクリックして、操作するキーを押してください";
+                KeysTextBox.Text = LanguageSelector.Get("KeysWatermark");
             }
         }
 
@@ -142,7 +142,7 @@ namespace VirtualMotionCaptureControlPanel
         {
             if (KeyConfigs.Count == 0)
             {
-                MessageBox.Show("キーが設定されていません。割り当てるキーを設定してください", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(LanguageSelector.Get("KeyNotFoundError"), LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

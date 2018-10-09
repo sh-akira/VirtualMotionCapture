@@ -17,6 +17,8 @@ namespace VirtualMotionCaptureControlPanel
             Client.Start(pipeName);
         }
 
+        public static string CurrentLanguage = "Japanese";
+
         public static string CurrentVRMFilePath;
 
         public static bool LeftControllerCenterEnable = false;

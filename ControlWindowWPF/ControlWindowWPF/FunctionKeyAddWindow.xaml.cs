@@ -17,22 +17,22 @@ using UnityNamedPipe;
 namespace VirtualMotionCaptureControlPanel
 {
     /// <summary>
-    /// FaceControlKeyAddWindow.xaml の相互作用ロジック
+    /// FunctionKeyAddWindow.xaml の相互作用ロジック
     /// </summary>
     public partial class FunctionKeyAddWindow : Window
     {
         public ObservableCollection<string> FunctionItems = new ObservableCollection<string>
         {
-            "コントロールパネル再表示",
-            "背景GB",
-            "背景BB",
-            "背景白",
-            "背景カスタム",
-            "背景透過",
-            "フロントカメラ",
-            "バックカメラ",
-            "フリーカメラ",
-            "座標追従カメラ",
+            LanguageSelector.Get("Functions_ShowControlPanel"),
+            LanguageSelector.Get("Functions_ColorGreen"),
+            LanguageSelector.Get("Functions_ColorBlue"),
+            LanguageSelector.Get("Functions_ColorWhite"),
+            LanguageSelector.Get("Functions_ColorCustom"),
+            LanguageSelector.Get("Functions_ColorTransparent"),
+            LanguageSelector.Get("Functions_FrontCamera"),
+            LanguageSelector.Get("Functions_BackCamera"),
+            LanguageSelector.Get("Functions_FreeCamera"),
+            LanguageSelector.Get("Functions_PositionFixedCamera"),
         };
         public FunctionKeyAddWindow()
         {
@@ -46,7 +46,7 @@ namespace VirtualMotionCaptureControlPanel
             KeyConfigs.AddRange(action.KeyConfigs);
             UpdateKeys();
         }
-        
+
         private List<KeyConfig> KeyConfigs = new List<KeyConfig>();
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -85,7 +85,7 @@ namespace VirtualMotionCaptureControlPanel
             }
             else
             {
-                KeysTextBox.Text = "ここをクリックして、操作するキーを押してください";
+                KeysTextBox.Text = LanguageSelector.Get("KeysWatermark");
             }
         }
 
@@ -112,17 +112,17 @@ namespace VirtualMotionCaptureControlPanel
                 }
             });
         }
-        
+
         private async void ApplyButton_Click(object sender, RoutedEventArgs e)
         {
             if (KeyConfigs.Count == 0)
             {
-                MessageBox.Show("キーが設定されていません。割り当てるキーを設定してください", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(LanguageSelector.Get("KeyNotFoundError"), LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             if (FunctionComboBox.SelectedItem == null)
             {
-                MessageBox.Show("機能が選択されていません。割り当てる機能を選択してください", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(LanguageSelector.Get("FunctionNotFoundError"), LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
