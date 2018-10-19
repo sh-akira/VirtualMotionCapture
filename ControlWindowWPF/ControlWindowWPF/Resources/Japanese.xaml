@@ -159,6 +159,7 @@
     <system:String x:Key="VRMImportWindow_Thumbnail_ToolTip">モデルのサムネイル画像です</system:String>
     <system:String x:Key="VRMImportWindow_ImportButton_ToolTip">必ずモデルのライセンス・許諾範囲を確認して問題なければ使用することができます</system:String>
     <system:String x:Key="VRMImportWindow_IgnoreButton_ToolTip">読み込みをキャンセルします</system:String>
+    <system:String x:Key="VRMImportWindow_VRoidNormalMapDescription">VRoidで作成したモデルがテカテカになる場合NormalMapの問題に対応したVRoid0.2.14以降でモデルを再出力してください</system:String>
 
     <system:String x:Key="Unknown">不明な値です</system:String>
     <system:String x:Key="OnlyAuthor">作者のみ許可</system:String>

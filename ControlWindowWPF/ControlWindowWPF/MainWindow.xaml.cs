@@ -90,23 +90,27 @@ namespace VirtualMotionCaptureControlPanel
             checkBox.Checked += checkedHandler;
         }
 
-        private void LoadSlider(float setvalue, float multiply, Slider slider)
+        private bool IsSliderSetting = false;
+
+        private void LoadSlider(float setvalue, float multiply, Slider slider, RoutedPropertyChangedEventHandler<double> valueChanged)
         {
+            IsSliderSetting = true;
             var min = (int)slider.Minimum;
             var max = (int)slider.Maximum;
             int value = (int)Math.Round(setvalue * multiply);
             if (value < min) value = min;
             if (value > max) value = max;
             slider.Value = value;
+            IsSliderSetting = false;
         }
 
-        private async Task SliderValueChanged(object slider, TextBlock textBlock, float multiple, PipeCommands.SetFloatValueBase command)
+        private async Task SliderValueChanged(object slider, TextBlock textBlock, float multiple, PipeCommands.SetFloatValueBase command, bool isSliderSetting)
         {
             if (textBlock == null) return;
             float value = (float)(slider as Slider).Value / multiple;
             textBlock.Text = value.ToString("#." + multiple.ToString().Substring(1));
             command.value = value;
-            await Globals.Client.SendCommandAsync(command);
+            if (isSliderSetting == false) await Globals.Client.SendCommandAsync(command);
         }
 
         private void Client_Received(object sender, DataReceivedEventArgs e)
@@ -195,12 +199,12 @@ namespace VirtualMotionCaptureControlPanel
                 else if (e.CommandType == typeof(PipeCommands.LoadLipSyncGain))
                 {
                     var d = (PipeCommands.LoadLipSyncGain)e.Data;
-                    LoadSlider(d.gain, 10.0f, GainSlider);
+                    LoadSlider(d.gain, 10.0f, GainSlider, GainSlider_ValueChanged);
                 }
                 else if (e.CommandType == typeof(PipeCommands.LoadLipSyncWeightThreashold))
                 {
                     var d = (PipeCommands.LoadLipSyncWeightThreashold)e.Data;
-                    LoadSlider(d.threashold, 1000.0f, WeightThreasholdSlider);
+                    LoadSlider(d.threashold, 1000.0f, WeightThreasholdSlider, WeightThreasholdSlider_ValueChanged);
                 }
                 //"表情制御"
                 else if (e.CommandType == typeof(PipeCommands.LoadAutoBlinkEnable))
@@ -217,32 +221,34 @@ namespace VirtualMotionCaptureControlPanel
                         DefaultFaces.Insert(0, d.face);
                         DefaultFacesBase.Insert(0, d.face);
                     }
+                    DefaultFaceComboBox.SelectionChanged -= DefaultFaceComboBox_SelectionChanged;
                     DefaultFaceComboBox.SelectedIndex = DefaultFaces.IndexOf(d.face);
+                    DefaultFaceComboBox.SelectionChanged += DefaultFaceComboBox_SelectionChanged;
                 }
                 else if (e.CommandType == typeof(PipeCommands.LoadBlinkTimeMin))
                 {
                     var d = (PipeCommands.LoadBlinkTimeMin)e.Data;
-                    LoadSlider(d.time, 10.0f, BlinkTimeMinSlider);
+                    LoadSlider(d.time, 10.0f, BlinkTimeMinSlider, BlinkTimeMinSlider_ValueChanged);
                 }
                 else if (e.CommandType == typeof(PipeCommands.LoadBlinkTimeMax))
                 {
                     var d = (PipeCommands.LoadBlinkTimeMax)e.Data;
-                    LoadSlider(d.time, 10.0f, BlinkTimeMaxSlider);
+                    LoadSlider(d.time, 10.0f, BlinkTimeMaxSlider, BlinkTimeMaxSlider_ValueChanged);
                 }
                 else if (e.CommandType == typeof(PipeCommands.LoadCloseAnimationTime))
                 {
                     var d = (PipeCommands.LoadCloseAnimationTime)e.Data;
-                    LoadSlider(d.time, 100.0f, CloseAnimationTimeSlider);
+                    LoadSlider(d.time, 100.0f, CloseAnimationTimeSlider, CloseAnimationTimeSlider_ValueChanged);
                 }
                 else if (e.CommandType == typeof(PipeCommands.LoadOpenAnimationTime))
                 {
                     var d = (PipeCommands.LoadOpenAnimationTime)e.Data;
-                    LoadSlider(d.time, 100.0f, OpenAnimationTimeSlider);
+                    LoadSlider(d.time, 100.0f, OpenAnimationTimeSlider, OpenAnimationTimeSlider_ValueChanged);
                 }
                 else if (e.CommandType == typeof(PipeCommands.LoadClosingTime))
                 {
                     var d = (PipeCommands.LoadClosingTime)e.Data;
-                    LoadSlider(d.time, 100.0f, ClosingTimeSlider);
+                    LoadSlider(d.time, 100.0f, ClosingTimeSlider, ClosingTimeSlider_ValueChanged);
                 }
                 //for Debug
                 else if (e.CommandType == typeof(PipeCommands.KeyDown))
@@ -509,12 +515,12 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void GainSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            await SliderValueChanged(GainSlider, GainTextBlock, 10.0f, new PipeCommands.SetLipSyncGain());
+            await SliderValueChanged(GainSlider, GainTextBlock, 10.0f, new PipeCommands.SetLipSyncGain(), IsSliderSetting);
         }
 
         private async void WeightThreasholdSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            await SliderValueChanged(WeightThreasholdSlider, WeightThreasholdTextBlock, 1000.0f, new PipeCommands.SetLipSyncWeightThreashold());
+            await SliderValueChanged(WeightThreasholdSlider, WeightThreasholdTextBlock, 1000.0f, new PipeCommands.SetLipSyncWeightThreashold(), IsSliderSetting);
         }
 
         #endregion
@@ -539,27 +545,27 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void BlinkTimeMinSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            await SliderValueChanged(sender, BlinkTimeMinTextBlock, 10.0f, new PipeCommands.SetBlinkTimeMin());
+            await SliderValueChanged(sender, BlinkTimeMinTextBlock, 10.0f, new PipeCommands.SetBlinkTimeMin(), IsSliderSetting);
         }
 
         private async void BlinkTimeMaxSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            await SliderValueChanged(sender, BlinkTimeMaxTextBlock, 10.0f, new PipeCommands.SetBlinkTimeMax());
+            await SliderValueChanged(sender, BlinkTimeMaxTextBlock, 10.0f, new PipeCommands.SetBlinkTimeMax(), IsSliderSetting);
         }
 
         private async void CloseAnimationTimeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            await SliderValueChanged(sender, CloseAnimationTimeTextBlock, 100.0f, new PipeCommands.SetCloseAnimationTime());
+            await SliderValueChanged(sender, CloseAnimationTimeTextBlock, 100.0f, new PipeCommands.SetCloseAnimationTime(), IsSliderSetting);
         }
 
         private async void OpenAnimationTimeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            await SliderValueChanged(sender, OpenAnimationTimeTextBlock, 100.0f, new PipeCommands.SetOpenAnimationTime());
+            await SliderValueChanged(sender, OpenAnimationTimeTextBlock, 100.0f, new PipeCommands.SetOpenAnimationTime(), IsSliderSetting);
         }
 
         private async void ClosingTimeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            await SliderValueChanged(sender, ClosingTimeTextBlock, 100.0f, new PipeCommands.SetClosingTime());
+            await SliderValueChanged(sender, ClosingTimeTextBlock, 100.0f, new PipeCommands.SetClosingTime(), IsSliderSetting);
         }
 
         #endregion

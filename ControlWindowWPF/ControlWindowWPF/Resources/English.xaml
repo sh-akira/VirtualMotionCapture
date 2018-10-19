@@ -159,6 +159,7 @@
     <system:String x:Key="VRMImportWindow_Thumbnail_ToolTip">Thumbnail image of the model</system:String>
     <system:String x:Key="VRMImportWindow_ImportButton_ToolTip">Always be sure to check the license of the model, you can use it if there is no problem</system:String>
     <system:String x:Key="VRMImportWindow_IgnoreButton_ToolTip">Cancel loading</system:String>
+    <system:String x:Key="VRMImportWindow_VRoidNormalMapDescription">If the gloss of the model created with VRoid is wrong Please re-export the model with VRoid 0.2.14 or later corresponding to the problem of NormalMap</system:String>
 
     <system:String x:Key="Unknown">Unknown</system:String>
     <system:String x:Key="OnlyAuthor">Only Author</system:String>

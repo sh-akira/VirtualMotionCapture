@@ -443,7 +443,7 @@ public class ControlWPFWindow : MonoBehaviour
         }
         var vrmdata = new VRMData();
         vrmdata.FilePath = path;
-        var context = new VRMImporterContext(UniGLTF.UnityPath.FromFullpath(path));
+        var context = new VRMImporterContext();
 
         var bytes = File.ReadAllBytes(path);
 
@@ -493,7 +493,7 @@ public class ControlWPFWindow : MonoBehaviour
     private async void ImportVRM(string path, bool ImportForCalibration, bool EnableNormalMapFix, bool DeleteHairNormalMap)
     {
         CurrentSettings.VRMPath = path;
-        var context = new VRMImporterContext(UniGLTF.UnityPath.FromFullpath(path));
+        var context = new VRMImporterContext();
 
         var bytes = File.ReadAllBytes(path);
 
@@ -516,7 +516,10 @@ public class ControlWPFWindow : MonoBehaviour
             CurrentModel = null;
         }
         // ParseしたJSONをシーンオブジェクトに変換していく
-        CurrentModel = await VRMImporter.LoadVrmAsync(context);
+        //CurrentModel = await VRMImporter.LoadVrmAsync(context);
+        await context.LoadAsyncTask();
+        context.ShowMeshes();
+        CurrentModel = context.Root;
 
         CurrentSettings.EnableNormalMapFix = EnableNormalMapFix;
         CurrentSettings.DeleteHairNormalMap = DeleteHairNormalMap;
@@ -1941,8 +1944,6 @@ public class ControlWPFWindow : MonoBehaviour
             await server.SendCommandAsync(new PipeCommands.LoadCameraMirror { enable = CurrentSettings.CameraMirrorEnable });
             SetWindowClickThrough(CurrentSettings.WindowClickThrough);
             await server.SendCommandAsync(new PipeCommands.LoadSetWindowClickThrough { enable = CurrentSettings.WindowClickThrough });
-            SetLipSyncEnable(CurrentSettings.LipSyncEnable);
-            await server.SendCommandAsync(new PipeCommands.LoadLipSyncEnable { enable = CurrentSettings.LipSyncEnable });
             SetLipSyncDevice(CurrentSettings.LipSyncDevice);
             await server.SendCommandAsync(new PipeCommands.LoadLipSyncDevice { device = CurrentSettings.LipSyncDevice });
             SetLipSyncGain(CurrentSettings.LipSyncGain);
@@ -1980,6 +1981,10 @@ public class ControlWPFWindow : MonoBehaviour
             await server.SendCommandAsync(new PipeCommands.LoadKeyActions { KeyActions = CurrentSettings.KeyActions });
             await server.SendCommandAsync(new PipeCommands.LoadHandRotations { LeftHandRotation = CurrentSettings.LeftHandRotation, RightHandRotation = CurrentSettings.RightHandRotation });
             UpdateHandRotation();
+
+            await server.SendCommandAsync(new PipeCommands.LoadLipSyncEnable { enable = CurrentSettings.LipSyncEnable });
+            SetLipSyncEnable(CurrentSettings.LipSyncEnable);
+ 
         }
     }
 
