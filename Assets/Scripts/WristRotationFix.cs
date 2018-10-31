@@ -15,7 +15,7 @@ public class WristRotationFix : MonoBehaviour
     private FixItem RightUpperArmFixItem;
 
     public float ElbowFixWeight = 0.5f;
-    public float UpperArmFixWeight = 0.5f;
+    public float UpperArmFixWeight = 0.2f; //0.5では強すぎて肩がねじれる場合がある
 
     public void SetVRIK(VRIK setIK)
     {
