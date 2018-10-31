@@ -1,6 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel.Resources"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <system:String x:Key="Error">エラー</system:String>
@@ -80,7 +79,7 @@
     <system:String x:Key="MainWindow_LipSync">リップシンク</system:String>
     <system:String x:Key="MainWindow_EnableLipSync">リップシンク</system:String>
     <system:String x:Key="MainWindow_MaxWeight">最大の音素のみ</system:String>
-    <system:String x:Key="MainWindow_MaxWeightEmphasis">最大音素の協調</system:String>
+    <system:String x:Key="MainWindow_MaxWeightEmphasis">最大音素の強調</system:String>
     <system:String x:Key="MainWindow_Device">使用するデバイス</system:String>
     <system:String x:Key="MainWindow_DeviceRefresh">更新</system:String>
     <system:String x:Key="MainWindow_Gain">ゲイン(感度)</system:String>
