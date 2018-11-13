@@ -470,8 +470,10 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void LipSyncDeviceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            LipsyncTabTextBlock.Background = new SolidColorBrush(Colors.PaleVioletRed);
             if (LipSyncDeviceComboBox.SelectedItem == null) return;
             if (LipSyncDeviceComboBox.SelectedItem.ToString().StartsWith(LanguageSelector.Get("Error") + ":")) return;
+            LipsyncTabTextBlock.Background = new SolidColorBrush(Colors.Transparent);
             await Globals.Client.SendCommandAsync(new PipeCommands.SetLipSyncDevice { device = LipSyncDeviceComboBox.SelectedItem.ToString() });
         }
 
@@ -487,6 +489,7 @@ namespace VirtualMotionCaptureControlPanel
             {
                 Dispatcher.Invoke(() =>
                 {
+                    LipsyncTabTextBlock.Background = new SolidColorBrush(Colors.PaleVioletRed);
                     var ret = (PipeCommands.ReturnGetLipSyncDevices)d;
                     var selectedItem = LipSyncDeviceComboBox.SelectedItem;
                     LipSyncDevices.Clear();
@@ -506,6 +509,7 @@ namespace VirtualMotionCaptureControlPanel
             if (LipSyncDevices.Contains(device))
             {
                 LipSyncDeviceComboBox.SelectedItem = device;
+                LipsyncTabTextBlock.Background = new SolidColorBrush(Colors.Transparent);
             }
             else
             {

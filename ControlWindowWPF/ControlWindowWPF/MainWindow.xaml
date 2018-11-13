@@ -55,7 +55,10 @@
                     </StackPanel>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="{DynamicResource MainWindow_LipSync}" ToolTip="{DynamicResource MainWindow_LipSync_ToolTip}">
+            <TabItem ToolTip="{DynamicResource MainWindow_LipSync_ToolTip}">
+                <TabItem.Header>
+                    <TextBlock Text="{DynamicResource MainWindow_LipSync}" Name="LipsyncTabTextBlock" Background="PaleVioletRed"/>
+                </TabItem.Header>
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                         <CheckBox Content="{DynamicResource MainWindow_EnableLipSync}" Name="LipSyncCheckBox" Checked="LipSyncCheckBox_Checked" Unchecked="LipSyncCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_EnableLipSync_ToolTip}"/>
