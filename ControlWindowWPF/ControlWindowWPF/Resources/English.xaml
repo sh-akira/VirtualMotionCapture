@@ -194,6 +194,24 @@
     <system:String x:Key="SettingWindow_OpenExternalCameraConfig_ToolTip">Load externalcamera.cfg to synthesize model into VR game and set it to free camera</system:String>
     <system:String x:Key="SettingWindow_Close_ToolTip">Close Settings</system:String>
     <system:String x:Key="SettingWindow_Language">Language</system:String>
+    <system:String x:Key="SettingWindow_VirtualWebCamSetting">Virtual WebCam Setting</system:String>
+    <system:String x:Key="SettingWindow_VirtualWebCamInstall">Virtual WebCam Install</system:String>
+    <system:String x:Key="SettingWindow_WebCamInstallButton">Install</system:String>
+    <system:String x:Key="SettingWindow_WebCamUninstallButton">Uninstall</system:String>
+    <system:String x:Key="SettingWindow_WebCamEnable">Emable Virtual WebCam(VMC__Camera)</system:String>
+    <system:String x:Key="SettingWindow_WebCamResize">Resize(heavy)</system:String>
+    <system:String x:Key="SettingWindow_WebCamMirror">Mirror(Flip Horizontal)</system:String>
+    <system:String x:Key="SettingWindow_WebCamBuffering">Buffering count(light/delay)：</system:String>
+    <system:String x:Key="SettingWindow_ResolutionSetting">Resolution(Set same resolution as webcam setting)</system:String>
+    <system:String x:Key="SettingWindow_ResolutionApply">Apply</system:String>
+    <system:String x:Key="SettingWindow_FailedFolderCreate">Failed to create the folder. Please create C:\VMC_Camera folder manually.</system:String>
+    <system:String x:Key="SettingWindow_FailedFileCopy">Failed to copy files. Please manually copy VMC_CameraFilter32bit.dll and 64bit.dll to C:\VMC_Camera folder.</system:String>
+    <system:String x:Key="SettingWindow_SuccessDriverInstall">The installation of the camera driver was successful. VMC_Camera will be added to the camera selection</system:String>
+    <system:String x:Key="SettingWindow_FailedDriverInstall">The installation of the camera driver has failed. Open a command prompt, move to C:\VMC_Camera folder, and execute regsvr32 VMC_CameraFilter32bit.dll and regsvr32 VMC_CameraFilter64bit.dll</system:String>
+    <system:String x:Key="SettingWindow_FailedFileDelete">Failed to delete files. Please manually delete C:\VMC_Camera folder</system:String>
+    <system:String x:Key="SettingWindow_FailedFolderDelete">Failed to delete the folder. Please manually delete C:\VMC_Camera folder</system:String>
+    <system:String x:Key="SettingWindow_SuccessDriverUninstall">The camera driver has been uninstalled. VMC_Camera will be deleted from camera selection</system:String>
+    <system:String x:Key="SettingWindow_FailedDriverUninstall">Failed to uninstall the camera driver. Open a command prompt, move to C:\VMC_Camera folder, and execute regsvr32 / u VMC_CameraFilter32bit.dll and regsvr32 / u VMC_CameraFilter64bit.dll. Then delete the C:\VMC_Camera folder</system:String>
 
 
     <!-- TrackerConfigWindow -->

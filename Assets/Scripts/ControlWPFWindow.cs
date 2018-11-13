@@ -413,6 +413,37 @@ public class ControlWPFWindow : MonoBehaviour
                 CurrentSettings.RightHandTrackerOffsetToBottom = d.RightHandTrackerOffsetToBottom;
 
             }
+            else if (e.CommandType == typeof(PipeCommands.GetVirtualWebCamConfig))
+            {
+                await server.SendCommandAsync(new PipeCommands.SetVirtualWebCamConfig
+                {
+                    Enabled = CurrentSettings.WebCamEnabled,
+                    Resize = CurrentSettings.WebCamResize,
+                    Mirroring = CurrentSettings.WebCamMirroring,
+                    Buffering = CurrentSettings.WebCamBuffering,
+                }, e.RequestId);
+            }
+            else if (e.CommandType == typeof(PipeCommands.SetVirtualWebCamConfig))
+            {
+                var d = (PipeCommands.SetVirtualWebCamConfig)e.Data;
+                CurrentSettings.WebCamEnabled = d.Enabled;
+                CurrentSettings.WebCamResize = d.Resize;
+                CurrentSettings.WebCamMirroring = d.Mirroring;
+                CurrentSettings.WebCamBuffering = d.Buffering;
+                UpdateWebCamConfig();
+            }
+            else if (e.CommandType == typeof(PipeCommands.GetResolutions))
+            {
+                await server.SendCommandAsync(new PipeCommands.ReturnResolutions
+                {
+                    List = new List<Tuple<int, int, int>>(Screen.resolutions.Select(r => Tuple.Create(r.width, r.height, r.refreshRate))),
+                }, e.RequestId);
+            }
+            else if (e.CommandType == typeof(PipeCommands.SetResolution))
+            {
+                var d = (PipeCommands.SetResolution)e.Data;
+                Screen.SetResolution(d.Width, d.Height, false, d.RefreshRate);
+            }
             else if (e.CommandType == typeof(PipeCommands.LoadCurrentSettings))
             {
                 if (isFirstTimeExecute)
@@ -1062,6 +1093,11 @@ public class ControlWPFWindow : MonoBehaviour
     {
         if (camera != null)
         {
+            var virtualCam = camera.gameObject.GetComponent<VirtualCamera>();
+            if (virtualCam != null)
+            {
+                virtualCam.enabled = CurrentSettings.WebCamEnabled;
+            }
             camera.gameObject.SetActive(true);
             if (currentCamera != null && currentCamera != camera) currentCamera.gameObject.SetActive(false);
             currentCamera = camera;
@@ -1829,6 +1865,15 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public bool DeleteHairNormalMap = true;
 
+        [OptionalField]
+        public bool WebCamEnabled = false;
+        [OptionalField]
+        public bool WebCamResize = false;
+        [OptionalField]
+        public bool WebCamMirroring = false;
+        [OptionalField]
+        public int WebCamBuffering = 0;
+
         //初期値
         [OnDeserializing()]
         internal void OnDeserializingMethod(StreamingContext context)
@@ -1858,6 +1903,11 @@ public class ControlWPFWindow : MonoBehaviour
             DeleteHairNormalMap = true;
 
             CameraMirrorEnable = false;
+
+            WebCamEnabled = false;
+            WebCamResize = false;
+            WebCamMirroring = false;
+            WebCamBuffering = 0;
         }
     }
 
@@ -1934,6 +1984,8 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 CurrentSettings.BackCameraLookTargetSettings.ApplyTo(BackCamera);
             }
+
+            UpdateWebCamConfig();
             if (CurrentSettings.CameraType.HasValue)
             {
                 ChangeCamera(CurrentSettings.CameraType.Value);
@@ -1984,11 +2036,18 @@ public class ControlWPFWindow : MonoBehaviour
 
             await server.SendCommandAsync(new PipeCommands.LoadLipSyncEnable { enable = CurrentSettings.LipSyncEnable });
             SetLipSyncEnable(CurrentSettings.LipSyncEnable);
- 
         }
     }
 
     #endregion
+
+    private void UpdateWebCamConfig()
+    {
+        SetCameraEnable(currentCamera);
+        VirtualCamera.Buffering_Global = CurrentSettings.WebCamBuffering;
+        VirtualCamera.MirrorMode_Global = CurrentSettings.WebCamMirroring ? VirtualCamera.EMirrorMode.MirrorHorizontally : VirtualCamera.EMirrorMode.Disabled;
+        VirtualCamera.ResizeMode_Global = CurrentSettings.WebCamResize ? VirtualCamera.EResizeMode.LinearResize : VirtualCamera.EResizeMode.Disabled;
+    }
 
     private void UpdateHandRotation()
     {

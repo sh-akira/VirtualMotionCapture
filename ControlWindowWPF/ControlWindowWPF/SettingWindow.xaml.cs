@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,14 @@ namespace VirtualMotionCaptureControlPanel
     /// </summary>
     public partial class SettingWindow : Window
     {
+        public class ResolutionItem
+        {
+            public int Width { get; set; }
+            public int Height { get; set; }
+            public int RefreshRate { get; set; }
+        }
+        public ObservableCollection<ResolutionItem> ResolutionItems;
+
         private ObservableCollection<float> RotationItems = new ObservableCollection<float> { -180.0f, -135.0f, -90.0f, -45.0f, 0.0f, 45.0f, 90.0f, 135.0f, 180.0f };
         public SettingWindow()
         {
@@ -101,8 +110,143 @@ namespace VirtualMotionCaptureControlPanel
             LanguageSelector.ChangeLanguage(language);
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private bool isSetting = false;
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetVirtualWebCamConfig { }, d =>
+            {
+                var config = (PipeCommands.SetVirtualWebCamConfig)d;
+                Dispatcher.Invoke(() =>
+                {
+                    isSetting = true;
+                    WebCamEnableCheckBox.IsChecked = config.Enabled;
+                    WebCamResizeCheckBox.IsChecked = config.Resize;
+                    WebCamMirrorCheckBox.IsChecked = config.Mirroring;
+                    WebCamBufferingComboBox.SelectedIndex = config.Buffering;
+                    isSetting = false;
+                });
+            });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetResolutions { }, d =>
+            {
+                var config = (PipeCommands.ReturnResolutions)d;
+                Dispatcher.Invoke(() =>
+                {
+                    ResolutionItems = new ObservableCollection<ResolutionItem>(config.List.Select(r => new ResolutionItem { Width = r.Item1, Height = r.Item2, RefreshRate = r.Item3 }));
+                    ResolutionComboBox.ItemsSource = ResolutionItems;
+                });
+            });
+        }
+
+        private void VirtualWebCamInstallButton_Click(object sender, RoutedEventArgs e)
+        {
+            var directory = @"C:\VMC_Camera\";
+            if (Directory.Exists(directory) == false)
+            {
+                try
+                {
+                    Directory.CreateDirectory(directory);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show(LanguageSelector.Get("SettingWindow_FailedFolderCreate"), LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
+            try
+            {
+                File.Copy(Globals.GetCurrentAppDir() + @"VMC_Camera\VMC_CameraFilter32bit.dll", directory + "VMC_CameraFilter32bit.dll", true);
+                File.Copy(Globals.GetCurrentAppDir() + @"VMC_Camera\VMC_CameraFilter64bit.dll", directory + "VMC_CameraFilter64bit.dll", true);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(LanguageSelector.Get("SettingWindow_FailedFileCopy"), LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            var process32 = Process.Start(Globals.GetCurrentAppDir() + "DLLInstaller32.exe", "/i /s " + directory + "VMC_CameraFilter32bit.dll");
+            var process64 = Process.Start(Globals.GetCurrentAppDir() + "DLLInstaller64.exe", "/i /s " + directory + "VMC_CameraFilter64bit.dll");
+            process32.WaitForExit();
+            process64.WaitForExit();
+            if (process32.ExitCode == 0 && process64.ExitCode == 0)
+            {
+                MessageBox.Show(LanguageSelector.Get("SettingWindow_SuccessDriverInstall"));
+            }
+            else
+            {
+                MessageBox.Show(LanguageSelector.Get("SettingWindow_FailedDriverInstall"), LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+        }
+
+        private void VirtualWebCamUninstallButton_Click(object sender, RoutedEventArgs e)
+        {
+            var directory = @"C:\VMC_Camera\";
+            var process32 = Process.Start(Globals.GetCurrentAppDir() + "DLLInstaller32.exe", "/u /s " + directory + "VMC_CameraFilter32bit.dll");
+            var process64 = Process.Start(Globals.GetCurrentAppDir() + "DLLInstaller64.exe", "/u /s " + directory + "VMC_CameraFilter64bit.dll");
+            process32.WaitForExit();
+            process64.WaitForExit();
+            if (process32.ExitCode == 0 && process64.ExitCode == 0)
+            {
+                try
+                {
+                    File.Delete(directory + "VMC_CameraFilter32bit.dll");
+                    File.Delete(directory + "VMC_CameraFilter64bit.dll");
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show(LanguageSelector.Get("SettingWindow_FailedFileDelete"), LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                try
+                {
+                    Directory.Delete(directory);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show(LanguageSelector.Get("SettingWindow_FailedFolderDelete"), LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                MessageBox.Show(LanguageSelector.Get("SettingWindow_SuccessDriverUninstall"));
+            }
+            else
+            {
+                MessageBox.Show(LanguageSelector.Get("SettingWindow_FailedDriverUninstall"), LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void WebCamCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            UpdateWebCamConfig();
+        }
+
+        private void WebCamBufferingComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateWebCamConfig();
+        }
+
+        private async void UpdateWebCamConfig()
+        {
+            if (isSetting) return;
+            await Globals.Client?.SendCommandAsync(new PipeCommands.SetVirtualWebCamConfig
+            {
+                Enabled = WebCamEnableCheckBox.IsChecked == true,
+                Resize = WebCamResizeCheckBox.IsChecked == true,
+                Mirroring = WebCamMirrorCheckBox.IsChecked == true,
+                Buffering = WebCamBufferingComboBox.SelectedIndex,
+            });
+        }
+
+        private async void ResolutionApplyButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ResolutionComboBox.SelectedItem == null) return;
+            var item = ResolutionComboBox.SelectedItem as ResolutionItem;
+            await Globals.Client?.SendCommandAsync(new PipeCommands.SetResolution
+            {
+                Width = item.Width,
+                Height = item.Height,
+                RefreshRate = item.RefreshRate,
+            });
         }
     }
 }

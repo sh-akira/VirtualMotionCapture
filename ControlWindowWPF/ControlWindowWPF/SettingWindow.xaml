@@ -33,6 +33,45 @@
         <GroupBox Header="{DynamicResource SettingWindow_TrackerConfig}">
             <Button Content="{DynamicResource SettingWindow_OpenTrackerConfig}" Name="TrackerConfigButton" Click="TrackerConfigButton_Click"/>
         </GroupBox>
+        <GroupBox Header="{DynamicResource SettingWindow_VirtualWebCamSetting}">
+            <DockPanel>
+                <GroupBox Header="{DynamicResource SettingWindow_VirtualWebCamInstall}" DockPanel.Dock="Top">
+                    <UniformGrid Columns="2">
+                        <Button Content="{DynamicResource SettingWindow_WebCamInstallButton}" Name="VirtualWebCamInstallButton" Click="VirtualWebCamInstallButton_Click"/>
+                        <Button Content="{DynamicResource SettingWindow_WebCamUninstallButton}" Name="VirtualWebCamUninstallButton" Click="VirtualWebCamUninstallButton_Click"/>
+                    </UniformGrid>
+                </GroupBox>
+                <CheckBox Content="{DynamicResource SettingWindow_WebCamEnable}" Name="WebCamEnableCheckBox" Checked="WebCamCheckBox_Changed" Unchecked="WebCamCheckBox_Changed" DockPanel.Dock="Top"/>
+                <CheckBox Content="{DynamicResource SettingWindow_WebCamResize}" Name="WebCamResizeCheckBox" Checked="WebCamCheckBox_Changed" Unchecked="WebCamCheckBox_Changed" DockPanel.Dock="Top"/>
+                <CheckBox Content="{DynamicResource SettingWindow_WebCamMirror}" Name="WebCamMirrorCheckBox" Checked="WebCamCheckBox_Changed" Unchecked="WebCamCheckBox_Changed" DockPanel.Dock="Top"/>
+                <TextBlock VerticalAlignment="Center" Text="{DynamicResource SettingWindow_WebCamBuffering}"/>
+                <ComboBox Name="WebCamBufferingComboBox" SelectionChanged="WebCamBufferingComboBox_SelectionChanged">
+                    <ComboBoxItem>0</ComboBoxItem>
+                    <ComboBoxItem>1</ComboBoxItem>
+                    <ComboBoxItem>2</ComboBoxItem>
+                    <ComboBoxItem>3</ComboBoxItem>
+                </ComboBox>
+            </DockPanel>
+        </GroupBox>
+        <GroupBox Header="{DynamicResource SettingWindow_ResolutionSetting}">
+            <DockPanel>
+                <Button Content="{DynamicResource SettingWindow_ResolutionApply}" DockPanel.Dock="Right" Name="ResolutionApplyButton" Click="ResolutionApplyButton_Click" Height="24"/>
+                <ComboBox Name="ResolutionComboBox" VerticalAlignment="Center">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Width}"/>
+                                <TextBlock Text="x"/>
+                                <TextBlock Text="{Binding Height}"/>
+                                <TextBlock Text="/"/>
+                                <TextBlock Text="{Binding RefreshRate}"/>
+                                <TextBlock Text="Hz"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </DockPanel>
+        </GroupBox>
         <GroupBox Header="{DynamicResource SettingWindow_Language}">
             <ComboBox Name="LanguageComboBox" SelectedIndex="0" SelectionChanged="LanguageComboBox_SelectionChanged">
                 <system:String>Japanese</system:String>

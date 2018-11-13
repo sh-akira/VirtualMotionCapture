@@ -219,6 +219,27 @@ namespace UnityNamedPipe
             public float RightHandTrackerOffsetToBottom { get; set; }
             public float RightHandTrackerOffsetToBodySide { get; set; }
         }
+
+        public class GetVirtualWebCamConfig { }
+        public class SetVirtualWebCamConfig
+        {
+            public bool Enabled { get; set; }
+            public bool Resize { get; set; }
+            public bool Mirroring { get; set; }
+            public int Buffering { get; set; }
+        }
+
+        public class GetResolutions { }
+        public class ReturnResolutions
+        {
+            public List<Tuple<int, int, int>> List { get; set; }
+        }
+        public class SetResolution
+        {
+            public int Width { get; set; }
+            public int Height { get; set; }
+            public int RefreshRate { get; set; }
+        }
     }
 
 

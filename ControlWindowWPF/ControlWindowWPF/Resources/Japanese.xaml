@@ -195,6 +195,24 @@
     <system:String x:Key="SettingWindow_OpenExternalCameraConfig_ToolTip">VRゲームにモデルを合成するためのexternalcamera.cfgを読み込んでフリーカメラに設定します</system:String>
     <system:String x:Key="SettingWindow_Close_ToolTip">設定を閉じます</system:String>
     <system:String x:Key="SettingWindow_Language">使用言語</system:String>
+    <system:String x:Key="SettingWindow_VirtualWebCamSetting">仮想Webカメラ設定</system:String>
+    <system:String x:Key="SettingWindow_VirtualWebCamInstall">仮想Webカメラインストール</system:String>
+    <system:String x:Key="SettingWindow_WebCamInstallButton">インストール</system:String>
+    <system:String x:Key="SettingWindow_WebCamUninstallButton">アンインストール</system:String>
+    <system:String x:Key="SettingWindow_WebCamEnable">仮想Webカメラを有効にする(VMC__Camera)</system:String>
+    <system:String x:Key="SettingWindow_WebCamResize">リサイズする(重くなります)</system:String>
+    <system:String x:Key="SettingWindow_WebCamMirror">ミラー出力(左右反転します)</system:String>
+    <system:String x:Key="SettingWindow_WebCamBuffering">バッファリング数(軽くなる/遅延する)：</system:String>
+    <system:String x:Key="SettingWindow_ResolutionSetting">解像度設定(Webカメラの使用側と同じ解像度を指定)</system:String>
+    <system:String x:Key="SettingWindow_ResolutionApply">適用</system:String>
+    <system:String x:Key="SettingWindow_FailedFolderCreate">フォルダの作成に失敗しました。C:\VMC_Cameraフォルダを手動で作成してください</system:String>
+    <system:String x:Key="SettingWindow_FailedFileCopy">ファイルのコピーに失敗しました。C:\VMC_CameraフォルダにVMC_CameraFilter32bit.dllと64bit.dllを手動でコピーしてください</system:String>
+    <system:String x:Key="SettingWindow_SuccessDriverInstall">カメラドライバのインストールに成功しました。カメラ選択にVMC_Cameraが追加されます</system:String>
+    <system:String x:Key="SettingWindow_FailedDriverInstall">カメラドライバのインストールに失敗しました。コマンドプロンプトを開き、C:\VMC_Cameraフォルダに移動して regsvr32 VMC_CameraFilter32bit.dll と  regsvr32 VMC_CameraFilter64bit.dll を実行してください。</system:String>
+    <system:String x:Key="SettingWindow_FailedFileDelete">ファイルの削除に失敗しました。C:\VMC_Cameraフォルダを手動で削除してください</system:String>
+    <system:String x:Key="SettingWindow_FailedFolderDelete">フォルダの削除に失敗しました。C:\VMC_Cameraフォルダを手動で削除してください</system:String>
+    <system:String x:Key="SettingWindow_SuccessDriverUninstall">カメラドライバのアンインストールに成功しました。カメラ選択からVMC_Cameraが削除されます</system:String>
+    <system:String x:Key="SettingWindow_FailedDriverUninstall">カメラドライバのアンインストールに失敗しました。コマンドプロンプトを開き、C:\VMC_Cameraフォルダに移動して regsvr32 /u VMC_CameraFilter32bit.dll regsvr32 /u VMC_CameraFilter64bit.dll を実行してください。その後C:\VMC_Cameraフォルダを削除してください</system:String>
 
 
     <!-- TrackerConfigWindow -->
