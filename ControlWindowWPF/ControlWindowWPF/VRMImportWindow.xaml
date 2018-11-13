@@ -35,7 +35,7 @@
         </DockPanel>
         <GroupBox Header="{DynamicResource VRMImportWindow_VRMInformation}" Margin="10,0,10,10">
             <DockPanel>
-                <StackPanel Orientation="Vertical" Margin="15">
+                <StackPanel Orientation="Vertical" Margin="15" Width="258">
                     <Border BorderBrush="Black" BorderThickness="1">
                         <Image Width="256" Height="256" Name="ThumbnailImage" ToolTip="{DynamicResource VRMImportWindow_Thumbnail_ToolTip}"/>
                     </Border>
