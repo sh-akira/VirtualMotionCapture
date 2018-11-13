@@ -132,7 +132,7 @@ public class Calibrator
         ik.solver.locomotion.weight = PelvisTransform == null && LeftFootTransform == null && RightFootTransform == null ? 1f : 0f;
     }
 
-    private static void CalibrateLeg(Settings settings, Transform FootTransform, IKSolverVR.Leg leg, Transform lastBone, Vector3 hmdForwardAngle, Vector3 rootForward, bool isLeft)
+    private static Transform CalibrateLeg(Settings settings, Transform FootTransform, IKSolverVR.Leg leg, Transform lastBone, Vector3 hmdForwardAngle, Vector3 rootForward, bool isLeft)
     {
         Transform footAdjusterTransform = leg.target == null ? new GameObject(isLeft ? "leftFootAdjuster" : "rightFootAdjuster").transform : leg.target;
         footAdjusterTransform.parent = FootTransform;
@@ -160,18 +160,17 @@ public class Calibrator
         leg.rotationWeight = 1f;
 
         // Bend goal
-        /*
-        Transform bendGoal = leg.bendGoal == null ? (new GameObject(name + " Leg Bend Goal")).transform : leg.bendGoal;
+
+        Transform bendGoal = leg.bendGoal == null ? (new GameObject(isLeft ? "leftFootBendGoal" : "rightFootBendGoal")).transform : leg.bendGoal;
         bendGoal.position = lastBone.position + frontQuaternion * Vector3.forward + frontQuaternion * Vector3.up;// * 0.5f;
         bendGoal.parent = FootTransform;
-        leg.bendGoal = bendGoal;
-        leg.bendGoalWeight = 1f;
-        */
-        leg.bendGoal = null;
-        leg.bendGoalWeight = 0f;
+        return bendGoal;
+
+        //leg.bendGoal = null;
+        //leg.bendGoalWeight = 0f;
     }
 
-    public static IEnumerator CalibrateScaled(Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null)
+    public static IEnumerator CalibrateScaled(Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
     {
         if (!ik.solver.initiated)
         {
@@ -197,6 +196,10 @@ public class Calibrator
         if (PelvisTransform != null) PelvisTransform.parent = footTrackerRoot;
         if (LeftFootTransform != null) LeftFootTransform.parent = footTrackerRoot;
         if (RightFootTransform != null) RightFootTransform.parent = footTrackerRoot;
+        if (LeftElbowTransform != null) LeftElbowTransform.parent = handTrackerRoot;
+        if (RightElbowTransform != null) RightElbowTransform.parent = handTrackerRoot;
+        if (LeftKneeTransform != null) LeftKneeTransform.parent = footTrackerRoot;
+        if (RightKneeTransform != null) RightKneeTransform.parent = footTrackerRoot;
 
         //コントローラーの場合手首までのオフセットを追加
         if (LeftHandOffset == Vector3.zero)
@@ -326,9 +329,10 @@ public class Calibrator
         var bendGoalTarget = new GameObject("BendGoalTarget");
         bendGoalTarget.transform.parent = ik.references.pelvis;
         bendGoalTarget.transform.localScale = Vector3.one;
-        bendGoalTarget.transform.localPosition = new Vector3(0, 0, 1); //正面1m
+        bendGoalTarget.transform.localPosition = new Vector3(0, 0, 1.5f); //正面1.5m
         bendGoalTarget.transform.localRotation = Quaternion.Euler(Vector3.zero);
-
+        var leftBendGoalTarget = bendGoalTarget.transform;
+        var rightBendGoalTarget = bendGoalTarget.transform;
 
         yield return new WaitForEndOfFrame();
         //yield break;
@@ -359,6 +363,7 @@ public class Calibrator
         }
         else if (LeftFootTransform != null && RightFootTransform != null)
         {
+            ik.solver.spine.maintainPelvisPosition = 0.0f;
             ik.solver.spine.maxRootAngle = 0f;
         }
 
@@ -396,13 +401,82 @@ public class Calibrator
             ik.solver.rightArm.rotationWeight = 0f;
         }
 
+        // Left Elbow
+        if (LeftElbowTransform != null)
+        {
+            Transform leftElbowAdjusterTransform = ik.solver.leftArm.bendGoal == null ? (new GameObject("leftHandAdjuster")).transform : ik.solver.leftArm.bendGoal;
+            leftElbowAdjusterTransform.parent = LeftElbowTransform;
+            leftElbowAdjusterTransform.position = LeftElbowTransform.position + LeftElbowTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp) * settings.handOffset;
+            Vector3 leftHandUp = Vector3.Cross(ik.solver.leftArm.wristToPalmAxis, ik.solver.leftArm.palmToThumbAxis);
+            leftElbowAdjusterTransform.rotation = QuaTools.MatchRotation(LeftElbowTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.leftArm.wristToPalmAxis, leftHandUp);
+            ik.solver.leftArm.bendGoal = leftElbowAdjusterTransform;
+            ik.solver.leftArm.bendGoalWeight = 1.0f;
+        }
+        else
+        {
+            ik.solver.leftArm.bendGoalWeight = 0.0f;
+        }
+
+        // Right Elbow
+        if (RightElbowTransform != null)
+        {
+            Transform rightElbowAdjusterTransform = ik.solver.rightArm.bendGoal == null ? (new GameObject("rightHandAdjuster")).transform : ik.solver.rightArm.bendGoal;
+            rightElbowAdjusterTransform.parent = RightElbowTransform;
+            rightElbowAdjusterTransform.position = RightElbowTransform.position + RightElbowTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp) * settings.handOffset;
+            Vector3 rightHandUp = Vector3.Cross(ik.solver.rightArm.wristToPalmAxis, ik.solver.rightArm.palmToThumbAxis);
+            rightElbowAdjusterTransform.rotation = QuaTools.MatchRotation(RightElbowTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.rightArm.wristToPalmAxis, rightHandUp);
+            ik.solver.rightArm.bendGoal = rightElbowAdjusterTransform;
+            ik.solver.rightArm.bendGoalWeight = 1.0f;
+        }
+        else
+        {
+            ik.solver.rightArm.bendGoalWeight = 0.0f;
+        }
+
         // Legs
-        if (LeftFootTransform != null) CalibrateLeg(settings, LeftFootTransform, ik.solver.leftLeg, (ik.references.leftToes != null ? ik.references.leftToes : ik.references.leftFoot), hmdForwardAngle, ik.references.root.forward, true);
-        if (RightFootTransform != null) CalibrateLeg(settings, RightFootTransform, ik.solver.rightLeg, (ik.references.rightToes != null ? ik.references.rightToes : ik.references.rightFoot), hmdForwardAngle, ik.references.root.forward, false);
-        ik.solver.leftLeg.bendGoal = bendGoalTarget.transform;
-        ik.solver.leftLeg.bendGoalWeight = 1.0f;
-        ik.solver.rightLeg.bendGoal = bendGoalTarget.transform;
-        ik.solver.rightLeg.bendGoalWeight = 1.0f;
+        if (LeftFootTransform != null)
+        {
+            leftBendGoalTarget = CalibrateLeg(settings, LeftFootTransform, ik.solver.leftLeg, (ik.references.leftToes != null ? ik.references.leftToes : ik.references.leftFoot), hmdForwardAngle, ik.references.root.forward, true);
+        }
+
+        if (LeftKneeTransform != null)
+        {
+            Transform leftKneeAdjusterTransform = ik.solver.leftLeg.bendGoal == null ? (new GameObject("leftKneeAdjuster")).transform : ik.solver.leftLeg.bendGoal;
+            leftKneeAdjusterTransform.parent = LeftKneeTransform;
+            leftKneeAdjusterTransform.position = ik.references.leftCalf.position;// LeftKneeTransform.position + LeftKneeTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp) * settings.handOffset;
+            leftKneeAdjusterTransform.transform.localPosition += new Vector3(0, -0.3f, 1f); //正面1m 下に30cm (膝より上にBendGoalが来ると計算が反転して膝が下向いてしまう)
+            //Vector3 leftHandUp = Vector3.Cross(GuessFootToKneeAxis(ik.references.leftCalf,ik.references.leftThigh), ik.solver.leftLeg.palmToThumbAxis);
+            leftKneeAdjusterTransform.rotation = ik.references.leftCalf.rotation;// QuaTools.MatchRotation(LeftKneeTransform.rotation * Quaternion.LookRotation(settings.footTrackerForward, settings.footTrackerUp), settings.footTrackerForward, settings.footTrackerUp, Vector3.zero, leftHandUp);
+            ik.solver.leftLeg.bendGoal = leftKneeAdjusterTransform;
+            ik.solver.leftLeg.bendGoalWeight = 1.0f;
+        }
+        else
+        {
+            ik.solver.leftLeg.bendGoal = leftBendGoalTarget;
+            ik.solver.leftLeg.bendGoalWeight = 1.0f;
+        }
+
+        if (RightFootTransform != null)
+        {
+            rightBendGoalTarget = CalibrateLeg(settings, RightFootTransform, ik.solver.rightLeg, (ik.references.rightToes != null ? ik.references.rightToes : ik.references.rightFoot), hmdForwardAngle, ik.references.root.forward, false);
+        }
+
+        if (RightKneeTransform != null)
+        {
+            Transform rightKneeAdjusterTransform = ik.solver.rightLeg.bendGoal == null ? (new GameObject("rightKneeAdjuster")).transform : ik.solver.rightLeg.bendGoal;
+            rightKneeAdjusterTransform.parent = RightKneeTransform;
+            rightKneeAdjusterTransform.position = ik.references.rightCalf.position;// RightKneeTransform.position + RightKneeTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp) * settings.handOffset;
+            rightKneeAdjusterTransform.transform.localPosition += new Vector3(0, -0.3f, 1f); //正面1m 下に30cm (膝より上にBendGoalが来ると計算が反転して膝が下向いてしまう)
+            //Vector3 rightHandUp = Vector3.Cross(GuessFootToKneeAxis(ik.references.rightCalf,ik.references.rightThigh), ik.solver.rightLeg.palmToThumbAxis);
+            rightKneeAdjusterTransform.rotation = ik.references.rightCalf.rotation;// QuaTools.MatchRotation(RightKneeTransform.rotation * Quaternion.LookRotation(settings.footTrackerForward, settings.footTrackerUp), settings.footTrackerForward, settings.footTrackerUp, Vector3.zero, rightHandUp);
+            ik.solver.rightLeg.bendGoal = rightKneeAdjusterTransform;
+            ik.solver.rightLeg.bendGoalWeight = 1.0f;
+        }
+        else
+        {
+            ik.solver.rightLeg.bendGoal = rightBendGoalTarget;
+            ik.solver.rightLeg.bendGoalWeight = 1.0f;
+        }
 
         // Root controller
         bool addRootController = PelvisTransform != null || (LeftFootTransform != null && RightFootTransform != null);
@@ -424,5 +498,13 @@ public class Calibrator
         // Additional solver settings
         ik.solver.spine.minHeadHeight = 0f;
         ik.solver.locomotion.weight = PelvisTransform == null && LeftFootTransform == null && RightFootTransform == null ? 1f : 0f;
+    }
+
+    private static Vector3 GuessFootToKneeAxis(Transform Foot, Transform Knee)
+    {
+        Vector3 toKnee = Knee.position - Foot.position;
+        Vector3 axis = AxisTools.ToVector3(AxisTools.GetAxisToDirection(Foot, toKnee));
+        if (Vector3.Dot(toKnee, Foot.rotation * axis) > 0f) axis = -axis;
+        return axis;
     }
 }

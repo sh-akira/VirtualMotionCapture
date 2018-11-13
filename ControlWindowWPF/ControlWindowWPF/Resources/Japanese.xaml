@@ -225,6 +225,10 @@
     <system:String x:Key="TrackerConfigWindow_Pelvis">腰</system:String>
     <system:String x:Key="TrackerConfigWindow_LeftFoot">左足</system:String>
     <system:String x:Key="TrackerConfigWindow_RightFoot">右足</system:String>
+    <system:String x:Key="TrackerConfigWindow_LeftElbow">左ひじ</system:String>
+    <system:String x:Key="TrackerConfigWindow_RightElbow">右ひじ</system:String>
+    <system:String x:Key="TrackerConfigWindow_LeftKnee">左ひざ</system:String>
+    <system:String x:Key="TrackerConfigWindow_RightKnee">右ひざ</system:String>
     <system:String x:Key="TrackerConfigWindow_TrackersList">トラッカー一覧(移動したトラッカーに色が付きます)</system:String>
     <system:String x:Key="TrackerConfigWindow_TrackerOffset">手のトラッカーオフセット設定(トラッカーの底面のネジ穴から手首の関節中心までの距離を設定)</system:String>
     <system:String x:Key="TrackerConfigWindow_OffsetLeftHand">左手</system:String>

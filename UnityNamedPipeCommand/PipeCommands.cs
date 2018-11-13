@@ -209,6 +209,10 @@ namespace UnityNamedPipe
             public Tuple<string, string> Pelvis { get; set; }
             public Tuple<string, string> LeftFoot { get; set; }
             public Tuple<string, string> RightFoot { get; set; }
+            public Tuple<string, string> LeftElbow { get; set; }
+            public Tuple<string, string> RightElbow { get; set; }
+            public Tuple<string, string> LeftKnee { get; set; }
+            public Tuple<string, string> RightKnee { get; set; }
         }
 
         public class GetTrackerOffsets { }

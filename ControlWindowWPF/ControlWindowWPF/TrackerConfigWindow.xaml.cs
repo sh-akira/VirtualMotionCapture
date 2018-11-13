@@ -125,6 +125,10 @@ namespace VirtualMotionCaptureControlPanel
             PelvisTrackerComboBox.SelectedItem = getItem(setting.Pelvis);
             LeftFootTrackerComboBox.SelectedItem = getItem(setting.LeftFoot);
             RightFootTrackerComboBox.SelectedItem = getItem(setting.RightFoot);
+            LeftElbowTrackerComboBox.SelectedItem = getItem(setting.LeftElbow);
+            RightElbowTrackerComboBox.SelectedItem = getItem(setting.RightElbow);
+            LeftKneeTrackerComboBox.SelectedItem = getItem(setting.LeftKnee);
+            RightKneeTrackerComboBox.SelectedItem = getItem(setting.RightKnee);
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -144,6 +148,10 @@ namespace VirtualMotionCaptureControlPanel
             command.Pelvis = (PelvisTrackerComboBox.SelectedItem as TrackerInfo ?? new TrackerInfo { TypeName = "トラッカー" }).ToTuple();
             command.LeftFoot = (LeftFootTrackerComboBox.SelectedItem as TrackerInfo ?? new TrackerInfo { TypeName = "トラッカー" }).ToTuple();
             command.RightFoot = (RightFootTrackerComboBox.SelectedItem as TrackerInfo ?? new TrackerInfo { TypeName = "トラッカー" }).ToTuple();
+            command.LeftElbow = (LeftElbowTrackerComboBox.SelectedItem as TrackerInfo ?? new TrackerInfo { TypeName = "トラッカー" }).ToTuple();
+            command.RightElbow = (RightElbowTrackerComboBox.SelectedItem as TrackerInfo ?? new TrackerInfo { TypeName = "トラッカー" }).ToTuple();
+            command.LeftKnee = (LeftKneeTrackerComboBox.SelectedItem as TrackerInfo ?? new TrackerInfo { TypeName = "トラッカー" }).ToTuple();
+            command.RightKnee = (RightKneeTrackerComboBox.SelectedItem as TrackerInfo ?? new TrackerInfo { TypeName = "トラッカー" }).ToTuple();
             await Globals.Client.SendCommandAsync(command);
         }
 

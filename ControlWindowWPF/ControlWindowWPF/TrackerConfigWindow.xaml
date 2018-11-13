@@ -27,8 +27,14 @@
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
@@ -44,6 +50,14 @@
                 <ComboBox  Grid.Column="1" Grid.Row="4" Name="LeftFootTrackerComboBox" VerticalAlignment="Center" Margin="20,5,5,5" ItemsSource="{Binding TrackersList}" SelectionChanged="ComboBox_SelectionChanged"/>
                 <TextBlock Grid.Column="0" Grid.Row="5" Text="{DynamicResource TrackerConfigWindow_RightFoot}"/>
                 <ComboBox  Grid.Column="1" Grid.Row="5" Name="RightFootTrackerComboBox" VerticalAlignment="Center" Margin="20,5,5,5" ItemsSource="{Binding TrackersList}" SelectionChanged="ComboBox_SelectionChanged"/>
+                <TextBlock Grid.Column="2" Grid.Row="1" Text="{DynamicResource TrackerConfigWindow_LeftElbow}"/>
+                <ComboBox  Grid.Column="3" Grid.Row="1" Name="LeftElbowTrackerComboBox" VerticalAlignment="Center" Margin="20,5,5,5" ItemsSource="{Binding TrackersList}" SelectionChanged="ComboBox_SelectionChanged"/>
+                <TextBlock Grid.Column="2" Grid.Row="2" Text="{DynamicResource TrackerConfigWindow_RightElbow}"/>
+                <ComboBox  Grid.Column="3" Grid.Row="2" Name="RightElbowTrackerComboBox" VerticalAlignment="Center" Margin="20,5,5,5" ItemsSource="{Binding TrackersList}" SelectionChanged="ComboBox_SelectionChanged"/>
+                <TextBlock Grid.Column="2" Grid.Row="4" Text="{DynamicResource TrackerConfigWindow_LeftKnee}"/>
+                <ComboBox  Grid.Column="3" Grid.Row="4" Name="LeftKneeTrackerComboBox" VerticalAlignment="Center" Margin="20,5,5,5" ItemsSource="{Binding TrackersList}" SelectionChanged="ComboBox_SelectionChanged"/>
+                <TextBlock Grid.Column="2" Grid.Row="5" Text="{DynamicResource TrackerConfigWindow_RightKnee}"/>
+                <ComboBox  Grid.Column="3" Grid.Row="5" Name="RightKneeTrackerComboBox" VerticalAlignment="Center" Margin="20,5,5,5" ItemsSource="{Binding TrackersList}" SelectionChanged="ComboBox_SelectionChanged"/>
             </Grid>
         </GroupBox>
         <DockPanel DockPanel.Dock="Bottom">

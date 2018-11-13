@@ -647,6 +647,10 @@ public class ControlWPFWindow : MonoBehaviour
     Transform rightFootTracker = null;
     Transform leftHandTracker = null;
     Transform rightHandTracker = null;
+    Transform leftElbowTracker = null;
+    Transform rightElbowTracker = null;
+    Transform leftKneeTracker = null;
+    Transform rightKneeTracker = null;
 
     private List<Tuple<string, string>> GetTrackerSerialNumbers()
     {
@@ -684,6 +688,10 @@ public class ControlWPFWindow : MonoBehaviour
             Pelvis = Tuple.Create(deviceDictionary[CurrentSettings.Pelvis.Item1], CurrentSettings.Pelvis.Item2),
             LeftFoot = Tuple.Create(deviceDictionary[CurrentSettings.LeftFoot.Item1], CurrentSettings.LeftFoot.Item2),
             RightFoot = Tuple.Create(deviceDictionary[CurrentSettings.RightFoot.Item1], CurrentSettings.RightFoot.Item2),
+            LeftElbow = Tuple.Create(deviceDictionary[CurrentSettings.LeftElbow.Item1], CurrentSettings.LeftElbow.Item2),
+            RightElbow = Tuple.Create(deviceDictionary[CurrentSettings.RightElbow.Item1], CurrentSettings.RightElbow.Item2),
+            LeftKnee = Tuple.Create(deviceDictionary[CurrentSettings.LeftKnee.Item1], CurrentSettings.LeftKnee.Item2),
+            RightKnee = Tuple.Create(deviceDictionary[CurrentSettings.RightKnee.Item1], CurrentSettings.RightKnee.Item2),
         };
     }
 
@@ -704,12 +712,16 @@ public class ControlWPFWindow : MonoBehaviour
         CurrentSettings.Pelvis = Tuple.Create(deviceDictionary[data.Pelvis.Item1], data.Pelvis.Item2);
         CurrentSettings.LeftFoot = Tuple.Create(deviceDictionary[data.LeftFoot.Item1], data.LeftFoot.Item2);
         CurrentSettings.RightFoot = Tuple.Create(deviceDictionary[data.RightFoot.Item1], data.RightFoot.Item2);
+        CurrentSettings.LeftElbow = Tuple.Create(deviceDictionary[data.LeftElbow.Item1], data.LeftElbow.Item2);
+        CurrentSettings.RightElbow = Tuple.Create(deviceDictionary[data.RightElbow.Item1], data.RightElbow.Item2);
+        CurrentSettings.LeftKnee = Tuple.Create(deviceDictionary[data.LeftKnee.Item1], data.LeftKnee.Item2);
+        CurrentSettings.RightKnee = Tuple.Create(deviceDictionary[data.RightKnee.Item1], data.RightKnee.Item2);
         SetVRIKTargetTrackers();
     }
 
     private enum TargetType
     {
-        Head, Pelvis, LeftArm, RightArm, LeftLeg, RightLeg
+        Head, Pelvis, LeftArm, RightArm, LeftLeg, RightLeg, LeftElbow, RightElbow, LeftKnee, RightKnee
     }
 
     private Transform GetTrackerTransformBySerialNumber(Tuple<ETrackedDeviceClass, string> serial, TargetType setTo, Transform headTracker = null)
@@ -766,6 +778,10 @@ public class ControlWPFWindow : MonoBehaviour
             if (CurrentSettings.Pelvis.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.Pelvis.Item2);
             if (CurrentSettings.LeftFoot.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.LeftFoot.Item2);
             if (CurrentSettings.RightFoot.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.RightFoot.Item2);
+            if (CurrentSettings.LeftElbow.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.LeftElbow.Item2);
+            if (CurrentSettings.RightElbow.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.RightElbow.Item2);
+            if (CurrentSettings.LeftKnee.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.LeftKnee.Item2);
+            if (CurrentSettings.RightKnee.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.RightKnee.Item2);
 
             //ここに来るときは腰か足のトラッカー自動認識になってるとき
             //割り当てられていないトラッカーリスト
@@ -877,6 +893,10 @@ public class ControlWPFWindow : MonoBehaviour
         bodyTracker = GetTrackerTransformBySerialNumber(CurrentSettings.Pelvis, TargetType.Pelvis, headTracker);
         leftFootTracker = GetTrackerTransformBySerialNumber(CurrentSettings.LeftFoot, TargetType.LeftLeg, headTracker);
         rightFootTracker = GetTrackerTransformBySerialNumber(CurrentSettings.RightFoot, TargetType.RightLeg, headTracker);
+        leftElbowTracker = GetTrackerTransformBySerialNumber(CurrentSettings.LeftElbow, TargetType.LeftElbow, headTracker);
+        rightElbowTracker = GetTrackerTransformBySerialNumber(CurrentSettings.RightElbow, TargetType.RightElbow, headTracker);
+        leftKneeTracker = GetTrackerTransformBySerialNumber(CurrentSettings.LeftKnee, TargetType.LeftKnee, headTracker);
+        rightKneeTracker = GetTrackerTransformBySerialNumber(CurrentSettings.RightKnee, TargetType.RightKnee, headTracker);
 
 
         var settings = new RootMotion.FinalIK.VRIKCalibrator.Settings();
@@ -908,7 +928,7 @@ public class ControlWPFWindow : MonoBehaviour
             rightHandOffset = new Vector3(1.0f, CurrentSettings.RightHandTrackerOffsetToBottom, CurrentSettings.RightHandTrackerOffsetToBodySide); // Vector3 (IsEnable, ToTrackerBottom, ToBodySide)
         }
 
-        yield return Calibrator.CalibrateScaled(HandTrackerRoot, HeadTrackerRoot, FootTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker);
+        yield return Calibrator.CalibrateScaled(HandTrackerRoot, HeadTrackerRoot, FootTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
 
         vrik.solver.IKPositionWeight = 1.0f;
         if (handler.Trackers.Count == 1)
@@ -933,6 +953,10 @@ public class ControlWPFWindow : MonoBehaviour
         CurrentSettings.rightHandTracker = StoreTransform.Create(rightHandTracker);
         CurrentSettings.leftFootTracker = StoreTransform.Create(leftFootTracker);
         CurrentSettings.rightFootTracker = StoreTransform.Create(rightFootTracker);
+        CurrentSettings.leftElbowTracker = StoreTransform.Create(leftElbowTracker);
+        CurrentSettings.rightElbowTracker = StoreTransform.Create(rightElbowTracker);
+        CurrentSettings.leftKneeTracker = StoreTransform.Create(leftKneeTracker);
+        CurrentSettings.rightKneeTracker = StoreTransform.Create(rightKneeTracker);
     }
 
     private void EndCalibrate()
@@ -1776,6 +1800,14 @@ public class ControlWPFWindow : MonoBehaviour
         public StoreTransform rightHandTracker = null;
         public StoreTransform leftFootTracker = null;
         public StoreTransform rightFootTracker = null;
+        [OptionalField]
+        public StoreTransform leftElbowTracker = null;
+        [OptionalField]
+        public StoreTransform rightElbowTracker = null;
+        [OptionalField]
+        public StoreTransform leftKneeTracker = null;
+        [OptionalField]
+        public StoreTransform rightKneeTracker = null;
         public Color BackgroundColor;
         public Color CustomBackgroundColor;
         public bool IsTransparent;
@@ -1850,6 +1882,14 @@ public class ControlWPFWindow : MonoBehaviour
         public Tuple<ETrackedDeviceClass, string> LeftFoot = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
         [OptionalField]
         public Tuple<ETrackedDeviceClass, string> RightFoot = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
+        [OptionalField]
+        public Tuple<ETrackedDeviceClass, string> LeftElbow = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
+        [OptionalField]
+        public Tuple<ETrackedDeviceClass, string> RightElbow = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
+        [OptionalField]
+        public Tuple<ETrackedDeviceClass, string> LeftKnee = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
+        [OptionalField]
+        public Tuple<ETrackedDeviceClass, string> RightKnee = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
 
         [OptionalField]
         public float LeftHandTrackerOffsetToBottom = 0.02f;
@@ -1891,6 +1931,10 @@ public class ControlWPFWindow : MonoBehaviour
             Pelvis = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
             LeftFoot = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
             RightFoot = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
+            LeftElbow = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
+            RightElbow = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
+            LeftKnee = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
+            RightKnee = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
 
             LeftHandTrackerOffsetToBottom = 0.02f;
             LeftHandTrackerOffsetToBodySide = 0.05f;
