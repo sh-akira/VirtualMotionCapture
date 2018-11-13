@@ -624,13 +624,50 @@ public class ControlWPFWindow : MonoBehaviour
 
     #region Calibration
 
+    private Vector3 fixKneeBone(Transform UpperLeg, Transform Knee, Transform Ankle)
+    {
+        var a = UpperLeg.position;
+        var b = Ankle.position;
+        var z = Mathf.Max(a.z, b.z) + 0.01f;
+        var x = Mathf.Lerp(a.x, b.x, 0.5f);
+        var offset = Knee.position - new Vector3(x, Knee.position.y, z);
+        Knee.position -= offset;
+        Ankle.position += offset;
+        return offset;
+    }
+
+
+    private void unfixKneeBone(Vector3 offset, Transform Knee, Transform Ankle)
+    {
+        //return;
+        Knee.position += offset;
+        Ankle.position -= offset;
+    }
+
     private void SetVRIK(GameObject model)
     {
+        //膝のボーンの曲がる方向で膝の向きが決まってしまうため、強制的に膝のボーンを少し前に曲げる
+        var leftOffset = Vector3.zero;
+        var rightOffset = Vector3.zero;
+        if (animator != null)
+        {
+            leftOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.LeftUpperLeg), animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg), animator.GetBoneTransform(HumanBodyBones.LeftFoot));
+            rightOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.RightUpperLeg), animator.GetBoneTransform(HumanBodyBones.RightLowerLeg), animator.GetBoneTransform(HumanBodyBones.RightFoot));
+        }
+
+
         vrik = model.AddComponent<RootMotion.FinalIK.VRIK>();
         vrik.solver.IKPositionWeight = 0f;
         vrik.solver.leftArm.stretchCurve = new AnimationCurve();
         vrik.solver.rightArm.stretchCurve = new AnimationCurve();
         vrik.UpdateSolverExternal();
+
+        //膝のボーンの曲がる方向で膝の向きが決まってしまうため、強制的に膝のボーンを少し前に曲げる
+        //if (animator != null)
+        //{
+        //    unfixKneeBone(leftOffset, animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg), animator.GetBoneTransform(HumanBodyBones.LeftFoot));
+        //    unfixKneeBone(rightOffset, animator.GetBoneTransform(HumanBodyBones.RightLowerLeg), animator.GetBoneTransform(HumanBodyBones.RightFoot));
+        //}
         //if (animator != null)
         //{
         //    var leftWrist = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).gameObject;
