@@ -628,7 +628,7 @@ public class ControlWPFWindow : MonoBehaviour
     {
         var a = UpperLeg.position;
         var b = Ankle.position;
-        var z = Mathf.Max(a.z, b.z) + 0.01f;
+        var z = Mathf.Max(a.z, b.z) + 0.001f;
         var x = Mathf.Lerp(a.x, b.x, 0.5f);
         var offset = Knee.position - new Vector3(x, Knee.position.y, z);
         Knee.position -= offset;
