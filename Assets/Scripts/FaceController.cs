@@ -76,50 +76,48 @@ public class FaceController : MonoBehaviour
         }
     }
 
-    public void StartSetting()
+    private void SetFaceNeutral()
     {
-        IsSetting = true;
         //表情をデフォルトに戻す
         if (proxy != null)
         {
-            foreach (var key in BlendShapeKeys)
-            {
-                proxy.SetValue(key, 0.0f, false);
-            }
-            proxy.SetValue(BlendShapePreset.Neutral, 1.0f, false);
+            var NeutralKey = new BlendShapeKey(BlendShapePreset.Neutral);
+            proxy.SetValues(BlendShapeKeys.Select(d => { var k = new BlendShapeKey(d); return new KeyValuePair<BlendShapeKey, float>(k, k.Equals(NeutralKey) ? 1.0f : 0.0f); }));
             proxy.Apply();
         }
     }
 
+    public void StartSetting()
+    {
+        IsSetting = true;
+        SetFaceNeutral();
+    }
+
     public void EndSetting()
     {
-        //表情をデフォルトに戻す
-        if (proxy != null)
-        {
-            foreach (var key in BlendShapeKeys)
-            {
-                proxy.SetValue(key, 0.0f, false);
-            }
-            proxy.SetValue(BlendShapePreset.Neutral, 1.0f, false);
-            proxy.Apply();
-        }
+        SetFaceNeutral();
         IsSetting = false;
     }
 
     public void SetFace(List<string> keys, List<float> strength, bool stopBlink)
     {
-        StopBlink = stopBlink;
-        proxy.ClearKeys();
-        foreach (var key in BlendShapeKeys)
+        if (proxy != null)
         {
-            proxy.SetValue(key, 0.0f, false);
+            StopBlink = stopBlink;
+            var NeutralKey = new BlendShapeKey(BlendShapePreset.Neutral);
+            var dict = new Dictionary<BlendShapeKey, float>();
+            foreach (var key in BlendShapeKeys)
+            {
+                dict.Add(new BlendShapeKey(key), 0.0f);
+            }
+            dict[NeutralKey] = 1.0f;
+            for (int i = 0; i < keys.Count; i++)
+            {
+                dict[new BlendShapeKey(keys[i])] = strength[i];
+            }
+            proxy.SetValues(dict.ToList());
+            proxy.Apply();
         }
-        proxy.SetValue(BlendShapePreset.Neutral, 1.0f);
-        for (int i = 0; i < keys.Count; i++)
-        {
-            proxy.SetValue(keys[i], strength[i], false);
-        }
-        proxy.Apply();
     }
 
     // Update is called once per frame
