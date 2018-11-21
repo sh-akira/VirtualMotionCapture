@@ -86,11 +86,11 @@ public class VirtualCamera : MonoBehaviour
 
     public class Interface
     {
-        [System.Runtime.InteropServices.DllImport("UnityCapturePlugin")]
+        [System.Runtime.InteropServices.DllImport("VMC_CameraPlugin")]
         extern static System.IntPtr CaptureCreateInstance(int CapNum);
-        [System.Runtime.InteropServices.DllImport("UnityCapturePlugin")]
+        [System.Runtime.InteropServices.DllImport("VMC_CameraPlugin")]
         extern static void CaptureDeleteInstance(System.IntPtr instance);
-        [System.Runtime.InteropServices.DllImport("UnityCapturePlugin")]
+        [System.Runtime.InteropServices.DllImport("VMC_CameraPlugin")]
         extern static ECaptureSendResult CaptureSendTexture(System.IntPtr instance, System.IntPtr nativetexture, int Timeout, int Buffering, EResizeMode ResizeMode, EMirrorMode MirrorMode, bool IsLinearColorSpace);
         System.IntPtr CaptureInstance;
 
