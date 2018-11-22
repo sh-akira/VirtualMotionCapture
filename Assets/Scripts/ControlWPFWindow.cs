@@ -54,6 +54,7 @@ public class ControlWPFWindow : MonoBehaviour
     public Transform HandTrackerRoot;
     public Transform HeadTrackerRoot;
     public Transform FootTrackerRoot;
+    public Transform RealTrackerRoot;
 
     private NamedPipeServer server;
     private string pipeName = Guid.NewGuid().ToString();
@@ -636,6 +637,22 @@ public class ControlWPFWindow : MonoBehaviour
         return offset;
     }
 
+    private Vector3 fixPelvisBone(Transform Spine, Transform Pelvis)
+    {
+        if (Spine.position.z < Pelvis.position.z)
+        {
+            return Vector3.zero;
+        }
+        
+        var offset = new Vector3(0, 0, Pelvis.position.z - Spine.position.z + 0.1f );
+        Pelvis.position -= offset;
+        foreach (var child in Pelvis.GetComponentsInChildren<Transform>(true))
+        {
+            //child.position += offset;
+        }
+        return offset;
+    }
+
 
     private void unfixKneeBone(Vector3 offset, Transform Knee, Transform Ankle)
     {
@@ -653,6 +670,7 @@ public class ControlWPFWindow : MonoBehaviour
         {
             leftOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.LeftUpperLeg), animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg), animator.GetBoneTransform(HumanBodyBones.LeftFoot));
             rightOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.RightUpperLeg), animator.GetBoneTransform(HumanBodyBones.RightLowerLeg), animator.GetBoneTransform(HumanBodyBones.RightFoot));
+            fixPelvisBone(animator.GetBoneTransform(HumanBodyBones.Spine), animator.GetBoneTransform(HumanBodyBones.Hips));
         }
 
 
@@ -965,7 +983,7 @@ public class ControlWPFWindow : MonoBehaviour
             rightHandOffset = new Vector3(1.0f, CurrentSettings.RightHandTrackerOffsetToBottom, CurrentSettings.RightHandTrackerOffsetToBodySide); // Vector3 (IsEnable, ToTrackerBottom, ToBodySide)
         }
 
-        yield return Calibrator.CalibrateScaled(HandTrackerRoot, HeadTrackerRoot, FootTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
+        yield return Calibrator.CalibrateScaled(RealTrackerRoot, HandTrackerRoot, HeadTrackerRoot, FootTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
 
         vrik.solver.IKPositionWeight = 1.0f;
         if (handler.Trackers.Count == 1)

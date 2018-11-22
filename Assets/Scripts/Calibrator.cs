@@ -141,9 +141,10 @@ public class Calibrator
         Quaternion frontQuaternion = Quaternion.LookRotation(hmdForwardAngle);
 
         // Target position
-        float inwardOffset = isLeft ? settings.footInwardOffset : -settings.footInwardOffset;
-        footAdjusterTransform.position = FootTransform.position + frontQuaternion * new Vector3(inwardOffset, 0f, settings.footForwardOffset);
-        footAdjusterTransform.position = new Vector3(footAdjusterTransform.position.x, lastBone.position.y, footAdjusterTransform.position.z);
+        //float inwardOffset = isLeft ? settings.footInwardOffset : -settings.footInwardOffset;
+        //footAdjusterTransform.position = FootTransform.position + frontQuaternion * new Vector3(inwardOffset, 0f, settings.footForwardOffset);
+        //footAdjusterTransform.position = new Vector3(footAdjusterTransform.position.x, lastBone.position.y, footAdjusterTransform.position.z);
+        footAdjusterTransform.position = lastBone.position;
 
         // Target rotation
         footAdjusterTransform.rotation = lastBone.rotation;
@@ -170,7 +171,7 @@ public class Calibrator
         //leg.bendGoalWeight = 0f;
     }
 
-    public static IEnumerator CalibrateScaled(Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
+    public static IEnumerator CalibrateScaled(Transform realTrackerRoot, Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
     {
         if (!ik.solver.initiated)
         {
@@ -188,6 +189,17 @@ public class Calibrator
         handTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
         headTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
         footTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        //スケール変更時の位置オフセット設定
+        var handTrackerOffset = handTrackerRoot.GetComponent<ScalePositionOffset>();
+        var headTrackerOffset = headTrackerRoot.GetComponent<ScalePositionOffset>();
+        var footTrackerOffset = footTrackerRoot.GetComponent<ScalePositionOffset>();
+        handTrackerOffset.ResetTargetAndPosition();
+        headTrackerOffset.ResetTargetAndPosition();
+        footTrackerOffset.ResetTargetAndPosition();
+        handTrackerOffset.SetTargets(realTrackerRoot.Find(LeftHandTransform.name), realTrackerRoot.Find(RightHandTransform.name), LeftHandTransform, RightHandTransform);
+        headTrackerOffset.SetDirectPosition(handTrackerOffset);
+        footTrackerOffset.SetDirectPosition(handTrackerOffset);
+
 
         //それぞれのトラッカーを正しいルートに移動
         if (HMDTransform != null) HMDTransform.parent = headTrackerRoot;
@@ -221,6 +233,10 @@ public class Calibrator
             RightHandTransform = offset.transform;
         }
 
+        //モデルの体の中心を取っておく
+        var modelcenterposition = Vector3.Lerp(ik.references.leftHand.position, ik.references.rightHand.position, 0.5f);
+        modelcenterposition = new Vector3(modelcenterposition.x, ik.references.root.position.y, modelcenterposition.z);
+        var modelcenterdistance = Vector3.Distance(ik.references.root.position, modelcenterposition);
 
         // モデルのポジションを手と手の中心位置に移動
         var centerposition = Vector3.Lerp(LeftHandTransform.position, RightHandTransform.position, 0.5f);
@@ -301,11 +317,11 @@ public class Calibrator
         modelHandHeight = (ik.references.leftHand.position.y + ik.references.rightHand.position.y) / 2f;
         realHandHeight = (LeftHandTransform.position.y + RightHandTransform.position.y) / 2f;
         hscale = modelHandHeight / realHandHeight;
-        handTrackerRoot.localScale = new Vector3(wscale, hscale, wscale);
+        handTrackerRoot.localScale = new Vector3(wscale, wscale, wscale);
 
         // モデルのポジションを再度手と手の中心位置に移動
         centerposition = Vector3.Lerp(LeftHandTransform.position, RightHandTransform.position, 0.5f);
-        ik.references.root.position = new Vector3(centerposition.x, ik.references.root.position.y, centerposition.z);
+        ik.references.root.position = new Vector3(centerposition.x, ik.references.root.position.y, centerposition.z) + ik.references.root.forward * modelcenterdistance;
         //hmdForwardAngle = HMDTransform.rotation * settings.headTrackerForward;
         //hmdForwardAngle.y = 0f;
         ik.references.root.rotation = Quaternion.LookRotation(hmdForwardAngle);
@@ -314,7 +330,7 @@ public class Calibrator
         var modelHeadHeight = ik.references.head.position.y;
         var realHeadHeight = HMDTransform.position.y;
         var headHscale = modelHeadHeight / realHeadHeight;
-        headTrackerRoot.localScale = new Vector3(wscale, hscale, wscale);
+        headTrackerRoot.localScale = new Vector3(wscale, wscale, wscale);
 
         // 腰のトラッカー全体のスケールを腰の位置に合わせる
         if (PelvisTransform != null)
@@ -322,7 +338,7 @@ public class Calibrator
             var modelPelvisHeight = ik.references.pelvis.position.y;
             var realPelvisHeight = PelvisTransform.position.y;
             var pelvisHscale = modelPelvisHeight / realPelvisHeight;
-            footTrackerRoot.localScale = new Vector3(wscale, pelvisHscale, wscale);
+            footTrackerRoot.localScale = new Vector3(wscale, wscale, wscale);
         }
 
 
@@ -424,7 +440,7 @@ public class Calibrator
         {
             ik.solver.rightArm.bendGoalWeight = 0.0f;
         }
-        
+
         // Legs
         ik.solver.leftLeg.bendGoalWeight = 0.0f;
         if (LeftFootTransform != null)
