@@ -61,7 +61,7 @@ public class VirtualCamera : MonoBehaviour
 
     void OnDestroy()
     {
-        CaptureInterface.Close();
+        CaptureInterface?.Close();
     }
 
     void OnRenderImage(RenderTexture source, RenderTexture destination)
