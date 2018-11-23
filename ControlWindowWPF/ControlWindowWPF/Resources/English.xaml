@@ -123,8 +123,11 @@
     <system:String x:Key="CalibrationWindow_CalibrationDescription2">Turn to the front and take the same pose as the model displayed on the screen</system:String>
     <system:String x:Key="CalibrationWindow_CalibrationButton">Calibration</system:String>
     <system:String x:Key="CalibrationWindow_CalibrationButton_ToolTip">Start Calibration</system:String>
-    <system:String x:Key="CalibrationWindow_Status_Calibrating">取得中</system:String>
-    <system:String x:Key="CalibrationWindow_Status_Finish">完了</system:String>
+    <system:String x:Key="CalibrationWindow_Status_Calibrating">Getting</system:String>
+    <system:String x:Key="CalibrationWindow_Status_Finish">Done</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrateDefaultRadioButton">Normal mode(expressing body movement as much as possible)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandRadioButton">MR compositing mode (correct hand position and no leg bending)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton">MR compositing mode (correct hand position and bend leg to the ground)</system:String>
 
     <!-- VRMImportWindow -->
     <system:String x:Key="VRMImportWindowTitle">Import VRM</system:String>

@@ -59,7 +59,7 @@ namespace VirtualMotionCaptureControlPanel
                 await Task.Delay(1000);
             } while (timercount-- > 0);
             StatusTextBlock.Text = LanguageSelector.Get("CalibrationWindow_Status_Calibrating");
-            await Globals.Client.SendCommandAsync(new PipeCommands.Calibrate());
+            await Globals.Client.SendCommandAsync(new PipeCommands.Calibrate { CalibrateType = CalibrateFixedHandRadioButton.IsChecked == true ? PipeCommands.CalibrateType.FixedHand : (CalibrateFixedHandWithGroundRadioButton.IsChecked == true ? PipeCommands.CalibrateType.FixedHandWithGround : PipeCommands.CalibrateType.Default) });
             await Task.Delay(1000);
             StatusTextBlock.Text = LanguageSelector.Get("CalibrationWindow_Status_Finish");
             await Task.Delay(1000);

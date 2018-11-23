@@ -43,7 +43,18 @@ namespace UnityNamedPipe
             public string Path { get; set; }
         }
 
-        public class Calibrate { }
+        public class Calibrate
+        {
+            public CalibrateType CalibrateType { get; set; }
+        }
+
+        public enum CalibrateType
+        {
+            Default = 0,
+            FixedHand = 1,
+            FixedHandWithGround = 2,
+        }
+
         public class EndCalibrate { }
 
         public class SetFloatValueBase { public float value { get; set; } }

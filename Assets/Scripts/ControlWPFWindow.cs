@@ -53,7 +53,7 @@ public class ControlWPFWindow : MonoBehaviour
 
     public Transform HandTrackerRoot;
     public Transform HeadTrackerRoot;
-    public Transform FootTrackerRoot;
+    public Transform PelvisTrackerRoot;
     public Transform RealTrackerRoot;
 
     private NamedPipeServer server;
@@ -183,7 +183,8 @@ public class ControlWPFWindow : MonoBehaviour
 
             else if (e.CommandType == typeof(PipeCommands.Calibrate))
             {
-                StartCoroutine(Calibrate());
+                var d = (PipeCommands.Calibrate)e.Data;
+                StartCoroutine(Calibrate(d.CalibrateType));
             }
             else if (e.CommandType == typeof(PipeCommands.EndCalibrate))
             {
@@ -947,7 +948,7 @@ public class ControlWPFWindow : MonoBehaviour
     }
 
 
-    private IEnumerator Calibrate()
+    private IEnumerator Calibrate(PipeCommands.CalibrateType calibrateType)
     {
         Transform headTracker = GetTrackerTransformBySerialNumber(CurrentSettings.Head, TargetType.Head);
         leftHandTracker = GetTrackerTransformBySerialNumber(CurrentSettings.LeftHand, TargetType.LeftArm, headTracker);
@@ -989,8 +990,18 @@ public class ControlWPFWindow : MonoBehaviour
             //zを＋方向は体中心(左手なら右手の方向)に向かって進む
             rightHandOffset = new Vector3(1.0f, CurrentSettings.RightHandTrackerOffsetToBottom, CurrentSettings.RightHandTrackerOffsetToBodySide); // Vector3 (IsEnable, ToTrackerBottom, ToBodySide)
         }
-
-        yield return Calibrator.CalibrateScaled(RealTrackerRoot, HandTrackerRoot, HeadTrackerRoot, FootTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
+        if (calibrateType == PipeCommands.CalibrateType.Default)
+        {
+            yield return Calibrator.CalibrateScaled(RealTrackerRoot, HandTrackerRoot, HeadTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
+        }
+        else if (calibrateType == PipeCommands.CalibrateType.FixedHand)
+        {
+            yield return Calibrator.CalibrateFixedHand(RealTrackerRoot, HandTrackerRoot, HeadTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
+        }
+        else if (calibrateType == PipeCommands.CalibrateType.FixedHandWithGround)
+        {
+            yield return Calibrator.CalibrateFixedHandWithGround(RealTrackerRoot, HandTrackerRoot, HeadTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
+        }
 
         vrik.solver.IKPositionWeight = 1.0f;
         if (handler.Trackers.Count == 1)
