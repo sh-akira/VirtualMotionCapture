@@ -612,6 +612,13 @@ public class ControlWPFWindow : MonoBehaviour
         {
             if (animator != null)
             {
+                //トラッカー位置の表示
+                RealTrackerRoot.gameObject.SetActive(true);
+                foreach(Transform t in RealTrackerRoot)
+                {
+                    t.localPosition = new Vector3(0, -100f, 0);
+                }
+
                 if (CalibrationCamera != null)
                 {
                     CalibrationCamera.Target = animator.GetBoneTransform(HumanBodyBones.Head);
@@ -1016,6 +1023,9 @@ public class ControlWPFWindow : MonoBehaviour
 
     private void EndCalibrate()
     {
+        //トラッカー位置の非表示
+        RealTrackerRoot.gameObject.SetActive(false);
+
         if (CalibrationCamera != null)
         {
             CalibrationCamera.gameObject.SetActive(false);
