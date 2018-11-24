@@ -20,6 +20,8 @@ using UnityEditor;
 
 public class ControlWPFWindow : MonoBehaviour
 {
+    public string VersionString;
+
     public TrackerHandler handler = null;
     public Transform LeftWristTransform = null;
     public Transform RightWristTransform = null;
@@ -87,6 +89,7 @@ public class ControlWPFWindow : MonoBehaviour
         EditorApplication.playModeStateChanged += EditorApplication_playModeStateChanged;//UnityエディタでPlayやStopした時の状態変化イベント
         pipeName = "VMCTest";
 #else
+        Assets.Scripts.NativeMethods.SetUnityWindowTitle(Application.productName + " " + VersionString);
         pipeName = "VMCpipe" + Guid.NewGuid().ToString();
 #endif
         server = new NamedPipeServer();
