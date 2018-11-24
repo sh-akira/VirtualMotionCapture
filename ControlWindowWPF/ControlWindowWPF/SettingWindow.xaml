@@ -31,6 +31,7 @@
                         </Setter>
                     </Style>
                 </DockPanel.Resources>
+                <Button DockPanel.Dock="Bottom" Content="{DynamicResource SettingWindow_ExportExternalCameraConfig}" Name="ExternalCameraConigExportButton" Click="ExternalCameraConigExportButton_Click" ToolTip="{DynamicResource SettingWindow_ExportExternalCameraConfig_ToolTip}"/>
                 <Button DockPanel.Dock="Bottom" Content="{DynamicResource SettingWindow_OpenExternalCameraConfig}" Name="ExternalCameraConigButton" Click="ExternalCameraConigButton_Click" ToolTip="{DynamicResource SettingWindow_OpenExternalCameraConfig_ToolTip}"/>
                 <TextBlock Text="{DynamicResource SettingWindow_ControllerNumber}"/>
                 <ComboBox  Name="ControllerComboBox" VerticalAlignment="Center" ItemsSource="{Binding TrackersList}" ToolTip="{DynamicResource SettingWindow_ControllerNumber_ToolTip}"/>

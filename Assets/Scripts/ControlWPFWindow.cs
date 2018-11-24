@@ -375,6 +375,25 @@ public class ControlWPFWindow : MonoBehaviour
                 var d = (PipeCommands.SetExternalCameraConfig)e.Data;
                 StartCoroutine(SetExternalCameraConfig(d));
             }
+            else if (e.CommandType == typeof(PipeCommands.GetExternalCameraConfig))
+            {
+                var d = (PipeCommands.GetExternalCameraConfig)e.Data;
+                var tracker = handler.GetTrackerTransformByName(d.ControllerName);
+                //InverseTransformPoint  Thanks: えむにわ(@m2wasabi)
+                var rposition = tracker.InverseTransformPoint(currentCamera.transform.position);
+                var rrotation = currentCamera.transform.eulerAngles - tracker.eulerAngles;
+                await server.SendCommandAsync(new PipeCommands.SetExternalCameraConfig
+                {
+                    x = rposition.x,
+                    y = rposition.y,
+                    z = rposition.z,
+                    rx = rrotation.x,
+                    ry = rrotation.y,
+                    rz = rrotation.z,
+                    fov = currentCamera.fieldOfView,
+                    ControllerName = d.ControllerName
+                }, e.RequestId);
+            }
             else if (e.CommandType == typeof(PipeCommands.GetTrackerSerialNumbers))
             {
                 await server.SendCommandAsync(new PipeCommands.ReturnTrackerSerialNumbers { List = GetTrackerSerialNumbers(), CurrentSetting = GetCurrentTrackerSettings() }, e.RequestId);

@@ -217,6 +217,8 @@
     <system:String x:Key="SettingWindow_SuccessDriverUninstall">カメラドライバのアンインストールに成功しました。カメラ選択からVMC_Cameraが削除されます</system:String>
     <system:String x:Key="SettingWindow_FailedDriverUninstall">カメラドライバのアンインストールに失敗しました。コマンドプロンプトを開き、C:\VMC_Cameraフォルダに移動して regsvr32 /u VMC_CameraFilter32bit.dll regsvr32 /u VMC_CameraFilter64bit.dll を実行してください。その後C:\VMC_Cameraフォルダを削除してください</system:String>
     <system:String x:Key="SettingWindow_SelectedItemError">カメラを割り当てるトラッカーを選択してください</system:String>
+    <system:String x:Key="SettingWindow_ExportExternalCameraConfig">externalcamera.cfgを出力</system:String>
+    <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">VRゲームにモデルを合成するためのexternalcamera.cfgを出力します</system:String>
 
 
     <!-- TrackerConfigWindow -->

@@ -197,6 +197,11 @@ namespace UnityNamedPipe
             public float fov { get; set; }
             public string ControllerName { get; set; }
         }
+        public class GetExternalCameraConfig
+        {
+            public string ControllerName { get; set; }
+        }
+
 
         public class ExitControlPanel { }
 

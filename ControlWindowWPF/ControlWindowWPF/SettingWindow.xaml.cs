@@ -154,6 +154,43 @@ namespace VirtualMotionCaptureControlPanel
             }
         }
 
+        private async void ExternalCameraConigExportButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ControllerComboBox.SelectedItem == null)
+            {
+                MessageBox.Show(LanguageSelector.Get("SettingWindow_SelectedItemError"), LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            var tracker = ControllerComboBox.SelectedItem as TrackerConfigWindow.TrackerInfo;
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetExternalCameraConfig { ControllerName = tracker.SerialNumber }, r =>
+            {
+                var d = (PipeCommands.SetExternalCameraConfig)r;
+                Dispatcher.Invoke(() =>
+                {
+                    var sfd = new SaveFileDialog();
+                    sfd.Filter = "externalcamera.cfg|externalcamera.cfg";
+                    sfd.Title = "Export externalcamera.cfg";
+                    sfd.FileName = "externalcamera.cfg";
+                    if (sfd.ShowDialog() == true)
+                    {
+                        var lines = new List<string>();
+                        lines.Add($"x={d.x}");
+                        lines.Add($"y={d.y}");
+                        lines.Add($"z={d.z}");
+                        lines.Add($"rx={d.rx}");
+                        lines.Add($"ry={d.ry}");
+                        lines.Add($"rz={d.rz}");
+                        lines.Add($"fov={d.fov}");
+                        lines.Add($"near=0.01");
+                        lines.Add($"far=1000");
+                        lines.Add($"disableStandardAssets=False");
+                        lines.Add($"frameSkip=0");
+                        File.WriteAllLines(sfd.FileName, lines);
+                    }
+                });
+            });
+        }
+
         private void TrackerConfigButton_Click(object sender, RoutedEventArgs e)
         {
             var win = new TrackerConfigWindow();

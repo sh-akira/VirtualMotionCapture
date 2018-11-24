@@ -37,6 +37,19 @@ namespace sh_akira.OVRTracking
 
         private bool IsOVRConnected = false;
 
+        public Transform GetTrackerTransformByName(string name)
+        {
+            if (CameraControllerObject.name == name) return CameraControllerObject.transform;
+            if (HMDObject.name == name) return HMDObject.transform;
+            var controller = Controllers.FirstOrDefault(d => d.name == name);
+            if (controller != null) return controller.transform;
+            var tracker = Trackers.FirstOrDefault(d => d.name == name);
+            if (tracker != null) return tracker.transform;
+            var basestation = BaseStations.FirstOrDefault(d => d.name == name);
+            if (basestation != null) return basestation.transform;
+            return null;
+        }
+
         // Update is called once per frame
         void Update()
         {
