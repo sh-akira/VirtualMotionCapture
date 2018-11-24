@@ -809,7 +809,7 @@ public class ControlWPFWindow : MonoBehaviour
         }
         else if (serial.Item1 == ETrackedDeviceClass.Controller)
         {
-            var controllers = handler.Controllers.Where(d => d != handler.CameraControllerObject);
+            var controllers = handler.Controllers.Where(d => d != handler.CameraControllerObject && d.name.Contains("LIV Virtual Camera") == false);
             Transform ret = null;
             foreach (var controller in controllers)
             {
@@ -835,7 +835,7 @@ public class ControlWPFWindow : MonoBehaviour
         }
         else if (serial.Item1 == ETrackedDeviceClass.GenericTracker)
         {
-            foreach (var tracker in handler.Trackers)
+            foreach (var tracker in handler.Trackers.Where(d => d != handler.CameraControllerObject && d.name.Contains("LIV Virtual Camera") == false))
             {
                 if (tracker != null && tracker.transform.name == serial.Item2)
                 {
