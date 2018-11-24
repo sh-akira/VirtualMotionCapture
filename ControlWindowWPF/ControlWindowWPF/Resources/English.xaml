@@ -215,7 +215,8 @@
     <system:String x:Key="SettingWindow_FailedFolderDelete">Failed to delete the folder. Please manually delete C:\VMC_Camera folder</system:String>
     <system:String x:Key="SettingWindow_SuccessDriverUninstall">The camera driver has been uninstalled. VMC_Camera will be deleted from camera selection</system:String>
     <system:String x:Key="SettingWindow_FailedDriverUninstall">Failed to uninstall the camera driver. Open a command prompt, move to C:\VMC_Camera folder, and execute regsvr32 / u VMC_CameraFilter32bit.dll and regsvr32 / u VMC_CameraFilter64bit.dll. Then delete the C:\VMC_Camera folder</system:String>
-
+    <system:String x:Key="SettingWindow_SelectedItemError">Please select tracker to assign camera</system:String>
+    
 
     <!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">Tracker assignment setting</system:String>

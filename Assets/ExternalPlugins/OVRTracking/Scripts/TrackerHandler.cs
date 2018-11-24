@@ -14,7 +14,7 @@ namespace sh_akira.OVRTracking
         public List<GameObject> ControllersObject = new List<GameObject>();
         public GameObject CameraControllerObject;
         [System.NonSerialized]
-        public int CameraControllerIndex = -1;
+        public string CameraControllerName = null;
         [System.NonSerialized]
         public List<GameObject> Trackers = new List<GameObject>();
         public List<GameObject> TrackersObject = new List<GameObject>();
@@ -44,6 +44,18 @@ namespace sh_akira.OVRTracking
             {
                 OpenVRWrapper.Instance.PollingVREvents();
                 var positions = OpenVRWrapper.Instance.GetTrackerPositions();
+
+                //externalcamera.cfg用のコントローラー設定
+                if (CameraControllerName != null && positions.SelectMany(d => d.Value).Any(d => d.Value == CameraControllerName))
+                {
+                    var cameracontroller = positions.SelectMany(d => d.Value).Where(d => d.Value == CameraControllerName).First();
+                    CameraControllerObject.transform.SetPositionAndRotationLocal(cameracontroller);
+                    foreach (var l in positions)
+                    {
+                        if (l.Value.Contains(cameracontroller)) l.Value.Remove(cameracontroller);
+                    }
+                }
+
                 var hmdPositions = positions[ETrackedDeviceClass.HMD];
                 if (hmdPositions.Any())
                 {
@@ -52,12 +64,6 @@ namespace sh_akira.OVRTracking
                 var controllerPositions = positions[ETrackedDeviceClass.Controller];
                 if (controllerPositions.Any())
                 {
-                    //externalcamera.cfg用のコントローラー設定
-                    if (CameraControllerIndex >= 0 && CameraControllerIndex < controllerPositions.Count)
-                    {
-                        CameraControllerObject.transform.SetPositionAndRotationLocal(controllerPositions[CameraControllerIndex]);
-                        controllerPositions.RemoveAt(CameraControllerIndex);
-                    }
                     for (int i = 0; i < controllerPositions.Count && i < ControllersObject.Count; i++)
                     {
                         ControllersObject[i].transform.SetPositionAndRotationLocal(controllerPositions[i]);
@@ -102,7 +108,7 @@ namespace sh_akira.OVRTracking
 
         public static event EventHandler<string> TrackerMovedEvent;
 
-        private static void CheckPosition(string serial,Vector3 pos)
+        private static void CheckPosition(string serial, Vector3 pos)
         {
             if (lastPositions.ContainsKey(serial) == false)
             {
@@ -110,7 +116,7 @@ namespace sh_akira.OVRTracking
             }
             else
             {
-                if(Vector3.Distance(lastPositions[serial],pos) > 0.1f)
+                if (Vector3.Distance(lastPositions[serial], pos) > 0.1f)
                 {
                     TrackerMovedEvent?.Invoke(null, serial);
                     lastPositions[serial] = pos;

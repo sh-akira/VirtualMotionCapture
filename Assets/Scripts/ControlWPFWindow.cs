@@ -373,18 +373,7 @@ public class ControlWPFWindow : MonoBehaviour
             else if (e.CommandType == typeof(PipeCommands.SetExternalCameraConfig))
             {
                 var d = (PipeCommands.SetExternalCameraConfig)e.Data;
-                //フリーカメラに変更
-                ChangeCamera(CameraTypes.Free);
-                //externalcamera.cfgは3つ目のコントローラー基準のポジション
-                handler.CameraControllerIndex = d.ControllerIndex;
-                //指定のコントローラーの子にして座標指定
-                currentCamera.transform.SetParent(handler.CameraControllerObject.transform);
-                currentCamera.transform.localPosition = new Vector3(d.x, d.y, d.z);
-                currentCamera.transform.localRotation = Quaternion.Euler(d.rx, d.ry, d.rz);
-                currentCamera.fieldOfView = d.fov;
-                //コントローラーは動くのでカメラ位置の保存はできない
-                //if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
-                //CurrentSettings.FreeCameraTransform.SetPosition(currentCamera.transform);
+                StartCoroutine(SetExternalCameraConfig(d));
             }
             else if (e.CommandType == typeof(PipeCommands.GetTrackerSerialNumbers))
             {
@@ -1383,6 +1372,23 @@ public class ControlWPFWindow : MonoBehaviour
     {
         CurrentSettings.CameraMirrorEnable = enable;
         SetCameraMirrorEnable(enable);
+    }
+
+    private IEnumerator SetExternalCameraConfig(PipeCommands.SetExternalCameraConfig d)
+    {
+        //フリーカメラに変更
+        ChangeCamera(CameraTypes.Free);
+        //externalcamera.cfgは3つ目のコントローラー基準のポジション
+        handler.CameraControllerName = d.ControllerName;
+        yield return null;
+        //指定のコントローラーの子にして座標指定
+        currentCamera.transform.SetParent(handler.CameraControllerObject.transform);
+        currentCamera.transform.localPosition = new Vector3(d.x, d.y, d.z);
+        currentCamera.transform.localRotation = Quaternion.Euler(d.rx, d.ry, d.rz);
+        currentCamera.fieldOfView = d.fov;
+        //コントローラーは動くのでカメラ位置の保存はできない
+        //if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
+        //CurrentSettings.FreeCameraTransform.SetPosition(currentCamera.transform);
     }
 
     #endregion

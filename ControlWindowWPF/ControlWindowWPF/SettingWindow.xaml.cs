@@ -1,8 +1,8 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -32,16 +32,67 @@ namespace VirtualMotionCaptureControlPanel
         }
         public ObservableCollection<ResolutionItem> ResolutionItems;
 
+        public ObservableCollection<TrackerConfigWindow.TrackerInfo> TrackersList { get; set; } = new ObservableCollection<TrackerConfigWindow.TrackerInfo>();
+
         private ObservableCollection<float> RotationItems = new ObservableCollection<float> { -180.0f, -135.0f, -90.0f, -45.0f, 0.0f, 45.0f, 90.0f, 135.0f, 180.0f };
         public SettingWindow()
         {
             var language = Globals.CurrentLanguage;
             InitializeComponent();
+            this.DataContext = this;
             LanguageComboBox.SelectedItem = language;
             LeftHandRotateComboBox.ItemsSource = RotationItems;
             RightHandRotateComboBox.ItemsSource = RotationItems;
             if (RotationItems.Contains(Globals.LeftHandRotation)) LeftHandRotateComboBox.SelectedItem = Globals.LeftHandRotation;
             if (RotationItems.Contains(Globals.RightHandRotation)) RightHandRotateComboBox.SelectedItem = Globals.RightHandRotation;
+        }
+
+        private Brush WhiteBrush = new SolidColorBrush(Colors.White);
+        private Brush ActiveBrush = new SolidColorBrush(Colors.Green);
+
+        private ConcurrentDictionary<string, DateTime> endTime = new ConcurrentDictionary<string, DateTime>();
+        private void Client_Received(object sender, DataReceivedEventArgs e)
+        {
+            if (e.CommandType == typeof(PipeCommands.TrackerMoved))
+            {
+                var d = (PipeCommands.TrackerMoved)e.Data;
+                var time = DateTime.Now.AddSeconds(3);
+                var item = TrackersList.Where(t => t.SerialNumber == d.SerialNumber).FirstOrDefault();
+                if (item == null) return;
+                Dispatcher.Invoke(() => item.Background = ActiveBrush);
+                if (endTime.ContainsKey(d.SerialNumber))
+                {
+                    endTime[d.SerialNumber] = time;
+                }
+                else
+                {
+                    endTime.TryAdd(d.SerialNumber, time);
+                }
+                var task = Task.Run(async () =>
+                {
+                    while (time > DateTime.Now)
+                    {
+                        await Task.Delay(200);
+                    }
+                    DateTime tmpTime;
+                    endTime.TryGetValue(d.SerialNumber, out tmpTime);
+                    if (tmpTime == time)
+                    {
+                        endTime.TryRemove(d.SerialNumber, out tmpTime);
+                        Dispatcher.Invoke(() => item.Background = WhiteBrush);
+                    }
+                });
+            }
+        }
+
+        private void SetTrackersList(List<Tuple<string, string>> list, PipeCommands.SetTrackerSerialNumbers setting)
+        {
+            TrackersList.Clear();
+            foreach (var d in list.OrderBy(d => d.Item1).ThenBy(d => d.Item2))
+            {
+                var trackerinfo = new TrackerConfigWindow.TrackerInfo { TypeName = d.Item1, SerialNumber = d.Item2, Background = WhiteBrush };
+                TrackersList.Add(trackerinfo);
+            }
         }
 
         private async void LeftHandRotateComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -65,6 +116,12 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void ExternalCameraConigButton_Click(object sender, RoutedEventArgs e)
         {
+            if (ControllerComboBox.SelectedItem == null)
+            {
+                MessageBox.Show(LanguageSelector.Get("SettingWindow_SelectedItemError"), LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            var tracker = ControllerComboBox.SelectedItem as TrackerConfigWindow.TrackerInfo;
             var ofd = new OpenFileDialog();
             ofd.Filter = "externalcamera.cfg|externalcamera.cfg";
             if (ofd.ShowDialog() == true)
@@ -93,7 +150,7 @@ namespace VirtualMotionCaptureControlPanel
                 var rz = GetFloat("rz");
                 var fov = GetFloat("fov");
 
-                await Globals.Client?.SendCommandAsync(new PipeCommands.SetExternalCameraConfig { x = x, y = y, z = z, rx = rx, ry = ry, rz = rz, fov = fov, ControllerIndex = ControllerComboBox.SelectedIndex });
+                await Globals.Client?.SendCommandAsync(new PipeCommands.SetExternalCameraConfig { x = x, y = y, z = z, rx = rx, ry = ry, rz = rz, fov = fov, ControllerName = tracker.SerialNumber });
             }
         }
 
@@ -136,6 +193,12 @@ namespace VirtualMotionCaptureControlPanel
                     ResolutionComboBox.ItemsSource = ResolutionItems;
                 });
             });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetTrackerSerialNumbers(), d =>
+            {
+                var data = (PipeCommands.ReturnTrackerSerialNumbers)d;
+                Dispatcher.Invoke(() => SetTrackersList(data.List, data.CurrentSetting));
+            });
+            Globals.Client.ReceivedEvent += Client_Received;
         }
 
         private void VirtualWebCamInstallButton_Click(object sender, RoutedEventArgs e)
@@ -164,8 +227,8 @@ namespace VirtualMotionCaptureControlPanel
                 return;
             }
 
-            var process32 = Process.Start(Globals.GetCurrentAppDir() + "DLLInstaller32.exe", "/i /s " + directory + "VMC_CameraFilter32bit.dll");
-            var process64 = Process.Start(Globals.GetCurrentAppDir() + "DLLInstaller64.exe", "/i /s " + directory + "VMC_CameraFilter64bit.dll");
+            var process32 = System.Diagnostics.Process.Start(Globals.GetCurrentAppDir() + "DLLInstaller32.exe", "/i /s " + directory + "VMC_CameraFilter32bit.dll");
+            var process64 = System.Diagnostics.Process.Start(Globals.GetCurrentAppDir() + "DLLInstaller64.exe", "/i /s " + directory + "VMC_CameraFilter64bit.dll");
             process32.WaitForExit();
             process64.WaitForExit();
             if (process32.ExitCode == 0 && process64.ExitCode == 0)
@@ -182,8 +245,8 @@ namespace VirtualMotionCaptureControlPanel
         private void VirtualWebCamUninstallButton_Click(object sender, RoutedEventArgs e)
         {
             var directory = @"C:\VMC_Camera\";
-            var process32 = Process.Start(Globals.GetCurrentAppDir() + "DLLInstaller32.exe", "/u /s " + directory + "VMC_CameraFilter32bit.dll");
-            var process64 = Process.Start(Globals.GetCurrentAppDir() + "DLLInstaller64.exe", "/u /s " + directory + "VMC_CameraFilter64bit.dll");
+            var process32 = System.Diagnostics.Process.Start(Globals.GetCurrentAppDir() + "DLLInstaller32.exe", "/u /s " + directory + "VMC_CameraFilter32bit.dll");
+            var process64 = System.Diagnostics.Process.Start(Globals.GetCurrentAppDir() + "DLLInstaller64.exe", "/u /s " + directory + "VMC_CameraFilter64bit.dll");
             process32.WaitForExit();
             process64.WaitForExit();
             if (process32.ExitCode == 0 && process64.ExitCode == 0)

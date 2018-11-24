@@ -20,14 +20,20 @@
         </GroupBox>
         <GroupBox Header="{DynamicResource SettingWindow_ExternalCameraConfig}">
             <DockPanel>
+                <DockPanel.Resources>
+                    <Style TargetType="ComboBox">
+                        <Setter Property="ItemTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <TextBlock HorizontalAlignment="Stretch" Text="{Binding Text}" Background="{Binding Background}"/>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </DockPanel.Resources>
                 <Button DockPanel.Dock="Bottom" Content="{DynamicResource SettingWindow_OpenExternalCameraConfig}" Name="ExternalCameraConigButton" Click="ExternalCameraConigButton_Click" ToolTip="{DynamicResource SettingWindow_OpenExternalCameraConfig_ToolTip}"/>
                 <TextBlock Text="{DynamicResource SettingWindow_ControllerNumber}"/>
-                <ComboBox Name="ControllerComboBox" SelectedIndex="0" ToolTip="{DynamicResource SettingWindow_ControllerNumber_ToolTip}">
-                    <ComboBoxItem>1</ComboBoxItem>
-                    <ComboBoxItem>2</ComboBoxItem>
-                    <ComboBoxItem>3</ComboBoxItem>
-                    <ComboBoxItem>4</ComboBoxItem>
-                </ComboBox>
+                <ComboBox  Name="ControllerComboBox" VerticalAlignment="Center" ItemsSource="{Binding TrackersList}" ToolTip="{DynamicResource SettingWindow_ControllerNumber_ToolTip}"/>
             </DockPanel>
         </GroupBox>
         <GroupBox Header="{DynamicResource SettingWindow_TrackerConfig}">
