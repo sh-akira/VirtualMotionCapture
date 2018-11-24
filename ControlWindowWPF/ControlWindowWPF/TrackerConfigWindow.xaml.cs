@@ -109,8 +109,9 @@ namespace VirtualMotionCaptureControlPanel
             list.Add(Tuple.Create("割り当てしない", default(string)));
             foreach (var d in list.OrderBy(d => d.Item1).ThenBy(d => d.Item2))
             {
-                TrackersList.Add(new TrackerInfo { TypeName = d.Item1, SerialNumber = d.Item2, Background = WhiteBrush });
-                if (d.Item2 != null) TrackersViewList.Add(new TrackerInfo { TypeName = d.Item1, SerialNumber = d.Item2, Background = WhiteBrush });
+                var trackerinfo = new TrackerInfo { TypeName = d.Item1, SerialNumber = d.Item2, Background = WhiteBrush };
+                TrackersList.Add(trackerinfo);
+                if (d.Item2 != null) TrackersViewList.Add(trackerinfo);
             }
             Func<Tuple<string, string>, TrackerInfo> getItem = (set) =>
             {
