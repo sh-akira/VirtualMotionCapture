@@ -20,7 +20,7 @@ SteamVRの一部のゲームや、LIVに対応したゲームでこのファイ�
 [基本のキャリブレーション](https://sh-akira.github.io/VirtualMotionCapture/manual/%E5%9F%BA%E6%9C%AC%E3%81%AE%E6%93%8D%E4%BD%9C%E6%96%B9%E6%B3%95.html)を完了して、バーチャルモーションキャプチャー単体でモデルの動きを確認出来た状態から説明をします。  
   
 externalcamera.cfgを出力するためには基準となる3本目のコントローラーもしくは、仮想コントローラーを先に用意する必要があります。仮想コントローラーの作成方法は次のページをご覧ください。  
-・LIVの初期設定(執筆中)  
+・[LIVの初期設定](https://sh-akira.github.io/VirtualMotionCapture/manual/LIV%E3%81%AE%E5%88%9D%E6%9C%9F%E8%A8%AD%E5%AE%9A.html)  
 ・MixedRealityTwoControllerのインストール(執筆中)  
   
 
