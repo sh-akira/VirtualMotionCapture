@@ -28,11 +28,11 @@ externalcamera.cfgを出力するためには基準となる3本目のコント�
 
 コントロールパネルの設定タブからキャリブレーションを押します。  
 
-![設定タブ](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/master/docs/images/manual/2-1.png)
+![設定タブ](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/aec0517c62537398c7c9ea772994ae56c992fd8a/docs/images/manual/2-1.png)
 
 キャリブレーションはMR合成モードの二つのうちどちらかを選択します。
 
-![キャリブレーション画面](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/master/docs/images/manual/2-2.png)
+![キャリブレーション画面](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/aec0517c62537398c7c9ea772994ae56c992fd8a/docs/images/manual/2-2.png)
 
 ・MR合成モード(手の位置をなるべく合わせて足は真っ直ぐ延ばす)を選択すると、足が長いモデルの場合地面に足が刺さります。  
 　BeatSaberのように地面が透明な場合は特に問題ありません  
@@ -46,36 +46,36 @@ externalcamera.cfgを出力するためには基準となる3本目のコント�
 
 コントロールパネルのカメラタブからフリーカメラを選択します。
 
-![カメラタブ](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/master/docs/images/manual/2-3.png)
+![カメラタブ](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/aec0517c62537398c7c9ea772994ae56c992fd8a/docs/images/manual/2-3.png)
 
 バーチャルモーションキャプチャーのメイン画面(モデルが表示されている画面)上でマウス操作でカメラを動かします。  
 マウスのホイールクリックでドラッグすることでカメラの移動  
 マウスの右クリックでドラッグすることでカメラの回転  
 モデルを180度後ろに回転させたい場合は、同じ方向にホイールドラッグと右クリックドラッグを交互に行うことで回転します。  
 
-![カメラの回転](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/master/docs/images/manual/2-4.png)
+![カメラの回転](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/aec0517c62537398c7c9ea772994ae56c992fd8a/docs/images/manual/2-4.png)
 
 ## externalcamera.cfgを出力する
 
 コントロールパネルの設定タブから詳細設定を開きます
 
-![詳細設定](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/master/docs/images/manual/2-5.png)
+![詳細設定](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/aec0517c62537398c7c9ea772994ae56c992fd8a/docs/images/manual/2-5.png)
 
 externalcamera.cfg(フリーカメラ座標を設定)のコントローラー番号でカメラに使用したい3本目のコントローラーを設定します。  
 LIVを使用する場合はコントローラー(LIV Virtual Camera (Controller))を  
 MixedRealityTwoControllerを使用する場合はコントローラー(Virtual Controller)を選択してください。  
 
-![コントローラー番号設定](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/master/docs/images/manual/2-6.png)
+![コントローラー番号設定](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/aec0517c62537398c7c9ea772994ae56c992fd8a/docs/images/manual/2-6.png)
 
 コントローラーを選択したらexternalcamera.cfgをファイルに出力します。  
 externalcamera.cfgを出力ボタンを押してください。
 
-![externalcamera.cfgを出力ボタン](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/master/docs/images/manual/2-7.png)
+![externalcamera.cfgを出力ボタン](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/aec0517c62537398c7c9ea772994ae56c992fd8a/docs/images/manual/2-7.png)
 
 ファイルを保存する画面が表示されるのでファイル名を変えずに(externalcamera.cfgのまま)お好きなフォルダに保存してください。  
 このファイルをこの後合成時に使用します。  
 
-![Export externalcamera.cfg画面](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/master/docs/images/manual/2-8.png)
+![Export externalcamera.cfg画面](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/aec0517c62537398c7c9ea772994ae56c992fd8a/docs/images/manual/2-8.png)
 
 ## 実際にゲームと合成する
 
