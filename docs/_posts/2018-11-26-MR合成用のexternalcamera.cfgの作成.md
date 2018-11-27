@@ -79,5 +79,6 @@ externalcamera.cfgを出力ボタンを押してください。
 
 ## 実際にゲームと合成する
 
-・LIVを使用してMR合成する(執筆中)  
+・[LIVを使用してMR合成する](https://sh-akira.github.io/VirtualMotionCapture/manual/LIV%E3%81%A8%E3%83%90%E3%83%BC%E3%83%81%E3%83%A3%E3%83%AB%E3%83%A2%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%AD%E3%83%A3%E3%83%97%E3%83%81%E3%83%A3%E3%83%BC%E3%81%A7MR%E5%90%88%E6%88%90.html)
+
 ・externalcamera.cfgを直接ゲームフォルダに置いてMR合成する(執筆中)  
