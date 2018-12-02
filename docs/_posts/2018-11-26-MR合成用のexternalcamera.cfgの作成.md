@@ -74,6 +74,8 @@ externalcamera.cfgを出力ボタンを押してください。
 
 ファイルを保存する画面が表示されるのでファイル名を変えずに(externalcamera.cfgのまま)お好きなフォルダに保存してください。  
 このファイルをこの後合成時に使用します。  
+<span style="color:red">**externalcamera.cfgをVirtualMotionCapture.exeと同じフォルダに保存しないでください！**</span>  
+<span style="color:red">**バーチャルモーションキャプチャーの画面が4分割されてしまい正常に動作しなくなります。**</span>
 
 ![Export externalcamera.cfg画面](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/07971766022eecc8c4f78f0dcf388e1cbb444e50/docs/images/manual/2-8.png)
 
