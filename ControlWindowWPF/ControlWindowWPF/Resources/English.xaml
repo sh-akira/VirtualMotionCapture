@@ -26,6 +26,7 @@
 
     <!-- MainWindow -->
     <system:String x:Key="MainWindowTitle">Control panel</system:String>
+    <system:String x:Key="MainWindowTitleLoading">Loading</system:String>
 
     <system:String x:Key="MainWindow_Setting">Settings</system:String>
     <system:String x:Key="MainWindow_LoadSetting">Open settings</system:String>

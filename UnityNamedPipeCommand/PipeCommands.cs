@@ -260,6 +260,11 @@ namespace UnityNamedPipe
             public int Height { get; set; }
             public int RefreshRate { get; set; }
         }
+
+        public class SetWindowNum
+        {
+            public int Num { get; set; }
+        }
     }
 
 

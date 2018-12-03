@@ -47,6 +47,8 @@ namespace VirtualMotionCaptureControlPanel
 
         private ObservableCollection<string> LipSyncDevices = new ObservableCollection<string>();
 
+        private int CurrentWindowNum = 0;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -59,6 +61,12 @@ namespace VirtualMotionCaptureControlPanel
             Globals.Client.ReceivedEvent += Client_Received;
             DefaultFaceComboBox.ItemsSource = DefaultFacesBase;
             LipSyncDeviceComboBox.ItemsSource = LipSyncDevices;
+            UpdateWindowTitle();
+        }
+
+        private void UpdateWindowTitle()
+        {
+            Title = $"{LanguageSelector.Get("MainWindowTitle")} ({(CurrentWindowNum == 0 ? LanguageSelector.Get("MainWindowTitleLoading") : CurrentWindowNum.ToString())})";
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -250,6 +258,12 @@ namespace VirtualMotionCaptureControlPanel
                     var d = (PipeCommands.LoadClosingTime)e.Data;
                     LoadSlider(d.time, 100.0f, ClosingTimeSlider, ClosingTimeSlider_ValueChanged);
                 }
+                else if (e.CommandType == typeof(PipeCommands.SetWindowNum))
+                {
+                    var d = (PipeCommands.SetWindowNum)e.Data;
+                    CurrentWindowNum = d.Num;
+                    UpdateWindowTitle();
+                }
                 //for Debug
                 else if (e.CommandType == typeof(PipeCommands.KeyDown))
                 {
@@ -312,6 +326,7 @@ namespace VirtualMotionCaptureControlPanel
         {
             var win = new SettingWindow();
             win.ShowDialog();
+            UpdateWindowTitle();
         }
 
         #endregion

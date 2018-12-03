@@ -25,6 +25,7 @@
 
     <!-- MainWindow -->
     <system:String x:Key="MainWindowTitle">コントロールパネル</system:String>
+    <system:String x:Key="MainWindowTitleLoading">起動中</system:String>
     
     <system:String x:Key="MainWindow_Setting">設定</system:String>
     <system:String x:Key="MainWindow_LoadSetting">設定の読込</system:String>

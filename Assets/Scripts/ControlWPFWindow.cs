@@ -72,6 +72,8 @@ public class ControlWPFWindow : MonoBehaviour
 
     private bool IsOculus { get { return SteamVR.instance.hmd_TrackingSystemName.ToLower().Contains("oculus"); } }
 
+    private int CurrentWindowNum = 1;
+
     private enum MouseButtons
     {
         Left = 0,
@@ -89,7 +91,7 @@ public class ControlWPFWindow : MonoBehaviour
         EditorApplication.playModeStateChanged += EditorApplication_playModeStateChanged;//UnityエディタでPlayやStopした時の状態変化イベント
         pipeName = "VMCTest";
 #else
-        Assets.Scripts.NativeMethods.SetUnityWindowTitle(Application.productName + " " + VersionString);
+        CurrentWindowNum = SetWindowTitle();
         pipeName = "VMCpipe" + Guid.NewGuid().ToString();
 #endif
         server = new NamedPipeServer();
@@ -114,6 +116,19 @@ public class ControlWPFWindow : MonoBehaviour
 
         KeyboardAction.KeyDownEvent += KeyboardAction_KeyDown;
         KeyboardAction.KeyUpEvent += KeyboardAction_KeyUp;
+    }
+
+    private int SetWindowTitle()
+    {
+        int setWindowNum = 1;
+        var allWindowList = GetAllWindowHandle();
+        var numlist = allWindowList.Where(p => p.Value.StartsWith(Application.productName) && p.Value.Contains('(')).Select(t => int.Parse(t.Value.Split('(').Last().Replace(")", ""))).OrderBy(d => d);
+        while (numlist.Contains(setWindowNum))
+        {
+            setWindowNum++;
+        }
+        Assets.Scripts.NativeMethods.SetUnityWindowTitle($"{Application.productName} {VersionString} ({setWindowNum})");
+        return setWindowNum;
     }
 
     private async void TransformExtensions_TrackerMovedEvent(object sender, string e)
@@ -2184,6 +2199,8 @@ public class ControlWPFWindow : MonoBehaviour
 
             await server.SendCommandAsync(new PipeCommands.LoadLipSyncEnable { enable = CurrentSettings.LipSyncEnable });
             SetLipSyncEnable(CurrentSettings.LipSyncEnable);
+
+            await server.SendCommandAsync(new PipeCommands.SetWindowNum { Num = CurrentWindowNum });
         }
     }
 
