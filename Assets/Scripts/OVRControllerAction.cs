@@ -198,7 +198,7 @@ public class OVRControllerAction : MonoBehaviour
         EVRButtonId.k_EButton_ApplicationMenu, //B/Yボタン
     };
 
-    private bool IsOculus { get { return SteamVR.instance.hmd_TrackingSystemName.ToLower().Contains("oculus"); } }
+    private bool IsOculus { get { return SteamVR.instance == null ? false : SteamVR.instance.hmd_TrackingSystemName.ToLower().Contains("oculus"); } }
 
     void Update()
     {

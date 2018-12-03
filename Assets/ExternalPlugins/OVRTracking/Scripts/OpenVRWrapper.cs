@@ -27,7 +27,7 @@ namespace sh_akira.OVRTracking
         public bool Setup()
         {
             var error = EVRInitError.None;
-            openVR = OpenVR.Init(ref error, EVRApplicationType.VRApplication_Background);
+            openVR = OpenVR.Init(ref error, EVRApplicationType.VRApplication_Overlay);
 
             if (error != EVRInitError.None)
             { //Error Init OpenVR
