@@ -641,7 +641,7 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 //トラッカー位置の表示
                 RealTrackerRoot.gameObject.SetActive(true);
-                foreach(Transform t in RealTrackerRoot)
+                foreach (Transform t in RealTrackerRoot)
                 {
                     t.localPosition = new Vector3(0, -100f, 0);
                 }
@@ -677,8 +677,8 @@ public class ControlWPFWindow : MonoBehaviour
         {
             return Vector3.zero;
         }
-        
-        var offset = new Vector3(0, 0, Pelvis.position.z - Spine.position.z + 0.1f );
+
+        var offset = new Vector3(0, 0, Pelvis.position.z - Spine.position.z + 0.1f);
         Pelvis.position -= offset;
         foreach (var child in Pelvis.GetComponentsInChildren<Transform>(true))
         {
