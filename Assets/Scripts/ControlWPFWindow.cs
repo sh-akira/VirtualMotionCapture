@@ -1333,8 +1333,11 @@ public class ControlWPFWindow : MonoBehaviour
             }
             else //固定カメラ
             {
-                currentCameraLookTarget.Distance += delta;
-                SaveLookTarget(currentCamera);
+                if (currentCameraLookTarget != null)
+                {
+                    currentCameraLookTarget.Distance += delta;
+                    SaveLookTarget(currentCamera);
+                }
             }
         }
 
