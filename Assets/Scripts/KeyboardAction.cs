@@ -24,6 +24,9 @@ public static class KeyboardAction
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool GetKeyboardState(byte[] lpKeyState);
+    [DllImport("User32.dll")]
+    private static extern short GetAsyncKeyState(System.Int32 vKey);
+
 
     private static bool IsInitialized = false;
 
@@ -31,14 +34,22 @@ public static class KeyboardAction
 
     public static void Update()
     {
+        Assets.Scripts.NativeMethods.SetUnityWindowTitle(UnityEngine.Time.frameCount.ToString());
         int i;
         var keys = new bool[256];
         var states = new byte[256];
-        if (GetKeyboardState(states))
+        //if (GetKeyboardState(states))
+        //{
+        //    for (i = 0; i < 256; i++)
+        //    {
+        //        keys[i] = ((states[i] & 0x80) == 0x80) & KeyMask[i];
+        //    }
+        //}
+        for (i = 0; i < 256; i++)
         {
-            for (i = 0; i < 256; i++)
+            if (KeyMask[i])
             {
-                keys[i] = ((states[i] & 0x80) == 0x80) & KeyMask[i];
+                keys[i] = (GetAsyncKeyState(i) & 0x8000) != 0;
             }
         }
         if (IsInitialized)
