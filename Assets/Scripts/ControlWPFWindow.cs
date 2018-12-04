@@ -122,7 +122,7 @@ public class ControlWPFWindow : MonoBehaviour
     {
         int setWindowNum = 1;
         var allWindowList = GetAllWindowHandle();
-        var numlist = allWindowList.Where(p => p.Value.StartsWith(Application.productName) && p.Value.Contains('(')).Select(t => int.Parse(t.Value.Split('(').Last().Replace(")", ""))).OrderBy(d => d);
+        var numlist = allWindowList.Where(p => p.Value.StartsWith(Application.productName + " ") && p.Value.EndsWith(")") && p.Value.Contains('(')).Select(t => int.Parse(t.Value.Split('(').Last().Replace(")", ""))).OrderBy(d => d);
         while (numlist.Contains(setWindowNum))
         {
             setWindowNum++;
