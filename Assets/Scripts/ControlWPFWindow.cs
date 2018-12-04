@@ -70,7 +70,7 @@ public class ControlWPFWindow : MonoBehaviour
 
     private Animator animator = null;
 
-    private bool IsOculus { get { return SteamVR.instance.hmd_TrackingSystemName.ToLower().Contains("oculus"); } }
+    private bool IsOculus { get { return controllerAction.IsOculus; } }
 
     private int CurrentWindowNum = 1;
 

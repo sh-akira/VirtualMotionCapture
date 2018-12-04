@@ -198,7 +198,29 @@ public class OVRControllerAction : MonoBehaviour
         EVRButtonId.k_EButton_ApplicationMenu, //B/Yボタン
     };
 
-    private bool IsOculus { get { return SteamVR.instance == null ? false : SteamVR.instance.hmd_TrackingSystemName.ToLower().Contains("oculus"); } }
+    public bool IsOculus
+    {
+        get
+        {
+            if (OpenVRWrapper.Instance.openVR == null)
+            {
+                return false;
+            }
+            var deviceId = OpenVR.k_unTrackedDeviceIndex_Hmd;
+            var prop = ETrackedDeviceProperty.Prop_TrackingSystemName_String;
+            var error = ETrackedPropertyError.TrackedProp_Success;
+            var capactiy = OpenVRWrapper.Instance.openVR.GetStringTrackedDeviceProperty(deviceId, prop, null, 0, ref error);
+            var name = "";
+            if (capactiy > 1)
+            {
+                var result = new System.Text.StringBuilder((int)capactiy);
+                OpenVRWrapper.Instance.openVR.GetStringTrackedDeviceProperty(deviceId, prop, result, capactiy, ref error);
+                name = result.ToString();
+            }
+            name = (error != ETrackedPropertyError.TrackedProp_Success) ? error.ToString() : "<unknown>";
+            return name.ToLower().Contains("oculus");
+        }
+    }
 
     void Update()
     {
