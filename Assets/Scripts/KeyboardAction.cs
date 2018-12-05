@@ -34,7 +34,6 @@ public static class KeyboardAction
 
     public static void Update()
     {
-        Assets.Scripts.NativeMethods.SetUnityWindowTitle(UnityEngine.Time.frameCount.ToString());
         int i;
         var keys = new bool[256];
         var states = new byte[256];
