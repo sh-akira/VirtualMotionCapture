@@ -1314,34 +1314,38 @@ public class ControlWPFWindow : MonoBehaviour
     // マウス関係のイベント
     private void CameraMouseEvent()
     {
-        float delta = Input.GetAxis("Mouse ScrollWheel");
-        if (delta != 0.0f)
+        var mousePos = Input.mousePosition;
+        //Debug.Log(mousePos.ToString() + " " + Screen.safeArea.ToString());
+        //SetUnityWindowTitle(mousePos.ToString() + " " + Screen.safeArea.ToString());
+        if (mousePos.x >= 0 && mousePos.y >= 0 && mousePos.x < Screen.safeArea.width && mousePos.y < Screen.safeArea.height)
         {
-            if (CurrentSettings.CameraType == CameraTypes.Free) //フリーカメラ
+            float delta = Input.GetAxis("Mouse ScrollWheel");
+            if (delta != 0.0f)
             {
-                currentCamera.transform.position += currentCamera.transform.forward * delta;
-                if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
-                CurrentSettings.FreeCameraTransform.SetPosition(currentCamera.transform);
-            }
-            else if (CurrentSettings.CameraType == CameraTypes.PositionFixed)
-            {
-                currentCamera.transform.position += currentCamera.transform.forward * delta;
-                if (CurrentSettings.PositionFixedCameraTransform == null) CurrentSettings.PositionFixedCameraTransform = new StoreTransform(currentCamera.transform);
-                CurrentSettings.PositionFixedCameraTransform.SetPosition(currentCamera.transform);
-                positionFixedCamera.UpdatePosition();
-
-            }
-            else //固定カメラ
-            {
-                if (currentCameraLookTarget != null)
+                if (CurrentSettings.CameraType == CameraTypes.Free) //フリーカメラ
                 {
-                    currentCameraLookTarget.Distance += delta;
-                    SaveLookTarget(currentCamera);
+                    currentCamera.transform.position += currentCamera.transform.forward * delta;
+                    if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
+                    CurrentSettings.FreeCameraTransform.SetPosition(currentCamera.transform);
+                }
+                else if (CurrentSettings.CameraType == CameraTypes.PositionFixed)
+                {
+                    currentCamera.transform.position += currentCamera.transform.forward * delta;
+                    if (CurrentSettings.PositionFixedCameraTransform == null) CurrentSettings.PositionFixedCameraTransform = new StoreTransform(currentCamera.transform);
+                    CurrentSettings.PositionFixedCameraTransform.SetPosition(currentCamera.transform);
+                    positionFixedCamera.UpdatePosition();
+
+                }
+                else //固定カメラ
+                {
+                    if (currentCameraLookTarget != null)
+                    {
+                        currentCameraLookTarget.Distance += delta;
+                        SaveLookTarget(currentCamera);
+                    }
                 }
             }
         }
-
-        var mousePos = Input.mousePosition;
 
         // 押されたとき
         if (Input.GetMouseButtonDown((int)MouseButtons.Right) || Input.GetMouseButtonDown((int)MouseButtons.Center))
