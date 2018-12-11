@@ -36,8 +36,6 @@ public class ControlWPFWindow : MonoBehaviour
     public Camera BackCamera;
     public Camera PositionFixedCamera;
 
-    public PositionFixedCamera positionFixedCamera;
-
     public Renderer BackgroundRenderer;
 
     public GameObject GridCanvas;
@@ -66,7 +64,6 @@ public class ControlWPFWindow : MonoBehaviour
     private RootMotion.FinalIK.VRIK vrik = null;
 
     private Camera currentCamera;
-    private CameraLookTarget currentCameraLookTarget = null;
 
     private Animator animator = null;
 
@@ -74,7 +71,7 @@ public class ControlWPFWindow : MonoBehaviour
 
     private int CurrentWindowNum = 1;
 
-    private enum MouseButtons
+    public enum MouseButtons
     {
         Left = 0,
         Right = 1,
@@ -284,7 +281,11 @@ public class ControlWPFWindow : MonoBehaviour
                 var d = (PipeCommands.SetCameraMirror)e.Data;
                 SetCameraMirror(d.enable);
             }
-
+            else if (e.CommandType == typeof(PipeCommands.SetCameraFOV))
+            {
+                var d = (PipeCommands.SetCameraFOV)e.Data;
+                SetCameraFOV(d.value);
+            }
             else if (e.CommandType == typeof(PipeCommands.SetAutoBlinkEnable))
             {
                 var d = (PipeCommands.SetAutoBlinkEnable)e.Data;
@@ -1192,8 +1193,6 @@ public class ControlWPFWindow : MonoBehaviour
     #region CameraControl
 
 
-    private Vector3 cameraMouseOldPos; // マウスの位置を保存する変数
-
     private void ChangeCamera(CameraTypes type)
     {
         if (type == CameraTypes.Free)
@@ -1227,7 +1226,6 @@ public class ControlWPFWindow : MonoBehaviour
             camera.gameObject.SetActive(true);
             if (currentCamera != null && currentCamera != camera) currentCamera.gameObject.SetActive(false);
             currentCamera = camera;
-            currentCameraLookTarget = camera.gameObject.GetComponent<CameraLookTarget>();
             SetCameraMirrorEnable(CurrentSettings.CameraMirrorEnable);
         }
     }
@@ -1267,143 +1265,22 @@ public class ControlWPFWindow : MonoBehaviour
             gameObject.transform.position = calcPosition;
             gameObject.transform.rotation = spineTransform.rotation;
             gameObject.transform.parent = bodyTracker == null ? animator.GetBoneTransform(HumanBodyBones.Spine) : CurrentModel.transform;
-            var lookTarget = FrontCamera.GetComponent<CameraLookTarget>();
+            var lookTarget = FrontCamera.GetComponent<CameraMouseControl>();
             if (lookTarget != null)
             {
-                lookTarget.Target = gameObject.transform;
+                lookTarget.LookTarget = gameObject.transform;
             }
-            lookTarget = BackCamera.GetComponent<CameraLookTarget>();
+            lookTarget = BackCamera.GetComponent<CameraMouseControl>();
             if (lookTarget != null)
             {
-                lookTarget.Target = gameObject.transform;
+                lookTarget.LookTarget = gameObject.transform;
             }
-            if (positionFixedCamera == null) positionFixedCamera = PositionFixedCamera.GetComponent<PositionFixedCamera>();
+            var positionFixedCamera = PositionFixedCamera.GetComponent<CameraMouseControl>();
             if (positionFixedCamera != null)
             {
-                positionFixedCamera.Target = gameObject.transform;
+                positionFixedCamera.PositionFixedTarget = gameObject.transform;
             }
         }
-    }
-
-    private void SaveLookTarget(Camera camera)
-    {
-        if (camera == FrontCamera)
-        {
-            if (CurrentSettings.FrontCameraLookTargetSettings == null)
-            {
-                CurrentSettings.FrontCameraLookTargetSettings = LookTargetSettings.Create(currentCameraLookTarget);
-            }
-            else
-            {
-                CurrentSettings.FrontCameraLookTargetSettings.Set(currentCameraLookTarget);
-            }
-        }
-        else if (camera == BackCamera)
-        {
-            if (CurrentSettings.BackCameraLookTargetSettings == null)
-            {
-                CurrentSettings.BackCameraLookTargetSettings = LookTargetSettings.Create(currentCameraLookTarget);
-            }
-            else
-            {
-                CurrentSettings.BackCameraLookTargetSettings.Set(currentCameraLookTarget);
-            }
-        }
-    }
-
-    // マウス関係のイベント
-    private void CameraMouseEvent()
-    {
-        var mousePos = Input.mousePosition;
-        //Debug.Log(mousePos.ToString() + " " + Screen.safeArea.ToString());
-        //SetUnityWindowTitle(mousePos.ToString() + " " + Screen.safeArea.ToString());
-        if (mousePos.x >= 0 && mousePos.y >= 0 && mousePos.x < Screen.safeArea.width && mousePos.y < Screen.safeArea.height)
-        {
-            float delta = Input.GetAxis("Mouse ScrollWheel");
-            if (delta != 0.0f)
-            {
-                if (CurrentSettings.CameraType == CameraTypes.Free) //フリーカメラ
-                {
-                    currentCamera.transform.position += currentCamera.transform.forward * delta;
-                    if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
-                    CurrentSettings.FreeCameraTransform.SetPosition(currentCamera.transform);
-                }
-                else if (CurrentSettings.CameraType == CameraTypes.PositionFixed)
-                {
-                    currentCamera.transform.position += currentCamera.transform.forward * delta;
-                    if (CurrentSettings.PositionFixedCameraTransform == null) CurrentSettings.PositionFixedCameraTransform = new StoreTransform(currentCamera.transform);
-                    CurrentSettings.PositionFixedCameraTransform.SetPosition(currentCamera.transform);
-                    positionFixedCamera.UpdatePosition();
-
-                }
-                else //固定カメラ
-                {
-                    if (currentCameraLookTarget != null)
-                    {
-                        currentCameraLookTarget.Distance += delta;
-                        SaveLookTarget(currentCamera);
-                    }
-                }
-            }
-        }
-
-        // 押されたとき
-        if (Input.GetMouseButtonDown((int)MouseButtons.Right) || Input.GetMouseButtonDown((int)MouseButtons.Center))
-            cameraMouseOldPos = mousePos;
-
-        Vector3 diff = mousePos - cameraMouseOldPos;
-        if (CurrentSettings.CameraMirrorEnable)
-        {
-            diff.x *= -1;
-        }
-
-        // 差分の長さが極小数より小さかったら、ドラッグしていないと判断する
-        if (diff.magnitude >= Vector3.kEpsilon)
-        {
-
-            if (Input.GetMouseButton((int)MouseButtons.Center))
-            { // 注視点
-                if (CurrentSettings.CameraType == CameraTypes.Free) //フリーカメラ
-                {
-                    currentCamera.transform.Translate(-diff * Time.deltaTime * 1.1f);
-                    if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
-                    CurrentSettings.FreeCameraTransform.SetPosition(currentCamera.transform);
-                }
-                else if (CurrentSettings.CameraType == CameraTypes.PositionFixed)
-                {
-                    currentCamera.transform.Translate(-diff * Time.deltaTime * 1.1f);
-                    if (CurrentSettings.PositionFixedCameraTransform == null) CurrentSettings.PositionFixedCameraTransform = new StoreTransform(currentCamera.transform);
-                    CurrentSettings.PositionFixedCameraTransform.SetPosition(currentCamera.transform);
-                    positionFixedCamera.UpdatePosition();
-                }
-                else //固定カメラ
-                {
-                    currentCameraLookTarget.Offset += new Vector3(0, -diff.y, 0) * Time.deltaTime * 1.1f;
-                    SaveLookTarget(currentCamera);
-                }
-            }
-            else if (Input.GetMouseButton((int)MouseButtons.Right))
-            { // 回転
-                if (CurrentSettings.CameraType == CameraTypes.Free)
-                {
-                    currentCamera.transform.RotateAround(currentCamera.transform.position, currentCamera.transform.right, -diff.y * Time.deltaTime * 30.0f);
-                    currentCamera.transform.RotateAround(currentCamera.transform.position, Vector3.up, diff.x * Time.deltaTime * 30.0f);
-                    if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
-                    CurrentSettings.FreeCameraTransform.SetRotation(currentCamera.transform);
-                }
-                else if (CurrentSettings.CameraType == CameraTypes.PositionFixed)
-                {
-                    currentCamera.transform.RotateAround(currentCamera.transform.position, currentCamera.transform.right, -diff.y * Time.deltaTime * 30.0f);
-                    currentCamera.transform.RotateAround(currentCamera.transform.position, Vector3.up, diff.x * Time.deltaTime * 30.0f);
-                    if (CurrentSettings.PositionFixedCameraTransform == null) CurrentSettings.PositionFixedCameraTransform = new StoreTransform(currentCamera.transform);
-                    CurrentSettings.PositionFixedCameraTransform.SetRotation(currentCamera.transform);
-                    positionFixedCamera.UpdatePosition();
-                }
-            }
-
-            this.cameraMouseOldPos = mousePos;
-        }
-        return;
     }
 
     private void SetGridVisible(bool enable)
@@ -1433,6 +1310,29 @@ public class ControlWPFWindow : MonoBehaviour
         //コントローラーは動くのでカメラ位置の保存はできない
         //if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
         //CurrentSettings.FreeCameraTransform.SetPosition(currentCamera.transform);
+    }
+
+    private CameraMouseControl frontCameraMouseControl = null;
+    private CameraMouseControl backCameraMouseControl = null;
+    private CameraMouseControl freeCameraMouseControl = null;
+    private CameraMouseControl positionFixedCameraMouseControl = null;
+
+    private void SetCameraFOV(float fov)
+    {
+        if (frontCameraMouseControl == null)
+        {
+
+
+            frontCameraMouseControl = FrontCamera.GetComponent<CameraMouseControl>();
+            backCameraMouseControl = BackCamera.GetComponent<CameraMouseControl>();
+            freeCameraMouseControl = FreeCamera.GetComponent<CameraMouseControl>();
+            positionFixedCameraMouseControl = PositionFixedCamera.GetComponent<CameraMouseControl>();
+        }
+        CurrentSettings.CameraFOV = fov;
+        frontCameraMouseControl.SetCameraFOV(fov);
+        backCameraMouseControl.SetCameraFOV(fov);
+        freeCameraMouseControl.SetCameraFOV(fov);
+        positionFixedCameraMouseControl.SetCameraFOV(fov);
     }
 
     #endregion
@@ -1839,7 +1739,7 @@ public class ControlWPFWindow : MonoBehaviour
     #region Setting
 
     [Serializable]
-    private class StoreTransform
+    public class StoreTransform
     {
         public Vector3 localPosition;
         public Vector3 position;
@@ -1875,6 +1775,12 @@ public class ControlWPFWindow : MonoBehaviour
             rotation = orig.rotation;
         }
 
+        public void SetPositionAndRotation(Transform orig)
+        {
+            SetPosition(orig);
+            SetRotation(orig);
+        }
+
         public Transform ToLocalTransform(Transform saveto)
         {
             saveto.localPosition = localPosition;
@@ -1893,31 +1799,31 @@ public class ControlWPFWindow : MonoBehaviour
     }
 
     [Serializable]
-    private class LookTargetSettings
+    public class LookTargetSettings
     {
         public Vector3 Offset;
         public float Distance;
-        public static LookTargetSettings Create(CameraLookTarget target)
+        public static LookTargetSettings Create(CameraMouseControl target)
         {
-            return new LookTargetSettings { Offset = target.Offset, Distance = target.Distance };
+            return new LookTargetSettings { Offset = target.LookOffset, Distance = target.CameraDistance };
         }
-        public void Set(CameraLookTarget target)
+        public void Set(CameraMouseControl target)
         {
-            Offset = target.Offset; Distance = target.Distance;
+            Offset = target.LookOffset; Distance = target.CameraDistance;
         }
-        public void ApplyTo(CameraLookTarget target)
+        public void ApplyTo(CameraMouseControl target)
         {
-            target.Offset = Offset; target.Distance = Distance;
+            target.LookOffset = Offset; target.CameraDistance = Distance;
         }
         public void ApplyTo(Camera camera)
         {
-            var target = camera.GetComponent<CameraLookTarget>();
-            if (target != null) { target.Offset = Offset; target.Distance = Distance; }
+            var target = camera.GetComponent<CameraMouseControl>();
+            if (target != null) { target.LookOffset = Offset; target.CameraDistance = Distance; }
         }
     }
 
     [Serializable]
-    private class Settings
+    public class Settings
     {
         public string VRMPath = null;
         public StoreTransform headTracker = null;
@@ -2040,6 +1946,9 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public int WebCamBuffering = 0;
 
+        [OptionalField]
+        public float CameraFOV = 60.0f;
+
         //初期値
         [OnDeserializing()]
         internal void OnDeserializingMethod(StreamingContext context)
@@ -2078,10 +1987,12 @@ public class ControlWPFWindow : MonoBehaviour
             WebCamResize = false;
             WebCamMirroring = false;
             WebCamBuffering = 0;
+
+            CameraFOV = 60.0f;
         }
     }
 
-    private Settings CurrentSettings = new Settings();
+    public static Settings CurrentSettings = new Settings();
 
     private void SaveSettings()
     {
@@ -2145,6 +2056,10 @@ public class ControlWPFWindow : MonoBehaviour
             if (CurrentSettings.FreeCameraTransform != null)
             {
                 CurrentSettings.FreeCameraTransform.ToLocalTransform(FreeCamera.transform);
+                var control = FreeCamera.GetComponent<CameraMouseControl>();
+                control.CameraAngle = -FreeCamera.transform.rotation.eulerAngles;
+                control.CameraDistance = Vector3.Distance(FreeCamera.transform.position, Vector3.zero);
+                control.CameraTarget = FreeCamera.transform.position + FreeCamera.transform.rotation * Vector3.forward * control.CameraDistance;
             }
             if (CurrentSettings.FrontCameraLookTargetSettings != null)
             {
@@ -2154,6 +2069,17 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 CurrentSettings.BackCameraLookTargetSettings.ApplyTo(BackCamera);
             }
+            if (CurrentSettings.PositionFixedCameraTransform != null)
+            {
+                CurrentSettings.PositionFixedCameraTransform.ToLocalTransform(PositionFixedCamera.transform);
+                var control = PositionFixedCamera.GetComponent<CameraMouseControl>();
+                control.CameraAngle = -PositionFixedCamera.transform.rotation.eulerAngles;
+                control.CameraDistance = Vector3.Distance(PositionFixedCamera.transform.position, Vector3.zero);
+                control.CameraTarget = PositionFixedCamera.transform.position + PositionFixedCamera.transform.rotation * Vector3.forward * control.CameraDistance;
+                control.UpdateRelativePosition();
+            }
+
+            await server.SendCommandAsync(new PipeCommands.LoadCameraFOV { fov = CurrentSettings.CameraFOV });
 
             UpdateWebCamConfig();
             if (CurrentSettings.CameraType.HasValue)
@@ -2243,28 +2169,29 @@ public class ControlWPFWindow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CameraMouseEvent();
         KeyboardAction.Update();
     }
 
     private int WindowX;
     private int WindowY;
     private Vector2 OldMousePos;
+    private bool isWindowDragging = false;
 
     void LateUpdate()
     {
         //Windowの移動操作
         //ドラッグ開始
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown((int)MouseButtons.Left) && Input.GetKey(KeyCode.LeftAlt) == false && Input.GetKey(KeyCode.RightAlt) == false)
         {
             var r = GetUnityWindowPosition();
             WindowX = r.left;
             WindowY = r.top;
             OldMousePos = GetWindowsMousePosition();
+            isWindowDragging = true;
         }
 
         //ドラッグ中
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton((int)MouseButtons.Left) && isWindowDragging)
         {
             Vector2 pos = GetWindowsMousePosition();
             if (pos != OldMousePos)
@@ -2274,6 +2201,11 @@ public class ControlWPFWindow : MonoBehaviour
                 SetUnityWindowPosition(WindowX, WindowY);
                 OldMousePos = pos;
             }
+        }
+
+        if (Input.GetMouseButtonUp((int)MouseButtons.Left) && isWindowDragging)
+        {
+            isWindowDragging = false;
         }
     }
 }

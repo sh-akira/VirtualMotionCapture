@@ -39,15 +39,29 @@
             <TabItem Header="{DynamicResource MainWindow_Camera}">
                 <StackPanel Orientation="Vertical">
                     <Grid>
-                        <UniformGrid Rows="2" Columns="3">
-                            <Button Content="{DynamicResource MainWindow_Front}" Name="FrontCameraButton" Click="FrontCameraButton_Click" ToolTip=""/>
-                            <Button Content="{DynamicResource MainWindow_Back}" Name="BackCameraButton" Click="BackCameraButton_Click" ToolTip=""/>
-                            <Button Content="{DynamicResource MainWindow_Free}" Name="FreeCameraButton" Click="FreeCameraButton_Click" ToolTip=""/>
-                            <Button Content="{DynamicResource MainWindow_PositionFixed}" Name="PositionFixedCameraButton" Click="PositionFixedCameraButton_Click" ToolTip=""/>
-                        </UniformGrid>
-                        <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                            <CheckBox Content="{DynamicResource MainWindow_Mirror}" Name="CameraMirrorCheckBox" Checked="CameraMirrorCheckBox_Checked" Unchecked="CameraMirrorCheckBox_Unchecked" ToolTip=""/>
-                            <CheckBox Content="{DynamicResource MainWindow_ShowGrid}" Name="CameraGridCheckBox" Checked="CameraGridCheckBox_Checked" Unchecked="CameraGridCheckBox_Unchecked" ToolTip=""/>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Content="{DynamicResource MainWindow_Front}" Name="FrontCameraButton" Click="FrontCameraButton_Click" Grid.Row="0" Grid.Column="0"/>
+                        <Button Content="{DynamicResource MainWindow_Back}" Name="BackCameraButton" Click="BackCameraButton_Click" Grid.Row="0" Grid.Column="1"/>
+                        <Button Content="{DynamicResource MainWindow_Free}" Name="FreeCameraButton" Click="FreeCameraButton_Click" Grid.Row="0" Grid.Column="2"/>
+                        <Button Content="{DynamicResource MainWindow_PositionFixed}" Name="PositionFixedCameraButton" Click="PositionFixedCameraButton_Click" Grid.Row="1" Grid.Column="0"/>
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                <CheckBox Content="{DynamicResource MainWindow_Mirror}" Name="CameraMirrorCheckBox" Checked="CameraMirrorCheckBox_Checked" Unchecked="CameraMirrorCheckBox_Unchecked"/>
+                                <CheckBox Content="{DynamicResource MainWindow_ShowGrid}" Name="CameraGridCheckBox" Checked="CameraGridCheckBox_Checked" Unchecked="CameraGridCheckBox_Unchecked"/>
+                            </StackPanel>
+                            <DockPanel>
+                                <TextBlock Text="FOV" DockPanel.Dock="Left"/>
+                                <TextBlock Text="60" DockPanel.Dock="Right" Width="30" Name="FOVTextBlock"/>
+                                <Slider Name="FOVSlider" Grid.Row="1" Grid.Column="1" Minimum="1" Value="60" Maximum="179" SmallChange="1" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="FOVSlider_ValueChanged"/>
+                            </DockPanel>
                         </StackPanel>
                     </Grid>
                     <StackPanel Orientation="Horizontal">

@@ -112,13 +112,17 @@ namespace VirtualMotionCaptureControlPanel
             IsSliderSetting = false;
         }
 
+        private float oldSliderValue = -1;
+
         private async Task SliderValueChanged(object slider, TextBlock textBlock, float multiple, PipeCommands.SetFloatValueBase command, bool isSliderSetting)
         {
             if (textBlock == null) return;
             float value = (float)(slider as Slider).Value / multiple;
-            textBlock.Text = value.ToString("#." + multiple.ToString().Substring(1));
+            if (oldSliderValue == value) return;
+            oldSliderValue = value;
+            textBlock.Text = multiple == 1.0f ? value.ToString() : value.ToString("#." + multiple.ToString().Substring(1));
             command.value = value;
-            if (isSliderSetting == false) await Globals.Client.SendCommandAsync(command);
+            if (isSliderSetting == false && Globals.Client != null) await Globals.Client.SendCommandAsync(command);
         }
 
         private void Client_Received(object sender, DataReceivedEventArgs e)
@@ -182,6 +186,11 @@ namespace VirtualMotionCaptureControlPanel
                 {
                     var d = (PipeCommands.LoadCameraMirror)e.Data;
                     SilentChangeChecked(CameraMirrorCheckBox, d.enable, CameraMirrorCheckBox_Checked, CameraMirrorCheckBox_Unchecked);
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadCameraFOV))
+                {
+                    var d = (PipeCommands.LoadCameraFOV)e.Data;
+                    LoadSlider(d.fov, 1.0f, FOVSlider, FOVSlider_ValueChanged);
                 }
                 //"リップシンク"
                 else if (e.CommandType == typeof(PipeCommands.LoadLipSyncEnable))
@@ -447,6 +456,11 @@ namespace VirtualMotionCaptureControlPanel
         private async void CameraMirrorCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             await Globals.Client.SendCommandAsync(new PipeCommands.SetCameraMirror { enable = false });
+        }
+
+        private async void FOVSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            await SliderValueChanged(FOVSlider, FOVTextBlock, 1.0f, new PipeCommands.SetCameraFOV(), IsSliderSetting);
         }
 
         #endregion
