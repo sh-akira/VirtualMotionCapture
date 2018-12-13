@@ -25,6 +25,7 @@ UnityNamedPipe.dll
 default.json
 ControlWindowWPF.exe
 docs/vendor*
+Photos*
 
 # Visual Studio cache directory
 .vs/

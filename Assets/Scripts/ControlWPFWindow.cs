@@ -2172,6 +2172,27 @@ public class ControlWPFWindow : MonoBehaviour
     void Update()
     {
         KeyboardAction.Update();
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            TakePhoto(16000, true);
+        }
+    }
+
+    private void TakePhoto(int width, bool transparentBackground)
+    {
+        Debug.Log($"Resolution:{(int)Screen.currentResolution.width}x{(int)Screen.currentResolution.height}");
+        var res = new Resolution { width = width, height = (int)((double)width / (double)Screen.currentResolution.width * (double)Screen.currentResolution.height) };
+        var directory = Application.dataPath + "/../Photos";
+        if (Directory.Exists(directory) == false)
+        {
+            Directory.CreateDirectory(directory);
+        }
+        var filename = $"VirtualMotionCapture_{res.width}x{res.height}_{DateTime.Now:yyyy-MM-dd_HH-mm-ss.fff}.png";
+        if (transparentBackground) BackgroundRenderer.gameObject.SetActive(false);
+        File.WriteAllBytes(Path.Combine(directory, filename), Photo.TakePNGPhoto(currentCamera, res, transparentBackground));
+        if (transparentBackground) BackgroundRenderer.gameObject.SetActive(true);
+        Debug.Log($"Save Photo: {filename}");
     }
 
     private int WindowX;
