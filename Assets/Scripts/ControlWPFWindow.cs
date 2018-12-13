@@ -1225,6 +1225,7 @@ public class ControlWPFWindow : MonoBehaviour
             }
             camera.gameObject.SetActive(true);
             if (currentCamera != null && currentCamera != camera) currentCamera.gameObject.SetActive(false);
+            camera.GetComponent<CameraMouseControl>().enabled = true;
             currentCamera = camera;
             SetCameraMirrorEnable(CurrentSettings.CameraMirrorEnable);
         }
@@ -1299,6 +1300,7 @@ public class ControlWPFWindow : MonoBehaviour
     {
         //フリーカメラに変更
         ChangeCamera(CameraTypes.Free);
+        FreeCamera.GetComponent<CameraMouseControl>().enabled = false;
         //externalcamera.cfgは3つ目のコントローラー基準のポジション
         handler.CameraControllerName = d.ControllerName;
         yield return null;
