@@ -2081,6 +2081,7 @@ public class ControlWPFWindow : MonoBehaviour
                 control.UpdateRelativePosition();
             }
 
+            SetCameraFOV(CurrentSettings.CameraFOV);
             await server.SendCommandAsync(new PipeCommands.LoadCameraFOV { fov = CurrentSettings.CameraFOV });
 
             UpdateWebCamConfig();
