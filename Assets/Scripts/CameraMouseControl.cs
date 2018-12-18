@@ -208,8 +208,12 @@ public class CameraMouseControl : MonoBehaviour
         float mouseScrollWheel = Input.GetAxis("Mouse ScrollWheel");
         if (mouseScrollWheel != 0.0f)
         {
-            CameraDistance = Mathf.Max(CameraDistance - mouseScrollWheel * cameraSpeed.z * (60.0f / currentCamera.fieldOfView), 0.1f);
-            settingChanged = true;
+            var mousePos = Input.mousePosition;
+            if (mousePos.x >= 0 && mousePos.y >= 0 && mousePos.x < Screen.safeArea.width && mousePos.y < Screen.safeArea.height)
+            {
+                CameraDistance = Mathf.Max(CameraDistance - mouseScrollWheel * cameraSpeed.z * (60.0f / currentCamera.fieldOfView), 0.1f);
+                settingChanged = true;
+            }
         }
 
         if (changeFOV)
