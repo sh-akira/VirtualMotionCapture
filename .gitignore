@@ -23,7 +23,8 @@ VMCPipeServerTest/
 ShortcutKeyPresets/
 UnityNamedPipe.dll
 default.json
-ControlWindowWPF.exe
+VirtualMotionCaptureControlPanel.exe
+VirtualMotionCaptureControlPanel.exe.config
 docs/vendor*
 Photos*
 
