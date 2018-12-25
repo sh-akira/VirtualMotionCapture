@@ -362,4 +362,23 @@
     <system:String x:Key="Functions_FreeCamera">FreeCamera</system:String>
     <system:String x:Key="Functions_PositionFixedCamera">PositionFixedCamera</system:String>
     
+    <!-- PhotoWindow -->
+    <system:String x:Key="PhotoWindowTitle">Take Photo</system:String>
+
+    <system:String x:Key="PhotoWindow_Photo">Take Photo</system:String>
+    <system:String x:Key="PhotoWindow_Folder">Destination folder</system:String>
+    <system:String x:Key="PhotoWindow_OpenFolder">Open folder</system:String>
+    <system:String x:Key="PhotoWindow_Resolution">Resolution</system:String>
+    <system:String x:Key="PhotoWindow_Width">Width:</system:String>
+    <system:String x:Key="PhotoWindow_Timer">Timer</system:String>
+    <system:String x:Key="PhotoWindow_TimeToPhoto">Time to shoot：</system:String>
+    <system:String x:Key="PhotoWindow_Sec">sec</system:String>
+    <system:String x:Key="PhotoWindow_Transparent">Transparent</system:String>
+    <system:String x:Key="PhotoWindow_TransparentCheckBox">Background transparent</system:String>
+    <system:String x:Key="PhotoWindow_Description">Press the camera button or pull the trigger of the controller to shoot</system:String>
+    <system:String x:Key="PhotoWindow_ErrorTimer">Please enter timer time in half-width integer</system:String>
+    <system:String x:Key="PhotoWindow_ErrorWidth">Please enter width in half-width integer</system:String>
+    <system:String x:Key="PhotoWindow_ErrorFolderExist">Folder does not exist</system:String>
+    <system:String x:Key="PhotoWindow_FolderSelect">Please select a folder.</system:String>
+    
 </ResourceDictionary>

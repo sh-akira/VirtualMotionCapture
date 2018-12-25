@@ -169,6 +169,9 @@ namespace UnityNamedPipe
         public class StartKeyConfig { }
         public class EndKeyConfig { }
 
+        public class StartKeySend { }
+        public class EndKeySend { }
+
         public class SetKeyActions
         {
             public List<KeyAction> KeyActions { get; set; }
@@ -266,6 +269,13 @@ namespace UnityNamedPipe
         public class SetWindowNum
         {
             public int Num { get; set; }
+        }
+
+        public class TakePhoto
+        {
+            public int Width { get; set; }
+            public bool TransparentBackground { get; set; }
+            public string Directory { get; set; }
         }
     }
 

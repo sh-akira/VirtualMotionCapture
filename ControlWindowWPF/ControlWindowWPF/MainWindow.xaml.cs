@@ -463,6 +463,15 @@ namespace VirtualMotionCaptureControlPanel
             await SliderValueChanged(FOVSlider, FOVTextBlock, 1.0f, new PipeCommands.SetCameraFOV(), IsSliderSetting);
         }
 
+        private void PhotoButton_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new PhotoWindow();
+            if (win.ShowDialog() == true)
+            {
+
+            }
+        }
+
         #endregion
 
         #region "リップシンク"

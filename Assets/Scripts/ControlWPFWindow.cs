@@ -364,6 +364,16 @@ public class ControlWPFWindow : MonoBehaviour
                 doKeyConfig = false;
                 CurrentKeyConfigs.Clear();
             }
+            else if (e.CommandType == typeof(PipeCommands.StartKeySend))
+            {
+                doKeySend = true;
+                CurrentKeyConfigs.Clear();
+            }
+            else if (e.CommandType == typeof(PipeCommands.EndKeySend))
+            {
+                doKeySend = false;
+                CurrentKeyConfigs.Clear();
+            }
             else if (e.CommandType == typeof(PipeCommands.SetKeyActions))
             {
                 var d = (PipeCommands.SetKeyActions)e.Data;
@@ -472,6 +482,11 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 var d = (PipeCommands.SetResolution)e.Data;
                 Screen.SetResolution(d.Width, d.Height, false, d.RefreshRate);
+            }
+            else if (e.CommandType == typeof(PipeCommands.TakePhoto))
+            {
+                var d = (PipeCommands.TakePhoto)e.Data;
+                TakePhoto(d.Width, d.TransparentBackground, d.Directory);
             }
             else if (e.CommandType == typeof(PipeCommands.LoadCurrentSettings))
             {
@@ -1406,6 +1421,7 @@ public class ControlWPFWindow : MonoBehaviour
     #region HandFaceControll
 
     private bool doKeyConfig = false;
+    private bool doKeySend = false;
 
     private async void ControllerAction_KeyDown(object sender, OVRKeyEventArgs e)
     {
@@ -1425,8 +1441,8 @@ public class ControlWPFWindow : MonoBehaviour
             if (e.IsLeft) lastLeftAxisPoint = config.keyIndex;
             else lastRightAxisPoint = config.keyIndex;
         }
-        if (doKeyConfig) await server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
-        else CheckKey(config, true);
+        if (doKeyConfig || doKeySend) await server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
+        if (!doKeyConfig) CheckKey(config, true);
     }
 
     private async void ControllerAction_KeyUp(object sender, OVRKeyEventArgs e)
@@ -1453,8 +1469,8 @@ public class ControlWPFWindow : MonoBehaviour
             if (doKeyConfig) await server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
             else CheckKey(config, true);
         }
-        if (doKeyConfig) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
-        else CheckKey(config, false);
+        if (doKeyConfig || doKeySend) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
+        if (!doKeyConfig) CheckKey(config, false);
     }
 
     private int lastLeftAxisPoint = -1;
@@ -1477,11 +1493,11 @@ public class ControlWPFWindow : MonoBehaviour
             config.isOculus = IsOculus;
             config.isTouch = e.IsTouch;
             //前のキーを離す
-            if (doKeyConfig) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
-            else CheckKey(config, false);
+            if (doKeyConfig || doKeySend) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
+            if (!doKeyConfig) CheckKey(config, false);
             config.keyIndex = newindex;
             //新しいキーを押す
-            if (doKeyConfig)
+            if (doKeyConfig || doKeySend)
             {
                 if (isSendingKey == false)
                 {
@@ -1490,7 +1506,7 @@ public class ControlWPFWindow : MonoBehaviour
                     isSendingKey = false;
                 }
             }
-            else CheckKey(config, true);
+            if (!doKeyConfig) CheckKey(config, true);
             if (e.IsLeft) lastLeftAxisPoint = newindex;
             else lastRightAxisPoint = newindex;
         }
@@ -1504,8 +1520,8 @@ public class ControlWPFWindow : MonoBehaviour
         config.actionType = KeyActionTypes.Face;
         config.keyCode = e.KeyCode;
         config.keyName = e.KeyName;
-        if (doKeyConfig) await server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
-        else CheckKey(config, true);
+        if (doKeyConfig || doKeySend) await server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
+        if (!doKeyConfig) CheckKey(config, true);
     }
 
     private /*async*/ void KeyboardAction_KeyUp(object sender, KeyboardEventArgs e)
@@ -1515,8 +1531,8 @@ public class ControlWPFWindow : MonoBehaviour
         config.actionType = KeyActionTypes.Face;
         config.keyCode = e.KeyCode;
         config.keyName = e.KeyName;
-        if (doKeyConfig) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
-        else CheckKey(config, false);
+        if (doKeyConfig || doKeySend) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
+        if (!doKeyConfig) CheckKey(config, false);
     }
 
     private int NearestPointIndex(bool isLeft, float x, float y)
@@ -2174,17 +2190,17 @@ public class ControlWPFWindow : MonoBehaviour
     {
         KeyboardAction.Update();
 
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            TakePhoto(16000, true);
-        }
+        //if (Input.GetKeyDown(KeyCode.P))
+        //{
+        //    TakePhoto(16000, true);
+        //}
     }
 
-    private void TakePhoto(int width, bool transparentBackground)
+    private void TakePhoto(int width, bool transparentBackground, string directory = null)
     {
         Debug.Log($"Resolution:{(int)Screen.currentResolution.width}x{(int)Screen.currentResolution.height}");
         var res = new Resolution { width = width, height = (int)((double)width / (double)Screen.currentResolution.width * (double)Screen.currentResolution.height) };
-        var directory = Application.dataPath + "/../Photos";
+        if (string.IsNullOrWhiteSpace(directory)) directory = Application.dataPath + "/../Photos";
         if (Directory.Exists(directory) == false)
         {
             Directory.CreateDirectory(directory);

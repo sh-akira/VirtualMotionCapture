@@ -363,4 +363,23 @@
     <system:String x:Key="Functions_FreeCamera">フリーカメラ</system:String>
     <system:String x:Key="Functions_PositionFixedCamera">座標追従カメラ</system:String>
 
+    <!-- PhotoWindow -->
+    <system:String x:Key="PhotoWindowTitle">写真撮影</system:String>
+
+    <system:String x:Key="PhotoWindow_Photo">写真撮影</system:String>
+    <system:String x:Key="PhotoWindow_Folder">保存先フォルダ</system:String>
+    <system:String x:Key="PhotoWindow_OpenFolder">撮影フォルダを開く</system:String>
+    <system:String x:Key="PhotoWindow_Resolution">解像度</system:String>
+    <system:String x:Key="PhotoWindow_Width">横幅：</system:String>
+    <system:String x:Key="PhotoWindow_Timer">タイマー</system:String>
+    <system:String x:Key="PhotoWindow_TimeToPhoto">撮影までの時間：</system:String>
+    <system:String x:Key="PhotoWindow_Sec">秒</system:String>
+    <system:String x:Key="PhotoWindow_Transparent">透過</system:String>
+    <system:String x:Key="PhotoWindow_TransparentCheckBox">背景を透過する</system:String>
+    <system:String x:Key="PhotoWindow_Description">カメラボタンを押すかコントローラーのトリガーを引いて撮影</system:String>
+    <system:String x:Key="PhotoWindow_ErrorTimer">タイマー時間は半角整数で入力してください</system:String>
+    <system:String x:Key="PhotoWindow_ErrorWidth">横幅は半角整数で入力してください</system:String>
+    <system:String x:Key="PhotoWindow_ErrorFolderExist">フォルダが存在しません</system:String>
+    <system:String x:Key="PhotoWindow_FolderSelect">フォルダーを選択してください。</system:String>
+    
 </ResourceDictionary>
