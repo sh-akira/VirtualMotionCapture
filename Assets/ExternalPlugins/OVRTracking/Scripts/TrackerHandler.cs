@@ -77,6 +77,7 @@ namespace sh_akira.OVRTracking
                 var controllerPositions = positions[ETrackedDeviceClass.Controller];
                 if (controllerPositions.Any())
                 {
+                    if (Controllers.Count != controllerPositions.Count) Controllers.Clear();
                     for (int i = 0; i < controllerPositions.Count && i < ControllersObject.Count; i++)
                     {
                         ControllersObject[i].transform.SetPositionAndRotationLocal(controllerPositions[i]);
@@ -86,6 +87,7 @@ namespace sh_akira.OVRTracking
                 var trackerPositions = positions[ETrackedDeviceClass.GenericTracker];
                 if (trackerPositions.Any())
                 {
+                    if (Trackers.Count != trackerPositions.Count) Trackers.Clear();
                     for (int i = 0; i < trackerPositions.Count && i < TrackersObject.Count; i++)
                     {
                         TrackersObject[i].transform.SetPositionAndRotationLocal(trackerPositions[i]);
@@ -96,6 +98,7 @@ namespace sh_akira.OVRTracking
                 var baseStationPositions = positions[ETrackedDeviceClass.TrackingReference];
                 if (baseStationPositions.Any())
                 {
+                    if (BaseStations.Count != baseStationPositions.Count) BaseStations.Clear();
                     for (int i = 0; i < baseStationPositions.Count && i < BaseStationsObject.Count; i++)
                     {
                         BaseStationsObject[i].transform.SetPositionAndRotationLocal(baseStationPositions[i]);
