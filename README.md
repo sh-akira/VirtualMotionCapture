@@ -161,11 +161,11 @@ Ver 0.02
 ・Assets直下にExternalPluginsフォルダを作って、その下に  
 　・OVRTracking (OVRTrackingライブラリ - 入れてあります)  
 　・UnityNamedPipe (名前付きパイプライブラリ - 入れてあります)  
-　・RootMotion ([Final IK](https://assetstore.unity.com/packages/tools/animation/final-ik-14290))  
-　・SteamVR ([SteamVR Plugin](https://assetstore.unity.com/packages/templates/systems/steamvr-plugin-32647))  
+　・RootMotion ([Final IK 1.7](https://assetstore.unity.com/packages/tools/animation/final-ik-14290) - **※現在AssetStoreから入手できるのは`1.8`です**)  
+　・SteamVR ([SteamVR Unity Plugin v1.2.3](https://github.com/ValveSoftware/steamvr_unity_plugin/releases/tag/1.2.3))  
 　・VRM ([UniVRM-0.43_4725.unitypackage](https://github.com/dwango/UniVRM/releases))  
 　・VRM.Samples ([UniVRM-RuntimeLoaderSample-0.43_4725.unitypackage](https://github.com/dwango/UniVRM/releases))  
-　・Oculus ([OVRLipSync.unitypackage](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/))  
+　・Oculus ([Oculus Lipsync Unity 1.28.0](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/1.28.0/))  
 　・CorrectNormalMapImport ([CorrectNormalMapImport](https://github.com/d30835nm/CorrectNormalMapImport))  
 以上のようなフォルダになるように各アセットをインポートしてください。  
 ・ControlWindowWPF/ControlWindowWPF.slnをVisual Studio 2017で開きます。  
