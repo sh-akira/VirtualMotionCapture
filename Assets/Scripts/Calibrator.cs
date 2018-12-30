@@ -117,9 +117,9 @@ public class Calibrator
         if (addRootController)
         {
             if (rootController == null) rootController = ik.references.root.gameObject.AddComponent<VRIKRootController>();
-            rootController.pelvisTarget = ik.solver.spine.pelvisTarget;
-            rootController.leftFootTarget = ik.solver.leftLeg.target;
-            rootController.rightFootTarget = ik.solver.rightLeg.target;
+            //rootController.pelvisTarget = ik.solver.spine.pelvisTarget;
+            //rootController.leftFootTarget = ik.solver.leftLeg.target;
+            //rootController.rightFootTarget = ik.solver.rightLeg.target;
             rootController.Calibrate();
         }
         else
@@ -492,9 +492,9 @@ public class Calibrator
         if (addRootController)
         {
             if (rootController == null) rootController = ik.references.root.gameObject.AddComponent<VRIKRootController>();
-            rootController.pelvisTarget = ik.solver.spine.pelvisTarget;
-            rootController.leftFootTarget = ik.solver.leftLeg.target;
-            rootController.rightFootTarget = ik.solver.rightLeg.target;
+            //rootController.pelvisTarget = ik.solver.spine.pelvisTarget;
+            //rootController.leftFootTarget = ik.solver.leftLeg.target;
+            //rootController.rightFootTarget = ik.solver.rightLeg.target;
             rootController.Calibrate();
         }
         else
@@ -807,9 +807,9 @@ public class Calibrator
         if (addRootController)
         {
             if (rootController == null) rootController = ik.references.root.gameObject.AddComponent<VRIKRootController>();
-            rootController.pelvisTarget = ik.solver.spine.pelvisTarget;
-            rootController.leftFootTarget = ik.solver.leftLeg.target;
-            rootController.rightFootTarget = ik.solver.rightLeg.target;
+            //rootController.pelvisTarget = ik.solver.spine.pelvisTarget;
+            //rootController.leftFootTarget = ik.solver.leftLeg.target;
+            //rootController.rightFootTarget = ik.solver.rightLeg.target;
             rootController.Calibrate();
         }
         else
@@ -1122,9 +1122,9 @@ public class Calibrator
         if (addRootController)
         {
             if (rootController == null) rootController = ik.references.root.gameObject.AddComponent<VRIKRootController>();
-            rootController.pelvisTarget = ik.solver.spine.pelvisTarget;
-            rootController.leftFootTarget = ik.solver.leftLeg.target;
-            rootController.rightFootTarget = ik.solver.rightLeg.target;
+            //rootController.pelvisTarget = ik.solver.spine.pelvisTarget;
+            //rootController.leftFootTarget = ik.solver.leftLeg.target;
+            //rootController.rightFootTarget = ik.solver.rightLeg.target;
             rootController.Calibrate();
         }
         else

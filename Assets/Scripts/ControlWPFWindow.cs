@@ -598,11 +598,11 @@ public class ControlWPFWindow : MonoBehaviour
 
         CurrentSettings.EnableNormalMapFix = EnableNormalMapFix;
         CurrentSettings.DeleteHairNormalMap = DeleteHairNormalMap;
-        if (EnableNormalMapFix)
-        {
-            //VRoidモデルのNormalMapテカテカを修正する
-            Yashinut.VRoid.CorrectNormalMapImport.CorrectNormalMap(CurrentModel, DeleteHairNormalMap);
-        }
+        //if (EnableNormalMapFix)
+        //{
+        //    //VRoidモデルのNormalMapテカテカを修正する
+        //    Yashinut.VRoid.CorrectNormalMapImport.CorrectNormalMap(CurrentModel, DeleteHairNormalMap);
+        //}
 
         //モデルのSkinnedMeshRendererがカリングされないように、すべてのオプション変更
         foreach (var renderer in CurrentModel.GetComponentsInChildren<SkinnedMeshRenderer>(true))

@@ -93,8 +93,8 @@ public class OVRControllerAction : MonoBehaviour
             case EVREventType.VREvent_OverlayGamepadFocusGained: break;
             case EVREventType.VREvent_OverlayGamepadFocusLost: break;
             case EVREventType.VREvent_OverlaySharedTextureChanged: break;
-            case EVREventType.VREvent_DashboardGuideButtonDown: break;
-            case EVREventType.VREvent_DashboardGuideButtonUp: break;
+            //case EVREventType.VREvent_DashboardGuideButtonDown: break;
+            //case EVREventType.VREvent_DashboardGuideButtonUp: break;
             case EVREventType.VREvent_ScreenshotTriggered: break;
             case EVREventType.VREvent_ImageFailed: break;
             case EVREventType.VREvent_DashboardOverlayCreated: break;
