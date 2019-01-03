@@ -14,6 +14,8 @@ namespace sh_akira.OVRTracking
         public List<GameObject> ControllersObject = new List<GameObject>();
         public GameObject CameraControllerObject;
         [System.NonSerialized]
+        public ETrackedDeviceClass CameraControllerType = ETrackedDeviceClass.Invalid;
+        [System.NonSerialized]
         public string CameraControllerName = null;
         [System.NonSerialized]
         public List<GameObject> Trackers = new List<GameObject>();
@@ -65,7 +67,11 @@ namespace sh_akira.OVRTracking
                     CameraControllerObject.transform.SetPositionAndRotationLocal(cameracontroller);
                     foreach (var l in positions)
                     {
-                        if (l.Value.Contains(cameracontroller)) l.Value.Remove(cameracontroller);
+                        if (l.Value.Contains(cameracontroller))
+                        {
+                            CameraControllerType = l.Key;
+                            l.Value.Remove(cameracontroller);
+                        }
                     }
                 }
 

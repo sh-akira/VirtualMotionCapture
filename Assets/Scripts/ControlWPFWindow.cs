@@ -764,14 +764,17 @@ public class ControlWPFWindow : MonoBehaviour
         {
             list.Add(Tuple.Create("HMD", handler.HMDObject.transform.name));
         }
+        //if (handler.CameraControllerType == ETrackedDeviceClass.HMD) list.Add(Tuple.Create("HMD", handler.CameraControllerObject.transform.name));
         foreach (var controller in handler.Controllers)
         {
             list.Add(Tuple.Create("コントローラー", controller.transform.name));
         }
+        if (handler.CameraControllerType == ETrackedDeviceClass.Controller) list.Add(Tuple.Create("コントローラー", handler.CameraControllerObject.transform.name));
         foreach (var tracker in handler.Trackers)
         {
             list.Add(Tuple.Create("トラッカー", tracker.transform.name));
         }
+        if (handler.CameraControllerType == ETrackedDeviceClass.GenericTracker) list.Add(Tuple.Create("トラッカー", handler.CameraControllerObject.transform.name));
         return list;
     }
 
