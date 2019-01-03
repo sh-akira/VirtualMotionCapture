@@ -28,6 +28,7 @@ VirtualMotionCaptureControlPanel.exe
 VirtualMotionCaptureControlPanel.exe.config
 docs/vendor*
 Photos*
+Assets/Test*
 
 # Visual Studio cache directory
 .vs/
