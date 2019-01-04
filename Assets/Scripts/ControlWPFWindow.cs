@@ -575,6 +575,11 @@ public class ControlWPFWindow : MonoBehaviour
         // GLB形式でJSONを取得しParseします
         context.ParseGlb(bytes);
 
+        // ParseしたJSONをシーンオブジェクトに変換していく
+        //CurrentModel = await VRMImporter.LoadVrmAsync(context);
+        await context.LoadAsyncTask();
+        context.ShowMeshes();
+
         if (CurrentModel != null)
         {
             if (LeftHandCamera != null)
@@ -590,10 +595,6 @@ public class ControlWPFWindow : MonoBehaviour
             Destroy(CurrentModel);
             CurrentModel = null;
         }
-        // ParseしたJSONをシーンオブジェクトに変換していく
-        //CurrentModel = await VRMImporter.LoadVrmAsync(context);
-        await context.LoadAsyncTask();
-        context.ShowMeshes();
         CurrentModel = context.Root;
 
         CurrentSettings.EnableNormalMapFix = EnableNormalMapFix;
