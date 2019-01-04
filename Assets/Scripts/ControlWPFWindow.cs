@@ -2074,6 +2074,14 @@ public class ControlWPFWindow : MonoBehaviour
             await server.SendCommandAsync(new PipeCommands.LoadHideBorder { enable = CurrentSettings.HideBorder });
             SetWindowTopMost(CurrentSettings.IsTopMost);
             await server.SendCommandAsync(new PipeCommands.LoadIsTopMost { enable = CurrentSettings.IsTopMost });
+            
+            SetCameraFOV(CurrentSettings.CameraFOV);
+            FreeCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
+            FrontCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
+            BackCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
+            PositionFixedCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
+
+
             if (CurrentSettings.FreeCameraTransform != null)
             {
                 CurrentSettings.FreeCameraTransform.ToLocalTransform(FreeCamera.transform);
@@ -2099,8 +2107,6 @@ public class ControlWPFWindow : MonoBehaviour
                 control.CameraTarget = PositionFixedCamera.transform.position + PositionFixedCamera.transform.rotation * Vector3.forward * control.CameraDistance;
                 control.UpdateRelativePosition();
             }
-
-            SetCameraFOV(CurrentSettings.CameraFOV);
             await server.SendCommandAsync(new PipeCommands.LoadCameraFOV { fov = CurrentSettings.CameraFOV });
 
             UpdateWebCamConfig();

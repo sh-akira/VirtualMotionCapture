@@ -132,6 +132,10 @@ public class CameraMouseControl : MonoBehaviour
 
     void Update()
     {
+        CheckUpdate();
+    }
+    public void CheckUpdate()
+    {
         bool settingChanged = false;
         if (LookTarget == null)
         {
