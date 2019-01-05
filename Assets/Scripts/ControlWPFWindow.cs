@@ -410,7 +410,7 @@ public class ControlWPFWindow : MonoBehaviour
                 var tracker = handler.GetTrackerTransformByName(d.ControllerName);
                 //InverseTransformPoint  Thanks: えむにわ(@m2wasabi)
                 var rposition = tracker.InverseTransformPoint(currentCamera.transform.position);
-                var rrotation = currentCamera.transform.eulerAngles - tracker.eulerAngles;
+                var rrotation = (Quaternion.Inverse(tracker.rotation) * currentCamera.transform.rotation).eulerAngles;
                 await server.SendCommandAsync(new PipeCommands.SetExternalCameraConfig
                 {
                     x = rposition.x,
