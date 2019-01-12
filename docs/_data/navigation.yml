@@ -1,12 +1,16 @@
+- name: よくある質問と回答
+  link: https://github.com/sh-akira/VirtualMotionCapture/wiki/%E3%82%88%E3%81%8F%E3%81%82%E3%82%8B%E8%B3%AA%E5%95%8F%E3%81%A8%E5%9B%9E%E7%AD%94
+  new_window: true
+  highlight: true
 - name: 操作方法
   link: /manual/
   new_window: false
-  highlight: false
-- name: 支援について
-  link: /about.html
-  new_window: false
-  highlight: false
+  highlight: true
 - name: ダウンロード
   link: /download.html
   new_window: false
   highlight: true
+- name: 支援について
+  link: /about.html
+  new_window: false
+  highlight: false
