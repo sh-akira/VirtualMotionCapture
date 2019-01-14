@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using UnityNamedPipe;
+using UnityMemoryMappedFile;
 
 namespace VirtualMotionCaptureControlPanel
 {
@@ -71,11 +71,11 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            await GetLipSyncDevice();
             while (Globals.Client.IsConnected != true)
             {
                 await Task.Delay(100);
             }
+            await GetLipSyncDevice();
             await Globals.Client.SendCommandAsync(new PipeCommands.LoadCurrentSettings());
         }
 
@@ -87,6 +87,7 @@ namespace VirtualMotionCaptureControlPanel
             }
             catch { }
             Application.Current.Windows.Cast<Window>().ToList().ForEach(d => { if (d != this) d.Close(); });
+            Globals.Client.Dispose();
         }
 
         private void SilentChangeChecked(CheckBox checkBox, bool enable, RoutedEventHandler checkedHandler, RoutedEventHandler uncheckedHandler)

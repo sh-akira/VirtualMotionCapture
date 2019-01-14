@@ -174,9 +174,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\UnityNamedPipeCommand\UnityNamedPipe.csproj">
-      <Project>{71593897-e7ab-4892-99fa-0dba75d1ac54}</Project>
-      <Name>UnityNamedPipe</Name>
+    <ProjectReference Include="..\..\UnityMemoryMappedFile\UnityMemoryMappedFile.csproj">
+      <Project>{045efc7f-9cf6-4dce-83e1-3cac35d83383}</Project>
+      <Name>UnityMemoryMappedFile</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

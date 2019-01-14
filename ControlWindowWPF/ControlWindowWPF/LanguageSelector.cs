@@ -27,7 +27,7 @@ namespace VirtualMotionCaptureControlPanel
             dictionary.Source = new Uri($"/VirtualMotionCaptureControlPanel;component/Resources/{language}.xaml", UriKind.Relative);
             Application.Current.Resources.MergedDictionaries[0] = dictionary;
             Globals.CurrentLanguage = language;
-            UnityNamedPipe.KeyConfig.Language = language;
+            UnityMemoryMappedFile.KeyConfig.Language = language;
         }
 
         public static string Get(string key)

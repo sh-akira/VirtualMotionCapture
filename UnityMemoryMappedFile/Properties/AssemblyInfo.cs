@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly: AssemblyTitle("UnityNamedPipeCommand")]
+[assembly: AssemblyTitle("UnityMemoryMappedFile")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("UnityNamedPipeCommand")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyCompany("sh_akira")]
+[assembly: AssemblyProduct("UnityMemoryMappedFile")]
+[assembly: AssemblyCopyright("Copyright ©  2019 sh_akira.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // このプロジェクトが COM に公開される場合、次の GUID が typelib の ID になります
-[assembly: Guid("71593897-e7ab-4892-99fa-0dba75d1ac54")]
+[assembly: Guid("045efc7f-9cf6-4dce-83e1-3cac35d83383")]
 
 // アセンブリのバージョン情報は次の 4 つの値で構成されています:
 //

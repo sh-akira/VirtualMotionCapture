@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualMotionCaptureControlPanel", "ControlWindowWPF\VirtualMotionCaptureControlPanel.csproj", "{4C96194C-31D2-4780-80BB-FE77F75FAFD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityNamedPipe", "..\UnityNamedPipeCommand\UnityNamedPipe.csproj", "{71593897-E7AB-4892-99FA-0DBA75D1AC54}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityMemoryMappedFile", "..\UnityMemoryMappedFile\UnityMemoryMappedFile.csproj", "{045EFC7F-9CF6-4DCE-83E1-3CAC35D83383}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{4C96194C-31D2-4780-80BB-FE77F75FAFD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C96194C-31D2-4780-80BB-FE77F75FAFD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C96194C-31D2-4780-80BB-FE77F75FAFD0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{71593897-E7AB-4892-99FA-0DBA75D1AC54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{71593897-E7AB-4892-99FA-0DBA75D1AC54}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{71593897-E7AB-4892-99FA-0DBA75D1AC54}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{71593897-E7AB-4892-99FA-0DBA75D1AC54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{045EFC7F-9CF6-4DCE-83E1-3CAC35D83383}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{045EFC7F-9CF6-4DCE-83E1-3CAC35D83383}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{045EFC7F-9CF6-4DCE-83E1-3CAC35D83383}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{045EFC7F-9CF6-4DCE-83E1-3CAC35D83383}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

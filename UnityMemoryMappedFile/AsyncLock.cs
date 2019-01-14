@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnityNamedPipe
+namespace UnityMemoryMappedFile
 {
     public sealed class AsyncLock
     {

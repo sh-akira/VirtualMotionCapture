@@ -4,13 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{71593897-E7AB-4892-99FA-0DBA75D1AC54}</ProjectGuid>
+    <ProjectGuid>{045EFC7F-9CF6-4DCE-83E1-3CAC35D83383}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UnityNamedPipe</RootNamespace>
-    <AssemblyName>UnityNamedPipe</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <RootNamespace>UnityMemoryMappedFile</RootNamespace>
+    <AssemblyName>UnityMemoryMappedFile</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,14 +45,14 @@
     <Compile Include="AsyncLock.cs" />
     <Compile Include="BinarySerializer.cs" />
     <Compile Include="DataReceivedEventArgs.cs" />
-    <Compile Include="NamedPipeBase.cs" />
-    <Compile Include="NamedPipeServer.cs" />
-    <Compile Include="NamedPipeClient.cs" />
+    <Compile Include="MemoryMappedFileBase.cs" />
+    <Compile Include="MemoryMappedFileServer.cs" />
+    <Compile Include="MemoryMappedFileClient.cs" />
     <Compile Include="PipeCommands.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /Y "$(TargetPath)" "$(SolutionDir)\..\Assets\ExternalPlugins\UnityNamedPipe\"</PostBuildEvent>
+    <PostBuildEvent>xcopy /Y "$(TargetPath)" "$(SolutionDir)\..\Assets\ExternalPlugins\UnityMemoryMappedFile\"</PostBuildEvent>
   </PropertyGroup>
 </Project>

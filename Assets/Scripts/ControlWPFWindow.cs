@@ -9,7 +9,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using UnityEngine;
-using UnityNamedPipe;
+using UnityMemoryMappedFile;
 using VRM;
 using static Assets.Scripts.NativeMethods;
 using RootMotion.FinalIK;
@@ -47,8 +47,6 @@ public class ControlWPFWindow : MonoBehaviour
 
     public OVRControllerAction controllerAction;
 
-    public MainThreadInvoker mainThreadInvoker;
-
     public WristRotationFix wristRotationFix;
 
     public Transform HandTrackerRoot;
@@ -56,7 +54,7 @@ public class ControlWPFWindow : MonoBehaviour
     public Transform PelvisTrackerRoot;
     public Transform RealTrackerRoot;
 
-    private NamedPipeServer server;
+    private MemoryMappedFileServer server;
     private string pipeName = Guid.NewGuid().ToString();
 
     private GameObject CurrentModel = null;
@@ -81,17 +79,20 @@ public class ControlWPFWindow : MonoBehaviour
     private uint defaultWindowStyle;
     private uint defaultExWindowStyle;
 
+    private System.Threading.SynchronizationContext context = null;
+
     // Use this for initialization
     void Start()
     {
+        context = System.Threading.SynchronizationContext.Current;
+
 #if UNITY_EDITOR   // エディタ上でしか動きません。
-        EditorApplication.playModeStateChanged += EditorApplication_playModeStateChanged;//UnityエディタでPlayやStopした時の状態変化イベント
         pipeName = "VMCTest";
 #else
         CurrentWindowNum = SetWindowTitle();
         pipeName = "VMCpipe" + Guid.NewGuid().ToString();
 #endif
-        server = new NamedPipeServer();
+        server = new MemoryMappedFileServer();
         server.ReceivedEvent += Server_Received;
         server.Start(pipeName);
 
@@ -159,7 +160,7 @@ public class ControlWPFWindow : MonoBehaviour
     private void OnApplicationQuit()
     {
         server.ReceivedEvent -= Server_Received;
-        server?.Stop();
+        server?.Dispose();
         KeyboardAction.KeyDownEvent -= KeyboardAction_KeyDown;
         KeyboardAction.KeyUpEvent -= KeyboardAction_KeyUp;
 
@@ -168,22 +169,9 @@ public class ControlWPFWindow : MonoBehaviour
         controllerAction.AxisChangedEvent -= ControllerAction_AxisChanged;
     }
 
-#if UNITY_EDITOR   // エディタ上でしか動きません。
-    private void EditorApplication_playModeStateChanged(PlayModeStateChange state)
+    private void Server_Received(object sender, DataReceivedEventArgs e)
     {
-        if (state == PlayModeStateChange.ExitingPlayMode)
-        {
-            server.ReceivedEvent -= Server_Received;
-            server.Stop();
-            //OpenVRWrapper.Instance.Close();
-            //SteamVR.SafeDispose();
-        }
-    }
-#endif
-
-    private async void Server_Received(object sender, DataReceivedEventArgs e)
-    {
-        await mainThreadInvoker.InvokeAsync(async () =>
+        context.Post(async s =>
         {
             if (e.CommandType == typeof(PipeCommands.LoadVRM))
             {
@@ -502,7 +490,7 @@ public class ControlWPFWindow : MonoBehaviour
                     LoadSettings(true, false);
                 }
             }
-        });
+        }, null);
     }
 
     private bool isFirstTimeExecute = true;
@@ -540,14 +528,14 @@ public class ControlWPFWindow : MonoBehaviour
         vrmdata.Reference = meta.Reference;
 
         // Permission
-        vrmdata.AllowedUser = (UnityNamedPipe.AllowedUser)meta.AllowedUser;
-        vrmdata.ViolentUssage = (UnityNamedPipe.UssageLicense)meta.ViolentUssage;
-        vrmdata.SexualUssage = (UnityNamedPipe.UssageLicense)meta.SexualUssage;
-        vrmdata.CommercialUssage = (UnityNamedPipe.UssageLicense)meta.CommercialUssage;
+        vrmdata.AllowedUser = (UnityMemoryMappedFile.AllowedUser)meta.AllowedUser;
+        vrmdata.ViolentUssage = (UnityMemoryMappedFile.UssageLicense)meta.ViolentUssage;
+        vrmdata.SexualUssage = (UnityMemoryMappedFile.UssageLicense)meta.SexualUssage;
+        vrmdata.CommercialUssage = (UnityMemoryMappedFile.UssageLicense)meta.CommercialUssage;
         vrmdata.OtherPermissionUrl = meta.OtherPermissionUrl;
 
         // Distribution License
-        vrmdata.LicenseType = (UnityNamedPipe.LicenseType)meta.LicenseType;
+        vrmdata.LicenseType = (UnityMemoryMappedFile.LicenseType)meta.LicenseType;
         vrmdata.OtherLicenseUrl = meta.OtherLicenseUrl;
         /*
         // ParseしたJSONをシーンオブジェクトに変換していく

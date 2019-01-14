@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityNamedPipe;
+using UnityMemoryMappedFile;
 using static ControlWPFWindow;
 
 public class CameraMouseControl : MonoBehaviour

@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UnityNamedPipe;
+using UnityMemoryMappedFile;
 
 namespace VirtualMotionCaptureControlPanel
 {
     public class Globals
     {
-        public static NamedPipeClient Client;
+        public static MemoryMappedFileClient Client;
 
         public static void Connect(string pipeName)
         {
-            Client = new NamedPipeClient();
+            Client = new MemoryMappedFileClient();
             Client.Start(pipeName);
         }
 

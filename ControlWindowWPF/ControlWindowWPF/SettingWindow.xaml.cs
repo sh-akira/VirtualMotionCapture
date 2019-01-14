@@ -15,7 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using UnityNamedPipe;
+using UnityMemoryMappedFile;
 
 namespace VirtualMotionCaptureControlPanel
 {
@@ -208,6 +208,21 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            Globals.Client.ReceivedEvent += Client_Received;
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetTrackerSerialNumbers(), d =>
+            {
+                var data = (PipeCommands.ReturnTrackerSerialNumbers)d;
+                Dispatcher.Invoke(() => SetTrackersList(data.List, data.CurrentSetting));
+            });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetResolutions { }, d =>
+            {
+                var config = (PipeCommands.ReturnResolutions)d;
+                Dispatcher.Invoke(() =>
+                {
+                    ResolutionItems = new ObservableCollection<ResolutionItem>(config.List.Select(r => new ResolutionItem { Width = r.Item1, Height = r.Item2, RefreshRate = r.Item3 }));
+                    ResolutionComboBox.ItemsSource = ResolutionItems;
+                });
+            });
             await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetVirtualWebCamConfig { }, d =>
             {
                 var config = (PipeCommands.SetVirtualWebCamConfig)d;
@@ -221,21 +236,6 @@ namespace VirtualMotionCaptureControlPanel
                     isSetting = false;
                 });
             });
-            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetResolutions { }, d =>
-            {
-                var config = (PipeCommands.ReturnResolutions)d;
-                Dispatcher.Invoke(() =>
-                {
-                    ResolutionItems = new ObservableCollection<ResolutionItem>(config.List.Select(r => new ResolutionItem { Width = r.Item1, Height = r.Item2, RefreshRate = r.Item3 }));
-                    ResolutionComboBox.ItemsSource = ResolutionItems;
-                });
-            });
-            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetTrackerSerialNumbers(), d =>
-            {
-                var data = (PipeCommands.ReturnTrackerSerialNumbers)d;
-                Dispatcher.Invoke(() => SetTrackersList(data.List, data.CurrentSetting));
-            });
-            Globals.Client.ReceivedEvent += Client_Received;
         }
 
         private void VirtualWebCamInstallButton_Click(object sender, RoutedEventArgs e)
