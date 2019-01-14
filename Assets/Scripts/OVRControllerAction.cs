@@ -10,7 +10,7 @@ using Valve.VR;
 
 public class OVRControllerAction : MonoBehaviour
 {
-   // public InputField inputField;
+    // public InputField inputField;
 
     public EventHandler<OVRKeyEventArgs> KeyDownEvent;
     public EventHandler<OVRKeyEventArgs> KeyUpEvent;
@@ -217,7 +217,11 @@ public class OVRControllerAction : MonoBehaviour
                 OpenVRWrapper.Instance.openVR.GetStringTrackedDeviceProperty(deviceId, prop, result, capactiy, ref error);
                 name = result.ToString();
             }
-            name = (error != ETrackedPropertyError.TrackedProp_Success) ? error.ToString() : "<unknown>";
+            if (error != ETrackedPropertyError.TrackedProp_Success)
+            {
+                name = error.ToString();
+            }
+            if (name == "") name = "<unknown>";
             return name.ToLower().Contains("oculus");
         }
     }
