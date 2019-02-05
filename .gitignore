@@ -27,6 +27,9 @@ VirtualMotionCaptureControlPanel.exe
 VirtualMotionCaptureControlPanel.exe.config
 docs/vendor*
 Photos*
+ControlWindowWPF/ControlWindowWPF/bin*
+UnityMemoryMappedFile/bin*
+Assets/ExternalPlugins/UnityMemoryMappedFile/UnityMemoryMappedFile*
 
 # Visual Studio cache directory
 .vs/
