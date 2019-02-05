@@ -30,6 +30,12 @@ Photos*
 ControlWindowWPF/ControlWindowWPF/bin*
 UnityMemoryMappedFile/bin*
 Assets/ExternalPlugins/UnityMemoryMappedFile/UnityMemoryMappedFile*
+Assets/VRoidSDK*
+Assets/Scenes/Example*
+Assets/Scenes/LoginExample*
+ControlWindowWPF/ControlWindowWPF/VRoidHubWindow*
+UnityMemoryMappedFile/PipeCommands_VRoidSDK*
+Assets/Scripts/VRoidSDKConnector*
 
 # Visual Studio cache directory
 .vs/

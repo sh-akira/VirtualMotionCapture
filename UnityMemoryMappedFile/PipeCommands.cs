@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace UnityMemoryMappedFile
 {
-    public class PipeCommands
+    public partial class PipeCommands
     {
         public static Type GetCommandType(string commandStr)
         {

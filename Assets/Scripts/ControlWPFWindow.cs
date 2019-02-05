@@ -54,7 +54,7 @@ public class ControlWPFWindow : MonoBehaviour
     public Transform PelvisTrackerRoot;
     public Transform RealTrackerRoot;
 
-    private MemoryMappedFileServer server;
+    public MemoryMappedFileServer server;
     private string pipeName = Guid.NewGuid().ToString();
 
     private GameObject CurrentModel = null;
@@ -570,77 +570,7 @@ public class ControlWPFWindow : MonoBehaviour
             await context.LoadAsyncTask();
             context.ShowMeshes();
 
-            if (CurrentModel != null)
-            {
-                if (LeftHandCamera != null)
-                {
-                    LeftHandCamera.transform.SetParent(null);
-                }
-                if (RightHandCamera != null)
-                {
-                    RightHandCamera.transform.SetParent(null);
-                }
-                CurrentModel.transform.SetParent(null);
-                CurrentModel.SetActive(false);
-                Destroy(CurrentModel);
-                CurrentModel = null;
-            }
-            CurrentModel = context.Root;
-
-            SaveDefaultCurrentModelTransforms();
-
-            CurrentSettings.EnableNormalMapFix = EnableNormalMapFix;
-            CurrentSettings.DeleteHairNormalMap = DeleteHairNormalMap;
-            if (EnableNormalMapFix)
-            {
-                //VRoidモデルのNormalMapテカテカを修正する
-                Yashinut.VRoid.CorrectNormalMapImport.CorrectNormalMap(CurrentModel, DeleteHairNormalMap);
-            }
-
-            //モデルのSkinnedMeshRendererがカリングされないように、すべてのオプション変更
-            foreach (var renderer in CurrentModel.GetComponentsInChildren<SkinnedMeshRenderer>(true))
-            {
-                renderer.updateWhenOffscreen = true;
-            }
-
-            //LipSync
-            LipSync.ImportVRMmodel(CurrentModel);
-            //まばたき
-            faceController.ImportVRMmodel(CurrentModel);
-
-            //CurrentModel.transform.SetParent(transform, false);
-
-            animator = CurrentModel.GetComponent<Animator>();
-            SetVRIK(CurrentModel);
-            if (animator != null)
-            {
-                animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).eulerAngles = new Vector3(LeftLowerArmAngle, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.RightLowerArm).eulerAngles = new Vector3(RightLowerArmAngle, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).eulerAngles = new Vector3(LeftUpperArmAngle, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.RightUpperArm).eulerAngles = new Vector3(RightUpperArmAngle, 0, 0);
-                wristRotationFix.SetVRIK(vrik);
-
-                handController.SetDefaultAngle(animator);
-
-                //設定用両手のカメラをモデルにアタッチ
-                if (LeftHandCamera != null)
-                {
-                    LeftHandCamera.transform.SetParent(animator.GetBoneTransform(HumanBodyBones.LeftHand));
-                    LeftHandCamera.transform.localPosition = new Vector3(-0.07f, -0.13f, 0.14f);
-                    LeftHandCamera.transform.localRotation = Quaternion.Euler(-140f, 0f, 90f);
-                    LeftHandCamera.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-                }
-                if (RightHandCamera != null)
-                {
-                    RightHandCamera.transform.SetParent(animator.GetBoneTransform(HumanBodyBones.RightHand));
-                    RightHandCamera.transform.localPosition = new Vector3(0.07f, -0.13f, 0.14f);
-                    RightHandCamera.transform.localRotation = Quaternion.Euler(-140f, 0f, -90f);
-                    RightHandCamera.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-                }
-
-            }
-            SetCameraLookTarget();
-            //SetTrackersToVRIK();
+            LoadNewModel(context.Root);
         }
         else
         {
@@ -664,6 +594,87 @@ public class ControlWPFWindow : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void LoadNewModel(GameObject model)
+    {
+        if (CurrentModel != null)
+        {
+            if (LeftHandCamera != null)
+            {
+                LeftHandCamera.transform.SetParent(null);
+            }
+            if (RightHandCamera != null)
+            {
+                RightHandCamera.transform.SetParent(null);
+            }
+            CurrentModel.transform.SetParent(null);
+            CurrentModel.SetActive(false);
+            Destroy(CurrentModel);
+            CurrentModel = null;
+        }
+        CurrentModel = model;
+
+        ModelInitialize();
+    }
+
+    public void ModelInitialize()
+    {
+
+        SaveDefaultCurrentModelTransforms();
+
+        //CurrentSettings.EnableNormalMapFix = EnableNormalMapFix;
+        //CurrentSettings.DeleteHairNormalMap = DeleteHairNormalMap;
+        //if (EnableNormalMapFix)
+        //{
+        //    //VRoidモデルのNormalMapテカテカを修正する
+        //    Yashinut.VRoid.CorrectNormalMapImport.CorrectNormalMap(CurrentModel, DeleteHairNormalMap);
+        //}
+
+        //モデルのSkinnedMeshRendererがカリングされないように、すべてのオプション変更
+        foreach (var renderer in CurrentModel.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+        {
+            renderer.updateWhenOffscreen = true;
+        }
+
+        //LipSync
+        LipSync.ImportVRMmodel(CurrentModel);
+        //まばたき
+        faceController.ImportVRMmodel(CurrentModel);
+
+        //CurrentModel.transform.SetParent(transform, false);
+
+        animator = CurrentModel.GetComponent<Animator>();
+        SetVRIK(CurrentModel);
+        if (animator != null)
+        {
+            animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).eulerAngles = new Vector3(LeftLowerArmAngle, 0, 0);
+            animator.GetBoneTransform(HumanBodyBones.RightLowerArm).eulerAngles = new Vector3(RightLowerArmAngle, 0, 0);
+            animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).eulerAngles = new Vector3(LeftUpperArmAngle, 0, 0);
+            animator.GetBoneTransform(HumanBodyBones.RightUpperArm).eulerAngles = new Vector3(RightUpperArmAngle, 0, 0);
+            wristRotationFix.SetVRIK(vrik);
+
+            handController.SetDefaultAngle(animator);
+
+            //設定用両手のカメラをモデルにアタッチ
+            if (LeftHandCamera != null)
+            {
+                LeftHandCamera.transform.SetParent(animator.GetBoneTransform(HumanBodyBones.LeftHand));
+                LeftHandCamera.transform.localPosition = new Vector3(-0.07f, -0.13f, 0.14f);
+                LeftHandCamera.transform.localRotation = Quaternion.Euler(-140f, 0f, 90f);
+                LeftHandCamera.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            }
+            if (RightHandCamera != null)
+            {
+                RightHandCamera.transform.SetParent(animator.GetBoneTransform(HumanBodyBones.RightHand));
+                RightHandCamera.transform.localPosition = new Vector3(0.07f, -0.13f, 0.14f);
+                RightHandCamera.transform.localRotation = Quaternion.Euler(-140f, 0f, -90f);
+                RightHandCamera.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            }
+
+        }
+        SetCameraLookTarget();
+        //SetTrackersToVRIK();
     }
 
     private Dictionary<HumanBodyBones, Quaternion> DefaultRotations;

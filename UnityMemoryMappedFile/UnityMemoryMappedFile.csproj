@@ -49,10 +49,14 @@
     <Compile Include="MemoryMappedFileServer.cs" />
     <Compile Include="MemoryMappedFileClient.cs" />
     <Compile Include="PipeCommands.cs" />
+    <Compile Include="PipeCommands_VRoidSDK.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /Y "$(TargetPath)" "$(SolutionDir)\..\Assets\ExternalPlugins\UnityMemoryMappedFile\"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>if not exist "$(ProjectDir)PipeCommands_VRoidSDK.cs" echo namespace UnityMemoryMappedFile{public partial class PipeCommands{}} &gt; "$(ProjectDir)PipeCommands_VRoidSDK.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

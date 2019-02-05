@@ -24,6 +24,10 @@ namespace VirtualMotionCaptureControlPanel
         public VRMImportWindow()
         {
             InitializeComponent();
+            if (VRoidHubWindow.IncludeVRoidHubWindow == false)
+            {
+                ShowVRoidHubButton.Visibility = Visibility.Collapsed;
+            }
         }
 
         private VRMData CurrentMeta = null;
@@ -77,6 +81,15 @@ namespace VirtualMotionCaptureControlPanel
             LoadMetaData(new VRMData());
             ImportButton.IsEnabled = false;
             IgnoreButton.IsEnabled = false;
+        }
+
+        private void ShowVRoidHubButton_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new VRoidHubWindow();
+            if (win.ShowDialog() == true)
+            {
+                this.Close();
+            }
         }
     }
 }
