@@ -103,14 +103,14 @@ public class VRMMetaImporter
     //from ImporterContext.cs(UniGLTF)
     static void RestoreOlderVersionValues(string Json, glTF GLTF)
     {
-        var parsed = UniJSON.JSON.Parse(Json);
+        var parsed = UniJSON.JsonParser.Parse(Json);
         for (int i = 0; i < GLTF.images.Count; ++i)
         {
             if (string.IsNullOrEmpty(GLTF.images[i].name))
             {
                 try
                 {
-                    var extraName = parsed["images"][i]["extra"]["name"].Value;
+                    var extraName = parsed["images"][i]["extra"]["name"].Value.GetString();
                     if (!string.IsNullOrEmpty(extraName))
                     {
                         //Debug.LogFormat("restore texturename: {0}", extraName);
@@ -133,7 +133,7 @@ public class VRMMetaImporter
                     var primitive = mesh.primitives[j];
                     for (int k = 0; k < primitive.targets.Count; ++k)
                     {
-                        var extraName = parsed["meshes"][i]["primitives"][j]["targets"][k]["extra"]["name"].Value;
+                        var extraName = parsed["meshes"][i]["primitives"][j]["targets"][k]["extra"]["name"].Value.GetString();
                         //Debug.LogFormat("restore morphName: {0}", extraName);
                         primitive.extras.targetNames.Add(extraName);
                     }
