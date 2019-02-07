@@ -380,5 +380,36 @@
     <system:String x:Key="PhotoWindow_ErrorWidth">Please enter width in half-width integer</system:String>
     <system:String x:Key="PhotoWindow_ErrorFolderExist">Folder does not exist</system:String>
     <system:String x:Key="PhotoWindow_FolderSelect">Please select a folder.</system:String>
-    
+
+
+    <!-- VRoidHubWindow -->
+    <system:String x:Key="VRoidHubWindowTitle">Import model from VRoid Hub</system:String>
+
+    <system:String x:Key="VRoidHubWindow_LoginDescription">To load the model from the VRoid Hub, Please log in to VRoid Hub and allow with Virtual Motion Capture.</system:String>
+    <system:String x:Key="VRoidHubWindow_Login">Login to VRoid Hub</system:String>
+    <system:String x:Key="VRoidHubWindow_ErrorDescription">An error occurred. Please close this window and reopen.</system:String>
+    <system:String x:Key="VRoidHubWindow_CodeDescription">Please enter the code displayed on web browser</system:String>
+    <system:String x:Key="VRoidHubWindow_Register">Enter</system:String>
+    <system:String x:Key="VRoidHubWindow_ModelList">Model List</system:String>
+    <system:String x:Key="VRoidHubWindow_FindModelOnVRoidHub">Find models on VRoid Hub</system:String>
+    <system:String x:Key="VRoidHubWindow_ModelInfo">Model Info</system:String>
+    <system:String x:Key="VRoidHubWindow_AllowedUser">Allowed User</system:String>
+    <system:String x:Key="VRoidHubWindow_ViolentExpression">Violent</system:String>
+    <system:String x:Key="VRoidHubWindow_SexualExpression">Sexual</system:String>
+    <system:String x:Key="VRoidHubWindow_CorporateCommercialUse">CorporateCommercialUse</system:String>
+    <system:String x:Key="VRoidHubWindow_PersonalCommercialUse">PersonalCommercialUse</system:String>
+    <system:String x:Key="VRoidHubWindow_NonProfit">Non profit</system:String>
+    <system:String x:Key="VRoidHubWindow_Modification">Modification</system:String>
+    <system:String x:Key="VRoidHubWindow_Redistribution">Redistribution</system:String>
+    <system:String x:Key="VRoidHubWindow_Credit">Credit</system:String>
+    <system:String x:Key="VRoidHubWindow_Necessary">Necessary</system:String>
+    <system:String x:Key="VRoidHubWindow_Unnecessary">Unnecessary</system:String>
+    <system:String x:Key="VRoidHubWindow_CreditCautionDescription1">When using this model, you need to display the license.</system:String>
+    <system:String x:Key="VRoidHubWindow_CreditCautionDescription2">Credit must be stated clearly.</system:String>
+    <system:String x:Key="VRoidHubWindow_OpenOnVRoidHub">Open VRoid Hub page</system:String>
+    <system:String x:Key="VRoidHubWindow_LoadModel">Agree and Import</system:String>
+    <system:String x:Key="VRoidHubWindow_Loading">Now loading</system:String>
+
+    <system:String x:Key="VRoidHubWindow_SelectModelMessage">Please select the model to load</system:String>
+    <system:String x:Key="VRoidHubWindow_CreditCautionConfirm">When using this model, you need to display the license. &#xa; Credit must be stated clearly when using it. OK?</system:String>
 </ResourceDictionary>

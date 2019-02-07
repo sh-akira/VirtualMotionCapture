@@ -25,7 +25,7 @@
     <DockPanel>
         <DockPanel DockPanel.Dock="Top">
             <Button Margin="10,10,0,0" Width="150" Height="40" Content="{DynamicResource VRMImportWindow_VRMImportButton}" Name="LoadVRMButton" Click="LoadVRMButton_Click" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip="{DynamicResource VRMImportWindow_VRMImportButton_ToolTip}"/>
-            <Button Margin="10,10,0,0" Width="150" Height="40" Content="VRoid Hubから開く" Name="ShowVRoidHubButton" Click="ShowVRoidHubButton_Click" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip="{DynamicResource VRMImportWindow_VRMImportButton_ToolTip}"/>
+            <Button Margin="10,10,0,0" Width="150" Height="40" Content="VRoid Hub" FontWeight="Bold" Name="ShowVRoidHubButton" Click="ShowVRoidHubButton_Click" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip="{DynamicResource VRMImportWindow_VRMImportButton_ToolTip}"/>
             <GroupBox Header="{DynamicResource VRMImportWindow_VRMImportOption}" FontSize="14">
                 <StackPanel Orientation="Horizontal">
                     <CheckBox Content="{DynamicResource VRMImportWindow_NormalMapFix}" Name="EnableNormalMapFixCheckBox" IsChecked="False" FontSize="14" Visibility="Collapsed"/>

@@ -381,5 +381,36 @@
     <system:String x:Key="PhotoWindow_ErrorWidth">横幅は半角整数で入力してください</system:String>
     <system:String x:Key="PhotoWindow_ErrorFolderExist">フォルダが存在しません</system:String>
     <system:String x:Key="PhotoWindow_FolderSelect">フォルダーを選択してください。</system:String>
-    
+
+
+    <!-- VRoidHubWindow -->
+    <system:String x:Key="VRoidHubWindowTitle">VRoid Hubからモデル読み込み</system:String>
+
+    <system:String x:Key="VRoidHubWindow_LoginDescription">VRoid Hubからモデルを読み込むにはVRoid Hubにログインして バーチャルモーションキャプチャーとの連携を許可してください。</system:String>
+    <system:String x:Key="VRoidHubWindow_Login">VRoid Hubにログイン</system:String>
+    <system:String x:Key="VRoidHubWindow_ErrorDescription">エラーが発生しました。この画面を閉じて再度開いてください。</system:String>
+    <system:String x:Key="VRoidHubWindow_CodeDescription">ブラウザに表示されたコードを入力してください</system:String>
+    <system:String x:Key="VRoidHubWindow_Register">認証する</system:String>
+    <system:String x:Key="VRoidHubWindow_ModelList">モデル一覧</system:String>
+    <system:String x:Key="VRoidHubWindow_FindModelOnVRoidHub">VRoid Hubでモデルを探す</system:String>
+    <system:String x:Key="VRoidHubWindow_ModelInfo">モデル情報</system:String>
+    <system:String x:Key="VRoidHubWindow_AllowedUser">アバターとしての利用</system:String>
+    <system:String x:Key="VRoidHubWindow_ViolentExpression">暴力表現での利用</system:String>
+    <system:String x:Key="VRoidHubWindow_SexualExpression">性的表現での利用</system:String>
+    <system:String x:Key="VRoidHubWindow_CorporateCommercialUse">法人の商用利用</system:String>
+    <system:String x:Key="VRoidHubWindow_PersonalCommercialUse">営利目的での活動</system:String>
+    <system:String x:Key="VRoidHubWindow_NonProfit">非商用に限る</system:String>
+    <system:String x:Key="VRoidHubWindow_Modification">改変</system:String>
+    <system:String x:Key="VRoidHubWindow_Redistribution">再配布</system:String>
+    <system:String x:Key="VRoidHubWindow_Credit">クレジット表記</system:String>
+    <system:String x:Key="VRoidHubWindow_Necessary">必要</system:String>
+    <system:String x:Key="VRoidHubWindow_Unnecessary">不要</system:String>
+    <system:String x:Key="VRoidHubWindow_CreditCautionDescription1">このモデルは使用時のライセンス表示が必須です。</system:String>
+    <system:String x:Key="VRoidHubWindow_CreditCautionDescription2">動画や配信で使用する際必ず明記する必要があります</system:String>
+    <system:String x:Key="VRoidHubWindow_OpenOnVRoidHub">VRoid Hubで開く</system:String>
+    <system:String x:Key="VRoidHubWindow_LoadModel">同意して読み込む</system:String>
+    <system:String x:Key="VRoidHubWindow_Loading">読込中です</system:String>
+
+    <system:String x:Key="VRoidHubWindow_SelectModelMessage">読み込むモデルを選択してください</system:String>
+    <system:String x:Key="VRoidHubWindow_CreditCautionConfirm">このモデルは使用時のライセンス表示が必須です。動画や配信で使用する際必ず明記する必要があります。使用しますか？</system:String>
 </ResourceDictionary>
