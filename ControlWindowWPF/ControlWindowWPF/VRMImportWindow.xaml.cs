@@ -70,6 +70,7 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void ImportButton_Click(object sender, RoutedEventArgs e)
         {
+            if (CurrentMeta == null) return;
             Globals.CurrentVRMFilePath = CurrentMeta.FilePath;
             await Globals.Client.SendCommandAsync(new PipeCommands.ImportVRM { Path = CurrentMeta.FilePath, ImportForCalibration = false, EnableNormalMapFix = EnableNormalMapFixCheckBox.IsChecked.Value, DeleteHairNormalMap = DeleteHairNormalMapCheckBox.IsChecked.Value });
 

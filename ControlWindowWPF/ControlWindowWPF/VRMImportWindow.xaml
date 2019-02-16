@@ -306,8 +306,8 @@
                         <TextBlock Grid.Row="3" Grid.Column="1" Text="{DynamicResource VRMImportWindow_OtherLicenseUrl}"/>
                         <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding OtherLicenseUrl}"/>
                         <UniformGrid Grid.Row="1" Grid.Column="4" Grid.RowSpan="4" Rows="2" Width="200">
-                            <Button Content="{DynamicResource VRMImportWindow_ImportButton}" Margin="10,10,10,5" Name="ImportButton" Click="ImportButton_Click" ToolTip="{DynamicResource VRMImportWindow_ImportButton_ToolTip}"/>
-                            <Button Content="{DynamicResource VRMImportWindow_IgnoreButton}" Margin="10,5,10,10" Name="IgnoreButton" Click="IgnoreButton_Click" ToolTip="{DynamicResource VRMImportWindow_IgnoreButton_ToolTip}"/>
+                            <Button Content="{DynamicResource VRMImportWindow_ImportButton}" Margin="10,10,10,5" Name="ImportButton" Click="ImportButton_Click" ToolTip="{DynamicResource VRMImportWindow_ImportButton_ToolTip}" IsEnabled="False"/>
+                            <Button Content="{DynamicResource VRMImportWindow_IgnoreButton}" Margin="10,5,10,10" Name="IgnoreButton" Click="IgnoreButton_Click" ToolTip="{DynamicResource VRMImportWindow_IgnoreButton_ToolTip}" IsEnabled="False"/>
                         </UniformGrid>
                     </Grid>
                 </DockPanel>
