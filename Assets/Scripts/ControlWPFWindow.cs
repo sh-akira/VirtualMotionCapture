@@ -1084,7 +1084,7 @@ public class ControlWPFWindow : MonoBehaviour
         }
 
         vrik.solver.IKPositionWeight = 1.0f;
-        if (handler.Trackers.Count == 1)
+        if (leftFootTracker == null && rightFootTracker == null)
         {
             vrik.solver.plantFeet = true;
             vrik.solver.locomotion.weight = 1.0f;
