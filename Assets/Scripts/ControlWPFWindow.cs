@@ -580,6 +580,14 @@ public class ControlWPFWindow : MonoBehaviour
             SetVRIK(CurrentModel);
             if (animator != null)
             {
+                animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).eulerAngles = new Vector3(LeftLowerArmAngle, 0, 0);
+                animator.GetBoneTransform(HumanBodyBones.RightLowerArm).eulerAngles = new Vector3(RightLowerArmAngle, 0, 0);
+                animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).eulerAngles = new Vector3(LeftUpperArmAngle, 0, 0);
+                animator.GetBoneTransform(HumanBodyBones.RightUpperArm).eulerAngles = new Vector3(RightUpperArmAngle, 0, 0);
+                wristRotationFix.SetVRIK(vrik);
+
+                handController.SetDefaultAngle(animator);
+
                 //トラッカー位置の表示
                 RealTrackerRoot.gameObject.SetActive(true);
                 foreach (Transform t in RealTrackerRoot)
@@ -645,7 +653,35 @@ public class ControlWPFWindow : MonoBehaviour
         //CurrentModel.transform.SetParent(transform, false);
 
         animator = CurrentModel.GetComponent<Animator>();
+
+        //膝のボーンの曲がる方向で膝の向きが決まってしまうため、強制的に膝のボーンを少し前に曲げる
+        var leftOffset = Vector3.zero;
+        var rightOffset = Vector3.zero;
+        if (animator != null)
+        {
+            leftOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.LeftUpperLeg), animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg), animator.GetBoneTransform(HumanBodyBones.LeftFoot));
+            rightOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.RightUpperLeg), animator.GetBoneTransform(HumanBodyBones.RightLowerLeg), animator.GetBoneTransform(HumanBodyBones.RightFoot));
+            fixPelvisBone(animator.GetBoneTransform(HumanBodyBones.Spine), animator.GetBoneTransform(HumanBodyBones.Hips));
+        }
+
         SetVRIK(CurrentModel);
+
+        //膝のボーンの曲がる方向で膝の向きが決まってしまうため、強制的に膝のボーンを少し前に曲げる
+        //if (animator != null)
+        //{
+        //    unfixKneeBone(leftOffset, animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg), animator.GetBoneTransform(HumanBodyBones.LeftFoot));
+        //    unfixKneeBone(rightOffset, animator.GetBoneTransform(HumanBodyBones.RightLowerLeg), animator.GetBoneTransform(HumanBodyBones.RightFoot));
+        //}
+        //if (animator != null)
+        //{
+        //    var leftWrist = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).gameObject;
+        //    var rightWrist = animator.GetBoneTransform(HumanBodyBones.RightLowerArm).gameObject;
+        //    var leftRelaxer = leftWrist.AddComponent<TwistRelaxer>();
+        //    var rightRelaxer = rightWrist.AddComponent<TwistRelaxer>();
+        //    leftRelaxer.ik = vrik;
+        //    rightRelaxer.ik = vrik;
+        //}
+
         if (animator != null)
         {
             animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).eulerAngles = new Vector3(LeftLowerArmAngle, 0, 0);
@@ -748,38 +784,11 @@ public class ControlWPFWindow : MonoBehaviour
 
     private void SetVRIK(GameObject model)
     {
-        //膝のボーンの曲がる方向で膝の向きが決まってしまうため、強制的に膝のボーンを少し前に曲げる
-        var leftOffset = Vector3.zero;
-        var rightOffset = Vector3.zero;
-        if (animator != null)
-        {
-            leftOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.LeftUpperLeg), animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg), animator.GetBoneTransform(HumanBodyBones.LeftFoot));
-            rightOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.RightUpperLeg), animator.GetBoneTransform(HumanBodyBones.RightLowerLeg), animator.GetBoneTransform(HumanBodyBones.RightFoot));
-            fixPelvisBone(animator.GetBoneTransform(HumanBodyBones.Spine), animator.GetBoneTransform(HumanBodyBones.Hips));
-        }
-
-
         vrik = model.AddComponent<RootMotion.FinalIK.VRIK>();
         vrik.solver.IKPositionWeight = 0f;
         vrik.solver.leftArm.stretchCurve = new AnimationCurve();
         vrik.solver.rightArm.stretchCurve = new AnimationCurve();
         vrik.UpdateSolverExternal();
-
-        //膝のボーンの曲がる方向で膝の向きが決まってしまうため、強制的に膝のボーンを少し前に曲げる
-        //if (animator != null)
-        //{
-        //    unfixKneeBone(leftOffset, animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg), animator.GetBoneTransform(HumanBodyBones.LeftFoot));
-        //    unfixKneeBone(rightOffset, animator.GetBoneTransform(HumanBodyBones.RightLowerLeg), animator.GetBoneTransform(HumanBodyBones.RightFoot));
-        //}
-        //if (animator != null)
-        //{
-        //    var leftWrist = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).gameObject;
-        //    var rightWrist = animator.GetBoneTransform(HumanBodyBones.RightLowerArm).gameObject;
-        //    var leftRelaxer = leftWrist.AddComponent<TwistRelaxer>();
-        //    var rightRelaxer = rightWrist.AddComponent<TwistRelaxer>();
-        //    leftRelaxer.ik = vrik;
-        //    rightRelaxer.ik = vrik;
-        //}
     }
 
     Transform bodyTracker = null;
