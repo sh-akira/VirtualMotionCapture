@@ -654,33 +654,7 @@ public class ControlWPFWindow : MonoBehaviour
 
         animator = CurrentModel.GetComponent<Animator>();
 
-        //膝のボーンの曲がる方向で膝の向きが決まってしまうため、強制的に膝のボーンを少し前に曲げる
-        var leftOffset = Vector3.zero;
-        var rightOffset = Vector3.zero;
-        if (animator != null)
-        {
-            leftOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.LeftUpperLeg), animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg), animator.GetBoneTransform(HumanBodyBones.LeftFoot));
-            rightOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.RightUpperLeg), animator.GetBoneTransform(HumanBodyBones.RightLowerLeg), animator.GetBoneTransform(HumanBodyBones.RightFoot));
-            fixPelvisBone(animator.GetBoneTransform(HumanBodyBones.Spine), animator.GetBoneTransform(HumanBodyBones.Hips));
-        }
-
         SetVRIK(CurrentModel);
-
-        //膝のボーンの曲がる方向で膝の向きが決まってしまうため、強制的に膝のボーンを少し前に曲げる
-        //if (animator != null)
-        //{
-        //    unfixKneeBone(leftOffset, animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg), animator.GetBoneTransform(HumanBodyBones.LeftFoot));
-        //    unfixKneeBone(rightOffset, animator.GetBoneTransform(HumanBodyBones.RightLowerLeg), animator.GetBoneTransform(HumanBodyBones.RightFoot));
-        //}
-        //if (animator != null)
-        //{
-        //    var leftWrist = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).gameObject;
-        //    var rightWrist = animator.GetBoneTransform(HumanBodyBones.RightLowerArm).gameObject;
-        //    var leftRelaxer = leftWrist.AddComponent<TwistRelaxer>();
-        //    var rightRelaxer = rightWrist.AddComponent<TwistRelaxer>();
-        //    leftRelaxer.ik = vrik;
-        //    rightRelaxer.ik = vrik;
-        //}
 
         if (animator != null)
         {
@@ -712,11 +686,17 @@ public class ControlWPFWindow : MonoBehaviour
         SetCameraLookTarget();
         //SetTrackersToVRIK();
     }
-
+    /*
+    private Vector3 DefaultModelPosition;
+    private Quaternion DefaultModelRotation;
+    private Vector3 DefaultModelScale;
     private Dictionary<HumanBodyBones, Quaternion> DefaultRotations;
 
     public void SaveDefaultCurrentModelTransforms()
     {
+        DefaultModelPosition = CurrentModel.transform.position;
+        DefaultModelRotation = CurrentModel.transform.rotation;
+        DefaultModelScale = CurrentModel.transform.localScale;
         DefaultRotations = new Dictionary<HumanBodyBones, Quaternion>();
         var animator = CurrentModel.GetComponent<Animator>();
         for (int i = 0; i < (int)HumanBodyBones.LastBone; i++)
@@ -732,12 +712,75 @@ public class ControlWPFWindow : MonoBehaviour
     public void LoadDefaultCurrentModelTransforms()
     {
         if (DefaultRotations == null) return;
+        CurrentModel.transform.position = DefaultModelPosition;
+        CurrentModel.transform.rotation = DefaultModelRotation;
+        CurrentModel.transform.localScale = DefaultModelScale;
         foreach (var pair in DefaultRotations)
         {
             var t = animator.GetBoneTransform(pair.Key);
             if (t != null)
             {
                 t.rotation = pair.Value;
+            }
+        }
+    }
+    */
+
+    private GameObject PositionSavedModel;
+    private Vector3 DefaultModelPosition;
+    private Quaternion DefaultModelRotation;
+    private Vector3 DefaultModelScale;
+    private Dictionary<Transform, Vector3> DefaultPositions;
+    private Dictionary<Transform, Quaternion> DefaultRotations;
+    private Dictionary<Transform, Vector3> DefaultScales;
+
+    public void SaveDefaultCurrentModelTransforms()
+    {
+        PositionSavedModel = CurrentModel;
+        DefaultModelPosition = CurrentModel.transform.position;
+        DefaultModelRotation = CurrentModel.transform.rotation;
+        DefaultModelScale = CurrentModel.transform.localScale;
+        DefaultPositions = new Dictionary<Transform, Vector3>();
+        DefaultRotations = new Dictionary<Transform, Quaternion>();
+        DefaultScales = new Dictionary<Transform, Vector3>();
+        var allTransforms = CurrentModel.transform.GetComponentsInChildren<Transform>(true);
+        foreach (var t in allTransforms)
+        {
+            DefaultPositions.Add(t, t.position);
+            DefaultRotations.Add(t, t.rotation);
+            DefaultScales.Add(t, t.localScale);
+        }
+    }
+
+    public void LoadDefaultCurrentModelTransforms()
+    {
+        if (PositionSavedModel != CurrentModel) return;
+        CurrentModel.transform.localScale = DefaultModelScale;
+        CurrentModel.transform.rotation = DefaultModelRotation;
+        CurrentModel.transform.position = DefaultModelPosition;
+        var animator = CurrentModel.GetComponent<Animator>();
+        foreach (var pair in DefaultScales)
+        {
+            var t = pair.Key;
+            if (t != null)
+            {
+                t.localScale = pair.Value;
+            }
+        }
+        foreach (var pair in DefaultRotations)
+        {
+            var t = pair.Key;
+            if (t != null)
+            {
+                t.rotation = pair.Value;
+            }
+        }
+        foreach (var pair in DefaultPositions)
+        {
+            var t = pair.Key;
+            if (t != null)
+            {
+                t.position = pair.Value;
             }
         }
     }
@@ -784,11 +827,37 @@ public class ControlWPFWindow : MonoBehaviour
 
     private void SetVRIK(GameObject model)
     {
+        //膝のボーンの曲がる方向で膝の向きが決まってしまうため、強制的に膝のボーンを少し前に曲げる
+        var leftOffset = Vector3.zero;
+        var rightOffset = Vector3.zero;
+        if (animator != null)
+        {
+            leftOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.LeftUpperLeg), animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg), animator.GetBoneTransform(HumanBodyBones.LeftFoot));
+            rightOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.RightUpperLeg), animator.GetBoneTransform(HumanBodyBones.RightLowerLeg), animator.GetBoneTransform(HumanBodyBones.RightFoot));
+            fixPelvisBone(animator.GetBoneTransform(HumanBodyBones.Spine), animator.GetBoneTransform(HumanBodyBones.Hips));
+        }
+
         vrik = model.AddComponent<RootMotion.FinalIK.VRIK>();
         vrik.solver.IKPositionWeight = 0f;
         vrik.solver.leftArm.stretchCurve = new AnimationCurve();
         vrik.solver.rightArm.stretchCurve = new AnimationCurve();
         vrik.UpdateSolverExternal();
+
+        //膝のボーンの曲がる方向で膝の向きが決まってしまうため、強制的に膝のボーンを少し前に曲げる
+        //if (animator != null)
+        //{
+        //    unfixKneeBone(leftOffset, animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg), animator.GetBoneTransform(HumanBodyBones.LeftFoot));
+        //    unfixKneeBone(rightOffset, animator.GetBoneTransform(HumanBodyBones.RightLowerLeg), animator.GetBoneTransform(HumanBodyBones.RightFoot));
+        //}
+        //if (animator != null)
+        //{
+        //    var leftWrist = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).gameObject;
+        //    var rightWrist = animator.GetBoneTransform(HumanBodyBones.RightLowerArm).gameObject;
+        //    var leftRelaxer = leftWrist.AddComponent<TwistRelaxer>();
+        //    var rightRelaxer = rightWrist.AddComponent<TwistRelaxer>();
+        //    leftRelaxer.ik = vrik;
+        //    rightRelaxer.ik = vrik;
+        //}
     }
 
     Transform bodyTracker = null;
@@ -2118,7 +2187,7 @@ public class ControlWPFWindow : MonoBehaviour
             await server.SendCommandAsync(new PipeCommands.LoadHideBorder { enable = CurrentSettings.HideBorder });
             SetWindowTopMost(CurrentSettings.IsTopMost);
             await server.SendCommandAsync(new PipeCommands.LoadIsTopMost { enable = CurrentSettings.IsTopMost });
-            
+
             SetCameraFOV(CurrentSettings.CameraFOV);
             FreeCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
             FrontCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
