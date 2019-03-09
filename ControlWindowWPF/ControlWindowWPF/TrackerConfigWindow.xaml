@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
         mc:Ignorable="d"
-        Title="{DynamicResource TrackerConfigWindowTitle}" Height="500" Width="800" Loaded="Window_Loaded">
+        Title="{DynamicResource TrackerConfigWindowTitle}" Height="500" Width="800" Loaded="Window_Loaded" Icon="Resources/VirtualMotionCapture.ico">
     <DockPanel>
         <GroupBox Header="{DynamicResource TrackerConfigWindow_TrackerConfig}" DockPanel.Dock="Top">
             <Grid>

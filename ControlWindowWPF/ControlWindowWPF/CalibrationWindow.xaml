@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
         mc:Ignorable="d"
-        Title="{DynamicResource CalibrationWindowTitle}" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize" Loaded="Window_Loaded" Closing="Window_Closing">
+        Title="{DynamicResource CalibrationWindowTitle}" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize" Loaded="Window_Loaded" Closing="Window_Closing" Icon="Resources/VirtualMotionCapture.ico">
     <Grid>
         <TextBlock Text="" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="Red" FontSize="36" FontWeight="Bold" Width="150" TextAlignment="Center" Margin="0,0,40,20" Name="StatusTextBlock"/>
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">

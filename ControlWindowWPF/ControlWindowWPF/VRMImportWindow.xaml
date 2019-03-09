@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
         mc:Ignorable="d"
-        Title="{DynamicResource VRMImportWindowTitle}" Height="565" Width="1120" ResizeMode="CanMinimize">
+        Title="{DynamicResource VRMImportWindowTitle}" Height="565" Width="1120" ResizeMode="CanMinimize" Icon="Resources/VirtualMotionCapture.ico">
     <Window.Resources>
         <Style TargetType="Button"/>
         <Style TargetType="TextBox">
