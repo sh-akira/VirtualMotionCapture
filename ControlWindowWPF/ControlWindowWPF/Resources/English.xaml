@@ -389,6 +389,7 @@
     <system:String x:Key="VRoidHubWindow_Login">Login to VRoid Hub</system:String>
     <system:String x:Key="VRoidHubWindow_ErrorDescription">An error occurred. Please close this window and reopen.</system:String>
     <system:String x:Key="VRoidHubWindow_CodeDescription">Please enter the code displayed on web browser</system:String>
+    <system:String x:Key="VRoidHubWindow_Paste">Paste</system:String>
     <system:String x:Key="VRoidHubWindow_Register">Enter</system:String>
     <system:String x:Key="VRoidHubWindow_ModelList">Model List</system:String>
     <system:String x:Key="VRoidHubWindow_FindModelOnVRoidHub">Find models on VRoid Hub</system:String>

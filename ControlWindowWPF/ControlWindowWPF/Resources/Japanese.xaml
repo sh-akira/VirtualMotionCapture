@@ -390,6 +390,7 @@
     <system:String x:Key="VRoidHubWindow_Login">VRoid Hubにログイン</system:String>
     <system:String x:Key="VRoidHubWindow_ErrorDescription">エラーが発生しました。この画面を閉じて再度開いてください。</system:String>
     <system:String x:Key="VRoidHubWindow_CodeDescription">ブラウザに表示されたコードを入力してください</system:String>
+    <system:String x:Key="VRoidHubWindow_Paste">貼り付け</system:String>
     <system:String x:Key="VRoidHubWindow_Register">認証する</system:String>
     <system:String x:Key="VRoidHubWindow_ModelList">モデル一覧</system:String>
     <system:String x:Key="VRoidHubWindow_FindModelOnVRoidHub">VRoid Hubでモデルを探す</system:String>
