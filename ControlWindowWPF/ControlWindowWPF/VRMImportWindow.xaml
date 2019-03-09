@@ -7,7 +7,6 @@
         mc:Ignorable="d"
         Title="{DynamicResource VRMImportWindowTitle}" Height="565" Width="1120" ResizeMode="CanMinimize" Icon="Resources/VirtualMotionCapture.ico">
     <Window.Resources>
-        <Style TargetType="Button"/>
         <Style TargetType="TextBox">
             <Setter Property="Margin" Value="8,3,0,3"/>
             <Setter Property="Padding" Value="4,1"/>

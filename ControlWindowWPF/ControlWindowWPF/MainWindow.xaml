@@ -7,10 +7,11 @@
         mc:Ignorable="d" Width="360" Height="185"
         Title="{DynamicResource MainWindowTitle}" FontSize="14" ResizeMode="CanMinimize" Background="#2A2A2A" Loaded="Window_Loaded" Closing="Window_Closing" Icon="Resources/VirtualMotionCapture.ico">
     <Grid>
+        <Button Visibility="Collapsed"/> <!--This Button for fix style bug-->
         <TabControl Margin="5">
             <TabItem Header="{DynamicResource MainWindow_Setting}" ToolTip="{DynamicResource MainWindow_Setting_ToolTip}">
                 <UniformGrid Rows="2" Columns="3">
-                    <Button Content="{DynamicResource MainWindow_LoadSetting}" Name="LoadSettingsButton" Click="LoadSettingsButton_Click" ToolTip="{DynamicResource MainWindow_LoadSetting_ToolTip}" Margin="3" Height="40" Padding="3,1"/>
+                    <Button Content="{DynamicResource MainWindow_LoadSetting}" Name="LoadSettingsButton" Click="LoadSettingsButton_Click" ToolTip="{DynamicResource MainWindow_LoadSetting_ToolTip}"/>
                     <Button Content="{DynamicResource MainWindow_ImportVRM}" Name="ImportVRMButton" Click="ImportVRMButton_Click" ToolTip="{DynamicResource MainWindow_ImportVRM_ToolTip}"/>
                     <Button Content="{DynamicResource MainWindow_ShortcutKey}" Name="ShortcutKeyButton" Click="ShortcutKeyButton_Click" ToolTip="{DynamicResource MainWindow_ShortcutKey_ToolTip}"/>
                     <Button Content="{DynamicResource MainWindow_SaveSetting}" Name="SaveSettingsButton" Click="SaveSettingsButton_Click" ToolTip="{DynamicResource MainWindow_SaveSetting_ToolTip}"/>
