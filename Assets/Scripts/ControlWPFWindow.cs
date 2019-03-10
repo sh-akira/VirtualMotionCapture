@@ -733,6 +733,7 @@ public class ControlWPFWindow : MonoBehaviour
     private Dictionary<Transform, Vector3> DefaultPositions;
     private Dictionary<Transform, Quaternion> DefaultRotations;
     private Dictionary<Transform, Vector3> DefaultScales;
+    private Dictionary<VRMSpringBoneColliderGroup.SphereCollider, Vector4> DefaultColliders;
 
     public void SaveDefaultCurrentModelTransforms()
     {
@@ -743,12 +744,23 @@ public class ControlWPFWindow : MonoBehaviour
         DefaultPositions = new Dictionary<Transform, Vector3>();
         DefaultRotations = new Dictionary<Transform, Quaternion>();
         DefaultScales = new Dictionary<Transform, Vector3>();
+        DefaultColliders = new Dictionary<VRMSpringBoneColliderGroup.SphereCollider, Vector4>();
         var allTransforms = CurrentModel.transform.GetComponentsInChildren<Transform>(true);
         foreach (var t in allTransforms)
         {
             DefaultPositions.Add(t, t.position);
             DefaultRotations.Add(t, t.rotation);
             DefaultScales.Add(t, t.localScale);
+        }
+
+        //VRMモデルのコライダー
+        var springBoneColiderGroups = CurrentModel.GetComponentsInChildren<VRM.VRMSpringBoneColliderGroup>();
+        foreach (var springBoneColiderGroup in springBoneColiderGroups)
+        {
+            foreach (var collider in springBoneColiderGroup.Colliders)
+            {
+                DefaultColliders.Add(collider, new Vector4(collider.Offset.x, collider.Offset.y, collider.Offset.z, collider.Radius));
+            }
         }
     }
 
@@ -781,6 +793,21 @@ public class ControlWPFWindow : MonoBehaviour
             if (t != null)
             {
                 t.position = pair.Value;
+            }
+        }
+
+        //VRMモデルのコライダー
+        var springBoneColiderGroups = CurrentModel.GetComponentsInChildren<VRM.VRMSpringBoneColliderGroup>();
+        foreach (var springBoneColiderGroup in springBoneColiderGroups)
+        {
+            foreach (var collider in springBoneColiderGroup.Colliders)
+            {
+                if (DefaultColliders.ContainsKey(collider))
+                {
+                    var col = DefaultColliders[collider];
+                    collider.Offset = new Vector3(col.x, col.y, col.z);
+                    collider.Radius = col.w;
+                }
             }
         }
     }
