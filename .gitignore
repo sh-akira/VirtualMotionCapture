@@ -22,7 +22,7 @@ HandPresets/
 VMCPipeServerTest/
 ShortcutKeyPresets/
 UnityNamedPipe.dll
-default.json
+#default.json
 VirtualMotionCaptureControlPanel.exe
 VirtualMotionCaptureControlPanel.exe.config
 docs/vendor*
