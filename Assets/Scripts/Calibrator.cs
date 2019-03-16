@@ -117,9 +117,9 @@ public class Calibrator
         if (addRootController)
         {
             if (rootController == null) rootController = ik.references.root.gameObject.AddComponent<VRIKRootController>();
-            rootController.pelvisTarget = ik.solver.spine.pelvisTarget;
-            rootController.leftFootTarget = ik.solver.leftLeg.target;
-            rootController.rightFootTarget = ik.solver.rightLeg.target;
+            //rootController.pelvisTarget = ik.solver.spine.pelvisTarget;
+            //rootController.leftFootTarget = ik.solver.leftLeg.target;
+            //rootController.rightFootTarget = ik.solver.rightLeg.target;
             rootController.Calibrate();
         }
         else
@@ -324,7 +324,7 @@ public class Calibrator
 
         // モデルのポジションを再度手と手の中心位置に移動
         centerposition = Vector3.Lerp(LeftHandTransform.position, RightHandTransform.position, 0.5f);
-        ik.references.root.position = new Vector3(centerposition.x, ik.references.root.position.y, centerposition.z) + ik.references.root.forward * modelcenterdistance + ik.references.root.forward * 0.1f ;
+        ik.references.root.position = new Vector3(centerposition.x, ik.references.root.position.y, centerposition.z) + ik.references.root.forward * modelcenterdistance + ik.references.root.forward * 0.1f;
         //hmdForwardAngle = HMDTransform.rotation * settings.headTrackerForward;
         //hmdForwardAngle.y = 0f;
         ik.references.root.rotation = Quaternion.LookRotation(hmdForwardAngle);
@@ -492,9 +492,9 @@ public class Calibrator
         if (addRootController)
         {
             if (rootController == null) rootController = ik.references.root.gameObject.AddComponent<VRIKRootController>();
-            rootController.pelvisTarget = ik.solver.spine.pelvisTarget;
-            rootController.leftFootTarget = ik.solver.leftLeg.target;
-            rootController.rightFootTarget = ik.solver.rightLeg.target;
+            //rootController.pelvisTarget = ik.solver.spine.pelvisTarget;
+            //rootController.leftFootTarget = ik.solver.leftLeg.target;
+            //rootController.rightFootTarget = ik.solver.rightLeg.target;
             rootController.Calibrate();
         }
         else
@@ -807,9 +807,9 @@ public class Calibrator
         if (addRootController)
         {
             if (rootController == null) rootController = ik.references.root.gameObject.AddComponent<VRIKRootController>();
-            rootController.pelvisTarget = ik.solver.spine.pelvisTarget;
-            rootController.leftFootTarget = ik.solver.leftLeg.target;
-            rootController.rightFootTarget = ik.solver.rightLeg.target;
+            //rootController.pelvisTarget = ik.solver.spine.pelvisTarget;
+            //rootController.leftFootTarget = ik.solver.leftLeg.target;
+            //rootController.rightFootTarget = ik.solver.rightLeg.target;
             rootController.Calibrate();
         }
         else
@@ -1122,9 +1122,9 @@ public class Calibrator
         if (addRootController)
         {
             if (rootController == null) rootController = ik.references.root.gameObject.AddComponent<VRIKRootController>();
-            rootController.pelvisTarget = ik.solver.spine.pelvisTarget;
-            rootController.leftFootTarget = ik.solver.leftLeg.target;
-            rootController.rightFootTarget = ik.solver.rightLeg.target;
+            //rootController.pelvisTarget = ik.solver.spine.pelvisTarget;
+            //rootController.leftFootTarget = ik.solver.leftLeg.target;
+            //rootController.rightFootTarget = ik.solver.rightLeg.target;
             rootController.Calibrate();
         }
         else
