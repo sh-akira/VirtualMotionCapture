@@ -36,7 +36,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Resources\VirtualMotionCapture.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\VirtualMotionCapture_dark.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -191,6 +191,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\VirtualMotionCapture.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\VirtualMotionCapture_dark.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

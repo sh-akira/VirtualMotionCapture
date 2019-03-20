@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="{DynamicResource SettingWindowTitle}" SizeToContent="Height" Width="300" ResizeMode="CanMinimize" Loaded="Window_Loaded" Icon="Resources/VirtualMotionCapture.ico">
+        Title="{DynamicResource SettingWindowTitle}" SizeToContent="Height" Width="300" ResizeMode="CanMinimize" Loaded="Window_Loaded" Icon="Resources/VirtualMotionCapture_dark.ico">
     <StackPanel Orientation="Vertical">
         <GroupBox Header="{DynamicResource SettingWindow_HandRotate}" DockPanel.Dock="Top">
             <UniformGrid Rows="1" Columns="2">
