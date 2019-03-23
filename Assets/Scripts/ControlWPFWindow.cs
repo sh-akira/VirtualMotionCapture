@@ -1930,6 +1930,12 @@ public class ControlWPFWindow : MonoBehaviour
             position = orig.position;
         }
 
+        public void SetPosition(Vector3 orig)
+        {
+            localPosition = orig;
+            position = orig;
+        }
+
         public void SetRotation(Transform orig)
         {
             localRotation = orig.localRotation;
@@ -2175,6 +2181,21 @@ public class ControlWPFWindow : MonoBehaviour
                 return;
             }
             CurrentSettings = Json.Serializer.Deserialize<Settings>(File.ReadAllText(path));
+            //スケールを元に戻す
+            //トラッカーのルートスケールを初期値に戻す
+            HandTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            HeadTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            PelvisTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            HandTrackerRoot.position = Vector3.zero;
+            HeadTrackerRoot.position = Vector3.zero;
+            PelvisTrackerRoot.position = Vector3.zero;
+            //スケール変更時の位置オフセット設定
+            var handTrackerOffset = HandTrackerRoot.GetComponent<ScalePositionOffset>();
+            var headTrackerOffset = HeadTrackerRoot.GetComponent<ScalePositionOffset>();
+            var footTrackerOffset = PelvisTrackerRoot.GetComponent<ScalePositionOffset>();
+            handTrackerOffset.ResetTargetAndPosition();
+            headTrackerOffset.ResetTargetAndPosition();
+            footTrackerOffset.ResetTargetAndPosition();
         }
         else
         {

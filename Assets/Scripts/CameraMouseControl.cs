@@ -122,10 +122,18 @@ public class CameraMouseControl : MonoBehaviour
 
     private Camera currentCamera;
 
+    private Transform parentTransform;
+
+    private Vector3 currentNoScaledPosition = Vector3.zero;
+
     void Start()
     {
         currentCamera = GetComponent<Camera>();
         UpdateCamera();
+        if (transform.parent != null)
+        {
+            parentTransform = transform.parent;
+        }
     }
 
     private bool isTargetRotate = false;
@@ -166,7 +174,10 @@ public class CameraMouseControl : MonoBehaviour
                 {
                     CameraAngle.x = (CameraAngle.x + dragOffset.y * cameraSpeed.x * (currentCamera.fieldOfView / 60.0f)) % 360.0f;
                     CameraAngle.y = (CameraAngle.y - dragOffset.x * cameraSpeed.y * (currentCamera.fieldOfView / 60.0f)) % 360.0f;
-                    CameraTarget = transform.position + Quaternion.Euler(-CameraAngle) * Vector3.forward * CameraDistance;
+                    var setPosition = transform.position;
+                    //TODO:元の座標を取っておいて計算しないと計算誤差で微妙にずれる
+                    setPosition = new Vector3((setPosition.x - parentTransform.position.x) / parentTransform.localScale.x, (setPosition.y - parentTransform.position.y) / parentTransform.localScale.y, (setPosition.z - parentTransform.position.z) / parentTransform.localScale.z);
+                    CameraTarget = setPosition + Quaternion.Euler(-CameraAngle) * Vector3.forward * CameraDistance;
                     if (PositionFixedTarget != null) // 座標追従カメラ
                     {
                         UpdateRelativePosition();
@@ -241,7 +252,8 @@ public class CameraMouseControl : MonoBehaviour
             }
             if (CurrentSettings.CameraType == CameraTypes.Free)
             {
-                CurrentSettings.FreeCameraTransform.SetPositionAndRotation(transform);
+                CurrentSettings.FreeCameraTransform.SetPosition(currentNoScaledPosition);
+                CurrentSettings.FreeCameraTransform.SetRotation(transform);
             }
             else if (CurrentSettings.CameraType == CameraTypes.PositionFixed)
             {
@@ -262,13 +274,14 @@ public class CameraMouseControl : MonoBehaviour
             doUpdateRelativePosition = false;
             RelativePosition = CameraTarget - PositionFixedTarget.position;
         }
+        Vector3 setPosition;
         if (LookTarget != null)
         {
 
             var lookAt = LookTarget.position + LookOffset;
 
             // カメラとプレイヤーとの間の距離を調整
-            transform.position = lookAt - (LookTarget.transform.forward) * (CurrentSettings.CameraType == CameraTypes.Front ? -CameraDistance : CameraDistance);
+            setPosition = lookAt - (LookTarget.transform.forward) * (CurrentSettings.CameraType == CameraTypes.Front ? -CameraDistance : CameraDistance);
 
             // 注視点の設定
             transform.LookAt(lookAt);
@@ -276,13 +289,19 @@ public class CameraMouseControl : MonoBehaviour
         else if (PositionFixedTarget != null)
         {
             transform.rotation = Quaternion.Euler(-CameraAngle);
-            transform.position = PositionFixedTarget.position + transform.rotation * Vector3.back * CameraDistance + RelativePosition;
+            setPosition = PositionFixedTarget.position + transform.rotation * Vector3.back * CameraDistance + RelativePosition;
         }
         else
         {
             transform.rotation = Quaternion.Euler(-CameraAngle);
-            transform.position = CameraTarget + transform.rotation * Vector3.back * CameraDistance;
+            setPosition = CameraTarget + transform.rotation * Vector3.back * CameraDistance;
         }
+        currentNoScaledPosition = setPosition;
+        if (parentTransform != null)
+        {
+            setPosition = new Vector3(setPosition.x * parentTransform.localScale.x + parentTransform.position.x, setPosition.y * parentTransform.localScale.y + parentTransform.position.y, setPosition.z * parentTransform.localScale.z + parentTransform.position.z);
+        }
+        transform.position = setPosition;
     }
 
     private void SaveLookTarget(Camera camera)
