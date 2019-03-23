@@ -548,10 +548,12 @@ public class ControlWPFWindow : MonoBehaviour
         */
         return vrmdata;
     }
-    public float LeftLowerArmAngle = -60f;
-    public float RightLowerArmAngle = -60f;
-    public float LeftUpperArmAngle = -60f;
-    public float RightUpperArmAngle = -60f;
+    private const float LeftLowerArmAngle = -30f;
+    private const float RightLowerArmAngle = -30f;
+    private const float LeftUpperArmAngle = -30f;
+    private const float RightUpperArmAngle = -30f;
+    private const float LeftHandAngle = -30f;
+    private const float RightHandAngle = -30f;
 
     private async void ImportVRM(string path, bool ImportForCalibration, bool EnableNormalMapFix, bool DeleteHairNormalMap)
     {
@@ -577,14 +579,17 @@ public class ControlWPFWindow : MonoBehaviour
             var currentvrik = CurrentModel.GetComponent<VRIK>();
             if (currentvrik != null) Destroy(currentvrik);
             LoadDefaultCurrentModelTransforms();
-            SetVRIK(CurrentModel);
+            //SetVRIK(CurrentModel);
             if (animator != null)
             {
-                animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).eulerAngles = new Vector3(LeftLowerArmAngle, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.RightLowerArm).eulerAngles = new Vector3(RightLowerArmAngle, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).eulerAngles = new Vector3(LeftUpperArmAngle, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.RightUpperArm).eulerAngles = new Vector3(RightUpperArmAngle, 0, 0);
-                wristRotationFix.SetVRIK(vrik);
+                animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(LeftLowerArmAngle, 0, 0);
+                animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(RightLowerArmAngle, 0, 0);
+                animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(LeftUpperArmAngle, 0, 0);
+                animator.GetBoneTransform(HumanBodyBones.RightUpperArm).localEulerAngles = new Vector3(RightUpperArmAngle, 0, 0);
+                animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(LeftHandAngle, 0, 0);
+                animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(RightHandAngle, 0, 0);
+
+                //wristRotationFix.SetVRIK(vrik);
 
                 handController.SetDefaultAngle(animator);
 
@@ -1135,6 +1140,10 @@ public class ControlWPFWindow : MonoBehaviour
 
     private IEnumerator Calibrate(PipeCommands.CalibrateType calibrateType)
     {
+
+        SetVRIK(CurrentModel);
+        wristRotationFix.SetVRIK(vrik);
+
         Transform headTracker = GetTrackerTransformBySerialNumber(CurrentSettings.Head, TargetType.Head);
         leftHandTracker = GetTrackerTransformBySerialNumber(CurrentSettings.LeftHand, TargetType.LeftArm, headTracker);
         rightHandTracker = GetTrackerTransformBySerialNumber(CurrentSettings.RightHand, TargetType.RightArm, headTracker);
