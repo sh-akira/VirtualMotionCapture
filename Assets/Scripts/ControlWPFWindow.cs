@@ -1432,7 +1432,7 @@ public class ControlWPFWindow : MonoBehaviour
             var gameObject = new GameObject("CameraLook");
             gameObject.transform.position = calcPosition;
             gameObject.transform.rotation = spineTransform.rotation;
-            gameObject.transform.parent = bodyTracker == null ? animator.GetBoneTransform(HumanBodyBones.Spine) : CurrentModel.transform;
+            gameObject.transform.parent =/* bodyTracker == null ? animator.GetBoneTransform(HumanBodyBones.Spine) :*/ CurrentModel.transform;
             var lookTarget = FrontCamera.GetComponent<CameraMouseControl>();
             if (lookTarget != null)
             {
