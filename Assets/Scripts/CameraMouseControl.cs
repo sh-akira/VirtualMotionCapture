@@ -144,6 +144,7 @@ public class CameraMouseControl : MonoBehaviour
     }
     public void CheckUpdate()
     {
+        var mousePosition = Input.mousePosition;
         bool settingChanged = false;
         if (LookTarget == null)
         {
@@ -155,7 +156,7 @@ public class CameraMouseControl : MonoBehaviour
 
             if (Input.GetMouseButton((int)MouseButtons.Left) && isTargetRotate)
             {
-                Vector3 dragOffset = Input.mousePosition - lastMousePosition;
+                Vector3 dragOffset = mousePosition - lastMousePosition;
                 CameraAngle.x = (CameraAngle.x + dragOffset.y * cameraSpeed.x) % 360.0f;
                 CameraAngle.y = (CameraAngle.y - dragOffset.x * cameraSpeed.y) % 360.0f;
                 settingChanged = true;
@@ -169,7 +170,7 @@ public class CameraMouseControl : MonoBehaviour
             // カメラ回転
             if (Input.GetMouseButton((int)MouseButtons.Right))
             {
-                Vector3 dragOffset = Input.mousePosition - lastMousePosition;
+                Vector3 dragOffset = mousePosition - lastMousePosition;
                 if (Input.GetMouseButtonDown((int)MouseButtons.Right) == false)
                 {
                     CameraAngle.x = (CameraAngle.x + dragOffset.y * cameraSpeed.x * (currentCamera.fieldOfView / 60.0f)) % 360.0f;
@@ -192,7 +193,7 @@ public class CameraMouseControl : MonoBehaviour
         if (Input.GetMouseButton((int)MouseButtons.Center))
         {
             Camera camera = GetComponent<Camera>();
-            Vector3 mousePositionInWorld = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, CameraDistance));
+            Vector3 mousePositionInWorld = camera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, CameraDistance));
             Vector3 lastMousePositionInWorld = camera.ScreenToWorldPoint(new Vector3(lastMousePosition.x, lastMousePosition.y, CameraDistance));
             Vector3 dragOffset = mousePositionInWorld - lastMousePositionInWorld;
 
@@ -200,7 +201,7 @@ public class CameraMouseControl : MonoBehaviour
             {
                 if (LookTarget != null) // フロント/バックカメラ
                 {
-                    dragOffset.Set(0, dragOffset.y, dragOffset.z);
+                    dragOffset.Set(0, dragOffset.y, 0);
                     LookOffset -= dragOffset;
                 }
                 else if (PositionFixedTarget != null) // 座標追従カメラ
@@ -217,13 +218,13 @@ public class CameraMouseControl : MonoBehaviour
         }
 
 
-        lastMousePosition = Input.mousePosition;
+        lastMousePosition = mousePosition;
 
         // ズーム
         float mouseScrollWheel = Input.GetAxis("Mouse ScrollWheel");
         if (mouseScrollWheel != 0.0f)
         {
-            var mousePos = Input.mousePosition;
+            var mousePos = mousePosition;
             if (mousePos.x >= 0 && mousePos.y >= 0 && mousePos.x < Screen.safeArea.width && mousePos.y < Screen.safeArea.height)
             {
                 CameraDistance = Mathf.Max(CameraDistance - mouseScrollWheel * cameraSpeed.z * (60.0f / currentCamera.fieldOfView), 0.1f);
