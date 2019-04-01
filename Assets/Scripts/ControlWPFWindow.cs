@@ -576,8 +576,11 @@ public class ControlWPFWindow : MonoBehaviour
         }
         else
         {
-            var currentvrik = CurrentModel.GetComponent<VRIK>();
-            if (currentvrik != null) Destroy(currentvrik);
+            if (CurrentModel != null)
+            {
+                var currentvrik = CurrentModel.GetComponent<VRIK>();
+                if (currentvrik != null) Destroy(currentvrik);
+            }
             LoadDefaultCurrentModelTransforms();
             //SetVRIK(CurrentModel);
             if (animator != null)
@@ -771,7 +774,7 @@ public class ControlWPFWindow : MonoBehaviour
 
     public void LoadDefaultCurrentModelTransforms()
     {
-        if (PositionSavedModel != CurrentModel) return;
+        if (PositionSavedModel != CurrentModel || CurrentModel == null) return;
         CurrentModel.transform.localScale = DefaultModelScale;
         CurrentModel.transform.rotation = DefaultModelRotation;
         CurrentModel.transform.position = DefaultModelPosition;
