@@ -283,6 +283,7 @@ public class CameraMouseControl : MonoBehaviour
             // カメラとプレイヤーとの間の距離を調整
             setPosition = lookAt - (LookTarget.transform.forward) * (CurrentSettings.CameraType == CameraTypes.Front ? -CameraDistance : CameraDistance);
 
+            transform.position = setPosition;
             // 注視点の設定
             transform.LookAt(lookAt);
         }
