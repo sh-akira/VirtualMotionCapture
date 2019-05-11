@@ -62,6 +62,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ColorPickerWindow.xaml.cs">
+      <DependentUpon>ColorPickerWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FunctionKeyAddWindow.xaml.cs">
       <DependentUpon>FunctionKeyAddWindow.xaml</DependentUpon>
     </Compile>
@@ -94,6 +97,10 @@
       <DependentUpon>VRoidHubWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="CalibrationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ColorPickerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -184,6 +191,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ColorPickerWPF\akr.WPF.Controls.ColorPicker\akr.WPF.Controls.ColorPicker.csproj">
+      <Project>{214ebe94-3ac3-4260-8664-35d803139e89}</Project>
+      <Name>akr.WPF.Controls.ColorPicker</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\UnityMemoryMappedFile\UnityMemoryMappedFile.csproj">
       <Project>{045efc7f-9cf6-4dce-83e1-3cac35d83383}</Project>
       <Name>UnityMemoryMappedFile</Name>

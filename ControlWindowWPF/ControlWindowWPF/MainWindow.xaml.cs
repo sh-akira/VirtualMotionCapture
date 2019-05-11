@@ -268,6 +268,17 @@ namespace VirtualMotionCaptureControlPanel
                     var d = (PipeCommands.LoadClosingTime)e.Data;
                     LoadSlider(d.time, 100.0f, ClosingTimeSlider, ClosingTimeSlider_ValueChanged);
                 }
+                else if (e.CommandType == typeof(PipeCommands.SetLightAngle))
+                {
+                    var d = (PipeCommands.SetLightAngle)e.Data;
+                    LoadSlider(d.X, 1.0f, LightXSlider, LightSlider_ValueChanged);
+                    LoadSlider(d.Y, 1.0f, LightYSlider, LightSlider_ValueChanged);
+                }
+                else if (e.CommandType == typeof(PipeCommands.ChangeLightColor))
+                {
+                    var d = (PipeCommands.ChangeLightColor)e.Data;
+                    LightColorButton.Background = new SolidColorBrush(Color.FromArgb((byte)(d.a * 255f), (byte)(d.r * 255f), (byte)(d.g * 255f), (byte)(d.b * 255f)));
+                }
                 else if (e.CommandType == typeof(PipeCommands.SetWindowNum))
                 {
                     var d = (PipeCommands.SetWindowNum)e.Data;
@@ -612,5 +623,26 @@ namespace VirtualMotionCaptureControlPanel
         }
 
         #endregion
+
+        private async void LightSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (LightXSlider == null || LightYSlider == null || Globals.Client == null) return;
+            await Globals.Client?.SendCommandAsync(new PipeCommands.SetLightAngle { X = (float)LightXSlider.Value, Y = (float)LightYSlider.Value });
+        }
+
+        private void LightColorButton_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new ColorPickerWindow();
+            win.SelectedColor = (LightColorButton.Background as SolidColorBrush).Color;
+            win.SelectedColorChangedEvent += ColorPickerWindow_SelectedColorChanged;
+            win.ShowDialog();
+            win.SelectedColorChangedEvent -= ColorPickerWindow_SelectedColorChanged;
+        }
+
+        private async void ColorPickerWindow_SelectedColorChanged(object sender, Color e)
+        {
+            LightColorButton.Background = new SolidColorBrush(e);
+            await Globals.Client?.SendCommandAsync(new PipeCommands.ChangeLightColor { a = e.A / 255f, r = e.R / 255f, g = e.G / 255f, b = e.B / 255f });
+        }
     }
 }

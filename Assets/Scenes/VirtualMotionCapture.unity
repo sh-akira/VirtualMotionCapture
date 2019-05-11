@@ -7599,6 +7599,8 @@ MonoBehaviour:
   HeadTrackerRoot: {fileID: 421670469}
   PelvisTrackerRoot: {fileID: 836257372}
   RealTrackerRoot: {fileID: 1300838139}
+  MainDirectionalLightTransform: {fileID: 170076735}
+  MainDirectionalLight: {fileID: 170076734}
 --- !u!4 &1407685705
 Transform:
   m_ObjectHideFlags: 0

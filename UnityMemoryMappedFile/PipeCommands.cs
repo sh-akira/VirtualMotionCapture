@@ -277,6 +277,20 @@ namespace UnityMemoryMappedFile
             public bool TransparentBackground { get; set; }
             public string Directory { get; set; }
         }
+
+        public class SetLightAngle
+        {
+            public float X { get; set; }
+            public float Y { get; set; }
+        }
+
+        public class ChangeLightColor
+        {
+            public float a { get; set; }
+            public float r { get; set; }
+            public float g { get; set; }
+            public float b { get; set; }
+        }
     }
 
 

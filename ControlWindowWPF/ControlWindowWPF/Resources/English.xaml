@@ -114,6 +114,12 @@
     <system:String x:Key="MainWindow_TimeToOpen_ToolTip">Set the animation time when eyelid open. Eyelids open slowly as you enlarge</system:String>
     <system:String x:Key="MainWindow_ClosedTime_ToolTip">Set the time eyelid is closed. If it is enlarged it will keep the eyelid closed for a while</system:String>
 
+    <system:String x:Key="MainWindow_Appearance">Appearance</system:String>
+    <system:String x:Key="MainWindow_LightColor">LightColor</system:String>
+    <system:String x:Key="MainWindow_LightAngle">Light Angle</system:String>
+    <system:String x:Key="MainWindow_LightVerticalDirection">Vertical</system:String>
+    <system:String x:Key="MainWindow_LightHorizontalDirection">Horizontal</system:String>
+
     <system:String x:Key="MainWindow_ErrorCalibration">VRM model has not been loaded. Please import first.</system:String>
 
 
@@ -380,7 +386,11 @@
     <system:String x:Key="PhotoWindow_ErrorWidth">Please enter width in half-width integer</system:String>
     <system:String x:Key="PhotoWindow_ErrorFolderExist">Folder does not exist</system:String>
     <system:String x:Key="PhotoWindow_FolderSelect">Please select a folder.</system:String>
+    
 
+    <!-- PhotoWindow -->
+    <system:String x:Key="ColorPickerWindowTitle">Color Picker</system:String>
+    
 
     <!-- VRoidHubWindow -->
     <system:String x:Key="VRoidHubWindowTitle">Import model from VRoid Hub</system:String>

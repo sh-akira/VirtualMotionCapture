@@ -113,6 +113,12 @@
     <system:String x:Key="MainWindow_TimeToOpen_ToolTip">まぶたが開くアニメーションの時間を設定します。大きくするとゆっくりまぶたが開きます</system:String>
     <system:String x:Key="MainWindow_ClosedTime_ToolTip">まぶたを閉じて開くまでの時間を設定します。大きくするとしばらくまぶたを閉じたままになります</system:String>
 
+    <system:String x:Key="MainWindow_Appearance">見た目</system:String>
+    <system:String x:Key="MainWindow_LightColor">照明色</system:String>
+    <system:String x:Key="MainWindow_LightAngle">照明角度</system:String>
+    <system:String x:Key="MainWindow_LightVerticalDirection">上下</system:String>
+    <system:String x:Key="MainWindow_LightHorizontalDirection">回転</system:String>
+
     <system:String x:Key="MainWindow_ErrorCalibration">VRMモデルが読み込まれていません。先に読み込んでください。</system:String>
 
 
@@ -381,7 +387,11 @@
     <system:String x:Key="PhotoWindow_ErrorWidth">横幅は半角整数で入力してください</system:String>
     <system:String x:Key="PhotoWindow_ErrorFolderExist">フォルダが存在しません</system:String>
     <system:String x:Key="PhotoWindow_FolderSelect">フォルダーを選択してください。</system:String>
+    
 
+    <!-- PhotoWindow -->
+    <system:String x:Key="ColorPickerWindowTitle">色選択</system:String>
+    
 
     <!-- VRoidHubWindow -->
     <system:String x:Key="VRoidHubWindowTitle">VRoid Hubからモデル読み込み</system:String>

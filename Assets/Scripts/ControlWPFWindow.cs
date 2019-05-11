@@ -476,6 +476,16 @@ public class ControlWPFWindow : MonoBehaviour
                 var d = (PipeCommands.TakePhoto)e.Data;
                 TakePhoto(d.Width, d.TransparentBackground, d.Directory);
             }
+            else if (e.CommandType == typeof(PipeCommands.SetLightAngle))
+            {
+                var d = (PipeCommands.SetLightAngle)e.Data;
+                SetLightAngle(d.X, d.Y);
+            }
+            else if (e.CommandType == typeof(PipeCommands.ChangeLightColor))
+            {
+                var d = (PipeCommands.ChangeLightColor)e.Data;
+                ChangeLightColor(d.a, d.r, d.g, d.b);
+            }
             else if (e.CommandType == typeof(PipeCommands.LoadCurrentSettings))
             {
                 if (isFirstTimeExecute)
@@ -491,6 +501,28 @@ public class ControlWPFWindow : MonoBehaviour
                 }
             }
         }, null);
+    }
+
+    public Transform MainDirectionalLightTransform;
+    public Light MainDirectionalLight;
+
+    private void SetLightAngle(float x, float y)
+    {
+        if (MainDirectionalLightTransform != null)
+        {
+            MainDirectionalLightTransform.eulerAngles = new Vector3(x, y, MainDirectionalLightTransform.eulerAngles.z);
+            CurrentSettings.LightRotationX = x;
+            CurrentSettings.LightRotationY = y;
+        }
+    }
+
+    private void ChangeLightColor(float a, float r, float g, float b)
+    {
+        if (MainDirectionalLight != null)
+        {
+            CurrentSettings.LightColor = new Color(r, g, b, a);
+            MainDirectionalLight.color = CurrentSettings.LightColor;
+        }
     }
 
     private bool isFirstTimeExecute = true;
@@ -2128,6 +2160,13 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public float CameraFOV = 60.0f;
 
+        [OptionalField]
+        public Color LightColor;
+        [OptionalField]
+        public float LightRotationX;
+        [OptionalField]
+        public float LightRotationY;
+
         //初期値
         [OnDeserializing()]
         internal void OnDeserializingMethod(StreamingContext context)
@@ -2168,6 +2207,10 @@ public class ControlWPFWindow : MonoBehaviour
             WebCamBuffering = 0;
 
             CameraFOV = 60.0f;
+
+            LightColor = Color.white;
+            LightRotationX = 130;
+            LightRotationY = 43;
         }
     }
 
@@ -2333,6 +2376,11 @@ public class ControlWPFWindow : MonoBehaviour
 
             await server.SendCommandAsync(new PipeCommands.LoadLipSyncEnable { enable = CurrentSettings.LipSyncEnable });
             SetLipSyncEnable(CurrentSettings.LipSyncEnable);
+
+            await server.SendCommandAsync(new PipeCommands.SetLightAngle { X = CurrentSettings.LightRotationX, Y = CurrentSettings.LightRotationY });
+            SetLightAngle(CurrentSettings.LightRotationX, CurrentSettings.LightRotationY);
+            await server.SendCommandAsync(new PipeCommands.ChangeLightColor { a = CurrentSettings.LightColor.a, r = CurrentSettings.LightColor.r, g = CurrentSettings.LightColor.g, b = CurrentSettings.LightColor.b });
+            ChangeLightColor(CurrentSettings.LightColor.a, CurrentSettings.LightColor.r, CurrentSettings.LightColor.g, CurrentSettings.LightColor.b);
 
             await server.SendCommandAsync(new PipeCommands.SetWindowNum { Num = CurrentWindowNum });
         }
