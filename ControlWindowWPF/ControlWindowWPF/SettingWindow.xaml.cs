@@ -236,6 +236,7 @@ namespace VirtualMotionCaptureControlPanel
                     isSetting = false;
                 });
             });
+            await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = true });
         }
 
         private void VirtualWebCamInstallButton_Click(object sender, RoutedEventArgs e)
@@ -347,6 +348,11 @@ namespace VirtualMotionCaptureControlPanel
                 Height = item.Height,
                 RefreshRate = item.RefreshRate,
             });
+        }
+
+        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = false });
         }
     }
 }

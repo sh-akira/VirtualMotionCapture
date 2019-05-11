@@ -129,9 +129,23 @@ public class ControlWPFWindow : MonoBehaviour
         return setWindowNum;
     }
 
+    private int doSendTrackerMoved = 0;
+    private Dictionary<string, DateTime> trackerMovedLastSendTime = new Dictionary<string, DateTime>();
     private async void TransformExtensions_TrackerMovedEvent(object sender, string e)
     {
-        await server.SendCommandAsync(new PipeCommands.TrackerMoved { SerialNumber = e });
+        if (doSendTrackerMoved > 0)
+        {
+            if (trackerMovedLastSendTime.ContainsKey(e) == false)
+            {
+                trackerMovedLastSendTime.Add(e, DateTime.Now);
+            }
+            else if (DateTime.Now - trackerMovedLastSendTime[e] < TimeSpan.FromSeconds(1))
+            {
+                return;
+            }
+            await server.SendCommandAsync(new PipeCommands.TrackerMoved { SerialNumber = e });
+            trackerMovedLastSendTime[e] = DateTime.Now;
+        }
     }
 
     private bool ControlPanelExecuted = false;
@@ -485,6 +499,17 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 var d = (PipeCommands.ChangeLightColor)e.Data;
                 ChangeLightColor(d.a, d.r, d.g, d.b);
+            }
+            else if (e.CommandType == typeof(PipeCommands.TrackerMovedRequest))
+            {
+                var d = (PipeCommands.TrackerMovedRequest)e.Data;
+                if (d.doSend)
+                {
+                    doSendTrackerMoved++;
+                } else
+                {
+                    doSendTrackerMoved--;
+                }
             }
             else if (e.CommandType == typeof(PipeCommands.LoadCurrentSettings))
             {

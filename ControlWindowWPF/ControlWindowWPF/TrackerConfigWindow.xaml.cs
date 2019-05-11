@@ -59,6 +59,7 @@ namespace VirtualMotionCaptureControlPanel
                 var data = (PipeCommands.SetTrackerOffsets)d;
                 Dispatcher.Invoke(() => SetTrackerOffsets(data));
             });
+            await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = true });
             Globals.Client.ReceivedEvent += Client_Received;
         }
 
@@ -184,6 +185,11 @@ namespace VirtualMotionCaptureControlPanel
                 RightHandTrackerOffsetToBodySide = (float)RightHandTrackerOffsetToBodySideSlider.Value / 1000.0f,
                 RightHandTrackerOffsetToBottom = (float)RightHandTrackerOffsetToBottomSlider.Value / 1000.0f,
             });
+        }
+
+        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = false });
         }
     }
 }

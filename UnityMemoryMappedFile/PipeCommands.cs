@@ -291,6 +291,11 @@ namespace UnityMemoryMappedFile
             public float g { get; set; }
             public float b { get; set; }
         }
+
+        public class TrackerMovedRequest
+        {
+            public bool doSend { get; set; }
+        }
     }
 
 
