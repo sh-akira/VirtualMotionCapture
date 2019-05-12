@@ -118,17 +118,17 @@ namespace UnityMemoryMappedFile
 
         private AsyncLock SendLock = new AsyncLock();
 
-        public async Task<string> SendCommandAsync(object command, string requestId = null)
+        public async Task<string> SendCommandAsync(object command, string requestId = null, bool needWait = false)
         {
             System.Diagnostics.Debug.WriteLine($"MemoryMappedFileBase SendCommandAsync WaitLock [{command.GetType().Name}]");
             using (await SendLock.LockAsync())
             {
                 System.Diagnostics.Debug.WriteLine($"MemoryMappedFileBase SendCommandAsync EnterLock [{command.GetType().Name}]");
-                return await Task.Run(() => SendCommand(command, requestId));
+                return await Task.Run(() => SendCommand(command, requestId, needWait));
             }
         }
 
-        public string SendCommand(object command, string requestId = null)
+        public string SendCommand(object command, string requestId = null, bool needWait = false)
         {
             System.Diagnostics.Debug.WriteLine($"MemoryMappedFileBase SendCommand Enter [{command.GetType().Name}]");
             if (IsConnected == false) return null;
@@ -141,6 +141,8 @@ namespace UnityMemoryMappedFile
             {
                 if (readCts.Token.IsCancellationRequested) return null;
             }
+            //Need to wait requestID before send (because sometime return data very fast)
+            if (needWait) WaitReceivedDictionary.TryAdd(requestId, null);
             System.Diagnostics.Debug.WriteLine($"MemoryMappedFileBase SendCommand EndWait [{command.GetType().Name}]");
             long position = 1;
             //CommandType
@@ -170,10 +172,9 @@ namespace UnityMemoryMappedFile
         public async Task SendCommandWaitAsync(object command, Action<object> returnAction)
         {
             System.Diagnostics.Debug.WriteLine($"MemoryMappedFileBase SendCommandWaitAsync Enter [{command.GetType().Name}]");
-            var requestId = await SendCommandAsync(command);
+            var requestId = await SendCommandAsync(command, null, true);
             System.Diagnostics.Debug.WriteLine($"MemoryMappedFileBase SendCommandWaitAsync Return SendCommandAsync [{command.GetType().Name}] id:{requestId}");
             if (requestId == null) return;
-            WaitReceivedDictionary.TryAdd(requestId, null);
             System.Diagnostics.Debug.WriteLine($"MemoryMappedFileBase SendCommandWaitAsync StartWait [{command.GetType().Name}]");
             while (WaitReceivedDictionary[requestId] == null)
             {
