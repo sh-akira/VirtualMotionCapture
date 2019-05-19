@@ -256,6 +256,7 @@
     <system:String x:Key="TrackerConfigWindow_LeftHandTrackerToShoulder_ToolTip">左手に付けるトラッカーの肩方向(マイナスは指先方向)</system:String>
     <system:String x:Key="TrackerConfigWindow_RightHandTrackerToBottom_ToolTip">右手に付けるトラッカーの底面方向(マイナスはスイッチ方向)</system:String>
     <system:String x:Key="TrackerConfigWindow_RightHandTrackerToShoulder_ToolTip">右手に付けるトラッカーの肩方向(マイナスは指先方向)</system:String>
+    <system:String x:Key="TrackerConfigWindow_SynchronizeBothHands">左右を同期する</system:String>
 
 
     <!-- ShortcutKeyWindow -->

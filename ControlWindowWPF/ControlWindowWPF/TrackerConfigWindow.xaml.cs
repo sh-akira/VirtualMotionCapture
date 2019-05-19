@@ -174,6 +174,13 @@ namespace VirtualMotionCaptureControlPanel
         private async void TrackerOffsetSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (IsSetting) return;
+            if (SyncCheckBox.IsChecked == true)
+            {
+                IsSetting = true;
+                RightHandTrackerOffsetToBodySideSlider.Value = LeftHandTrackerOffsetToBodySideSlider.Value;
+                RightHandTrackerOffsetToBottomSlider.Value = LeftHandTrackerOffsetToBottomSlider.Value;
+                IsSetting = false;
+            }
             LeftHandTrackerOffsetToBodySideTextBlock.Text = LeftHandTrackerOffsetToBodySideSlider.Value.ToString() + " mm";
             LeftHandTrackerOffsetToBottomTextBlock.Text = LeftHandTrackerOffsetToBottomSlider.Value.ToString() + " mm";
             RightHandTrackerOffsetToBodySideTextBlock.Text = RightHandTrackerOffsetToBodySideSlider.Value.ToString() + " mm";
@@ -190,6 +197,16 @@ namespace VirtualMotionCaptureControlPanel
         private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = false });
+        }
+
+        private void SyncCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            RightHandGroupBox.IsEnabled = false;
+        }
+
+        private void SyncCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            RightHandGroupBox.IsEnabled = true;
         }
     }
 }

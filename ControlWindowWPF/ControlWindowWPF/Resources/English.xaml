@@ -249,12 +249,13 @@
     <system:String x:Key="TrackerConfigWindow_OffsetRightHand">Right hand</system:String>
     <system:String x:Key="TrackerConfigWindow_RightHandTrackerToBottom">　To bottom</system:String>
     <system:String x:Key="TrackerConfigWindow_RightHandTrackerToShoulder">　To shoulder</system:String>
-    <system:String x:Key="TrackerConfigWindow_TrackerOffsetDescription">When attaching to the back of the hand: About 20 mm, 50 mm / to the wrist (arm): About 20 mm, -50 mm</system:String>
+    <system:String x:Key="TrackerConfigWindow_TrackerOffsetDescription">Attach to the back of the hand: About 20 mm, 50 mm / to the wrist (arm): About 20 mm, -50 mm</system:String>
     <system:String x:Key="TrackerConfigWindow_Close">Close</system:String>
     <system:String x:Key="TrackerConfigWindow_LeftHandTrackerToBottom_ToolTip">The bottom direction of the tracker to be attached to the left hand (minus is switch direction)</system:String>
     <system:String x:Key="TrackerConfigWindow_LeftHandTrackerToShoulder_ToolTip">The direction of the shoulder of the tracker to be attached to the left hand (minus toward the fingertip)</system:String>
     <system:String x:Key="TrackerConfigWindow_RightHandTrackerToBottom_ToolTip">The bottom direction of the tracker attached to the right hand (minus is the switch direction)</system:String>
     <system:String x:Key="TrackerConfigWindow_RightHandTrackerToShoulder_ToolTip">The direction of the shoulder of the tracker to be attached to the right hand (negative toward the fingertip)</system:String>
+    <system:String x:Key="TrackerConfigWindow_SynchronizeBothHands">Syncronize both hands</system:String>
 
 
     <!-- ShortcutKeyWindow -->
