@@ -485,6 +485,9 @@ public class ControlWPFWindow : MonoBehaviour
             else if (e.CommandType == typeof(PipeCommands.SetResolution))
             {
                 var d = (PipeCommands.SetResolution)e.Data;
+                CurrentSettings.ScreenWidth = d.Width;
+                CurrentSettings.ScreenHeight = d.Height;
+                CurrentSettings.ScreenRefreshRate = d.RefreshRate;
                 Screen.SetResolution(d.Width, d.Height, false, d.RefreshRate);
             }
             else if (e.CommandType == typeof(PipeCommands.TakePhoto))
@@ -2194,6 +2197,13 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public float LightRotationY;
 
+        [OptionalField]
+        public int ScreenWidth = 0;
+        [OptionalField]
+        public int ScreenHeight = 0;
+        [OptionalField]
+        public int ScreenRefreshRate = 0;
+
         //初期値
         [OnDeserializing()]
         internal void OnDeserializingMethod(StreamingContext context)
@@ -2238,6 +2248,10 @@ public class ControlWPFWindow : MonoBehaviour
             LightColor = Color.white;
             LightRotationX = 130;
             LightRotationY = 43;
+
+            ScreenWidth = 0;
+            ScreenHeight = 0;
+            ScreenRefreshRate = 0;
         }
     }
 
@@ -2406,6 +2420,11 @@ public class ControlWPFWindow : MonoBehaviour
             SetLightAngle(CurrentSettings.LightRotationX, CurrentSettings.LightRotationY);
             await server.SendCommandAsync(new PipeCommands.ChangeLightColor { a = CurrentSettings.LightColor.a, r = CurrentSettings.LightColor.r, g = CurrentSettings.LightColor.g, b = CurrentSettings.LightColor.b });
             ChangeLightColor(CurrentSettings.LightColor.a, CurrentSettings.LightColor.r, CurrentSettings.LightColor.g, CurrentSettings.LightColor.b);
+
+            if (Screen.resolutions.Any(d => d.width == CurrentSettings.ScreenWidth && d.height == CurrentSettings.ScreenHeight && d.refreshRate == CurrentSettings.ScreenRefreshRate))
+            {
+                Screen.SetResolution(CurrentSettings.ScreenWidth, CurrentSettings.ScreenHeight, false, CurrentSettings.ScreenRefreshRate);
+            }
 
             await server.SendCommandAsync(new PipeCommands.SetWindowNum { Num = CurrentWindowNum });
         }
