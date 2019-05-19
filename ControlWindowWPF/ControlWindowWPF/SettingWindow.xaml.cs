@@ -173,14 +173,16 @@ namespace VirtualMotionCaptureControlPanel
                     sfd.FileName = "externalcamera.cfg";
                     if (sfd.ShowDialog() == true)
                     {
+                        var culture = System.Globalization.CultureInfo.InvariantCulture;
+                        var format = culture.NumberFormat;
                         var lines = new List<string>();
-                        lines.Add($"x={d.x}");
-                        lines.Add($"y={d.y}");
-                        lines.Add($"z={d.z}");
-                        lines.Add($"rx={d.rx}");
-                        lines.Add($"ry={d.ry}");
-                        lines.Add($"rz={d.rz}");
-                        lines.Add($"fov={d.fov}");
+                        lines.Add($"x=" + d.x.ToString("G", format));
+                        lines.Add($"y=" + d.y.ToString("G", format));
+                        lines.Add($"z=" + d.z.ToString("G", format));
+                        lines.Add($"rx=" + d.rx.ToString("G", format));
+                        lines.Add($"ry=" + d.ry.ToString("G", format));
+                        lines.Add($"rz=" + d.rz.ToString("G", format));
+                        lines.Add($"fov=" + d.fov.ToString("G", format));
                         lines.Add($"near=0.01");
                         lines.Add($"far=1000");
                         lines.Add($"disableStandardAssets=False");
