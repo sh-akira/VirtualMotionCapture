@@ -190,7 +190,7 @@ public class ControlWPFWindow : MonoBehaviour
             if (e.CommandType == typeof(PipeCommands.LoadVRM))
             {
                 var d = (PipeCommands.LoadVRM)e.Data;
-                await server.SendCommandAsync(new PipeCommands.ReturnLoadVRM { Data = LoadVRM() }, e.RequestId);
+                await server.SendCommandAsync(new PipeCommands.ReturnLoadVRM { Data = LoadVRM(d.Path) }, e.RequestId);
             }
             else if (e.CommandType == typeof(PipeCommands.ImportVRM))
             {
@@ -325,11 +325,13 @@ public class ControlWPFWindow : MonoBehaviour
             }
             else if (e.CommandType == typeof(PipeCommands.LoadSettings))
             {
-                LoadSettings();
+                var d = (PipeCommands.LoadSettings)e.Data;
+                LoadSettings(false, false, d.Path);
             }
             else if (e.CommandType == typeof(PipeCommands.SaveSettings))
             {
-                SaveSettings();
+                var d = (PipeCommands.SaveSettings)e.Data;
+                SaveSettings(d.Path);
             }
             else if (e.CommandType == typeof(PipeCommands.SetControllerTouchPadPoints))
             {
@@ -506,7 +508,8 @@ public class ControlWPFWindow : MonoBehaviour
                 if (d.doSend)
                 {
                     doSendTrackerMoved++;
-                } else
+                }
+                else
                 {
                     doSendTrackerMoved--;
                 }
@@ -554,9 +557,8 @@ public class ControlWPFWindow : MonoBehaviour
 
     #region VRM
 
-    private VRMData LoadVRM()
+    private VRMData LoadVRM(string path)
     {
-        var path = WindowsDialogs.OpenFileDialog("VRMファイル選択", ".vrm");
         if (string.IsNullOrEmpty(path))
         {
             return null;
@@ -2241,9 +2243,8 @@ public class ControlWPFWindow : MonoBehaviour
 
     public static Settings CurrentSettings = new Settings();
 
-    private void SaveSettings()
+    private void SaveSettings(string path)
     {
-        var path = WindowsDialogs.SaveFileDialog("設定保存先選択", ".json");
         if (string.IsNullOrEmpty(path))
         {
             return;
@@ -2251,11 +2252,10 @@ public class ControlWPFWindow : MonoBehaviour
         File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(CurrentSettings)));
     }
 
-    private async void LoadSettings(bool LoadDefault = false, bool IsFirstTime = false)
+    private async void LoadSettings(bool LoadDefault = false, bool IsFirstTime = false, string path = null)
     {
         if (LoadDefault == false)
         {
-            var path = WindowsDialogs.OpenFileDialog("設定読み込み先選択", ".json");
             if (string.IsNullOrEmpty(path))
             {
                 return;
@@ -2283,7 +2283,7 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 try
                 {
-                    var path = Application.dataPath + "/../default.json";
+                    path = Application.dataPath + "/../default.json";
                     CurrentSettings = Json.Serializer.Deserialize<Settings>(File.ReadAllText(path));
                 }
                 catch (Exception ex)

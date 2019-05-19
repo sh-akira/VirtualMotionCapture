@@ -34,11 +34,16 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void LoadVRMButton_Click(object sender, RoutedEventArgs e)
         {
-            await Globals.Client.SendCommandWaitAsync(new PipeCommands.LoadVRM(), d =>
+            var ofd = new Microsoft.Win32.OpenFileDialog();
+            ofd.Filter = "VRM File(*.vrm)|*.vrm";
+            if (ofd.ShowDialog() == true)
             {
-                var ret = (PipeCommands.ReturnLoadVRM)d;
-                Dispatcher.Invoke(() => LoadMetaData(ret.Data));
-            });
+                await Globals.Client.SendCommandWaitAsync(new PipeCommands.LoadVRM { Path = ofd.FileName }, d =>
+                {
+                    var ret = (PipeCommands.ReturnLoadVRM)d;
+                    Dispatcher.Invoke(() => LoadMetaData(ret.Data));
+                });
+            }
         }
 
         private void LoadMetaData(VRMData meta)

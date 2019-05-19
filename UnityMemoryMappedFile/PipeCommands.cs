@@ -88,8 +88,8 @@ namespace UnityMemoryMappedFile
         public class SetClosingTime : SetFloatValueBase { }
         public class SetDefaultFace { public string face { get; set; } }
 
-        public class SaveSettings { }
-        public class LoadSettings { }
+        public class SaveSettings { public string Path { get; set; } }
+        public class LoadSettings { public string Path { get; set; } }
         public class LoadCurrentSettings { }
         public class LoadCustomBackgroundColor
         {

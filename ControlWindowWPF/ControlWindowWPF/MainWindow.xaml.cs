@@ -312,12 +312,22 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void LoadSettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            await Globals.Client.SendCommandAsync(new PipeCommands.LoadSettings());
+            var ofd = new Microsoft.Win32.OpenFileDialog();
+            ofd.Filter = "Setting File(*.json)|*.json";
+            if (ofd.ShowDialog() == true)
+            {
+                await Globals.Client.SendCommandAsync(new PipeCommands.LoadSettings { Path = ofd.FileName });
+            }
         }
 
         private async void SaveSettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            await Globals.Client.SendCommandAsync(new PipeCommands.SaveSettings());
+            var sfd = new Microsoft.Win32.SaveFileDialog();
+            sfd.Filter = "Setting File(*.json)|*.json";
+            if (sfd.ShowDialog() == true)
+            {
+                await Globals.Client.SendCommandAsync(new PipeCommands.SaveSettings { Path = sfd.FileName });
+            }
         }
 
         private void ImportVRMButton_Click(object sender, RoutedEventArgs e)
