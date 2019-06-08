@@ -6,7 +6,10 @@ VRMのモデルファイルを読み込んで、3点～10点フルトラッキ�
 もちろんVRゲーム中以外でも使用することができます。  
   
   
-[公式ホームページはこちらです](https://sh-akira.github.io/VirtualMotionCapture/)
+**[公式ホームページはこちらです](https://sh-akira.github.io/VirtualMotionCapture/)**  
+**ダウンロード、説明書、よくある質問等すべてこちらからご覧ください。**  
+  
+**現在最新のソースコードは[v0.22basefixブランチ](https://github.com/sh-akira/VirtualMotionCapture/tree/v0.22basefix)です。ビルドされる場合はそちらを参照してください。**  
   
   
 # VRゲーム中にも同時起動可能  
