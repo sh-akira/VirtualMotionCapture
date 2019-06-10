@@ -48,14 +48,16 @@ VRoid製のモデルを使用する場合、リップシンクが表情と競合
     
 テスト環境：  
 OS: Windows 10 (1809)  
-CPU:Core i7 8700k  
-GPU: Geforce GTX1080Ti  
+CPU:Core i9 9900k  
+GPU: Geforce RTX2080Ti  
 Mem: 16GB  
 VR: HTC Vive + 11 tracker  
 (Oculus Rift+Touchの3点と+Kinectでの6点での動作報告があります)  
 (GTX1080 での動作も確認済み)  
 (Vive Pro,i7-4790K,GTX980,Mem 8G, Win10 Proで動作確認されました)  
 WinMR機器での動作確認もされています(必ず両手のコントローラーが必要です。キャリブレーション時に両手がトラッキングされている必要があります)  
+また、WinMRの場合Tポーズが通常の方法では取れませんがカウントダウンの0秒時に一気に腕を開くことで疑似的にTポーズをとる必要があります  
+Oculus Rift Sの動作確認済みです  
   
   
 まだテスト版です。テストが不十分の可能性が大いにあります。  
