@@ -231,8 +231,9 @@ Ver 0.02
 ビルド環境：Unity 2018.1.6f1 / Visual Studio 2017 (Windowsデスクトップ開発パッケージ)  
   
   
-・このリポジトリをクローンかダウンロードしてUnityで開いてください。  
-・Unity 2018.1.6f1で開いてください。  
+・このリポジトリをクローンかダウンロードします。  
+・ダウンロードした場合ColorPickerWPFフォルダがありませんので、忘れずにそちらもダウンロードして入れてください  
+※以下、UnityはUnity 2018.1.6f1で開いてください。  
 ※以下のプラグインインポート前に、ProjectSettingsフォルダをコピーしてバックアップしてください！  
 ※API UpdaterはNo, Thanksで問題ありません。  
 ・Assets直下にExternalPluginsフォルダを作って、その下に  
@@ -244,13 +245,15 @@ Ver 0.02
 　・VRM ([UniVRM-0.51.0_1b36.unitypackage](https://github.com/dwango/UniVRM/releases))  
 　・Oculus ([Oculus Lipsync Unity 1.30.0](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/1.30.0/))  
 以上のようなフォルダになるように各アセットをインポートしてください。  
-※インポートが終わったらUnityをいったん終了し、ProjectSettingsフォルダを削除して、バックアップしておいたProjectSettingsフォルダを戻してください！その後Unityをもう一度起動します  
-・UnityのConsoleを見てエラーが出ている個所4か所(ダブルクリックで開く)を  
-　UnityEngine.VR.VRDeviceをUnityEngine.XR.XRDeviceに  
-　UnityEngine.VR.VRSettingsをUnityEngine.XR.XRSettingsに変更して保存  
+※インポートが終わったらUnityをいったん終了し、ProjectSettingsフォルダを削除して、バックアップしておいたProjectSettingsフォルダを戻してください！ 
+
 ・ControlWindowWPF/ControlWindowWPF.slnをVisual Studio 2017で開きます。  
 ・VirtualMotionCaptureControlPanelプロジェクトのプロパティを開きデバッグのコマンドライン引数を/pipeName VMCTestにする。  
 ・そのままVisualStudioで1回開始します。自動でexeが作成されます。開いたコントロールパネルは閉じて1回終了します。  
+・Unityをもう一度起動します  
+・UnityのConsoleを見てエラーが出ている個所4か所(ダブルクリックで開く)を  
+　UnityEngine.VR.VRDeviceをUnityEngine.XR.XRDeviceに  
+　UnityEngine.VR.VRSettingsをUnityEngine.XR.XRSettingsに変更して保存  
 ・まだエラーが残ってる場合はUnity再起動  
 ・ScenesフォルダのVirtualMotionCaptureシーンを開いてUnity側の実行  
 ・VisualStudioでコントロールパネルを開始  
