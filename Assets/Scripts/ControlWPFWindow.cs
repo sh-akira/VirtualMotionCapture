@@ -2433,8 +2433,8 @@ public class ControlWPFWindow : MonoBehaviour
             await server.SendCommandWaitAsync(new PipeCommands.GetWindowHandle(), ret =>
             {
                 var d = (PipeCommands.ReturnWindowHandle)ret;
-                SetForegroundWindow(GetUnityWindowHandle());
-                SetForegroundWindow(d.Handle);
+                ActiveWindow(GetUnityWindowHandle());
+                ActiveWindow(d.Handle);
             });
 
         }
