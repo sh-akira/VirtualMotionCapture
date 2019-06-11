@@ -296,6 +296,12 @@ namespace UnityMemoryMappedFile
         {
             public bool doSend { get; set; }
         }
+
+        public class GetWindowHandle { }
+        public class ReturnWindowHandle
+        {
+            public IntPtr Handle { get; set; }
+        }
     }
 
 

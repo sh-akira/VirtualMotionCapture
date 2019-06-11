@@ -128,7 +128,7 @@ namespace VirtualMotionCaptureControlPanel
 
         private void Client_Received(object sender, DataReceivedEventArgs e)
         {
-            Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(async () =>
             {
                 //"設定"
                 if (e.CommandType == typeof(PipeCommands.LoadVRMPath))
@@ -284,6 +284,10 @@ namespace VirtualMotionCaptureControlPanel
                     var d = (PipeCommands.SetWindowNum)e.Data;
                     CurrentWindowNum = d.Num;
                     UpdateWindowTitle();
+                }
+                else if (e.CommandType == typeof(PipeCommands.GetWindowHandle))
+                {
+                    await Globals.Client?.SendCommandAsync(new PipeCommands.ReturnWindowHandle { Handle = (new System.Windows.Interop.WindowInteropHelper(this)).Handle }, e.RequestId);
                 }
                 //for Debug
                 else if (e.CommandType == typeof(PipeCommands.KeyDown))
