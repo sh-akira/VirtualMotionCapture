@@ -285,10 +285,6 @@ namespace VirtualMotionCaptureControlPanel
                     CurrentWindowNum = d.Num;
                     UpdateWindowTitle();
                 }
-                else if (e.CommandType == typeof(PipeCommands.GetWindowHandle))
-                {
-                    await Globals.Client?.SendCommandAsync(new PipeCommands.ReturnWindowHandle { Handle = (new System.Windows.Interop.WindowInteropHelper(this)).Handle }, e.RequestId);
-                }
                 //for Debug
                 else if (e.CommandType == typeof(PipeCommands.KeyDown))
                 {

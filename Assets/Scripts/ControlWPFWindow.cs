@@ -2429,14 +2429,6 @@ public class ControlWPFWindow : MonoBehaviour
 
             await server.SendCommandAsync(new PipeCommands.SetWindowNum { Num = CurrentWindowNum });
 
-            //ウインドウをアクティブにする
-            await server.SendCommandWaitAsync(new PipeCommands.GetWindowHandle(), ret =>
-            {
-                var d = (PipeCommands.ReturnWindowHandle)ret;
-                ActiveWindow(GetUnityWindowHandle());
-                ActiveWindow(d.Handle);
-            });
-
         }
     }
 
