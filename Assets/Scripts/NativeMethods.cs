@@ -55,9 +55,12 @@ namespace Assets.Scripts
         public static IntPtr CurrentWindowHandle = IntPtr.Zero;
         public static IntPtr GetUnityWindowHandle() => CurrentWindowHandle == IntPtr.Zero ? CurrentWindowHandle = FindWindow(null, Application.productName) : CurrentWindowHandle;
 
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
+
         public static bool IsWindowActive()
         {
-            return GetUnityWindowHandle() == GetActiveWindow();
+            return GetUnityWindowHandle() == GetForegroundWindow();
         }
 
         [DllImport("user32.dll")]
