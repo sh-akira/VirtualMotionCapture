@@ -239,6 +239,9 @@ A.割り当てコントローラーを変更して再度ファイルを開いて
   
 Q.起動後に操作するとフリーズする  
 A.VirtualMotionCaputre.exeと同じフォルダにあるdefault.jsonを別のフォルダに移動し、起動後に設定の読込ボタンからdefault.jsonを開くようにすると回避できる場合があります  
+
+Q.ここに書いていないことで困っています  
+A.[よくある質問と回答](https://github.com/sh-akira/VirtualMotionCapture/wiki/%E3%82%88%E3%81%8F%E3%81%82%E3%82%8B%E8%B3%AA%E5%95%8F%E3%81%A8%E5%9B%9E%E7%AD%94) も併せて確認してみてください。
   
 Q.支援先を教えてください  
 A.[欲しいものリスト](https://t.co/KPJRzn6sVR) ギフト送付先(akira.satoh.sh[アットマーク]gmail.com)  
