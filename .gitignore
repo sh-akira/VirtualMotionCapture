@@ -36,6 +36,9 @@ Assets/Scenes/LoginExample*
 ControlWindowWPF/ControlWindowWPF/VRoidHubWindow*
 UnityMemoryMappedFile/PipeCommands_VRoidSDK*
 Assets/Scripts/VRoidSDKConnector*
+Assets/Tobii*
+Assets/ExternalPlugins/ViveSR*
+tobii*
 
 # Visual Studio cache directory
 .vs/

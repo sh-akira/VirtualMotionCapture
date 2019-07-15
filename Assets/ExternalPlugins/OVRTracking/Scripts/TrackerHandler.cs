@@ -124,7 +124,7 @@ namespace sh_akira.OVRTracking
         }
     }
 
-    public static class TransformExtensions
+    public static class TrackerTransformExtensions
     {
         private static Dictionary<string, Vector3> lastPositions = new Dictionary<string, Vector3>();
 

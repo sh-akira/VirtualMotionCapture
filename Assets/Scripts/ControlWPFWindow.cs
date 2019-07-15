@@ -525,7 +525,7 @@ public class ControlWPFWindow : MonoBehaviour
                     isFirstTimeExecute = false;
                     //起動時は初期設定ロード
                     LoadSettings(true, true);
-                    TransformExtensions.TrackerMovedEvent += TransformExtensions_TrackerMovedEvent;
+                    TrackerTransformExtensions.TrackerMovedEvent += TransformExtensions_TrackerMovedEvent;
                 }
                 else
                 {
