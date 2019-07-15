@@ -356,5 +356,16 @@ namespace VirtualMotionCaptureControlPanel
         {
             await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = false });
         }
+
+        private void EyeTracking_TobiiSettingButton_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new EyeTracking_TobiiSettingWindow();
+            win.ShowDialog();
+        }
+
+        private void EyeTracking_ViveProEyeSettingButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

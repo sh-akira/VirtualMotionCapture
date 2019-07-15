@@ -387,6 +387,15 @@
     <system:String x:Key="PhotoWindow_ErrorWidth">Please enter width in half-width integer</system:String>
     <system:String x:Key="PhotoWindow_ErrorFolderExist">Folder does not exist</system:String>
     <system:String x:Key="PhotoWindow_FolderSelect">Please select a folder.</system:String>
+
+    <!-- EyeTracking_TobiiSettingWindow -->
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeScale">Eye movement range (inverted with minus)</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeOffset">Eye position offset (0.01=1cm)</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_Horizontal">Horizontal</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_Vertical">Vertical</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_Calibration">Calibration</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_CalibrationDescription">Move to the front of Tobii after model calibration is complete and press the calibration button while looking at the center of the monitor.</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_Close">Close</system:String>
     
 
     <!-- PhotoWindow -->

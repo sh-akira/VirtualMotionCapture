@@ -388,6 +388,15 @@
     <system:String x:Key="PhotoWindow_ErrorWidth">横幅は半角整数で入力してください</system:String>
     <system:String x:Key="PhotoWindow_ErrorFolderExist">フォルダが存在しません</system:String>
     <system:String x:Key="PhotoWindow_FolderSelect">フォルダーを選択してください。</system:String>
+
+    <!-- EyeTracking_TobiiSettingWindow -->
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeScale">目の移動範囲(マイナスで反転します)</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeOffset">目の位置オフセット(0.01=1cm)</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_Horizontal">左右方向</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_Vertical">上下方向</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_Calibration">キャリブレーション</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_CalibrationDescription">Tobii正面の頭の位置を取得するためモデルのキャリブレーション完了後にTobiiの前に移動してモニターの中心を見ながらキャリブレーションボタンを押してください</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_Close">閉じる</system:String>
     
 
     <!-- PhotoWindow -->

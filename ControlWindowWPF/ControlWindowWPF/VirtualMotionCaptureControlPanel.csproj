@@ -65,6 +65,9 @@
     <Compile Include="ColorPickerWindow.xaml.cs">
       <DependentUpon>ColorPickerWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EyeTracking_TobiiSettingWindow.xaml.cs">
+      <DependentUpon>EyeTracking_TobiiSettingWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FunctionKeyAddWindow.xaml.cs">
       <DependentUpon>FunctionKeyAddWindow.xaml</DependentUpon>
     </Compile>
@@ -101,6 +104,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ColorPickerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EyeTracking_TobiiSettingWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

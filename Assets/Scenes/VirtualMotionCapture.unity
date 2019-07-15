@@ -1912,6 +1912,57 @@ Transform:
   m_Father: {fileID: 1300838139}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &326004791
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 326004793}
+  - component: {fileID: 326004792}
+  m_Layer: 0
+  m_Name: EyeTracking
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &326004792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 326004791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6fd25003140c0e47b39261ea2e0f470, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MonitorPosition: {fileID: 0}
+  LookTarget: {fileID: 0}
+  StartPos: {x: 0, y: 0, z: 0}
+  ScaleX: 0.5
+  ScaleY: 0.2
+  OffsetX: 0
+  OffsetY: 0
+  CenterX: 0.5
+  CenterY: 0.5
+  Smoothing: 0.7
+  controlWPFWindow: {fileID: 1407685704}
+--- !u!4 &326004793
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 326004791}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 21
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &378345255
 GameObject:
   m_ObjectHideFlags: 0

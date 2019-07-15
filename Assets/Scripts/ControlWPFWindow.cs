@@ -81,6 +81,12 @@ public class ControlWPFWindow : MonoBehaviour
 
     private System.Threading.SynchronizationContext context = null;
 
+    public Action<GameObject> ModelLoadedAction = null;
+    public Action<GameObject> AdditionalSettingAction = null;
+
+    public Action<GameObject> EyeTracking_TobiiCalibrationAction = null;
+    public Action<PipeCommands.SetEyeTracking_TobiiOffsets> SetEyeTracking_TobiiOffsetsAction = null;
+
     // Use this for initialization
     void Start()
     {
@@ -518,6 +524,25 @@ public class ControlWPFWindow : MonoBehaviour
                     doSendTrackerMoved--;
                 }
             }
+            else if (e.CommandType == typeof(PipeCommands.SetEyeTracking_TobiiOffsets))
+            {
+                var d = (PipeCommands.SetEyeTracking_TobiiOffsets)e.Data;
+                SetEyeTracking_TobiiOffsets(d);
+            }
+            else if (e.CommandType == typeof(PipeCommands.GetEyeTracking_TobiiOffsets))
+            {
+                await server.SendCommandAsync(new PipeCommands.SetEyeTracking_TobiiOffsets
+                {
+                    OffsetHorizontal = CurrentSettings.EyeTracking_TobiiOffsetHorizontal,
+                    OffsetVertical = CurrentSettings.EyeTracking_TobiiOffsetVertical,
+                    ScaleHorizontal = CurrentSettings.EyeTracking_TobiiScaleHorizontal,
+                    ScaleVertical = CurrentSettings.EyeTracking_TobiiScaleVertical
+                }, e.RequestId);
+            }
+            else if (e.CommandType == typeof(PipeCommands.EyeTracking_TobiiCalibration))
+            {
+                EyeTracking_TobiiCalibrationAction?.Invoke(CurrentModel);
+            }
             else if (e.CommandType == typeof(PipeCommands.LoadCurrentSettings))
             {
                 if (isFirstTimeExecute)
@@ -756,6 +781,8 @@ public class ControlWPFWindow : MonoBehaviour
         }
         SetCameraLookTarget();
         //SetTrackersToVRIK();
+
+        ModelLoadedAction?.Invoke(CurrentModel);
     }
     /*
     private Vector3 DefaultModelPosition;
@@ -1972,6 +1999,34 @@ public class ControlWPFWindow : MonoBehaviour
 
     #endregion
 
+    #region EyeTracking
+
+
+    private void SetEyeTracking_TobiiOffsets(PipeCommands.SetEyeTracking_TobiiOffsets offsets)
+    {
+        CurrentSettings.EyeTracking_TobiiOffsetHorizontal = offsets.OffsetHorizontal;
+        CurrentSettings.EyeTracking_TobiiOffsetVertical = offsets.OffsetVertical;
+        CurrentSettings.EyeTracking_TobiiScaleHorizontal = offsets.ScaleHorizontal;
+        CurrentSettings.EyeTracking_TobiiScaleVertical = offsets.ScaleVertical;
+        SetEyeTracking_TobiiOffsetsAction?.Invoke(offsets);
+    }
+
+    public void SetEyeTracking_TobiiPosition(Transform position,float centerX,float centerY)
+    {
+        CurrentSettings.EyeTracking_TobiiPosition = StoreTransform.Create(position);
+        CurrentSettings.EyeTracking_TobiiCenterX = centerX;
+        CurrentSettings.EyeTracking_TobiiCenterY = centerY;
+    }
+
+    public Vector2 GetEyeTracking_TobiiLocalPosition(Transform saveto)
+    {
+        CurrentSettings.EyeTracking_TobiiPosition.ToLocalTransform(saveto);
+        return new Vector2(CurrentSettings.EyeTracking_TobiiCenterX, CurrentSettings.EyeTracking_TobiiCenterY);
+    }
+    
+
+    #endregion
+
     #region Setting
 
     [Serializable]
@@ -2205,6 +2260,32 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public int ScreenRefreshRate = 0;
 
+        //EyeTracking
+        [OptionalField]
+        public float EyeTracking_TobiiScaleHorizontal;
+        [OptionalField]
+        public float EyeTracking_TobiiScaleVertical;
+        [OptionalField]
+        public float EyeTracking_TobiiOffsetHorizontal;
+        [OptionalField]
+        public float EyeTracking_TobiiOffsetVertical;
+        [OptionalField]
+        public StoreTransform EyeTracking_TobiiPosition;
+        [OptionalField]
+        public float EyeTracking_TobiiCenterX;
+        [OptionalField]
+        public float EyeTracking_TobiiCenterY;
+        [OptionalField]
+        public float EyeTracking_ViveProEyeScaleHorizontal;
+        [OptionalField]          
+        public float EyeTracking_ViveProEyeScaleVertical;
+        [OptionalField]          
+        public float EyeTracking_ViveProEyeOffsetHorizontal;
+        [OptionalField]          
+        public float EyeTracking_ViveProEyeOffsetVertical;
+
+
+
         //初期値
         [OnDeserializing()]
         internal void OnDeserializingMethod(StreamingContext context)
@@ -2253,6 +2334,12 @@ public class ControlWPFWindow : MonoBehaviour
             ScreenWidth = 0;
             ScreenHeight = 0;
             ScreenRefreshRate = 0;
+
+            EyeTracking_TobiiScaleHorizontal = 0.5f;
+            EyeTracking_TobiiScaleVertical = 0.2f;
+            EyeTracking_ViveProEyeScaleHorizontal = 0.5f;
+            EyeTracking_ViveProEyeScaleVertical = 0.2f;
+                
         }
     }
 
@@ -2426,6 +2513,16 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 Screen.SetResolution(CurrentSettings.ScreenWidth, CurrentSettings.ScreenHeight, false, CurrentSettings.ScreenRefreshRate);
             }
+
+            SetEyeTracking_TobiiOffsetsAction?.Invoke(new PipeCommands.SetEyeTracking_TobiiOffsets
+            {
+                OffsetHorizontal = CurrentSettings.EyeTracking_TobiiOffsetHorizontal,
+                OffsetVertical = CurrentSettings.EyeTracking_TobiiOffsetVertical,
+                ScaleHorizontal = CurrentSettings.EyeTracking_TobiiScaleHorizontal,
+                ScaleVertical = CurrentSettings.EyeTracking_TobiiScaleVertical
+            });
+
+            AdditionalSettingAction?.Invoke(null);
 
             await server.SendCommandAsync(new PipeCommands.SetWindowNum { Num = CurrentWindowNum });
 

@@ -296,6 +296,26 @@ namespace UnityMemoryMappedFile
         {
             public bool doSend { get; set; }
         }
+
+        public class GetEyeTracking_TobiiOffsets { }
+        public class SetEyeTracking_TobiiOffsets
+        {
+            public float ScaleHorizontal { get; set; }
+            public float ScaleVertical { get; set; }
+            public float OffsetHorizontal { get; set; }
+            public float OffsetVertical { get; set; }
+        }
+
+        public class EyeTracking_TobiiCalibration { }
+
+        public class GetEyeTracking_ViveProEyeOffsets { }
+        public class SetEyeTracking_ViveProEyeOffsets
+        {
+            public float ScaleHorizontal { get; set; }
+            public float ScaleVertical { get; set; }
+            public float OffsetHorizontal { get; set; }
+            public float OffsetVertical { get; set; }
+        }
     }
 
 
