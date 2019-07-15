@@ -68,6 +68,10 @@ Oculus Rift Sの動作確認済みです
   
   
 # 更新履歴
+Ver 0.33  
+・Tobii Eye Tracker 4Cサポート  
+・UniVRM 0.53に更新  
+  
 Ver 0.32  
 ・CPU使用率を大幅に下げました  
 ・VRM読み込み時のファイルを開くダイアログが裏に行くときがある  
@@ -271,9 +275,14 @@ Ver 0.02
 　・VMC_Camera (仮想カメラライブラリ - 入れてあります)  
 　・RootMotion(Plugins/RootMotionフォルダ) ([Final IK 1.8](https://assetstore.unity.com/packages/tools/animation/final-ik-14290))  
 　・SteamVR ([SteamVR.Plugin.unitypackage](https://github.com/ValveSoftware/steamvr_unity_plugin/releases/tag/1.2.3))  
-　・VRM ([UniVRM-0.51.0_1b36.unitypackage](https://github.com/dwango/UniVRM/releases))  
+　・VRM ([UniVRM-0.53.0_6b07.unitypackage](https://github.com/vrm-c/UniVRM/releases))  
 　・Oculus ([Oculus Lipsync Unity 1.30.0](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/1.30.0/))  
 以上のようなフォルダになるように各アセットをインポートしてください。  
+アイトラッキングが不要な場合Assets\EyeTrackingフォルダを削除します  
+アイトラッキング対応する場合は  
+　・ViveSR([Vive-SRanipal-Unity-Plugin.unitypackage](https://hub.vive.com/en-US/profile/material-download)) SRanipal_SDK_1.0.1.0_Eye.zip内  
+　・Tobii([TobiiUnitySDKForDesktop_4.0.3.unitypackage](https://github.com/Tobii/UnitySDK/releases)) アセットストアからインポート(インポートしたままフォルダは移動しないでください)  
+以上の二つをインポート  
 ※インポートが終わったらUnityをいったん終了し、ProjectSettingsフォルダを削除して、バックアップしておいたProjectSettingsフォルダを戻してください！ 
 
 ・ControlWindowWPF/ControlWindowWPF.slnをVisual Studio 2017で開きます。  
