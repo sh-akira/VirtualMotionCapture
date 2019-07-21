@@ -68,6 +68,9 @@ Oculus Rift Sの動作確認済みです
   
   
 # 更新履歴
+Ver 0.34  
+・VIVE Pro Eyeサポート  
+  
 Ver 0.33  
 ・Tobii Eye Tracker 4Cサポート  
 ・UniVRM 0.53に更新  
