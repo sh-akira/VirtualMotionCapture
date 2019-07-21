@@ -56,12 +56,12 @@ public class EyeTracking_ViveProEye : MonoBehaviour
     private void SetEyeTracking_ViveProEyeUseEyelidMovements(PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements useEyelidMovements)
     {
         UseEyelidMovements = useEyelidMovements.Use;
-        faceController.ViveProEyeEnabled = UseEyelidMovements;
         if(UseEyelidMovements == false)
         {
             faceController.SetBlink_L(0.0f);
             faceController.SetBlink_R(0.0f);
         }
+        faceController.ViveProEyeEnabled = UseEyelidMovements;
     }
 
     private void ModelInitialize(GameObject currentModel)
