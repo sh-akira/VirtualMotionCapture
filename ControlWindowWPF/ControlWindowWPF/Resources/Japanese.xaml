@@ -397,7 +397,15 @@
     <system:String x:Key="EyeTracking_TobiiSettingWindow_Calibration">キャリブレーション</system:String>
     <system:String x:Key="EyeTracking_TobiiSettingWindow_CalibrationDescription">Tobii正面の頭の位置を取得するためモデルのキャリブレーション完了後にTobiiの前に移動してモニターの中心を見ながらキャリブレーションボタンを押してください</system:String>
     <system:String x:Key="EyeTracking_TobiiSettingWindow_Close">閉じる</system:String>
-    
+
+    <!-- EyeTracking_ViveProEyeSettingWindow -->
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeScale">目の移動範囲(マイナスで反転します)</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeOffset">目の位置オフセット(0.01=1cm)</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Horizontal">左右方向</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Vertical">上下方向</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovements">まぶたの動きを使う</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovementsCheckBox">使用する</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Close">閉じる</system:String>
 
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">色選択</system:String>

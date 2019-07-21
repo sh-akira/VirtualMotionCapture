@@ -11,6 +11,7 @@ public class FaceController : MonoBehaviour
     private VRMBlendShapeProxy proxy;
 
     public bool EnableBlink = false;
+    public bool ViveProEyeEnabled = false;
     public bool StopBlink = false;
 
     public float BlinkTimeMin = 1.0f;           //まばたきするまでの最短時間
@@ -76,6 +77,25 @@ public class FaceController : MonoBehaviour
         }
     }
 
+    public void SetBlink_L(float value)
+    {
+        if (ViveProEyeEnabled == false)
+        {
+            proxy.ImmediatelySetValue(BlendShapePreset.Blink, 0.0f);
+            ViveProEyeEnabled = true;
+        }
+        proxy.ImmediatelySetValue(BlendShapePreset.Blink_L, value);
+    }
+    public void SetBlink_R(float value)
+    {
+        if (ViveProEyeEnabled == false)
+        {
+            proxy.ImmediatelySetValue(BlendShapePreset.Blink, 0.0f);
+            ViveProEyeEnabled = true;
+        }
+        proxy.ImmediatelySetValue(BlendShapePreset.Blink_R, value);
+    }
+
     private void SetFaceNeutral()
     {
         //表情をデフォルトに戻す
@@ -133,7 +153,7 @@ public class FaceController : MonoBehaviour
             }
             if (IsSetting == false)
             {
-                if (EnableBlink)
+                if (EnableBlink && ViveProEyeEnabled == false)
                 {
                     if (StopBlink == false)
                     {

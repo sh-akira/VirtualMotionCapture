@@ -365,7 +365,8 @@ namespace VirtualMotionCaptureControlPanel
 
         private void EyeTracking_ViveProEyeSettingButton_Click(object sender, RoutedEventArgs e)
         {
-
+            var win = new EyeTracking_ViveProEyeSettingWindow();
+            win.ShowDialog();
         }
     }
 }

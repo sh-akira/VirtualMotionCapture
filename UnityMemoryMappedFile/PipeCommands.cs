@@ -316,6 +316,11 @@ namespace UnityMemoryMappedFile
             public float OffsetHorizontal { get; set; }
             public float OffsetVertical { get; set; }
         }
+        public class GetEyeTracking_ViveProEyeUseEyelidMovements { }
+        public class SetEyeTracking_ViveProEyeUseEyelidMovements
+        {
+            public bool Use { get; set; }
+        }
     }
 
 

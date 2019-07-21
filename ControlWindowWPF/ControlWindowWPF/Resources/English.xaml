@@ -396,6 +396,15 @@
     <system:String x:Key="EyeTracking_TobiiSettingWindow_Calibration">Calibration</system:String>
     <system:String x:Key="EyeTracking_TobiiSettingWindow_CalibrationDescription">Move to the front of Tobii after model calibration is complete and press the calibration button while looking at the center of the monitor.</system:String>
     <system:String x:Key="EyeTracking_TobiiSettingWindow_Close">Close</system:String>
+
+    <!-- EyeTracking_ViveProEyeSettingWindow -->
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeScale">Eye movement range (inverted with minus)</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeOffset">Eye position offset (0.01=1cm)</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Horizontal">Horizontal</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Vertical">Vertical</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovements">Use eyelid movements</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovementsCheckBox">Use</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Close">Close</system:String>
     
 
     <!-- PhotoWindow -->

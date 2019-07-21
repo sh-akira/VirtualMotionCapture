@@ -65,6 +65,9 @@
     <Compile Include="ColorPickerWindow.xaml.cs">
       <DependentUpon>ColorPickerWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EyeTracking_ViveProEyeSettingWindow.xaml.cs">
+      <DependentUpon>EyeTracking_ViveProEyeSettingWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="EyeTracking_TobiiSettingWindow.xaml.cs">
       <DependentUpon>EyeTracking_TobiiSettingWindow.xaml</DependentUpon>
     </Compile>
@@ -106,6 +109,10 @@
     <Page Include="ColorPickerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EyeTracking_ViveProEyeSettingWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="EyeTracking_TobiiSettingWindow.xaml">
       <SubType>Designer</SubType>

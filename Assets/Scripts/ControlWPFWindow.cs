@@ -86,6 +86,8 @@ public class ControlWPFWindow : MonoBehaviour
 
     public Action<GameObject> EyeTracking_TobiiCalibrationAction = null;
     public Action<PipeCommands.SetEyeTracking_TobiiOffsets> SetEyeTracking_TobiiOffsetsAction = null;
+    public Action<PipeCommands.SetEyeTracking_ViveProEyeOffsets> SetEyeTracking_ViveProEyeOffsetsAction = null;
+    public Action<PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements> SetEyeTracking_ViveProEyeUseEyelidMovementsAction = null;
 
     // Use this for initialization
     void Start()
@@ -542,6 +544,33 @@ public class ControlWPFWindow : MonoBehaviour
             else if (e.CommandType == typeof(PipeCommands.EyeTracking_TobiiCalibration))
             {
                 EyeTracking_TobiiCalibrationAction?.Invoke(CurrentModel);
+            }
+            else if (e.CommandType == typeof(PipeCommands.SetEyeTracking_ViveProEyeOffsets))
+            {
+                var d = (PipeCommands.SetEyeTracking_ViveProEyeOffsets)e.Data;
+                SetEyeTracking_ViveProEyeOffsets(d);
+            }
+            else if (e.CommandType == typeof(PipeCommands.GetEyeTracking_ViveProEyeOffsets))
+            {
+                await server.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeOffsets
+                {
+                    OffsetHorizontal = CurrentSettings.EyeTracking_ViveProEyeOffsetHorizontal,
+                    OffsetVertical = CurrentSettings.EyeTracking_ViveProEyeOffsetVertical,
+                    ScaleHorizontal = CurrentSettings.EyeTracking_ViveProEyeScaleHorizontal,
+                    ScaleVertical = CurrentSettings.EyeTracking_ViveProEyeScaleVertical
+                }, e.RequestId);
+            }
+            else if (e.CommandType == typeof(PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements))
+            {
+                var d = (PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements)e.Data;
+                SetEyeTracking_ViveProEyeUseEyelidMovements(d);
+            }
+            else if (e.CommandType == typeof(PipeCommands.GetEyeTracking_ViveProEyeUseEyelidMovements))
+            {
+                await server.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements
+                {
+                    Use = CurrentSettings.EyeTracking_ViveProEyeUseEyelidMovements,
+                }, e.RequestId);
             }
             else if (e.CommandType == typeof(PipeCommands.LoadCurrentSettings))
             {
@@ -2011,7 +2040,7 @@ public class ControlWPFWindow : MonoBehaviour
         SetEyeTracking_TobiiOffsetsAction?.Invoke(offsets);
     }
 
-    public void SetEyeTracking_TobiiPosition(Transform position,float centerX,float centerY)
+    public void SetEyeTracking_TobiiPosition(Transform position, float centerX, float centerY)
     {
         CurrentSettings.EyeTracking_TobiiPosition = StoreTransform.Create(position);
         CurrentSettings.EyeTracking_TobiiCenterX = centerX;
@@ -2020,10 +2049,23 @@ public class ControlWPFWindow : MonoBehaviour
 
     public Vector2 GetEyeTracking_TobiiLocalPosition(Transform saveto)
     {
-        CurrentSettings.EyeTracking_TobiiPosition.ToLocalTransform(saveto);
+        if (CurrentSettings.EyeTracking_TobiiPosition != null) CurrentSettings.EyeTracking_TobiiPosition.ToLocalTransform(saveto);
         return new Vector2(CurrentSettings.EyeTracking_TobiiCenterX, CurrentSettings.EyeTracking_TobiiCenterY);
     }
-    
+    private void SetEyeTracking_ViveProEyeOffsets(PipeCommands.SetEyeTracking_ViveProEyeOffsets offsets)
+    {
+        CurrentSettings.EyeTracking_ViveProEyeOffsetHorizontal = offsets.OffsetHorizontal;
+        CurrentSettings.EyeTracking_ViveProEyeOffsetVertical = offsets.OffsetVertical;
+        CurrentSettings.EyeTracking_ViveProEyeScaleHorizontal = offsets.ScaleHorizontal;
+        CurrentSettings.EyeTracking_ViveProEyeScaleVertical = offsets.ScaleVertical;
+        SetEyeTracking_ViveProEyeOffsetsAction?.Invoke(offsets);
+    }
+    private void SetEyeTracking_ViveProEyeUseEyelidMovements(PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements useEyelidMovements)
+    {
+        CurrentSettings.EyeTracking_ViveProEyeUseEyelidMovements = useEyelidMovements.Use;
+        SetEyeTracking_ViveProEyeUseEyelidMovementsAction?.Invoke(useEyelidMovements);
+    }
+
 
     #endregion
 
@@ -2277,12 +2319,14 @@ public class ControlWPFWindow : MonoBehaviour
         public float EyeTracking_TobiiCenterY;
         [OptionalField]
         public float EyeTracking_ViveProEyeScaleHorizontal;
-        [OptionalField]          
+        [OptionalField]
         public float EyeTracking_ViveProEyeScaleVertical;
-        [OptionalField]          
+        [OptionalField]
         public float EyeTracking_ViveProEyeOffsetHorizontal;
-        [OptionalField]          
+        [OptionalField]
         public float EyeTracking_ViveProEyeOffsetVertical;
+        [OptionalField]
+        public bool EyeTracking_ViveProEyeUseEyelidMovements;
 
 
 
@@ -2337,9 +2381,9 @@ public class ControlWPFWindow : MonoBehaviour
 
             EyeTracking_TobiiScaleHorizontal = 0.5f;
             EyeTracking_TobiiScaleVertical = 0.2f;
-            EyeTracking_ViveProEyeScaleHorizontal = 0.5f;
-            EyeTracking_ViveProEyeScaleVertical = 0.2f;
-                
+            EyeTracking_ViveProEyeScaleHorizontal = 2.0f;
+            EyeTracking_ViveProEyeScaleVertical = 1.5f;
+            EyeTracking_ViveProEyeUseEyelidMovements = true;
         }
     }
 
@@ -2520,6 +2564,14 @@ public class ControlWPFWindow : MonoBehaviour
                 OffsetVertical = CurrentSettings.EyeTracking_TobiiOffsetVertical,
                 ScaleHorizontal = CurrentSettings.EyeTracking_TobiiScaleHorizontal,
                 ScaleVertical = CurrentSettings.EyeTracking_TobiiScaleVertical
+            });
+
+            SetEyeTracking_ViveProEyeOffsetsAction?.Invoke(new PipeCommands.SetEyeTracking_ViveProEyeOffsets
+            {
+                OffsetHorizontal = CurrentSettings.EyeTracking_ViveProEyeOffsetHorizontal,
+                OffsetVertical = CurrentSettings.EyeTracking_ViveProEyeOffsetVertical,
+                ScaleHorizontal = CurrentSettings.EyeTracking_ViveProEyeScaleHorizontal,
+                ScaleVertical = CurrentSettings.EyeTracking_ViveProEyeScaleVertical
             });
 
             AdditionalSettingAction?.Invoke(null);

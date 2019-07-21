@@ -1921,6 +1921,8 @@ GameObject:
   m_Component:
   - component: {fileID: 326004793}
   - component: {fileID: 326004792}
+  - component: {fileID: 326004794}
+  - component: {fileID: 326004795}
   m_Layer: 0
   m_Name: EyeTracking
   m_TagString: Untagged
@@ -1963,6 +1965,42 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 21
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &326004794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 326004791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fd512d95b6700d44a5763b8c74b228a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MonitorPosition: {fileID: 0}
+  LookTarget: {fileID: 0}
+  StartPos: {x: 0, y: 0, z: 0}
+  ScaleX: 0.5
+  ScaleY: 0.2
+  OffsetX: 0
+  OffsetY: 0
+  CenterX: 0.5
+  CenterY: 0.5
+  Smoothing: 0.7
+  controlWPFWindow: {fileID: 1407685704}
+  faceController: {fileID: 69806225}
+  UseEyelidMovements: 1
+--- !u!114 &326004795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 326004791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47613961cde0a8b4aa4f79219b7e523c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnableEye: 1
 --- !u!1 &378345255
 GameObject:
   m_ObjectHideFlags: 0
