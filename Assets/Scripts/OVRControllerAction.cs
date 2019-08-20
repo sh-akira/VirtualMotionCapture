@@ -64,7 +64,7 @@ public class OVRControllerAction : MonoBehaviour
             case EVREventType.VREvent_MouseButtonUp: break;
             case EVREventType.VREvent_FocusEnter: break;
             case EVREventType.VREvent_FocusLeave: break;
-            case EVREventType.VREvent_Scroll: break;
+            //case EVREventType.VREvent_Scroll: break;
             case EVREventType.VREvent_TouchPadMove: break;
             case EVREventType.VREvent_OverlayFocusChanged: break;
             case EVREventType.VREvent_InputFocusCaptured: break;
@@ -83,7 +83,7 @@ public class OVRControllerAction : MonoBehaviour
             case EVREventType.VREvent_OverlayHidden: break;
             case EVREventType.VREvent_DashboardActivated: break;
             case EVREventType.VREvent_DashboardDeactivated: break;
-            case EVREventType.VREvent_DashboardThumbSelected: break;
+            //case EVREventType.VREvent_DashboardThumbSelected: break;
             case EVREventType.VREvent_DashboardRequested: break;
             case EVREventType.VREvent_ResetDashboard: break;
             case EVREventType.VREvent_RenderToast: break;
@@ -93,8 +93,8 @@ public class OVRControllerAction : MonoBehaviour
             case EVREventType.VREvent_OverlayGamepadFocusGained: break;
             case EVREventType.VREvent_OverlayGamepadFocusLost: break;
             case EVREventType.VREvent_OverlaySharedTextureChanged: break;
-            case EVREventType.VREvent_DashboardGuideButtonDown: break;
-            case EVREventType.VREvent_DashboardGuideButtonUp: break;
+            //case EVREventType.VREvent_DashboardGuideButtonDown: break;
+            //case EVREventType.VREvent_DashboardGuideButtonUp: break;
             case EVREventType.VREvent_ScreenshotTriggered: break;
             case EVREventType.VREvent_ImageFailed: break;
             case EVREventType.VREvent_DashboardOverlayCreated: break;
