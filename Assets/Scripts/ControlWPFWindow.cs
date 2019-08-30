@@ -92,12 +92,12 @@ public class ControlWPFWindow : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        Debug.unityLogger.logEnabled = false;
         context = System.Threading.SynchronizationContext.Current;
 
 #if UNITY_EDITOR   // エディタ上でしか動きません。
         pipeName = "VMCTest";
 #else
+        Debug.unityLogger.logEnabled = false;
         CurrentWindowNum = SetWindowTitle();
         pipeName = "VMCpipe" + Guid.NewGuid().ToString();
 #endif
