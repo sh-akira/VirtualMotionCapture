@@ -2891,14 +2891,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49d7b96c4048b244085c84bc1c240b6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  addvec: {x: 0, y: 0, z: 0}
-  mulvec: {x: 0, y: 0, z: 0}
-  vecind: {x: 0, y: 1, z: 2}
   handController: {fileID: 69806227}
-  thumbDistalXYZ: {x: 1, y: 3, z: -2}
-  thumbMiddleXYZ: {x: 1, y: 3, z: -2}
-  thumbProximalXYZ: {x: 1, y: 3, z: -2}
-  SteamVRHandSkeletonRoot: {fileID: 0}
 --- !u!4 &483683250
 Transform:
   m_ObjectHideFlags: 0
