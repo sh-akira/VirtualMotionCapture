@@ -122,6 +122,7 @@ public class HandController : MonoBehaviour
 
     public void SetHandEulerAngles(bool LeftEnable, bool RightEnable, List<Vector3> Eulers)
     {
+        if (FingerTransforms.Count == 0) return;
         var handBonesCount = FingerBones.Count / 2;
         if (LeftEnable)
         {
@@ -159,6 +160,7 @@ public class HandController : MonoBehaviour
 
     public List<Vector3> CalcHandEulerAngles(List<int> angles)
     {
+        if (FingerDefaultVectors == null || FingerDefaultVectors.Count == 0) return null;
         var handBonesCount = FingerBones.Count / 2;
         var eulers = new Vector3[FingerBones.Count];
         for (int i = 0; i < handBonesCount; i += 3)
