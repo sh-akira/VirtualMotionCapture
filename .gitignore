@@ -39,6 +39,7 @@ Assets/Scripts/VRoidSDKConnector*
 Assets/Tobii*
 Assets/ExternalPlugins/ViveSR*
 tobii*
+SteamVR*
 
 # Visual Studio cache directory
 .vs/
