@@ -21,8 +21,6 @@ public class HandTracking_Index : MonoBehaviour
     public EVRSkeletalTransformSpace skeletalTransformSpace { get; set; }
 
     protected VRBoneTransform_t[] tempBoneTransforms = new VRBoneTransform_t[SteamVR_Action_Skeleton.numBones];
-    protected VRBoneTransform_t[] tempRightBoneTransforms = new VRBoneTransform_t[SteamVR_Action_Skeleton.numBones];
-
 
     public Vector3[] leftBonePositions { get; protected set; }
     public Quaternion[] leftBoneRotations { get; protected set; }
@@ -40,6 +38,9 @@ public class HandTracking_Index : MonoBehaviour
     private string actionSetPath = "/actions/default";
     private string skeletonLeftHandActionPath = "/actions/default/in/SkeletonLeftHand";
     private string skeletonRightHandActionPath = "/actions/default/in/SkeletonRightHand";
+    
+    [SerializeField]
+    private HandController handController;
 
     //Indexで手を完全に開いたとき
     private Vector3[] indexHandReferences_Paper = new Vector3[] {
@@ -113,69 +114,73 @@ public class HandTracking_Index : MonoBehaviour
     };
 
     private Vector3[] vrmHandReferences_Paper = new Vector3[] {
-new Vector3(359.5f,8.33795E-10f,358f),
-new Vector3(359.5f,-8.33795E-10f,3f),
-new Vector3(359.5f,339f,10f),
-new Vector3(359.5f,0f,5f),
-new Vector3(359.5f,0f,5f),
-new Vector3(359.5f,347f,4f),
-new Vector3(359.5f,-8.33795E-10f,2f),
-new Vector3(359.5f,0f,0f),
-new Vector3(359.5f,356f,359f),
-new Vector3(359.5f,-4.168975E-10f,1f),
-new Vector3(359.5f,-4.168975E-10f,1f),
-new Vector3(359.5f,2f,-8.33795E-10f),
-new Vector3(346.6555f,21.15556f,357.3556f),
-new Vector3(349.7889f,9.71111f,356.1667f),
-new Vector3(359.5f,357f,14f),
-new Vector3(359.5f,-8.33795E-10f,2f),
-new Vector3(359.5f,8.33795E-10f,357f),
-new Vector3(359.5f,21f,350f),
-new Vector3(359.5f,0f,355f),
-new Vector3(359.5f,0f,355f),
-new Vector3(359.5f,13f,356f),
-new Vector3(359.5f,8.33795E-10f,358f),
-new Vector3(359.5f,0f,0f),
-new Vector3(359.5f,4f,1f),
-new Vector3(359.5f,4.168975E-10f,359f),
-new Vector3(359.5f,4.168975E-10f,359f),
-new Vector3(359.5f,358f,8.33795E-10f),
-new Vector3(346.6555f,338.8445f,2.644444f),
-new Vector3(349.7889f,350.2889f,3.833333f),
-new Vector3(359.5f,3f,346f),
-};
+        //左手
+        new Vector3(359.5f,8.33795E-10f,358f),      //小指から
+        new Vector3(359.5f,-8.33795E-10f,3f),
+        new Vector3(359.5f,339f,10f),
+        new Vector3(359.5f,0f,5f),
+        new Vector3(359.5f,0f,5f),
+        new Vector3(359.5f,347f,4f),
+        new Vector3(359.5f,-8.33795E-10f,2f),
+        new Vector3(359.5f,0f,0f),
+        new Vector3(359.5f,356f,359f),
+        new Vector3(359.5f,-4.168975E-10f,1f),
+        new Vector3(359.5f,-4.168975E-10f,1f),
+        new Vector3(359.5f,2f,-8.33795E-10f),
+        new Vector3(346.6555f,21.15556f,357.3556f), //第1関節(指先)
+        new Vector3(349.7889f,9.71111f,356.1667f),  //第2関節
+        new Vector3(359.5f,357f,14f),               //第3関節
+        //右手
+        new Vector3(359.5f,-8.33795E-10f,2f),
+        new Vector3(359.5f,8.33795E-10f,357f),
+        new Vector3(359.5f,21f,350f),
+        new Vector3(359.5f,0f,355f),
+        new Vector3(359.5f,0f,355f),
+        new Vector3(359.5f,13f,356f),
+        new Vector3(359.5f,8.33795E-10f,358f),
+        new Vector3(359.5f,0f,0f),
+        new Vector3(359.5f,4f,1f),
+        new Vector3(359.5f,4.168975E-10f,359f),
+        new Vector3(359.5f,4.168975E-10f,359f),
+        new Vector3(359.5f,358f,8.33795E-10f),
+        new Vector3(346.6555f,338.8445f,2.644444f),
+        new Vector3(349.7889f,350.2889f,3.833333f),
+        new Vector3(359.5f,3f,346f),
+    };
     private Vector3[] vrmHandReferences_Rock = new Vector3[] {
-new Vector3(359.5f,0f,90f),
-new Vector3(359.5f,0f,90f),
-new Vector3(359.5f,0f,90f),
-new Vector3(359.5f,0f,90f),
-new Vector3(359.5f,0f,90f),
-new Vector3(359.5f,0f,90f),
-new Vector3(359.5f,0f,90f),
-new Vector3(359.5f,0f,90f),
-new Vector3(359.5f,0f,86f),
-new Vector3(359.5f,0f,81f),
-new Vector3(359.5f,-2.668144E-08f,102f),
-new Vector3(359.5f,0f,79f),
-new Vector3(44.83333f,285.3333f,9.333335f),
-new Vector3(29.47778f,330.0222f,11.83333f),
-new Vector3(359.5f,345f,6f),
-new Vector3(359.5f,0f,270f),
-new Vector3(359.5f,0f,270f),
-new Vector3(359.5f,0f,270f),
-new Vector3(359.5f,0f,270f),
-new Vector3(359.5f,0f,270f),
-new Vector3(359.5f,0f,270f),
-new Vector3(359.5f,0f,270f),
-new Vector3(359.5f,0f,270f),
-new Vector3(359.5f,0f,274f),
-new Vector3(359.5f,0f,279f),
-new Vector3(359.5f,2.668144E-08f,258f),
-new Vector3(359.5f,0f,281f),
-new Vector3(44.83333f,74.66666f,350.6667f),
-new Vector3(29.47778f,29.97778f,348.1667f),
-new Vector3(359.5f,15f,354f),
-};
+        //左手
+        new Vector3(359.5f,0f,90f),                 //小指から
+        new Vector3(359.5f,0f,90f),
+        new Vector3(359.5f,0f,90f),
+        new Vector3(359.5f,0f,90f),
+        new Vector3(359.5f,0f,90f),
+        new Vector3(359.5f,0f,90f),
+        new Vector3(359.5f,0f,90f),
+        new Vector3(359.5f,0f,90f),
+        new Vector3(359.5f,0f,86f),
+        new Vector3(359.5f,0f,81f),
+        new Vector3(359.5f,-2.668144E-08f,102f),
+        new Vector3(359.5f,0f,79f),
+        new Vector3(44.83333f,285.3333f,9.333335f), //第1関節(指先)
+        new Vector3(29.47778f,330.0222f,11.83333f), //第2関節
+        new Vector3(359.5f,345f,6f),                //第3関節
+        //右手
+        new Vector3(359.5f,0f,270f),                  
+        new Vector3(359.5f,0f,270f),
+        new Vector3(359.5f,0f,270f),
+        new Vector3(359.5f,0f,270f),
+        new Vector3(359.5f,0f,270f),
+        new Vector3(359.5f,0f,270f),
+        new Vector3(359.5f,0f,270f),
+        new Vector3(359.5f,0f,270f),
+        new Vector3(359.5f,0f,274f),
+        new Vector3(359.5f,0f,279f),
+        new Vector3(359.5f,2.668144E-08f,258f),
+        new Vector3(359.5f,0f,281f),
+        new Vector3(44.83333f,74.66666f,350.6667f),
+        new Vector3(29.47778f,29.97778f,348.1667f),
+        new Vector3(359.5f,15f,354f),
+    };
 
     private float[] vrmHandReferenceEuler_Open = new float[] { 2, -3, -10, 21, -5, -5, -4, 13, -2, 0, 1, 4, -1, -1, 0, -2, 34, 23, -14, 3 };
     private float[] vrmHandReferenceEuler_Close = new float[] { -90, -90, -90, 0, -90, -90, -90, 0, -90, -90, -86, 0, -81, -102, -79, 0, -120, -71, -6, 15 };
@@ -333,23 +338,6 @@ new Vector3(359.5f,15f,354f),
         return ((DescriptionAttribute)enumType.GetMember(inputSourceEnumName)[0].GetCustomAttributes(descriptionType, false)[0]).Description;
     }
 
-    public Vector3 addvec = new Vector3(0, 0, 0);
-    public Vector3 mulvec = new Vector3(0, 0, 0);
-    public Vector3 vecind = new Vector3(0, 1, 2);
-
-    private Vector3 calcoffset(Vector3 vec)
-    {
-        var floatarr = new float[] { (vec.x + addvec.x) * mulvec.x, (vec.y + addvec.y) * mulvec.y, (vec.z + addvec.z) * mulvec.z };
-        return new Vector3(floatarr[(int)vecind.x], floatarr[(int)vecind.y], floatarr[(int)vecind.z]);
-    }
-
-    [SerializeField]
-    private HandController handController;
-
-    public Vector3 thumbDistalXYZ = new Vector3(1, 3, -2);
-    public Vector3 thumbMiddleXYZ = new Vector3(1, 3, -2);
-    public Vector3 thumbProximalXYZ = new Vector3(1, 3, -2);
-
     private void UpdateHandController(bool leftEnable, bool rightEnable)
     {
         var eulers = new List<Vector3>();
@@ -385,12 +373,6 @@ new Vector3(359.5f,15f,354f),
         eulers.Add(GetVRMAngleFromIndexAngle(index++, rightBoneRotations[SteamVR_Skeleton_JointIndexes.thumbDistal].eulerAngles));
         eulers.Add(GetVRMAngleFromIndexAngle(index++, rightBoneRotations[SteamVR_Skeleton_JointIndexes.thumbMiddle].eulerAngles));
         eulers.Add(GetVRMAngleFromIndexAngle(index++, rightBoneRotations[SteamVR_Skeleton_JointIndexes.thumbProximal].eulerAngles));
-
-        Debug.Log($"<b>LeftThumb</b>Distal:{leftBoneRotations[SteamVR_Skeleton_JointIndexes.thumbDistal].eulerAngles} Middle:{leftBoneRotations[SteamVR_Skeleton_JointIndexes.thumbMiddle].eulerAngles} Proximal:{leftBoneRotations[SteamVR_Skeleton_JointIndexes.thumbProximal].eulerAngles}");
-
-        CreateDebugText();
-
-        if (SteamVRHandSkeletonRoot != null) SetHandRotationToSteamVRHand();
 
         handController.SetHandEulerAngles(leftEnable, rightEnable, eulers);
     }
@@ -470,103 +452,5 @@ new Vector3(359.5f,15f,354f),
     private float GetValueFromRatio(float ratio, float min, float max)
     {
         return ratio * (max - min) + min;
-    }
-
-    public Transform SteamVRHandSkeletonRoot = null;
-    private Transform[] SteamVRHandBones = null;
-
-    private void SetHandRotationToSteamVRHand()
-    {
-        if (SteamVRHandBones == null)
-        {
-            SteamVRHandBones = SteamVRHandSkeletonRoot.GetComponentsInChildren<Transform>();
-        }
-
-        for (var i = 2; i < SteamVRHandBones.Length; i++)
-        {
-            if (SteamVRHandBones[i] == null) continue;
-            SteamVRHandBones[i].localRotation = leftBoneRotations[i];
-        }
-    }
-
-    private string debugstr = "";
-
-    private void CreateDebugText()
-    {
-        var sb = new StringBuilder();
-        sb.AppendLine("==========");
-        sb.AppendLine("LeftHands:");
-        sb.AppendLine("小指:");
-        sb.AppendLine(leftBoneRotations[SteamVR_Skeleton_JointIndexes.pinkyDistal].eulerAngles.ToString());
-        sb.AppendLine(leftBoneRotations[SteamVR_Skeleton_JointIndexes.pinkyMiddle].eulerAngles.ToString());
-        sb.AppendLine(leftBoneRotations[SteamVR_Skeleton_JointIndexes.pinkyProximal].eulerAngles.ToString());
-        sb.AppendLine("薬指:");
-        sb.AppendLine(leftBoneRotations[SteamVR_Skeleton_JointIndexes.ringDistal].eulerAngles.ToString());
-        sb.AppendLine(leftBoneRotations[SteamVR_Skeleton_JointIndexes.ringMiddle].eulerAngles.ToString());
-        sb.AppendLine(leftBoneRotations[SteamVR_Skeleton_JointIndexes.ringProximal].eulerAngles.ToString());
-        sb.AppendLine("中指:");
-        sb.AppendLine(leftBoneRotations[SteamVR_Skeleton_JointIndexes.middleDistal].eulerAngles.ToString());
-        sb.AppendLine(leftBoneRotations[SteamVR_Skeleton_JointIndexes.middleMiddle].eulerAngles.ToString());
-        sb.AppendLine(leftBoneRotations[SteamVR_Skeleton_JointIndexes.middleProximal].eulerAngles.ToString());
-        sb.AppendLine("人差し指:");
-        sb.AppendLine(leftBoneRotations[SteamVR_Skeleton_JointIndexes.indexDistal].eulerAngles.ToString());
-        sb.AppendLine(leftBoneRotations[SteamVR_Skeleton_JointIndexes.indexMiddle].eulerAngles.ToString());
-        sb.AppendLine(leftBoneRotations[SteamVR_Skeleton_JointIndexes.indexProximal].eulerAngles.ToString());
-        sb.AppendLine("親指:");
-        sb.AppendLine(leftBoneRotations[SteamVR_Skeleton_JointIndexes.thumbDistal].eulerAngles.ToString());
-        sb.AppendLine(leftBoneRotations[SteamVR_Skeleton_JointIndexes.thumbMiddle].eulerAngles.ToString());
-        sb.AppendLine(leftBoneRotations[SteamVR_Skeleton_JointIndexes.thumbProximal].eulerAngles.ToString());
-        sb.AppendLine("==========");
-        sb.AppendLine("RightHands:");
-        sb.AppendLine("小指");
-        sb.AppendLine(rightBoneRotations[SteamVR_Skeleton_JointIndexes.pinkyDistal].eulerAngles.ToString());
-        sb.AppendLine(rightBoneRotations[SteamVR_Skeleton_JointIndexes.pinkyMiddle].eulerAngles.ToString());
-        sb.AppendLine(rightBoneRotations[SteamVR_Skeleton_JointIndexes.pinkyProximal].eulerAngles.ToString());
-        sb.AppendLine("薬指");
-        sb.AppendLine(rightBoneRotations[SteamVR_Skeleton_JointIndexes.ringDistal].eulerAngles.ToString());
-        sb.AppendLine(rightBoneRotations[SteamVR_Skeleton_JointIndexes.ringMiddle].eulerAngles.ToString());
-        sb.AppendLine(rightBoneRotations[SteamVR_Skeleton_JointIndexes.ringProximal].eulerAngles.ToString());
-        sb.AppendLine("中指");
-        sb.AppendLine(rightBoneRotations[SteamVR_Skeleton_JointIndexes.middleDistal].eulerAngles.ToString());
-        sb.AppendLine(rightBoneRotations[SteamVR_Skeleton_JointIndexes.middleMiddle].eulerAngles.ToString());
-        sb.AppendLine(rightBoneRotations[SteamVR_Skeleton_JointIndexes.middleProximal].eulerAngles.ToString());
-        sb.AppendLine("人差し指");
-        sb.AppendLine(rightBoneRotations[SteamVR_Skeleton_JointIndexes.indexDistal].eulerAngles.ToString());
-        sb.AppendLine(rightBoneRotations[SteamVR_Skeleton_JointIndexes.indexMiddle].eulerAngles.ToString());
-        sb.AppendLine(rightBoneRotations[SteamVR_Skeleton_JointIndexes.indexProximal].eulerAngles.ToString());
-        sb.AppendLine("親指");
-        sb.AppendLine(rightBoneRotations[SteamVR_Skeleton_JointIndexes.thumbDistal].eulerAngles.ToString());
-        sb.AppendLine(rightBoneRotations[SteamVR_Skeleton_JointIndexes.thumbMiddle].eulerAngles.ToString());
-        sb.AppendLine(rightBoneRotations[SteamVR_Skeleton_JointIndexes.thumbProximal].eulerAngles.ToString());
-        sb.AppendLine("==========");
-
-        debugstr = sb.ToString();
-        var sb2 = new System.Text.StringBuilder();
-        sb2.AppendLine("new Vector3(" + RotToString(rightBoneRotations[SteamVR_Skeleton_JointIndexes.pinkyDistal].eulerAngles) + "),");
-        sb2.AppendLine("new Vector3(" + RotToString(rightBoneRotations[SteamVR_Skeleton_JointIndexes.pinkyMiddle].eulerAngles) + "),");
-        sb2.AppendLine("new Vector3(" + RotToString(rightBoneRotations[SteamVR_Skeleton_JointIndexes.pinkyProximal].eulerAngles) + "),");
-        sb2.AppendLine("new Vector3(" + RotToString(rightBoneRotations[SteamVR_Skeleton_JointIndexes.ringDistal].eulerAngles) + "),");
-        sb2.AppendLine("new Vector3(" + RotToString(rightBoneRotations[SteamVR_Skeleton_JointIndexes.ringMiddle].eulerAngles) + "),");
-        sb2.AppendLine("new Vector3(" + RotToString(rightBoneRotations[SteamVR_Skeleton_JointIndexes.ringProximal].eulerAngles) + "),");
-        sb2.AppendLine("new Vector3(" + RotToString(rightBoneRotations[SteamVR_Skeleton_JointIndexes.middleDistal].eulerAngles) + "),");
-        sb2.AppendLine("new Vector3(" + RotToString(rightBoneRotations[SteamVR_Skeleton_JointIndexes.middleMiddle].eulerAngles) + "),");
-        sb2.AppendLine("new Vector3(" + RotToString(rightBoneRotations[SteamVR_Skeleton_JointIndexes.middleProximal].eulerAngles) + "),");
-        sb2.AppendLine("new Vector3(" + RotToString(rightBoneRotations[SteamVR_Skeleton_JointIndexes.indexDistal].eulerAngles) + "),");
-        sb2.AppendLine("new Vector3(" + RotToString(rightBoneRotations[SteamVR_Skeleton_JointIndexes.indexMiddle].eulerAngles) + "),");
-        sb2.AppendLine("new Vector3(" + RotToString(rightBoneRotations[SteamVR_Skeleton_JointIndexes.indexProximal].eulerAngles) + "),");
-        sb2.AppendLine("new Vector3(" + RotToString(rightBoneRotations[SteamVR_Skeleton_JointIndexes.thumbDistal].eulerAngles) + "),");
-        sb2.AppendLine("new Vector3(" + RotToString(rightBoneRotations[SteamVR_Skeleton_JointIndexes.thumbMiddle].eulerAngles) + "),");
-        sb2.AppendLine("new Vector3(" + RotToString(rightBoneRotations[SteamVR_Skeleton_JointIndexes.thumbProximal].eulerAngles) + "),");
-
-        Debug.Log(sb2.ToString());
-    }
-    private string RotToString(Vector3 rot)
-    {
-        return rot.x.ToString() + "f," + rot.y.ToString() + "f," + rot.z.ToString() + "f";
-    }
-
-    void OnGUI()
-    {
-        GUI.TextArea(new Rect(10, 10, 200, 800), debugstr);
     }
 }
