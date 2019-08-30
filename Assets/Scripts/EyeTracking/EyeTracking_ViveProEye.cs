@@ -88,6 +88,8 @@ public class EyeTracking_ViveProEye : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Camera.main == null) return;
+
         if (SRanipal_Eye_Framework.Status != SRanipal_Eye_Framework.FrameworkStatus.WORKING &&
             SRanipal_Eye_Framework.Status != SRanipal_Eye_Framework.FrameworkStatus.NOT_SUPPORT) return;
 
