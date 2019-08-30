@@ -2580,7 +2580,7 @@ GameObject:
   - component: {fileID: 462948923}
   m_Layer: 0
   m_Name: BackCamera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3473,7 +3473,7 @@ GameObject:
   - component: {fileID: 680324452}
   m_Layer: 0
   m_Name: PositionFixedCamera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7545,7 +7545,7 @@ GameObject:
   - component: {fileID: 1404284885}
   m_Layer: 0
   m_Name: FrontCamera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
