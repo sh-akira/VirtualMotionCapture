@@ -586,6 +586,24 @@ public class ControlWPFWindow : MonoBehaviour
                     LoadSettings(true, false);
                 }
             }
+            else if (e.CommandType == typeof(PipeCommands.ImportCameraPlus))
+            {
+                var d = (PipeCommands.ImportCameraPlus)e.Data;
+                ImportCameraPlus(d);
+            }
+            else if (e.CommandType == typeof(PipeCommands.ExportCameraPlus))
+            {
+                await server.SendCommandAsync(new PipeCommands.ReturnExportCameraPlus
+                {
+                    x = CurrentSettings.FreeCameraTransform.localPosition.x,
+                    y = CurrentSettings.FreeCameraTransform.localPosition.y,
+                    z = CurrentSettings.FreeCameraTransform.localPosition.z,
+                    rx = CurrentSettings.FreeCameraTransform.localRotation.eulerAngles.x,
+                    ry = CurrentSettings.FreeCameraTransform.localRotation.eulerAngles.y,
+                    rz = CurrentSettings.FreeCameraTransform.localRotation.eulerAngles.z,
+                    fov = currentCamera.fieldOfView
+                }, e.RequestId);
+            }
         }, null);
     }
 
@@ -1601,6 +1619,20 @@ public class ControlWPFWindow : MonoBehaviour
         //コントローラーは動くのでカメラ位置の保存はできない
         //if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
         //CurrentSettings.FreeCameraTransform.SetPosition(currentCamera.transform);
+    }
+
+    private async void ImportCameraPlus(PipeCommands.ImportCameraPlus d)
+    {
+        ChangeCamera(CameraTypes.Free);
+        CurrentSettings.FreeCameraTransform.localPosition = new Vector3(d.x, d.y, d.z);
+        CurrentSettings.FreeCameraTransform.localRotation = Quaternion.Euler(d.rx, d.ry, d.rz);
+        FreeCamera.fieldOfView = d.fov;
+        CurrentSettings.FreeCameraTransform.ToLocalTransform(FreeCamera.transform);
+        var control = FreeCamera.GetComponent<CameraMouseControl>();
+        control.CameraAngle = -FreeCamera.transform.rotation.eulerAngles;
+        control.CameraDistance = Vector3.Distance(FreeCamera.transform.localPosition, Vector3.zero);
+        control.CameraTarget = FreeCamera.transform.localPosition + FreeCamera.transform.rotation * Vector3.forward * control.CameraDistance;
+        await server.SendCommandAsync(new PipeCommands.LoadCameraFOV { fov = d.fov });
     }
 
     private CameraMouseControl frontCameraMouseControl = null;

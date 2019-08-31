@@ -321,6 +321,28 @@ namespace UnityMemoryMappedFile
         {
             public bool Use { get; set; }
         }
+
+        public class ImportCameraPlus
+        {
+            public float x { get; set; }
+            public float y { get; set; }
+            public float z { get; set; }
+            public float rx { get; set; }
+            public float ry { get; set; }
+            public float rz { get; set; }
+            public float fov { get; set; }
+        }
+        public class ExportCameraPlus { }
+        public class ReturnExportCameraPlus
+        {
+            public float x { get; set; }
+            public float y { get; set; }
+            public float z { get; set; }
+            public float rx { get; set; }
+            public float ry { get; set; }
+            public float rz { get; set; }
+            public float fov { get; set; }
+        }
     }
 
 

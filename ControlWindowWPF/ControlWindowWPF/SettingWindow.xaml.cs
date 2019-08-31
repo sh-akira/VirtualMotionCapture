@@ -368,5 +368,72 @@ namespace VirtualMotionCaptureControlPanel
             var win = new EyeTracking_ViveProEyeSettingWindow();
             win.ShowDialog();
         }
+
+        private async void CameraPlus_ImportButton_Click(object sender, RoutedEventArgs e)
+        {
+            var ofd = new OpenFileDialog();
+
+            ofd.Filter = "cameraplus.cfg|cameraplus.cfg";
+            if (ofd.ShowDialog() == true)
+            {
+                var configs = new Dictionary<string, string>();
+                var lines = File.ReadAllLines(ofd.FileName);
+                foreach (var line in lines)
+                {
+                    if (line.Contains("="))
+                    {
+                        var items = line.Split(new string[] { "=" }, 2, StringSplitOptions.None);
+                        configs.Add(items[0], items[1]);
+                    }
+                }
+                Func<string, float> GetFloat = (string key) =>
+                {
+                    if (configs.ContainsKey(key) == false) { return 0.0f; }
+                    if (float.TryParse(configs[key], out var ret)) { return ret; }
+                    return 0.0f;
+                };
+                var x = GetFloat("posx");
+                var y = GetFloat("posy");
+                var z = GetFloat("posz");
+                var rx = GetFloat("angx");
+                var ry = GetFloat("angy");
+                var rz = GetFloat("angz");
+                var fov = GetFloat("fov");
+
+                await Globals.Client?.SendCommandAsync(new PipeCommands.ImportCameraPlus { x = x, y = y, z = z, rx = rx, ry = ry, rz = rz, fov = fov });
+            }
+        }
+
+        private async void CameraPlus_ExportButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.ExportCameraPlus { }, r =>
+            {
+                var d = (PipeCommands.ReturnExportCameraPlus)r;
+                Dispatcher.Invoke(() =>
+                {
+                    var ofd = new OpenFileDialog();
+                    ofd.Filter = "cameraplus.cfg|cameraplus.cfg";
+                    ofd.Title = "Select cameraplus.cfg";
+                    ofd.FileName = "cameraplus.cfg";
+                    if (ofd.ShowDialog() == true)
+                    {
+                        var culture = System.Globalization.CultureInfo.InvariantCulture;
+                        var format = culture.NumberFormat;
+                        var lines = File.ReadAllLines(ofd.FileName);
+                        for (int i = 0; i < lines.Length; i++)
+                        {
+                            if (lines[i].StartsWith("posx")) lines[i] = $"posx=" + d.x.ToString("G", format);
+                            if (lines[i].StartsWith("posy")) lines[i] = $"posy=" + d.y.ToString("G", format);
+                            if (lines[i].StartsWith("posz")) lines[i] = $"posz=" + d.z.ToString("G", format);
+                            if (lines[i].StartsWith("angx")) lines[i] = $"angx=" + d.rx.ToString("G", format);
+                            if (lines[i].StartsWith("angy")) lines[i] = $"angy=" + d.ry.ToString("G", format);
+                            if (lines[i].StartsWith("angz")) lines[i] = $"angz=" + d.rz.ToString("G", format);
+                            if (lines[i].StartsWith("fov")) lines[i] = $"fov=" + d.fov.ToString("G", format);
+                        }
+                        File.WriteAllLines(ofd.FileName, lines);
+                    }
+                });
+            });
+        }
     }
 }

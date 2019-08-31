@@ -85,6 +85,12 @@
                 <Button Content="VIVE Pro Eye" Name="EyeTracking_ViveProEyeSettingButton" Click="EyeTracking_ViveProEyeSettingButton_Click"/>
             </UniformGrid>
         </GroupBox>
+        <GroupBox Header="CameraPlus">
+            <UniformGrid Columns="2">
+                <Button Content="Import" Name="CameraPlus_ImportButton" Click="CameraPlus_ImportButton_Click"/>
+                <Button Content="Export" Name="CameraPlus_ExportButton" Click="CameraPlus_ExportButton_Click"/>
+            </UniformGrid>
+        </GroupBox>
         <GroupBox Header="{DynamicResource SettingWindow_Language}">
             <ComboBox Name="LanguageComboBox" SelectedIndex="0" SelectionChanged="LanguageComboBox_SelectionChanged">
                 <system:String>Japanese</system:String>
