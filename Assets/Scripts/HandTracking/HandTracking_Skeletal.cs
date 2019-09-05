@@ -7,7 +7,7 @@ using System.Text;
 using UnityEngine;
 using Valve.VR;
 
-public class HandTracking_Index : MonoBehaviour
+public class HandTracking_Skeletal : MonoBehaviour
 {
 
     private static uint activeActionSetSize = 0;
@@ -185,6 +185,9 @@ public class HandTracking_Index : MonoBehaviour
     private float[] vrmHandReferenceEuler_Open = new float[] { 2, -3, -10, 21, -5, -5, -4, 13, -2, 0, 1, 4, -1, -1, 0, -2, 34, 23, -14, 3 };
     private float[] vrmHandReferenceEuler_Close = new float[] { -90, -90, -90, 0, -90, -90, -90, 0, -90, -90, -86, 0, -81, -102, -79, 0, -120, -71, -6, 15 };
 
+    private bool leftAvailable = false;
+    private bool rightAvailable = false;
+
     // Use this for initialization
     void Start()
     {
@@ -198,6 +201,9 @@ public class HandTracking_Index : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
+        //OVRControllerAction.Instance.UpdateManual();
+        /*
         EVRInputError err;
 
         if (initialized == false)
@@ -214,7 +220,7 @@ public class HandTracking_Index : MonoBehaviour
             rangeOfMotion = EVRSkeletalMotionRange.WithoutController;
             skeletalTransformSpace = EVRSkeletalTransformSpace.Parent;
 
-            var path = Application.dataPath + "/../action.json";
+            var path = Application.dataPath + "/../actions.json";
 
             var currentPath = Application.dataPath;
             int lastIndex = currentPath.LastIndexOf('/');
@@ -266,8 +272,6 @@ public class HandTracking_Index : MonoBehaviour
             OpenVR.Compositor.SetTrackingSpace(ETrackingUniverseOrigin.TrackingUniverseStanding);
         }
 
-        bool leftAvailable = false;
-        bool rightAvailable = false;
 
         //すべてのActionSetに対して新しいイベントがないか更新する
         err = OpenVR.Input.UpdateActionState(rawActiveActionSetArray, activeActionSetSize);
@@ -291,14 +295,45 @@ public class HandTracking_Index : MonoBehaviour
         //右手Skeletalのイベントが発生していたら
         if (skeletalActionData.bActive)
             rightAvailable = GetSkeletalBoneData(righthand_handle, rightBonePositions, rightBoneRotations);
+            */
 
         if (leftAvailable || rightAvailable)
         {
             IsDataAvailable = true;
             UpdateHandController(leftAvailable, rightAvailable);
+            leftAvailable = false;
+            rightAvailable = false;
         }
     }
 
+    public void SetSkeltalBoneData(bool isLeft, VRBoneTransform_t[] tempBoneTransforms)
+    {
+        var bonePositions = isLeft ? leftBonePositions : rightBonePositions;
+        var boneRotations = isLeft ? leftBoneRotations : rightBoneRotations;
+
+        for (int boneIndex = 0; boneIndex < tempBoneTransforms.Length; boneIndex++)
+        {
+            // SteamVR's coordinate system is right handed, and Unity's is left handed.  The FBX data has its
+            // X axis flipped when Unity imports it, so here we need to flip the X axis as well
+            bonePositions[boneIndex].x = -tempBoneTransforms[boneIndex].position.v0;
+            bonePositions[boneIndex].y = tempBoneTransforms[boneIndex].position.v1;
+            bonePositions[boneIndex].z = tempBoneTransforms[boneIndex].position.v2;
+
+            boneRotations[boneIndex].x = tempBoneTransforms[boneIndex].orientation.x;
+            boneRotations[boneIndex].y = -tempBoneTransforms[boneIndex].orientation.y;
+            boneRotations[boneIndex].z = -tempBoneTransforms[boneIndex].orientation.z;
+            boneRotations[boneIndex].w = tempBoneTransforms[boneIndex].orientation.w;
+        }
+
+        // Now that we're in the same handedness as Unity, rotate the root bone around the Y axis
+        // so that forward is facing down +Z
+
+        boneRotations[0] = SteamVR_Action_Skeleton.steamVRFixUpRotation * boneRotations[0];
+        if (isLeft) leftAvailable = true;
+        if (!isLeft) rightAvailable = true;
+    }
+
+    /*
     private bool GetSkeletalBoneData(ulong handle, Vector3[] bonePositions, Quaternion[] boneRotations)
     {
         //実際にBoneのTransformを取得する
@@ -332,6 +367,7 @@ public class HandTracking_Index : MonoBehaviour
         boneRotations[0] = SteamVR_Action_Skeleton.steamVRFixUpRotation * boneRotations[0];
         return true;
     }
+    */
 
     private static string GetPath(string inputSourceEnumName)
     {

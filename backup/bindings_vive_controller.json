@@ -13,7 +13,16 @@
       "poses": [],
       "haptics": [],
       "sources": [],
-      "skeleton": []
+      "skeleton": [
+        {
+          "output": "/actions/default/in/skeletonlefthand",
+          "path": "/user/hand/left/input/skeleton/left"
+        },
+        {
+          "output": "/actions/default/in/skeletonrighthand",
+          "path": "/user/hand/right/input/skeleton/right"
+        }
+      ]
     },
     "/actions/platformer": {
       "chords": [],
@@ -23,7 +32,7 @@
       "skeleton": []
     }
   },
-  "controller_type": "holographic_controller",
+  "controller_type": "vive_controller",
   "description": "",
-  "name": "Default bindings for Windows Mixed Reality Controllers"
+  "name": "vive_controller"
 }

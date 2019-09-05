@@ -93,10 +93,6 @@
     {
       "name": "/actions/default/in/ClickTrackpad",
       "type": "boolean"
-    },
-    {
-      "name": "/actions/default/in/ClickMenu",
-      "type": "boolean"
     }
   ],
   "action_sets": [

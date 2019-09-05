@@ -12,9 +12,16 @@ public class OVRControllerAction : MonoBehaviour
 {
     // public InputField inputField;
 
+    public static OVRControllerAction Instance;
+
     public EventHandler<OVRKeyEventArgs> KeyDownEvent;
     public EventHandler<OVRKeyEventArgs> KeyUpEvent;
     public EventHandler<OVRKeyEventArgs> AxisChangedEvent;
+
+    void OnEnable()
+    {
+        Instance = this;
+    }
 
     // Use this for initialization
     void Start()
@@ -226,7 +233,7 @@ public class OVRControllerAction : MonoBehaviour
         }
     }
 
-    void Update()
+    public void UpdateManual()
     {
         if (OpenVRWrapper.Instance.openVR == null)
         {

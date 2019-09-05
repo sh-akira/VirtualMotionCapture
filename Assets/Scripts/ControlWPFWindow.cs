@@ -2583,6 +2583,40 @@ public class ControlWPFWindow : MonoBehaviour
 
     #endregion
 
+    private void KeyActionsUpgrade()
+    {
+        //古いバージョンで保存したVIVE/Oculus用のキーコンフィグをアップグレード
+        var newKeyActions = new List<KeyAction>();
+        foreach (var action in CurrentSettings.KeyActions)
+        {
+            var newKeyConfigs = new List<KeyConfig>();
+            foreach (var config in action.KeyConfigs)
+            {
+                if (config.type == KeyTypes.Controller && config.keyCode != -2)
+                {
+                    if (config.keyIndex < 0)
+                    {//通常キー
+
+                        config.keyName = config.isTouch ? "Touch" : "Click";
+                        if (config.keyCode == (int)Valve.VR.EVRButtonId.k_EButton_ApplicationMenu)
+                        {
+                            if (config.isOculus)
+                                config.keyName += config.isLeft ? "Ybutton" : "Bbutton";
+                            else
+                                config.keyName += "Menu";
+                        }
+
+                    }
+                    else
+                    {//タッチパッド分割ボタン
+
+                    }
+                    config.keyCode = -2;
+                }
+            }
+        }
+    }
+
     private void UpdateWebCamConfig()
     {
         SetCameraEnable(currentCamera);
