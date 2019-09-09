@@ -74,6 +74,7 @@ public class HandController : MonoBehaviour
         if (rightAnimationController == null) rightAnimationController = new AnimationController();
 
         var startEulers = GetHandEulerAngles();
+        if (startEulers == null) return;
         var endEulers = CalcHandEulerAngles(angles);
 
         if (LeftEnable)
@@ -143,6 +144,7 @@ public class HandController : MonoBehaviour
     public List<Vector3> GetHandEulerAngles()
     {
         var handBonesCount = FingerBones.Count;
+        if (FingerTransforms.Count != handBonesCount) return null;
         var eulers = new List<Vector3>();
         for (int i = 0; i < handBonesCount; i++)
         {

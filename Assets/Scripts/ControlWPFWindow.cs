@@ -45,7 +45,7 @@ public class ControlWPFWindow : MonoBehaviour
     public FaceController faceController;
     public HandController handController;
 
-    public OVRControllerAction controllerAction;
+    public SteamVR2Input steamVR2Input;
 
     public WristRotationFix wristRotationFix;
 
@@ -64,8 +64,6 @@ public class ControlWPFWindow : MonoBehaviour
     private Camera currentCamera;
 
     private Animator animator = null;
-
-    private bool IsOculus { get { return controllerAction.IsOculus; } }
 
     private int CurrentWindowNum = 1;
 
@@ -117,9 +115,9 @@ public class ControlWPFWindow : MonoBehaviour
         CurrentSettings.BackgroundColor = BackgroundRenderer.material.color;
         CurrentSettings.CustomBackgroundColor = BackgroundRenderer.material.color;
 
-        controllerAction.KeyDownEvent += ControllerAction_KeyDown;
-        controllerAction.KeyUpEvent += ControllerAction_KeyUp;
-        controllerAction.AxisChangedEvent += ControllerAction_AxisChanged;
+        steamVR2Input.KeyDownEvent += ControllerAction_KeyDown;
+        steamVR2Input.KeyUpEvent += ControllerAction_KeyUp;
+        steamVR2Input.AxisChangedEvent += ControllerAction_AxisChanged;
 
         KeyboardAction.KeyDownEvent += KeyboardAction_KeyDown;
         KeyboardAction.KeyUpEvent += KeyboardAction_KeyUp;
@@ -187,9 +185,9 @@ public class ControlWPFWindow : MonoBehaviour
         KeyboardAction.KeyDownEvent -= KeyboardAction_KeyDown;
         KeyboardAction.KeyUpEvent -= KeyboardAction_KeyUp;
 
-        controllerAction.KeyDownEvent -= ControllerAction_KeyDown;
-        controllerAction.KeyUpEvent -= ControllerAction_KeyUp;
-        controllerAction.AxisChangedEvent -= ControllerAction_AxisChanged;
+        steamVR2Input.KeyDownEvent -= ControllerAction_KeyDown;
+        steamVR2Input.KeyUpEvent -= ControllerAction_KeyUp;
+        steamVR2Input.AxisChangedEvent -= ControllerAction_AxisChanged;
     }
 
     private void Server_Received(object sender, DataReceivedEventArgs e)
@@ -345,11 +343,24 @@ public class ControlWPFWindow : MonoBehaviour
             else if (e.CommandType == typeof(PipeCommands.SetControllerTouchPadPoints))
             {
                 var d = (PipeCommands.SetControllerTouchPadPoints)e.Data;
-                CurrentSettings.IsOculus = d.IsOculus;
-                CurrentSettings.LeftCenterEnable = d.LeftCenterEnable;
-                CurrentSettings.RightCenterEnable = d.RightCenterEnable;
-                CurrentSettings.LeftTouchPadPoints = d.LeftPoints;
-                CurrentSettings.RightTouchPadPoints = d.RightPoints;
+                if (d.isStick)
+                {
+                    CurrentSettings.LeftThumbStickPoints = d.LeftPoints;
+                    CurrentSettings.RightThumbStickPoints = d.RightPoints;
+                }
+                else
+                {
+                    CurrentSettings.LeftCenterEnable = d.LeftCenterEnable;
+                    CurrentSettings.RightCenterEnable = d.RightCenterEnable;
+                    CurrentSettings.LeftTouchPadPoints = d.LeftPoints;
+                    CurrentSettings.RightTouchPadPoints = d.RightPoints;
+                }
+            }
+            else if (e.CommandType == typeof(PipeCommands.SetSkeletalInputEnable))
+            {
+                var d = (PipeCommands.SetSkeletalInputEnable)e.Data;
+                CurrentSettings.EnableSkeletal = d.enable;
+                steamVR2Input.EnableSkeletal = CurrentSettings.EnableSkeletal;
             }
             else if (e.CommandType == typeof(PipeCommands.StartHandCamera))
             {
@@ -1704,10 +1715,10 @@ public class ControlWPFWindow : MonoBehaviour
         var config = new KeyConfig();
         config.type = KeyTypes.Controller;
         config.actionType = KeyActionTypes.Hand;
-        config.keyCode = (int)e.ButtonId;
+        config.keyCode = -2;
+        config.keyName = e.Name;
         config.isLeft = e.IsLeft;
-        config.keyIndex = e.IsAxis == false ? -1 : e.ButtonId == Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad ? NearestPointIndex(e.IsLeft, e.Axis.x, e.Axis.y) : 0;
-        config.isOculus = IsOculus;
+        config.keyIndex = e.IsAxis == false ? -1 : NearestPointIndex(e.IsLeft, e.Axis.x, e.Axis.y, e.Name.Contains("Stick"));
         config.isTouch = e.IsTouch;
         if (e.IsAxis)
         {
@@ -1725,10 +1736,10 @@ public class ControlWPFWindow : MonoBehaviour
         var config = new KeyConfig();
         config.type = KeyTypes.Controller;
         config.actionType = KeyActionTypes.Hand;
-        config.keyCode = (int)e.ButtonId;
+        config.keyCode = -2;
+        config.keyName = e.Name;
         config.isLeft = e.IsLeft;
-        config.keyIndex = e.IsAxis == false ? -1 : e.ButtonId == Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad ? NearestPointIndex(e.IsLeft, e.Axis.x, e.Axis.y) : 0;
-        config.isOculus = IsOculus;
+        config.keyIndex = e.IsAxis == false ? -1 : NearestPointIndex(e.IsLeft, e.Axis.x, e.Axis.y, e.Name.Contains("Stick"));
         config.isTouch = e.IsTouch;
         if (e.IsAxis && config.keyIndex != (e.IsLeft ? lastLeftAxisPoint : lastRightAxisPoint))
         {//タッチパッド離した瞬間違うポイントだった場合
@@ -1755,17 +1766,20 @@ public class ControlWPFWindow : MonoBehaviour
     private async void ControllerAction_AxisChanged(object sender, OVRKeyEventArgs e)
     {
         if (e.IsAxis == false) return;
-        var newindex = NearestPointIndex(e.IsLeft, e.Axis.x, e.Axis.y);
+        var keyName = e.Name;
+        if (keyName.Contains("Trigger")) return; //トリガーは現時点ではアナログ入力無効
+        if (keyName.Contains("Position")) keyName = keyName.Replace("Position", "Touch"); //ポジションはいったんタッチと同じにする
+        var newindex = NearestPointIndex(e.IsLeft, e.Axis.x, e.Axis.y, keyName.Contains("Stick"));
         if ((e.IsLeft ? lastLeftAxisPoint : lastRightAxisPoint) != newindex)
         {//ドラッグで隣の領域に入った場合
             var config = new KeyConfig();
             config.type = KeyTypes.Controller;
             config.actionType = KeyActionTypes.Hand;
-            config.keyCode = (int)e.ButtonId;
+            config.keyCode = -2;
+            config.keyName = keyName;
             config.isLeft = e.IsLeft;
             config.keyIndex = (e.IsLeft ? lastLeftAxisPoint : lastRightAxisPoint);
-            config.isOculus = IsOculus;
-            config.isTouch = e.IsTouch;
+            config.isTouch = true;// e.IsTouch; //ポジションはいったんタッチと同じにする
             //前のキーを離す
             if (doKeyConfig || doKeySend) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
             if (!doKeyConfig) CheckKey(config, false);
@@ -1809,21 +1823,21 @@ public class ControlWPFWindow : MonoBehaviour
         if (!doKeyConfig) CheckKey(config, false);
     }
 
-    private int NearestPointIndex(bool isLeft, float x, float y)
+    private int NearestPointIndex(bool isLeft, float x, float y, bool isStick)
     {
         //Debug.Log($"SearchNearestPoint:{x},{y},{isLeft}");
         int index = 0;
-        var points = isLeft ? CurrentSettings.LeftTouchPadPoints : CurrentSettings.RightTouchPadPoints;
+        var points = isStick ? (isLeft ? CurrentSettings.LeftThumbStickPoints : CurrentSettings.RightThumbStickPoints) : (isLeft ? CurrentSettings.LeftTouchPadPoints : CurrentSettings.RightTouchPadPoints);
         if (points == null) return 0; //未設定時は一つ
         var centerEnable = isLeft ? CurrentSettings.LeftCenterEnable : CurrentSettings.RightCenterEnable;
-        if (centerEnable || IsOculus) //センターキー有効時(Oculusの場合はスティックなので、センター無効にする)
+        if (centerEnable || isStick) //センターキー有効時(タッチパッド) / スティックの場合はセンター無効にする
         {
             var point_distance = x * x + y * y;
             var r = 2.0f / 5.0f; //半径
             var r2 = r * r;
             if (point_distance < r2) //円内
             {
-                if (IsOculus) return -1;
+                if (isStick) return -1;
                 index = points.Count + 1;
                 return index;
             }
@@ -2235,6 +2249,10 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public List<UPoint> RightTouchPadPoints;
         [OptionalField]
+        public List<UPoint> LeftThumbStickPoints;
+        [OptionalField]
+        public List<UPoint> RightThumbStickPoints;
+        [OptionalField]
         public List<KeyAction> KeyActions = null;
         [OptionalField]
         public float LeftHandRotation = -90.0f;
@@ -2328,7 +2346,8 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public bool EyeTracking_ViveProEyeUseEyelidMovements;
 
-
+        [OptionalField]
+        public bool EnableSkeletal;
 
         //初期値
         [OnDeserializing()]
@@ -2384,6 +2403,8 @@ public class ControlWPFWindow : MonoBehaviour
             EyeTracking_ViveProEyeScaleHorizontal = 2.0f;
             EyeTracking_ViveProEyeScaleVertical = 1.5f;
             EyeTracking_ViveProEyeUseEyelidMovements = true;
+
+            EnableSkeletal = true;
         }
     }
 
@@ -2541,6 +2562,18 @@ public class ControlWPFWindow : MonoBehaviour
                 RightPoints = CurrentSettings.RightTouchPadPoints,
                 RightCenterEnable = CurrentSettings.RightCenterEnable
             });
+            await server.SendCommandAsync(new PipeCommands.LoadControllerStickPoints
+            {
+                LeftPoints = CurrentSettings.LeftThumbStickPoints,
+                RightPoints = CurrentSettings.RightThumbStickPoints,
+            });
+
+            KeyAction.KeyActionsUpgrade(CurrentSettings.KeyActions);
+
+            steamVR2Input.EnableSkeletal = CurrentSettings.EnableSkeletal;
+
+            await server.SendCommandAsync(new PipeCommands.LoadSkeletalInputEnable { enable = CurrentSettings.EnableSkeletal });
+
             await server.SendCommandAsync(new PipeCommands.LoadKeyActions { KeyActions = CurrentSettings.KeyActions });
             await server.SendCommandAsync(new PipeCommands.LoadHandRotations { LeftHandRotation = CurrentSettings.LeftHandRotation, RightHandRotation = CurrentSettings.RightHandRotation });
             UpdateHandRotation();
@@ -2582,40 +2615,6 @@ public class ControlWPFWindow : MonoBehaviour
     }
 
     #endregion
-
-    private void KeyActionsUpgrade()
-    {
-        //古いバージョンで保存したVIVE/Oculus用のキーコンフィグをアップグレード
-        var newKeyActions = new List<KeyAction>();
-        foreach (var action in CurrentSettings.KeyActions)
-        {
-            var newKeyConfigs = new List<KeyConfig>();
-            foreach (var config in action.KeyConfigs)
-            {
-                if (config.type == KeyTypes.Controller && config.keyCode != -2)
-                {
-                    if (config.keyIndex < 0)
-                    {//通常キー
-
-                        config.keyName = config.isTouch ? "Touch" : "Click";
-                        if (config.keyCode == (int)Valve.VR.EVRButtonId.k_EButton_ApplicationMenu)
-                        {
-                            if (config.isOculus)
-                                config.keyName += config.isLeft ? "Ybutton" : "Bbutton";
-                            else
-                                config.keyName += "Menu";
-                        }
-
-                    }
-                    else
-                    {//タッチパッド分割ボタン
-
-                    }
-                    config.keyCode = -2;
-                }
-            }
-        }
-    }
 
     private void UpdateWebCamConfig()
     {

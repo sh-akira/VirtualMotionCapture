@@ -11,6 +11,22 @@
       "skeleton": "/skeleton/hand/right"
     },
     {
+      "name": "/actions/default/in/PositionTrackpad",
+      "type": "vector2"
+    },
+    {
+      "name": "/actions/default/in/PositionThumbStick",
+      "type": "vector2"
+    },
+    {
+      "name": "/actions/default/in/PullTrigger",
+      "type": "vector1"
+    },
+    {
+      "name": "/actions/default/in/PullGrip",
+      "type": "vector1"
+    },
+    {
       "name": "/actions/default/in/ClickSystem",
       "type": "boolean"
     },
@@ -27,16 +43,8 @@
       "type": "boolean"
     },
     {
-      "name": "/actions/default/in/PullTrigger",
-      "type": "vector1"
-    },
-    {
       "name": "/actions/default/in/TouchTrackpad",
       "type": "boolean"
-    },
-    {
-      "name": "/actions/default/in/PositionTrackpad",
-      "type": "vector2"
     },
     {
       "name": "/actions/default/in/ClickThumbStick",
@@ -45,10 +53,6 @@
     {
       "name": "/actions/default/in/TouchThumbStick",
       "type": "boolean"
-    },
-    {
-      "name": "/actions/default/in/PositionThumbStick",
-      "type": "vector2"
     },
     {
       "name": "/actions/default/in/ClickBbutton",

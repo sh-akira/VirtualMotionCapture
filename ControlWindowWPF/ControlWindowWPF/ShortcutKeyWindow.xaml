@@ -10,50 +10,91 @@
         <StackPanel Orientation="Vertical" DockPanel.Dock="Right">
             <GroupBox Header="{DynamicResource ShortcutKeyWindow_TouchPadStickInfo}">
                 <StackPanel Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal">
-                        <StackPanel Orientation="Vertical">
-                            <GroupBox Header="{DynamicResource ShortcutKeyWindow_LeftController}">
-                                <Grid>
-                                    <Image Width="150" Height="150" Name="LeftImage"/>
-                                    <Canvas Name="LeftCanvas" ToolTip="{DynamicResource ShortcutKeyWindow_LeftController_ToolTip}"/>
-                                </Grid>
-                            </GroupBox>
-                            <CheckBox Content="{DynamicResource ShortcutKeyWindow_LeftCenterKey}" Name="LeftCenterKeyCheckBox" Checked="LeftCenterKeyCheckBox_Checked" Unchecked="LeftCenterKeyCheckBox_Unchecked" ToolTip="{DynamicResource ShortcutKeyWindow_LeftCenterKey_ToolTip}"/>
-                            <DockPanel>
-                                <TextBlock Text="{DynamicResource ShortcutKeyWindow_LeftDivideCount}" Margin="10,0,0,0"/>
-                                <ScrollBar Height="30" Minimum="1" Maximum="30" Value="1" DockPanel.Dock="Right" Name="LeftTouchPadUpDown" ValueChanged="LeftTouchPadUpDown_ValueChanged" SmallChange="1" ToolTip="{DynamicResource ShortcutKeyWindow_LeftDivideCount_ToolTip}">
-                                    <ScrollBar.LayoutTransform>
-                                        <RotateTransform Angle="180"/>
-                                    </ScrollBar.LayoutTransform>
-                                </ScrollBar>
-                                <TextBlock Text="1" Margin="0,0,5,0" TextAlignment="Right" Name="LeftTouchPadUpDownTextBlock"/>
-                            </DockPanel>
+                    <GroupBox Header="タッチパッド">
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Vertical">
+                                <GroupBox Header="{DynamicResource ShortcutKeyWindow_LeftController}">
+                                    <Grid>
+                                        <Image Width="150" Height="150" Name="LeftImage"/>
+                                        <Canvas Name="LeftCanvas" ToolTip="{DynamicResource ShortcutKeyWindow_LeftController_ToolTip}"/>
+                                    </Grid>
+                                </GroupBox>
+                                <CheckBox Content="{DynamicResource ShortcutKeyWindow_LeftCenterKey}" Name="LeftCenterKeyCheckBox" Checked="LeftCenterKeyCheckBox_Checked" Unchecked="LeftCenterKeyCheckBox_Unchecked" ToolTip="{DynamicResource ShortcutKeyWindow_LeftCenterKey_ToolTip}"/>
+                                <DockPanel>
+                                    <TextBlock Text="{DynamicResource ShortcutKeyWindow_LeftDivideCount}" Margin="10,0,0,0"/>
+                                    <ScrollBar Height="30" Minimum="1" Maximum="30" Value="1" DockPanel.Dock="Right" Name="LeftTouchPadUpDown" ValueChanged="LeftTouchPadUpDown_ValueChanged" SmallChange="1" ToolTip="{DynamicResource ShortcutKeyWindow_LeftDivideCount_ToolTip}">
+                                        <ScrollBar.LayoutTransform>
+                                            <RotateTransform Angle="180"/>
+                                        </ScrollBar.LayoutTransform>
+                                    </ScrollBar>
+                                    <TextBlock Text="1" Margin="0,0,5,0" TextAlignment="Right" Name="LeftTouchPadUpDownTextBlock"/>
+                                </DockPanel>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical">
+                                <GroupBox Header="{DynamicResource ShortcutKeyWindow_RightController}">
+                                    <Grid>
+                                        <Image Width="150" Height="150" Name="RightImage"/>
+                                        <Canvas Name="RightCanvas" ToolTip="{DynamicResource ShortcutKeyWindow_RightController_ToolTip}"/>
+                                    </Grid>
+                                </GroupBox>
+                                <CheckBox Content="{DynamicResource ShortcutKeyWindow_RightCenterKey}" Name="RightCenterKeyCheckBox" Checked="RightCenterKeyCheckBox_Checked" Unchecked="RightCenterKeyCheckBox_Unchecked" ToolTip="{DynamicResource ShortcutKeyWindow_RightCenterKey_ToolTip}"/>
+                                <DockPanel>
+                                    <TextBlock Text="{DynamicResource ShortcutKeyWindow_RightDivideCount}" Margin="10,0,0,0"/>
+                                    <ScrollBar Height="30" Minimum="1" Maximum="30" Value="1" DockPanel.Dock="Right" Name="RightTouchPadUpDown" ValueChanged="RightTouchPadUpDown_ValueChanged" SmallChange="1" ToolTip="{DynamicResource ShortcutKeyWindow_RightDivideCount_ToolTip}">
+                                        <ScrollBar.LayoutTransform>
+                                            <RotateTransform Angle="180"/>
+                                        </ScrollBar.LayoutTransform>
+                                    </ScrollBar>
+                                    <TextBlock Text="1" Margin="0,0,5,0" TextAlignment="Right" Name="RightTouchPadUpDownTextBlock"/>
+                                </DockPanel>
+                            </StackPanel>
                         </StackPanel>
-                        <StackPanel Orientation="Vertical">
-                            <GroupBox Header="{DynamicResource ShortcutKeyWindow_RightController}">
-                                <Grid>
-                                    <Image Width="150" Height="150" Name="RightImage"/>
-                                    <Canvas Name="RightCanvas" ToolTip="{DynamicResource ShortcutKeyWindow_RightController_ToolTip}"/>
-                                </Grid>
-                            </GroupBox>
-                            <CheckBox Content="{DynamicResource ShortcutKeyWindow_RightCenterKey}" Name="RightCenterKeyCheckBox" Checked="RightCenterKeyCheckBox_Checked" Unchecked="RightCenterKeyCheckBox_Unchecked" ToolTip="{DynamicResource ShortcutKeyWindow_RightCenterKey_ToolTip}"/>
-                            <DockPanel>
-                                <TextBlock Text="{DynamicResource ShortcutKeyWindow_RightDivideCount}" Margin="10,0,0,0"/>
-                                <ScrollBar Height="30" Minimum="1" Maximum="30" Value="1" DockPanel.Dock="Right" Name="RightTouchPadUpDown" ValueChanged="RightTouchPadUpDown_ValueChanged" SmallChange="1" ToolTip="{DynamicResource ShortcutKeyWindow_RightDivideCount_ToolTip}">
-                                    <ScrollBar.LayoutTransform>
-                                        <RotateTransform Angle="180"/>
-                                    </ScrollBar.LayoutTransform>
-                                </ScrollBar>
-                                <TextBlock Text="1" Margin="0,0,5,0" TextAlignment="Right" Name="RightTouchPadUpDownTextBlock"/>
-                            </DockPanel>
+                    </GroupBox>
+                    <GroupBox Header="スティック">
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Vertical">
+                                <GroupBox Header="{DynamicResource ShortcutKeyWindow_LeftController}">
+                                    <Grid>
+                                        <Image Width="150" Height="150" Name="LeftStickImage"/>
+                                        <Canvas Name="LeftStickCanvas" ToolTip="{DynamicResource ShortcutKeyWindow_LeftController_ToolTip}"/>
+                                    </Grid>
+                                </GroupBox>
+                                                                <DockPanel>
+                                    <TextBlock Text="{DynamicResource ShortcutKeyWindow_LeftDivideCount}" Margin="10,0,0,0"/>
+                                    <ScrollBar Height="30" Minimum="1" Maximum="30" Value="1" DockPanel.Dock="Right" Name="LeftStickUpDown" ValueChanged="LeftStickUpDown_ValueChanged" SmallChange="1" ToolTip="{DynamicResource ShortcutKeyWindow_LeftDivideCount_ToolTip}">
+                                        <ScrollBar.LayoutTransform>
+                                            <RotateTransform Angle="180"/>
+                                        </ScrollBar.LayoutTransform>
+                                    </ScrollBar>
+                                    <TextBlock Text="1" Margin="0,0,5,0" TextAlignment="Right" Name="LeftStickUpDownTextBlock"/>
+                                </DockPanel>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical">
+                                <GroupBox Header="{DynamicResource ShortcutKeyWindow_RightController}">
+                                    <Grid>
+                                        <Image Width="150" Height="150" Name="RightStickImage"/>
+                                        <Canvas Name="RightStickCanvas" ToolTip="{DynamicResource ShortcutKeyWindow_RightController_ToolTip}"/>
+                                    </Grid>
+                                </GroupBox>
+                                <DockPanel>
+                                    <TextBlock Text="{DynamicResource ShortcutKeyWindow_RightDivideCount}" Margin="10,0,0,0"/>
+                                    <ScrollBar Height="30" Minimum="1" Maximum="30" Value="1" DockPanel.Dock="Right" Name="RightStickUpDown" ValueChanged="RightStickUpDown_ValueChanged" SmallChange="1" ToolTip="{DynamicResource ShortcutKeyWindow_RightDivideCount_ToolTip}">
+                                        <ScrollBar.LayoutTransform>
+                                            <RotateTransform Angle="180"/>
+                                        </ScrollBar.LayoutTransform>
+                                    </ScrollBar>
+                                    <TextBlock Text="1" Margin="0,0,5,0" TextAlignment="Right" Name="RightStickUpDownTextBlock"/>
+                                </DockPanel>
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
+                    </GroupBox>
                     <DockPanel>
                         <Button DockPanel.Dock="Right" Content="{DynamicResource ShortcutKeyWindow_Apply}" Name="TouchPadApplyButton" Click="TouchPadApplyButton_Click" Width="100" IsEnabled="False" ToolTip="{DynamicResource ShortcutKeyWindow_Apply_ToolTip}"/>
-                        <TextBlock Text="{DynamicResource ShortcutKeyWindow_OculusTouchDescription}" TextWrapping="Wrap" Width="170" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                        <TextBlock Text="" TextWrapping="Wrap" Width="170" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
                     </DockPanel>
                 </StackPanel>
             </GroupBox>
+            <CheckBox Content="手の動きにSkeletalを使う(ハンドジェスチャーが無効になります)" Name="EnableSkeletalInputCheckBox" Checked="EnableSkeletalInputCheckBox_CheckedChanged" Unchecked="EnableSkeletalInputCheckBox_CheckedChanged"/>
             <UniformGrid Rows="2" Columns="2">
                 <Button Content="{DynamicResource ShortcutKeyWindow_AddHandGesture}" Name="HandGestureAddButton" Click="HandGestureAddButton_Click" ToolTip="{DynamicResource ShortcutKeyWindow_AddHandGesture_ToolTip}"/>
                 <Button Content="{DynamicResource ShortcutKeyWindow_AddFacingExpression}" Name="FaceAddButton" Click="FaceAddButton_Click" ToolTip="{DynamicResource ShortcutKeyWindow_AddFacingExpression_ToolTip}"/>
