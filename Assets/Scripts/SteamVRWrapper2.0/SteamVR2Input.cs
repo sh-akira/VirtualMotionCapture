@@ -249,16 +249,19 @@ public class SteamVR2Input : MonoBehaviour
                 }
                 else if (action.type == "skeleton")
                 {
-                    //実際にBoneのTransformを取得する
-                    //rangeOfMotionは実際のコントローラーの形に指を曲げる(WithController)か、完全にグーが出来るようにする(WithoutController)か
-                    var tempBoneTransforms = new VRBoneTransform_t[SteamVR_Action_Skeleton.numBones];
-                    err = OpenVR.Input.GetSkeletalBoneData(action.handle, skeletalTransformSpace, rangeOfMotion, tempBoneTransforms);
-                    if (err != EVRInputError.None)
+                    if (EnableSkeletal)
                     {
-                        Debug.LogWarning($"<b>[SteamVR]</b> GetDigitalActionData error ({action.name}): {err} handle: {action.handle}");
-                        continue;
+                        //実際にBoneのTransformを取得する
+                        //rangeOfMotionは実際のコントローラーの形に指を曲げる(WithController)か、完全にグーが出来るようにする(WithoutController)か
+                        var tempBoneTransforms = new VRBoneTransform_t[SteamVR_Action_Skeleton.numBones];
+                        err = OpenVR.Input.GetSkeletalBoneData(action.handle, skeletalTransformSpace, rangeOfMotion, tempBoneTransforms);
+                        if (err != EVRInputError.None)
+                        {
+                            Debug.LogWarning($"<b>[SteamVR]</b> GetDigitalActionData error ({action.name}): {err} handle: {action.handle}");
+                            continue;
+                        }
+                        handTracking_Skeletal.SetSkeltalBoneData(action.name.Contains("Left"), tempBoneTransforms);
                     }
-                    handTracking_Skeletal.SetSkeltalBoneData(action.name.Contains("Left"), tempBoneTransforms);
                 }
             }
         }
