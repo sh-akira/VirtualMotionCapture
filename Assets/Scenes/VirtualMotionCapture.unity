@@ -355,6 +355,50 @@ Transform:
   m_Father: {fileID: 1300838139}
   m_RootOrder: 21
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &130023279
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 130023281}
+  - component: {fileID: 130023280}
+  m_Layer: 0
+  m_Name: SteamVR2Input
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &130023280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 130023279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70d42a2c3842ef54eb64201ac8486331, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rangeOfMotion: 0
+  skeletalTransformSpace: 0
+  handTracking_Skeletal: {fileID: 483683249}
+  EnableSkeletal: 1
+--- !u!4 &130023281
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 130023279}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 23
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &131724274
 GameObject:
   m_ObjectHideFlags: 0
@@ -2580,7 +2624,7 @@ GameObject:
   - component: {fileID: 462948923}
   m_Layer: 0
   m_Name: BackCamera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2864,6 +2908,47 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 481131001}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &483683248
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 483683250}
+  - component: {fileID: 483683249}
+  m_Layer: 0
+  m_Name: HandTracking
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &483683249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 483683248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49d7b96c4048b244085c84bc1c240b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handController: {fileID: 69806227}
+--- !u!4 &483683250
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 483683248}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.098420456, y: 1.0538161, z: -0.632037}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 22
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &483689759
 GameObject:
   m_ObjectHideFlags: 0
@@ -3425,7 +3510,7 @@ GameObject:
   - component: {fileID: 680324452}
   m_Layer: 0
   m_Name: PositionFixedCamera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5558,7 +5643,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1128534204}
   - component: {fileID: 1128534203}
-  - component: {fileID: 1128534205}
   - component: {fileID: 1128534206}
   m_Layer: 0
   m_Name: HandTrackerRoot
@@ -5669,17 +5753,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1128534205
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1128534202}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5500d6dda05af245bb16fa7f669b705, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1128534206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7497,7 +7570,7 @@ GameObject:
   - component: {fileID: 1404284885}
   m_Layer: 0
   m_Name: FrontCamera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7667,7 +7740,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50f533c8e82d6b540bbaeaaf98022cf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VersionString: v0.34d
+  VersionString: v0.35
   handler: {fileID: 1128534203}
   LeftWristTransform: {fileID: 0}
   RightWristTransform: {fileID: 0}
@@ -7683,7 +7756,7 @@ MonoBehaviour:
   LipSync: {fileID: 144144637}
   faceController: {fileID: 69806225}
   handController: {fileID: 69806227}
-  controllerAction: {fileID: 1128534205}
+  steamVR2Input: {fileID: 130023280}
   wristRotationFix: {fileID: 1793473874}
   HandTrackerRoot: {fileID: 1128534204}
   HeadTrackerRoot: {fileID: 421670469}

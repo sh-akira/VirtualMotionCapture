@@ -144,6 +144,17 @@ namespace VirtualMotionCaptureControlPanel
                     Globals.RightControllerPoints = d.RightPoints;
                     Globals.RightControllerCenterEnable = d.RightCenterEnable;
                 }
+                else if (e.CommandType == typeof(PipeCommands.LoadControllerStickPoints))
+                {
+                    var d = (PipeCommands.LoadControllerStickPoints)e.Data;
+                    Globals.LeftControllerStickPoints = d.LeftPoints;
+                    Globals.RightControllerStickPoints = d.RightPoints;
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadSkeletalInputEnable))
+                {
+                    var d = (PipeCommands.LoadSkeletalInputEnable)e.Data;
+                    Globals.EnableSkeletal = d.enable;
+                }
                 else if (e.CommandType == typeof(PipeCommands.LoadKeyActions))
                 {
                     var d = (PipeCommands.LoadKeyActions)e.Data;

@@ -126,6 +126,11 @@ namespace UnityMemoryMappedFile
             public List<UPoint> RightPoints { get; set; }
             public bool RightCenterEnable { get; set; }
         }
+        public class LoadControllerStickPoints
+        {
+            public List<UPoint> LeftPoints { get; set; }
+            public List<UPoint> RightPoints { get; set; }
+        }
         public class LoadKeyActions { public List<KeyAction> KeyActions { get; set; } }
 
         public class ChangeCamera { public CameraTypes type { get; set; } }
@@ -145,12 +150,15 @@ namespace UnityMemoryMappedFile
 
         public class SetControllerTouchPadPoints
         {
-            public bool IsOculus { get; set; }
+            public bool isStick { get; set; }
             public List<UPoint> LeftPoints { get; set; }
             public bool LeftCenterEnable { get; set; }
             public List<UPoint> RightPoints { get; set; }
             public bool RightCenterEnable { get; set; }
         }
+
+        public class SetSkeletalInputEnable { public bool enable { get; set; } }
+        public class LoadSkeletalInputEnable { public bool enable { get; set; } }
 
         public class StartHandCamera
         {
@@ -388,89 +396,13 @@ namespace UnityMemoryMappedFile
 
         public bool IsEqual(KeyConfig k)
         {
-            return type == k.type && actionType == k.actionType && keyCode == k.keyCode && isLeft == k.isLeft && keyIndex == k.keyIndex && isOculus == k.isOculus && isTouch == k.isTouch;
+            return type == k.type && actionType == k.actionType && keyCode == k.keyCode && isLeft == k.isLeft && keyIndex == k.keyIndex && isOculus == k.isOculus && isTouch == k.isTouch && keyName == k.keyName;
         }
 
         public bool IsEqualKeyCode(KeyConfig k)
         {
-            return type == k.type && keyCode == k.keyCode && isLeft == k.isLeft && keyIndex == k.keyIndex && isOculus == k.isOculus && isTouch == k.isTouch;
+            return type == k.type && keyCode == k.keyCode && isLeft == k.isLeft && keyIndex == k.keyIndex && isOculus == k.isOculus && isTouch == k.isTouch && keyName == k.keyName;
         }
-
-        private static Dictionary<int, string> EVRButtonIdString = new Dictionary<int, string>
-        {
-            { 0, "システム" },
-            { 1, "メニュー" },
-            { 2, "グリップ" },
-            { 3, "パッド左" },
-            { 4, "パッド上" },
-            { 5, "パッド右" },
-            { 6, "パッド下" },
-            { 7, "Aボタン" },
-            { 31, "近接センサ" },
-            { 32, "タッチパッド" },
-            { 33, "トリガー" },
-            { 34, "軸2" },
-            { 35, "軸3" },
-            { 36, "軸4" },
-            { 64, "最大値" }
-        };
-
-        private static Dictionary<int, string> EVRButtonIdString_Oculus = new Dictionary<int, string>
-        {
-            { 0, "システム" },
-            { 1, "B/Yボタン" },
-            { 2, "中指トリガー" },
-            { 3, "パッド左" },
-            { 4, "パッド上" },
-            { 5, "パッド右" },
-            { 6, "パッド下" },
-            { 7, "A/Xボタン" },
-            { 31, "近接センサ" },
-            { 32, "スティック" },
-            { 33, "人差し指トリガー" },
-            { 34, "軸2" },
-            { 35, "軸3" },
-            { 36, "軸4" },
-            { 64, "最大値" }
-        };
-
-        private static Dictionary<int, string> EVRButtonIdString_English = new Dictionary<int, string>
-        {
-            { 0, "System" },
-            { 1, "Menu" },
-            { 2, "Grip" },
-            { 3, "PadLeft" },
-            { 4, "PadUp" },
-            { 5, "PadRight" },
-            { 6, "PadDown" },
-            { 7, "AButton" },
-            { 31, "ProximitySensor" },
-            { 32, "TouchPad" },
-            { 33, "Trigger" },
-            { 34, "Axis2" },
-            { 35, "Axis3" },
-            { 36, "Axis4" },
-            { 64, "Max" }
-        };
-
-        private static Dictionary<int, string> EVRButtonIdString_Oculus_English = new Dictionary<int, string>
-        {
-            { 0, "System" },
-            { 1, "B/YButton" },
-            { 2, "MiddleFingerTrigger" },
-            { 3, "PadLeft" },
-            { 4, "PadUp" },
-            { 5, "PadRight" },
-            { 6, "PadDown" },
-            { 7, "A/XButton" },
-            { 31, "ProximitySensor" },
-            { 32, "Stick" },
-            { 33, "IndexFingerTrigger" },
-            { 34, "Axis2" },
-            { 35, "Axis3" },
-            { 36, "Axis4" },
-            { 64, "Max" }
-        };
 
         private static string[] KeyCodeString = new string[] {
             "",
@@ -994,7 +926,7 @@ namespace UnityMemoryMappedFile
             if (Language == "Japanese")
             {
                 var isLeftStr = type == KeyTypes.Controller ? (isLeft ? "左" : "右") : "";
-                var keyCodeStr = type == KeyTypes.Controller ? (isOculus ? EVRButtonIdString_Oculus[keyCode] : EVRButtonIdString[keyCode]) : KeyCodeString[keyCode];
+                var keyCodeStr = type == KeyTypes.Controller ? keyName : KeyCodeString[keyCode];
                 var indexStr = keyIndex > 0 ? $"{keyIndex}" : "";
                 var keyTypesString = type == KeyTypes.Controller ? "コントローラー" : type == KeyTypes.Keyboard ? "キーボード" : "マウス";
                 var isTouchStr = type == KeyTypes.Controller ? (isTouch ? "タッチ" : "") : "";
@@ -1003,7 +935,7 @@ namespace UnityMemoryMappedFile
             else
             {
                 var isLeftStr = type == KeyTypes.Controller ? (isLeft ? "Left" : "Right") : "";
-                var keyCodeStr = type == KeyTypes.Controller ? (isOculus ? EVRButtonIdString_Oculus_English[keyCode] : EVRButtonIdString_English[keyCode]) : KeyCodeString_English[keyCode];
+                var keyCodeStr = type == KeyTypes.Controller ? keyName : KeyCodeString_English[keyCode];
                 var indexStr = keyIndex > 0 ? $"{keyIndex}" : "";
                 var keyTypesString = type == KeyTypes.Controller ? "Controller" : type == KeyTypes.Keyboard ? "Keyboard" : "Mouse";
                 var isTouchStr = type == KeyTypes.Controller ? (isTouch ? "Touch" : "") : "";
@@ -1011,20 +943,7 @@ namespace UnityMemoryMappedFile
             }
         }
     }
-
-    public class KeyEventArgs : EventArgs
-    {
-        public EVRButtonId ButtonId { get; }
-        public float AxisX { get; }
-        public float AxisY { get; }
-        public bool IsLeft { get; }
-
-        public KeyEventArgs(EVRButtonId buttonId, float axisX, float axisY, bool isLeft) : base()
-        {
-            ButtonId = buttonId; AxisX = axisX; AxisY = axisY; IsLeft = isLeft;
-        }
-    }
-
+    
     public class KeyAction
     {
         public List<KeyConfig> KeyConfigs { get; set; }
@@ -1044,6 +963,62 @@ namespace UnityMemoryMappedFile
 
         public float HandChangeTime { get; set; } = 0.1f;
         public float LipSyncMaxLevel { get; set; } = 1.0f;
+
+        public static void KeyActionsUpgrade(List<KeyAction> keyActions)
+        {
+            //古いバージョンで保存したVIVE/Oculus用のキーコンフィグをアップグレード
+            var newKeyActions = new List<KeyAction>();
+            foreach (var action in keyActions)
+            {
+                var newKeyConfigs = new List<KeyConfig>();
+                foreach (var config in action.KeyConfigs)
+                {
+                    if (config.type == KeyTypes.Controller && config.keyCode != -2)
+                    {
+                        if (config.keyIndex < 0)
+                        {//通常キー
+
+                            config.keyName = config.isTouch ? "Touch" : "Click";
+                            if (config.keyCode == (int)EVRButtonId.k_EButton_ApplicationMenu)
+                            {
+                                if (config.isOculus)
+                                    config.keyName += config.isLeft ? "Ybutton" : "Bbutton";
+                                else
+                                    config.keyName += "Menu";
+                            }
+                            else if (config.keyCode == (int)EVRButtonId.k_EButton_Grip)
+                            {
+                                config.keyName += "Grip";
+                            }
+                            else if (config.keyCode == (int)EVRButtonId.k_EButton_SteamVR_Touchpad)
+                            {
+                                if (config.isOculus)
+                                    config.keyName += "ThumbStick";
+                                else
+                                    config.keyName += "Trackpad";
+                            }
+                            else if (config.keyCode == (int)EVRButtonId.k_EButton_SteamVR_Trigger)
+                            {
+                                config.keyName += "Trigger";
+                            }
+                            else if (config.keyCode == (int)EVRButtonId.k_EButton_A)
+                            {
+                                config.keyName += config.isLeft ? "Xbutton" : "Abutton";
+                            }
+                        }
+                        else
+                        {//タッチパッド分割ボタン
+                            if (config.isOculus)
+                                config.keyName = "TouchThumbStick";
+                            else
+                                config.keyName = "TouchTrackpad";
+                            config.isTouch = true;
+                        }
+                        config.keyCode = -2;
+                    }
+                }
+            }
+        }
     }
 
     public enum Functions

@@ -26,6 +26,11 @@ namespace VirtualMotionCaptureControlPanel
         public static bool RightControllerCenterEnable = false;
         public static List<UPoint> RightControllerPoints = new List<UPoint>();
 
+        public static List<UPoint> LeftControllerStickPoints = new List<UPoint>();
+        public static List<UPoint> RightControllerStickPoints = new List<UPoint>();
+
+        public static bool EnableSkeletal = true;
+
         public static float LeftHandRotation = -90.0f;
         public static float RightHandRotation = 90.0f;
 
