@@ -277,7 +277,7 @@ Ver 0.02
 　・UnityMemoryMappedFile (共有メモリライブラリ - 入れてあります)  
 　・VMC_Camera (仮想カメラライブラリ - 入れてあります)  
 　・RootMotion(Plugins/RootMotionフォルダ) ([Final IK 1.8](https://assetstore.unity.com/packages/tools/animation/final-ik-14290))  
-　・SteamVR ([SteamVR.Plugin.unitypackage](https://github.com/ValveSoftware/steamvr_unity_plugin/releases/tag/1.2.3))  
+　・SteamVR ([SteamVR.Plugin.unitypackage](https://github.com/ValveSoftware/steamvr_unity_plugin/releases/tag/2.3.2))  
 　・VRM ([UniVRM-0.53.0_6b07.unitypackage](https://github.com/vrm-c/UniVRM/releases))  
 　・Oculus ([Oculus Lipsync Unity 1.30.0](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/1.30.0/))  
 以上のようなフォルダになるように各アセットをインポートしてください。  
