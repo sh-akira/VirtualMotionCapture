@@ -4,13 +4,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using RootMotion.FinalIK;
+using VRM;
 
+[RequireComponent(typeof(uOSC.uOscClient))]
 public class ExternalSender : MonoBehaviour {
     uOSC.uOscClient uClient = null;
     GameObject CurrentModel = null;
     ControlWPFWindow window = null;
     Animator animator = null;
     VRIK vrik = null;
+    VRMBlendShapeProxy blendShapeProxy = null;
 
     void Start () {
         uClient = GetComponent<uOSC.uOscClient>();
@@ -21,6 +24,7 @@ public class ExternalSender : MonoBehaviour {
             this.CurrentModel = CurrentModel;
             animator = CurrentModel.GetComponent<Animator>();
             vrik = CurrentModel.GetComponent<VRIK>();
+            blendShapeProxy = CurrentModel.GetComponent<VRMBlendShapeProxy>();
         };
     }
 
@@ -40,7 +44,7 @@ public class ExternalSender : MonoBehaviour {
                 var RootTransform = vrik.references.root;
                 if (RootTransform != null)
                 {
-                    uClient.Send("/VMC/ExternalSender/Root/Transform",
+                    uClient.Send("/VMC/Ext/Root/Pos",
                         "root",
                         RootTransform.position.x, RootTransform.position.y, RootTransform.position.z,
                         RootTransform.rotation.x, RootTransform.rotation.y, RootTransform.rotation.z, RootTransform.rotation.w);
@@ -53,19 +57,39 @@ public class ExternalSender : MonoBehaviour {
                 var Transform = animator.GetBoneTransform(bone);
                 if (Transform != null)
                 {
-                    uClient.Send("/VMC/ExternalSender/Bone/Transform", 
+                    uClient.Send("/VMC/Ext/Bone/Pos", 
                         bone.ToString(), 
                         Transform.localPosition.x, Transform.localPosition.y, Transform.localPosition.z, 
                         Transform.localRotation.x, Transform.localRotation.y, Transform.localRotation.z, Transform.localRotation.w);
                 }
             }
-            uClient.Send("/VMC/ExternalSender/Available", 1);
+
+            //Blendsharp
+            if (blendShapeProxy == null)
+            {
+                blendShapeProxy = CurrentModel.GetComponent<VRMBlendShapeProxy>();
+                Debug.Log("ExternalSender: VRMBlendShapeProxy Updated");
+            }
+
+            if (blendShapeProxy != null) {
+                foreach (var b in blendShapeProxy.GetValues())
+                {
+                    uClient.Send("/VMC/Ext/Blend/Val",
+                        b.Key.ToString(),
+                        (float)b.Value
+                        );
+                }
+                uClient.Send("/VMC/Ext/Blend/Apply");
+            }
+
+            //Available
+            uClient.Send("/VMC/Ext/OK", 1);
         }
         else
         {
-            uClient.Send("/VMC/ExternalSender/Available", 0);
+            uClient.Send("/VMC/Ext/OK", 0);
         }
-        uClient.Send("/VMC/ExternalSender/Time", Time.time);
+        uClient.Send("/VMC/Ext/T", Time.time);
     }
 }
 
