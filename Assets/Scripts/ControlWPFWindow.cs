@@ -2738,4 +2738,10 @@ public class ControlWPFWindow : MonoBehaviour
             isWindowDragging = false;
         }
     }
+
+    //---ExternalSender
+    public GameObject GetCurrentModel()
+    {
+        return CurrentModel;
+    }
 }
