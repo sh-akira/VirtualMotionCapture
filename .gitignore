@@ -41,6 +41,7 @@ Assets/ExternalPlugins/ViveSR*
 tobii*
 SteamVR*csproj
 Backup*
+Assets/ExternalPlugins/uOSC*
 
 # Visual Studio cache directory
 .vs/
