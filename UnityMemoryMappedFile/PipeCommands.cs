@@ -351,6 +351,12 @@ namespace UnityMemoryMappedFile
             public float rz { get; set; }
             public float fov { get; set; }
         }
+
+        public class GetEnableExternalMotionSender { }
+        public class EnableExternalMotionSender
+        {
+            public bool enable { get; set; }
+        }
     }
 
 

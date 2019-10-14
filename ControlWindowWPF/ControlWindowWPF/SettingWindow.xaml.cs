@@ -238,6 +238,16 @@ namespace VirtualMotionCaptureControlPanel
                     isSetting = false;
                 });
             });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEnableExternalMotionSender { }, d =>
+            {
+                var data = (PipeCommands.EnableExternalMotionSender)d;
+                Dispatcher.Invoke(() =>
+                {
+                    isSetting = true;
+                    ExternalMotionSenderEnableCheckBox.IsChecked = data.enable;
+                    isSetting = false;
+                });
+            });
             await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = true });
         }
 
@@ -433,6 +443,15 @@ namespace VirtualMotionCaptureControlPanel
                         File.WriteAllLines(ofd.FileName, lines);
                     }
                 });
+            });
+        }
+
+        private async void ExternalMotionSenderCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            if (isSetting) return;
+            await Globals.Client?.SendCommandAsync(new PipeCommands.EnableExternalMotionSender
+            {
+                enable = ExternalMotionSenderEnableCheckBox.IsChecked.Value
             });
         }
     }

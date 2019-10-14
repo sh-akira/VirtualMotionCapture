@@ -54,6 +54,8 @@ public class ControlWPFWindow : MonoBehaviour
     public Transform PelvisTrackerRoot;
     public Transform RealTrackerRoot;
 
+    public GameObject ExternalMotionSenderObject;
+
     public MemoryMappedFileServer server;
     private string pipeName = Guid.NewGuid().ToString();
 
@@ -613,6 +615,18 @@ public class ControlWPFWindow : MonoBehaviour
                     ry = CurrentSettings.FreeCameraTransform.localRotation.eulerAngles.y,
                     rz = CurrentSettings.FreeCameraTransform.localRotation.eulerAngles.z,
                     fov = currentCamera.fieldOfView
+                }, e.RequestId);
+            }
+            else if (e.CommandType == typeof(PipeCommands.EnableExternalMotionSender))
+            {
+                var d = (PipeCommands.EnableExternalMotionSender)e.Data;
+                SetExternalMotionSenderEnable(d.enable);
+            }
+            else if (e.CommandType == typeof(PipeCommands.GetEnableExternalMotionSender))
+            {
+                await server.SendCommandAsync(new PipeCommands.EnableExternalMotionSender
+                {
+                    enable = CurrentSettings.ExternalMotionSenderEnable
                 }, e.RequestId);
             }
         }, null);
@@ -2115,6 +2129,16 @@ public class ControlWPFWindow : MonoBehaviour
 
     #endregion
 
+    #region ExternalMotionSender
+
+    private void SetExternalMotionSenderEnable(bool enable)
+    {
+        CurrentSettings.ExternalMotionSenderEnable = enable;
+        ExternalMotionSenderObject.SetActive(enable);
+    }
+
+    #endregion
+
     #region Setting
 
     [Serializable]
@@ -2378,6 +2402,10 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public bool EyeTracking_ViveProEyeUseEyelidMovements;
 
+        //ExternalMotionSender
+        [OptionalField]
+        public bool ExternalMotionSenderEnable;
+
         [OptionalField]
         public bool EnableSkeletal;
 
@@ -2437,6 +2465,8 @@ public class ControlWPFWindow : MonoBehaviour
             EyeTracking_ViveProEyeUseEyelidMovements = true;
 
             EnableSkeletal = true;
+
+            ExternalMotionSenderEnable = false;
         }
     }
 
@@ -2622,6 +2652,8 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 Screen.SetResolution(CurrentSettings.ScreenWidth, CurrentSettings.ScreenHeight, false, CurrentSettings.ScreenRefreshRate);
             }
+
+            SetExternalMotionSenderEnable(CurrentSettings.ExternalMotionSenderEnable);
 
             SetEyeTracking_TobiiOffsetsAction?.Invoke(new PipeCommands.SetEyeTracking_TobiiOffsets
             {

@@ -91,6 +91,9 @@
                 <Button Content="Export" Name="CameraPlus_ExportButton" Click="CameraPlus_ExportButton_Click"/>
             </UniformGrid>
         </GroupBox>
+        <GroupBox Header="{DynamicResource SettingWindow_ExternalMotionSender}">
+            <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionSenderEnable}" Name="ExternalMotionSenderEnableCheckBox" Checked="ExternalMotionSenderCheckBox_Changed" Unchecked="ExternalMotionSenderCheckBox_Changed" DockPanel.Dock="Top"/>
+        </GroupBox>
         <GroupBox Header="{DynamicResource SettingWindow_Language}">
             <ComboBox Name="LanguageComboBox" SelectedIndex="0" SelectionChanged="LanguageComboBox_SelectionChanged">
                 <system:String>Japanese</system:String>

@@ -226,6 +226,8 @@
     <system:String x:Key="SettingWindow_SelectedItemError">カメラを割り当てるトラッカーを選択してください</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig">externalcamera.cfgを出力</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">VRゲームにモデルを合成するためのexternalcamera.cfgを出力します</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSender">外部にモーション送信</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">OSCでモーション送信を有効にする</system:String>
 
 
     <!-- TrackerConfigWindow -->

@@ -5950,7 +5950,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1155637109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7816,6 +7816,7 @@ MonoBehaviour:
   HeadTrackerRoot: {fileID: 421670469}
   PelvisTrackerRoot: {fileID: 836257372}
   RealTrackerRoot: {fileID: 1300838139}
+  ExternalMotionSenderObject: {fileID: 1155637108}
   MainDirectionalLightTransform: {fileID: 170076735}
   MainDirectionalLight: {fileID: 170076734}
 --- !u!4 &1407685705
