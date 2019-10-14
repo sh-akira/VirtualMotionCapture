@@ -2434,7 +2434,7 @@ public class ControlWPFWindow : MonoBehaviour
             EyeTracking_TobiiScaleVertical = 0.2f;
             EyeTracking_ViveProEyeScaleHorizontal = 2.0f;
             EyeTracking_ViveProEyeScaleVertical = 1.5f;
-            EyeTracking_ViveProEyeUseEyelidMovements = true;
+            EyeTracking_ViveProEyeUseEyelidMovements = false;
 
             EnableSkeletal = true;
         }
@@ -2637,6 +2637,11 @@ public class ControlWPFWindow : MonoBehaviour
                 OffsetVertical = CurrentSettings.EyeTracking_ViveProEyeOffsetVertical,
                 ScaleHorizontal = CurrentSettings.EyeTracking_ViveProEyeScaleHorizontal,
                 ScaleVertical = CurrentSettings.EyeTracking_ViveProEyeScaleVertical
+            });
+
+            SetEyeTracking_ViveProEyeUseEyelidMovementsAction?.Invoke(new PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements
+            {
+                Use = CurrentSettings.EyeTracking_ViveProEyeUseEyelidMovements
             });
 
             AdditionalSettingAction?.Invoke(null);
