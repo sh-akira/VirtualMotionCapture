@@ -79,19 +79,19 @@ public class FaceController : MonoBehaviour
 
     public void SetBlink_L(float value)
     {
+        if (proxy == null) return;
         if (ViveProEyeEnabled == false)
         {
             proxy.ImmediatelySetValue(BlendShapePreset.Blink, 0.0f);
-            ViveProEyeEnabled = true;
         }
         proxy.ImmediatelySetValue(BlendShapePreset.Blink_L, value);
     }
     public void SetBlink_R(float value)
     {
+        if (proxy == null) return;
         if (ViveProEyeEnabled == false)
         {
             proxy.ImmediatelySetValue(BlendShapePreset.Blink, 0.0f);
-            ViveProEyeEnabled = true;
         }
         proxy.ImmediatelySetValue(BlendShapePreset.Blink_R, value);
     }
