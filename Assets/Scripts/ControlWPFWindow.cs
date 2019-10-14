@@ -2135,6 +2135,18 @@ public class ControlWPFWindow : MonoBehaviour
     {
         CurrentSettings.ExternalMotionSenderEnable = enable;
         ExternalMotionSenderObject.SetActive(enable);
+        WaitOneFrameAction(() => ModelLoadedAction?.Invoke(CurrentModel));
+    }
+
+    private void WaitOneFrameAction(Action action)
+    {
+        StartCoroutine(WaitOneFrameCoroutine(action));
+    }
+
+    private IEnumerator WaitOneFrameCoroutine(Action action)
+    {
+        yield return null;
+        action?.Invoke();
     }
 
     #endregion

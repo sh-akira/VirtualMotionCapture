@@ -25,6 +25,8 @@ public class EyeTracking_ViveProEye : MonoBehaviour
     public FaceController faceController;
     public bool UseEyelidMovements = true;
 
+    private GameObject currentModel;
+
     private Dictionary<EyeShape, float> EyeWeightings = new Dictionary<EyeShape, float>();
 
     // Use this for initialization
@@ -67,6 +69,8 @@ public class EyeTracking_ViveProEye : MonoBehaviour
     private void ModelInitialize(GameObject currentModel)
     {
         if (currentModel == null) return;
+        if (this.currentModel == currentModel) return;
+        this.currentModel = currentModel;
         var animator = currentModel.GetComponent<Animator>();
         var head = animator.GetBoneTransform(HumanBodyBones.Head);
         //モデルの頭の子に目線向ける先を設定
