@@ -23,8 +23,6 @@ public class EyeTracking_Tobii : MonoBehaviour
     private bool isFirst = true;
     public ControlWPFWindow controlWPFWindow;
 
-    private GameObject currentModel = null;
-
     // Use this for initialization
     void Start()
     {
@@ -55,8 +53,6 @@ public class EyeTracking_Tobii : MonoBehaviour
     {
         if (currentModel == null) return;
         if (fromSetting == false && TobiiAPI.IsConnected == false) return;
-        if (this.currentModel == currentModel) return;
-        this.currentModel = currentModel;
         var animator = currentModel.GetComponent<Animator>();
         var head = animator.GetBoneTransform(HumanBodyBones.Head);
         //モデルの頭の前方50cm地点にモニターがあることにする
