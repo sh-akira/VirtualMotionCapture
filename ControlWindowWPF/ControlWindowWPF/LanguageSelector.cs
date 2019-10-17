@@ -15,6 +15,10 @@ namespace VirtualMotionCaptureControlPanel
             {
                 ChangeLanguage("Japanese");
             }
+            else if (System.Globalization.CultureInfo.CurrentCulture.Name == "zh-CN")
+            {
+                ChangeLanguage("Chinese");
+            }
             else
             {
                 ChangeLanguage("English");

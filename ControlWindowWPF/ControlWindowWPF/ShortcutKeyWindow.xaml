@@ -10,7 +10,7 @@
         <StackPanel Orientation="Vertical" DockPanel.Dock="Right">
             <GroupBox Header="{DynamicResource ShortcutKeyWindow_TouchPadStickInfo}">
                 <StackPanel Orientation="Vertical">
-                    <GroupBox Header="タッチパッド">
+                    <GroupBox Header="{DynamicResource ShortcutKeyWindow_TouchPad}">
                         <StackPanel Orientation="Horizontal">
                             <StackPanel Orientation="Vertical">
                                 <GroupBox Header="{DynamicResource ShortcutKeyWindow_LeftController}">
@@ -50,7 +50,7 @@
                             </StackPanel>
                         </StackPanel>
                     </GroupBox>
-                    <GroupBox Header="スティック">
+                    <GroupBox Header="{DynamicResource ShortcutKeyWindow_Stick}">
                         <StackPanel Orientation="Horizontal">
                             <StackPanel Orientation="Vertical">
                                 <GroupBox Header="{DynamicResource ShortcutKeyWindow_LeftController}">
@@ -94,7 +94,7 @@
                     </DockPanel>
                 </StackPanel>
             </GroupBox>
-            <CheckBox Content="手の動きにSkeletalを使う(ハンドジェスチャーが無効になります)" Name="EnableSkeletalInputCheckBox" Checked="EnableSkeletalInputCheckBox_CheckedChanged" Unchecked="EnableSkeletalInputCheckBox_CheckedChanged"/>
+            <CheckBox Content="{DynamicResource ShortcutKeyWindow_UseSkeletal}" Name="EnableSkeletalInputCheckBox" Checked="EnableSkeletalInputCheckBox_CheckedChanged" Unchecked="EnableSkeletalInputCheckBox_CheckedChanged"/>
             <UniformGrid Rows="2" Columns="2">
                 <Button Content="{DynamicResource ShortcutKeyWindow_AddHandGesture}" Name="HandGestureAddButton" Click="HandGestureAddButton_Click" ToolTip="{DynamicResource ShortcutKeyWindow_AddHandGesture_ToolTip}"/>
                 <Button Content="{DynamicResource ShortcutKeyWindow_AddFacingExpression}" Name="FaceAddButton" Click="FaceAddButton_Click" ToolTip="{DynamicResource ShortcutKeyWindow_AddFacingExpression_ToolTip}"/>
