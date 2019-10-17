@@ -268,6 +268,8 @@
     <system:String x:Key="ShortcutKeyWindow_Name">名称</system:String>
     <system:String x:Key="ShortcutKeyWindow_UseKey">使用キー</system:String>
     <system:String x:Key="ShortcutKeyWindow_TouchPadStickInfo">タッチパッド/スティックの割り当て状態</system:String>
+    <system:String x:Key="ShortcutKeyWindow_TouchPad">タッチパッド</system:String>
+    <system:String x:Key="ShortcutKeyWindow_Stick">スティック</system:String>
     <system:String x:Key="ShortcutKeyWindow_LeftController">左コントローラー</system:String>
     <system:String x:Key="ShortcutKeyWindow_RightController">右コントローラー</system:String>
     <system:String x:Key="ShortcutKeyWindow_LeftCenterKey">センターキー</system:String>
@@ -301,6 +303,7 @@
     <system:String x:Key="ShortcutKeyWindow_Edit_ToolTip">選択されているショートカットキーを編集します</system:String>
     <system:String x:Key="ShortcutKeyWindow_Remove_ToolTip">選択されているショートカットキーを削除します</system:String>
     <system:String x:Key="ShortcutKeyWindow_ShortcutKeyList_ToolTip">登録されているショートカットキー一覧です</system:String>
+    <system:String x:Key="ShortcutKeyWindow_UseSkeletal">手の動きにSkeletalを使う(ハンドジェスチャーが無効になります)</system:String>
 
 
     <!-- HandGestureControlKeyAddWindow -->

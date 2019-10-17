@@ -267,6 +267,8 @@
     <system:String x:Key="ShortcutKeyWindow_Name">Name</system:String>
     <system:String x:Key="ShortcutKeyWindow_UseKey">UseKey</system:String>
     <system:String x:Key="ShortcutKeyWindow_TouchPadStickInfo">Touch pad / stick assignment</system:String>
+    <system:String x:Key="ShortcutKeyWindow_TouchPad">Touch pad</system:String>
+    <system:String x:Key="ShortcutKeyWindow_Stick">Stick</system:String>
     <system:String x:Key="ShortcutKeyWindow_LeftController">Left controller</system:String>
     <system:String x:Key="ShortcutKeyWindow_RightController">Right controller</system:String>
     <system:String x:Key="ShortcutKeyWindow_LeftCenterKey">Center key</system:String>
@@ -300,6 +302,7 @@
     <system:String x:Key="ShortcutKeyWindow_Edit_ToolTip">Edit the selected shortcut key.</system:String>
     <system:String x:Key="ShortcutKeyWindow_Remove_ToolTip">Remove the selected shortcut key.</system:String>
     <system:String x:Key="ShortcutKeyWindow_ShortcutKeyList_ToolTip">List of registered shortcut keys.</system:String>
+    <system:String x:Key="ShortcutKeyWindow_UseSkeletal">Use Skeletal for fingers (hand gestures are disabled)</system:String>
 
 
     <!-- HandGestureControlKeyAddWindow -->
