@@ -16,26 +16,109 @@ public class ExternalSender : MonoBehaviour {
     VRMBlendShapeProxy blendShapeProxy = null;
     Camera currentCamera = null;
 
+    public SteamVR2Input steamVR2Input;
+
     void Start () {
         uClient = GetComponent<uOSC.uOscClient>();
         window = GameObject.Find("ControlWPFWindow").GetComponent<ControlWPFWindow>();
 
         window.ModelLoadedAction += (GameObject CurrentModel) =>
         {
-            this.CurrentModel = CurrentModel;
-            animator = CurrentModel.GetComponent<Animator>();
-            vrik = CurrentModel.GetComponent<VRIK>();
-            blendShapeProxy = CurrentModel.GetComponent<VRMBlendShapeProxy>();
+            if (CurrentModel != null) {
+                this.CurrentModel = CurrentModel;
+                animator = CurrentModel.GetComponent<Animator>();
+                vrik = CurrentModel.GetComponent<VRIK>();
+                blendShapeProxy = CurrentModel.GetComponent<VRMBlendShapeProxy>();
+            }
         };
 
         window.CameraChangedAction += (Camera currentCamera) =>
         {
             this.currentCamera = currentCamera;
         };
+
+        steamVR2Input.KeyDownEvent += (object sender, OVRKeyEventArgs e) =>
+        {
+            if (this.isActiveAndEnabled)
+            {
+                //Debug.Log("Ext: ConDown");
+                try
+                {
+                    uClient.Send("/VMC/Ext/Con", 1, e.Name, e.IsLeft ? 1 : 0, e.IsTouch ? 1 : 0, e.IsAxis ? 1 : 0, e.Axis.x, e.Axis.y, e.Axis.z);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError(ex);
+                }
+            }
+        };
+
+        steamVR2Input.KeyUpEvent += (object sender, OVRKeyEventArgs e) =>
+        {
+            if (this.isActiveAndEnabled)
+            {
+                //Debug.Log("Ext: ConUp");
+                try
+                {
+                    uClient.Send("/VMC/Ext/Con", 0, e.Name, e.IsLeft ? 1 : 0, e.IsTouch ? 1 : 0, e.IsAxis ? 1 : 0, e.Axis.x, e.Axis.y, e.Axis.z);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError(ex);
+                }
+            }
+        };
+
+        steamVR2Input.AxisChangedEvent += (object sender, OVRKeyEventArgs e) =>
+        {
+            if (this.isActiveAndEnabled)
+            {
+                //Debug.Log("Ext: ConAxis");
+                try
+                {
+                    if (e.IsAxis) {
+                        uClient.Send("/VMC/Ext/Con", 2, e.Name, e.IsLeft ? 1 : 0, e.IsTouch ? 1 : 0, e.IsAxis ? 1 : 0, e.Axis.x, e.Axis.y, e.Axis.z);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError(ex);
+                }
+            }
+        };
+
+        KeyboardAction.KeyDownEvent += (object sender, KeyboardEventArgs e) => {
+            if (this.isActiveAndEnabled)
+            {
+                //Debug.Log("Ext: KeyDown");
+                try
+                {
+                    uClient.Send("/VMC/Ext/Key", 1, e.KeyName, e.KeyCode);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError(ex);
+                }
+            }
+        };
+        KeyboardAction.KeyUpEvent += (object sender, KeyboardEventArgs e) => {
+            if (this.isActiveAndEnabled)
+            {
+                //Debug.Log("Ext: KeyUp");
+                try
+                {
+                    uClient.Send("/VMC/Ext/Key", 0, e.KeyName, e.KeyCode);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError(ex);
+                }
+            }
+        };
     }
 
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update () {
         if (CurrentModel != null && animator != null && uClient != null)
         {
             //Root
