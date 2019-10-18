@@ -47,7 +47,7 @@ public class ExternalSender : MonoBehaviour {
                 //Debug.Log("Ext: ConDown");
                 try
                 {
-                    uClient.Send("/VMC/Ext/Con", 1, e.Name, e.IsLeft ? 1 : 0, e.IsTouch ? 1 : 0, e.IsAxis ? 1 : 0, e.Axis.x, e.Axis.y, e.Axis.z);
+                    uClient?.Send("/VMC/Ext/Con", 1, e.Name, e.IsLeft ? 1 : 0, e.IsTouch ? 1 : 0, e.IsAxis ? 1 : 0, e.Axis.x, e.Axis.y, e.Axis.z);
                 }
                 catch (Exception ex)
                 {
@@ -63,7 +63,7 @@ public class ExternalSender : MonoBehaviour {
                 //Debug.Log("Ext: ConUp");
                 try
                 {
-                    uClient.Send("/VMC/Ext/Con", 0, e.Name, e.IsLeft ? 1 : 0, e.IsTouch ? 1 : 0, e.IsAxis ? 1 : 0, e.Axis.x, e.Axis.y, e.Axis.z);
+                    uClient?.Send("/VMC/Ext/Con", 0, e.Name, e.IsLeft ? 1 : 0, e.IsTouch ? 1 : 0, e.IsAxis ? 1 : 0, e.Axis.x, e.Axis.y, e.Axis.z);
                 }
                 catch (Exception ex)
                 {
@@ -80,7 +80,7 @@ public class ExternalSender : MonoBehaviour {
                 try
                 {
                     if (e.IsAxis) {
-                        uClient.Send("/VMC/Ext/Con", 2, e.Name, e.IsLeft ? 1 : 0, e.IsTouch ? 1 : 0, e.IsAxis ? 1 : 0, e.Axis.x, e.Axis.y, e.Axis.z);
+                        uClient?.Send("/VMC/Ext/Con", 2, e.Name, e.IsLeft ? 1 : 0, e.IsTouch ? 1 : 0, e.IsAxis ? 1 : 0, e.Axis.x, e.Axis.y, e.Axis.z);
                     }
                 }
                 catch (Exception ex)
@@ -96,7 +96,7 @@ public class ExternalSender : MonoBehaviour {
                 //Debug.Log("Ext: KeyDown");
                 try
                 {
-                    uClient.Send("/VMC/Ext/Key", 1, e.KeyName, e.KeyCode);
+                    uClient?.Send("/VMC/Ext/Key", 1, e.KeyName, e.KeyCode);
                 }
                 catch (Exception ex)
                 {
@@ -110,7 +110,7 @@ public class ExternalSender : MonoBehaviour {
                 //Debug.Log("Ext: KeyUp");
                 try
                 {
-                    uClient.Send("/VMC/Ext/Key", 0, e.KeyName, e.KeyCode);
+                    uClient?.Send("/VMC/Ext/Key", 0, e.KeyName, e.KeyCode);
                 }
                 catch (Exception ex)
                 {
@@ -122,7 +122,7 @@ public class ExternalSender : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        if (CurrentModel != null && animator != null && uClient != null)
+        if (CurrentModel != null && animator != null)
         {
             //Root
             if (vrik == null)
@@ -137,7 +137,7 @@ public class ExternalSender : MonoBehaviour {
                 var offset = handTrackerRoot.transform;
                 if (RootTransform != null && offset != null)
                 {
-                    uClient.Send("/VMC/Ext/Root/Pos",
+                    uClient?.Send("/VMC/Ext/Root/Pos",
                         "root",
                         RootTransform.position.x, RootTransform.position.y, RootTransform.position.z,
                         RootTransform.rotation.x, RootTransform.rotation.y, RootTransform.rotation.z, RootTransform.rotation.w,
@@ -152,7 +152,7 @@ public class ExternalSender : MonoBehaviour {
                 var Transform = animator.GetBoneTransform(bone);
                 if (Transform != null)
                 {
-                    uClient.Send("/VMC/Ext/Bone/Pos", 
+                    uClient?.Send("/VMC/Ext/Bone/Pos", 
                         bone.ToString(), 
                         Transform.localPosition.x, Transform.localPosition.y, Transform.localPosition.z, 
                         Transform.localRotation.x, Transform.localRotation.y, Transform.localRotation.z, Transform.localRotation.w);
@@ -169,33 +169,33 @@ public class ExternalSender : MonoBehaviour {
             if (blendShapeProxy != null) {
                 foreach (var b in blendShapeProxy.GetValues())
                 {
-                    uClient.Send("/VMC/Ext/Blend/Val",
+                    uClient?.Send("/VMC/Ext/Blend/Val",
                         b.Key.ToString(),
                         (float)b.Value
                         );
                 }
-                uClient.Send("/VMC/Ext/Blend/Apply");
+                uClient?.Send("/VMC/Ext/Blend/Apply");
             }
 
             //Available
-            uClient.Send("/VMC/Ext/OK", 1);
+            uClient?.Send("/VMC/Ext/OK", 1);
         }
         else
         {
-            uClient.Send("/VMC/Ext/OK", 0);
+            uClient?.Send("/VMC/Ext/OK", 0);
         }
 
         //Camera
         if (currentCamera != null)
         {
-            uClient.Send("/VMC/Ext/Cam",
+            uClient?.Send("/VMC/Ext/Cam",
                 "Camera",
                 currentCamera.transform.position.x, currentCamera.transform.position.y, currentCamera.transform.position.z,
                 currentCamera.transform.rotation.x, currentCamera.transform.rotation.y, currentCamera.transform.rotation.z, currentCamera.transform.rotation.w,
                 currentCamera.fieldOfView);
         }
 
-        uClient.Send("/VMC/Ext/T", Time.time);
+        uClient?.Send("/VMC/Ext/T", Time.time);
     }
 }
 
