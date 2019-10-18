@@ -83,6 +83,7 @@ public class ControlWPFWindow : MonoBehaviour
 
     public Action<GameObject> ModelLoadedAction = null;
     public Action<GameObject> AdditionalSettingAction = null;
+    public Action<Camera> CameraChangedAction = null;
 
     public Action<GameObject> EyeTracking_TobiiCalibrationAction = null;
     public Action<PipeCommands.SetEyeTracking_TobiiOffsets> SetEyeTracking_TobiiOffsetsAction = null;
@@ -123,6 +124,8 @@ public class ControlWPFWindow : MonoBehaviour
 
         KeyboardAction.KeyDownEvent += KeyboardAction_KeyDown;
         KeyboardAction.KeyUpEvent += KeyboardAction_KeyUp;
+
+        CameraChangedAction?.Invoke(currentCamera);
     }
 
     private int SetWindowTitle()
@@ -1560,6 +1563,8 @@ public class ControlWPFWindow : MonoBehaviour
             camera.GetComponent<CameraMouseControl>().enabled = true;
             currentCamera = camera;
             SetCameraMirrorEnable(CurrentSettings.CameraMirrorEnable);
+
+            CameraChangedAction?.Invoke(currentCamera);
         }
     }
 
@@ -2136,6 +2141,7 @@ public class ControlWPFWindow : MonoBehaviour
         CurrentSettings.ExternalMotionSenderEnable = enable;
         ExternalMotionSenderObject.SetActive(enable);
         WaitOneFrameAction(() => ModelLoadedAction?.Invoke(CurrentModel));
+        WaitOneFrameAction(() => CameraChangedAction?.Invoke(currentCamera));
     }
 
     private void WaitOneFrameAction(Action action)
