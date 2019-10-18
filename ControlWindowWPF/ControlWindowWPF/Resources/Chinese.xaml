@@ -302,7 +302,7 @@
     <system:String x:Key="ShortcutKeyWindow_Edit_ToolTip">编辑被选择的快捷键。</system:String>
     <system:String x:Key="ShortcutKeyWindow_Remove_ToolTip">移除被选择的快捷键。</system:String>
     <system:String x:Key="ShortcutKeyWindow_ShortcutKeyList_ToolTip">已注册快捷键列表</system:String>
-    <system:String x:Key="ShortcutKeyWindow_UseSkeletal">Use Skeletal for fingers (hand gestures are disabled)</system:String>
+    <system:String x:Key="ShortcutKeyWindow_UseSkeletal">使用Index指虎追踪手指（手势表情将不可用）</system:String>
 
 
     <!-- HandGestureControlKeyAddWindow -->
