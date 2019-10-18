@@ -1,0 +1,450 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <system:String x:Key="Error">에러</system:String>
+    <system:String x:Key="Confirm">확인</system:String>
+    <system:String x:Key="Custom">커스텀</system:String>
+    <system:String x:Key="KeysWatermark">여기를 클릭한 뒤 조작할 키를 눌러주세요.</system:String>
+    <system:String x:Key="KeyNotFoundError">키가 설정되어있지 않습니다. 할당할 키를 선택해주세요.</system:String>
+    <system:String x:Key="FunctionNotFoundError">기능이 선택되어있지 않습니다. 할당할 기능을 선택해주세요.</system:String>
+    <system:String x:Key="FileNameIsInvalidError">파일명으로서 사용할 수 없는 문자가 포함되어있습니다. 변경해주세요.</system:String>
+    <system:String x:Key="Overwritten">이미 존재하는 이름입니다. 덮어씌우시겠습니까?</system:String>
+    <system:String x:Key="BothHand">양손</system:String>
+    <system:String x:Key="RightHand">오른손</system:String>
+    <system:String x:Key="LeftHand">왼손</system:String>
+    <system:String x:Key="FacialExpression">표정</system:String>
+    <system:String x:Key="Function">기능</system:String>
+    <system:String x:Key="AutoDetect">자동감지</system:String>
+    <system:String x:Key="NotFound">[미접속]</system:String>
+
+    <system:String x:Key="HMD">HMD</system:String>
+    <system:String x:Key="Controller">컨트롤러</system:String>
+    <system:String x:Key="Tracker">트래커</system:String>
+    <system:String x:Key="NoAssign">할당하지않음</system:String>
+
+    <!-- MainWindow -->
+    <system:String x:Key="MainWindowTitle">컨트롤패널</system:String>
+    <system:String x:Key="MainWindowTitleLoading">기동중</system:String>
+    
+    <system:String x:Key="MainWindow_Setting">설정</system:String>
+    <system:String x:Key="MainWindow_LoadSetting">설정 불러오기</system:String>
+    <system:String x:Key="MainWindow_ImportVRM">VRM 로드</system:String>
+    <system:String x:Key="MainWindow_ShortcutKey">단축키</system:String>
+    <system:String x:Key="MainWindow_SaveSetting">설정 저장</system:String>
+    <system:String x:Key="MainWindow_Calibration">캘리브레이션</system:String>
+    <system:String x:Key="MainWindow_AdvancedSetting">고급설정</system:String>
+    <system:String x:Key="MainWindow_Setting_ToolTip">설정</system:String>
+    <system:String x:Key="MainWindow_LoadSetting_ToolTip">모든 설정을 파일로부터 읽어드립니다</system:String>
+    <system:String x:Key="MainWindow_ImportVRM_ToolTip">VRM모델을 로드합니다</system:String>
+    <system:String x:Key="MainWindow_ShortcutKey_ToolTip">컨트롤러, 또는 키보드로 조작하는 단축키를 설정합니다</system:String>
+    <system:String x:Key="MainWindow_SaveSetting_ToolTip">모든 설정을 파일로서 저장합니다</system:String>
+    <system:String x:Key="MainWindow_Calibration_ToolTip">모델 조작 캘리브레이션을 실시합니다</system:String>
+    <system:String x:Key="MainWindow_AdvancedSetting_ToolTip">기타 상세한 설정을 엽니다</system:String>
+                          
+    <system:String x:Key="MainWindow_Background">배경색</system:String>
+    <system:String x:Key="MainWindow_GB">GB</system:String>
+    <system:String x:Key="MainWindow_BB">BB</system:String>
+    <system:String x:Key="MainWindow_White240">白240</system:String>
+    <system:String x:Key="MainWindow_Custom">커스텀</system:String>
+    <system:String x:Key="MainWindow_Transparent">투명</system:String>
+    <system:String x:Key="MainWindow_WindowAlwaysTopMost">윈도우를 항상 맨 위에 표시</system:String>
+    <system:String x:Key="MainWindow_HideWindowBorder">윈도우 프레임 숨기기</system:String>
+    <system:String x:Key="MainWindow_MouseInputPassThrough">마우스 조작을 투과</system:String>
+    <system:String x:Key="MainWindow_Background_ToolTip">배경색</system:String>
+    <system:String x:Key="MainWindow_GB_ToolTip">배경색을 초록으로 설정합니다</system:String>
+    <system:String x:Key="MainWindow_BB_ToolTip">배경색을 파랑으로 설정합니다</system:String>
+    <system:String x:Key="MainWindow_White240_ToolTip">배경색을 흰 색(RGB:240,240,240)으로 설정합니다</system:String>
+    <system:String x:Key="MainWindow_Custom_ToolTip">배경색을 원하는 색으로 설정 가능합니다. 우클릭으로 색을 변경할 수 있습니다</system:String>
+    <system:String x:Key="MainWindow_Transparent_ToolTip">배경을 투명하게 하고 아래의 창이 보이도록 합니다. 자동으로 윈도우 프레임을 숨깁니다</system:String>
+    <system:String x:Key="MainWindow_WindowAlwaysTopMost_ToolTip">윈도우를 항상 맨 위에 표시하여 다른 창 아래로 가지 않도록 합니다</system:String>
+    <system:String x:Key="MainWindow_HideWindowBorder_ToolTip">윈도우의 프레임을 숨겨서 캡쳐를 원활하게 합니다</system:String>
+    <system:String x:Key="MainWindow_MouseInputPassThrough_ToolTip">마우스 조작(클릭 등)을 투과하여 아래의 창을 조작할 수 있도록 합니다.(컨트롤패널을 다시 표시하려면 단축키를 설정하는 것을 추천합니다)</system:String>
+                          
+    <system:String x:Key="MainWindow_Camera">카메라</system:String>
+    <system:String x:Key="MainWindow_Front">앞면</system:String>
+    <system:String x:Key="MainWindow_Back">뒷면</system:String>
+    <system:String x:Key="MainWindow_Free">자유시점</system:String>
+    <system:String x:Key="MainWindow_PositionFixed">좌표고정</system:String>
+    <system:String x:Key="MainWindow_Mirror">미러모드</system:String>
+    <system:String x:Key="MainWindow_ShowGrid">격자표시</system:String>
+    <system:String x:Key="MainWindow_CameraDescription">카메라는 화면을 클릭하여 활성화해야 조작할 수 있습니다</system:String>
+    <system:String x:Key="MainWindow_Camera_ToolTip">카메라</system:String>
+    <system:String x:Key="MainWindow_Front_ToolTip">앞면카메라(모델을 항상 중심에 표시, 정면고정, 마우스휠 드래그와 스크롤 가능)</system:String>
+    <system:String x:Key="MainWindow_Back_ToolTip">뒷면카메라(모델을 항상 중심에 표시, 뒷면고정, 마우스휠 드래그와 스크롤 가능)</system:String>
+    <system:String x:Key="MainWindow_Free_ToolTip">자유시점카메라(화면에서 마우스휠 드래그, 스크롤, 우클릭드래그로 자유롭게 움직일 수 있습니다)</system:String>
+    <system:String x:Key="MainWindow_PositionFixed_ToolTip">좌표고정카메라(모델과 카메라의 거리와 회전을 고정, 화면에서 마우스휠 드래그, 스크롤, 우클릭으로 자유롭게 이동할 수 있습니다)</system:String>
+    <system:String x:Key="MainWindow_Mirror_ToolTip">표시되는 화면을 좌우반전합니다</system:String>
+    <system:String x:Key="MainWindow_ShowGrid_ToolTip">화면에 격자를 표시하여 카메라의 위치를 설정하기 쉽게 합니다</system:String>
+                          
+    <system:String x:Key="MainWindow_LipSync">립싱크</system:String>
+    <system:String x:Key="MainWindow_EnableLipSync">립싱크</system:String>
+    <system:String x:Key="MainWindow_MaxWeight">최대발음만</system:String>
+    <system:String x:Key="MainWindow_MaxWeightEmphasis">최대발음강조</system:String>
+    <system:String x:Key="MainWindow_Device">장치</system:String>
+    <system:String x:Key="MainWindow_DeviceRefresh">갱신</system:String>
+    <system:String x:Key="MainWindow_Gain">Gain(감도)</system:String>
+    <system:String x:Key="MainWindow_WeightThreashold">최소발음</system:String>
+    <system:String x:Key="MainWindow_LipSync_ToolTip">립싱크</system:String>
+    <system:String x:Key="MainWindow_EnableLipSync_ToolTip">음성을 통한 립싱크를 사용합니다</system:String>
+    <system:String x:Key="MainWindow_MaxWeight_ToolTip">아이우에오에서 가장 큰 발음만 사용하여 입을 확실하게 움직입니다</system:String>
+    <system:String x:Key="MainWindow_MaxWeightEmphasis_ToolTip">아이우에오에서 가장 큰 발음을 강조하여 입이 확실하게 열리도록 합니다</system:String>
+    <system:String x:Key="MainWindow_Device_ToolTip">녹음장치를 선택합니다</system:String>
+    <system:String x:Key="MainWindow_DeviceRefresh_ToolTip">장치목록을 갱신합니다</system:String>
+    <system:String x:Key="MainWindow_Gain_ToolTip">Gain(감도)를 조정합니다. 목소리가 작아서 잘 반응하지 않을 경우 크게 하세요</system:String>
+    <system:String x:Key="MainWindow_WeightThreashold_ToolTip">아이우에오 발음의 최소수준을 설정합니다. 잡음에 의해 입이 움직이는 경우 설정해주세요</system:String>
+                          
+    <system:String x:Key="MainWindow_Face">표정제어</system:String>
+    <system:String x:Key="MainWindow_AutoBlink">자동깜빡임</system:String>
+    <system:String x:Key="MainWindow_DefaultFace">기본표정</system:String>
+    <system:String x:Key="MainWindow_TimeToNextBlink">다음 깜빡일때까지(초)</system:String>
+    <system:String x:Key="MainWindow_MinTime">최단</system:String>
+    <system:String x:Key="MainWindow_MaxTime">최장</system:String>
+    <system:String x:Key="MainWindow_AnimationTime">애니메이션시간(초)</system:String>
+    <system:String x:Key="MainWindow_TimeToClose">감기</system:String>
+    <system:String x:Key="MainWindow_TimeToOpen">뜨기</system:String>
+    <system:String x:Key="MainWindow_ClosedTime">감은상태의 시간(초)</system:String>
+    <system:String x:Key="MainWindow_Face_ToolTip">표정제어</system:String>
+    <system:String x:Key="MainWindow_AutoBlink_ToolTip">자동으로 눈을 깜빡이는 기능을 활성화합니다</system:String>
+    <system:String x:Key="MainWindow_DefaultFace_ToolTip">기본표정을 NEUTRAL에서 다른 표정으로 바꿉니다</system:String>
+    <system:String x:Key="MainWindow_MinTime_ToolTip">다음으로 눈을 깜빡일 때까지의 최단시간(단위:초)을 지정합니다. 최단시간부터 최장시간까지의 시간 사이에서 랜덤으로 깜빡입니다</system:String>
+    <system:String x:Key="MainWindow_MaxTime_ToolTip">다음으로 눈을 깜빡일 때까지의 최장시간(단위:초)을 지정합니다. 최단시간부터 최장시간까지의 시간 사이에서 랜덤으로 깜빡입니다</system:String>
+    <system:String x:Key="MainWindow_TimeToClose_ToolTip">깜빡일 때 눈을 감는 애니메이션의 시간을 설정합니다. 크게 할수록 천천히 눈을 감습니다</system:String>
+    <system:String x:Key="MainWindow_TimeToOpen_ToolTip">깜빡일 때 눈을 뜨는 애니메이션의 시간을 설정합니다. 크게 할수록 천천히 눈을 뜹니다</system:String>
+    <system:String x:Key="MainWindow_ClosedTime_ToolTip">깜빡일 때 눈을 감은 뒤 열때까지의 시간을 설정합니다. 크게 할수록 그만큼 눈을 오래 감고 있습니다</system:String>
+
+    <system:String x:Key="MainWindow_Appearance">환경</system:String>
+    <system:String x:Key="MainWindow_LightColor">조명색</system:String>
+    <system:String x:Key="MainWindow_LightAngle">조명각도</system:String>
+    <system:String x:Key="MainWindow_LightVerticalDirection">상하</system:String>
+    <system:String x:Key="MainWindow_LightHorizontalDirection">회전</system:String>
+
+    <system:String x:Key="MainWindow_ErrorCalibration">VRM모델을 로드하지 않았습니다. 모델을 먼저 불러와주세요.</system:String>
+
+
+    <!-- CalibrationWindow -->
+    <system:String x:Key="CalibrationWindowTitle">캘리브레이션</system:String>
+
+    <system:String x:Key="CalibrationWindow_CalibrationDescription1">버튼을 누르거나, 컨트롤러의 트리거를 당기면 5초 후 캘리브레이션이 됩니다</system:String>
+    <system:String x:Key="CalibrationWindow_CalibrationDescription2">정면을 보신 뒤 화면의 모델과 같은 포즈를 취해주세요</system:String>
+    <system:String x:Key="CalibrationWindow_CalibrationButton">캘리브레이션</system:String>
+    <system:String x:Key="CalibrationWindow_CalibrationButton_ToolTip">캘리브레이션을 개시합니다</system:String>
+    <system:String x:Key="CalibrationWindow_Status_Calibrating">보정중</system:String>
+    <system:String x:Key="CalibrationWindow_Status_Finish">완료</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrateDefaultRadioButton">일반모드(몸의 움직임을 최대한 재현함)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandRadioButton">MR합성모드(손의 위치를 최대한 맞추고 다리는 쭉 뻗음)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton">MR합성모드(손의 위치를 최대한 맞추고 다리는 바닥에 맞추어 구부림)</system:String>
+
+
+    <!-- VRMImportWindow -->
+    <system:String x:Key="VRMImportWindowTitle">VRM 로드</system:String>
+
+    <system:String x:Key="VRMImportWindow_VRMImportButton">VRM 로드</system:String>
+    <system:String x:Key="VRMImportWindow_VRMImportOption">로드옵션</system:String>
+    <system:String x:Key="VRMImportWindow_NormalMapFix">노말맵 자동수정(VRoid대상)</system:String>
+    <system:String x:Key="VRMImportWindow_RemoveHairNormalMap">노말맵 수정 시에 머리카락의 노말맵을 삭제(VRoid대상)</system:String>
+    <system:String x:Key="VRMImportWindow_VRMInformation">VRM정보</system:String>
+    <system:String x:Key="VRMImportWindow_ModelTitle">모델명</system:String>
+    <system:String x:Key="VRMImportWindow_ModelVersion">버전</system:String>
+    <system:String x:Key="VRMImportWindow_ModelAuthor">제작자</system:String>
+    <system:String x:Key="VRMImportWindow_ModelReference">참조</system:String>
+    <system:String x:Key="VRMImportWindow_ModelContactInformation">연락처</system:String>
+    <system:String x:Key="VRMImportWindow_PersonationPermission">아바타에 인격을 부여하는 것에 대한 허가</system:String>
+    <system:String x:Key="VRMImportWindow_WhoCanPerform1">아바타에 인격을</system:String>
+    <system:String x:Key="VRMImportWindow_WhoCanPerform2">부여하는 것에 대한 허가범위</system:String>
+    <system:String x:Key="VRMImportWindow_PerformViolentActs1">이 아바타를 사용하여</system:String>
+    <system:String x:Key="VRMImportWindow_PerformViolentActs2">폭력표현을 하는 것에 대한 허가</system:String>
+    <system:String x:Key="VRMImportWindow_PerformSexualActs1">이 아바타를 사용하여</system:String>
+    <system:String x:Key="VRMImportWindow_PerformSexualActs2">성적표현을 하는 것에 대한 허가</system:String>
+    <system:String x:Key="VRMImportWindow_ForCommercialUse">상업적 이용 허가</system:String>
+    <system:String x:Key="VRMImportWindow_PersonationOtherLicenseUrl">기타 라이센스 조건</system:String>
+    <system:String x:Key="VRMImportWindow_LicenseRedistributionAndModification">재배포, 변경에 대한 허가</system:String>
+    <system:String x:Key="VRMImportWindow_LicenseType">라이센스 타입</system:String>
+    <system:String x:Key="VRMImportWindow_OtherLicenseUrl">기타 라이센스 조건</system:String>
+    <system:String x:Key="VRMImportWindow_ImportButton">동의하고 로드</system:String>
+    <system:String x:Key="VRMImportWindow_IgnoreButton">동의하지않음</system:String>
+    <system:String x:Key="VRMImportWindow_VRMImportButton_ToolTip">VRM 파일을 로드합니다</system:String>
+    <system:String x:Key="VRMImportWindow_RemoveHairNormalMap_ToolTip">노말맵 자동수정이 켜져있을 때에 활성화됩니다</system:String>
+    <system:String x:Key="VRMImportWindow_Thumbnail_ToolTip">모델의 썸네일 그림입니다</system:String>
+    <system:String x:Key="VRMImportWindow_ImportButton_ToolTip">반드시 모델의 라이센스, 허가범위를 확인한 후 문제가 없을 때만 사용이 가능합니다</system:String>
+    <system:String x:Key="VRMImportWindow_IgnoreButton_ToolTip">로드를 취소합니다</system:String>
+    <system:String x:Key="VRMImportWindow_VRoidNormalMapDescription">VRoid에서 만든 모델이 번들번들거릴 경우, 노말맵 문제에 대처한 VRoid0.2.14에서 모델을 다시 출력해주세요</system:String>
+
+    <system:String x:Key="Unknown">불명</system:String>
+    <system:String x:Key="OnlyAuthor">제작자에게만 허가</system:String>
+    <system:String x:Key="OnlyAllowed">허가된 사람만</system:String>
+    <system:String x:Key="AllowAll">모두에게 허가</system:String>
+    <system:String x:Key="Disallow">허가하지 않음</system:String>
+    <system:String x:Key="Allow">허가</system:String>
+    <system:String x:Key="LicenseType_RedistributionProhibited">재배포금지(Redistribution Prohibited)</system:String>
+    <system:String x:Key="LicenseType_CC0">저작권 포기(CC0)</system:String>
+    <system:String x:Key="LicenseType_CC_BY">Creative Commons CC BY라이센스(CC_BY)</system:String>
+    <system:String x:Key="LicenseType_CC_BY_NC">Creative Commons CC BY NC라이센스(CC_BY_NC)</system:String>
+    <system:String x:Key="LicenseType_CC_BY_SA">Creative Commons CC BY SA라이센스(CC_BY_SA)</system:String>
+    <system:String x:Key="LicenseType_CC_BY_NC_SA">Creative Commons CC BY NC SA라이센스(CC_BY_NC_SA)</system:String>
+    <system:String x:Key="LicenseType_CC_BY_ND">Creative Commons CC BY ND라이센스(CC_BY_ND)</system:String>
+    <system:String x:Key="LicenseType_CC_BY_NC_ND">Creative Commons CC BY NC ND라이센스(CC_BY_NC_ND)</system:String>
+    <system:String x:Key="LicenseType_Other">기타(Other)</system:String>
+    
+    
+    <!-- SettingWindow -->
+    <system:String x:Key="SettingWindowTitle">설정</system:String>
+                          
+    <system:String x:Key="SettingWindow_HandRotate">손의 각도 조절</system:String>
+    <system:String x:Key="SettingWindow_LeftHand">왼손</system:String>
+    <system:String x:Key="SettingWindow_RightHand">오른손</system:String>
+    <system:String x:Key="SettingWindow_ExternalCameraConfig">externalcamera.cfg(자유시점카메라 좌표를 설정)</system:String>
+    <system:String x:Key="SettingWindow_ControllerNumber">컨트롤러 번호：</system:String>
+    <system:String x:Key="SettingWindow_OpenExternalCameraConfig">externalcamera.cfg 열기</system:String>
+    <system:String x:Key="SettingWindow_TrackerConfig">사용 트래커 설정</system:String>
+    <system:String x:Key="SettingWindow_OpenTrackerConfig">트래커 할당 설정 열기</system:String>
+    <system:String x:Key="SettingWindow_Close">닫기</system:String>
+    <system:String x:Key="SettingWindow_LeftHand_ToolTip">왼손의 회전을 조정합니다. 실제 손과 모델의 손의 각도가 어긋난 경우 변경해주세요</system:String>
+    <system:String x:Key="SettingWindow_RightHand_ToolTip">오른손의 회전을 조정합니다. 실제 손과 모델의 손의 각도가 어긋난 경우 변경해주세요</system:String>
+    <system:String x:Key="SettingWindow_ControllerNumber_ToolTip">externalcamera의 기준이 되는 컨트롤러를 선택(변경할 때에는 CFG파일을 다시 열어주세요)</system:String>
+    <system:String x:Key="SettingWindow_OpenExternalCameraConfig_ToolTip">VR게임에 모델을 합성하기 위한 externalcamera.cfg를 로드하여 자유시점 카메라의 위치를 설정합니다</system:String>
+    <system:String x:Key="SettingWindow_Close_ToolTip">설정을 닫습니다</system:String>
+    <system:String x:Key="SettingWindow_Language">사용언어</system:String>
+    <system:String x:Key="SettingWindow_VirtualWebCamSetting">가상웹캠 설정</system:String>
+    <system:String x:Key="SettingWindow_VirtualWebCamInstall">가상웹캠 인스톨</system:String>
+    <system:String x:Key="SettingWindow_WebCamInstallButton">인스톨</system:String>
+    <system:String x:Key="SettingWindow_WebCamUninstallButton">언인스톨</system:String>
+    <system:String x:Key="SettingWindow_WebCamEnable">가상웹캠 활성화(VMC__Camera)</system:String>
+    <system:String x:Key="SettingWindow_WebCamResize">리사이즈합니다(렉을 유발합니다)</system:String>
+    <system:String x:Key="SettingWindow_WebCamMirror">미러출력(좌우로 반전합니다)</system:String>
+    <system:String x:Key="SettingWindow_WebCamBuffering">버퍼링수(렉이줄어듬/지연됨)：</system:String>
+    <system:String x:Key="SettingWindow_ResolutionSetting">해상도설정(웹캠사용처와 같은 해상도로 지정)</system:String>
+    <system:String x:Key="SettingWindow_ResolutionApply">적용</system:String>
+    <system:String x:Key="SettingWindow_FailedFolderCreate">폴더 생성에 실패했습니다. C:\VMC_Camera폴더를 직접 생성해주세요.</system:String>
+    <system:String x:Key="SettingWindow_FailedFileCopy">파일 복사에 실패했습니다. C:\VMC_Camera폴더에VMC_CameraFilter32bit.dll와64bit.dll을 직접 붙여넣어주세요.</system:String>
+    <system:String x:Key="SettingWindow_SuccessDriverInstall">카메라 드라이버를 성공적으로 설치했습니다.카메라 선택에 VMC_Camera가 추가됩니다</system:String>
+    <system:String x:Key="SettingWindow_FailedDriverInstall">카메라 드라이버 설치를 실패했습니다.명령 프롬프트를 연 뒤C:\VMC_Camera폴더로 이동하여 regsvr32 VMC_CameraFilter32bit.dll 과  regsvr32 VMC_CameraFilter64bit.dll 을 실행해주세요.</system:String>
+    <system:String x:Key="SettingWindow_FailedFileDelete">폴더 삭제에 실패했습니다. C:\VMC_Camera폴더를 직접 삭제해주세요</system:String>
+    <system:String x:Key="SettingWindow_FailedFolderDelete">폴더 삭제에 실패했습니다. C:\VMC_Camera폴더를 직접 삭제해주세요</system:String>
+    <system:String x:Key="SettingWindow_SuccessDriverUninstall">카메라 드라이버를 제거했습니다. 카메라 선택에서 VMC_Camera가 삭제됩니다</system:String>
+    <system:String x:Key="SettingWindow_FailedDriverUninstall">카메라 드라이버의 제거에 실패했습니다. 명령 프롬프트를 연 뒤, C:\VMC_Camera폴더로 이동하여 regsvr32 /u VMC_CameraFilter32bit.dll regsvr32 /u VMC_CameraFilter64bit.dll 를 실행해주세요.그 후 C:\VMC_Camera 폴더를 삭제해주세요</system:String>
+    <system:String x:Key="SettingWindow_SelectedItemError">카메라를 할당할 트래커를 선택해주세요</system:String>
+    <system:String x:Key="SettingWindow_ExportExternalCameraConfig">externalcamera.cfg 출력</system:String>
+    <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">VR게임에 모델을 합성하기 위한 externalcamera.cfg를 출력합니다</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSender">외부로 모션을 송신</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">OSC로 모션송신을 활성화합니다</system:String>
+
+
+    <!-- TrackerConfigWindow -->
+    <system:String x:Key="TrackerConfigWindowTitle">트래커 할당 설정</system:String>
+
+    <system:String x:Key="TrackerConfigWindow_TrackerConfig">트래커 할당</system:String>
+    <system:String x:Key="TrackerConfigWindow_Head">머리</system:String>
+    <system:String x:Key="TrackerConfigWindow_LeftHand">왼손</system:String>
+    <system:String x:Key="TrackerConfigWindow_RightHand">오른손</system:String>
+    <system:String x:Key="TrackerConfigWindow_Pelvis">허리</system:String>
+    <system:String x:Key="TrackerConfigWindow_LeftFoot">왼발</system:String>
+    <system:String x:Key="TrackerConfigWindow_RightFoot">오른발</system:String>
+    <system:String x:Key="TrackerConfigWindow_LeftElbow">왼팔꿈치</system:String>
+    <system:String x:Key="TrackerConfigWindow_RightElbow">오른팔꿈치</system:String>
+    <system:String x:Key="TrackerConfigWindow_LeftKnee">왼무릎</system:String>
+    <system:String x:Key="TrackerConfigWindow_RightKnee">오른무릎</system:String>
+    <system:String x:Key="TrackerConfigWindow_TrackersList">트래커 목록(이동한 트래커는 색이 칠해집니다)</system:String>
+    <system:String x:Key="TrackerConfigWindow_TrackerOffset">손 트래커 오프셋 설정(트래커 바닥 나사구멍에서 손목관절 중심까지의 거리를 설정)</system:String>
+    <system:String x:Key="TrackerConfigWindow_OffsetLeftHand">왼손</system:String>
+    <system:String x:Key="TrackerConfigWindow_LeftHandTrackerToBottom">트래커바닥방향</system:String>
+    <system:String x:Key="TrackerConfigWindow_LeftHandTrackerToShoulder">어깨방향</system:String>
+    <system:String x:Key="TrackerConfigWindow_OffsetRightHand">오른손</system:String>
+    <system:String x:Key="TrackerConfigWindow_RightHandTrackerToBottom">트래커바닥방향</system:String>
+    <system:String x:Key="TrackerConfigWindow_RightHandTrackerToShoulder">어깨방향</system:String>
+    <system:String x:Key="TrackerConfigWindow_TrackerOffsetDescription">손등에 붙일 경우：20mm,50mm정도  손목(팔)에 붙일 경우：20mm,-50mm정도</system:String>
+    <system:String x:Key="TrackerConfigWindow_Close">닫기</system:String>
+    <system:String x:Key="TrackerConfigWindow_LeftHandTrackerToBottom_ToolTip">왼손에 붙이는 트래커의 바닥방향(마이너스는 스위치방향)</system:String>
+    <system:String x:Key="TrackerConfigWindow_LeftHandTrackerToShoulder_ToolTip">왼손에 붙이는 트래커의 어깨방향(마이너스는 손가락방향)</system:String>
+    <system:String x:Key="TrackerConfigWindow_RightHandTrackerToBottom_ToolTip">오른손에 붙이는 트래커의 바닥방향(마이너스는 스위치방향)</system:String>
+    <system:String x:Key="TrackerConfigWindow_RightHandTrackerToShoulder_ToolTip">오른손에 붙이는 트래커의 어깨방향(마이너스는 손가락방향)</system:String>
+    <system:String x:Key="TrackerConfigWindow_SynchronizeBothHands">좌우 동기화</system:String>
+
+
+    <!-- ShortcutKeyWindow -->
+    <system:String x:Key="ShortcutKeyWindowTitle">설정</system:String>
+
+    <system:String x:Key="ShortcutKeyWindow_Type">종류별</system:String>
+    <system:String x:Key="ShortcutKeyWindow_Name">명칭</system:String>
+    <system:String x:Key="ShortcutKeyWindow_UseKey">사용키</system:String>
+    <system:String x:Key="ShortcutKeyWindow_TouchPadStickInfo">터치패드/스틱의 할당상태</system:String>
+    <system:String x:Key="ShortcutKeyWindow_TouchPad">터치패드</system:String>
+    <system:String x:Key="ShortcutKeyWindow_Stick">스틱</system:String>
+    <system:String x:Key="ShortcutKeyWindow_LeftController">왼 컨트롤러</system:String>
+    <system:String x:Key="ShortcutKeyWindow_RightController">오른 컨트롤러</system:String>
+    <system:String x:Key="ShortcutKeyWindow_LeftCenterKey">센터 키</system:String>
+    <system:String x:Key="ShortcutKeyWindow_LeftDivideCount">분할 수：</system:String>
+    <system:String x:Key="ShortcutKeyWindow_RightCenterKey">센터 키</system:String>
+    <system:String x:Key="ShortcutKeyWindow_RightDivideCount">분할 수：</system:String>
+    <system:String x:Key="ShortcutKeyWindow_OculusTouchDescription">Oculus Touch는 센터키영역이 스틱의 무반응 영역입니다</system:String>
+    <system:String x:Key="ShortcutKeyWindow_Apply">적용</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddHandGesture">손 제스쳐 추가</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddFacingExpression">표정 추가</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddFunction">기능 추가</system:String>
+    <system:String x:Key="ShortcutKeyWindow_SelectPreset">프리셋에서 선택</system:String>
+    <system:String x:Key="ShortcutKeyWindow_CustomName">이름설정(저장하여 프리셋에 추가)</system:String>
+    <system:String x:Key="ShortcutKeyWindow_SavePreset">저장</system:String>
+    <system:String x:Key="ShortcutKeyWindow_Edit">편집</system:String>
+    <system:String x:Key="ShortcutKeyWindow_Remove">삭제</system:String>
+
+    <system:String x:Key="ShortcutKeyWindow_LeftController_ToolTip">왼쪽터치패드/스틱의 분할영역을 설정합니다. 사각형 슬라이더를 드래그하여 크기를 변경할 수 있습니다</system:String>
+    <system:String x:Key="ShortcutKeyWindow_RightController_ToolTip">오른쪽터치패드/스틱의 분할영역을 설정합니다. 사각형 슬라이더를 드래그하여 크기를 변경할 수 있습니다</system:String>
+    <system:String x:Key="ShortcutKeyWindow_LeftCenterKey_ToolTip">왼쪽터치패드의 중심을 원형의 키로서 독립설정합니다/오큘러스터치의 무반응 영역</system:String>
+    <system:String x:Key="ShortcutKeyWindow_LeftDivideCount_ToolTip">왼쪽 컨트롤러의 터치패드/스틱의 분할수를 지정합니다</system:String>
+    <system:String x:Key="ShortcutKeyWindow_RightCenterKey_ToolTip">오른쪽터치패드의 중심을 원형의 키로서 독립설정합니다/오큘러스터치의 무반응 영역</system:String>
+    <system:String x:Key="ShortcutKeyWindow_RightDivideCount_ToolTip">오른쪽 컨트롤러의 터치패드/스틱의 분할수를 지정합니다</system:String>
+    <system:String x:Key="ShortcutKeyWindow_Apply_ToolTip">지정한 터치패드 할당을 저장합니다(저장하지 않을 시 유효하지 않습니다)</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddHandGesture_ToolTip">손가락 모양을 변경하는 단축키를 추가합니다</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddFacingExpression_ToolTip">표정을 변경하는 단축키를 추가합니다</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddFunction_ToolTip">기능을 실행하는 단축키를 추가합니다</system:String>
+    <system:String x:Key="ShortcutKeyWindow_SelectPreset_ToolTip">프리셋에서 단축키 목록을 가져옵니다. 현재 설정을 덮어쓰게 되니 조심하십시오</system:String>
+    <system:String x:Key="ShortcutKeyWindow_CustomName_ToolTip">프리셋에 저장할 이름을 지정해주세요</system:String>
+    <system:String x:Key="ShortcutKeyWindow_SavePreset_ToolTip">현재 단축키 목록을 프리셋에 저장합니다</system:String>
+    <system:String x:Key="ShortcutKeyWindow_Edit_ToolTip">선택되어있는 단축키를 편집합니다</system:String>
+    <system:String x:Key="ShortcutKeyWindow_Remove_ToolTip">선택되어있는 단축키를 제거합니다</system:String>
+    <system:String x:Key="ShortcutKeyWindow_ShortcutKeyList_ToolTip">등록되어있는 단축키의 목록입니다</system:String>
+    <system:String x:Key="ShortcutKeyWindow_UseSkeletal">손의 움직임에 skeletal을 사용(손 제스쳐가 무효화됩니다)</system:String>
+
+
+    <!-- HandGestureControlKeyAddWindow -->
+    <system:String x:Key="HandGestureControlKeyAddWindowTitle">손 제스쳐 설정</system:String>
+
+    <system:String x:Key="HandGestureControlKeyAddWindow_HandSelect">조작할 손</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_RightHand">오른손</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_LeftHand">왼손</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_BothHand">양손</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_AngleLimit">각도 제한</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_On">활성</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_UseKey">사용키(빈 칸을 선택한 후 컨트롤러의 버튼을 눌러주세요)</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_KeyUp">키를놓았을때</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_Clear">클리어</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_LittleFinger">새끼</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_RingFinger">약지</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_MiddleFinger">중지</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_IndexFinger">검지</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_Thumb">엄지</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_FirstJoint">첫째관절</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_SecondJoint">둘째관절</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_ThirdJoint">셋째관절</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_ThirdJointSide">셋째관절(가로)</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_AnimationTime">애니메이션시간(손가락움직임시간)</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_Second">초</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_Preset">프리셋에서 선택</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_CustomName">커스텀명칭(저장하여프리셋에추가)</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_Save">저장</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_Register">등록</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_Cancel">취소</system:String>
+
+
+    <!-- FaceControlKeyAddWindow -->
+    <system:String x:Key="FaceControlKeyAddWindowTitle">표정 조작 설정</system:String>
+
+    <system:String x:Key="FaceControlKeyAddWindow_UseKey">사용키(빈 칸을 선택한 후 컨트롤러의 버튼을 눌러주세요)</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_KeyUp">키를놓았을때</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_Clear">클리어</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_AddFacial">표정추가</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_Add">추가</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_DisableBlinking">자동깜빡임을 무효로 함</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_LipSyncSuppression">립싱크억제(입이너무크게열리는걸방지)</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_LipSyncMaxLevel">최대치설정(0으로무효)</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_Register">등록</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_Cancel">취소</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_SaveName">명칭저장</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_Key">키</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_Weight">강도</system:String>
+
+
+    <!-- FunctionKeyAddWindow -->
+    <system:String x:Key="FunctionKeyAddWindowTitle">기능키 설정</system:String>
+
+    <system:String x:Key="FunctionKeyAddWindow_UseKey">사용키(빈 칸을 선택한 후 컨트롤러의 버튼을 눌러주세요)</system:String>
+    <system:String x:Key="FunctionKeyAddWindow_KeyUp">키를놓았을때</system:String>
+    <system:String x:Key="FunctionKeyAddWindow_Clear">클리어</system:String>
+    <system:String x:Key="FunctionKeyAddWindow_Register">등록</system:String>
+    <system:String x:Key="FunctionKeyAddWindow_Cancel">취소</system:String>
+    <system:String x:Key="FunctionKeyAddWindow_SelectFunction">할당 기능 선택</system:String>
+
+    <system:String x:Key="Functions_ShowControlPanel">컨트롤패널 비표시</system:String>
+    <system:String x:Key="Functions_ColorGreen">배경GB</system:String>
+    <system:String x:Key="Functions_ColorBlue">베걍BB</system:String>
+    <system:String x:Key="Functions_ColorWhite">배경하양</system:String>
+    <system:String x:Key="Functions_ColorCustom">배경커스텀</system:String>
+    <system:String x:Key="Functions_ColorTransparent">배경투명</system:String>
+    <system:String x:Key="Functions_FrontCamera">앞면카메라</system:String>
+    <system:String x:Key="Functions_BackCamera">뒷면카메라</system:String>
+    <system:String x:Key="Functions_FreeCamera">자유시점카메라</system:String>
+    <system:String x:Key="Functions_PositionFixedCamera">좌표고정카메라</system:String>
+
+    <!-- PhotoWindow -->
+    <system:String x:Key="PhotoWindowTitle">사진촬영</system:String>
+
+    <system:String x:Key="PhotoWindow_Photo">사진촬영</system:String>
+    <system:String x:Key="PhotoWindow_Folder">저장폴더</system:String>
+    <system:String x:Key="PhotoWindow_OpenFolder">촬영 폴더 열기</system:String>
+    <system:String x:Key="PhotoWindow_Resolution">해상도</system:String>
+    <system:String x:Key="PhotoWindow_Width">가로：</system:String>
+    <system:String x:Key="PhotoWindow_Timer">타이머</system:String>
+    <system:String x:Key="PhotoWindow_TimeToPhoto">촬영까지의시간：</system:String>
+    <system:String x:Key="PhotoWindow_Sec">초</system:String>
+    <system:String x:Key="PhotoWindow_Transparent">투명</system:String>
+    <system:String x:Key="PhotoWindow_TransparentCheckBox">배경을투명하게</system:String>
+    <system:String x:Key="PhotoWindow_Description">카메라 버튼을 누르거나 컨트롤러의 트리거를 당겨서 촬영</system:String>
+    <system:String x:Key="PhotoWindow_ErrorTimer">타이머 시간은 정수로 입력해주세요</system:String>
+    <system:String x:Key="PhotoWindow_ErrorWidth">가로길이는 정수로 입력해주세요</system:String>
+    <system:String x:Key="PhotoWindow_ErrorFolderExist">폴더가 없습니다</system:String>
+    <system:String x:Key="PhotoWindow_FolderSelect">폴더를 선택해주세요.</system:String>
+
+    <!-- EyeTracking_TobiiSettingWindow -->
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeScale">눈 이동범위(마이너스로 거꾸로합니다)</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeOffset">눈 위치 오프셋(0.01=1cm)</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_Horizontal">좌우방향</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_Vertical">상하방향</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_Calibration">캘리브레이션</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_CalibrationDescription">Tobii 정면 머리의 위치를 얻기 위하여 모델의 캘리브레이션이 완료된 후에 Tobii의 앞으로 이동하여 모니터의 중심을 보면서 캘리브레이션 버튼을 눌러주세요</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_Close">닫기</system:String>
+
+    <!-- EyeTracking_ViveProEyeSettingWindow -->
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeScale">눈 이동범위(마이너스로 거꾸로합니다)</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeOffset">눈 위치 오프셋(0.01=1cm)</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Horizontal">좌우방향</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Vertical">상하방향</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovements">눈커풀의 움직임을 사용</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovementsCheckBox">사용한다</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Close">닫기</system:String>
+
+    <!-- PhotoWindow -->
+    <system:String x:Key="ColorPickerWindowTitle">색상선택</system:String>
+    
+
+    <!-- VRoidHubWindow -->
+    <system:String x:Key="VRoidHubWindowTitle">VRoid Hub에서 모델 불러오기</system:String>
+
+    <system:String x:Key="VRoidHubWindow_LoginDescription">VRoid Hub에서 모델을 불러오기 위해선 VRoid Hub에 로그인하여 버츄얼 모션 캡쳐(バーチャルモーションキャプチャー)와의 연계를 허용해주세요.</system:String>
+    <system:String x:Key="VRoidHubWindow_Login">VRoid Hub에 로그인</system:String>
+    <system:String x:Key="VRoidHubWindow_ErrorDescription">에러가 발생했습니다. 이 화면을 닫고 다시 열어주세요.</system:String>
+    <system:String x:Key="VRoidHubWindow_CodeDescription">브라우저에 표시된 코드를 입력해주세요</system:String>
+    <system:String x:Key="VRoidHubWindow_Paste">붙여넣기</system:String>
+    <system:String x:Key="VRoidHubWindow_Register">인증</system:String>
+    <system:String x:Key="VRoidHubWindow_ModelList">모델목록</system:String>
+    <system:String x:Key="VRoidHubWindow_FindModelOnVRoidHub">VRoid Hub로 모델을 찾기</system:String>
+    <system:String x:Key="VRoidHubWindow_ModelInfo">모델정보</system:String>
+    <system:String x:Key="VRoidHubWindow_AllowedUser">아바타로서의 사용</system:String>
+    <system:String x:Key="VRoidHubWindow_ViolentExpression">폭력표현의 사용</system:String>
+    <system:String x:Key="VRoidHubWindow_SexualExpression">성적표현의 사용</system:String>
+    <system:String x:Key="VRoidHubWindow_CorporateCommercialUse">법인의 상업적 이용</system:String>
+    <system:String x:Key="VRoidHubWindow_PersonalCommercialUse">영리적인 활동</system:String>
+    <system:String x:Key="VRoidHubWindow_NonProfit">비상업적 이용 한정</system:String>
+    <system:String x:Key="VRoidHubWindow_Modification">개조</system:String>
+    <system:String x:Key="VRoidHubWindow_Redistribution">재배포</system:String>
+    <system:String x:Key="VRoidHubWindow_Credit">크레딧 표기</system:String>
+    <system:String x:Key="VRoidHubWindow_Necessary">필요</system:String>
+    <system:String x:Key="VRoidHubWindow_Unnecessary">불필요ㅛ</system:String>
+    <system:String x:Key="VRoidHubWindow_CreditCautionDescription1">이 모델은 사용시에 라이센스를 표시해야합니다</system:String>
+    <system:String x:Key="VRoidHubWindow_CreditCautionDescription2">영상, 생방송에 사용할 시 반드시 명기해야합니다</system:String>
+    <system:String x:Key="VRoidHubWindow_OpenOnVRoidHub">VRoid Hub에서 열기</system:String>
+    <system:String x:Key="VRoidHubWindow_LoadModel">동의하고 불러오기</system:String>
+    <system:String x:Key="VRoidHubWindow_Loading">로딩중입니다</system:String>
+
+    <system:String x:Key="VRoidHubWindow_SelectModelMessage">불러올 모델을 선택해주세요</system:String>
+    <system:String x:Key="VRoidHubWindow_CreditCautionConfirm">이 모델은 사용 시 라이센스를 반드시 표시해야합니다. 영상, 생방송 등에 사용할 시 반드시 명기하셔야 합니다. 사용하시겠습니까?</system:String>
+</ResourceDictionary>
