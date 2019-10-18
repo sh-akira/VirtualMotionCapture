@@ -248,6 +248,15 @@ namespace VirtualMotionCaptureControlPanel
                     isSetting = false;
                 });
             });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetExternalMotionSenderAddress { }, d =>
+            {
+                var data = (PipeCommands.ChangeExternalMotionSenderAddress)d;
+                Dispatcher.Invoke(() =>
+                {
+                    ExternalMotionSenderAddressTextBox.Text = data.address;
+                    ExternalMotionSenderPortTextBox.Text = data.port.ToString();
+                });
+            });
             await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = true });
         }
 
@@ -453,6 +462,23 @@ namespace VirtualMotionCaptureControlPanel
             {
                 enable = ExternalMotionSenderEnableCheckBox.IsChecked.Value
             });
+        }
+
+        private async void OSCApplyButton_Click(object sender, RoutedEventArgs e)
+        {
+            ExternalMotionSenderPortTextBox.Background = new SolidColorBrush(Colors.White);
+            if (int.TryParse(ExternalMotionSenderPortTextBox.Text, out int port))
+            {
+                await Globals.Client?.SendCommandAsync(new PipeCommands.ChangeExternalMotionSenderAddress
+                {
+                    address = ExternalMotionSenderAddressTextBox.Text,
+                    port = port
+                });
+            }
+            else
+            {
+                ExternalMotionSenderPortTextBox.Background = new SolidColorBrush(Colors.Pink);
+            }
         }
     }
 }

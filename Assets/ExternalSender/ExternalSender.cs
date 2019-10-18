@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using RootMotion.FinalIK;
 using VRM;
+using System.Reflection;
 
 [RequireComponent(typeof(uOSC.uOscClient))]
-public class ExternalSender : MonoBehaviour {
+public class ExternalSender : MonoBehaviour
+{
     uOSC.uOscClient uClient = null;
     GameObject CurrentModel = null;
     ControlWPFWindow window = null;
@@ -17,17 +19,19 @@ public class ExternalSender : MonoBehaviour {
     Camera currentCamera = null;
 
     public SteamVR2Input steamVR2Input;
-    
+
     GameObject handTrackerRoot;
 
-    void Start () {
+    void Start()
+    {
         uClient = GetComponent<uOSC.uOscClient>();
         window = GameObject.Find("ControlWPFWindow").GetComponent<ControlWPFWindow>();
         handTrackerRoot = GameObject.Find("HandTrackerRoot");
 
         window.ModelLoadedAction += (GameObject CurrentModel) =>
         {
-            if (CurrentModel != null) {
+            if (CurrentModel != null)
+            {
                 this.CurrentModel = CurrentModel;
                 animator = CurrentModel.GetComponent<Animator>();
                 vrik = CurrentModel.GetComponent<VRIK>();
@@ -79,7 +83,8 @@ public class ExternalSender : MonoBehaviour {
                 //Debug.Log("Ext: ConAxis");
                 try
                 {
-                    if (e.IsAxis) {
+                    if (e.IsAxis)
+                    {
                         uClient?.Send("/VMC/Ext/Con", 2, e.Name, e.IsLeft ? 1 : 0, e.IsTouch ? 1 : 0, e.IsAxis ? 1 : 0, e.Axis.x, e.Axis.y, e.Axis.z);
                     }
                 }
@@ -90,7 +95,8 @@ public class ExternalSender : MonoBehaviour {
             }
         };
 
-        KeyboardAction.KeyDownEvent += (object sender, KeyboardEventArgs e) => {
+        KeyboardAction.KeyDownEvent += (object sender, KeyboardEventArgs e) =>
+        {
             if (this.isActiveAndEnabled)
             {
                 //Debug.Log("Ext: KeyDown");
@@ -104,7 +110,8 @@ public class ExternalSender : MonoBehaviour {
                 }
             }
         };
-        KeyboardAction.KeyUpEvent += (object sender, KeyboardEventArgs e) => {
+        KeyboardAction.KeyUpEvent += (object sender, KeyboardEventArgs e) =>
+        {
             if (this.isActiveAndEnabled)
             {
                 //Debug.Log("Ext: KeyUp");
@@ -121,7 +128,8 @@ public class ExternalSender : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update () {
+    void Update()
+    {
         if (CurrentModel != null && animator != null)
         {
             //Root
@@ -152,9 +160,9 @@ public class ExternalSender : MonoBehaviour {
                 var Transform = animator.GetBoneTransform(bone);
                 if (Transform != null)
                 {
-                    uClient?.Send("/VMC/Ext/Bone/Pos", 
-                        bone.ToString(), 
-                        Transform.localPosition.x, Transform.localPosition.y, Transform.localPosition.z, 
+                    uClient?.Send("/VMC/Ext/Bone/Pos",
+                        bone.ToString(),
+                        Transform.localPosition.x, Transform.localPosition.y, Transform.localPosition.z,
                         Transform.localRotation.x, Transform.localRotation.y, Transform.localRotation.z, Transform.localRotation.w);
                 }
             }
@@ -166,7 +174,8 @@ public class ExternalSender : MonoBehaviour {
                 Debug.Log("ExternalSender: VRMBlendShapeProxy Updated");
             }
 
-            if (blendShapeProxy != null) {
+            if (blendShapeProxy != null)
+            {
                 foreach (var b in blendShapeProxy.GetValues())
                 {
                     uClient?.Send("/VMC/Ext/Blend/Val",
@@ -196,6 +205,18 @@ public class ExternalSender : MonoBehaviour {
         }
 
         uClient?.Send("/VMC/Ext/T", Time.time);
+    }
+
+    public void ChangeOSCAddress(string address, int port)
+    {
+        if (uClient == null) uClient = GetComponent<uOSC.uOscClient>();
+        uClient.enabled = false;
+        var type = typeof(uOSC.uOscClient);
+        var addressfield = type.GetField("address", BindingFlags.SetField | BindingFlags.NonPublic | BindingFlags.Instance);
+        addressfield.SetValue(uClient, address);
+        var portfield = type.GetField("port", BindingFlags.SetField | BindingFlags.NonPublic | BindingFlags.Instance);
+        portfield.SetValue(uClient, port);
+        uClient.enabled = true;
     }
 }
 

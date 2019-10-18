@@ -92,7 +92,22 @@
             </UniformGrid>
         </GroupBox>
         <GroupBox Header="{DynamicResource SettingWindow_ExternalMotionSender}">
-            <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionSenderEnable}" Name="ExternalMotionSenderEnableCheckBox" Checked="ExternalMotionSenderCheckBox_Changed" Unchecked="ExternalMotionSenderCheckBox_Changed" DockPanel.Dock="Top"/>
+            <DockPanel>
+                <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionSenderEnable}" Name="ExternalMotionSenderEnableCheckBox" Checked="ExternalMotionSenderCheckBox_Changed" Unchecked="ExternalMotionSenderCheckBox_Changed" DockPanel.Dock="Top"/>
+                <Button Content="{DynamicResource SettingWindow_ResolutionApply}" Name="OSCApplyButton" Click="OSCApplyButton_Click" Height="24" DockPanel.Dock="Right"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Address:" Grid.Column="0"/>
+                    <TextBox Text="127.0.0.1" Grid.Column="1" VerticalAlignment="Center" Name="ExternalMotionSenderAddressTextBox"/>
+                    <TextBlock Text=" Port:" Grid.Column="2"/>
+                    <TextBox Text="39539" Grid.Column="3" VerticalAlignment="Center" Name="ExternalMotionSenderPortTextBox"/>
+                </Grid>
+            </DockPanel>
         </GroupBox>
         <GroupBox Header="{DynamicResource SettingWindow_Language}">
             <ComboBox Name="LanguageComboBox" SelectedIndex="0" SelectionChanged="LanguageComboBox_SelectionChanged">

@@ -55,6 +55,7 @@ public class ControlWPFWindow : MonoBehaviour
     public Transform RealTrackerRoot;
 
     public GameObject ExternalMotionSenderObject;
+    private ExternalSender externalMotionSender;
 
     public MemoryMappedFileServer server;
     private string pipeName = Guid.NewGuid().ToString();
@@ -126,6 +127,8 @@ public class ControlWPFWindow : MonoBehaviour
         KeyboardAction.KeyUpEvent += KeyboardAction_KeyUp;
 
         CameraChangedAction?.Invoke(currentCamera);
+
+        externalMotionSender = ExternalMotionSenderObject.GetComponent<ExternalSender>();
     }
 
     private int SetWindowTitle()
@@ -630,6 +633,19 @@ public class ControlWPFWindow : MonoBehaviour
                 await server.SendCommandAsync(new PipeCommands.EnableExternalMotionSender
                 {
                     enable = CurrentSettings.ExternalMotionSenderEnable
+                }, e.RequestId);
+            }
+            else if (e.CommandType == typeof(PipeCommands.ChangeExternalMotionSenderAddress))
+            {
+                var d = (PipeCommands.ChangeExternalMotionSenderAddress)e.Data;
+                ChangeExternalMotionSenderAddress(d.address, d.port);
+            }
+            else if (e.CommandType == typeof(PipeCommands.GetExternalMotionSenderAddress))
+            {
+                await server.SendCommandAsync(new PipeCommands.ChangeExternalMotionSenderAddress
+                {
+                    address = CurrentSettings.ExternalMotionSenderAddress,
+                    port = CurrentSettings.ExternalMotionSenderPort
                 }, e.RequestId);
             }
         }, null);
@@ -2144,6 +2160,13 @@ public class ControlWPFWindow : MonoBehaviour
         WaitOneFrameAction(() => CameraChangedAction?.Invoke(currentCamera));
     }
 
+    private void ChangeExternalMotionSenderAddress(string address, int port)
+    {
+        CurrentSettings.ExternalMotionSenderAddress = address;
+        CurrentSettings.ExternalMotionSenderPort = port;
+        externalMotionSender.ChangeOSCAddress(address, port);
+    }
+
     private void WaitOneFrameAction(Action action)
     {
         StartCoroutine(WaitOneFrameCoroutine(action));
@@ -2423,6 +2446,10 @@ public class ControlWPFWindow : MonoBehaviour
         //ExternalMotionSender
         [OptionalField]
         public bool ExternalMotionSenderEnable;
+        [OptionalField]
+        public string ExternalMotionSenderAddress;
+        [OptionalField]
+        public int ExternalMotionSenderPort;
 
         [OptionalField]
         public bool EnableSkeletal;
@@ -2485,6 +2512,8 @@ public class ControlWPFWindow : MonoBehaviour
             EnableSkeletal = true;
 
             ExternalMotionSenderEnable = false;
+            ExternalMotionSenderAddress = "127.0.0.1";
+            ExternalMotionSenderPort = 39539;
         }
     }
 
@@ -2672,6 +2701,7 @@ public class ControlWPFWindow : MonoBehaviour
             }
 
             SetExternalMotionSenderEnable(CurrentSettings.ExternalMotionSenderEnable);
+            ChangeExternalMotionSenderAddress(CurrentSettings.ExternalMotionSenderAddress, CurrentSettings.ExternalMotionSenderPort);
 
             SetEyeTracking_TobiiOffsetsAction?.Invoke(new PipeCommands.SetEyeTracking_TobiiOffsets
             {

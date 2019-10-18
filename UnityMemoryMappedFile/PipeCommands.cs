@@ -357,6 +357,12 @@ namespace UnityMemoryMappedFile
         {
             public bool enable { get; set; }
         }
+        public class GetExternalMotionSenderAddress { }
+        public class ChangeExternalMotionSenderAddress
+        {
+            public string address { get; set; }
+            public int port { get; set; }
+        }
     }
 
 
