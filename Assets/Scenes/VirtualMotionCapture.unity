@@ -5975,6 +5975,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc4032a37a493bf44b54ca33ea768822, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  steamVR2Input: {fileID: 130023280}
 --- !u!4 &1155637111
 Transform:
   m_ObjectHideFlags: 0
