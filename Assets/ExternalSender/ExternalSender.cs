@@ -14,6 +14,7 @@ public class ExternalSender : MonoBehaviour {
     Animator animator = null;
     VRIK vrik = null;
     VRMBlendShapeProxy blendShapeProxy = null;
+    Camera currentCamera = null;
 
     void Start () {
         uClient = GetComponent<uOSC.uOscClient>();
@@ -25,6 +26,11 @@ public class ExternalSender : MonoBehaviour {
             animator = CurrentModel.GetComponent<Animator>();
             vrik = CurrentModel.GetComponent<VRIK>();
             blendShapeProxy = CurrentModel.GetComponent<VRMBlendShapeProxy>();
+        };
+
+        window.CameraChangedAction += (Camera currentCamera) =>
+        {
+            this.currentCamera = currentCamera;
         };
     }
 
@@ -89,6 +95,17 @@ public class ExternalSender : MonoBehaviour {
         {
             uClient.Send("/VMC/Ext/OK", 0);
         }
+
+        //Camera
+        if (currentCamera != null)
+        {
+            uClient.Send("/VMC/Ext/Cam",
+                "Camera",
+                currentCamera.transform.position.x, currentCamera.transform.position.y, currentCamera.transform.position.z,
+                currentCamera.transform.rotation.x, currentCamera.transform.rotation.y, currentCamera.transform.rotation.z, currentCamera.transform.rotation.w,
+                currentCamera.fieldOfView);
+        }
+
         uClient.Send("/VMC/Ext/T", Time.time);
     }
 }
