@@ -17,10 +17,13 @@ public class ExternalSender : MonoBehaviour {
     Camera currentCamera = null;
 
     public SteamVR2Input steamVR2Input;
+    
+    GameObject handTrackerRoot;
 
     void Start () {
         uClient = GetComponent<uOSC.uOscClient>();
         window = GameObject.Find("ControlWPFWindow").GetComponent<ControlWPFWindow>();
+        handTrackerRoot = GameObject.Find("HandTrackerRoot");
 
         window.ModelLoadedAction += (GameObject CurrentModel) =>
         {
@@ -131,12 +134,15 @@ public class ExternalSender : MonoBehaviour {
             if (vrik != null)
             {
                 var RootTransform = vrik.references.root;
-                if (RootTransform != null)
+                var offset = handTrackerRoot.transform;
+                if (RootTransform != null && offset != null)
                 {
                     uClient.Send("/VMC/Ext/Root/Pos",
                         "root",
                         RootTransform.position.x, RootTransform.position.y, RootTransform.position.z,
-                        RootTransform.rotation.x, RootTransform.rotation.y, RootTransform.rotation.z, RootTransform.rotation.w);
+                        RootTransform.rotation.x, RootTransform.rotation.y, RootTransform.rotation.z, RootTransform.rotation.w,
+                        offset.localScale.x, offset.localScale.y, offset.localScale.z,
+                        offset.position.x, offset.position.y, offset.position.z);
                 }
             }
 
