@@ -203,6 +203,10 @@ namespace VirtualMotionCaptureControlPanel
         {
             var language = LanguageComboBox.SelectedItem as string;
             if (string.IsNullOrWhiteSpace(language)) language = "Japanese";
+            if (language.Contains(" ("))
+            {
+                language = language.Split(' ').First();
+            }
             LanguageSelector.ChangeLanguage(language);
         }
 
