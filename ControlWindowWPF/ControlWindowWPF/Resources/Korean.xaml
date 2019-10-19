@@ -45,7 +45,7 @@
     <system:String x:Key="MainWindow_Background">배경색</system:String>
     <system:String x:Key="MainWindow_GB">GB</system:String>
     <system:String x:Key="MainWindow_BB">BB</system:String>
-    <system:String x:Key="MainWindow_White240">白240</system:String>
+    <system:String x:Key="MainWindow_White240">흰색240</system:String>
     <system:String x:Key="MainWindow_Custom">커스텀</system:String>
     <system:String x:Key="MainWindow_Transparent">투명</system:String>
     <system:String x:Key="MainWindow_WindowAlwaysTopMost">윈도우를 항상 맨 위에 표시</system:String>
@@ -149,13 +149,13 @@
     <system:String x:Key="VRMImportWindow_ModelAuthor">제작자</system:String>
     <system:String x:Key="VRMImportWindow_ModelReference">참조</system:String>
     <system:String x:Key="VRMImportWindow_ModelContactInformation">연락처</system:String>
-    <system:String x:Key="VRMImportWindow_PersonationPermission">아바타에 인격을 부여하는 것에 대한 허가</system:String>
+    <system:String x:Key="VRMImportWindow_PersonationPermission">아바타에 인격부여에 대한 허가</system:String>
     <system:String x:Key="VRMImportWindow_WhoCanPerform1">아바타에 인격을</system:String>
     <system:String x:Key="VRMImportWindow_WhoCanPerform2">부여하는 것에 대한 허가범위</system:String>
     <system:String x:Key="VRMImportWindow_PerformViolentActs1">이 아바타를 사용하여</system:String>
-    <system:String x:Key="VRMImportWindow_PerformViolentActs2">폭력표현을 하는 것에 대한 허가</system:String>
+    <system:String x:Key="VRMImportWindow_PerformViolentActs2">폭력표현에 대한 허가</system:String>
     <system:String x:Key="VRMImportWindow_PerformSexualActs1">이 아바타를 사용하여</system:String>
-    <system:String x:Key="VRMImportWindow_PerformSexualActs2">성적표현을 하는 것에 대한 허가</system:String>
+    <system:String x:Key="VRMImportWindow_PerformSexualActs2">성적표현에 대한 허가</system:String>
     <system:String x:Key="VRMImportWindow_ForCommercialUse">상업적 이용 허가</system:String>
     <system:String x:Key="VRMImportWindow_PersonationOtherLicenseUrl">기타 라이센스 조건</system:String>
     <system:String x:Key="VRMImportWindow_LicenseRedistributionAndModification">재배포, 변경에 대한 허가</system:String>
