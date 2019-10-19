@@ -95,8 +95,8 @@
             <ComboBox Name="LanguageComboBox" SelectedIndex="0" SelectionChanged="LanguageComboBox_SelectionChanged">
                 <system:String>Japanese</system:String>
                 <system:String>English</system:String>
-                <system:String>Chinese</system:String>
-                <system:String>Korean</system:String>
+                <system:String>Chinese (@PoctorXz)</system:String>
+                <system:String>Korean (@MANKALO_kr)</system:String>
             </ComboBox>
         </GroupBox>
         <Button Content="{DynamicResource SettingWindow_Close}" HorizontalAlignment="Right" Width="100" Name="CloseButton" Click="CloseButton_Click" ToolTip="{DynamicResource SettingWindow_Close_ToolTip}"/>
