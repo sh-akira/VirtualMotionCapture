@@ -40,7 +40,8 @@ namespace VirtualMotionCaptureControlPanel
             var language = Globals.CurrentLanguage;
             InitializeComponent();
             this.DataContext = this;
-            LanguageComboBox.SelectedItem = language;
+            var languageitem = LanguageComboBox.Items.Cast<string>().First(d => d.Contains(language));
+            LanguageComboBox.SelectedItem = languageitem;
             LeftHandRotateComboBox.ItemsSource = RotationItems;
             RightHandRotateComboBox.ItemsSource = RotationItems;
             if (RotationItems.Contains(Globals.LeftHandRotation)) LeftHandRotateComboBox.SelectedItem = Globals.LeftHandRotation;
