@@ -1,0 +1,23 @@
+- links:
+  - name: 맨위로
+    link: /
+  - name: 다운로드
+    link: /download.html
+- links:
+  - name: 조작 방법
+    link: /manual/
+  - name: 지원
+    link: /about.html
+- links:
+  - name: GitHub
+    link: https://github.com/sh-akira
+    new_window: true
+    social_icon: GitHub
+  - name: Twitter
+    link: https://twitter.com/sh_akira
+    social_icon: Twitter
+    new_window: true
+  - name: pixivFANBOX
+    link: https://www.pixiv.net/fanbox/creator/10267568
+    social_icon: pixivFANBOX
+    new_window: true

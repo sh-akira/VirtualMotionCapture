@@ -1,0 +1,19 @@
+- name: 자주 묻는 질문과 답변
+  link: https://github.com/sh-akira/VirtualMotionCapture/wiki/%E3%82%88%E3%81%8F%E3%81%82%E3%82%8B%E8%B3%AA%E5%95%8F%E3%81%A8%E5%9B%9E%E7%AD%94
+  new_window: true
+  highlight: true
+- name: 조작 방법
+  link: /manual/
+  new_window: false
+  highlight: true
+- name: 다운로드
+  link: /download.html
+  new_window: false
+  highlight: true
+- name: 지원
+  link: /about.html
+  new_window: false
+  highlight: false
+
+
+

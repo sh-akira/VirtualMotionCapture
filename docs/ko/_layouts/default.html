@@ -1,0 +1,78 @@
+<!doctype html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- Begin Jekyll SEO tag v2.4.0 -->
+<title>버츄얼모션캡쳐 - VirtualMotionCapture | 버츄얼모션캡쳐</title>
+<meta name="generator" content="Jekyll v3.7.2" />
+<meta property="og:title" content="バーチャルモーションキャプチャー - VirtualMotionCapture" />
+<meta name="author" content="sh_akira" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="VR機器でVRMの3Dモデルをコントロール！VRゲーム実況を始めよう" />
+<meta property="og:description" content="VR機器でVRMの3Dモデルをコントロール！VRゲーム実況を始めよう" />
+<link rel="canonical" href="https://sh-akira.github.io/VirtualMotionCapture/" />
+<meta property="og:url" content="https://sh-akira.github.io/VirtualMotionCapture/" />
+<meta property="og:site_name" content="バーチャルモーションキャプチャー" />
+<meta property="og:image" content="https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/master/docs/images/ss2.jpg" />
+<meta name="twitter:title" content="バーチャルモーションキャプチャー - VirtualMotionCapture" />
+<meta name="twitter:url" content="https://sh-akira.github.io/VirtualMotionCapture/" />
+<meta name="twitter:description" content="VR機器でVRMの3Dモデルをコントロール！VRゲーム実況を始めよう" />
+<meta name="twitter:image" content="https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/master/docs/images/ss2.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@sh_akira" />
+<meta name="twitter:creator" content="@sh_akira" />
+<script type="application/ld+json">
+{"@type":"WebSite","headline":"バーチャルモーションキャプチャー - VirtualMotionCapture","url":"https://sh-akira.github.io/VirtualMotionCapture/","sameAs":["https://twitter.com/sh_akira","https://github.com/sh-akira","https://www.pixiv.net/fanbox/creator/10267568"],"image":"https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/master/docs/images/ss2.jpg","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://sh-akira.github.io/VirtualMotionCapture/siteicon.png"},"name":"sh_akira"},"name":"sh_akira","author":{"@type":"Person","name":"sh_akira"},"description":"VR機器でVRMの3Dモデルをコントロール！VRゲーム実況を始めよう","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+		{% feed_meta %}
+
+		<link rel="stylesheet" href="{{ site.baseurl }}/css/screen.css">
+		<link rel="icon" type="image/png" href="{{ site.baseurl }}/favicon.png">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-126733587-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-126733587-1');
+</script>
+
+	</head>
+	<body>
+		<header>
+			<div class="container">
+				<div class="company-name"><a href="{{ site.baseurl }}/">VirtualMotionCapture</a></div>
+				{% include navigation.html %}
+			</div>
+		</header>
+		{{ content }}
+		<footer>
+			<div class="container">
+				<div class="footer-columns">
+					{% for column in site.data.footer %}
+					<ul class="footer-links">
+						{% for link in column.links %}
+							<li><a {% if link.new_window %}target="_blank"{% endif %} href="{% include relative-src.html src=link.link %}" {% if link.social_icon %}class="{{ link.social_icon }}-icon"{% endif %}>
+								{% if link.social_icon %}
+									{% include social-icon.html icon=link.social_icon %}
+								{% endif %}
+								{{ link.name }}</a></li>
+						{% endfor %}
+					</ul>
+					{% endfor %}
+				</div>
+				<p class="copyright">&copy; {{ site.time | date: '%Y' }} <a target="_blank" href="https://twitter.com/sh_akira">sh_akira</a>.</p>
+			</div>
+		</footer>
+		<script>
+			document.getElementById("open-nav").onclick = function () {
+				document.body.classList.toggle("nav-open");
+				return false;
+			};
+		</script>
+	</body>
+</html>
