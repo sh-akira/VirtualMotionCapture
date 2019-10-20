@@ -76,7 +76,6 @@ exclude:
   - README.md
   - LICENCE
   - vendor
-  - ko
 
 # -----------
 # CloudCannon
