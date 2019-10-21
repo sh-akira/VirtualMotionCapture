@@ -52,7 +52,7 @@ public class EyeTracking_Tobii : MonoBehaviour
     private void Calibration(GameObject currentModel, bool fromSetting)
     {
         if (currentModel == null) return;
-        if (fromSetting == false && TobiiAPI.IsConnected == false) return;
+        if (TobiiAPI.IsConnected == false) return;
         var animator = currentModel.GetComponent<Animator>();
         var head = animator.GetBoneTransform(HumanBodyBones.Head);
         //モデルの頭の前方50cm地点にモニターがあることにする
