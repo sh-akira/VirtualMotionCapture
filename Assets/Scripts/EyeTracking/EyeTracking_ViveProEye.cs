@@ -98,25 +98,25 @@ public class EyeTracking_ViveProEye : MonoBehaviour
             SRanipal_Eye_Framework.Status != SRanipal_Eye_Framework.FrameworkStatus.NOT_SUPPORT) return;
 
         //まぶた
-        EyeData eyeData = new EyeData();
-        SRanipal_Eye.GetEyeData(ref eyeData);
-
         bool isLeftEyeActive = false;
-        bool isRightEyeAcitve = false;
+        bool isRightEyeActive = false;
+        float leftEyeOpenness = 0.0f;
+        float rightEyeOpenness = 0.0f;
         if (SRanipal_Eye_Framework.Status == SRanipal_Eye_Framework.FrameworkStatus.WORKING)
         {
-            isLeftEyeActive = eyeData.verbose_data.left.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_ORIGIN_VALIDITY);
-            isRightEyeAcitve = eyeData.verbose_data.right.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_ORIGIN_VALIDITY);
+            isLeftEyeActive = SRanipal_Eye.GetEyeOpenness(EyeIndex.LEFT, out leftEyeOpenness);
+            isRightEyeActive = SRanipal_Eye.GetEyeOpenness(EyeIndex.RIGHT, out rightEyeOpenness);
         }
         else if (SRanipal_Eye_Framework.Status == SRanipal_Eye_Framework.FrameworkStatus.NOT_SUPPORT)
         {
             isLeftEyeActive = true;
-            isRightEyeAcitve = true;
+            isRightEyeActive = true;
         }
 
-        if (isLeftEyeActive || isRightEyeAcitve)
+        if (isLeftEyeActive || isRightEyeActive)
         {
-            SRanipal_Eye.GetEyeWeightings(out EyeWeightings);
+            EyeWeightings[EyeShape.Eye_Left_Blink] = leftEyeOpenness;
+            EyeWeightings[EyeShape.Eye_Right_Blink] = rightEyeOpenness;
             UpdateEyeShapes(EyeWeightings);
         }
         else
