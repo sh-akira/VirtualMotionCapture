@@ -382,6 +382,7 @@ namespace UnityMemoryMappedFile
         Controller,
         Keyboard,
         Mouse,
+        Midi,
     }
 
     public enum KeyActionTypes
@@ -938,18 +939,18 @@ namespace UnityMemoryMappedFile
             if (Language == "Japanese")
             {
                 var isLeftStr = type == KeyTypes.Controller ? (isLeft ? "左" : "右") : "";
-                var keyCodeStr = type == KeyTypes.Controller ? keyName : KeyCodeString[keyCode];
+                var keyCodeStr = type == KeyTypes.Controller ? keyName : type == KeyTypes.Keyboard ? KeyCodeString[keyCode] : keyCode.ToString();
                 var indexStr = keyIndex > 0 ? $"{keyIndex}" : "";
-                var keyTypesString = type == KeyTypes.Controller ? "コントローラー" : type == KeyTypes.Keyboard ? "キーボード" : "マウス";
+                var keyTypesString = type == KeyTypes.Controller ? "コントローラー" : type == KeyTypes.Keyboard ? "キーボード" : type == KeyTypes.Midi ? "MIDI " : "マウス";
                 var isTouchStr = type == KeyTypes.Controller ? (isTouch ? "タッチ" : "") : "";
                 return $"{isLeftStr}{keyTypesString}[{keyCodeStr}{indexStr}{isTouchStr}]";
             }
             else
             {
                 var isLeftStr = type == KeyTypes.Controller ? (isLeft ? "Left" : "Right") : "";
-                var keyCodeStr = type == KeyTypes.Controller ? keyName : KeyCodeString_English[keyCode];
+                var keyCodeStr = type == KeyTypes.Controller ? keyName : type == KeyTypes.Keyboard ? KeyCodeString_English[keyCode] : keyCode.ToString();
                 var indexStr = keyIndex > 0 ? $"{keyIndex}" : "";
-                var keyTypesString = type == KeyTypes.Controller ? "Controller" : type == KeyTypes.Keyboard ? "Keyboard" : "Mouse";
+                var keyTypesString = type == KeyTypes.Controller ? "Controller" : type == KeyTypes.Keyboard ? "Keyboard" : type == KeyTypes.Midi ? "MIDI " : "Mouse";
                 var isTouchStr = type == KeyTypes.Controller ? (isTouch ? "Touch" : "") : "";
                 return $"{isLeftStr}{keyTypesString}[{keyCodeStr}{indexStr}{isTouchStr}]";
             }
