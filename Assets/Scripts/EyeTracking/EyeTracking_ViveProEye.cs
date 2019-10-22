@@ -100,8 +100,8 @@ public class EyeTracking_ViveProEye : MonoBehaviour
         //まぶた
         bool isLeftEyeActive = false;
         bool isRightEyeActive = false;
-        float leftEyeOpenness = 0.0f;
-        float rightEyeOpenness = 0.0f;
+        float leftEyeOpenness = 1.0f;
+        float rightEyeOpenness = 1.0f;
         if (SRanipal_Eye_Framework.Status == SRanipal_Eye_Framework.FrameworkStatus.WORKING)
         {
             isLeftEyeActive = SRanipal_Eye.GetEyeOpenness(EyeIndex.LEFT, out leftEyeOpenness);
