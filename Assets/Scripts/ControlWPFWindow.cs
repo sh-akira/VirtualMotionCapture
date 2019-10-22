@@ -132,6 +132,8 @@ public class ControlWPFWindow : MonoBehaviour
 
         MidiJack.MidiMaster.noteOnDelegate += async (channel, note, velocity) =>
         {
+            Debug.Log("MidiNoteOn:" + channel + "/" + note + "/" + velocity);
+
             var config = new KeyConfig();
             config.type = KeyTypes.Keyboard;
             config.actionType = KeyActionTypes.Face;
@@ -144,6 +146,8 @@ public class ControlWPFWindow : MonoBehaviour
 
         MidiJack.MidiMaster.noteOffDelegate += async (channel, note) =>
         {
+            Debug.Log("MidiNoteOff:" + channel + "/" + note);
+
             var config = new KeyConfig();
             config.type = KeyTypes.Keyboard;
             config.actionType = KeyActionTypes.Face;
@@ -152,6 +156,28 @@ public class ControlWPFWindow : MonoBehaviour
             config.keyName = MidiName(channel, note);
             if (doKeyConfig || doKeySend) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
             if (!doKeyConfig) CheckKey(config, false);
+        };
+        MidiJack.MidiMaster.knobDelegate += async (MidiJack.MidiChannel channel, int knobNo, float value) =>
+        {
+            Debug.Log("MidiCC:" + channel + "/" + knobNo + "/" + value);
+
+            var config = new KeyConfig();
+            config.type = KeyTypes.Keyboard;
+            config.actionType = KeyActionTypes.Face;
+            config.keyCode = (int)channel;
+            config.keyIndex = knobNo;
+            config.keyName = MidiName(channel, knobNo);
+
+            //あくまで簡易的なチェック。本当は前回のboolとかを配列で用意して、変化したときのみ送信すべき
+            if (value > 0.5f)
+            {
+                if (doKeyConfig || doKeySend) await server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
+                if (!doKeyConfig) CheckKey(config, true);
+            }
+            else {
+                if (doKeyConfig || doKeySend) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
+                if (!doKeyConfig) CheckKey(config, false);
+            }
         };
     }
 

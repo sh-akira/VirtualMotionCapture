@@ -133,7 +133,7 @@ public class ExternalSender : MonoBehaviour
                 //Debug.Log("Ext: KeyDown");
                 try
                 {
-                    uClient?.Send("/VMC/Ext/Midi", 1, (int)channel, note);
+                    uClient?.Send("/VMC/Ext/Midi/Note", 1, (int)channel, note);
                 }
                 catch (Exception ex)
                 {
@@ -148,7 +148,22 @@ public class ExternalSender : MonoBehaviour
                 //Debug.Log("Ext: KeyDown");
                 try
                 {
-                    uClient?.Send("/VMC/Ext/Midi", 0, (int)channel, note);
+                    uClient?.Send("/VMC/Ext/Midi/Note", 0, (int)channel, note);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError(ex);
+                }
+            }
+        };
+        MidiJack.MidiMaster.knobDelegate += (MidiJack.MidiChannel channel, int knobNo, float value) =>
+        {
+            if (this.isActiveAndEnabled)
+            {
+                //Debug.Log("Ext: KeyDown");
+                try
+                {
+                    uClient?.Send("/VMC/Ext/Midi/CC", 1, (int)channel, knobNo,value);
                 }
                 catch (Exception ex)
                 {
