@@ -129,6 +129,35 @@ public class ControlWPFWindow : MonoBehaviour
         CameraChangedAction?.Invoke(currentCamera);
 
         externalMotionSender = ExternalMotionSenderObject.GetComponent<ExternalSender>();
+
+        MidiJack.MidiMaster.noteOnDelegate += async (channel, note, velocity) =>
+        {
+            var config = new KeyConfig();
+            config.type = KeyTypes.Keyboard;
+            config.actionType = KeyActionTypes.Face;
+            config.keyCode = (int)channel;
+            config.keyIndex = note;
+            config.keyName = MidiName(channel, note);
+            if (doKeyConfig || doKeySend) await server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
+            if (!doKeyConfig) CheckKey(config, true);
+        };
+
+        MidiJack.MidiMaster.noteOffDelegate += async (channel, note) =>
+        {
+            var config = new KeyConfig();
+            config.type = KeyTypes.Keyboard;
+            config.actionType = KeyActionTypes.Face;
+            config.keyCode = (int)channel;
+            config.keyIndex = note;
+            config.keyName = MidiName(channel, note);
+            if (doKeyConfig || doKeySend) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
+            if (!doKeyConfig) CheckKey(config, false);
+        };
+    }
+
+    private string MidiName(MidiJack.MidiChannel channel, int note)
+    {
+        return $"MIDI Ch{(int)channel + 1} {note}";
     }
 
     private int SetWindowTitle()

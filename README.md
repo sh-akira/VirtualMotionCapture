@@ -281,6 +281,7 @@ Ver 0.02
 　・VRM ([UniVRM-0.53.0_6b07.unitypackage](https://github.com/vrm-c/UniVRM/releases))  
 　・Oculus ([Oculus Lipsync Unity 1.30.0](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/1.30.0/))  
 　・uOSC([uOSC-v0.0.2.unitypackage](https://github.com/hecomi/uOSC/releases/tag/v0.0.2))  
+　・MidiJack([MidiJack.unitypackage](https://github.com/keijiro/MidiJack))  
 以上のようなフォルダになるように各アセットをインポートしてください。  
 アイトラッキングが不要な場合Assets\EyeTrackingフォルダを削除します  
 アイトラッキング対応する場合は  

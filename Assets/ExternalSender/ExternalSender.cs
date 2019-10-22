@@ -125,6 +125,37 @@ public class ExternalSender : MonoBehaviour
                 }
             }
         };
+
+        MidiJack.MidiMaster.noteOnDelegate += (MidiJack.MidiChannel channel, int note, float velocity) =>
+        {
+            if (this.isActiveAndEnabled)
+            {
+                //Debug.Log("Ext: KeyDown");
+                try
+                {
+                    uClient?.Send("/VMC/Ext/Midi", 1, (int)channel, note);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError(ex);
+                }
+            }
+        };
+        MidiJack.MidiMaster.noteOffDelegate += (MidiJack.MidiChannel channel, int note) =>
+        {
+            if (this.isActiveAndEnabled)
+            {
+                //Debug.Log("Ext: KeyDown");
+                try
+                {
+                    uClient?.Send("/VMC/Ext/Midi", 0, (int)channel, note);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError(ex);
+                }
+            }
+        };
     }
 
     // Update is called once per frame
