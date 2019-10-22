@@ -111,8 +111,8 @@ public class EyeTracking_ViveProEye : MonoBehaviour
 
         if (isLeftEyeActive || isRightEyeActive)
         {
-            EyeWeightings[EyeShape.Eye_Left_Blink] = leftEyeOpenness;
-            EyeWeightings[EyeShape.Eye_Right_Blink] = rightEyeOpenness;
+            EyeWeightings[EyeShape.Eye_Left_Blink] = 1 - leftEyeOpenness;
+            EyeWeightings[EyeShape.Eye_Right_Blink] = 1 - rightEyeOpenness;
             UpdateEyeShapes(EyeWeightings);
         }
         else
