@@ -20,6 +20,20 @@ public class ExternalSender : MonoBehaviour
 
     public SteamVR2Input steamVR2Input;
 
+    //フレーム周期
+    public int periodStatus = 1;
+    public int periodRoot = 1;
+    public int periodBone = 1;
+    public int periodBlendShape = 1;
+    public int periodCamera = 1;
+
+    //フレーム数カウント用
+    private int frameOfStatus = 1;
+    private int frameOfRoot = 1;
+    private int frameOfBone = 1;
+    private int frameOfBlendShape = 1;
+    private int frameOfCamera = 1;
+
     GameObject handTrackerRoot;
 
     void Start()
@@ -185,33 +199,43 @@ public class ExternalSender : MonoBehaviour
                 Debug.Log("ExternalSender: VRIK Updated");
             }
 
-            if (vrik != null)
+            if (frameOfRoot > periodRoot)
             {
-                var RootTransform = vrik.references.root;
-                var offset = handTrackerRoot.transform;
-                if (RootTransform != null && offset != null)
+                frameOfRoot = 1;
+                if (vrik != null)
                 {
-                    uClient?.Send("/VMC/Ext/Root/Pos",
-                        "root",
-                        RootTransform.position.x, RootTransform.position.y, RootTransform.position.z,
-                        RootTransform.rotation.x, RootTransform.rotation.y, RootTransform.rotation.z, RootTransform.rotation.w,
-                        offset.localScale.x, offset.localScale.y, offset.localScale.z,
-                        offset.position.x, offset.position.y, offset.position.z);
+                    var RootTransform = vrik.references.root;
+                    var offset = handTrackerRoot.transform;
+                    if (RootTransform != null && offset != null)
+                    {
+                        uClient?.Send("/VMC/Ext/Root/Pos",
+                            "root",
+                            RootTransform.position.x, RootTransform.position.y, RootTransform.position.z,
+                            RootTransform.rotation.x, RootTransform.rotation.y, RootTransform.rotation.z, RootTransform.rotation.w,
+                            offset.localScale.x, offset.localScale.y, offset.localScale.z,
+                            offset.position.x, offset.position.y, offset.position.z);
+                    }
                 }
             }
+            frameOfRoot++;
 
             //Bones
-            foreach (HumanBodyBones bone in Enum.GetValues(typeof(HumanBodyBones)))
+            if (frameOfBone > periodBone)
             {
-                var Transform = animator.GetBoneTransform(bone);
-                if (Transform != null)
+                frameOfBone = 1;
+                foreach (HumanBodyBones bone in Enum.GetValues(typeof(HumanBodyBones)))
                 {
-                    uClient?.Send("/VMC/Ext/Bone/Pos",
-                        bone.ToString(),
-                        Transform.localPosition.x, Transform.localPosition.y, Transform.localPosition.z,
-                        Transform.localRotation.x, Transform.localRotation.y, Transform.localRotation.z, Transform.localRotation.w);
+                    var Transform = animator.GetBoneTransform(bone);
+                    if (Transform != null)
+                    {
+                        uClient?.Send("/VMC/Ext/Bone/Pos",
+                            bone.ToString(),
+                            Transform.localPosition.x, Transform.localPosition.y, Transform.localPosition.z,
+                            Transform.localRotation.x, Transform.localRotation.y, Transform.localRotation.z, Transform.localRotation.w);
+                    }
                 }
             }
+            frameOfBone++;
 
             //Blendsharp
             if (blendShapeProxy == null)
@@ -220,37 +244,58 @@ public class ExternalSender : MonoBehaviour
                 Debug.Log("ExternalSender: VRMBlendShapeProxy Updated");
             }
 
-            if (blendShapeProxy != null)
+            if (frameOfBlendShape > periodBlendShape)
             {
-                foreach (var b in blendShapeProxy.GetValues())
-                {
-                    uClient?.Send("/VMC/Ext/Blend/Val",
-                        b.Key.ToString(),
-                        (float)b.Value
-                        );
-                }
-                uClient?.Send("/VMC/Ext/Blend/Apply");
-            }
+                frameOfBlendShape = 1;
 
-            //Available
-            uClient?.Send("/VMC/Ext/OK", 1);
-        }
-        else
-        {
-            uClient?.Send("/VMC/Ext/OK", 0);
+                if (blendShapeProxy != null)
+                {
+                    foreach (var b in blendShapeProxy.GetValues())
+                    {
+                        uClient?.Send("/VMC/Ext/Blend/Val",
+                            b.Key.ToString(),
+                            (float)b.Value
+                            );
+                    }
+                    uClient?.Send("/VMC/Ext/Blend/Apply");
+                }
+            }
+            frameOfBlendShape++;
         }
 
         //Camera
-        if (currentCamera != null)
+        if (frameOfCamera > periodCamera)
         {
-            uClient?.Send("/VMC/Ext/Cam",
-                "Camera",
-                currentCamera.transform.position.x, currentCamera.transform.position.y, currentCamera.transform.position.z,
-                currentCamera.transform.rotation.x, currentCamera.transform.rotation.y, currentCamera.transform.rotation.z, currentCamera.transform.rotation.w,
-                currentCamera.fieldOfView);
+            frameOfCamera = 1;
+            if (currentCamera != null)
+            {
+                uClient?.Send("/VMC/Ext/Cam",
+                    "Camera",
+                    currentCamera.transform.position.x, currentCamera.transform.position.y, currentCamera.transform.position.z,
+                    currentCamera.transform.rotation.x, currentCamera.transform.rotation.y, currentCamera.transform.rotation.z, currentCamera.transform.rotation.w,
+                    currentCamera.fieldOfView);
+            }
         }
+        frameOfCamera++;
 
-        uClient?.Send("/VMC/Ext/T", Time.time);
+        //Status
+        if (frameOfStatus > periodStatus)
+        {
+            frameOfStatus = 1;
+            if (CurrentModel != null && animator != null)
+            {
+                //Available
+                uClient?.Send("/VMC/Ext/OK", 1);
+            }
+            else
+            {
+                uClient?.Send("/VMC/Ext/OK", 0);
+            }
+            uClient?.Send("/VMC/Ext/T", Time.time);
+        }
+        frameOfStatus++;
+
+        //---End of frame---
     }
 
     public void ChangeOSCAddress(string address, int port)
