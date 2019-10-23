@@ -135,7 +135,7 @@ public class ControlWPFWindow : MonoBehaviour
             Debug.Log("MidiNoteOn:" + channel + "/" + note + "/" + velocity);
 
             var config = new KeyConfig();
-            config.type = KeyTypes.Keyboard;
+            config.type = KeyTypes.Midi;
             config.actionType = KeyActionTypes.Face;
             config.keyCode = (int)channel;
             config.keyIndex = note;
@@ -149,7 +149,7 @@ public class ControlWPFWindow : MonoBehaviour
             Debug.Log("MidiNoteOff:" + channel + "/" + note);
 
             var config = new KeyConfig();
-            config.type = KeyTypes.Keyboard;
+            config.type = KeyTypes.Midi;
             config.actionType = KeyActionTypes.Face;
             config.keyCode = (int)channel;
             config.keyIndex = note;
@@ -162,7 +162,7 @@ public class ControlWPFWindow : MonoBehaviour
             Debug.Log("MidiCC:" + channel + "/" + knobNo + "/" + value);
 
             var config = new KeyConfig();
-            config.type = KeyTypes.Keyboard;
+            config.type = KeyTypes.Midi;
             config.actionType = KeyActionTypes.Face;
             config.keyCode = (int)channel;
             config.keyIndex = knobNo;
