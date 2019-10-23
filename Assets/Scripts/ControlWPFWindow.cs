@@ -91,6 +91,8 @@ public class ControlWPFWindow : MonoBehaviour
     public Action<PipeCommands.SetEyeTracking_ViveProEyeOffsets> SetEyeTracking_ViveProEyeOffsetsAction = null;
     public Action<PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements> SetEyeTracking_ViveProEyeUseEyelidMovementsAction = null;
 
+    public MidiCCWarpper midiCCWarpper;
+
     // Use this for initialization
     void Start()
     {
@@ -130,7 +132,7 @@ public class ControlWPFWindow : MonoBehaviour
 
         externalMotionSender = ExternalMotionSenderObject.GetComponent<ExternalSender>();
 
-        MidiJack.MidiMaster.noteOnDelegate += async (channel, note, velocity) =>
+        midiCCWarpper.noteOnDelegateProxy += async (channel, note, velocity) =>
         {
             Debug.Log("MidiNoteOn:" + channel + "/" + note + "/" + velocity);
 
@@ -144,7 +146,7 @@ public class ControlWPFWindow : MonoBehaviour
             if (!doKeyConfig) CheckKey(config, true);
         };
 
-        MidiJack.MidiMaster.noteOffDelegate += async (channel, note) =>
+        midiCCWarpper.noteOffDelegateProxy += async (channel, note) =>
         {
             Debug.Log("MidiNoteOff:" + channel + "/" + note);
 
@@ -157,8 +159,9 @@ public class ControlWPFWindow : MonoBehaviour
             if (doKeyConfig || doKeySend) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
             if (!doKeyConfig) CheckKey(config, false);
         };
-        MidiJack.MidiMaster.knobDelegate += async (MidiJack.MidiChannel channel, int knobNo, float value) =>
+        midiCCWarpper.knobUpdateBoolDelegate += async (int knobNo, bool value) =>
         {
+            MidiJack.MidiChannel channel = MidiJack.MidiChannel.Ch1; //仮でCh1
             Debug.Log("MidiCC:" + channel + "/" + knobNo + "/" + value);
 
             var config = new KeyConfig();
@@ -168,16 +171,14 @@ public class ControlWPFWindow : MonoBehaviour
             config.keyIndex = knobNo;
             config.keyName = MidiName(channel, knobNo);
 
-            //あくまで簡易的なチェック。本当は前回のboolとかを配列で用意して、変化したときのみ送信すべき
-            if (value > 0.5f)
+            if (value)
             {
                 if (doKeyConfig || doKeySend) await server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
-                if (!doKeyConfig) CheckKey(config, true);
             }
             else {
                 if (doKeyConfig || doKeySend) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
-                if (!doKeyConfig) CheckKey(config, false);
             }
+            if (!doKeyConfig) CheckKey(config, value);
         };
     }
 

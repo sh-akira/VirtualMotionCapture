@@ -19,6 +19,7 @@ public class ExternalSender : MonoBehaviour
     Camera currentCamera = null;
 
     public SteamVR2Input steamVR2Input;
+    public MidiCCWarpper midiCCWarpper;
 
     //フレーム周期
     public int periodStatus = 1;
@@ -140,7 +141,7 @@ public class ExternalSender : MonoBehaviour
             }
         };
 
-        MidiJack.MidiMaster.noteOnDelegate += (MidiJack.MidiChannel channel, int note, float velocity) =>
+        midiCCWarpper.noteOnDelegateProxy += (MidiJack.MidiChannel channel, int note, float velocity) =>
         {
             if (this.isActiveAndEnabled)
             {
@@ -155,7 +156,7 @@ public class ExternalSender : MonoBehaviour
                 }
             }
         };
-        MidiJack.MidiMaster.noteOffDelegate += (MidiJack.MidiChannel channel, int note) =>
+        midiCCWarpper.noteOffDelegateProxy += (MidiJack.MidiChannel channel, int note) =>
         {
             if (this.isActiveAndEnabled)
             {
@@ -170,14 +171,29 @@ public class ExternalSender : MonoBehaviour
                 }
             }
         };
-        MidiJack.MidiMaster.knobDelegate += (MidiJack.MidiChannel channel, int knobNo, float value) =>
+        midiCCWarpper.knobUpdateFloatDelegate += (int knobNo, float value) =>
         {
             if (this.isActiveAndEnabled)
             {
                 //Debug.Log("Ext: KeyDown");
                 try
                 {
-                    uClient?.Send("/VMC/Ext/Midi/CC", 1, (int)channel, knobNo,value);
+                    uClient?.Send("/VMC/Ext/Midi/CC/Val", 1, knobNo, value);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError(ex);
+                }
+            }
+        };
+        midiCCWarpper.knobUpdateBoolDelegate += (int knobNo, bool value) =>
+        {
+            if (this.isActiveAndEnabled)
+            {
+                //Debug.Log("Ext: KeyDown");
+                try
+                {
+                    uClient?.Send("/VMC/Ext/Midi/CC/Bit", 1, knobNo, (int)(value?1:0));
                 }
                 catch (Exception ex)
                 {
