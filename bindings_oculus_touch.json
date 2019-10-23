@@ -1,7 +1,7 @@
 {
    "action_manifest_version" : 0,
    "alias_info" : {},
-   "app_key" : "application.generated.unity.virtualmotioncapture.exe",
+   
    "bindings" : {
       "/actions/buggy" : {
          "chords" : [],
@@ -118,7 +118,7 @@
                      "output" : "/actions/default/in/pullgrip"
                   },
                   "touch" : {
-                     "output" : "/actions/default/in/clicktrigger"
+                     "output" : "/actions/default/in/touchgrip"
                   }
                },
                "mode" : "trigger",
@@ -133,7 +133,7 @@
                      "output" : "/actions/default/in/pullgrip"
                   },
                   "touch" : {
-                     "output" : "/actions/default/in/clicktrigger"
+                     "output" : "/actions/default/in/touchgrip"
                   }
                },
                "mode" : "trigger",
@@ -154,14 +154,14 @@
             {
                "inputs" : {
                   "click" : {
-                     "output" : "/actions/default/in/clickxbutton"
+                     "output" : "/actions/default/in/clickabutton"
                   },
                   "touch" : {
-                     "output" : "/actions/default/in/touchxbutton"
+                     "output" : "/actions/default/in/touchabutton"
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/right/input/x"
+               "path" : "/user/hand/right/input/a"
             },
             {
                "inputs" : {
@@ -178,14 +178,14 @@
             {
                "inputs" : {
                   "click" : {
-                     "output" : "/actions/default/in/clickybutton"
+                     "output" : "/actions/default/in/clickbbutton"
                   },
                   "touch" : {
-                     "output" : "/actions/default/in/touchybutton"
+                     "output" : "/actions/default/in/touchbbutton"
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/right/input/y"
+               "path" : "/user/hand/right/input/b"
             }
          ]
       },
