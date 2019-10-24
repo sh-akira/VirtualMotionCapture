@@ -283,7 +283,7 @@ Ver 0.02
 以上のようなフォルダになるように各アセットをインポートしてください。  
 アイトラッキングが不要な場合Assets\EyeTrackingフォルダを削除します  
 アイトラッキング対応する場合は  
-　・ViveSR([Vive-SRanipal-Unity-Plugin.unitypackage](https://hub.vive.com/en-US/profile/material-download)) SRanipal_SDK_1.0.1.0_Eye.zip内  
+　・ViveSR([Vive-SRanipal-Unity-Plugin.unitypackage](https://hub.vive.com/en-US/profile/material-download)) SRanipal_SDK_1.1.0.1_Eye.zip内  
 　・Tobii([TobiiUnitySDKForDesktop_4.0.3.unitypackage](https://github.com/Tobii/UnitySDK/releases)) アセットストアからインポート(インポートしたままフォルダは移動しないでください)  
 以上の二つをインポート  
 ※インポートが終わったらUnityをいったん終了し、ProjectSettingsフォルダを削除して、バックアップしておいたProjectSettingsフォルダを戻してください！ 
