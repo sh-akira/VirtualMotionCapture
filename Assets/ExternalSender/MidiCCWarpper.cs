@@ -29,8 +29,18 @@ public class MidiCCWarpper : MonoBehaviour {
     void Start () {
         MidiJack.MidiMaster.noteOnDelegate += (MidiJack.MidiChannel channel, int note, float velocity) =>
         {
-            if (noteOnDelegateProxy != null) {
-                noteOnDelegateProxy.Invoke(channel, note, velocity);
+            if (velocity != 0)
+            {
+                if (noteOnDelegateProxy != null)
+                {
+                    noteOnDelegateProxy.Invoke(channel, note, velocity);
+                }
+            }
+            else {
+                if (noteOffDelegateProxy != null)
+                {
+                    noteOffDelegateProxy.Invoke(channel, note);
+                }
             }
         };
         MidiJack.MidiMaster.noteOffDelegate += (MidiJack.MidiChannel channel, int note) => {

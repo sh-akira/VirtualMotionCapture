@@ -156,7 +156,7 @@ public class ExternalSender : MonoBehaviour
                 //Debug.Log("Ext: KeyDown");
                 try
                 {
-                    uClient?.Send("/VMC/Ext/Midi/Note", 1, (int)channel, note);
+                    uClient?.Send("/VMC/Ext/Midi/Note", 1, (int)channel, note, velocity);
                 }
                 catch (Exception ex)
                 {
@@ -171,7 +171,7 @@ public class ExternalSender : MonoBehaviour
                 //Debug.Log("Ext: KeyDown");
                 try
                 {
-                    uClient?.Send("/VMC/Ext/Midi/Note", 0, (int)channel, note);
+                    uClient?.Send("/VMC/Ext/Midi/Note", 0, (int)channel, note, (float)0f);
                 }
                 catch (Exception ex)
                 {
@@ -186,7 +186,7 @@ public class ExternalSender : MonoBehaviour
                 //Debug.Log("Ext: KeyDown");
                 try
                 {
-                    uClient?.Send("/VMC/Ext/Midi/CC/Val", 2, knobNo, value);
+                    uClient?.Send("/VMC/Ext/Midi/CC/Val", knobNo, value);
                 }
                 catch (Exception ex)
                 {
@@ -201,7 +201,7 @@ public class ExternalSender : MonoBehaviour
                 //Debug.Log("Ext: KeyDown");
                 try
                 {
-                    uClient?.Send("/VMC/Ext/Midi/CC/Bit", 2, knobNo, (int)(value?1:0));
+                    uClient?.Send("/VMC/Ext/Midi/CC/Bit", knobNo, (int)(value?1:0));
                 }
                 catch (Exception ex)
                 {
