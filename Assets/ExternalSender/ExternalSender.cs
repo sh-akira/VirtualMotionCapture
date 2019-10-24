@@ -307,7 +307,7 @@ public class ExternalSender : MonoBehaviour
         {
             frameOfDevices = 1;
 
-            uClient?.Send("/VMC/Ext/Hmd",
+            uClient?.Send("/VMC/Ext/Hmd/Pos",
                     "HMD",
                     trackerHandler.HMDObject.transform.position.x, trackerHandler.HMDObject.transform.position.y, trackerHandler.HMDObject.transform.position.z,
                     trackerHandler.HMDObject.transform.rotation.x, trackerHandler.HMDObject.transform.rotation.y, trackerHandler.HMDObject.transform.rotation.z, trackerHandler.HMDObject.transform.rotation.w);
@@ -315,14 +315,14 @@ public class ExternalSender : MonoBehaviour
 
             foreach (var c in trackerHandler.Controllers)
             {
-                uClient?.Send("/VMC/Ext/Con",
+                uClient?.Send("/VMC/Ext/Con/Pos",
                         c.name,
                         c.transform.position.x, c.transform.position.y, c.transform.position.z,
                         c.transform.rotation.x, c.transform.rotation.y, c.transform.rotation.z, c.transform.rotation.w);
             }
             foreach (var c in trackerHandler.Trackers)
             {
-                uClient?.Send("/VMC/Ext/Tra",
+                uClient?.Send("/VMC/Ext/Tra/Pos",
                         c.name,
                         c.transform.position.x, c.transform.position.y, c.transform.position.z,
                         c.transform.rotation.x, c.transform.rotation.y, c.transform.rotation.z, c.transform.rotation.w);
