@@ -7,6 +7,9 @@ using RootMotion.FinalIK;
 using VRM;
 using System.Reflection;
 
+using sh_akira;
+using sh_akira.OVRTracking;
+
 [RequireComponent(typeof(uOSC.uOscClient))]
 public class ExternalSender : MonoBehaviour
 {
@@ -27,6 +30,7 @@ public class ExternalSender : MonoBehaviour
     public int periodBone = 1;
     public int periodBlendShape = 1;
     public int periodCamera = 1;
+    public int periodDevices = 1;
 
     //フレーム数カウント用
     private int frameOfStatus = 1;
@@ -34,14 +38,18 @@ public class ExternalSender : MonoBehaviour
     private int frameOfBone = 1;
     private int frameOfBlendShape = 1;
     private int frameOfCamera = 1;
+    private int frameOfDevices = 1;
 
     GameObject handTrackerRoot;
+    TrackerHandler trackerHandler;
 
     void Start()
     {
         uClient = GetComponent<uOSC.uOscClient>();
         window = GameObject.Find("ControlWPFWindow").GetComponent<ControlWPFWindow>();
         handTrackerRoot = GameObject.Find("HandTrackerRoot");
+
+        trackerHandler = handTrackerRoot.GetComponent<TrackerHandler>();
 
         window.ModelLoadedAction += (GameObject CurrentModel) =>
         {
@@ -293,6 +301,36 @@ public class ExternalSender : MonoBehaviour
             }
         }
         frameOfCamera++;
+
+        //TrackerSend
+        if (frameOfDevices > periodDevices)
+        {
+            frameOfDevices = 1;
+
+            uClient?.Send("/VMC/Ext/Hmd",
+                    "HMD",
+                    trackerHandler.HMDObject.transform.position.x, trackerHandler.HMDObject.transform.position.y, trackerHandler.HMDObject.transform.position.z,
+                    trackerHandler.HMDObject.transform.rotation.x, trackerHandler.HMDObject.transform.rotation.y, trackerHandler.HMDObject.transform.rotation.z, trackerHandler.HMDObject.transform.rotation.w);
+
+
+            foreach (var c in trackerHandler.Controllers)
+            {
+                uClient?.Send("/VMC/Ext/Con",
+                        c.name,
+                        c.transform.position.x, c.transform.position.y, c.transform.position.z,
+                        c.transform.rotation.x, c.transform.rotation.y, c.transform.rotation.z, c.transform.rotation.w);
+            }
+            foreach (var c in trackerHandler.Trackers)
+            {
+                uClient?.Send("/VMC/Ext/Tra",
+                        c.name,
+                        c.transform.position.x, c.transform.position.y, c.transform.position.z,
+                        c.transform.rotation.x, c.transform.rotation.y, c.transform.rotation.z, c.transform.rotation.w);
+            }
+        }
+        frameOfDevices++;
+
+
 
         //Status
         if (frameOfStatus > periodStatus)
