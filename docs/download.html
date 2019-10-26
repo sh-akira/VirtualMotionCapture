@@ -5,6 +5,7 @@ description: バーチャルモーションキャプチャーのダウンロー�
 pricing_table:
   - name: BOOTHから
     color: "#4a4a4a"
+    bgcolor: "#5555f0"
     features:
       - text: 無料でダウンロードできます
         highlight: true
@@ -13,6 +14,17 @@ pricing_table:
     call_to_action:
       link: https://sh-akira.booth.pm/items/999760
       text: ダウンロードページへ
+  - name: pixivFANBOXから
+    color: "#4a4a4a"
+    bgcolor: "#f05555"
+    features:
+      - text: 先行リリース版(有料)
+        highlight: true
+      - text: 支援者限定の新機能先行配信もあります
+        highlight: false
+    call_to_action:
+      link: https://www.pixiv.net/fanbox/creator/10267568
+      text: 支援ページへ
 faq:
   - question: 使用に料金はかかりますか？
     answer: 無料で使用することが出来ます。気に入って頂けたら支援もお待ちしています。
@@ -34,7 +46,7 @@ faq:
 			{% endfor %}
 
 			{% if plan.call_to_action %}
-				<li class="pricing-cta"><div class="button"><a target="_blank" style="background: #5555f0" href="{{ plan.call_to_action.link }}">{{ plan.call_to_action.text }} &rarr;</a></div></li>
+				<li class="pricing-cta"><div class="button"><a target="_blank" style="background: {{ plan.bgcolor }}" href="{{ plan.call_to_action.link }}">{{ plan.call_to_action.text }} &rarr;</a></div></li>
 			{% endif %}
 		</ul>
 	{% endfor %}
