@@ -91,7 +91,7 @@ public class ControlWPFWindow : MonoBehaviour
     public Action<PipeCommands.SetEyeTracking_ViveProEyeOffsets> SetEyeTracking_ViveProEyeOffsetsAction = null;
     public Action<PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements> SetEyeTracking_ViveProEyeUseEyelidMovementsAction = null;
 
-    public MidiCCWarpper midiCCWarpper;
+    public MidiCCWrapper midiCCWrapper;
 
     // Use this for initialization
     void Start()
@@ -132,7 +132,7 @@ public class ControlWPFWindow : MonoBehaviour
 
         externalMotionSender = ExternalMotionSenderObject.GetComponent<ExternalSender>();
 
-        midiCCWarpper.noteOnDelegateProxy += async (channel, note, velocity) =>
+        midiCCWrapper.noteOnDelegateProxy += async (channel, note, velocity) =>
         {
             Debug.Log("MidiNoteOn:" + channel + "/" + note + "/" + velocity);
 
@@ -146,7 +146,7 @@ public class ControlWPFWindow : MonoBehaviour
             if (!doKeyConfig) CheckKey(config, true);
         };
 
-        midiCCWarpper.noteOffDelegateProxy += async (channel, note) =>
+        midiCCWrapper.noteOffDelegateProxy += async (channel, note) =>
         {
             Debug.Log("MidiNoteOff:" + channel + "/" + note);
 
@@ -159,7 +159,7 @@ public class ControlWPFWindow : MonoBehaviour
             if (doKeyConfig || doKeySend) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
             if (!doKeyConfig) CheckKey(config, false);
         };
-        midiCCWarpper.knobUpdateBoolDelegate += async (int knobNo, bool value) =>
+        midiCCWrapper.knobUpdateBoolDelegate += async (int knobNo, bool value) =>
         {
             MidiJack.MidiChannel channel = MidiJack.MidiChannel.Ch1; //仮でCh1
             Debug.Log("MidiCC:" + channel + "/" + knobNo + "/" + value);

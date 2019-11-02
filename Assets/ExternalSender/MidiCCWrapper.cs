@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class MidiCCWarpper : MonoBehaviour {
+public class MidiCCWrapper : MonoBehaviour {
     const int KNOBS = 128;
     const float Threshold = 0.5f;
 
