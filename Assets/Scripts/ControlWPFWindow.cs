@@ -1600,7 +1600,7 @@ public class ControlWPFWindow : MonoBehaviour
     #region CameraControl
 
 
-    private void ChangeCamera(CameraTypes type)
+    public void ChangeCamera(CameraTypes type)
     {
         if (type == CameraTypes.Free)
         {
