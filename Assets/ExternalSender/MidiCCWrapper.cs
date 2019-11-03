@@ -6,8 +6,8 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public class MidiCCWrapper : MonoBehaviour {
-    const int KNOBS = 128;
-    const float Threshold = 0.5f;
+    public const int KNOBS = 128;
+    public const float Threshold = 0.5f;
 
     //デリゲート反応用
     public bool CCAnyUpdate = false;
