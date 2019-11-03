@@ -14,8 +14,12 @@ public class ExternalReceiverForVMC : MonoBehaviour {
     public SortedDictionary<string, SteamVR_Utils.RigidTransform> virtualTracker = new SortedDictionary<string, SteamVR_Utils.RigidTransform>();
 
     ControlWPFWindow window = null;
+    GameObject CurrentModel = null;
     Camera currentCamera = null;
     VRMBlendShapeProxy blendShapeProxy = null;
+    VRMLookAtHead vrmLookAtHead = null;
+
+    GameObject lookTargetOSC;
 
     Vector3 pos;
     Quaternion rot;
@@ -29,7 +33,9 @@ public class ExternalReceiverForVMC : MonoBehaviour {
         {
             if (CurrentModel != null)
             {
+                this.CurrentModel = CurrentModel;
                 blendShapeProxy = CurrentModel.GetComponent<VRMBlendShapeProxy>();
+                vrmLookAtHead = CurrentModel.GetComponent<VRMLookAtHead>();
             }
         };
         window.CameraChangedAction += (Camera currentCamera) =>
@@ -138,12 +144,9 @@ public class ExternalReceiverForVMC : MonoBehaviour {
                 rot.w = (float)message.values[7];
                 float fov = (float)message.values[8];
 
-                Debug.Log(pos);
-                Debug.Log(rot);
-                Debug.Log(fov);
-
                 //FreeCameraじゃなかったらFreeCameraにする
-                if (ControlWPFWindow.CurrentSettings.CameraType != UnityMemoryMappedFile.CameraTypes.Free) {
+                if (ControlWPFWindow.CurrentSettings.CameraType != UnityMemoryMappedFile.CameraTypes.Free)
+                {
                     window.ChangeCamera(UnityMemoryMappedFile.CameraTypes.Free);
                 }
 
@@ -171,6 +174,46 @@ public class ExternalReceiverForVMC : MonoBehaviour {
                 if (blendShapeProxy != null)
                 {
                     blendShapeProxy.Apply();
+                }
+            }//外部アイトラ V2.3
+            else if (message.address == "/VMC/Ext/Set/Eye"
+                && (message.values[0] is int)
+                && (message.values[1] is float)
+                && (message.values[2] is float)
+                && (message.values[3] is float)
+            )
+            {
+                bool enable = ((int)message.values[0]) != 0;
+                pos.x = (float)message.values[1];
+                pos.y = (float)message.values[2];
+                pos.z = (float)message.values[3];
+
+                if (enable)
+                {
+                    //ターゲットが存在しなければ作る
+                    if (lookTargetOSC == null)
+                    {
+                        lookTargetOSC = new GameObject();
+                        lookTargetOSC.transform.parent = null;
+                        lookTargetOSC.name = "lookTargetOSC";
+                    }
+                    //位置を書き込む
+                    if (lookTargetOSC.transform != null) {
+                        lookTargetOSC.transform.position = pos;
+                    }
+
+                    //視線に書き込む
+                    if (vrmLookAtHead != null)
+                    {
+                        vrmLookAtHead.Target = lookTargetOSC.transform;
+                    }
+                }
+                else {
+                    //視線を止める
+                    if (vrmLookAtHead != null)
+                    {
+                        vrmLookAtHead.Target = null;
+                    }
                 }
             }
         }
