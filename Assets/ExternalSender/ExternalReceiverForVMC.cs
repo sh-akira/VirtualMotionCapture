@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR;
+using VRM;
 
 [RequireComponent(typeof(uOSC.uOscServer))]
 public class ExternalReceiverForVMC : MonoBehaviour {
@@ -14,6 +15,7 @@ public class ExternalReceiverForVMC : MonoBehaviour {
 
     ControlWPFWindow window = null;
     Camera currentCamera = null;
+    VRMBlendShapeProxy blendShapeProxy = null;
 
     Vector3 pos;
     Quaternion rot;
@@ -23,6 +25,13 @@ public class ExternalReceiverForVMC : MonoBehaviour {
         server.onDataReceived.AddListener(OnDataReceived);
 
         window = GameObject.Find("ControlWPFWindow").GetComponent<ControlWPFWindow>();
+        window.ModelLoadedAction += (GameObject CurrentModel) =>
+        {
+            if (CurrentModel != null)
+            {
+                blendShapeProxy = CurrentModel.GetComponent<VRMBlendShapeProxy>();
+            }
+        };
         window.CameraChangedAction += (Camera currentCamera) =>
         {
             this.currentCamera = currentCamera;
@@ -145,6 +154,24 @@ public class ExternalReceiverForVMC : MonoBehaviour {
                 window.FreeCamera.transform.position = pos;
                 window.FreeCamera.transform.rotation = rot;
                 window.FreeCamera.fieldOfView = fov;
+            } //ブレンドシェープ同期
+            else if (message.address == "/VMC/Ext/Blend/Val"
+                && (message.values[0] is string)
+                && (message.values[1] is float)
+                )
+            {
+                if (blendShapeProxy != null)
+                {
+                    blendShapeProxy.AccumulateValue((string)message.values[0], (float)message.values[1]);
+                }
+            }
+            //ブレンドシェープ適用
+            else if (message.address == "/VMC/Ext/Blend/Apply")
+            {
+                if (blendShapeProxy != null)
+                {
+                    blendShapeProxy.Apply();
+                }
             }
         }
     }
