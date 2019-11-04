@@ -22,7 +22,7 @@ public class ExternalSender : MonoBehaviour
     Camera currentCamera = null;
 
     public SteamVR2Input steamVR2Input;
-    public MidiCCWarpper midiCCWarpper;
+    public MidiCCWrapper midiCCWrapper;
 
     //フレーム周期
     public int periodStatus = 1;
@@ -149,7 +149,7 @@ public class ExternalSender : MonoBehaviour
             }
         };
 
-        midiCCWarpper.noteOnDelegateProxy += (MidiJack.MidiChannel channel, int note, float velocity) =>
+        midiCCWrapper.noteOnDelegateProxy += (MidiJack.MidiChannel channel, int note, float velocity) =>
         {
             if (this.isActiveAndEnabled)
             {
@@ -164,7 +164,7 @@ public class ExternalSender : MonoBehaviour
                 }
             }
         };
-        midiCCWarpper.noteOffDelegateProxy += (MidiJack.MidiChannel channel, int note) =>
+        midiCCWrapper.noteOffDelegateProxy += (MidiJack.MidiChannel channel, int note) =>
         {
             if (this.isActiveAndEnabled)
             {
@@ -179,7 +179,7 @@ public class ExternalSender : MonoBehaviour
                 }
             }
         };
-        midiCCWarpper.knobUpdateFloatDelegate += (int knobNo, float value) =>
+        midiCCWrapper.knobUpdateFloatDelegate += (int knobNo, float value) =>
         {
             if (this.isActiveAndEnabled)
             {
@@ -194,7 +194,7 @@ public class ExternalSender : MonoBehaviour
                 }
             }
         };
-        midiCCWarpper.knobUpdateBoolDelegate += (int knobNo, bool value) =>
+        midiCCWrapper.knobUpdateBoolDelegate += (int knobNo, bool value) =>
         {
             if (this.isActiveAndEnabled)
             {
@@ -308,7 +308,7 @@ public class ExternalSender : MonoBehaviour
             frameOfDevices = 1;
 
             uClient?.Send("/VMC/Ext/Hmd/Pos",
-                    "HMD",
+                    trackerHandler.HMDObject.name,
                     trackerHandler.HMDObject.transform.position.x, trackerHandler.HMDObject.transform.position.y, trackerHandler.HMDObject.transform.position.z,
                     trackerHandler.HMDObject.transform.rotation.x, trackerHandler.HMDObject.transform.rotation.y, trackerHandler.HMDObject.transform.rotation.z, trackerHandler.HMDObject.transform.rotation.w);
 

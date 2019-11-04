@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class MidiCCWarpper : MonoBehaviour {
-    const int KNOBS = 128;
-    const float Threshold = 0.5f;
+public class MidiCCWrapper : MonoBehaviour {
+    public const int KNOBS = 128;
+    public const float Threshold = 0.5f;
 
     //デリゲート反応用
     public bool CCAnyUpdate = false;
@@ -51,19 +51,24 @@ public class MidiCCWarpper : MonoBehaviour {
 
         MidiJack.MidiMaster.knobDelegate += (MidiJack.MidiChannel channel, int knobNo, float value) =>
         {
-            if (knobDelegateProxy != null) {
-                knobDelegateProxy.Invoke(channel, knobNo, value);
-            }
-
-            //範囲内かチェック
-            if (0 <= knobNo && knobNo < KNOBS)
-            {
-                //値を記録する
-                CCValue[knobNo] = value;
-                CCUpdateBit[knobNo] = true;
-                CCAnyUpdate = true;
-            }
+            KnobUpdated(channel, knobNo, value);
         };
+    }
+
+    public void KnobUpdated(MidiJack.MidiChannel channel, int knobNo, float value) {
+        if (knobDelegateProxy != null)
+        {
+            knobDelegateProxy.Invoke(channel, knobNo, value);
+        }
+
+        //範囲内かチェック
+        if (0 <= knobNo && knobNo < KNOBS)
+        {
+            //値を記録する
+            CCValue[knobNo] = value;
+            CCUpdateBit[knobNo] = true;
+            CCAnyUpdate = true;
+        }
     }
 
     void Update () {
