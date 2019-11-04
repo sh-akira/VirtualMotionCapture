@@ -12,6 +12,10 @@ using static RootMotion.FinalIK.VRIKCalibrator;
 public class Calibrator
 {
 
+    public static float pelvisOffsetDivide = 4f;
+    public static Transform pelvisOffsetTransform;
+    public static float pelvisOffsetHeight = 0f;
+
     /// <summary>
     /// Calibrates VRIK to the specified trackers using the VRIKTrackerCalibrator.Settings.
     /// </summary>
@@ -203,12 +207,15 @@ public class Calibrator
         headTrackerOffset.SetDirectPosition(handTrackerOffset);
         footTrackerOffset.SetDirectPosition(handTrackerOffset);
 
+        //腰トラ下げ用空Object
+        var pelvisOffsetAdjuster = new GameObject("PelvisOffsetAdjuster").transform;
+        pelvisOffsetAdjuster.parent = footTrackerRoot;
 
         //それぞれのトラッカーを正しいルートに移動
         if (HMDTransform != null) HMDTransform.parent = headTrackerRoot;
         if (LeftHandTransform != null) LeftHandTransform.parent = handTrackerRoot;
         if (RightHandTransform != null) RightHandTransform.parent = handTrackerRoot;
-        if (PelvisTransform != null) PelvisTransform.parent = footTrackerRoot;
+        if (PelvisTransform != null) PelvisTransform.parent = pelvisOffsetAdjuster;
         if (LeftFootTransform != null) LeftFootTransform.parent = footTrackerRoot;
         if (RightFootTransform != null) RightFootTransform.parent = footTrackerRoot;
         if (LeftElbowTransform != null) LeftElbowTransform.parent = handTrackerRoot;
@@ -502,6 +509,13 @@ public class Calibrator
             if (rootController != null) GameObject.Destroy(rootController);
         }
 
+        if (PelvisTransform != null)
+        {
+            pelvisOffsetHeight = ik.references.pelvis.position.y;
+            pelvisOffsetTransform = pelvisOffsetAdjuster;
+            pelvisOffsetAdjuster.localPosition = new Vector3(0, pelvisOffsetDivide == 0 ? 0 : -(ik.references.pelvis.position.y / pelvisOffsetDivide), 0);
+        }
+
         // Additional solver settings
         ik.solver.spine.minHeadHeight = 0f;
         ik.solver.locomotion.weight = PelvisTransform == null && LeftFootTransform == null && RightFootTransform == null ? 1f : 0f;
@@ -539,12 +553,16 @@ public class Calibrator
         headTrackerOffset.SetDirectPosition(handTrackerOffset);
         footTrackerOffset.SetDirectPosition(handTrackerOffset);
 
+        //腰トラ下げ用空Object
+        var pelvisOffsetAdjuster = new GameObject("PelvisOffsetAdjuster").transform;
+        pelvisOffsetAdjuster.parent = footTrackerRoot;
+
 
         //それぞれのトラッカーを正しいルートに移動
         if (HMDTransform != null) HMDTransform.parent = headTrackerRoot;
         if (LeftHandTransform != null) LeftHandTransform.parent = handTrackerRoot;
         if (RightHandTransform != null) RightHandTransform.parent = handTrackerRoot;
-        if (PelvisTransform != null) PelvisTransform.parent = footTrackerRoot;
+        if (PelvisTransform != null) PelvisTransform.parent = pelvisOffsetAdjuster;
         if (LeftFootTransform != null) LeftFootTransform.parent = footTrackerRoot;
         if (RightFootTransform != null) RightFootTransform.parent = footTrackerRoot;
         if (LeftElbowTransform != null) LeftElbowTransform.parent = handTrackerRoot;
@@ -817,6 +835,13 @@ public class Calibrator
             if (rootController != null) GameObject.Destroy(rootController);
         }
 
+        if (PelvisTransform != null)
+        {
+            pelvisOffsetHeight = ik.references.pelvis.position.y;
+            pelvisOffsetTransform = pelvisOffsetAdjuster;
+            pelvisOffsetAdjuster.localPosition = new Vector3(0, pelvisOffsetDivide == 0 ? 0 : -(ik.references.pelvis.position.y / pelvisOffsetDivide), 0);
+        }
+
         // Additional solver settings
         ik.solver.spine.minHeadHeight = 0f;
         ik.solver.locomotion.weight = PelvisTransform == null && LeftFootTransform == null && RightFootTransform == null ? 1f : 0f;
@@ -854,12 +879,16 @@ public class Calibrator
         headTrackerOffset.SetDirectPosition(handTrackerOffset);
         footTrackerOffset.SetDirectPosition(handTrackerOffset);
 
+        //腰トラ下げ用空Object
+        var pelvisOffsetAdjuster = new GameObject("PelvisOffsetAdjuster").transform;
+        pelvisOffsetAdjuster.parent = footTrackerRoot;
+
 
         //それぞれのトラッカーを正しいルートに移動
         if (HMDTransform != null) HMDTransform.parent = headTrackerRoot;
         if (LeftHandTransform != null) LeftHandTransform.parent = handTrackerRoot;
         if (RightHandTransform != null) RightHandTransform.parent = handTrackerRoot;
-        if (PelvisTransform != null) PelvisTransform.parent = headTrackerRoot;
+        if (PelvisTransform != null) PelvisTransform.parent = pelvisOffsetAdjuster;
         if (LeftFootTransform != null) LeftFootTransform.parent = footTrackerRoot;
         if (RightFootTransform != null) RightFootTransform.parent = footTrackerRoot;
         if (LeftElbowTransform != null) LeftElbowTransform.parent = handTrackerRoot;
@@ -1136,6 +1165,14 @@ public class Calibrator
             handTrackerRoot.position = Vector3.zero;
             headTrackerRoot.position = Vector3.zero;
         }
+
+        if (PelvisTransform != null)
+        {
+            pelvisOffsetHeight = ik.references.pelvis.position.y;
+            pelvisOffsetTransform = pelvisOffsetAdjuster;
+            pelvisOffsetAdjuster.localPosition = new Vector3(0, pelvisOffsetDivide == 0 ? 0 : - (ik.references.pelvis.position.y / pelvisOffsetDivide), 0);
+        }
+
         // Additional solver settings
         ik.solver.spine.minHeadHeight = 0f;
         ik.solver.locomotion.weight = PelvisTransform == null && LeftFootTransform == null && RightFootTransform == null ? 1f : 0f;
