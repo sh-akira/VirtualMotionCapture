@@ -2617,6 +2617,10 @@ public class ControlWPFWindow : MonoBehaviour
                 {
                     path = Application.dataPath + "/../default.json";
                     CurrentSettings = Json.Serializer.Deserialize<Settings>(File.ReadAllText(path));
+                    float divide = 0;
+                    if (float.TryParse(File.ReadAllText(Application.dataPath + "/../PelvisTrackerOffsetDivide.txt"), out divide)){
+                        Calibrator.pelvisOffsetDivide = divide;
+                    }
                 }
                 catch (Exception ex)
                 {
