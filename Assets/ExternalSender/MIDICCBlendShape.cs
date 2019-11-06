@@ -6,9 +6,13 @@ using VRM;
 
 public class MIDICCBlendShape : MonoBehaviour {
     public MidiCCWrapper midiCCWrapper;
-    public string[] KnobToBlendShape = new string[MidiCCWrapper.KNOBS];
+    public string[] KnobToBlendShape = new string[MidiCCWrapper.KNOBS]; //BlendShapeとKnobを紐付けるキー配列
+
     ControlWPFWindow window = null;
     VRMBlendShapeProxy blendShapeProxy = null;
+
+    //キーが存在するか
+    bool available = false;
 
     void Start()
     {
@@ -23,17 +27,26 @@ public class MIDICCBlendShape : MonoBehaviour {
     }
 
     void Update () {
+        available = false;
+
         //全ノブを調べる
         if (blendShapeProxy != null)
         {
             for (int i = 0; i < MidiCCWrapper.KNOBS; i++)
             {
+                //キーが登録されている場合
                 if (KnobToBlendShape[i] != null && KnobToBlendShape[i] != "")
                 {
+                    //表情を反映する
                     blendShapeProxy.AccumulateValue(KnobToBlendShape[i], midiCCWrapper.CCValue[i]);
+                    available = true;
                 }
             }
-            blendShapeProxy.Apply();
+
+            //値が一つでも存在すれば反映、でなければ特に触らない
+            if (available) {
+                blendShapeProxy.Apply();
+            }
         }
     }
 }
