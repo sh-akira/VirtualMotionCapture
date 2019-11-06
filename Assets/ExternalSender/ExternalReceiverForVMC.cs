@@ -233,8 +233,13 @@ public class ExternalReceiverForVMC : MonoBehaviour {
         return new SteamVR_Utils.RigidTransform(pos, rot);
     }
 
-    void Update()
+    public void ChangeOSCPort(int port)
     {
-
+        var uServer = GetComponent<uOSC.uOscServer>();
+        uServer.enabled = false;
+        var type = typeof(uOSC.uOscServer);
+        var portfield = type.GetField("port", BindingFlags.SetField | BindingFlags.NonPublic | BindingFlags.Instance);
+        portfield.SetValue(uServer, port);
+        uServer.enabled = true;
     }
 }

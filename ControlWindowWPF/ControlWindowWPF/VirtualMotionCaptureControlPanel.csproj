@@ -83,6 +83,9 @@
     </Compile>
     <Compile Include="JsonSerializer.cs" />
     <Compile Include="LanguageSelector.cs" />
+    <Compile Include="MidiCCBlendShapeSettingWIndow.xaml.cs">
+      <DependentUpon>MidiCCBlendShapeSettingWIndow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PhotoWindow.xaml.cs">
       <DependentUpon>PhotoWindow.xaml</DependentUpon>
     </Compile>
@@ -145,6 +148,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="MidiCCBlendShapeSettingWIndow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PhotoWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

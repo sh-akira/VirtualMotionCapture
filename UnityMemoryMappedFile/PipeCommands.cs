@@ -362,6 +362,29 @@ namespace UnityMemoryMappedFile
         {
             public string address { get; set; }
             public int port { get; set; }
+
+            public int PeriodStatus { get; set; }
+            public int PeriodRoot { get; set; }
+            public int PeriodBone { get; set; }
+            public int PeriodBlendShape { get; set; }
+            public int PeriodCamera { get; set; }
+            public int PeriodDevices { get; set; }
+        }
+
+        public class GetEnableExternalMotionReceiver { }
+        public class EnableExternalMotionReceiver
+        {
+            public bool enable { get; set; }
+        }
+        public class GetExternalMotionReceiverPort { }
+        public class ChangeExternalMotionReceiverPort
+        {
+            public int port { get; set; }
+        }
+        public class GetMidiCCBlendShape { }
+        public class SetMidiCCBlendShape
+        {
+            public List<string> BlendShapes { get; set; }
         }
     }
 
