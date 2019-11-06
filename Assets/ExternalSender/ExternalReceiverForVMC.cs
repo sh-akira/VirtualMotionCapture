@@ -10,6 +10,7 @@ public class ExternalReceiverForVMC : MonoBehaviour {
     public ExternalSender externalSender;
     public MidiCCWrapper MIDICCWrapper;
 
+    //仮想コントローラソート済み辞書
     public SortedDictionary<string, SteamVR_Utils.RigidTransform> virtualController = new SortedDictionary<string, SteamVR_Utils.RigidTransform>();
     public SortedDictionary<string, SteamVR_Utils.RigidTransform> virtualTracker = new SortedDictionary<string, SteamVR_Utils.RigidTransform>();
 
@@ -19,8 +20,10 @@ public class ExternalReceiverForVMC : MonoBehaviour {
     VRMBlendShapeProxy blendShapeProxy = null;
     VRMLookAtHead vrmLookAtHead = null;
 
+    //仮想視線操作用
     GameObject lookTargetOSC;
 
+    //バッファ
     Vector3 pos;
     Quaternion rot;
 
@@ -123,6 +126,7 @@ public class ExternalReceiverForVMC : MonoBehaviour {
             {
                 MIDICCWrapper.KnobUpdated(0, (int)message.values[0], (float)message.values[1]);
             }
+            //Camera Control V2.3
             else if (message.address == "/VMC/Ext/Cam"
                 && (message.values[0] is string)
                 && (message.values[1] is float)

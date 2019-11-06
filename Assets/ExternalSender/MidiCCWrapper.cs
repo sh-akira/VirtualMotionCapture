@@ -6,25 +6,25 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public class MidiCCWrapper : MonoBehaviour {
-    public const int KNOBS = 128;
-    public const float Threshold = 0.5f;
+    public const int KNOBS = 128; //最大ノブ数
+    public const float Threshold = 0.5f; //bool判定しきい値
 
-    //デリゲート反応用
-    public bool CCAnyUpdate = false;
-    public float[] CCValue = new float[KNOBS];
-    public bool[] CCUpdateBit = new bool[KNOBS];
-
-    //フレーム内処理用
-    public bool[] CCBoolValueInFrame = new bool[KNOBS];
-
-    //MIDIJack集約用プロキシ
+    //MIDIJack集約用デリゲートプロキシ(入力を即時通知する)
     public Action<MidiJack.MidiChannel, int, float> noteOnDelegateProxy = null;
     public Action<MidiJack.MidiChannel, int> noteOffDelegateProxy = null;
     public Action<MidiJack.MidiChannel, int, float> knobDelegateProxy = null;
 
-    //フレーム単位で処理するデリゲート
+    //フレーム単位にまるめて変化を通知するデリゲート
     public Action<int, float> knobUpdateFloatDelegate = null;
     public Action<int, bool> knobUpdateBoolDelegate = null;
+
+    //デリゲートを使わず現在値を取得するインターフェース
+    public float[] CCValue = new float[KNOBS];
+    public bool[] CCBoolValueInFrame = new bool[KNOBS];
+
+    //変化検出用の内部変数
+    private bool CCAnyUpdate = false;
+    private bool[] CCUpdateBit = new bool[KNOBS];
 
     void Start () {
         MidiJack.MidiMaster.noteOnDelegate += (MidiJack.MidiChannel channel, int note, float velocity) =>
