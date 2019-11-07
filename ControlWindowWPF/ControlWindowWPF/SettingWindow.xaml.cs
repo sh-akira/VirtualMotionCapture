@@ -268,6 +268,16 @@ namespace VirtualMotionCaptureControlPanel
                     PeriodDevicesTextBox.Text = data.PeriodDevices.ToString();
                 });
             });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEnableExternalMotionReceiver { }, d =>
+            {
+                var data = (PipeCommands.EnableExternalMotionReceiver)d;
+                Dispatcher.Invoke(() =>
+                {
+                    isSetting = true;
+                    ExternalMotionReceiverEnableCheckBox.IsChecked = data.enable;
+                    isSetting = false;
+                });
+            });
             await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = true });
         }
 
