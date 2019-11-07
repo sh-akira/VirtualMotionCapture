@@ -123,7 +123,7 @@
                             <TextBlock Text=" Port:" Grid.Column="2"/>
                             <TextBox Text="39539" Grid.Column="3" VerticalAlignment="Center" Name="ExternalMotionSenderPortTextBox"/>
                         </Grid>
-                        <GroupBox Header="送信間隔(指定フレームに1回)" DockPanel.Dock="Top">
+                        <GroupBox Header="{DynamicResource SettingWindow_ExternalMotionSenderTransmissionInterval}" DockPanel.Dock="Top">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
@@ -152,10 +152,10 @@
                         </GroupBox>
                     </DockPanel>
                 </GroupBox>
-                <GroupBox Header="外部からモーション受信">
+                <GroupBox Header="{DynamicResource SettingWindow_ExternalMotionReceiver}">
                     <DockPanel>
                         <Button Content="{DynamicResource SettingWindow_ResolutionApply}" Name="OSCReceiverApplyButton" Click="OSCReceiverApplyButton_Click" DockPanel.Dock="Right" Padding="10,5"/>
-                        <CheckBox Content="OSCでモーション受信を有効にする" Name="ExternalMotionReceiverEnableCheckBox" Checked="ExternalMotionReceiverCheckBox_Changed" Unchecked="ExternalMotionReceiverCheckBox_Changed" DockPanel.Dock="Top"/>
+                        <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionReceiverEnable}" Name="ExternalMotionReceiverEnableCheckBox" Checked="ExternalMotionReceiverCheckBox_Changed" Unchecked="ExternalMotionReceiverCheckBox_Changed" DockPanel.Dock="Top"/>
                         <Grid DockPanel.Dock="Top">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
