@@ -412,6 +412,7 @@ namespace UnityMemoryMappedFile
         Keyboard,
         Mouse,
         Midi,
+        MidiCC,
     }
 
     public enum KeyActionTypes
@@ -970,7 +971,7 @@ namespace UnityMemoryMappedFile
                 var isLeftStr = type == KeyTypes.Controller ? (isLeft ? "左" : "右") : "";
                 var keyCodeStr = type == KeyTypes.Controller ? keyName : type == KeyTypes.Keyboard ? KeyCodeString[keyCode] : keyCode.ToString();
                 var indexStr = keyIndex > 0 ? $"{keyIndex}" : "";
-                var keyTypesString = type == KeyTypes.Controller ? "コントローラー" : type == KeyTypes.Keyboard ? "キーボード" : type == KeyTypes.Midi ? "MIDI " : "マウス";
+                var keyTypesString = type == KeyTypes.Controller ? "コントローラー" : type == KeyTypes.Keyboard ? "キーボード" : type == KeyTypes.Midi ? "MIDI " : type == KeyTypes.MidiCC ? "MIDI CC " : "マウス";
                 var isTouchStr = type == KeyTypes.Controller ? (isTouch ? "タッチ" : "") : "";
                 return $"{isLeftStr}{keyTypesString}[{keyCodeStr}{indexStr}{isTouchStr}]";
             }
@@ -979,7 +980,7 @@ namespace UnityMemoryMappedFile
                 var isLeftStr = type == KeyTypes.Controller ? (isLeft ? "Left" : "Right") : "";
                 var keyCodeStr = type == KeyTypes.Controller ? keyName : type == KeyTypes.Keyboard ? KeyCodeString_English[keyCode] : keyCode.ToString();
                 var indexStr = keyIndex > 0 ? $"{keyIndex}" : "";
-                var keyTypesString = type == KeyTypes.Controller ? "Controller" : type == KeyTypes.Keyboard ? "Keyboard" : type == KeyTypes.Midi ? "MIDI " : "Mouse";
+                var keyTypesString = type == KeyTypes.Controller ? "Controller" : type == KeyTypes.Keyboard ? "Keyboard" : type == KeyTypes.Midi ? "MIDI " : type == KeyTypes.MidiCC ? "MIDI CC " : "Mouse";
                 var isTouchStr = type == KeyTypes.Controller ? (isTouch ? "Touch" : "") : "";
                 return $"{isLeftStr}{keyTypesString}[{keyCodeStr}{indexStr}{isTouchStr}]";
             }

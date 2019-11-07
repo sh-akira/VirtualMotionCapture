@@ -171,7 +171,7 @@ public class ControlWPFWindow : MonoBehaviour
             Debug.Log("MidiCC:" + channel + "/" + knobNo + "/" + value);
 
             var config = new KeyConfig();
-            config.type = KeyTypes.Midi;
+            config.type = KeyTypes.MidiCC;
             config.actionType = KeyActionTypes.Face;
             config.keyCode = (int)channel;
             config.keyIndex = knobNo;
