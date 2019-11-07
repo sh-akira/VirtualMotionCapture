@@ -175,7 +175,7 @@ public class DynamicOVRLipSync : OVRLipSyncContextBase
                             Array.Copy(microphoneBuffer, head, processBuffer, 0, processBuffer.Length);
                         }
 
-                        OVRLipSync.ProcessFrame(Context, processBuffer, Frame);
+                        OVRLipSync.ProcessFrame(Context, processBuffer, Frame, OVRLipSync.AudioDataType.F32_Mono);
 
                         head += processBuffer.Length;
                         if (head > microphoneBuffer.Length)
@@ -226,7 +226,7 @@ public class DynamicOVRLipSync : OVRLipSyncContextBase
 
                     OVRLipSync.Frame frame = this.Frame;
 
-                    OVRLipSync.ProcessFrameInterleaved(Context, data,/* flags,*/ frame);
+                    OVRLipSync.ProcessFrame(Context, data,/* flags,*/ frame);
                 }
             }
 

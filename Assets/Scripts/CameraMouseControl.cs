@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityNamedPipe;
+using UnityMemoryMappedFile;
 using static ControlWPFWindow;
 
 public class CameraMouseControl : MonoBehaviour
@@ -122,16 +122,29 @@ public class CameraMouseControl : MonoBehaviour
 
     private Camera currentCamera;
 
+    private Transform parentTransform;
+
+    private Vector3 currentNoScaledPosition = Vector3.zero;
+
     void Start()
     {
         currentCamera = GetComponent<Camera>();
         UpdateCamera();
+        if (transform.parent != null)
+        {
+            parentTransform = transform.parent;
+        }
     }
 
     private bool isTargetRotate = false;
 
     void Update()
     {
+        CheckUpdate();
+    }
+    public void CheckUpdate()
+    {
+        var mousePosition = Input.mousePosition;
         bool settingChanged = false;
         if (LookTarget == null)
         {
@@ -143,7 +156,7 @@ public class CameraMouseControl : MonoBehaviour
 
             if (Input.GetMouseButton((int)MouseButtons.Left) && isTargetRotate)
             {
-                Vector3 dragOffset = Input.mousePosition - lastMousePosition;
+                Vector3 dragOffset = mousePosition - lastMousePosition;
                 CameraAngle.x = (CameraAngle.x + dragOffset.y * cameraSpeed.x) % 360.0f;
                 CameraAngle.y = (CameraAngle.y - dragOffset.x * cameraSpeed.y) % 360.0f;
                 settingChanged = true;
@@ -157,12 +170,15 @@ public class CameraMouseControl : MonoBehaviour
             // カメラ回転
             if (Input.GetMouseButton((int)MouseButtons.Right))
             {
-                Vector3 dragOffset = Input.mousePosition - lastMousePosition;
+                Vector3 dragOffset = mousePosition - lastMousePosition;
                 if (Input.GetMouseButtonDown((int)MouseButtons.Right) == false)
                 {
                     CameraAngle.x = (CameraAngle.x + dragOffset.y * cameraSpeed.x * (currentCamera.fieldOfView / 60.0f)) % 360.0f;
                     CameraAngle.y = (CameraAngle.y - dragOffset.x * cameraSpeed.y * (currentCamera.fieldOfView / 60.0f)) % 360.0f;
-                    CameraTarget = transform.position + Quaternion.Euler(-CameraAngle) * Vector3.forward * CameraDistance;
+                    var setPosition = transform.position;
+                    //TODO:元の座標を取っておいて計算しないと計算誤差で微妙にずれる
+                    setPosition = new Vector3((setPosition.x - parentTransform.position.x) / parentTransform.localScale.x, (setPosition.y - parentTransform.position.y) / parentTransform.localScale.y, (setPosition.z - parentTransform.position.z) / parentTransform.localScale.z);
+                    CameraTarget = setPosition + Quaternion.Euler(-CameraAngle) * Vector3.forward * CameraDistance;
                     if (PositionFixedTarget != null) // 座標追従カメラ
                     {
                         UpdateRelativePosition();
@@ -177,7 +193,7 @@ public class CameraMouseControl : MonoBehaviour
         if (Input.GetMouseButton((int)MouseButtons.Center))
         {
             Camera camera = GetComponent<Camera>();
-            Vector3 mousePositionInWorld = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, CameraDistance));
+            Vector3 mousePositionInWorld = camera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, CameraDistance));
             Vector3 lastMousePositionInWorld = camera.ScreenToWorldPoint(new Vector3(lastMousePosition.x, lastMousePosition.y, CameraDistance));
             Vector3 dragOffset = mousePositionInWorld - lastMousePositionInWorld;
 
@@ -185,7 +201,7 @@ public class CameraMouseControl : MonoBehaviour
             {
                 if (LookTarget != null) // フロント/バックカメラ
                 {
-                    dragOffset.Set(0, dragOffset.y, dragOffset.z);
+                    dragOffset.Set(0, dragOffset.y, 0);
                     LookOffset -= dragOffset;
                 }
                 else if (PositionFixedTarget != null) // 座標追従カメラ
@@ -202,17 +218,20 @@ public class CameraMouseControl : MonoBehaviour
         }
 
 
-        lastMousePosition = Input.mousePosition;
+        lastMousePosition = mousePosition;
 
         // ズーム
-        float mouseScrollWheel = Input.GetAxis("Mouse ScrollWheel");
-        if (mouseScrollWheel != 0.0f)
+        if (Assets.Scripts.NativeMethods.IsWindowActive())
         {
-            var mousePos = Input.mousePosition;
-            if (mousePos.x >= 0 && mousePos.y >= 0 && mousePos.x < Screen.safeArea.width && mousePos.y < Screen.safeArea.height)
+            float mouseScrollWheel = Input.GetAxis("Mouse ScrollWheel");
+            if (mouseScrollWheel != 0.0f)
             {
-                CameraDistance = Mathf.Max(CameraDistance - mouseScrollWheel * cameraSpeed.z * (60.0f / currentCamera.fieldOfView), 0.1f);
-                settingChanged = true;
+                var mousePos = mousePosition;
+                if (mousePos.x >= 0 && mousePos.y >= 0 && mousePos.x < Screen.safeArea.width && mousePos.y < Screen.safeArea.height)
+                {
+                    CameraDistance = Mathf.Max(CameraDistance - mouseScrollWheel * cameraSpeed.z * (60.0f / currentCamera.fieldOfView), 0.1f);
+                    settingChanged = true;
+                }
             }
         }
 
@@ -237,7 +256,8 @@ public class CameraMouseControl : MonoBehaviour
             }
             if (CurrentSettings.CameraType == CameraTypes.Free)
             {
-                CurrentSettings.FreeCameraTransform.SetPositionAndRotation(transform);
+                CurrentSettings.FreeCameraTransform.SetPosition(currentNoScaledPosition);
+                CurrentSettings.FreeCameraTransform.SetRotation(transform);
             }
             else if (CurrentSettings.CameraType == CameraTypes.PositionFixed)
             {
@@ -258,27 +278,35 @@ public class CameraMouseControl : MonoBehaviour
             doUpdateRelativePosition = false;
             RelativePosition = CameraTarget - PositionFixedTarget.position;
         }
+        Vector3 setPosition;
         if (LookTarget != null)
         {
 
             var lookAt = LookTarget.position + LookOffset;
 
             // カメラとプレイヤーとの間の距離を調整
-            transform.position = lookAt - (LookTarget.transform.forward) * (CurrentSettings.CameraType == CameraTypes.Front ? -CameraDistance : CameraDistance);
+            setPosition = lookAt - (LookTarget.transform.forward) * (CurrentSettings.CameraType == CameraTypes.Front ? -CameraDistance : CameraDistance);
 
+            transform.position = setPosition;
             // 注視点の設定
             transform.LookAt(lookAt);
         }
         else if (PositionFixedTarget != null)
         {
             transform.rotation = Quaternion.Euler(-CameraAngle);
-            transform.position = PositionFixedTarget.position + transform.rotation * Vector3.back * CameraDistance + RelativePosition;
+            setPosition = PositionFixedTarget.position + transform.rotation * Vector3.back * CameraDistance + RelativePosition;
         }
         else
         {
             transform.rotation = Quaternion.Euler(-CameraAngle);
-            transform.position = CameraTarget + transform.rotation * Vector3.back * CameraDistance;
+            setPosition = CameraTarget + transform.rotation * Vector3.back * CameraDistance;
         }
+        currentNoScaledPosition = setPosition;
+        if (parentTransform != null)
+        {
+            setPosition = new Vector3(setPosition.x * parentTransform.localScale.x + parentTransform.position.x, setPosition.y * parentTransform.localScale.y + parentTransform.position.y, setPosition.z * parentTransform.localScale.z + parentTransform.position.z);
+        }
+        transform.position = setPosition;
     }
 
     private void SaveLookTarget(Camera camera)

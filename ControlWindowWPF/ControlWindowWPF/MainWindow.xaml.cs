@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using UnityNamedPipe;
+using UnityMemoryMappedFile;
 
 namespace VirtualMotionCaptureControlPanel
 {
@@ -71,11 +71,11 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            await GetLipSyncDevice();
             while (Globals.Client.IsConnected != true)
             {
                 await Task.Delay(100);
             }
+            await GetLipSyncDevice();
             await Globals.Client.SendCommandAsync(new PipeCommands.LoadCurrentSettings());
         }
 
@@ -87,6 +87,7 @@ namespace VirtualMotionCaptureControlPanel
             }
             catch { }
             Application.Current.Windows.Cast<Window>().ToList().ForEach(d => { if (d != this) d.Close(); });
+            Globals.Client.Dispose();
         }
 
         private void SilentChangeChecked(CheckBox checkBox, bool enable, RoutedEventHandler checkedHandler, RoutedEventHandler uncheckedHandler)
@@ -127,7 +128,7 @@ namespace VirtualMotionCaptureControlPanel
 
         private void Client_Received(object sender, DataReceivedEventArgs e)
         {
-            Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(async () =>
             {
                 //"設定"
                 if (e.CommandType == typeof(PipeCommands.LoadVRMPath))
@@ -142,6 +143,17 @@ namespace VirtualMotionCaptureControlPanel
                     Globals.LeftControllerCenterEnable = d.LeftCenterEnable;
                     Globals.RightControllerPoints = d.RightPoints;
                     Globals.RightControllerCenterEnable = d.RightCenterEnable;
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadControllerStickPoints))
+                {
+                    var d = (PipeCommands.LoadControllerStickPoints)e.Data;
+                    Globals.LeftControllerStickPoints = d.LeftPoints;
+                    Globals.RightControllerStickPoints = d.RightPoints;
+                }
+                else if (e.CommandType == typeof(PipeCommands.LoadSkeletalInputEnable))
+                {
+                    var d = (PipeCommands.LoadSkeletalInputEnable)e.Data;
+                    Globals.EnableSkeletal = d.enable;
                 }
                 else if (e.CommandType == typeof(PipeCommands.LoadKeyActions))
                 {
@@ -267,6 +279,17 @@ namespace VirtualMotionCaptureControlPanel
                     var d = (PipeCommands.LoadClosingTime)e.Data;
                     LoadSlider(d.time, 100.0f, ClosingTimeSlider, ClosingTimeSlider_ValueChanged);
                 }
+                else if (e.CommandType == typeof(PipeCommands.SetLightAngle))
+                {
+                    var d = (PipeCommands.SetLightAngle)e.Data;
+                    LoadSlider(d.X, 1.0f, LightXSlider, LightSlider_ValueChanged);
+                    LoadSlider(d.Y, 1.0f, LightYSlider, LightSlider_ValueChanged);
+                }
+                else if (e.CommandType == typeof(PipeCommands.ChangeLightColor))
+                {
+                    var d = (PipeCommands.ChangeLightColor)e.Data;
+                    LightColorButton.Background = new SolidColorBrush(Color.FromArgb((byte)(d.a * 255f), (byte)(d.r * 255f), (byte)(d.g * 255f), (byte)(d.b * 255f)));
+                }
                 else if (e.CommandType == typeof(PipeCommands.SetWindowNum))
                 {
                     var d = (PipeCommands.SetWindowNum)e.Data;
@@ -292,7 +315,7 @@ namespace VirtualMotionCaptureControlPanel
             var updown = isDown ? "Down" : "Up  ";
             var leftright = key.isLeft ? "Left " : "Right";
             var facehand = key.actionType == KeyActionTypes.Face ? "Face" : "Hand";
-            var type = key.type == KeyTypes.Controller ? "Controller" : key.type == KeyTypes.Keyboard ? "Keyboard  " : "Mouse     ";
+            var type = key.type == KeyTypes.Controller ? "Controller" : key.type == KeyTypes.Keyboard ? "Keyboard  " : key.type == KeyTypes.Midi ? "Midi " : "Mouse     ";
             System.Diagnostics.Debug.WriteLine($"Key{updown} {facehand} {leftright} {type} {key.keyCode} {key.keyIndex}");
         }
 
@@ -300,12 +323,22 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void LoadSettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            await Globals.Client.SendCommandAsync(new PipeCommands.LoadSettings());
+            var ofd = new Microsoft.Win32.OpenFileDialog();
+            ofd.Filter = "Setting File(*.json)|*.json";
+            if (ofd.ShowDialog() == true)
+            {
+                await Globals.Client.SendCommandAsync(new PipeCommands.LoadSettings { Path = ofd.FileName });
+            }
         }
 
         private async void SaveSettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            await Globals.Client.SendCommandAsync(new PipeCommands.SaveSettings());
+            var sfd = new Microsoft.Win32.SaveFileDialog();
+            sfd.Filter = "Setting File(*.json)|*.json";
+            if (sfd.ShowDialog() == true)
+            {
+                await Globals.Client.SendCommandAsync(new PipeCommands.SaveSettings { Path = sfd.FileName });
+            }
         }
 
         private void ImportVRMButton_Click(object sender, RoutedEventArgs e)
@@ -611,5 +644,26 @@ namespace VirtualMotionCaptureControlPanel
         }
 
         #endregion
+
+        private async void LightSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (LightXSlider == null || LightYSlider == null || Globals.Client == null) return;
+            await Globals.Client?.SendCommandAsync(new PipeCommands.SetLightAngle { X = (float)LightXSlider.Value, Y = (float)LightYSlider.Value });
+        }
+
+        private void LightColorButton_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new ColorPickerWindow();
+            win.SelectedColor = (LightColorButton.Background as SolidColorBrush).Color;
+            win.SelectedColorChangedEvent += ColorPickerWindow_SelectedColorChanged;
+            win.ShowDialog();
+            win.SelectedColorChangedEvent -= ColorPickerWindow_SelectedColorChanged;
+        }
+
+        private async void ColorPickerWindow_SelectedColorChanged(object sender, Color e)
+        {
+            LightColorButton.Background = new SolidColorBrush(e);
+            await Globals.Client?.SendCommandAsync(new PipeCommands.ChangeLightColor { a = e.A / 255f, r = e.R / 255f, g = e.G / 255f, b = e.B / 255f });
+        }
     }
 }

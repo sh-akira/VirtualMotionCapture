@@ -42,6 +42,7 @@ tobii*
 SteamVR*csproj
 Backup*
 Assets/ExternalPlugins/uOSC*
+Assets/ExternalPlugins/MidiJack*
 
 # Visual Studio cache directory
 .vs/

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
         mc:Ignorable="d"
-        Title="{DynamicResource FunctionKeyAddWindowTitle}" SizeToContent="Height" Width="450" Loaded="Window_Loaded" Closing="Window_Closing">
+        Title="{DynamicResource FunctionKeyAddWindowTitle}" SizeToContent="Height" Width="450" Loaded="Window_Loaded" Closing="Window_Closing" Icon="Resources/VirtualMotionCapture_dark.ico">
     <DockPanel>
         <GroupBox Header="{DynamicResource FunctionKeyAddWindow_UseKey}" DockPanel.Dock="Top">
             <DockPanel>

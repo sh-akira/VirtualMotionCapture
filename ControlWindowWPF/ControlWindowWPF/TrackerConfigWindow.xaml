@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
         mc:Ignorable="d"
-        Title="{DynamicResource TrackerConfigWindowTitle}" Height="500" Width="800" Loaded="Window_Loaded">
+        Title="{DynamicResource TrackerConfigWindowTitle}" Height="500" Width="800" Loaded="Window_Loaded" Closing="Window_Closing" Icon="Resources/VirtualMotionCapture_dark.ico">
     <DockPanel>
         <GroupBox Header="{DynamicResource TrackerConfigWindow_TrackerConfig}" DockPanel.Dock="Top">
             <Grid>
@@ -83,7 +83,7 @@
                                 </StackPanel>
                             </UniformGrid>
                         </GroupBox>
-                        <GroupBox Header="{DynamicResource TrackerConfigWindow_OffsetRightHand}">
+                        <GroupBox Header="{DynamicResource TrackerConfigWindow_OffsetRightHand}" Name="RightHandGroupBox">
                             <UniformGrid Rows="1" Columns="2">
                                 <StackPanel>
                                     <DockPanel Margin="0,10,0,0">
@@ -102,7 +102,10 @@
                             </UniformGrid>
                         </GroupBox>
                     </UniformGrid>
-                    <TextBlock Text="{DynamicResource TrackerConfigWindow_TrackerOffsetDescription}"/>
+                    <DockPanel>
+                        <TextBlock Text="{DynamicResource TrackerConfigWindow_TrackerOffsetDescription}" DockPanel.Dock="Right"/>
+                        <CheckBox Content="{DynamicResource TrackerConfigWindow_SynchronizeBothHands}" Name="SyncCheckBox" Checked="SyncCheckBox_Checked" Unchecked="SyncCheckBox_Unchecked"/>
+                    </DockPanel>
                 </StackPanel>
             </GroupBox>
         </DockPanel>

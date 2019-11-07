@@ -11,6 +11,32 @@
                         <Setter Property="Margin" Value="3"/>
                         <Setter Property="Height" Value="40"/>
                         <Setter Property="Padding" Value="3,1"/>
+                        <Setter Property="Background" Value="#EFEFEF"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="BorderBrush" Value="#222222"/>
+                        <Setter Property="OverridesDefaultStyle" Value="True" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border x:Name="ButtonBorder" CornerRadius="3" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter x:Name="ButtonContentPresenter" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <!-- マウスオーバーした時に色を変える -->
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="true">
+                                            <Setter Property="Background" Value="#DDEEFF" TargetName="ButtonBorder"/>
+                                        </Trigger>
+                                        <Trigger Property="IsPressed" Value="true">
+                                            <Setter Property="Background" Value="#FEFEFE" TargetName="ButtonBorder"/>
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="false">
+                                            <Setter Property="Background" Value="#CCCCCC" TargetName="ButtonBorder"/>
+                                            <Setter Property="TextBlock.Foreground" Value="#444444" TargetName="ButtonContentPresenter"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
                     </Style>
                     <Style TargetType="TextBlock">
                         <Setter Property="VerticalAlignment" Value="Center"/>

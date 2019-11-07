@@ -1,0 +1,3 @@
+[submodule "ColorPickerWPF"]
+	path = ColorPickerWPF
+	url = https://github.com/sh-akira/ColorPickerWPF

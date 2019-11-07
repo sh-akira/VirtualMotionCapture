@@ -1,7 +1,7 @@
 # バーチャルモーションキャプチャー (VirtualMotionCapture)  
 VRゲーム中にモデルをコントロール  
   
-VRMのモデルファイルを読み込んで、3点～フルトラッキングで操作するアプリです。  
+VRMのモデルファイルを読み込んで、3点～10点フルトラッキングで操作するアプリです。  
 追加のモーションキャプチャーがなくても、動いている姿を見せることができます。  
 もちろんVRゲーム中以外でも使用することができます。  
   
@@ -17,9 +17,9 @@ HMDと両手コントローラーのみ、
 HMDと両手コントローラーと腰トラッカー、  
 HMDと両手コントローラーと両足トラッカー、  
 HMDと両手コントローラーと腰と両足トラッカー  
+これらにプラスして両肘トラッカー、両膝トラッカー、
 それぞれのキャリブレーションに対応しています。  
-  
-バーチャルモーションキャプチャーを最初に起動し、その後VRゲームを起動してください。  
+全ての部位にHMD、コントローラー、トラッカーを自由に割り当て可能です。  
   
 # 基本の操作方法  
 起動するとコントロールパネルが表示されます。  
@@ -48,15 +48,17 @@ VRoid製のモデルを使用する場合、リップシンクが表情と競合
     
     
 テスト環境：  
-OS: Windows 10 (1803)  
-CPU:Core i7 8700k  
-GPU: Geforce GTX1080Ti  
+OS: Windows 10 (1809)  
+CPU:Core i9 9900k  
+GPU: Geforce RTX2080Ti  
 Mem: 16GB  
-VR: HTC Vive + 3 tracker  
+VR: HTC Vive + 11 tracker  
 (Oculus Rift+Touchの3点と+Kinectでの6点での動作報告があります)  
 (GTX1080 での動作も確認済み)  
 (Vive Pro,i7-4790K,GTX980,Mem 8G, Win10 Proで動作確認されました)  
-WinMR機器での動作確認もされています(必ず両手のコントローラーが必要です)  
+WinMR機器での動作確認もされています(必ず両手のコントローラーが必要です。キャリブレーション時に両手がトラッキングされている必要があります)  
+また、WinMRの場合Tポーズが通常の方法では取れませんがカウントダウンの0秒時に一気に腕を開くことで疑似的にTポーズをとる必要があります  
+Oculus Rift Sの動作確認済みです  
   
   
 まだテスト版です。テストが不十分の可能性が大いにあります。  
@@ -67,6 +69,71 @@ WinMR機器での動作確認もされています(必ず両手のコントロ�
   
   
 # 更新履歴
+Ver 0.34  
+・VIVE Pro Eyeサポート  
+  
+Ver 0.33  
+・Tobii Eye Tracker 4Cサポート  
+・UniVRM 0.53に更新  
+  
+Ver 0.32  
+・CPU使用率を大幅に下げました  
+・VRM読み込み時のファイルを開くダイアログが裏に行くときがある  
+・設定読込/保存時のダイアログも裏に行く  
+・[VRoid Hub]自分のモデルでも設定次第ではライセンス表記必須のメッセージが出てしまう  
+・[VRoid Hub]VRoid Hubで探すボタンのリンク先をアプリページに変える  
+・ロケーションによってexternalcamera.cfgのフォーマットに準拠しないファイルが生成される（ドットがカンマになる）  
+・トラッカーオフセット設定を左右を連動してバーを動かす  
+・設定保存に解像度も含める  
+  
+Ver 0.31  
+・ライトの方向変更機能追加  
+・ライトの色変更機能追加  
+・しばらく使うとトラッカー選択が白くなる現象の修正  
+  
+Ver 0.30  
+・フロント/バックカメラのブレ修正  
+・フロント/バックカメラ移動がZ軸で回っていたのを修正  
+  
+Ver 0.29  
+・フロントカメラの挙動修正(テスト版)  
+  
+Ver 0.28  
+・モデル表示画面とコントロールパネルのアイコンを分けました  
+・externalcamera.cfgの出力と設定保存をキャリブレーション前に行った場合に次の起動で設定を読み込むとカメラ位置がずれていた問題を修正  
+・キャリブレーション時のモデルの手のひらを正しい方向(正面)に変更  
+
+Ver 0.27  
+・アイコン追加  
+・ボタンのスタイル変更  
+・再キャリブレーション時のコライダーサイズ修正  
+・Final IKを1.8に更新  
+・OVRLipSyncを1.30.0に更新  
+・UniVRMを0.51に更新  
+・[VRoid Hub]貼り付けボタン追加  
+・[VRoid Hub]プラグイン0.16更新  
+
+Ver 0.26  
+・VRMを開く前に読み込みボタンを押すと固まる問題修正  
+・2個以上トラッカーがあって足にトラッカー設定しない場合足が動かない問題修正  
+・キャリブレーション後に手首の捻じれ補正が効かなかった問題修正  
+・2回以上キャリブレーションを同じモデルで行うと手が入れ替わったりずれたりした問題修正  
+  
+Ver 0.25  
+・VRoid Hubからのモデル読み込みに対応  
+・キャリブレーション時にモデルをリロードしないように変更  
+・UniVRM0.49対応  
+・ローカルVRMを1度も読まずにVRoidHubからモデルを開くとキャリブレーションできなかった問題修正  
+  
+Ver 0.24  
+・物理トラッカーへのexternalcamera.cfgの出力修正  
+・モデル表示画面とコントロールパネルの通信方法を変更  
+・v0.22からのOculusの認識修正  
+  
+Ver 0.23  
+・FOV変更した設定データを起動直後に読み込むとカメラ位置が壊れる  
+・設定読み込み直後の読み込み完了前に再度設定を読み込むとモデルが2体表示される  
+  
 Ver 0.22  
 ・画面の透過機能修正  
 ・OBSで複数起動キャプチャ対応のため、ウインドウタイトルに数字を追加  
@@ -201,23 +268,39 @@ Ver 0.02
 ビルド環境：Unity 2018.1.6f1 / Visual Studio 2017 (Windowsデスクトップ開発パッケージ)  
   
   
-・このリポジトリをクローンかダウンロードしてUnityで開いてください。  
-・Unity 2018.1.6f1で開いてください。  
+・このリポジトリをクローンかダウンロードします。  
+・ダウンロードした場合ColorPickerWPFフォルダがありませんので、忘れずにそちらもダウンロードして入れてください  
+※以下、UnityはUnity 2018.1.6f1で開いてください。  
+※以下のプラグインインポート前に、ProjectSettingsフォルダをコピーしてバックアップしてください！  
+※API UpdaterはNo, Thanksで問題ありません。  
 ・Assets直下にExternalPluginsフォルダを作って、その下に  
 　・OVRTracking (OVRTrackingライブラリ - 入れてあります)  
-　・UnityNamedPipe (名前付きパイプライブラリ - 入れてあります)  
-　・RootMotion ([Final IK 1.7](https://assetstore.unity.com/packages/tools/animation/final-ik-14290) - **※現在AssetStoreから入手できるのは`1.8`です**)  
-　・SteamVR ([SteamVR Unity Plugin v1.2.3](https://github.com/ValveSoftware/steamvr_unity_plugin/releases/tag/1.2.3))  
-　・VRM ([UniVRM-0.43_4725.unitypackage](https://github.com/dwango/UniVRM/releases))  
-　・VRM.Samples ([UniVRM-RuntimeLoaderSample-0.43_4725.unitypackage](https://github.com/dwango/UniVRM/releases))  
-　・Oculus ([Oculus Lipsync Unity 1.28.0](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/1.28.0/))  
-　・CorrectNormalMapImport ([CorrectNormalMapImport](https://github.com/d30835nm/CorrectNormalMapImport))  
+　・UnityMemoryMappedFile (共有メモリライブラリ - 入れてあります)  
+　・VMC_Camera (仮想カメラライブラリ - 入れてあります)  
+　・RootMotion(Plugins/RootMotionフォルダ) ([Final IK 1.9](https://assetstore.unity.com/packages/tools/animation/final-ik-14290))  
+　・SteamVR ([SteamVR.Plugin.unitypackage](https://github.com/ValveSoftware/steamvr_unity_plugin/releases/tag/2.3.2))  
+　・VRM ([UniVRM-0.53.0_6b07.unitypackage](https://github.com/vrm-c/UniVRM/releases))  
+　・Oculus ([Oculus Lipsync Unity 1.30.0](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/1.30.0/))  
+　・uOSC([uOSC-v0.0.2.unitypackage](https://github.com/hecomi/uOSC/releases/tag/v0.0.2))  
+　・MidiJack([MidiJack.unitypackage](https://github.com/keijiro/MidiJack))  
 以上のようなフォルダになるように各アセットをインポートしてください。  
+アイトラッキングが不要な場合Assets\EyeTrackingフォルダを削除します  
+アイトラッキング対応する場合は  
+　・ViveSR([Vive-SRanipal-Unity-Plugin.unitypackage](https://hub.vive.com/en-US/profile/material-download)) SRanipal_SDK_1.1.0.1_Eye.zip内  
+　・Tobii([TobiiUnitySDKForDesktop_4.0.3.unitypackage](https://github.com/Tobii/UnitySDK/releases)) アセットストアからインポート(インポートしたままフォルダは移動しないでください)  
+以上の二つをインポート  
+※インポートが終わったらUnityをいったん終了し、ProjectSettingsフォルダを削除して、バックアップしておいたProjectSettingsフォルダを戻してください！ 
+
 ・ControlWindowWPF/ControlWindowWPF.slnをVisual Studio 2017で開きます。  
-・そのままビルドをするとexeが作成されます  
-・UnityのPlayer Settingsを開き、Other SettingsのScripting Runtime Version を .NET 4.x Equivalent にして再起動  
-・Unity側の実行  
-・先ほどビルドしたexeを実行  
+・VirtualMotionCaptureControlPanelプロジェクトのプロパティを開きデバッグのコマンドライン引数を/pipeName VMCTestにする。  
+・そのままVisualStudioで1回開始します。自動でexeが作成されます。開いたコントロールパネルは閉じて1回終了します。  
+・Unityをもう一度起動します  
+・UnityのConsoleを見てエラーが出ている個所4か所(ダブルクリックで開く)を  
+　UnityEngine.VR.VRDeviceをUnityEngine.XR.XRDeviceに  
+　UnityEngine.VR.VRSettingsをUnityEngine.XR.XRSettingsに変更して保存  
+・まだエラーが残ってる場合はUnity再起動  
+・ScenesフォルダのVirtualMotionCaptureシーンを開いてUnity側の実行  
+・VisualStudioでコントロールパネルを開始  
   
   
 # FAQ  

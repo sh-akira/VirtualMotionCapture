@@ -11,7 +11,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using UnityNamedPipe;
+using UnityMemoryMappedFile;
 
 namespace VirtualMotionCaptureControlPanel
 {
@@ -97,7 +97,7 @@ namespace VirtualMotionCaptureControlPanel
             if (e.CommandType == typeof(PipeCommands.KeyDown))
             {
                 var d = (PipeCommands.KeyDown)e.Data;
-                if (d.Config.keyCode == (int)EVRButtonId.k_EButton_SteamVR_Trigger && d.Config.type == KeyTypes.Controller && d.Config.isTouch == false) //タッチに反応しないように(Oculus Touch)
+                if (d.Config.keyName == "ClickTrigger" && d.Config.type == KeyTypes.Controller && d.Config.isTouch == false) //タッチに反応しないように(Oculus Touch)
                 {
                     Dispatcher.Invoke(() =>
                     {

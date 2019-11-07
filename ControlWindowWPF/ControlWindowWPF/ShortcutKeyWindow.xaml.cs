@@ -15,7 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using UnityNamedPipe;
+using UnityMemoryMappedFile;
 
 namespace VirtualMotionCaptureControlPanel
 {
@@ -41,14 +41,18 @@ namespace VirtualMotionCaptureControlPanel
             CenterColor = FromHsv(0, S, V);
             LeftImage.Source = LeftWB;
             RightImage.Source = RightWB;
+            LeftStickImage.Source = LeftStickWB;
+            RightStickImage.Source = RightStickWB;
             KeysDataGrid.ItemsSource = KeysListItems;
             UpdateKeyList();
             UpdateTouchPadPoints();
+            UpdateStickPoints();
+            EnableSkeletalInputCheckBox.IsChecked = Globals.EnableSkeletal;
             if (Directory.Exists(Globals.GetCurrentAppDir() + PresetDirectory) == false)
             {
                 Directory.CreateDirectory(Globals.GetCurrentAppDir() + PresetDirectory);
             }
-            PresetComboBox.ItemsSource = Directory.EnumerateFiles(Globals.GetCurrentAppDir() + PresetDirectory, "*.json").Select(d => System.IO.Path.GetFileNameWithoutExtension(d));
+            PresetComboBox.ItemsSource = Directory.EnumerateFiles(Globals.GetCurrentAppDir() + PresetDirectory, "*.json").Where(d => d.Contains("_KeyPoints.json") == false).Select(d => System.IO.Path.GetFileNameWithoutExtension(d));
         }
 
         private void UpdateTouchPadPoints()
@@ -59,9 +63,9 @@ namespace VirtualMotionCaptureControlPanel
                 if (Globals.LeftControllerPoints.Count > 0)
                 {
                     LeftTouchPadUpDown.Value = Globals.LeftControllerPoints.Count;
-                    ClearPoints(true);
-                    Globals.LeftControllerPoints.ForEach(d => AddPoint(d.x, -d.y, true));
-                    UpdateTouchPadView(LeftWB);
+                    ClearPoints(true, true);
+                    Globals.LeftControllerPoints.ForEach(d => AddPoint(d.x, -d.y, true, true));
+                    UpdateView(LeftWB);
                 }
             }
             RightCenterKeyCheckBox.IsChecked = Globals.RightControllerCenterEnable;
@@ -70,12 +74,35 @@ namespace VirtualMotionCaptureControlPanel
                 if (Globals.RightControllerPoints.Count > 0)
                 {
                     RightTouchPadUpDown.Value = Globals.RightControllerPoints.Count;
-                    ClearPoints(false);
-                    Globals.RightControllerPoints.ForEach(d => AddPoint(d.x, -d.y, false));
-                    UpdateTouchPadView(RightWB);
+                    ClearPoints(false, true);
+                    Globals.RightControllerPoints.ForEach(d => AddPoint(d.x, -d.y, false, true));
+                    UpdateView(RightWB);
                 }
             }
             TouchPadApplyButton.IsEnabled = false;
+        }
+        private void UpdateStickPoints()
+        {
+            if (Globals.LeftControllerStickPoints != null)
+            {
+                if (Globals.LeftControllerStickPoints.Count > 0)
+                {
+                    LeftStickUpDown.Value = Globals.LeftControllerStickPoints.Count;
+                    ClearPoints(true, false);
+                    Globals.LeftControllerStickPoints.ForEach(d => AddPoint(d.x, -d.y, true, false));
+                    UpdateView(LeftStickWB);
+                }
+            }
+            if (Globals.RightControllerStickPoints != null)
+            {
+                if (Globals.RightControllerStickPoints.Count > 0)
+                {
+                    RightStickUpDown.Value = Globals.RightControllerStickPoints.Count;
+                    ClearPoints(false, false);
+                    Globals.RightControllerStickPoints.ForEach(d => AddPoint(d.x, -d.y, false, false));
+                    UpdateView(RightStickWB);
+                }
+            }
         }
 
         private float _nextH = 0;
@@ -84,6 +111,8 @@ namespace VirtualMotionCaptureControlPanel
         private float nextH { get { _nextH += 67; if (_nextH > 360) _nextH -= 360; return _nextH; } }
         private WriteableBitmap LeftWB = new WriteableBitmap(300, 300, 96.0, 96.0, PixelFormats.Bgr32, null);
         private WriteableBitmap RightWB = new WriteableBitmap(300, 300, 96.0, 96.0, PixelFormats.Bgr32, null);
+        private WriteableBitmap LeftStickWB = new WriteableBitmap(300, 300, 96.0, 96.0, PixelFormats.Bgr32, null);
+        private WriteableBitmap RightStickWB = new WriteableBitmap(300, 300, 96.0, 96.0, PixelFormats.Bgr32, null);
 
         public class ControllerPoint
         {
@@ -97,14 +126,18 @@ namespace VirtualMotionCaptureControlPanel
 
         public List<ControllerPoint> LeftPoints = new List<ControllerPoint>();
         public List<ControllerPoint> RightPoints = new List<ControllerPoint>();
+        public List<ControllerPoint> LeftStickPoints = new List<ControllerPoint>();
+        public List<ControllerPoint> RightStickPoints = new List<ControllerPoint>();
 
         private Color CenterColor;
 
-        private Image TouchPadImage(bool isLeft) => isLeft ? LeftImage : RightImage;
-        private Canvas TouchPadCanvas(bool isLeft) => isLeft ? LeftCanvas : RightCanvas;
+        private Image TargetImage(bool isLeft, bool isTouchPad) => isTouchPad ? (isLeft ? LeftImage : RightImage) : (isLeft ? LeftStickImage : RightStickImage);
+        private Canvas TargetCanvas(bool isLeft, bool isTouchPad) => isTouchPad ? (isLeft ? LeftCanvas : RightCanvas) : (isLeft ? LeftStickCanvas : RightStickCanvas);
+        private WriteableBitmap TargetWB(bool isLeft, bool isTouchPad) => isTouchPad ? (isLeft ? LeftWB : RightWB) : (isLeft ? LeftStickWB : RightStickWB);
+        private List<ControllerPoint> TargetPoints(bool isLeft, bool isTouchPad) => isTouchPad ? (isLeft ? LeftPoints : RightPoints) : (isLeft ? LeftStickPoints : RightStickPoints);
 
 
-        private void AddPoint(float x, float y, bool isLeft)
+        private void AddPoint(float x, float y, bool isLeft, bool isTouchPad)
         {
             var point = new ControllerPoint();
             point.Point = new Point(x, y);
@@ -114,15 +147,15 @@ namespace VirtualMotionCaptureControlPanel
             point.Pen = new Pen(point.Brush, 1.0f);
             point.Pen.Freeze();
             point.Thumb = new Thumb { Width = 8, Height = 8, Background = new SolidColorBrush(Colors.Black) };
-            TouchPadCanvas(isLeft).Children.Add(point.Thumb);
+            TargetCanvas(isLeft, isTouchPad).Children.Add(point.Thumb);
             point.Thumb.PreviewMouseLeftButtonDown += Thumb_PreviewMouseLeftButtonDown;
             point.Thumb.PreviewMouseMove += Thumb_PreviewMouseMove;
             point.Thumb.PreviewMouseLeftButtonUp += Thumb_PreviewMouseLeftButtonUp;
-            Canvas.SetLeft(point.Thumb, (int)((point.Point.X + 1.0f) * TouchPadImage(isLeft).Width) / 2);
-            Canvas.SetTop(point.Thumb, (int)((point.Point.Y + 1.0f) * TouchPadImage(isLeft).Height) / 2);
+            Canvas.SetLeft(point.Thumb, (int)((point.Point.X + 1.0f) * TargetImage(isLeft, isTouchPad).Width) / 2);
+            Canvas.SetTop(point.Thumb, (int)((point.Point.Y + 1.0f) * TargetImage(isLeft, isTouchPad).Height) / 2);
             point.Thumb.Tag = point;
-            point.Wb = isLeft ? LeftWB : RightWB;
-            (isLeft ? LeftPoints : RightPoints).Add(point);
+            point.Wb = TargetWB(isLeft, isTouchPad);
+            TargetPoints(isLeft, isTouchPad).Add(point);
         }
 
         //h:0～360 s:0～1.0 v:0～1.0
@@ -168,16 +201,16 @@ namespace VirtualMotionCaptureControlPanel
             return Color.FromArgb(255, (byte)Math.Round(r * 255f), (byte)Math.Round(g * 255f), (byte)Math.Round(b * 255f));
         }
 
-        private void ClearPoints(bool isLeft)
+        private void ClearPoints(bool isLeft, bool isTouchPad)
         {
             _nextH = 0;
-            var points = (isLeft ? LeftPoints : RightPoints);
+            var points = TargetPoints(isLeft, isTouchPad);
             foreach (var p in points)
             {
                 p.Thumb.PreviewMouseLeftButtonDown -= Thumb_PreviewMouseLeftButtonDown;
                 p.Thumb.PreviewMouseMove -= Thumb_PreviewMouseMove;
                 p.Thumb.PreviewMouseLeftButtonUp -= Thumb_PreviewMouseLeftButtonUp;
-                TouchPadCanvas(isLeft).Children.Remove(p.Thumb);
+                TargetCanvas(isLeft, isTouchPad).Children.Remove(p.Thumb);
             }
             points.Clear();
             //(isLeft ? Globals.LeftControllerPoints : Globals.RightControllerPoints).Clear();
@@ -185,14 +218,15 @@ namespace VirtualMotionCaptureControlPanel
 
         private DrawingGroup backingStore = new DrawingGroup();
 
-        private void UpdateTouchPadView(WriteableBitmap wb)
+        private void UpdateView(WriteableBitmap wb)
         {
             wb.Lock();
-            var isLeft = wb == LeftWB;
+            var isLeft = wb == LeftWB || wb == LeftStickWB;
+            var isTouchPad = wb == LeftWB || wb == RightWB;
             var width = (float)wb.PixelWidth;
             var height = (float)wb.PixelHeight;
             //領域塗り
-            var points = isLeft ? LeftPoints : RightPoints;
+            var points = TargetPoints(isLeft, isTouchPad);
             if (points.Count > 0)
             {
                 for (int y = 0; y < wb.PixelHeight; y++)
@@ -204,11 +238,11 @@ namespace VirtualMotionCaptureControlPanel
                     }
                 }
             }
-            if ((isLeft ? LeftCenterKeyCheckBox : RightCenterKeyCheckBox).IsChecked.Value)
+            if (isTouchPad == false || (isLeft ? LeftCenterKeyCheckBox : RightCenterKeyCheckBox).IsChecked.Value)
             {
                 var cwidth = width * 2 / 5;
                 var cheight = height * 2 / 5;
-                FillEllipse(wb, (int)(width / 2.0), (int)(height / 2.0), (int)(cwidth / 2), (int)(cheight / 2), CenterColor);
+                FillEllipse(wb, (int)(width / 2.0), (int)(height / 2.0), (int)(cwidth / 2), (int)(cheight / 2), isTouchPad ? CenterColor : Color.FromRgb(80, 80, 80));
             }
             //円形に切り取り
             FillEllipse(wb, (int)(width / 2), (int)(height / 2), (int)(width / 2), (int)(height / 2), Colors.White, true);
@@ -253,7 +287,7 @@ namespace VirtualMotionCaptureControlPanel
                 var height = (float)canvas.ActualHeight;
                 point.Point.X = (Canvas.GetLeft(point.Thumb) * 2 - width) / width;
                 point.Point.Y = (Canvas.GetTop(point.Thumb) * 2 - width) / height;
-                UpdateTouchPadView((thumb.Tag as ControllerPoint).Wb);
+                UpdateView((thumb.Tag as ControllerPoint).Wb);
             }
         }
 
@@ -283,46 +317,70 @@ namespace VirtualMotionCaptureControlPanel
 
         private void LeftCenterKeyCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            UpdateTouchPadView(LeftWB);
+            UpdateView(LeftWB);
         }
 
         private void LeftCenterKeyCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            UpdateTouchPadView(LeftWB);
+            UpdateView(LeftWB);
         }
 
         private void LeftTouchPadUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (LeftTouchPadUpDownTextBlock != null) LeftTouchPadUpDownTextBlock.Text = LeftTouchPadUpDown.Value.ToString();
-            ClearPoints(true);
+            ClearPoints(true, true);
             for (int i = 1; i <= LeftTouchPadUpDown.Value; i++)
             {
                 var rad = -((360 / (double)LeftTouchPadUpDown.Value) * (Math.PI / 180) * i);
-                AddPoint((float)Math.Sin(rad) * 0.8f, -(float)Math.Cos(rad) * 0.8f, true);
+                AddPoint((float)Math.Sin(rad) * 0.8f, -(float)Math.Cos(rad) * 0.8f, true, true);
             }
-            UpdateTouchPadView(LeftWB);
+            UpdateView(LeftWB);
         }
 
         private void RightCenterKeyCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            UpdateTouchPadView(RightWB);
+            UpdateView(RightWB);
         }
 
         private void RightCenterKeyCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            UpdateTouchPadView(RightWB);
+            UpdateView(RightWB);
         }
 
         private void RightTouchPadUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (RightTouchPadUpDownTextBlock != null) RightTouchPadUpDownTextBlock.Text = RightTouchPadUpDown.Value.ToString();
-            ClearPoints(false);
+            ClearPoints(false, true);
             for (int i = 1; i <= RightTouchPadUpDown.Value; i++)
             {
                 var rad = (360 / (double)RightTouchPadUpDown.Value) * (Math.PI / 180) * i;
-                AddPoint((float)Math.Sin(rad) * 0.8f, -(float)Math.Cos(rad) * 0.8f, false);
+                AddPoint((float)Math.Sin(rad) * 0.8f, -(float)Math.Cos(rad) * 0.8f, false, true);
             }
-            UpdateTouchPadView(RightWB);
+            UpdateView(RightWB);
+        }
+
+        private void LeftStickUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (LeftStickUpDownTextBlock != null) LeftStickUpDownTextBlock.Text = LeftStickUpDown.Value.ToString();
+            ClearPoints(true, false);
+            for (int i = 1; i <= LeftStickUpDown.Value; i++)
+            {
+                var rad = -((360 / (double)LeftStickUpDown.Value) * (Math.PI / 180) * i);
+                AddPoint((float)Math.Sin(rad) * 0.8f, -(float)Math.Cos(rad) * 0.8f, true, false);
+            }
+            UpdateView(LeftStickWB);
+        }
+
+        private void RightStickUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (RightStickUpDownTextBlock != null) RightStickUpDownTextBlock.Text = RightStickUpDown.Value.ToString();
+            ClearPoints(false, false);
+            for (int i = 1; i <= RightStickUpDown.Value; i++)
+            {
+                var rad = (360 / (double)RightStickUpDown.Value) * (Math.PI / 180) * i;
+                AddPoint((float)Math.Sin(rad) * 0.8f, -(float)Math.Cos(rad) * 0.8f, false, false);
+            }
+            UpdateView(RightStickWB);
         }
 
         private async void HandGestureAddButton_Click(object sender, RoutedEventArgs e)
@@ -614,11 +672,29 @@ namespace VirtualMotionCaptureControlPanel
             Globals.RightControllerCenterEnable = RightCenterKeyCheckBox.IsChecked.Value;
             await Globals.Client.SendCommandAsync(new PipeCommands.SetControllerTouchPadPoints
             {
-                IsOculus = false,
+                isStick = false,
                 LeftPoints = Globals.LeftControllerPoints,
                 LeftCenterEnable = LeftCenterKeyCheckBox.IsChecked.Value,
                 RightPoints = Globals.RightControllerPoints,
                 RightCenterEnable = RightCenterKeyCheckBox.IsChecked.Value
+            });
+            if (Globals.LeftControllerStickPoints == null) Globals.LeftControllerStickPoints = new List<UPoint>();
+            Globals.LeftControllerStickPoints.Clear();
+            foreach (var p in LeftStickPoints)
+            {
+                Globals.LeftControllerStickPoints.Add(new UPoint { x = (float)p.Point.X, y = -(float)p.Point.Y });
+            }
+            if (Globals.RightControllerStickPoints == null) Globals.RightControllerStickPoints = new List<UPoint>();
+            Globals.RightControllerStickPoints.Clear();
+            foreach (var p in RightStickPoints)
+            {
+                Globals.RightControllerStickPoints.Add(new UPoint { x = (float)p.Point.X, y = -(float)p.Point.Y });
+            }
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetControllerTouchPadPoints
+            {
+                isStick = true,
+                LeftPoints = Globals.LeftControllerStickPoints,
+                RightPoints = Globals.RightControllerStickPoints,
             });
             TouchPadApplyButton.IsEnabled = false;
         }
@@ -670,6 +746,16 @@ namespace VirtualMotionCaptureControlPanel
             }
         }
         private const string PresetDirectory = "ShortcutKeyPresets";
+        public class KeyPointsModel
+        {
+            public List<UPoint> RightTouchPadPoints { get; set; }
+            public List<UPoint> LeftTouchPadPoints { get; set; }
+            public bool RightCenterKeyEnable { get; set; }
+            public bool LeftCenterKeyEnable { get; set; }
+            public List<UPoint> RightStickPoints { get; set; }
+            public List<UPoint> LeftStickPoints { get; set; }
+            public bool EnableSkeletal { get; set; }
+        }
 
         private void CustomSaveButton_Click(object sender, RoutedEventArgs e)
         {
@@ -679,7 +765,8 @@ namespace VirtualMotionCaptureControlPanel
                 return;
             }
             var path = Globals.GetCurrentAppDir() + PresetDirectory + "\\" + CustomNameTextBox.Text + ".json";
-            if (File.Exists(path))
+            var pointsPath = Globals.GetCurrentAppDir() + PresetDirectory + "\\" + CustomNameTextBox.Text + "_KeyPoints.json";
+            if (File.Exists(path) || File.Exists(pointsPath))
             {
                 if (MessageBox.Show(LanguageSelector.Get("Overwritten"), LanguageSelector.Get("Confirm"), MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.Cancel)
                 {
@@ -687,7 +774,22 @@ namespace VirtualMotionCaptureControlPanel
                 }
             }
             File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(Globals.KeyActions)));
-            PresetComboBox.ItemsSource = Directory.EnumerateFiles(Globals.GetCurrentAppDir() + PresetDirectory, "*.json").Select(d => System.IO.Path.GetFileNameWithoutExtension(d));
+            if (Globals.LeftControllerPoints == null) Globals.LeftControllerPoints = new List<UPoint>();
+            if (Globals.RightControllerPoints == null) Globals.RightControllerPoints = new List<UPoint>();
+            if (Globals.LeftControllerStickPoints == null) Globals.LeftControllerStickPoints = new List<UPoint>();
+            if (Globals.RightControllerStickPoints == null) Globals.RightControllerStickPoints = new List<UPoint>();
+            var points = new KeyPointsModel()
+            {
+                LeftCenterKeyEnable = Globals.LeftControllerCenterEnable,
+                RightCenterKeyEnable = Globals.RightControllerCenterEnable,
+                LeftTouchPadPoints = new List<UPoint>(Globals.LeftControllerPoints),
+                RightTouchPadPoints = new List<UPoint>(Globals.RightControllerPoints),
+                LeftStickPoints = new List<UPoint>(Globals.LeftControllerStickPoints),
+                RightStickPoints = new List<UPoint>(Globals.RightControllerStickPoints),
+                EnableSkeletal = Globals.EnableSkeletal,
+            };
+            File.WriteAllText(pointsPath, Json.Serializer.ToReadable(Json.Serializer.Serialize(points)));
+            PresetComboBox.ItemsSource = Directory.EnumerateFiles(Globals.GetCurrentAppDir() + PresetDirectory, "*.json").Where(d => d.Contains("_KeyPoints.json") == false).Select(d => System.IO.Path.GetFileNameWithoutExtension(d));
         }
 
         private async void PresetComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -695,9 +797,46 @@ namespace VirtualMotionCaptureControlPanel
             if (PresetComboBox.SelectedItem == null) return;
 
             var path = Globals.GetCurrentAppDir() + PresetDirectory + "\\" + PresetComboBox.SelectedItem.ToString() + ".json";
+            var pointsPath = Globals.GetCurrentAppDir() + PresetDirectory + "\\" + PresetComboBox.SelectedItem.ToString() + "_KeyPoints.json";
             Globals.KeyActions = Json.Serializer.Deserialize<List<KeyAction>>(File.ReadAllText(path));
+            KeyAction.KeyActionsUpgrade(Globals.KeyActions);
             UpdateKeyList();
+            if (File.Exists(pointsPath))
+            {
+                var points = Json.Serializer.Deserialize<KeyPointsModel>(File.ReadAllText(pointsPath));
+                Globals.LeftControllerPoints = new List<UPoint>(points.LeftTouchPadPoints);
+                Globals.RightControllerPoints = new List<UPoint>(points.RightTouchPadPoints);
+                Globals.LeftControllerStickPoints = new List<UPoint>(points.LeftStickPoints);
+                Globals.RightControllerStickPoints = new List<UPoint>(points.RightStickPoints);
+                Globals.LeftControllerCenterEnable = points.LeftCenterKeyEnable;
+                Globals.RightControllerCenterEnable = points.RightCenterKeyEnable;
+                Globals.EnableSkeletal = points.EnableSkeletal;
+                UpdateTouchPadPoints();
+                UpdateStickPoints();
+                await Globals.Client.SendCommandAsync(new PipeCommands.SetControllerTouchPadPoints
+                {
+                    isStick = false,
+                    LeftPoints = Globals.LeftControllerPoints,
+                    LeftCenterEnable = LeftCenterKeyCheckBox.IsChecked.Value,
+                    RightPoints = Globals.RightControllerPoints,
+                    RightCenterEnable = RightCenterKeyCheckBox.IsChecked.Value
+                });
+                await Globals.Client.SendCommandAsync(new PipeCommands.SetControllerTouchPadPoints
+                {
+                    isStick = true,
+                    LeftPoints = Globals.LeftControllerStickPoints,
+                    RightPoints = Globals.RightControllerStickPoints,
+                });
+                TouchPadApplyButton.IsEnabled = false;
+            }
             await Globals.Client.SendCommandAsync(new PipeCommands.SetKeyActions { KeyActions = Globals.KeyActions });
+            CustomNameTextBox.Text = PresetComboBox.SelectedItem.ToString();
+            EnableSkeletalInputCheckBox.IsChecked = Globals.EnableSkeletal;
+        }
+
+        private async void EnableSkeletalInputCheckBox_CheckedChanged(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client?.SendCommandAsync(new PipeCommands.SetSkeletalInputEnable { enable = EnableSkeletalInputCheckBox.IsChecked.Value });
         }
     }
 }

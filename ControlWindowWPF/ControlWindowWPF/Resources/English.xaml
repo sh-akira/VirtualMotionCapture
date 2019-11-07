@@ -114,6 +114,12 @@
     <system:String x:Key="MainWindow_TimeToOpen_ToolTip">Set the animation time when eyelid open. Eyelids open slowly as you enlarge</system:String>
     <system:String x:Key="MainWindow_ClosedTime_ToolTip">Set the time eyelid is closed. If it is enlarged it will keep the eyelid closed for a while</system:String>
 
+    <system:String x:Key="MainWindow_Appearance">Appearance</system:String>
+    <system:String x:Key="MainWindow_LightColor">LightColor</system:String>
+    <system:String x:Key="MainWindow_LightAngle">Light Angle</system:String>
+    <system:String x:Key="MainWindow_LightVerticalDirection">Vertical</system:String>
+    <system:String x:Key="MainWindow_LightHorizontalDirection">Horizontal</system:String>
+
     <system:String x:Key="MainWindow_ErrorCalibration">VRM model has not been loaded. Please import first.</system:String>
 
 
@@ -219,6 +225,8 @@
     <system:String x:Key="SettingWindow_SelectedItemError">Please select tracker to assign camera</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig">Export externalcamera.cfg</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">Export externalcamera.cfg to synthesize model into VR game</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSender">External motion sender</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">Enable OSC motion sender</system:String>
     
 
     <!-- TrackerConfigWindow -->
@@ -243,12 +251,13 @@
     <system:String x:Key="TrackerConfigWindow_OffsetRightHand">Right hand</system:String>
     <system:String x:Key="TrackerConfigWindow_RightHandTrackerToBottom">　To bottom</system:String>
     <system:String x:Key="TrackerConfigWindow_RightHandTrackerToShoulder">　To shoulder</system:String>
-    <system:String x:Key="TrackerConfigWindow_TrackerOffsetDescription">When attaching to the back of the hand: About 20 mm, 50 mm / to the wrist (arm): About 20 mm, -50 mm</system:String>
+    <system:String x:Key="TrackerConfigWindow_TrackerOffsetDescription">Attach to the back of the hand: About 20 mm, 50 mm / to the wrist (arm): About 20 mm, -50 mm</system:String>
     <system:String x:Key="TrackerConfigWindow_Close">Close</system:String>
     <system:String x:Key="TrackerConfigWindow_LeftHandTrackerToBottom_ToolTip">The bottom direction of the tracker to be attached to the left hand (minus is switch direction)</system:String>
     <system:String x:Key="TrackerConfigWindow_LeftHandTrackerToShoulder_ToolTip">The direction of the shoulder of the tracker to be attached to the left hand (minus toward the fingertip)</system:String>
     <system:String x:Key="TrackerConfigWindow_RightHandTrackerToBottom_ToolTip">The bottom direction of the tracker attached to the right hand (minus is the switch direction)</system:String>
     <system:String x:Key="TrackerConfigWindow_RightHandTrackerToShoulder_ToolTip">The direction of the shoulder of the tracker to be attached to the right hand (negative toward the fingertip)</system:String>
+    <system:String x:Key="TrackerConfigWindow_SynchronizeBothHands">Syncronize both hands</system:String>
 
 
     <!-- ShortcutKeyWindow -->
@@ -258,6 +267,8 @@
     <system:String x:Key="ShortcutKeyWindow_Name">Name</system:String>
     <system:String x:Key="ShortcutKeyWindow_UseKey">UseKey</system:String>
     <system:String x:Key="ShortcutKeyWindow_TouchPadStickInfo">Touch pad / stick assignment</system:String>
+    <system:String x:Key="ShortcutKeyWindow_TouchPad">Touch pad</system:String>
+    <system:String x:Key="ShortcutKeyWindow_Stick">Stick</system:String>
     <system:String x:Key="ShortcutKeyWindow_LeftController">Left controller</system:String>
     <system:String x:Key="ShortcutKeyWindow_RightController">Right controller</system:String>
     <system:String x:Key="ShortcutKeyWindow_LeftCenterKey">Center key</system:String>
@@ -291,6 +302,7 @@
     <system:String x:Key="ShortcutKeyWindow_Edit_ToolTip">Edit the selected shortcut key.</system:String>
     <system:String x:Key="ShortcutKeyWindow_Remove_ToolTip">Remove the selected shortcut key.</system:String>
     <system:String x:Key="ShortcutKeyWindow_ShortcutKeyList_ToolTip">List of registered shortcut keys.</system:String>
+    <system:String x:Key="ShortcutKeyWindow_UseSkeletal">Use Skeletal for fingers (hand gestures are disabled)</system:String>
 
 
     <!-- HandGestureControlKeyAddWindow -->
@@ -380,5 +392,59 @@
     <system:String x:Key="PhotoWindow_ErrorWidth">Please enter width in half-width integer</system:String>
     <system:String x:Key="PhotoWindow_ErrorFolderExist">Folder does not exist</system:String>
     <system:String x:Key="PhotoWindow_FolderSelect">Please select a folder.</system:String>
+
+    <!-- EyeTracking_TobiiSettingWindow -->
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeScale">Eye movement range (inverted with minus)</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeOffset">Eye position offset (0.01=1cm)</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_Horizontal">Horizontal</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_Vertical">Vertical</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_Calibration">Calibration</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_CalibrationDescription">Move to the front of Tobii after model calibration is complete and press the calibration button while looking at the center of the monitor.</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_Close">Close</system:String>
+
+    <!-- EyeTracking_ViveProEyeSettingWindow -->
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeScale">Eye movement range (inverted with minus)</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeOffset">Eye position offset (0.01=1cm)</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Horizontal">Horizontal</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Vertical">Vertical</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovements">Use eyelid movements</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovementsCheckBox">Use</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Close">Close</system:String>
     
+
+    <!-- PhotoWindow -->
+    <system:String x:Key="ColorPickerWindowTitle">Color Picker</system:String>
+    
+
+    <!-- VRoidHubWindow -->
+    <system:String x:Key="VRoidHubWindowTitle">Import model from VRoid Hub</system:String>
+
+    <system:String x:Key="VRoidHubWindow_LoginDescription">To load the model from the VRoid Hub, Please log in to VRoid Hub and allow with Virtual Motion Capture.</system:String>
+    <system:String x:Key="VRoidHubWindow_Login">Login to VRoid Hub</system:String>
+    <system:String x:Key="VRoidHubWindow_ErrorDescription">An error occurred. Please close this window and reopen.</system:String>
+    <system:String x:Key="VRoidHubWindow_CodeDescription">Please enter the code displayed on web browser</system:String>
+    <system:String x:Key="VRoidHubWindow_Paste">Paste</system:String>
+    <system:String x:Key="VRoidHubWindow_Register">Enter</system:String>
+    <system:String x:Key="VRoidHubWindow_ModelList">Model List</system:String>
+    <system:String x:Key="VRoidHubWindow_FindModelOnVRoidHub">Find models on VRoid Hub</system:String>
+    <system:String x:Key="VRoidHubWindow_ModelInfo">Model Info</system:String>
+    <system:String x:Key="VRoidHubWindow_AllowedUser">Allowed User</system:String>
+    <system:String x:Key="VRoidHubWindow_ViolentExpression">Violent</system:String>
+    <system:String x:Key="VRoidHubWindow_SexualExpression">Sexual</system:String>
+    <system:String x:Key="VRoidHubWindow_CorporateCommercialUse">CorporateCommercialUse</system:String>
+    <system:String x:Key="VRoidHubWindow_PersonalCommercialUse">PersonalCommercialUse</system:String>
+    <system:String x:Key="VRoidHubWindow_NonProfit">Non profit</system:String>
+    <system:String x:Key="VRoidHubWindow_Modification">Modification</system:String>
+    <system:String x:Key="VRoidHubWindow_Redistribution">Redistribution</system:String>
+    <system:String x:Key="VRoidHubWindow_Credit">Credit</system:String>
+    <system:String x:Key="VRoidHubWindow_Necessary">Necessary</system:String>
+    <system:String x:Key="VRoidHubWindow_Unnecessary">Unnecessary</system:String>
+    <system:String x:Key="VRoidHubWindow_CreditCautionDescription1">When using this model, you need to display the license.</system:String>
+    <system:String x:Key="VRoidHubWindow_CreditCautionDescription2">Credit must be stated clearly.</system:String>
+    <system:String x:Key="VRoidHubWindow_OpenOnVRoidHub">Open VRoid Hub page</system:String>
+    <system:String x:Key="VRoidHubWindow_LoadModel">Agree and Import</system:String>
+    <system:String x:Key="VRoidHubWindow_Loading">Now loading</system:String>
+
+    <system:String x:Key="VRoidHubWindow_SelectModelMessage">Please select the model to load</system:String>
+    <system:String x:Key="VRoidHubWindow_CreditCautionConfirm">When using this model, you need to display the license. &#xa; Credit must be stated clearly when using it. OK?</system:String>
 </ResourceDictionary>

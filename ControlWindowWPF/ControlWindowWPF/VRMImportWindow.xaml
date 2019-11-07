@@ -5,9 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
         mc:Ignorable="d"
-        Title="{DynamicResource VRMImportWindowTitle}" Height="565" Width="1120" ResizeMode="CanMinimize">
+        Title="{DynamicResource VRMImportWindowTitle}" Height="565" Width="1120" ResizeMode="CanMinimize" Icon="Resources/VirtualMotionCapture_dark.ico">
     <Window.Resources>
-        <Style TargetType="Button"/>
         <Style TargetType="TextBox">
             <Setter Property="Margin" Value="8,3,0,3"/>
             <Setter Property="Padding" Value="4,1"/>
@@ -25,6 +24,7 @@
     <DockPanel>
         <DockPanel DockPanel.Dock="Top">
             <Button Margin="10,10,0,0" Width="150" Height="40" Content="{DynamicResource VRMImportWindow_VRMImportButton}" Name="LoadVRMButton" Click="LoadVRMButton_Click" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip="{DynamicResource VRMImportWindow_VRMImportButton_ToolTip}"/>
+            <Button Margin="10,10,0,0" Width="150" Height="40" Content="VRoid Hub" FontWeight="Bold" Name="ShowVRoidHubButton" Click="ShowVRoidHubButton_Click" DockPanel.Dock="Left" HorizontalAlignment="Left" ToolTip="{DynamicResource VRMImportWindow_VRMImportButton_ToolTip}"/>
             <GroupBox Header="{DynamicResource VRMImportWindow_VRMImportOption}" FontSize="14">
                 <StackPanel Orientation="Horizontal">
                     <CheckBox Content="{DynamicResource VRMImportWindow_NormalMapFix}" Name="EnableNormalMapFixCheckBox" IsChecked="False" FontSize="14" Visibility="Collapsed"/>
@@ -305,8 +305,8 @@
                         <TextBlock Grid.Row="3" Grid.Column="1" Text="{DynamicResource VRMImportWindow_OtherLicenseUrl}"/>
                         <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding OtherLicenseUrl}"/>
                         <UniformGrid Grid.Row="1" Grid.Column="4" Grid.RowSpan="4" Rows="2" Width="200">
-                            <Button Content="{DynamicResource VRMImportWindow_ImportButton}" Margin="10,10,10,5" Name="ImportButton" Click="ImportButton_Click" ToolTip="{DynamicResource VRMImportWindow_ImportButton_ToolTip}"/>
-                            <Button Content="{DynamicResource VRMImportWindow_IgnoreButton}" Margin="10,5,10,10" Name="IgnoreButton" Click="IgnoreButton_Click" ToolTip="{DynamicResource VRMImportWindow_IgnoreButton_ToolTip}"/>
+                            <Button Content="{DynamicResource VRMImportWindow_ImportButton}" Margin="10,10,10,5" Name="ImportButton" Click="ImportButton_Click" ToolTip="{DynamicResource VRMImportWindow_ImportButton_ToolTip}" IsEnabled="False"/>
+                            <Button Content="{DynamicResource VRMImportWindow_IgnoreButton}" Margin="10,5,10,10" Name="IgnoreButton" Click="IgnoreButton_Click" ToolTip="{DynamicResource VRMImportWindow_IgnoreButton_ToolTip}" IsEnabled="False"/>
                         </UniformGrid>
                     </Grid>
                 </DockPanel>

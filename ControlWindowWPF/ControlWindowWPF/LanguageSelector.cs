@@ -15,6 +15,14 @@ namespace VirtualMotionCaptureControlPanel
             {
                 ChangeLanguage("Japanese");
             }
+            else if (System.Globalization.CultureInfo.CurrentCulture.Name == "zh-CN")
+            {
+                ChangeLanguage("Chinese");
+            }
+            else if (System.Globalization.CultureInfo.CurrentCulture.Name == "ko-KR")
+            {
+                ChangeLanguage("Korean");
+            }
             else
             {
                 ChangeLanguage("English");
@@ -27,7 +35,7 @@ namespace VirtualMotionCaptureControlPanel
             dictionary.Source = new Uri($"/VirtualMotionCaptureControlPanel;component/Resources/{language}.xaml", UriKind.Relative);
             Application.Current.Resources.MergedDictionaries[0] = dictionary;
             Globals.CurrentLanguage = language;
-            UnityNamedPipe.KeyConfig.Language = language;
+            UnityMemoryMappedFile.KeyConfig.Language = language;
         }
 
         public static string Get(string key)

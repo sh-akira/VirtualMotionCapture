@@ -12,7 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using UnityNamedPipe;
+using UnityMemoryMappedFile;
 
 namespace VirtualMotionCaptureControlPanel
 {
@@ -24,17 +24,26 @@ namespace VirtualMotionCaptureControlPanel
         public VRMImportWindow()
         {
             InitializeComponent();
+            if (VRoidHubWindow.IncludeVRoidHubWindow == false)
+            {
+                ShowVRoidHubButton.Visibility = Visibility.Collapsed;
+            }
         }
 
         private VRMData CurrentMeta = null;
 
         private async void LoadVRMButton_Click(object sender, RoutedEventArgs e)
         {
-            await Globals.Client.SendCommandWaitAsync(new PipeCommands.LoadVRM(), d =>
+            var ofd = new Microsoft.Win32.OpenFileDialog();
+            ofd.Filter = "VRM File(*.vrm)|*.vrm";
+            if (ofd.ShowDialog() == true)
             {
-                var ret = (PipeCommands.ReturnLoadVRM)d;
-                Dispatcher.Invoke(() => LoadMetaData(ret.Data));
-            });
+                await Globals.Client.SendCommandWaitAsync(new PipeCommands.LoadVRM { Path = ofd.FileName }, d =>
+                {
+                    var ret = (PipeCommands.ReturnLoadVRM)d;
+                    Dispatcher.Invoke(() => LoadMetaData(ret.Data));
+                });
+            }
         }
 
         private void LoadMetaData(VRMData meta)
@@ -66,6 +75,7 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void ImportButton_Click(object sender, RoutedEventArgs e)
         {
+            if (CurrentMeta == null) return;
             Globals.CurrentVRMFilePath = CurrentMeta.FilePath;
             await Globals.Client.SendCommandAsync(new PipeCommands.ImportVRM { Path = CurrentMeta.FilePath, ImportForCalibration = false, EnableNormalMapFix = EnableNormalMapFixCheckBox.IsChecked.Value, DeleteHairNormalMap = DeleteHairNormalMapCheckBox.IsChecked.Value });
 
@@ -77,6 +87,15 @@ namespace VirtualMotionCaptureControlPanel
             LoadMetaData(new VRMData());
             ImportButton.IsEnabled = false;
             IgnoreButton.IsEnabled = false;
+        }
+
+        private void ShowVRoidHubButton_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new VRoidHubWindow();
+            if (win.ShowDialog() == true)
+            {
+                this.Close();
+            }
         }
     }
 }

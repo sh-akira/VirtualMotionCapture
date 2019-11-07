@@ -15,7 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using UnityNamedPipe;
+using UnityMemoryMappedFile;
 
 namespace VirtualMotionCaptureControlPanel
 {
@@ -40,7 +40,8 @@ namespace VirtualMotionCaptureControlPanel
             var language = Globals.CurrentLanguage;
             InitializeComponent();
             this.DataContext = this;
-            LanguageComboBox.SelectedItem = language;
+            var languageitem = LanguageComboBox.Items.Cast<string>().First(d => d.Contains(language));
+            LanguageComboBox.SelectedItem = languageitem;
             LeftHandRotateComboBox.ItemsSource = RotationItems;
             RightHandRotateComboBox.ItemsSource = RotationItems;
             if (RotationItems.Contains(Globals.LeftHandRotation)) LeftHandRotateComboBox.SelectedItem = Globals.LeftHandRotation;
@@ -173,14 +174,16 @@ namespace VirtualMotionCaptureControlPanel
                     sfd.FileName = "externalcamera.cfg";
                     if (sfd.ShowDialog() == true)
                     {
+                        var culture = System.Globalization.CultureInfo.InvariantCulture;
+                        var format = culture.NumberFormat;
                         var lines = new List<string>();
-                        lines.Add($"x={d.x}");
-                        lines.Add($"y={d.y}");
-                        lines.Add($"z={d.z}");
-                        lines.Add($"rx={d.rx}");
-                        lines.Add($"ry={d.ry}");
-                        lines.Add($"rz={d.rz}");
-                        lines.Add($"fov={d.fov}");
+                        lines.Add($"x=" + d.x.ToString("G", format));
+                        lines.Add($"y=" + d.y.ToString("G", format));
+                        lines.Add($"z=" + d.z.ToString("G", format));
+                        lines.Add($"rx=" + d.rx.ToString("G", format));
+                        lines.Add($"ry=" + d.ry.ToString("G", format));
+                        lines.Add($"rz=" + d.rz.ToString("G", format));
+                        lines.Add($"fov=" + d.fov.ToString("G", format));
                         lines.Add($"near=0.01");
                         lines.Add($"far=1000");
                         lines.Add($"disableStandardAssets=False");
@@ -201,6 +204,10 @@ namespace VirtualMotionCaptureControlPanel
         {
             var language = LanguageComboBox.SelectedItem as string;
             if (string.IsNullOrWhiteSpace(language)) language = "Japanese";
+            if (language.Contains(" ("))
+            {
+                language = language.Split(' ').First();
+            }
             LanguageSelector.ChangeLanguage(language);
         }
 
@@ -208,6 +215,21 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            Globals.Client.ReceivedEvent += Client_Received;
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetTrackerSerialNumbers(), d =>
+            {
+                var data = (PipeCommands.ReturnTrackerSerialNumbers)d;
+                Dispatcher.Invoke(() => SetTrackersList(data.List, data.CurrentSetting));
+            });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetResolutions { }, d =>
+            {
+                var config = (PipeCommands.ReturnResolutions)d;
+                Dispatcher.Invoke(() =>
+                {
+                    ResolutionItems = new ObservableCollection<ResolutionItem>(config.List.Select(r => new ResolutionItem { Width = r.Item1, Height = r.Item2, RefreshRate = r.Item3 }));
+                    ResolutionComboBox.ItemsSource = ResolutionItems;
+                });
+            });
             await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetVirtualWebCamConfig { }, d =>
             {
                 var config = (PipeCommands.SetVirtualWebCamConfig)d;
@@ -221,21 +243,26 @@ namespace VirtualMotionCaptureControlPanel
                     isSetting = false;
                 });
             });
-            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetResolutions { }, d =>
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEnableExternalMotionSender { }, d =>
             {
-                var config = (PipeCommands.ReturnResolutions)d;
+                var data = (PipeCommands.EnableExternalMotionSender)d;
                 Dispatcher.Invoke(() =>
                 {
-                    ResolutionItems = new ObservableCollection<ResolutionItem>(config.List.Select(r => new ResolutionItem { Width = r.Item1, Height = r.Item2, RefreshRate = r.Item3 }));
-                    ResolutionComboBox.ItemsSource = ResolutionItems;
+                    isSetting = true;
+                    ExternalMotionSenderEnableCheckBox.IsChecked = data.enable;
+                    isSetting = false;
                 });
             });
-            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetTrackerSerialNumbers(), d =>
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetExternalMotionSenderAddress { }, d =>
             {
-                var data = (PipeCommands.ReturnTrackerSerialNumbers)d;
-                Dispatcher.Invoke(() => SetTrackersList(data.List, data.CurrentSetting));
+                var data = (PipeCommands.ChangeExternalMotionSenderAddress)d;
+                Dispatcher.Invoke(() =>
+                {
+                    ExternalMotionSenderAddressTextBox.Text = data.address;
+                    ExternalMotionSenderPortTextBox.Text = data.port.ToString();
+                });
             });
-            Globals.Client.ReceivedEvent += Client_Received;
+            await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = true });
         }
 
         private void VirtualWebCamInstallButton_Click(object sender, RoutedEventArgs e)
@@ -347,6 +374,116 @@ namespace VirtualMotionCaptureControlPanel
                 Height = item.Height,
                 RefreshRate = item.RefreshRate,
             });
+        }
+
+        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = false });
+        }
+
+        private void EyeTracking_TobiiSettingButton_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new EyeTracking_TobiiSettingWindow();
+            win.ShowDialog();
+        }
+
+        private void EyeTracking_ViveProEyeSettingButton_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new EyeTracking_ViveProEyeSettingWindow();
+            win.ShowDialog();
+        }
+
+        private async void CameraPlus_ImportButton_Click(object sender, RoutedEventArgs e)
+        {
+            var ofd = new OpenFileDialog();
+
+            ofd.Filter = "cameraplus.cfg|cameraplus.cfg";
+            if (ofd.ShowDialog() == true)
+            {
+                var configs = new Dictionary<string, string>();
+                var lines = File.ReadAllLines(ofd.FileName);
+                foreach (var line in lines)
+                {
+                    if (line.Contains("="))
+                    {
+                        var items = line.Split(new string[] { "=" }, 2, StringSplitOptions.None);
+                        configs.Add(items[0], items[1]);
+                    }
+                }
+                Func<string, float> GetFloat = (string key) =>
+                {
+                    if (configs.ContainsKey(key) == false) { return 0.0f; }
+                    if (float.TryParse(configs[key], out var ret)) { return ret; }
+                    return 0.0f;
+                };
+                var x = GetFloat("posx");
+                var y = GetFloat("posy");
+                var z = GetFloat("posz");
+                var rx = GetFloat("angx");
+                var ry = GetFloat("angy");
+                var rz = GetFloat("angz");
+                var fov = GetFloat("fov");
+
+                await Globals.Client?.SendCommandAsync(new PipeCommands.ImportCameraPlus { x = x, y = y, z = z, rx = rx, ry = ry, rz = rz, fov = fov });
+            }
+        }
+
+        private async void CameraPlus_ExportButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.ExportCameraPlus { }, r =>
+            {
+                var d = (PipeCommands.ReturnExportCameraPlus)r;
+                Dispatcher.Invoke(() =>
+                {
+                    var ofd = new OpenFileDialog();
+                    ofd.Filter = "cameraplus.cfg|cameraplus.cfg";
+                    ofd.Title = "Select cameraplus.cfg";
+                    ofd.FileName = "cameraplus.cfg";
+                    if (ofd.ShowDialog() == true)
+                    {
+                        var culture = System.Globalization.CultureInfo.InvariantCulture;
+                        var format = culture.NumberFormat;
+                        var lines = File.ReadAllLines(ofd.FileName);
+                        for (int i = 0; i < lines.Length; i++)
+                        {
+                            if (lines[i].StartsWith("posx")) lines[i] = $"posx=" + d.x.ToString("G", format);
+                            if (lines[i].StartsWith("posy")) lines[i] = $"posy=" + d.y.ToString("G", format);
+                            if (lines[i].StartsWith("posz")) lines[i] = $"posz=" + d.z.ToString("G", format);
+                            if (lines[i].StartsWith("angx")) lines[i] = $"angx=" + d.rx.ToString("G", format);
+                            if (lines[i].StartsWith("angy")) lines[i] = $"angy=" + d.ry.ToString("G", format);
+                            if (lines[i].StartsWith("angz")) lines[i] = $"angz=" + d.rz.ToString("G", format);
+                            if (lines[i].StartsWith("fov")) lines[i] = $"fov=" + d.fov.ToString("G", format);
+                        }
+                        File.WriteAllLines(ofd.FileName, lines);
+                    }
+                });
+            });
+        }
+
+        private async void ExternalMotionSenderCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            if (isSetting) return;
+            await Globals.Client?.SendCommandAsync(new PipeCommands.EnableExternalMotionSender
+            {
+                enable = ExternalMotionSenderEnableCheckBox.IsChecked.Value
+            });
+        }
+
+        private async void OSCApplyButton_Click(object sender, RoutedEventArgs e)
+        {
+            ExternalMotionSenderPortTextBox.Background = new SolidColorBrush(Colors.White);
+            if (int.TryParse(ExternalMotionSenderPortTextBox.Text, out int port))
+            {
+                await Globals.Client?.SendCommandAsync(new PipeCommands.ChangeExternalMotionSenderAddress
+                {
+                    address = ExternalMotionSenderAddressTextBox.Text,
+                    port = port
+                });
+            }
+            else
+            {
+                ExternalMotionSenderPortTextBox.Background = new SolidColorBrush(Colors.Pink);
+            }
         }
     }
 }

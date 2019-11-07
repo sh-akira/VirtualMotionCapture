@@ -1,0 +1,14 @@
+{
+  "bindings": {
+    "/actions/default": {
+      "chords": [],
+      "poses": [],
+      "haptics": [],
+      "sources": [],
+      "skeleton": []
+    }
+  },
+  "controller_type": "holographic_hmd",
+  "description": "",
+  "name": "holographic_hmd defaults"
+}

@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\VirtualMotionCapture_dark.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -59,6 +62,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ColorPickerWindow.xaml.cs">
+      <DependentUpon>ColorPickerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EyeTracking_ViveProEyeSettingWindow.xaml.cs">
+      <DependentUpon>EyeTracking_ViveProEyeSettingWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EyeTracking_TobiiSettingWindow.xaml.cs">
+      <DependentUpon>EyeTracking_TobiiSettingWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FunctionKeyAddWindow.xaml.cs">
       <DependentUpon>FunctionKeyAddWindow.xaml</DependentUpon>
     </Compile>
@@ -87,7 +99,22 @@
     <Compile Include="VRMImportWindow.xaml.cs">
       <DependentUpon>VRMImportWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="VRoidHubWindow.xaml.cs">
+      <DependentUpon>VRoidHubWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="CalibrationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ColorPickerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EyeTracking_ViveProEyeSettingWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="EyeTracking_TobiiSettingWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -122,6 +149,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\Chinese.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Resources\Japanese.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -129,6 +160,10 @@
     <Page Include="Resources\English.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Korean.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="SettingWindow.xaml">
       <SubType>Designer</SubType>
@@ -143,6 +178,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="VRMImportWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VRoidHubWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -174,10 +213,24 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\UnityNamedPipeCommand\UnityNamedPipe.csproj">
-      <Project>{71593897-e7ab-4892-99fa-0dba75d1ac54}</Project>
-      <Name>UnityNamedPipe</Name>
+    <ProjectReference Include="..\..\ColorPickerWPF\akr.WPF.Controls.ColorPicker\akr.WPF.Controls.ColorPicker.csproj">
+      <Project>{214ebe94-3ac3-4260-8664-35d803139e89}</Project>
+      <Name>akr.WPF.Controls.ColorPicker</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\UnityMemoryMappedFile\UnityMemoryMappedFile.csproj">
+      <Project>{045efc7f-9cf6-4dce-83e1-3cac35d83383}</Project>
+      <Name>UnityMemoryMappedFile</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\VirtualMotionCapture.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\VirtualMotionCapture_dark.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>if not exist "$(ProjectDir)VRoidHubWindow.xaml" echo ^&lt;Window x:Class="VirtualMotionCaptureControlPanel.VRoidHubWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" /^&gt; &gt; "$(ProjectDir)VRoidHubWindow.xaml"
+if not exist "$(ProjectDir)VRoidHubWindow.xaml.cs" echo namespace VirtualMotionCaptureControlPanel { public partial class VRoidHubWindow : System.Windows.Window {public static bool IncludeVRoidHubWindow = false;} } &gt; "$(ProjectDir)VRoidHubWindow.xaml.cs"</PreBuildEvent>
+  </PropertyGroup>
 </Project>
