@@ -86,8 +86,12 @@ namespace sh_akira.OVRTracking
                 var controllerPositions = positions[ETrackedDeviceClass.Controller];
 
                 //add from ExternalReceiverForVMC
-                foreach (var c in externalReceiver.virtualController) {
-                    controllerPositions.Add(new KeyValuePair<SteamVR_Utils.RigidTransform, string>(c.Value, c.Key));
+                if (externalReceiver != null)
+                {
+                    foreach (var c in externalReceiver.virtualController)
+                    {
+                        controllerPositions.Add(new KeyValuePair<SteamVR_Utils.RigidTransform, string>(c.Value, c.Key));
+                    }
                 }
 
                 if (controllerPositions.Any())
@@ -103,9 +107,12 @@ namespace sh_akira.OVRTracking
                 var trackerPositions = positions[ETrackedDeviceClass.GenericTracker];
 
                 //add from ExternalReceiverForVMC
-                foreach (var t in externalReceiver.virtualTracker)
+                if (externalReceiver != null)
                 {
-                    trackerPositions.Add(new KeyValuePair<SteamVR_Utils.RigidTransform, string>(t.Value, t.Key));
+                    foreach (var t in externalReceiver.virtualTracker)
+                    {
+                        trackerPositions.Add(new KeyValuePair<SteamVR_Utils.RigidTransform, string>(t.Value, t.Key));
+                    }
                 }
 
                 if (trackerPositions.Any())
