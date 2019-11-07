@@ -260,6 +260,22 @@ namespace VirtualMotionCaptureControlPanel
                 {
                     ExternalMotionSenderAddressTextBox.Text = data.address;
                     ExternalMotionSenderPortTextBox.Text = data.port.ToString();
+                    PeriodStatusTextBox.Text = data.PeriodStatus.ToString();
+                    PeriodRootTextBox.Text = data.PeriodRoot.ToString();
+                    PeriodBoneTextBox.Text = data.PeriodBone.ToString();
+                    PeriodBlendShapeTextBox.Text = data.PeriodBlendShape.ToString();
+                    PeriodCameraTextBox.Text = data.PeriodCamera.ToString();
+                    PeriodDevicesTextBox.Text = data.PeriodDevices.ToString();
+                });
+            });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEnableExternalMotionReceiver { }, d =>
+            {
+                var data = (PipeCommands.EnableExternalMotionReceiver)d;
+                Dispatcher.Invoke(() =>
+                {
+                    isSetting = true;
+                    ExternalMotionReceiverEnableCheckBox.IsChecked = data.enable;
+                    isSetting = false;
                 });
             });
             await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = true });
@@ -471,18 +487,68 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void OSCApplyButton_Click(object sender, RoutedEventArgs e)
         {
-            ExternalMotionSenderPortTextBox.Background = new SolidColorBrush(Colors.White);
-            if (int.TryParse(ExternalMotionSenderPortTextBox.Text, out int port))
+            var port = TextBoxTryParse(ExternalMotionSenderPortTextBox);
+            var PeriodStatus = TextBoxTryParse(PeriodStatusTextBox);
+            var PeriodRoot = TextBoxTryParse(PeriodRootTextBox);
+            var PeriodBone = TextBoxTryParse(PeriodBoneTextBox);
+            var PeriodBlendShape = TextBoxTryParse(PeriodBlendShapeTextBox);
+            var PeriodCamera = TextBoxTryParse(PeriodCameraTextBox);
+            var PeriodDevices = TextBoxTryParse(PeriodDevicesTextBox);
+
+            if (port.HasValue && PeriodStatus.HasValue && PeriodRoot.HasValue && PeriodBone.HasValue && PeriodBlendShape.HasValue && PeriodCamera.HasValue && PeriodDevices.HasValue)
             {
                 await Globals.Client?.SendCommandAsync(new PipeCommands.ChangeExternalMotionSenderAddress
                 {
                     address = ExternalMotionSenderAddressTextBox.Text,
-                    port = port
+                    port = port.Value,
+                    PeriodStatus = PeriodStatus.Value,
+                    PeriodRoot = PeriodRoot.Value,
+                    PeriodBone = PeriodBone.Value,
+                    PeriodBlendShape = PeriodBlendShape.Value,
+                    PeriodCamera = PeriodCamera.Value,
+                    PeriodDevices = PeriodDevices.Value,
                 });
+            }
+        }
+
+        private async void ExternalMotionReceiverCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            if (isSetting) return;
+            await Globals.Client?.SendCommandAsync(new PipeCommands.EnableExternalMotionReceiver
+            {
+                enable = ExternalMotionReceiverEnableCheckBox.IsChecked.Value
+            });
+        }
+
+        private async void OSCReceiverApplyButton_Click(object sender, RoutedEventArgs e)
+        {
+            var port = TextBoxTryParse(ExternalMotionReceiverPortTextBox);
+            if (port.HasValue)
+            {
+                await Globals.Client?.SendCommandAsync(new PipeCommands.ChangeExternalMotionReceiverPort
+                {
+                    port = port.Value
+                });
+            }
+        }
+
+        private void MidiCCBlendShapeSettingButton_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new MidiCCBlendShapeSettingWIndow();
+            win.ShowDialog();
+        }
+
+        private int? TextBoxTryParse(TextBox textBox)
+        {
+            textBox.Background = new SolidColorBrush(Colors.White);
+            if (int.TryParse(textBox.Text, out int value))
+            {
+                return value;
             }
             else
             {
-                ExternalMotionSenderPortTextBox.Background = new SolidColorBrush(Colors.Pink);
+                textBox.Background = new SolidColorBrush(Colors.Pink);
+                return null;
             }
         }
     }

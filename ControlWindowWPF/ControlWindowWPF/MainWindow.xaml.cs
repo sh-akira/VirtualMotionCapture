@@ -315,7 +315,7 @@ namespace VirtualMotionCaptureControlPanel
             var updown = isDown ? "Down" : "Up  ";
             var leftright = key.isLeft ? "Left " : "Right";
             var facehand = key.actionType == KeyActionTypes.Face ? "Face" : "Hand";
-            var type = key.type == KeyTypes.Controller ? "Controller" : key.type == KeyTypes.Keyboard ? "Keyboard  " : key.type == KeyTypes.Midi ? "Midi " : "Mouse     ";
+            var type = key.type == KeyTypes.Controller ? "Controller" : key.type == KeyTypes.Keyboard ? "Keyboard  " : key.type == KeyTypes.Midi ? "Midi " : key.type == KeyTypes.MidiCC ? "MIDI CC " : "Mouse     ";
             System.Diagnostics.Debug.WriteLine($"Key{updown} {facehand} {leftright} {type} {key.keyCode} {key.keyIndex}");
         }
 

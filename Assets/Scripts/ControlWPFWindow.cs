@@ -57,6 +57,9 @@ public class ControlWPFWindow : MonoBehaviour
     public GameObject ExternalMotionSenderObject;
     private ExternalSender externalMotionSender;
 
+    public GameObject ExternalMotionReceiverObject;
+    private ExternalReceiverForVMC externalMotionReceiver;
+
     public MemoryMappedFileServer server;
     private string pipeName = Guid.NewGuid().ToString();
 
@@ -92,6 +95,8 @@ public class ControlWPFWindow : MonoBehaviour
     public Action<PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements> SetEyeTracking_ViveProEyeUseEyelidMovementsAction = null;
 
     public MidiCCWrapper midiCCWrapper;
+
+    public MIDICCBlendShape midiCCBlendShape;
 
     // Use this for initialization
     void Start()
@@ -131,6 +136,7 @@ public class ControlWPFWindow : MonoBehaviour
         CameraChangedAction?.Invoke(currentCamera);
 
         externalMotionSender = ExternalMotionSenderObject.GetComponent<ExternalSender>();
+        externalMotionReceiver = ExternalMotionReceiverObject.GetComponent<ExternalReceiverForVMC>();
 
         midiCCWrapper.noteOnDelegateProxy += async (channel, note, velocity) =>
         {
@@ -165,7 +171,7 @@ public class ControlWPFWindow : MonoBehaviour
             Debug.Log("MidiCC:" + channel + "/" + knobNo + "/" + value);
 
             var config = new KeyConfig();
-            config.type = KeyTypes.Midi;
+            config.type = KeyTypes.MidiCC;
             config.actionType = KeyActionTypes.Face;
             config.keyCode = (int)channel;
             config.keyIndex = knobNo;
@@ -175,16 +181,34 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 if (doKeyConfig || doKeySend) await server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
             }
-            else {
+            else
+            {
                 if (doKeyConfig || doKeySend) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
             }
             if (!doKeyConfig) CheckKey(config, value);
+        };
+
+        MidiJack.MidiMaster.knobDelegate += (MidiJack.MidiChannel channel, int knobNo, float value) =>
+        {
+            CheckKnobUpdated(channel, knobNo, value);
         };
     }
 
     private string MidiName(MidiJack.MidiChannel channel, int note)
     {
         return $"MIDI Ch{(int)channel + 1} {note}";
+    }
+
+    private float[] lastKnobUpdatedSendTime = new float[MidiCCWrapper.KNOBS];
+
+    private async void CheckKnobUpdated(MidiJack.MidiChannel channel, int knobNo, float value)
+    {
+        if (doKeySend == false) return;
+        if (lastKnobUpdatedSendTime[knobNo] + 3f < Time.realtimeSinceStartup)
+        {
+            lastKnobUpdatedSendTime[knobNo] = Time.realtimeSinceStartup;
+            await server?.SendCommandAsync(new PipeCommands.MidiCCKnobUpdate { channel = (int)channel, knobNo = knobNo, value = value });
+        }
     }
 
     private int SetWindowTitle()
@@ -694,15 +718,51 @@ public class ControlWPFWindow : MonoBehaviour
             else if (e.CommandType == typeof(PipeCommands.ChangeExternalMotionSenderAddress))
             {
                 var d = (PipeCommands.ChangeExternalMotionSenderAddress)e.Data;
-                ChangeExternalMotionSenderAddress(d.address, d.port);
+                ChangeExternalMotionSenderAddress(d.address, d.port, d.PeriodStatus, d.PeriodRoot, d.PeriodBone, d.PeriodBlendShape, d.PeriodCamera, d.PeriodDevices);
             }
             else if (e.CommandType == typeof(PipeCommands.GetExternalMotionSenderAddress))
             {
                 await server.SendCommandAsync(new PipeCommands.ChangeExternalMotionSenderAddress
                 {
                     address = CurrentSettings.ExternalMotionSenderAddress,
-                    port = CurrentSettings.ExternalMotionSenderPort
+                    port = CurrentSettings.ExternalMotionSenderPort,
+                    PeriodStatus = CurrentSettings.ExternalMotionSenderPeriodStatus,
+                    PeriodRoot = CurrentSettings.ExternalMotionSenderPeriodRoot,
+                    PeriodBone = CurrentSettings.ExternalMotionSenderPeriodBone,
+                    PeriodBlendShape = CurrentSettings.ExternalMotionSenderPeriodBlendShape,
+                    PeriodCamera = CurrentSettings.ExternalMotionSenderPeriodCamera,
+                    PeriodDevices = CurrentSettings.ExternalMotionSenderPeriodDevices,
                 }, e.RequestId);
+            }
+            else if (e.CommandType == typeof(PipeCommands.EnableExternalMotionReceiver))
+            {
+                var d = (PipeCommands.EnableExternalMotionReceiver)e.Data;
+                SetExternalMotionReceiverEnable(d.enable);
+            }
+            else if (e.CommandType == typeof(PipeCommands.GetEnableExternalMotionReceiver))
+            {
+                await server.SendCommandAsync(new PipeCommands.EnableExternalMotionReceiver
+                {
+                    enable = CurrentSettings.ExternalMotionReceiverEnable
+                }, e.RequestId);
+            }
+            else if (e.CommandType == typeof(PipeCommands.ChangeExternalMotionReceiverPort))
+            {
+                var d = (PipeCommands.ChangeExternalMotionReceiverPort)e.Data;
+                ChangeExternalMotionReceiverPort(d.port);
+            }
+            else if (e.CommandType == typeof(PipeCommands.GetMidiCCBlendShape))
+            {
+                var bs = CurrentSettings.MidiCCBlendShape;
+                await server.SendCommandAsync(new PipeCommands.SetMidiCCBlendShape
+                {
+                    BlendShapes = CurrentSettings.MidiCCBlendShape,
+                }, e.RequestId);
+            }
+            else if (e.CommandType == typeof(PipeCommands.SetMidiCCBlendShape))
+            {
+                var d = (PipeCommands.SetMidiCCBlendShape)e.Data;
+                SetMidiCCBlendShape(d.BlendShapes);
             }
         }, null);
     }
@@ -2216,12 +2276,39 @@ public class ControlWPFWindow : MonoBehaviour
         WaitOneFrameAction(() => CameraChangedAction?.Invoke(currentCamera));
     }
 
-    private void ChangeExternalMotionSenderAddress(string address, int port)
+    private void SetExternalMotionReceiverEnable(bool enable)
+    {
+        CurrentSettings.ExternalMotionReceiverEnable = enable;
+        ExternalMotionReceiverObject.SetActive(enable);
+        WaitOneFrameAction(() => ModelLoadedAction?.Invoke(CurrentModel));
+        WaitOneFrameAction(() => CameraChangedAction?.Invoke(currentCamera));
+    }
+
+    private void ChangeExternalMotionSenderAddress(string address, int port, int pstatus, int proot, int pbone, int pblendshape, int pcamera, int pdevices)
     {
         CurrentSettings.ExternalMotionSenderAddress = address;
         CurrentSettings.ExternalMotionSenderPort = port;
+        CurrentSettings.ExternalMotionSenderPeriodStatus = pstatus;
+        CurrentSettings.ExternalMotionSenderPeriodRoot = proot;
+        CurrentSettings.ExternalMotionSenderPeriodBone = pbone;
+        CurrentSettings.ExternalMotionSenderPeriodBlendShape = pblendshape;
+        CurrentSettings.ExternalMotionSenderPeriodCamera = pcamera;
+        CurrentSettings.ExternalMotionSenderPeriodDevices = pdevices;
+        externalMotionSender.periodStatus = pstatus;
+        externalMotionSender.periodRoot = proot;
+        externalMotionSender.periodBone = pbone;
+        externalMotionSender.periodBlendShape = pblendshape;
+        externalMotionSender.periodCamera = pcamera;
+        externalMotionSender.periodDevices = pdevices;
         externalMotionSender.ChangeOSCAddress(address, port);
     }
+
+    private void ChangeExternalMotionReceiverPort(int port)
+    {
+        CurrentSettings.ExternalMotionReceiverPort = port;
+        externalMotionReceiver.ChangeOSCPort(port);
+    }
+
 
     private void WaitOneFrameAction(Action action)
     {
@@ -2506,9 +2593,29 @@ public class ControlWPFWindow : MonoBehaviour
         public string ExternalMotionSenderAddress;
         [OptionalField]
         public int ExternalMotionSenderPort;
+        [OptionalField]
+        public int ExternalMotionSenderPeriodStatus;
+        [OptionalField]
+        public int ExternalMotionSenderPeriodRoot;
+        [OptionalField]
+        public int ExternalMotionSenderPeriodBone;
+        [OptionalField]
+        public int ExternalMotionSenderPeriodBlendShape;
+        [OptionalField]
+        public int ExternalMotionSenderPeriodCamera;
+        [OptionalField]
+        public int ExternalMotionSenderPeriodDevices;
+        [OptionalField]
+        public bool ExternalMotionReceiverEnable;
+        [OptionalField]
+        public int ExternalMotionReceiverPort;
+        [OptionalField]
+        public List<string> MidiCCBlendShape;
 
         [OptionalField]
         public bool EnableSkeletal;
+
+
 
         //初期値
         [OnDeserializing()]
@@ -2570,6 +2677,17 @@ public class ControlWPFWindow : MonoBehaviour
             ExternalMotionSenderEnable = false;
             ExternalMotionSenderAddress = "127.0.0.1";
             ExternalMotionSenderPort = 39539;
+            ExternalMotionSenderPeriodStatus = 1;
+            ExternalMotionSenderPeriodRoot = 1;
+            ExternalMotionSenderPeriodBone = 1;
+            ExternalMotionSenderPeriodBlendShape = 1;
+            ExternalMotionSenderPeriodCamera = 1;
+            ExternalMotionSenderPeriodDevices = 1;
+
+            ExternalMotionReceiverEnable = false;
+            ExternalMotionReceiverPort = 39540;
+
+            MidiCCBlendShape = new List<string>(Enumerable.Repeat(default(string), MidiCCWrapper.KNOBS));
         }
     }
 
@@ -2618,7 +2736,8 @@ public class ControlWPFWindow : MonoBehaviour
                     path = Application.dataPath + "/../default.json";
                     CurrentSettings = Json.Serializer.Deserialize<Settings>(File.ReadAllText(path));
                     float divide = 0;
-                    if (float.TryParse(File.ReadAllText(Application.dataPath + "/../PelvisTrackerOffsetDivide.txt"), out divide)){
+                    if (float.TryParse(File.ReadAllText(Application.dataPath + "/../PelvisTrackerOffsetDivide.txt"), out divide))
+                    {
                         Calibrator.pelvisOffsetDivide = divide;
                     }
                 }
@@ -2761,7 +2880,11 @@ public class ControlWPFWindow : MonoBehaviour
             }
 
             SetExternalMotionSenderEnable(CurrentSettings.ExternalMotionSenderEnable);
-            ChangeExternalMotionSenderAddress(CurrentSettings.ExternalMotionSenderAddress, CurrentSettings.ExternalMotionSenderPort);
+            ChangeExternalMotionSenderAddress(CurrentSettings.ExternalMotionSenderAddress, CurrentSettings.ExternalMotionSenderPort, CurrentSettings.ExternalMotionSenderPeriodStatus, CurrentSettings.ExternalMotionSenderPeriodRoot, CurrentSettings.ExternalMotionSenderPeriodBone, CurrentSettings.ExternalMotionSenderPeriodBlendShape, CurrentSettings.ExternalMotionSenderPeriodCamera, CurrentSettings.ExternalMotionSenderPeriodDevices);
+            SetExternalMotionReceiverEnable(CurrentSettings.ExternalMotionReceiverEnable);
+            ChangeExternalMotionReceiverPort(CurrentSettings.ExternalMotionReceiverPort);
+
+            SetMidiCCBlendShape(CurrentSettings.MidiCCBlendShape);
 
             SetEyeTracking_TobiiOffsetsAction?.Invoke(new PipeCommands.SetEyeTracking_TobiiOffsets
             {
@@ -2792,6 +2915,12 @@ public class ControlWPFWindow : MonoBehaviour
     }
 
     #endregion
+
+    private void SetMidiCCBlendShape(List<string> blendshapes)
+    {
+        CurrentSettings.MidiCCBlendShape = blendshapes;
+        midiCCBlendShape.KnobToBlendShape = blendshapes.ToArray();
+    }
 
     private void UpdateWebCamConfig()
     {

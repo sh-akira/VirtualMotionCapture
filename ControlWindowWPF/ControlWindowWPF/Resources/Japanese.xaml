@@ -228,6 +228,9 @@
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">VRゲームにモデルを合成するためのexternalcamera.cfgを出力します</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSender">外部にモーション送信</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">OSCでモーション送信を有効にする</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">送信間隔(指定フレームに1回)</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionReceiver">外部からモーション受信</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">OSCでモーション受信を有効にする</system:String>
 
 
     <!-- TrackerConfigWindow -->

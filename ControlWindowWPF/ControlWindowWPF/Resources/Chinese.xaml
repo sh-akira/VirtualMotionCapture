@@ -227,6 +227,10 @@
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">输出externalcamera.cfg以校准VR游戏的相机</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSender">发送外部动作</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">成功用OSC运动发送</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">传输间隔（每隔指定的帧一次）</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionReceiver">接受外部动作</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">在OSC上启用运动接收</system:String>
+
     
 
     <!-- TrackerConfigWindow -->
