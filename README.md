@@ -1,7 +1,7 @@
 # バーチャルモーションキャプチャー (VirtualMotionCapture)  
 VRゲーム中にモデルをコントロール  
   
-VRMのモデルファイルを読み込んで、3点～10点フルトラッキングで操作するアプリです。  
+VRMのモデルファイルを読み込んで、3点～フルトラッキングで操作するアプリです。  
 追加のモーションキャプチャーがなくても、動いている姿を見せることができます。  
 もちろんVRゲーム中以外でも使用することができます。  
   
@@ -19,9 +19,9 @@ HMDと両手コントローラーのみ、
 HMDと両手コントローラーと腰トラッカー、  
 HMDと両手コントローラーと両足トラッカー、  
 HMDと両手コントローラーと腰と両足トラッカー  
-これらにプラスして両肘トラッカー、両膝トラッカー、
 それぞれのキャリブレーションに対応しています。  
-全ての部位にHMD、コントローラー、トラッカーを自由に割り当て可能です。  
+  
+バーチャルモーションキャプチャーを最初に起動し、その後VRゲームを起動してください。  
   
 # 基本の操作方法  
 起動するとコントロールパネルが表示されます。  
@@ -50,15 +50,15 @@ VRoid製のモデルを使用する場合、リップシンクが表情と競合
     
     
 テスト環境：  
-OS: Windows 10 (1809)  
+OS: Windows 10 (1803)  
 CPU:Core i7 8700k  
 GPU: Geforce GTX1080Ti  
 Mem: 16GB  
-VR: HTC Vive + 11 tracker  
+VR: HTC Vive + 3 tracker  
 (Oculus Rift+Touchの3点と+Kinectでの6点での動作報告があります)  
 (GTX1080 での動作も確認済み)  
 (Vive Pro,i7-4790K,GTX980,Mem 8G, Win10 Proで動作確認されました)  
-WinMR機器での動作確認もされています(必ず両手のコントローラーが必要です。キャリブレーション時に両手がトラッキングされている必要があります)  
+WinMR機器での動作確認もされています(必ず両手のコントローラーが必要です)  
   
   
 まだテスト版です。テストが不十分の可能性が大いにあります。  
@@ -200,25 +200,24 @@ Ver 0.02
   
   
 # ビルド手順  
-ビルド環境：Unity 2018.3.0f2 / Visual Studio 2017 (Windowsデスクトップ開発パッケージ)  
+ビルド環境：Unity 2018.1.6f1 / Visual Studio 2017 (Windowsデスクトップ開発パッケージ)  
   
   
 ・このリポジトリをクローンかダウンロードしてUnityで開いてください。  
-・Unity 2018.3.0f2で開いてください。  
+・Unity 2018.1.6f1で開いてください。  
 ・Assets直下にExternalPluginsフォルダを作って、その下に  
 　・OVRTracking (OVRTrackingライブラリ - 入れてあります)  
 　・UnityNamedPipe (名前付きパイプライブラリ - 入れてあります)  
-　・VMC_Camera (仮想カメラライブラリ - 入れてあります)  
-　・Plugins ([Final IK 1.8](https://assetstore.unity.com/packages/tools/animation/final-ik-14290))  
-　・SteamVR ([SteamVR Unity Plugin v2.0.1](https://assetstore.unity.com/packages/tools/integration/steamvr-plugin-32647))  
-　・VRM ([UniVRM-0.46_ce8c.unitypackage](https://github.com/dwango/UniVRM/releases))  
-　・Oculus ([Oculus Lipsync Unity 1.30.0](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/1.30.0/))  
+　・RootMotion ([Final IK 1.7](https://assetstore.unity.com/packages/tools/animation/final-ik-14290) - **※現在AssetStoreから入手できるのは`1.8`です**)  
+　・SteamVR ([SteamVR Unity Plugin v1.2.3](https://github.com/ValveSoftware/steamvr_unity_plugin/releases/tag/1.2.3))  
+　・VRM ([UniVRM-0.43_4725.unitypackage](https://github.com/dwango/UniVRM/releases))  
+　・VRM.Samples ([UniVRM-RuntimeLoaderSample-0.43_4725.unitypackage](https://github.com/dwango/UniVRM/releases))  
+　・Oculus ([Oculus Lipsync Unity 1.28.0](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/1.28.0/))  
+　・CorrectNormalMapImport ([CorrectNormalMapImport](https://github.com/d30835nm/CorrectNormalMapImport))  
 以上のようなフォルダになるように各アセットをインポートしてください。  
 ・ControlWindowWPF/ControlWindowWPF.slnをVisual Studio 2017で開きます。  
-・VirtualMotionCaptureControlPanelプロジェクトのプロパティを開きデバッグのコマンドライン引数を/pipeName VMCTestにする。  
 ・そのままビルドをするとexeが作成されます  
 ・UnityのPlayer Settingsを開き、Other SettingsのScripting Runtime Version を .NET 4.x Equivalent にして再起動  
-・UnityのWindowメニューからPackage Managerを開き、OpenVR(1.0.2)をインストールして再起動  
 ・Unity側の実行  
 ・先ほどビルドしたexeを実行  
   
@@ -232,10 +231,12 @@ Q.Oculus Homeからゲームを起動しようとすると、SteamVRを閉じて
 A.Homeは使用せずにゲームのインストールフォルダから直接exeを実行で回避できる報告がありました  
   
 Q.externalcamera.cfgはどうやって設定するの？  
-A.バーチャルモーションキャプチャーでフリーカメラを映したい方向に移動したら、詳細設定画面の出力ボタンで出力可能です  
+A.みゅみゅさんの記事[【HTC Vive】コントローラ２本でクロマキー合成をする方法](https://qiita.com/miyumiyu/items/25deb3542e913750f519)を参照してください。  
+バーチャルモーションキャプチャーのカメラ標準はfov=60です。  
+実際にコントローラーを3つ繋いでいる場合は、3本目のコントローラーをカメラ代わりにすることができます。  
   
 Q.externalcamera.cfgの位置がおかしい  
-A.割り当てコントローラーを変更して再度ファイルを開いてみてください。  
+A.コントローラー番号を変更して再度ファイルを開いてみてください。  
   
 Q.起動後に操作するとフリーズする  
 A.VirtualMotionCaputre.exeと同じフォルダにあるdefault.jsonを別のフォルダに移動し、起動後に設定の読込ボタンからdefault.jsonを開くようにすると回避できる場合があります  

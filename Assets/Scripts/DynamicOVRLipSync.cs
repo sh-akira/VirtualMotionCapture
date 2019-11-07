@@ -226,7 +226,7 @@ public class DynamicOVRLipSync : OVRLipSyncContextBase
 
                     OVRLipSync.Frame frame = this.Frame;
 
-                    OVRLipSync.ProcessFrame(Context, data,/* flags,*/ frame);
+                    OVRLipSync.ProcessFrameInterleaved(Context, data,/* flags,*/ frame);
                 }
             }
 
