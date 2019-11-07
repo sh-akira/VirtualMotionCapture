@@ -1,0 +1,233 @@
+{
+  "app_key": "application.generated.unity.virtualmotioncapture.exe",
+  "bindings": {
+    "/actions/buggy": {
+      "chords": [],
+      "poses": [],
+      "haptics": [],
+      "sources": [],
+      "skeleton": []
+    },
+    "/actions/default": {
+      "chords": [],
+      "poses": [],
+      "haptics": [],
+      "sources": [
+        {
+          "path": "/user/hand/left/input/system",
+          "mode": "button",
+          "parameters": {},
+          "inputs": {
+            "click": {
+              "output": "/actions/default/in/clicksystem"
+            },
+            "touch": {
+              "output": "/actions/default/in/touchsystem"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/right/input/system",
+          "mode": "button",
+          "parameters": {},
+          "inputs": {
+            "click": {
+              "output": "/actions/default/in/clicksystem"
+            },
+            "touch": {
+              "output": "/actions/default/in/touchsystem"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/left/input/trigger",
+          "mode": "trigger",
+          "parameters": {},
+          "inputs": {
+            "click": {
+              "output": "/actions/default/in/clicktrigger"
+            },
+            "pull": {
+              "output": "/actions/default/in/pulltrigger"
+            },
+            "touch": {
+              "output": "/actions/default/in/touchtrigger"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/right/input/trigger",
+          "mode": "trigger",
+          "parameters": {},
+          "inputs": {
+            "click": {
+              "output": "/actions/default/in/clicktrigger"
+            },
+            "pull": {
+              "output": "/actions/default/in/pulltrigger"
+            },
+            "touch": {
+              "output": "/actions/default/in/touchtrigger"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/left/input/trackpad",
+          "mode": "trackpad",
+          "parameters": {},
+          "inputs": {
+            "position": {
+              "output": "/actions/default/in/positiontrackpad"
+            },
+            "touch": {
+              "output": "/actions/default/in/touchtrackpad"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/right/input/trackpad",
+          "mode": "trackpad",
+          "parameters": {},
+          "inputs": {
+            "position": {
+              "output": "/actions/default/in/positiontrackpad"
+            },
+            "touch": {
+              "output": "/actions/default/in/touchtrackpad"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/left/input/thumbstick",
+          "mode": "joystick",
+          "parameters": {},
+          "inputs": {
+            "click": {
+              "output": "/actions/default/in/clickthumbstick"
+            },
+            "position": {
+              "output": "/actions/default/in/positionthumbstick"
+            },
+            "touch": {
+              "output": "/actions/default/in/touchthumbstick"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/right/input/thumbstick",
+          "mode": "joystick",
+          "parameters": {},
+          "inputs": {
+            "click": {
+              "output": "/actions/default/in/clickthumbstick"
+            },
+            "position": {
+              "output": "/actions/default/in/positionthumbstick"
+            },
+            "touch": {
+              "output": "/actions/default/in/touchthumbstick"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/left/input/grip",
+          "mode": "button",
+          "parameters": {},
+          "inputs": {
+            "click": {
+              "output": "/actions/default/in/clickgrip"
+            },
+            "touch": {
+              "output": "/actions/default/in/touchgrip"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/right/input/grip",
+          "mode": "button",
+          "parameters": {},
+          "inputs": {
+            "click": {
+              "output": "/actions/default/in/clickgrip"
+            },
+            "touch": {
+              "output": "/actions/default/in/touchgrip"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/left/input/a",
+          "mode": "button",
+          "parameters": {},
+          "inputs": {
+            "click": {
+              "output": "/actions/default/in/clickabutton"
+            },
+            "touch": {
+              "output": "/actions/default/in/touchabutton"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/right/input/a",
+          "mode": "button",
+          "parameters": {},
+          "inputs": {
+            "click": {
+              "output": "/actions/default/in/clickabutton"
+            },
+            "touch": {
+              "output": "/actions/default/in/touchabutton"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/left/input/b",
+          "mode": "button",
+          "parameters": {},
+          "inputs": {
+            "click": {
+              "output": "/actions/default/in/clickbbutton"
+            },
+            "touch": {
+              "output": "/actions/default/in/touchbbutton"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/right/input/b",
+          "mode": "button",
+          "parameters": {},
+          "inputs": {
+            "click": {
+              "output": "/actions/default/in/clickbbutton"
+            },
+            "touch": {
+              "output": "/actions/default/in/touchbbutton"
+            }
+          }
+        }
+      ],
+      "skeleton": [
+        {
+          "output": "/actions/default/in/skeletonlefthand",
+          "path": "/user/hand/left/input/skeleton/left"
+        },
+        {
+          "output": "/actions/default/in/skeletonrighthand",
+          "path": "/user/hand/right/input/skeleton/right"
+        }
+      ]
+    },
+    "/actions/platformer": {
+      "chords": [],
+      "poses": [],
+      "haptics": [],
+      "sources": [],
+      "skeleton": []
+    }
+  },
+  "controller_type": "knuckles",
+  "description": "",
+  "name": "VirtualMotionCapture config for Index Controller"
+}

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="{DynamicResource SettingWindowTitle}" SizeToContent="Height" Width="300" ResizeMode="CanMinimize" Loaded="Window_Loaded">
+        Title="{DynamicResource SettingWindowTitle}" SizeToContent="Height" Width="300" ResizeMode="CanMinimize" Loaded="Window_Loaded" Closing="Window_Closing" Icon="Resources/VirtualMotionCapture_dark.ico">
     <StackPanel Orientation="Vertical">
         <GroupBox Header="{DynamicResource SettingWindow_HandRotate}" DockPanel.Dock="Top">
             <UniformGrid Rows="1" Columns="2">
@@ -79,10 +79,42 @@
                 </ComboBox>
             </DockPanel>
         </GroupBox>
+        <GroupBox Header="Eye Tracking">
+            <UniformGrid Columns="2">
+                <Button Content="Tobii Eye Tracker 4C" Name="EyeTracking_TobiiSettingButton" Click="EyeTracking_TobiiSettingButton_Click"/>
+                <Button Content="VIVE Pro Eye" Name="EyeTracking_ViveProEyeSettingButton" Click="EyeTracking_ViveProEyeSettingButton_Click"/>
+            </UniformGrid>
+        </GroupBox>
+        <GroupBox Header="CameraPlus">
+            <UniformGrid Columns="2">
+                <Button Content="Import" Name="CameraPlus_ImportButton" Click="CameraPlus_ImportButton_Click"/>
+                <Button Content="Export" Name="CameraPlus_ExportButton" Click="CameraPlus_ExportButton_Click"/>
+            </UniformGrid>
+        </GroupBox>
+        <GroupBox Header="{DynamicResource SettingWindow_ExternalMotionSender}">
+            <DockPanel>
+                <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionSenderEnable}" Name="ExternalMotionSenderEnableCheckBox" Checked="ExternalMotionSenderCheckBox_Changed" Unchecked="ExternalMotionSenderCheckBox_Changed" DockPanel.Dock="Top"/>
+                <Button Content="{DynamicResource SettingWindow_ResolutionApply}" Name="OSCApplyButton" Click="OSCApplyButton_Click" Height="24" DockPanel.Dock="Right"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Address:" Grid.Column="0"/>
+                    <TextBox Text="127.0.0.1" Grid.Column="1" VerticalAlignment="Center" Name="ExternalMotionSenderAddressTextBox"/>
+                    <TextBlock Text=" Port:" Grid.Column="2"/>
+                    <TextBox Text="39539" Grid.Column="3" VerticalAlignment="Center" Name="ExternalMotionSenderPortTextBox"/>
+                </Grid>
+            </DockPanel>
+        </GroupBox>
         <GroupBox Header="{DynamicResource SettingWindow_Language}">
             <ComboBox Name="LanguageComboBox" SelectedIndex="0" SelectionChanged="LanguageComboBox_SelectionChanged">
                 <system:String>Japanese</system:String>
                 <system:String>English</system:String>
+                <system:String>Chinese (@PoctorXz)</system:String>
+                <system:String>Korean (@MANKALO_kr)</system:String>
             </ComboBox>
         </GroupBox>
         <Button Content="{DynamicResource SettingWindow_Close}" HorizontalAlignment="Right" Width="100" Name="CloseButton" Click="CloseButton_Click" ToolTip="{DynamicResource SettingWindow_Close_ToolTip}"/>

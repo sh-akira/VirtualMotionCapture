@@ -4,13 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
-        mc:Ignorable="d" Width="360" Height="185"
-        Title="{DynamicResource MainWindowTitle}" FontSize="14" ResizeMode="CanMinimize" Background="#2A2A2A" Loaded="Window_Loaded" Closing="Window_Closing">
+        mc:Ignorable="d" Width="420" Height="185"
+        Title="{DynamicResource MainWindowTitle}" FontSize="14" ResizeMode="CanMinimize" Background="#2A2A2A" Loaded="Window_Loaded" Closing="Window_Closing" Icon="Resources/VirtualMotionCapture_dark.ico">
     <Grid>
+        <Button Visibility="Collapsed"/>
+        <!--This Button for fix style bug-->
         <TabControl Margin="5">
             <TabItem Header="{DynamicResource MainWindow_Setting}" ToolTip="{DynamicResource MainWindow_Setting_ToolTip}">
                 <UniformGrid Rows="2" Columns="3">
-                    <Button Content="{DynamicResource MainWindow_LoadSetting}" Name="LoadSettingsButton" Click="LoadSettingsButton_Click" ToolTip="{DynamicResource MainWindow_LoadSetting_ToolTip}" Margin="3" Height="40" Padding="3,1"/>
+                    <Button Content="{DynamicResource MainWindow_LoadSetting}" Name="LoadSettingsButton" Click="LoadSettingsButton_Click" ToolTip="{DynamicResource MainWindow_LoadSetting_ToolTip}"/>
                     <Button Content="{DynamicResource MainWindow_ImportVRM}" Name="ImportVRMButton" Click="ImportVRMButton_Click" ToolTip="{DynamicResource MainWindow_ImportVRM_ToolTip}"/>
                     <Button Content="{DynamicResource MainWindow_ShortcutKey}" Name="ShortcutKeyButton" Click="ShortcutKeyButton_Click" ToolTip="{DynamicResource MainWindow_ShortcutKey_ToolTip}"/>
                     <Button Content="{DynamicResource MainWindow_SaveSetting}" Name="SaveSettingsButton" Click="SaveSettingsButton_Click" ToolTip="{DynamicResource MainWindow_SaveSetting_ToolTip}"/>
@@ -155,6 +157,24 @@
                         <TextBlock Text="0.10" Name="ClosingTimeTextBlock" Grid.Row="3" Grid.Column="5" TextAlignment="Center"/>
                     </Grid>
                 </StackPanel>
+            </TabItem>
+            <TabItem Header="{DynamicResource MainWindow_Appearance}">
+                <DockPanel>
+                    <Button Content="{DynamicResource MainWindow_LightColor}" Name="LightColorButton" Click="LightColorButton_Click" DockPanel.Dock="Right" VerticalAlignment="Top"/>
+                    <GroupBox DockPanel.Dock="Top" Header="{DynamicResource MainWindow_LightAngle}">
+                        <StackPanel Orientation="Vertical">
+                            <DockPanel DockPanel.Dock="Top">
+                                <TextBlock Text="{DynamicResource MainWindow_LightVerticalDirection}"/>
+                                <Slider Name="LightXSlider" Minimum="0" Value="130" Maximum="359" ValueChanged="LightSlider_ValueChanged" SmallChange="1"/>
+                            </DockPanel>
+                            <DockPanel DockPanel.Dock="Top">
+                                <TextBlock Text="{DynamicResource MainWindow_LightHorizontalDirection}"/>
+                                <Slider Name="LightYSlider" Minimum="0" Value="43" Maximum="359" ValueChanged="LightSlider_ValueChanged" SmallChange="1" DockPanel.Dock="Top"/>
+                            </DockPanel>
+                        </StackPanel>
+                    </GroupBox>
+                    <Grid/>
+                </DockPanel>
             </TabItem>
         </TabControl>
     </Grid>

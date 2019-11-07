@@ -1,0 +1,55 @@
+﻿<Window x:Class="VirtualMotionCaptureControlPanel.EyeTracking_TobiiSettingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
+        mc:Ignorable="d"
+        Title="EyeTracking Tobii Eye Tracker 4C" Width="400" SizeToContent="Height" Loaded="Window_Loaded">
+    <DockPanel>
+        <GroupBox Header="{DynamicResource EyeTracking_TobiiSettingWindow_EyeScale}" DockPanel.Dock="Top">
+            <UniformGrid Rows="1" Columns="2">
+                <StackPanel>
+                    <DockPanel Margin="0,10,0,0">
+                        <TextBlock Text="x0.5" DockPanel.Dock="Right" x:Name="EyeMoveScaleHorizontalTextBlock"/>
+                        <TextBlock Text="{DynamicResource EyeTracking_TobiiSettingWindow_Horizontal}"/>
+                    </DockPanel>
+                    <Slider Minimum="-5" Maximum="5" Value="0.5" SmallChange="0.01" LargeChange="0.1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="0.01" Foreground="Transparent" Name="EyeMoveScaleHorizontalSlider" Margin="0,0,0,5" ValueChanged="EyeMoveSlider_ValueChanged"/>
+                </StackPanel>
+                <StackPanel>
+                    <DockPanel Margin="0,10,0,0">
+                        <TextBlock Text="x0.2" DockPanel.Dock="Right" x:Name="EyeMoveScaleVerticalTextBlock"/>
+                        <TextBlock Text="{DynamicResource EyeTracking_TobiiSettingWindow_Vertical}"/>
+                    </DockPanel>
+                    <Slider Minimum="-5" Maximum="5" Value="0.2" SmallChange="0.01" LargeChange="0.1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="0.01" Foreground="Transparent" Name="EyeMoveScaleVerticalSlider" Margin="0,0,0,5" ValueChanged="EyeMoveSlider_ValueChanged"/>
+                </StackPanel>
+            </UniformGrid>
+        </GroupBox>
+        <GroupBox Header="{DynamicResource EyeTracking_TobiiSettingWindow_EyeOffset}" DockPanel.Dock="Top">
+            <UniformGrid Rows="1" Columns="2">
+                <StackPanel>
+                    <DockPanel Margin="0,10,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="EyeMoveOffsetHorizontalTextBlock"/>
+                        <TextBlock Text="{DynamicResource EyeTracking_TobiiSettingWindow_Horizontal}"/>
+                    </DockPanel>
+                    <Slider Minimum="-50" Maximum="50" Value="0" SmallChange="0.01" LargeChange="0.01" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="0.01" Foreground="Transparent" Name="EyeMoveOffsetHorizontalSlider" Margin="0,0,0,5" ValueChanged="EyeMoveSlider_ValueChanged"/>
+                </StackPanel>
+                <StackPanel>
+                    <DockPanel Margin="0,10,0,0">
+                        <TextBlock Text="0" DockPanel.Dock="Right" x:Name="EyeMoveOffsetVerticalTextBlock"/>
+                        <TextBlock Text="{DynamicResource EyeTracking_TobiiSettingWindow_Vertical}"/>
+                    </DockPanel>
+                    <Slider Minimum="-50" Maximum="50" Value="0" SmallChange="0.01" LargeChange="0.01" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="0.01" Foreground="Transparent" Name="EyeMoveOffsetVerticalSlider" Margin="0,0,0,5" ValueChanged="EyeMoveSlider_ValueChanged"/>
+                </StackPanel>
+            </UniformGrid>
+        </GroupBox>
+        <GroupBox Header="{DynamicResource EyeTracking_TobiiSettingWindow_Calibration}" DockPanel.Dock="Top">
+            <DockPanel>
+                <TextBlock Text="{DynamicResource EyeTracking_TobiiSettingWindow_CalibrationDescription}" TextWrapping="Wrap" DockPanel.Dock="Top"/>
+                <Button Content="{DynamicResource EyeTracking_TobiiSettingWindow_Calibration}" Name="CalibrationButton" Click="CalibrationButton_Click"/>
+            </DockPanel>
+        </GroupBox>
+        <Button DockPanel.Dock="Right" Content="{DynamicResource EyeTracking_TobiiSettingWindow_Close}" Width="100" Name="CloseButton" Click="CloseButton_Click"/>
+        <Grid/>
+    </DockPanel>
+</Window>

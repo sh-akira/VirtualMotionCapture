@@ -14,6 +14,8 @@ namespace sh_akira.OVRTracking
         public List<GameObject> ControllersObject = new List<GameObject>();
         public GameObject CameraControllerObject;
         [System.NonSerialized]
+        public ETrackedDeviceClass CameraControllerType = ETrackedDeviceClass.Invalid;
+        [System.NonSerialized]
         public string CameraControllerName = null;
         [System.NonSerialized]
         public List<GameObject> Trackers = new List<GameObject>();
@@ -22,6 +24,8 @@ namespace sh_akira.OVRTracking
         public List<GameObject> BaseStations = new List<GameObject>();
         public List<GameObject> BaseStationsObject = new List<GameObject>();
         public bool DisableBaseStationRotation = true;
+
+        public ExternalReceiverForVMC externalReceiver;
 
         // Use this for initialization
         void Start()
@@ -65,7 +69,11 @@ namespace sh_akira.OVRTracking
                     CameraControllerObject.transform.SetPositionAndRotationLocal(cameracontroller);
                     foreach (var l in positions)
                     {
-                        if (l.Value.Contains(cameracontroller)) l.Value.Remove(cameracontroller);
+                        if (l.Value.Contains(cameracontroller))
+                        {
+                            CameraControllerType = l.Key;
+                            l.Value.Remove(cameracontroller);
+                        }
                     }
                 }
 
@@ -74,7 +82,14 @@ namespace sh_akira.OVRTracking
                 {
                     HMDObject.transform.SetPositionAndRotationLocal(hmdPositions.FirstOrDefault());
                 }
+
                 var controllerPositions = positions[ETrackedDeviceClass.Controller];
+
+                //add from ExternalReceiverForVMC
+                foreach (var c in externalReceiver.virtualController) {
+                    controllerPositions.Add(new KeyValuePair<SteamVR_Utils.RigidTransform, string>(c.Value, c.Key));
+                }
+
                 if (controllerPositions.Any())
                 {
                     if (Controllers.Count != controllerPositions.Count) Controllers.Clear();
@@ -84,7 +99,15 @@ namespace sh_akira.OVRTracking
                         if (Controllers.Contains(ControllersObject[i]) == false) Controllers.Add(ControllersObject[i]);
                     }
                 }
+
                 var trackerPositions = positions[ETrackedDeviceClass.GenericTracker];
+
+                //add from ExternalReceiverForVMC
+                foreach (var t in externalReceiver.virtualTracker)
+                {
+                    trackerPositions.Add(new KeyValuePair<SteamVR_Utils.RigidTransform, string>(t.Value, t.Key));
+                }
+
                 if (trackerPositions.Any())
                 {
                     if (Trackers.Count != trackerPositions.Count) Trackers.Clear();
@@ -118,7 +141,7 @@ namespace sh_akira.OVRTracking
         }
     }
 
-    public static class TransformExtensions
+    public static class TrackerTransformExtensions
     {
         private static Dictionary<string, Vector3> lastPositions = new Dictionary<string, Vector3>();
 

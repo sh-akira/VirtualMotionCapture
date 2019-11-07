@@ -13,7 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using UnityNamedPipe;
+using UnityMemoryMappedFile;
 
 namespace VirtualMotionCaptureControlPanel
 {
@@ -59,6 +59,7 @@ namespace VirtualMotionCaptureControlPanel
                 var data = (PipeCommands.SetTrackerOffsets)d;
                 Dispatcher.Invoke(() => SetTrackerOffsets(data));
             });
+            await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = true });
             Globals.Client.ReceivedEvent += Client_Received;
         }
 
@@ -173,6 +174,13 @@ namespace VirtualMotionCaptureControlPanel
         private async void TrackerOffsetSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (IsSetting) return;
+            if (SyncCheckBox.IsChecked == true)
+            {
+                IsSetting = true;
+                RightHandTrackerOffsetToBodySideSlider.Value = LeftHandTrackerOffsetToBodySideSlider.Value;
+                RightHandTrackerOffsetToBottomSlider.Value = LeftHandTrackerOffsetToBottomSlider.Value;
+                IsSetting = false;
+            }
             LeftHandTrackerOffsetToBodySideTextBlock.Text = LeftHandTrackerOffsetToBodySideSlider.Value.ToString() + " mm";
             LeftHandTrackerOffsetToBottomTextBlock.Text = LeftHandTrackerOffsetToBottomSlider.Value.ToString() + " mm";
             RightHandTrackerOffsetToBodySideTextBlock.Text = RightHandTrackerOffsetToBodySideSlider.Value.ToString() + " mm";
@@ -184,6 +192,21 @@ namespace VirtualMotionCaptureControlPanel
                 RightHandTrackerOffsetToBodySide = (float)RightHandTrackerOffsetToBodySideSlider.Value / 1000.0f,
                 RightHandTrackerOffsetToBottom = (float)RightHandTrackerOffsetToBottomSlider.Value / 1000.0f,
             });
+        }
+
+        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = false });
+        }
+
+        private void SyncCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            RightHandGroupBox.IsEnabled = false;
+        }
+
+        private void SyncCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            RightHandGroupBox.IsEnabled = true;
         }
     }
 }

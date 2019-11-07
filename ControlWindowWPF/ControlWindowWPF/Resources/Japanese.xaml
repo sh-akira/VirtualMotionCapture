@@ -113,6 +113,12 @@
     <system:String x:Key="MainWindow_TimeToOpen_ToolTip">まぶたが開くアニメーションの時間を設定します。大きくするとゆっくりまぶたが開きます</system:String>
     <system:String x:Key="MainWindow_ClosedTime_ToolTip">まぶたを閉じて開くまでの時間を設定します。大きくするとしばらくまぶたを閉じたままになります</system:String>
 
+    <system:String x:Key="MainWindow_Appearance">見た目</system:String>
+    <system:String x:Key="MainWindow_LightColor">照明色</system:String>
+    <system:String x:Key="MainWindow_LightAngle">照明角度</system:String>
+    <system:String x:Key="MainWindow_LightVerticalDirection">上下</system:String>
+    <system:String x:Key="MainWindow_LightHorizontalDirection">回転</system:String>
+
     <system:String x:Key="MainWindow_ErrorCalibration">VRMモデルが読み込まれていません。先に読み込んでください。</system:String>
 
 
@@ -220,6 +226,8 @@
     <system:String x:Key="SettingWindow_SelectedItemError">カメラを割り当てるトラッカーを選択してください</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig">externalcamera.cfgを出力</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">VRゲームにモデルを合成するためのexternalcamera.cfgを出力します</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSender">外部にモーション送信</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">OSCでモーション送信を有効にする</system:String>
 
 
     <!-- TrackerConfigWindow -->
@@ -250,6 +258,7 @@
     <system:String x:Key="TrackerConfigWindow_LeftHandTrackerToShoulder_ToolTip">左手に付けるトラッカーの肩方向(マイナスは指先方向)</system:String>
     <system:String x:Key="TrackerConfigWindow_RightHandTrackerToBottom_ToolTip">右手に付けるトラッカーの底面方向(マイナスはスイッチ方向)</system:String>
     <system:String x:Key="TrackerConfigWindow_RightHandTrackerToShoulder_ToolTip">右手に付けるトラッカーの肩方向(マイナスは指先方向)</system:String>
+    <system:String x:Key="TrackerConfigWindow_SynchronizeBothHands">左右を同期する</system:String>
 
 
     <!-- ShortcutKeyWindow -->
@@ -259,6 +268,8 @@
     <system:String x:Key="ShortcutKeyWindow_Name">名称</system:String>
     <system:String x:Key="ShortcutKeyWindow_UseKey">使用キー</system:String>
     <system:String x:Key="ShortcutKeyWindow_TouchPadStickInfo">タッチパッド/スティックの割り当て状態</system:String>
+    <system:String x:Key="ShortcutKeyWindow_TouchPad">タッチパッド</system:String>
+    <system:String x:Key="ShortcutKeyWindow_Stick">スティック</system:String>
     <system:String x:Key="ShortcutKeyWindow_LeftController">左コントローラー</system:String>
     <system:String x:Key="ShortcutKeyWindow_RightController">右コントローラー</system:String>
     <system:String x:Key="ShortcutKeyWindow_LeftCenterKey">センターキー</system:String>
@@ -292,6 +303,7 @@
     <system:String x:Key="ShortcutKeyWindow_Edit_ToolTip">選択されているショートカットキーを編集します</system:String>
     <system:String x:Key="ShortcutKeyWindow_Remove_ToolTip">選択されているショートカットキーを削除します</system:String>
     <system:String x:Key="ShortcutKeyWindow_ShortcutKeyList_ToolTip">登録されているショートカットキー一覧です</system:String>
+    <system:String x:Key="ShortcutKeyWindow_UseSkeletal">手の動きにSkeletalを使う(ハンドジェスチャーが無効になります)</system:String>
 
 
     <!-- HandGestureControlKeyAddWindow -->
@@ -381,5 +393,58 @@
     <system:String x:Key="PhotoWindow_ErrorWidth">横幅は半角整数で入力してください</system:String>
     <system:String x:Key="PhotoWindow_ErrorFolderExist">フォルダが存在しません</system:String>
     <system:String x:Key="PhotoWindow_FolderSelect">フォルダーを選択してください。</system:String>
+
+    <!-- EyeTracking_TobiiSettingWindow -->
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeScale">目の移動範囲(マイナスで反転します)</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeOffset">目の位置オフセット(0.01=1cm)</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_Horizontal">左右方向</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_Vertical">上下方向</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_Calibration">キャリブレーション</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_CalibrationDescription">Tobii正面の頭の位置を取得するためモデルのキャリブレーション完了後にTobiiの前に移動してモニターの中心を見ながらキャリブレーションボタンを押してください</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_Close">閉じる</system:String>
+
+    <!-- EyeTracking_ViveProEyeSettingWindow -->
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeScale">目の移動範囲(マイナスで反転します)</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeOffset">目の位置オフセット(0.01=1cm)</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Horizontal">左右方向</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Vertical">上下方向</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovements">まぶたの動きを使う</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovementsCheckBox">使用する</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Close">閉じる</system:String>
+
+    <!-- PhotoWindow -->
+    <system:String x:Key="ColorPickerWindowTitle">色選択</system:String>
     
+
+    <!-- VRoidHubWindow -->
+    <system:String x:Key="VRoidHubWindowTitle">VRoid Hubからモデル読み込み</system:String>
+
+    <system:String x:Key="VRoidHubWindow_LoginDescription">VRoid Hubからモデルを読み込むにはVRoid Hubにログインして バーチャルモーションキャプチャーとの連携を許可してください。</system:String>
+    <system:String x:Key="VRoidHubWindow_Login">VRoid Hubにログイン</system:String>
+    <system:String x:Key="VRoidHubWindow_ErrorDescription">エラーが発生しました。この画面を閉じて再度開いてください。</system:String>
+    <system:String x:Key="VRoidHubWindow_CodeDescription">ブラウザに表示されたコードを入力してください</system:String>
+    <system:String x:Key="VRoidHubWindow_Paste">貼り付け</system:String>
+    <system:String x:Key="VRoidHubWindow_Register">認証する</system:String>
+    <system:String x:Key="VRoidHubWindow_ModelList">モデル一覧</system:String>
+    <system:String x:Key="VRoidHubWindow_FindModelOnVRoidHub">VRoid Hubでモデルを探す</system:String>
+    <system:String x:Key="VRoidHubWindow_ModelInfo">モデル情報</system:String>
+    <system:String x:Key="VRoidHubWindow_AllowedUser">アバターとしての利用</system:String>
+    <system:String x:Key="VRoidHubWindow_ViolentExpression">暴力表現での利用</system:String>
+    <system:String x:Key="VRoidHubWindow_SexualExpression">性的表現での利用</system:String>
+    <system:String x:Key="VRoidHubWindow_CorporateCommercialUse">法人の商用利用</system:String>
+    <system:String x:Key="VRoidHubWindow_PersonalCommercialUse">営利目的での活動</system:String>
+    <system:String x:Key="VRoidHubWindow_NonProfit">非商用に限る</system:String>
+    <system:String x:Key="VRoidHubWindow_Modification">改変</system:String>
+    <system:String x:Key="VRoidHubWindow_Redistribution">再配布</system:String>
+    <system:String x:Key="VRoidHubWindow_Credit">クレジット表記</system:String>
+    <system:String x:Key="VRoidHubWindow_Necessary">必要</system:String>
+    <system:String x:Key="VRoidHubWindow_Unnecessary">不要</system:String>
+    <system:String x:Key="VRoidHubWindow_CreditCautionDescription1">このモデルは使用時のライセンス表示が必須です。</system:String>
+    <system:String x:Key="VRoidHubWindow_CreditCautionDescription2">動画や配信で使用する際必ず明記する必要があります</system:String>
+    <system:String x:Key="VRoidHubWindow_OpenOnVRoidHub">VRoid Hubで開く</system:String>
+    <system:String x:Key="VRoidHubWindow_LoadModel">同意して読み込む</system:String>
+    <system:String x:Key="VRoidHubWindow_Loading">読込中です</system:String>
+
+    <system:String x:Key="VRoidHubWindow_SelectModelMessage">読み込むモデルを選択してください</system:String>
+    <system:String x:Key="VRoidHubWindow_CreditCautionConfirm">このモデルは使用時のライセンス表示が必須です。動画や配信で使用する際必ず明記する必要があります。使用しますか？</system:String>
 </ResourceDictionary>

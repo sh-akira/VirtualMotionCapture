@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UnityNamedPipe;
+using UnityMemoryMappedFile;
 
 namespace VirtualMotionCaptureControlPanel
 {
     public class Globals
     {
-        public static NamedPipeClient Client;
+        public static MemoryMappedFileClient Client;
 
         public static void Connect(string pipeName)
         {
-            Client = new NamedPipeClient();
+            Client = new MemoryMappedFileClient();
             Client.Start(pipeName);
         }
 
@@ -25,6 +25,11 @@ namespace VirtualMotionCaptureControlPanel
         public static List<UPoint> LeftControllerPoints = new List<UPoint>();
         public static bool RightControllerCenterEnable = false;
         public static List<UPoint> RightControllerPoints = new List<UPoint>();
+
+        public static List<UPoint> LeftControllerStickPoints = new List<UPoint>();
+        public static List<UPoint> RightControllerStickPoints = new List<UPoint>();
+
+        public static bool EnableSkeletal = true;
 
         public static float LeftHandRotation = -90.0f;
         public static float RightHandRotation = 90.0f;
