@@ -386,6 +386,12 @@ namespace UnityMemoryMappedFile
         {
             public List<string> BlendShapes { get; set; }
         }
+        public class MidiCCKnobUpdate
+        {
+            public int channel { get; set; }
+            public int knobNo { get; set; }
+            public float value { get; set; }
+        }
     }
 
 

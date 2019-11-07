@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
         mc:Ignorable="d"
-        Title="Midi CC BlendShape Setting" Height="450" Width="400" Loaded="Window_Loaded">
+        Title="Midi CC BlendShape Setting" Height="450" Width="400" Loaded="Window_Loaded" Closing="Window_Closing">
     <DockPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Right">
             <Button Content="{DynamicResource FaceControlKeyAddWindow_Register}" Width="100" Name="ApplyButton" Click="ApplyButton_Click"/>
@@ -26,7 +26,13 @@
                 </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Knob #" Binding="{Binding Index}" MinWidth="80" />
+                <DataGridTextColumn Header="Knob #" Binding="{Binding Index}" MinWidth="80" IsReadOnly="True">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="{x:Type DataGridCell}">
+                            <Setter Property="Background" Value="{Binding Background}"/>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
                 <DataGridTemplateColumn Header="BlendShape" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

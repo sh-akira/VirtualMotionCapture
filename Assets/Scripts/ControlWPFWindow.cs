@@ -187,11 +187,28 @@ public class ControlWPFWindow : MonoBehaviour
             }
             if (!doKeyConfig) CheckKey(config, value);
         };
+
+        MidiJack.MidiMaster.knobDelegate += (MidiJack.MidiChannel channel, int knobNo, float value) =>
+        {
+            CheckKnobUpdated(channel, knobNo, value);
+        };
     }
 
     private string MidiName(MidiJack.MidiChannel channel, int note)
     {
         return $"MIDI Ch{(int)channel + 1} {note}";
+    }
+
+    private float[] lastKnobUpdatedSendTime = new float[MidiCCWrapper.KNOBS];
+
+    private async void CheckKnobUpdated(MidiJack.MidiChannel channel, int knobNo, float value)
+    {
+        if (doKeySend == false) return;
+        if (lastKnobUpdatedSendTime[knobNo] + 3f < Time.realtimeSinceStartup)
+        {
+            lastKnobUpdatedSendTime[knobNo] = Time.realtimeSinceStartup;
+            await server?.SendCommandAsync(new PipeCommands.MidiCCKnobUpdate { channel = (int)channel, knobNo = knobNo, value = value });
+        }
     }
 
     private int SetWindowTitle()
@@ -736,6 +753,7 @@ public class ControlWPFWindow : MonoBehaviour
             }
             else if (e.CommandType == typeof(PipeCommands.GetMidiCCBlendShape))
             {
+                var bs = CurrentSettings.MidiCCBlendShape;
                 await server.SendCommandAsync(new PipeCommands.SetMidiCCBlendShape
                 {
                     BlendShapes = CurrentSettings.MidiCCBlendShape,
