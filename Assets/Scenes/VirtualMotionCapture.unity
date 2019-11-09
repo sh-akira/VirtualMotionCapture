@@ -2046,6 +2046,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EnableEye: 1
+  EnableEyeDataCallback: 0
+  EnableEyeVersion: 0
 --- !u!1 &378345255
 GameObject:
   m_ObjectHideFlags: 0
@@ -7740,7 +7742,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50f533c8e82d6b540bbaeaaf98022cf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VersionString: v0.35
+  VersionString: v0.35r2
   handler: {fileID: 1128534203}
   LeftWristTransform: {fileID: 0}
   RightWristTransform: {fileID: 0}
