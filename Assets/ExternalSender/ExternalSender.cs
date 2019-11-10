@@ -223,7 +223,7 @@ public class ExternalSender : MonoBehaviour
                 Debug.Log("ExternalSender: VRIK Updated");
             }
 
-            if (frameOfRoot > periodRoot)
+            if (frameOfRoot > periodRoot && periodRoot != 0)
             {
                 frameOfRoot = 1;
                 if (vrik != null)
@@ -244,7 +244,7 @@ public class ExternalSender : MonoBehaviour
             frameOfRoot++;
 
             //Bones
-            if (frameOfBone > periodBone)
+            if (frameOfBone > periodBone && periodBone != 0)
             {
                 frameOfBone = 1;
                 foreach (HumanBodyBones bone in Enum.GetValues(typeof(HumanBodyBones)))
@@ -268,7 +268,7 @@ public class ExternalSender : MonoBehaviour
                 Debug.Log("ExternalSender: VRMBlendShapeProxy Updated");
             }
 
-            if (frameOfBlendShape > periodBlendShape)
+            if (frameOfBlendShape > periodBlendShape && periodBlendShape != 0)
             {
                 frameOfBlendShape = 1;
 
@@ -288,7 +288,7 @@ public class ExternalSender : MonoBehaviour
         }
 
         //Camera
-        if (frameOfCamera > periodCamera)
+        if (frameOfCamera > periodCamera && periodCamera != 0)
         {
             frameOfCamera = 1;
             if (currentCamera != null)
@@ -303,7 +303,7 @@ public class ExternalSender : MonoBehaviour
         frameOfCamera++;
 
         //TrackerSend
-        if (frameOfDevices > periodDevices)
+        if (frameOfDevices > periodDevices && periodDevices != 0)
         {
             frameOfDevices = 1;
 
@@ -333,7 +333,7 @@ public class ExternalSender : MonoBehaviour
 
 
         //Status
-        if (frameOfStatus > periodStatus)
+        if (frameOfStatus > periodStatus && periodStatus != 0)
         {
             frameOfStatus = 1;
             if (CurrentModel != null && animator != null)
