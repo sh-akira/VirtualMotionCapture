@@ -311,14 +311,21 @@ public class ExternalSender : MonoBehaviour
                     trackerHandler.HMDObject.name,
                     trackerHandler.HMDObject.transform.position.x, trackerHandler.HMDObject.transform.position.y, trackerHandler.HMDObject.transform.position.z,
                     trackerHandler.HMDObject.transform.rotation.x, trackerHandler.HMDObject.transform.rotation.y, trackerHandler.HMDObject.transform.rotation.z, trackerHandler.HMDObject.transform.rotation.w);
-
-
+            uClient?.Send("/VMC/Ext/Hmd/Pos/Local",
+                    trackerHandler.HMDObject.name,
+                    trackerHandler.HMDObject.transform.localPosition.x, trackerHandler.HMDObject.transform.localPosition.y, trackerHandler.HMDObject.transform.localPosition.z,
+                    trackerHandler.HMDObject.transform.localRotation.x, trackerHandler.HMDObject.transform.localRotation.y, trackerHandler.HMDObject.transform.localRotation.z, trackerHandler.HMDObject.transform.localRotation.w);
+            
             foreach (var c in trackerHandler.Controllers)
             {
                 uClient?.Send("/VMC/Ext/Con/Pos",
                         c.name,
                         c.transform.position.x, c.transform.position.y, c.transform.position.z,
                         c.transform.rotation.x, c.transform.rotation.y, c.transform.rotation.z, c.transform.rotation.w);
+                uClient?.Send("/VMC/Ext/Con/Pos/Local",
+                        c.name,
+                        c.transform.localPosition.x, c.transform.localPosition.y, c.transform.localPosition.z,
+                        c.transform.localRotation.x, c.transform.localRotation.y, c.transform.localRotation.z, c.transform.localRotation.w);
             }
             foreach (var c in trackerHandler.Trackers)
             {
@@ -326,6 +333,10 @@ public class ExternalSender : MonoBehaviour
                         c.name,
                         c.transform.position.x, c.transform.position.y, c.transform.position.z,
                         c.transform.rotation.x, c.transform.rotation.y, c.transform.rotation.z, c.transform.rotation.w);
+                uClient?.Send("/VMC/Ext/Tra/Pos/Local",
+                        c.name,
+                        c.transform.localPosition.x, c.transform.localPosition.y, c.transform.localPosition.z,
+                        c.transform.localRotation.x, c.transform.localRotation.y, c.transform.localRotation.z, c.transform.localRotation.w);
             }
         }
         frameOfDevices++;
