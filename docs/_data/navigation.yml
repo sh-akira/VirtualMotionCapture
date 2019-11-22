@@ -14,8 +14,8 @@
   link: /about.html
   new_window: false
   highlight: false
-- name: 日本語
-  link: https://sh-akira.github.io/VirtualMotionCapture/
+- name: EN
+  link: https://sh-akira.github.io/VirtualMotionCapture-en/
   new_window: false
   highlight: false
 - name: 한국어
