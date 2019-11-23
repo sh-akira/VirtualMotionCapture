@@ -64,13 +64,13 @@ namespace sh_akira.OVRTracking
 
         private string[] serialNumbers = null;
 
-        public Dictionary<ETrackedDeviceClass, List<KeyValuePair<SteamVR_Utils.RigidTransform, string>>> GetTrackerPositions()
+        public Dictionary<ETrackedDeviceClass, List<DeviceInfo>> GetTrackerPositions()
         {
-            var positions = new Dictionary<ETrackedDeviceClass, List<KeyValuePair<SteamVR_Utils.RigidTransform, string>>>();
-            positions.Add(ETrackedDeviceClass.HMD, new List<KeyValuePair<SteamVR_Utils.RigidTransform, string>>());
-            positions.Add(ETrackedDeviceClass.Controller, new List<KeyValuePair<SteamVR_Utils.RigidTransform, string>>());
-            positions.Add(ETrackedDeviceClass.GenericTracker, new List<KeyValuePair<SteamVR_Utils.RigidTransform, string>>());
-            positions.Add(ETrackedDeviceClass.TrackingReference, new List<KeyValuePair<SteamVR_Utils.RigidTransform, string>>());
+            var positions = new Dictionary<ETrackedDeviceClass, List<DeviceInfo>>();
+            positions.Add(ETrackedDeviceClass.HMD, new List<DeviceInfo>());
+            positions.Add(ETrackedDeviceClass.Controller, new List<DeviceInfo>());
+            positions.Add(ETrackedDeviceClass.GenericTracker, new List<DeviceInfo>());
+            positions.Add(ETrackedDeviceClass.TrackingReference, new List<DeviceInfo>());
             TrackedDevicePose_t[] allPoses = new TrackedDevicePose_t[OpenVR.k_unMaxTrackedDeviceCount];
             if (serialNumbers == null) serialNumbers = new string[OpenVR.k_unMaxTrackedDeviceCount];
             //TODO: TrackingUniverseStanding??
@@ -86,7 +86,11 @@ namespace sh_akira.OVRTracking
                     {
                         serialNumbers[i] = GetTrackerSerialNumber(i);
                     }
-                    positions[deviceClass].Add(new KeyValuePair<SteamVR_Utils.RigidTransform, string>(new SteamVR_Utils.RigidTransform(pose.mDeviceToAbsoluteTracking), serialNumbers[i]));
+                    positions[deviceClass].Add(new DeviceInfo(new SteamVR_Utils.RigidTransform(pose.mDeviceToAbsoluteTracking), serialNumbers[i], pose));
+                }
+                else {
+                    //接続切れたらシリアル番号キャッシュクリア
+                    serialNumbers[i] = null;
                 }
             }
             return positions;
