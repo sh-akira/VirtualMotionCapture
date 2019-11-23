@@ -86,7 +86,7 @@ namespace sh_akira.OVRTracking
                     {
                         serialNumbers[i] = GetTrackerSerialNumber(i);
                     }
-                    positions[deviceClass].Add(new DeviceInfo(new SteamVR_Utils.RigidTransform(pose.mDeviceToAbsoluteTracking), serialNumbers[i], pose));
+                    positions[deviceClass].Add(new DeviceInfo(new SteamVR_Utils.RigidTransform(pose.mDeviceToAbsoluteTracking), serialNumbers[i], pose, openVR.GetTrackedDeviceClass(i)));
                 }
                 else {
                     //接続切れたらシリアル番号キャッシュクリア
