@@ -8,6 +8,7 @@ using Valve.VR;
 
 namespace sh_akira.OVRTracking
 {
+    //デバイス情報
     public class DeviceInfo
     {
         const float MAX_CHECK_SECONDS = 60f; //最大カウント時間
@@ -94,6 +95,12 @@ namespace sh_akira.OVRTracking
         //トラッキング正常性を用いた処理
         private void saveAndSwapInvalidTransform()
         {
+            //0を検出したら、過去の値を使う
+            if (transform.pos == Vector3.zero && transform.rot == Quaternion.identity)
+            {
+                transform = lastValidTransform[serialNumber];
+            }
+
             //値保存・スワップ処理(時間を考慮する)
             if (IsTrackingOK())
             {
@@ -118,16 +125,13 @@ namespace sh_akira.OVRTracking
             else
             {
                 //正常ではない場合、
-                if (lastValidTransform.ContainsKey(serialNumber))
-                {
-                    //過去に記録したデータが有るならば、過去のデータに差し替える
-                    Vector3 pos = lastValidTransform[serialNumber].pos;
+                //過去に記録したデータが有るならば、過去のデータに差し替える
+                Vector3 pos = lastValidTransform[serialNumber].pos;
 
-                    //回転情報は部分的に反映する(飛びの影響を受けづらいのと、不自然さ防止)
-                    Quaternion rot = Quaternion.Lerp(lastValidTransform[serialNumber].rot, transform.rot, 0.5f);
+                //回転情報は部分的に反映する(飛びの影響を受けづらいのと、不自然さ防止)
+                Quaternion rot = Quaternion.Lerp(lastValidTransform[serialNumber].rot, transform.rot, 0.5f);
 
-                    transform = new SteamVR_Utils.RigidTransform(pos, rot);
-                }
+                transform = new SteamVR_Utils.RigidTransform(pos, rot);
             }
         }
 
