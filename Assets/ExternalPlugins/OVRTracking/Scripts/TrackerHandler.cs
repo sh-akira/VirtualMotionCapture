@@ -63,9 +63,9 @@ namespace sh_akira.OVRTracking
                 var positions = OpenVRWrapper.Instance.GetTrackerPositions();
 
                 //externalcamera.cfg用のコントローラー設定
-                if (CameraControllerName != null && positions.SelectMany(d => d.Value).Any(d => d.Value == CameraControllerName))
+                if (CameraControllerName != null && positions.SelectMany(d => d.Value).Any(d => d.serialNumber == CameraControllerName))
                 {
-                    var cameracontroller = positions.SelectMany(d => d.Value).Where(d => d.Value == CameraControllerName).First();
+                    var cameracontroller = positions.SelectMany(d => d.Value).Where(d => d.serialNumber == CameraControllerName).First();
                     CameraControllerObject.transform.SetPositionAndRotationLocal(cameracontroller);
                     foreach (var l in positions)
                     {
@@ -90,7 +90,7 @@ namespace sh_akira.OVRTracking
                 {
                     foreach (var c in externalReceiver.virtualController)
                     {
-                        controllerPositions.Add(new KeyValuePair<SteamVR_Utils.RigidTransform, string>(c.Value, c.Key));
+                        controllerPositions.Add(new DeviceInfo(c.Value,c.Key));
                     }
                 }
 
@@ -111,7 +111,7 @@ namespace sh_akira.OVRTracking
                 {
                     foreach (var t in externalReceiver.virtualTracker)
                     {
-                        trackerPositions.Add(new KeyValuePair<SteamVR_Utils.RigidTransform, string>(t.Value, t.Key));
+                        trackerPositions.Add(new DeviceInfo(t.Value,t.Key));
                     }
                 }
 
@@ -154,40 +154,42 @@ namespace sh_akira.OVRTracking
 
         public static event EventHandler<string> TrackerMovedEvent;
 
-        private static void CheckPosition(string serial, Vector3 pos)
+        private static void CheckPosition(DeviceInfo device)
         {
-            if (lastPositions.ContainsKey(serial) == false)
+            if (lastPositions.ContainsKey(device.serialNumber) == false)
             {
-                lastPositions.Add(serial, pos);
+                lastPositions.Add(device.serialNumber, device.transform.pos);
             }
             else
             {
-                if (Vector3.Distance(lastPositions[serial], pos) > 0.1f)
+                if (Vector3.Distance(lastPositions[device.serialNumber], device.transform.pos) > 0.1f)
                 {
-                    TrackerMovedEvent?.Invoke(null, serial);
-                    lastPositions[serial] = pos;
+                    TrackerMovedEvent?.Invoke(null, device.serialNumber);
+                    lastPositions[device.serialNumber] = device.transform.pos;
                 }
             }
         }
 
-        public static void SetPositionAndRotation(this Transform t, KeyValuePair<SteamVR_Utils.RigidTransform, string> mat)
+        public static void SetPositionAndRotation(this Transform t, DeviceInfo mat)
         {
-            if (mat.Key != null)
+            if (mat != null)
             {
-                CheckPosition(mat.Value, mat.Key.pos);
-                t.SetPositionAndRotation(mat.Key.pos, mat.Key.rot);
-                t.name = mat.Value;
+                CheckPosition(mat);
+
+                t.SetPositionAndRotation(mat.transform.pos, mat.transform.rot);
+                t.name = mat.serialNumber;
             }
         }
 
-        public static void SetPositionAndRotationLocal(this Transform t, KeyValuePair<SteamVR_Utils.RigidTransform, string> mat)
+        public static void SetPositionAndRotationLocal(this Transform t, DeviceInfo mat)
         {
-            if (mat.Key != null)
+            if (mat != null)
             {
-                CheckPosition(mat.Value, mat.Key.pos);
-                t.localPosition = mat.Key.pos;
-                t.localRotation = mat.Key.rot;
-                t.name = mat.Value;
+                CheckPosition(mat);
+
+                t.localPosition = mat.transform.pos;
+                t.localRotation = mat.transform.rot;
+                t.name = mat.serialNumber;
             }
         }
     }
