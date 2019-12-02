@@ -169,6 +169,18 @@
                 <GroupBox Header="MIDI CC BlendShape">
                     <Button Content="Knob to BlendShape setting" Name="MidiCCBlendShapeSettingButton" Click="MidiCCBlendShapeSettingButton_Click"/>
                 </GroupBox>
+                <GroupBox Header="Prevent losing tracking">
+                    <GroupBox>
+                        <GroupBox.Header>
+                            <CheckBox Content="Enable" Name="TrackingFilterEnable" Checked="TrackingFilterEnable_Changed" Unchecked="TrackingFilterEnable_Changed"/>
+                        </GroupBox.Header>
+                        <WrapPanel>
+                            <CheckBox Content="HMD" Name="TrackingFilterHmdEnable" Checked="TrackingFilterEnable_Changed" Unchecked="TrackingFilterEnable_Changed"/>
+                            <CheckBox Content="Controller" Name="TrackingFilterControllerEnable" Checked="TrackingFilterEnable_Changed" Unchecked="TrackingFilterEnable_Changed"/>
+                            <CheckBox Content="Tracker" Name="TrackingFilterTrackerEnable" Checked="TrackingFilterEnable_Changed" Unchecked="TrackingFilterEnable_Changed"/>
+                        </WrapPanel>
+                    </GroupBox>
+                </GroupBox>
             </StackPanel>
         </Grid>
         <Button Content="{DynamicResource SettingWindow_Close}" HorizontalAlignment="Right" Width="100" Name="CloseButton" Click="CloseButton_Click" ToolTip="{DynamicResource SettingWindow_Close_ToolTip}"/>

@@ -278,6 +278,19 @@ namespace VirtualMotionCaptureControlPanel
                     isSetting = false;
                 });
             });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEnableTrackingFilter { }, d =>
+            {
+                var data = (PipeCommands.EnableTrackingFilter)d;
+                Dispatcher.Invoke(() =>
+                {
+                    isSetting = true;
+                    TrackingFilterEnable.IsChecked = data.globalEnable;
+                    TrackingFilterHmdEnable.IsChecked = data.hmdEnable;
+                    TrackingFilterControllerEnable.IsChecked = data.controllerEnable;
+                    TrackingFilterTrackerEnable.IsChecked = data.trackerEnable;
+                    isSetting = false;
+                });
+            });
             await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = true });
         }
 
@@ -550,6 +563,18 @@ namespace VirtualMotionCaptureControlPanel
                 textBox.Background = new SolidColorBrush(Colors.Pink);
                 return null;
             }
+        }
+
+        private async void TrackingFilterEnable_Changed(object sender, RoutedEventArgs e)
+        {
+            if (isSetting) return;
+            await Globals.Client?.SendCommandAsync(new PipeCommands.EnableTrackingFilter
+            {
+                globalEnable = TrackingFilterEnable.IsChecked.Value,
+                hmdEnable = TrackingFilterHmdEnable.IsChecked.Value,
+                controllerEnable = TrackingFilterControllerEnable.IsChecked.Value,
+                trackerEnable = TrackingFilterTrackerEnable.IsChecked.Value,
+            });
         }
     }
 }

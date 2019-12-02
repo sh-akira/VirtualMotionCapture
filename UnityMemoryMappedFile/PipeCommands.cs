@@ -392,6 +392,15 @@ namespace UnityMemoryMappedFile
             public int knobNo { get; set; }
             public float value { get; set; }
         }
+
+        public class GetEnableTrackingFilter { }
+        public class EnableTrackingFilter
+        {
+            public bool globalEnable { get; set; }
+            public bool hmdEnable { get; set; }
+            public bool controllerEnable { get; set; }
+            public bool trackerEnable { get; set; }
+        }
     }
 
 

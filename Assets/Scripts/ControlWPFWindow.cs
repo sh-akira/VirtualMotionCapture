@@ -764,6 +764,21 @@ public class ControlWPFWindow : MonoBehaviour
                 var d = (PipeCommands.SetMidiCCBlendShape)e.Data;
                 SetMidiCCBlendShape(d.BlendShapes);
             }
+            else if (e.CommandType == typeof(PipeCommands.EnableTrackingFilter))
+            {
+                var d = (PipeCommands.EnableTrackingFilter)e.Data;
+                SetTrackingFilterEnable(d.globalEnable, d.hmdEnable, d.controllerEnable, d.trackerEnable);
+            }
+            else if (e.CommandType == typeof(PipeCommands.GetEnableTrackingFilter))
+            {
+                await server.SendCommandAsync(new PipeCommands.EnableTrackingFilter
+                {
+                    globalEnable = CurrentSettings.TrackingFilterEnable,
+                    hmdEnable = CurrentSettings.TrackingFilterHmdEnable,
+                    controllerEnable = CurrentSettings.TrackingFilterControllerEnable,
+                    trackerEnable = CurrentSettings.TrackingFilterTrackerEnable,
+                }, e.RequestId);
+            }
         }, null);
     }
 
@@ -2323,6 +2338,18 @@ public class ControlWPFWindow : MonoBehaviour
 
     #endregion
 
+    private void SetTrackingFilterEnable(bool global, bool hmd, bool controller, bool tracker)
+    {
+        DeviceInfo.globalEnable = global;
+        DeviceInfo.hmdEnable = hmd;
+        DeviceInfo.controllerEnable = controller;
+        DeviceInfo.trackerEnable = tracker;
+        CurrentSettings.TrackingFilterEnable = global;
+        CurrentSettings.TrackingFilterHmdEnable = hmd;
+        CurrentSettings.TrackingFilterControllerEnable = controller;
+        CurrentSettings.TrackingFilterTrackerEnable = tracker;
+    }
+
     #region Setting
 
     [Serializable]
@@ -2615,6 +2642,14 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public bool EnableSkeletal;
 
+        [OptionalField]
+        public bool TrackingFilterEnable;
+        [OptionalField]
+        public bool TrackingFilterHmdEnable;
+        [OptionalField]
+        public bool TrackingFilterControllerEnable;
+        [OptionalField]
+        public bool TrackingFilterTrackerEnable;
 
 
         //初期値
@@ -2688,6 +2723,11 @@ public class ControlWPFWindow : MonoBehaviour
             ExternalMotionReceiverPort = 39540;
 
             MidiCCBlendShape = new List<string>(Enumerable.Repeat(default(string), MidiCCWrapper.KNOBS));
+
+            TrackingFilterEnable = true;
+            TrackingFilterHmdEnable = true;
+            TrackingFilterControllerEnable = true;
+            TrackingFilterTrackerEnable = true;
         }
     }
 
