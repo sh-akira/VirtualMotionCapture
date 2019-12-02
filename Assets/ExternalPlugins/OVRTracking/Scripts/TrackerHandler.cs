@@ -57,87 +57,95 @@ namespace sh_akira.OVRTracking
         // Update is called once per frame
         void Update()
         {
+            Dictionary<ETrackedDeviceClass, List<DeviceInfo>> positions;
             if (IsOVRConnected)
             {
                 OpenVRWrapper.Instance.PollingVREvents();
-                var positions = OpenVRWrapper.Instance.GetTrackerPositions();
-
-                //externalcamera.cfg用のコントローラー設定
-                if (CameraControllerName != null && positions.SelectMany(d => d.Value).Any(d => d.serialNumber == CameraControllerName))
+                positions = OpenVRWrapper.Instance.GetTrackerPositions();
+            }
+            else
+            {
+                positions = new Dictionary<ETrackedDeviceClass, List<DeviceInfo>>();
+                positions.Add(ETrackedDeviceClass.HMD, new List<DeviceInfo>());
+                positions.Add(ETrackedDeviceClass.Controller, new List<DeviceInfo>());
+                positions.Add(ETrackedDeviceClass.GenericTracker, new List<DeviceInfo>());
+                positions.Add(ETrackedDeviceClass.TrackingReference, new List<DeviceInfo>());
+            }
+            //externalcamera.cfg用のコントローラー設定
+            if (CameraControllerName != null && positions.SelectMany(d => d.Value).Any(d => d.serialNumber == CameraControllerName))
+            {
+                var cameracontroller = positions.SelectMany(d => d.Value).Where(d => d.serialNumber == CameraControllerName).First();
+                CameraControllerObject.transform.SetPositionAndRotationLocal(cameracontroller);
+                foreach (var l in positions)
                 {
-                    var cameracontroller = positions.SelectMany(d => d.Value).Where(d => d.serialNumber == CameraControllerName).First();
-                    CameraControllerObject.transform.SetPositionAndRotationLocal(cameracontroller);
-                    foreach (var l in positions)
+                    if (l.Value.Contains(cameracontroller))
                     {
-                        if (l.Value.Contains(cameracontroller))
-                        {
-                            CameraControllerType = l.Key;
-                            l.Value.Remove(cameracontroller);
-                        }
+                        CameraControllerType = l.Key;
+                        l.Value.Remove(cameracontroller);
                     }
                 }
+            }
 
-                var hmdPositions = positions[ETrackedDeviceClass.HMD];
-                if (hmdPositions.Any())
+            var hmdPositions = positions[ETrackedDeviceClass.HMD];
+            if (hmdPositions.Any())
+            {
+                HMDObject.transform.SetPositionAndRotationLocal(hmdPositions.FirstOrDefault());
+            }
+
+            var controllerPositions = positions[ETrackedDeviceClass.Controller];
+
+            //add from ExternalReceiverForVMC
+            if (externalReceiver != null)
+            {
+                foreach (var c in externalReceiver.virtualController)
                 {
-                    HMDObject.transform.SetPositionAndRotationLocal(hmdPositions.FirstOrDefault());
+                    controllerPositions.Add(new DeviceInfo(c.Value, c.Key));
                 }
+            }
 
-                var controllerPositions = positions[ETrackedDeviceClass.Controller];
-
-                //add from ExternalReceiverForVMC
-                if (externalReceiver != null)
+            if (controllerPositions.Any())
+            {
+                if (Controllers.Count != controllerPositions.Count) Controllers.Clear();
+                for (int i = 0; i < controllerPositions.Count && i < ControllersObject.Count; i++)
                 {
-                    foreach (var c in externalReceiver.virtualController)
-                    {
-                        controllerPositions.Add(new DeviceInfo(c.Value,c.Key));
-                    }
+                    ControllersObject[i].transform.SetPositionAndRotationLocal(controllerPositions[i]);
+                    if (Controllers.Contains(ControllersObject[i]) == false) Controllers.Add(ControllersObject[i]);
                 }
+            }
 
-                if (controllerPositions.Any())
+            var trackerPositions = positions[ETrackedDeviceClass.GenericTracker];
+
+            //add from ExternalReceiverForVMC
+            if (externalReceiver != null)
+            {
+                foreach (var t in externalReceiver.virtualTracker)
                 {
-                    if (Controllers.Count != controllerPositions.Count) Controllers.Clear();
-                    for (int i = 0; i < controllerPositions.Count && i < ControllersObject.Count; i++)
-                    {
-                        ControllersObject[i].transform.SetPositionAndRotationLocal(controllerPositions[i]);
-                        if (Controllers.Contains(ControllersObject[i]) == false) Controllers.Add(ControllersObject[i]);
-                    }
+                    trackerPositions.Add(new DeviceInfo(t.Value, t.Key));
                 }
+            }
 
-                var trackerPositions = positions[ETrackedDeviceClass.GenericTracker];
-
-                //add from ExternalReceiverForVMC
-                if (externalReceiver != null)
+            if (trackerPositions.Any())
+            {
+                if (Trackers.Count != trackerPositions.Count) Trackers.Clear();
+                for (int i = 0; i < trackerPositions.Count && i < TrackersObject.Count; i++)
                 {
-                    foreach (var t in externalReceiver.virtualTracker)
-                    {
-                        trackerPositions.Add(new DeviceInfo(t.Value,t.Key));
-                    }
+                    TrackersObject[i].transform.SetPositionAndRotationLocal(trackerPositions[i]);
+                    if (Trackers.Contains(TrackersObject[i]) == false) Trackers.Add(TrackersObject[i]);
                 }
+            }
 
-                if (trackerPositions.Any())
+            var baseStationPositions = positions[ETrackedDeviceClass.TrackingReference];
+            if (baseStationPositions.Any())
+            {
+                if (BaseStations.Count != baseStationPositions.Count) BaseStations.Clear();
+                for (int i = 0; i < baseStationPositions.Count && i < BaseStationsObject.Count; i++)
                 {
-                    if (Trackers.Count != trackerPositions.Count) Trackers.Clear();
-                    for (int i = 0; i < trackerPositions.Count && i < TrackersObject.Count; i++)
+                    BaseStationsObject[i].transform.SetPositionAndRotationLocal(baseStationPositions[i]);
+                    if (DisableBaseStationRotation)
                     {
-                        TrackersObject[i].transform.SetPositionAndRotationLocal(trackerPositions[i]);
-                        if (Trackers.Contains(TrackersObject[i]) == false) Trackers.Add(TrackersObject[i]);
+                        BaseStationsObject[i].transform.rotation = Quaternion.Euler(0, BaseStationsObject[i].transform.eulerAngles.y, 0);
                     }
-                }
-
-                var baseStationPositions = positions[ETrackedDeviceClass.TrackingReference];
-                if (baseStationPositions.Any())
-                {
-                    if (BaseStations.Count != baseStationPositions.Count) BaseStations.Clear();
-                    for (int i = 0; i < baseStationPositions.Count && i < BaseStationsObject.Count; i++)
-                    {
-                        BaseStationsObject[i].transform.SetPositionAndRotationLocal(baseStationPositions[i]);
-                        if (DisableBaseStationRotation)
-                        {
-                            BaseStationsObject[i].transform.rotation = Quaternion.Euler(0, BaseStationsObject[i].transform.eulerAngles.y, 0);
-                        }
-                        if (BaseStations.Contains(BaseStationsObject[i]) == false) BaseStations.Add(BaseStationsObject[i]);
-                    }
+                    if (BaseStations.Contains(BaseStationsObject[i]) == false) BaseStations.Add(BaseStationsObject[i]);
                 }
             }
         }
