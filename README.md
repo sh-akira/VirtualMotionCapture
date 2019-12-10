@@ -284,11 +284,13 @@ Ver 0.02
 　・uOSC([uOSC-v0.0.2.unitypackage](https://github.com/hecomi/uOSC/releases/tag/v0.0.2))  
 　・MidiJack([MidiJack.unitypackage](https://github.com/keijiro/MidiJack))  
 以上のようなフォルダになるように各アセットをインポートしてください。  
-アイトラッキングが不要な場合Assets\EyeTrackingフォルダを削除します  
+アイトラッキングが不要な場合Assets\Scripts\EyeTrackingフォルダを削除します  
 アイトラッキング対応する場合は  
 　・ViveSR([Vive-SRanipal-Unity-Plugin.unitypackage](https://hub.vive.com/en-US/profile/material-download)) SRanipal_SDK_1.1.0.1_Eye.zip内  
 　・Tobii([TobiiUnitySDKForDesktop_4.0.3.unitypackage](https://github.com/Tobii/UnitySDK/releases)) アセットストアからインポート(インポートしたままフォルダは移動しないでください)  
 以上の二つをインポート  
+※face2vmcなどを使って外部からのモーションを受信する場合にアイトラッキング対応をすると、モーションが競合して目のアニメーションが正常に動作しない場合があります。外部からのモーション受信をする場合はアイトラッキング対応をしないことを推奨します。
+
 ※インポートが終わったらUnityをいったん終了し、ProjectSettingsフォルダを削除して、バックアップしておいたProjectSettingsフォルダを戻してください！ 
 
 ・ControlWindowWPF/ControlWindowWPF.slnをVisual Studio 2017で開きます。  
