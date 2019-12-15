@@ -140,6 +140,8 @@ public class FaceController : MonoBehaviour
         }
     }
 
+    private bool isReset = false;
+
     // Update is called once per frame
     void Update()
     {
@@ -155,6 +157,7 @@ public class FaceController : MonoBehaviour
             {
                 if (EnableBlink && ViveProEyeEnabled == false)
                 {
+                    isReset = false;
                     if (StopBlink == false)
                     {
                         if (animationController?.Next() == false)
@@ -165,7 +168,11 @@ public class FaceController : MonoBehaviour
                 }
                 else
                 {
-                    animationController?.Reset();
+                    if (isReset == false)
+                    {
+                        isReset = true;
+                        animationController?.Reset();
+                    }
                 }
 
                 if (DefaultFace != BlendShapePreset.Neutral && proxy != null)
