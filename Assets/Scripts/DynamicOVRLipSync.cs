@@ -138,9 +138,10 @@ public class DynamicOVRLipSync : OVRLipSyncContextBase
                         for (int i = 0; i < presets.Length; i++)
                         {
                             visemes[i] *= MaxLevel;
-                            proxy.SetValue(presets[i], visemes[i]);
+                            proxy.AccumulateValue(presets[i], visemes[i]);
                         }
 
+                        proxy.Apply();
 
                         //Debug.Log("Visemes:" + string.Join(",", frame.Visemes.Select(d => d.ToString())));
                     }
