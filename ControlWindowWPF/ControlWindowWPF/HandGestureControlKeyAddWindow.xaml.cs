@@ -60,7 +60,9 @@ namespace VirtualMotionCaptureControlPanel
             {
                 var slider = this.FindName("ValueSlider" + i.ToString("00")) as Slider;
                 var textblock = this.FindName("ValueTextBlock" + i.ToString("00")) as TextBlock;
-                slider.Value = action.HandAngles[i - 1];
+                var angle = action.HandAngles[i - 1];
+                if (slider.Minimum > angle || slider.Maximum < angle) AngleLimitCheckBox.IsChecked = false;
+                slider.Value = angle;
                 textblock.Text = slider.Value.ToString();
                 handAngles[(int)slider.Tag - 1] = (int)slider.Value;
             }
