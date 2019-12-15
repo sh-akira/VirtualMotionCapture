@@ -381,9 +381,10 @@ public class Calibrator
         }
         else if (LeftFootTransform != null && RightFootTransform != null)
         {
-            ik.solver.spine.maintainPelvisPosition = 0.0f;
             ik.solver.spine.maxRootAngle = 0f;
         }
+
+        ik.solver.spine.maintainPelvisPosition = 0.0f;
 
         yield return new WaitForEndOfFrame();
 
@@ -707,9 +708,10 @@ public class Calibrator
         }
         else if (LeftFootTransform != null && RightFootTransform != null)
         {
-            ik.solver.spine.maintainPelvisPosition = 0.0f;
             ik.solver.spine.maxRootAngle = 0f;
         }
+
+        ik.solver.spine.maintainPelvisPosition = 0.0f;
 
         yield return new WaitForEndOfFrame();
 
@@ -1033,9 +1035,10 @@ public class Calibrator
         }
         else if (LeftFootTransform != null && RightFootTransform != null)
         {
-            ik.solver.spine.maintainPelvisPosition = 0.0f;
             ik.solver.spine.maxRootAngle = 0f;
         }
+
+        ik.solver.spine.maintainPelvisPosition = 0.0f;
 
         yield return new WaitForEndOfFrame();
 
