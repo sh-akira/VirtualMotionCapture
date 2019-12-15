@@ -201,7 +201,7 @@ namespace VirtualMotionCaptureControlPanel
             {
                 name = PresetComboBox.SelectedItem as string;
             }
-            else
+            else if (string.IsNullOrEmpty(name))
             {
                 name = LanguageSelector.Get("Custom");
             }
