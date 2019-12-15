@@ -291,6 +291,16 @@ namespace VirtualMotionCaptureControlPanel
                     isSetting = false;
                 });
             });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEnableModelModifier { }, d =>
+            {
+                var data = (PipeCommands.EnableModelModifier)d;
+                Dispatcher.Invoke(() =>
+                {
+                    isSetting = true;
+                    FixKneeRotationCheckBox.IsChecked = data.fixKneeRotation;
+                    isSetting = false;
+                });
+            });
             await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = true });
         }
 
@@ -574,6 +584,15 @@ namespace VirtualMotionCaptureControlPanel
                 hmdEnable = TrackingFilterHmdEnable.IsChecked.Value,
                 controllerEnable = TrackingFilterControllerEnable.IsChecked.Value,
                 trackerEnable = TrackingFilterTrackerEnable.IsChecked.Value,
+            });
+        }
+
+        private async void FixKneeRotationCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            if (isSetting) return;
+            await Globals.Client?.SendCommandAsync(new PipeCommands.EnableModelModifier
+            {
+                fixKneeRotation = FixKneeRotationCheckBox.IsChecked.Value,
             });
         }
     }

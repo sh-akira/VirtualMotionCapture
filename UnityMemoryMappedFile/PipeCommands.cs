@@ -401,6 +401,12 @@ namespace UnityMemoryMappedFile
             public bool controllerEnable { get; set; }
             public bool trackerEnable { get; set; }
         }
+
+        public class GetEnableModelModifier { }
+        public class EnableModelModifier
+        {
+            public bool fixKneeRotation { get; set; }
+        }
     }
 
 

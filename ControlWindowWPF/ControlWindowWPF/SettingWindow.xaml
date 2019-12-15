@@ -181,6 +181,11 @@
                         </WrapPanel>
                     </GroupBox>
                 </GroupBox>
+                <GroupBox Header="Model modifier">
+                    <StackPanel Orientation="Vertical">
+                        <CheckBox Content="Fix Knee rotation" Name="FixKneeRotationCheckBox" Checked="FixKneeRotationCheckBox_Changed" Unchecked="FixKneeRotationCheckBox_Changed"/>
+                    </StackPanel>
+                </GroupBox>
             </StackPanel>
         </Grid>
         <Button Content="{DynamicResource SettingWindow_Close}" HorizontalAlignment="Right" Width="100" Name="CloseButton" Click="CloseButton_Click" ToolTip="{DynamicResource SettingWindow_Close_ToolTip}"/>

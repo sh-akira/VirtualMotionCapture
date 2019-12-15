@@ -779,6 +779,18 @@ public class ControlWPFWindow : MonoBehaviour
                     trackerEnable = CurrentSettings.TrackingFilterTrackerEnable,
                 }, e.RequestId);
             }
+            else if (e.CommandType == typeof(PipeCommands.EnableModelModifier))
+            {
+                var d = (PipeCommands.EnableModelModifier)e.Data;
+                SetModelModifierEnable(d.fixKneeRotation);
+            }
+            else if (e.CommandType == typeof(PipeCommands.GetEnableModelModifier))
+            {
+                await server.SendCommandAsync(new PipeCommands.EnableModelModifier
+                {
+                    fixKneeRotation = CurrentSettings.FixKneeRotation,
+                }, e.RequestId);
+            }
         }, null);
     }
 
@@ -1177,7 +1189,7 @@ public class ControlWPFWindow : MonoBehaviour
         //膝のボーンの曲がる方向で膝の向きが決まってしまうため、強制的に膝のボーンを少し前に曲げる
         var leftOffset = Vector3.zero;
         var rightOffset = Vector3.zero;
-        if (animator != null)
+        if (animator != null && CurrentSettings.FixKneeRotation)
         {
             leftOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.LeftUpperLeg), animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg), animator.GetBoneTransform(HumanBodyBones.LeftFoot));
             rightOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.RightUpperLeg), animator.GetBoneTransform(HumanBodyBones.RightLowerLeg), animator.GetBoneTransform(HumanBodyBones.RightFoot));
@@ -2350,6 +2362,11 @@ public class ControlWPFWindow : MonoBehaviour
         CurrentSettings.TrackingFilterTrackerEnable = tracker;
     }
 
+    private void SetModelModifierEnable(bool fixKneeRotation)
+    {
+        CurrentSettings.FixKneeRotation = fixKneeRotation;
+    }
+
     #region Setting
 
     [Serializable]
@@ -2651,6 +2668,8 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public bool TrackingFilterTrackerEnable;
 
+        [OptionalField]
+        public bool FixKneeRotation;
 
         //初期値
         [OnDeserializing()]
@@ -2728,6 +2747,8 @@ public class ControlWPFWindow : MonoBehaviour
             TrackingFilterHmdEnable = true;
             TrackingFilterControllerEnable = true;
             TrackingFilterTrackerEnable = true;
+
+            FixKneeRotation = true;
         }
     }
 
@@ -2946,6 +2967,10 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 Use = CurrentSettings.EyeTracking_ViveProEyeUseEyelidMovements
             });
+
+            SetTrackingFilterEnable(CurrentSettings.TrackingFilterEnable, CurrentSettings.TrackingFilterHmdEnable, CurrentSettings.TrackingFilterControllerEnable, CurrentSettings.TrackingFilterTrackerEnable);
+
+            SetModelModifierEnable(CurrentSettings.FixKneeRotation);
 
             AdditionalSettingAction?.Invoke(null);
 
