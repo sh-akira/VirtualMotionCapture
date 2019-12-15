@@ -15,6 +15,9 @@ public class ExternalReceiverForVMC : MonoBehaviour {
     public SortedDictionary<string, SteamVR_Utils.RigidTransform> virtualController = new SortedDictionary<string, SteamVR_Utils.RigidTransform>();
     public SortedDictionary<string, SteamVR_Utils.RigidTransform> virtualTracker = new SortedDictionary<string, SteamVR_Utils.RigidTransform>();
 
+    public SortedDictionary<string, SteamVR_Utils.RigidTransform> virtualControllerFiltered = new SortedDictionary<string, SteamVR_Utils.RigidTransform>();
+    public SortedDictionary<string, SteamVR_Utils.RigidTransform> virtualTrackerFiltered = new SortedDictionary<string, SteamVR_Utils.RigidTransform>();
+
     ControlWPFWindow window = null;
     GameObject CurrentModel = null;
     Camera currentCamera = null;
@@ -48,6 +51,8 @@ public class ExternalReceiverForVMC : MonoBehaviour {
         };
     }
 
+    private object LockObject = new object();
+
     void OnDataReceived(uOSC.Message message)
     {
         //有効なとき以外処理しない
@@ -68,13 +73,17 @@ public class ExternalReceiverForVMC : MonoBehaviour {
                 string serial = (string)message.values[0];
                 var rigidTransform = SetTransform(ref pos, ref rot, ref message);
 
-                if (virtualController.ContainsKey(serial))
+                lock (LockObject)
                 {
-                    virtualController[serial] = rigidTransform;
-                }
-                else
-                {
-                    virtualController.Add(serial, rigidTransform);
+                    if (virtualController.ContainsKey(serial))
+                    {
+                        virtualController[serial] = rigidTransform;
+                    }
+                    else
+                    {
+                        virtualController.Add(serial, rigidTransform);
+                        virtualControllerFiltered.Add(serial, rigidTransform);
+                    }
                 }
             }
             //仮想トラッカー V2.3
@@ -93,13 +102,17 @@ public class ExternalReceiverForVMC : MonoBehaviour {
                 string serial = (string)message.values[0];
                 var rigidTransform = SetTransform(ref pos, ref rot, ref message);
 
-                if (virtualTracker.ContainsKey(serial))
+                lock (LockObject)
                 {
-                    virtualTracker[serial] = rigidTransform;
-                }
-                else
-                {
-                    virtualTracker.Add(serial, rigidTransform);
+                    if (virtualTracker.ContainsKey(serial))
+                    {
+                        virtualTracker[serial] = rigidTransform;
+                    }
+                    else
+                    {
+                        virtualTracker.Add(serial, rigidTransform);
+                        virtualTrackerFiltered.Add(serial, rigidTransform);
+                    }
                 }
             }
             //フレーム設定 V2.3
@@ -232,6 +245,27 @@ public class ExternalReceiverForVMC : MonoBehaviour {
         rot.z = (float)message.values[6];
         rot.w = (float)message.values[7];
         return new SteamVR_Utils.RigidTransform(pos, rot);
+    }
+
+    public static float filterStrength = 10.0f;
+
+    private void Update()
+    {
+        lock (LockObject)
+        {
+            foreach (var pair in virtualController)
+            {
+                var newpos = Vector3.Lerp(virtualControllerFiltered[pair.Key].pos, pair.Value.pos, filterStrength * Time.deltaTime);
+                var newrot = Quaternion.Lerp(virtualControllerFiltered[pair.Key].rot, pair.Value.rot, filterStrength * Time.deltaTime);
+                virtualControllerFiltered[pair.Key] = new SteamVR_Utils.RigidTransform(newpos, newrot);
+            }
+            foreach (var pair in virtualTracker)
+            {
+                var newpos = Vector3.Lerp(virtualTrackerFiltered[pair.Key].pos, pair.Value.pos, filterStrength * Time.deltaTime);
+                var newrot = Quaternion.Lerp(virtualTrackerFiltered[pair.Key].rot, pair.Value.rot, filterStrength * Time.deltaTime);
+                virtualTrackerFiltered[pair.Key] = new SteamVR_Utils.RigidTransform(newpos, newrot);
+            }
+        }
     }
 
     public void ChangeOSCPort(int port)

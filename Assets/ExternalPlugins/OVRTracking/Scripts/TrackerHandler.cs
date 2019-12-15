@@ -97,7 +97,7 @@ namespace sh_akira.OVRTracking
             //add from ExternalReceiverForVMC
             if (externalReceiver != null)
             {
-                foreach (var c in externalReceiver.virtualController)
+                foreach (var c in externalReceiver.virtualControllerFiltered)
                 {
                     controllerPositions.Add(new DeviceInfo(c.Value, c.Key));
                 }
@@ -118,7 +118,7 @@ namespace sh_akira.OVRTracking
             //add from ExternalReceiverForVMC
             if (externalReceiver != null)
             {
-                foreach (var t in externalReceiver.virtualTracker)
+                foreach (var t in externalReceiver.virtualTrackerFiltered)
                 {
                     trackerPositions.Add(new DeviceInfo(t.Value, t.Key));
                 }
