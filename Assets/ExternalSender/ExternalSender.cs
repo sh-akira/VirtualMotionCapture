@@ -9,6 +9,7 @@ using System.Reflection;
 
 using sh_akira;
 using sh_akira.OVRTracking;
+using UnityMemoryMappedFile;
 
 [RequireComponent(typeof(uOSC.uOscClient))]
 public class ExternalSender : MonoBehaviour
@@ -20,9 +21,12 @@ public class ExternalSender : MonoBehaviour
     VRIK vrik = null;
     VRMBlendShapeProxy blendShapeProxy = null;
     Camera currentCamera = null;
+    VRMData vrmdata = null;
 
     public SteamVR2Input steamVR2Input;
     public MidiCCWrapper midiCCWrapper;
+    public ExternalReceiverForVMC externalReceiver;
+    public string optionString = "";
 
     //フレーム周期
     public int periodStatus = 1;
@@ -31,6 +35,7 @@ public class ExternalSender : MonoBehaviour
     public int periodBlendShape = 1;
     public int periodCamera = 1;
     public int periodDevices = 1;
+    public int periodLowRateInfo = 90; //低頻度情報(1秒程度間隔)
 
     //フレーム数カウント用
     private int frameOfStatus = 1;
@@ -39,6 +44,7 @@ public class ExternalSender : MonoBehaviour
     private int frameOfBlendShape = 1;
     private int frameOfCamera = 1;
     private int frameOfDevices = 1;
+    private int frameOfLowRateInfo = 1;
 
     //パケット分割数
     const int PACKET_DIV_BONE = 12;
@@ -68,6 +74,17 @@ public class ExternalSender : MonoBehaviour
         window.CameraChangedAction += (Camera currentCamera) =>
         {
             this.currentCamera = currentCamera;
+        };
+
+        window.VRMmetaLodedAction += (VRMData vrmdata) =>
+        {
+            this.vrmdata = vrmdata;
+            SendPerLowRate(); //即時送信
+        };
+
+        window.LightChangedAction += () =>
+        {
+            SendPerLowRate(); //即時送信
         };
 
         steamVR2Input.KeyDownEvent += (object sender, OVRKeyEventArgs e) =>
@@ -213,9 +230,56 @@ public class ExternalSender : MonoBehaviour
             }
         };
     }
-
     // Update is called once per frame
     void Update()
+    {
+        //基本的に毎フレーム送信するもの
+        SendPerFrame();
+
+        //低頻度(1秒以上)で送信する情報もの
+        if (frameOfLowRateInfo > periodLowRateInfo && periodLowRateInfo != 0)
+        {
+            frameOfLowRateInfo = 1;
+            SendPerLowRate();
+        }
+        frameOfLowRateInfo++;
+
+    }
+
+    //低頻度(1秒以上)で送信する情報もの。ただし送信要求が来たら即時発信する
+    public void SendPerLowRate()
+    {
+        uOSC.Bundle infoBundle = new uOSC.Bundle(uOSC.Timestamp.Immediate);
+        //受信有効情報(Receive enable)
+        //有効可否と、ポート番号の送信
+        infoBundle.Add(new uOSC.Message("/VMC/Ext/Rcv", (int)(externalReceiver.isActiveAndEnabled?1:0), externalReceiver.receivePort));
+
+
+        //【イベント送信】DirectionalLight位置・色(DirectionalLight transform & color)
+        if ((window.MainDirectionalLightTransform != null) && (window.MainDirectionalLight.color != null))
+        {
+            infoBundle.Add(new uOSC.Message("/VMC/Ext/Light",
+                "Light",
+                window.MainDirectionalLightTransform.position.x, window.MainDirectionalLightTransform.position.y, window.MainDirectionalLightTransform.position.z,
+                window.MainDirectionalLightTransform.rotation.x, window.MainDirectionalLightTransform.rotation.y, window.MainDirectionalLightTransform.rotation.z, window.MainDirectionalLightTransform.rotation.w,
+                window.MainDirectionalLight.color.r, window.MainDirectionalLight.color.g, window.MainDirectionalLight.color.b, window.MainDirectionalLight.color.a));
+        }
+
+        //【イベント送信】VRM基本情報(VRM information)
+        if (vrmdata != null) {
+            //ファイルパス, キャラ名
+            infoBundle.Add(new uOSC.Message("/VMC/Ext/VRM",vrmdata.FilePath,vrmdata.Title));
+        }
+
+        //送信
+        uClient?.Send(infoBundle);
+
+        //【イベント送信】Option文字列(Option string) [独立送信](大きいため単独で送る)
+        uClient?.Send(new uOSC.Message("/VMC/Ext/Opt", optionString));
+    }
+
+    //基本的に毎フレーム送信するもの
+    void SendPerFrame()
     {
         uOSC.Bundle rootBundle = new uOSC.Bundle(uOSC.Timestamp.Immediate);
 

@@ -18,6 +18,9 @@ public class ExternalReceiverForVMC : MonoBehaviour {
     public SortedDictionary<string, SteamVR_Utils.RigidTransform> virtualControllerFiltered = new SortedDictionary<string, SteamVR_Utils.RigidTransform>();
     public SortedDictionary<string, SteamVR_Utils.RigidTransform> virtualTrackerFiltered = new SortedDictionary<string, SteamVR_Utils.RigidTransform>();
 
+    public int receivePort = 39540;
+    public string statusString = "";
+
     ControlWPFWindow window = null;
     GameObject CurrentModel = null;
     Camera currentCamera = null;
@@ -216,7 +219,8 @@ public class ExternalReceiverForVMC : MonoBehaviour {
                         lookTargetOSC.name = "lookTargetOSC";
                     }
                     //位置を書き込む
-                    if (lookTargetOSC.transform != null) {
+                    if (lookTargetOSC.transform != null)
+                    {
                         lookTargetOSC.transform.position = pos;
                     }
 
@@ -226,7 +230,8 @@ public class ExternalReceiverForVMC : MonoBehaviour {
                         vrmLookAtHead.Target = lookTargetOSC.transform;
                     }
                 }
-                else {
+                else
+                {
                     //視線を止める
                     if (vrmLookAtHead != null)
                     {
@@ -234,6 +239,17 @@ public class ExternalReceiverForVMC : MonoBehaviour {
                     }
                 }
             }
+            //情報要求 V2.4
+            else if (message.address == "/VMC/Ext/Set/Req")
+            {
+                externalSender.SendPerLowRate(); //即時送信
+            }
+            //情報表示 V2.4
+            else if (message.address == "/VMC/Ext/Set/Res" && (message.values[0] is string))
+            {
+                statusString = (string)message.values[0];
+            }
+
         }
     }
     SteamVR_Utils.RigidTransform SetTransform(ref Vector3 pos, ref Quaternion rot,ref uOSC.Message message) {
@@ -270,6 +286,7 @@ public class ExternalReceiverForVMC : MonoBehaviour {
 
     public void ChangeOSCPort(int port)
     {
+        receivePort = port;
         var uServer = GetComponent<uOSC.uOscServer>();
         uServer.enabled = false;
         var type = typeof(uOSC.uOscServer);
