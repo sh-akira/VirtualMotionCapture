@@ -249,33 +249,53 @@ public class ExternalSender : MonoBehaviour
     //低頻度(1秒以上)で送信する情報もの。ただし送信要求が来たら即時発信する
     public void SendPerLowRate()
     {
-        uOSC.Bundle infoBundle = new uOSC.Bundle(uOSC.Timestamp.Immediate);
-        //受信有効情報(Receive enable)
-        //有効可否と、ポート番号の送信
-        infoBundle.Add(new uOSC.Message("/VMC/Ext/Rcv", (int)(externalReceiver.isActiveAndEnabled?1:0), externalReceiver.receivePort));
-
-
-        //【イベント送信】DirectionalLight位置・色(DirectionalLight transform & color)
-        if ((window.MainDirectionalLightTransform != null) && (window.MainDirectionalLight.color != null))
+        //status送信が無効な場合はこれらも送信しない
+        if (periodStatus != 0)
         {
-            infoBundle.Add(new uOSC.Message("/VMC/Ext/Light",
-                "Light",
-                window.MainDirectionalLightTransform.position.x, window.MainDirectionalLightTransform.position.y, window.MainDirectionalLightTransform.position.z,
-                window.MainDirectionalLightTransform.rotation.x, window.MainDirectionalLightTransform.rotation.y, window.MainDirectionalLightTransform.rotation.z, window.MainDirectionalLightTransform.rotation.w,
-                window.MainDirectionalLight.color.r, window.MainDirectionalLight.color.g, window.MainDirectionalLight.color.b, window.MainDirectionalLight.color.a));
+
+            uOSC.Bundle infoBundle = new uOSC.Bundle(uOSC.Timestamp.Immediate);
+            //受信有効情報(Receive enable)
+            //有効可否と、ポート番号の送信
+            infoBundle.Add(new uOSC.Message("/VMC/Ext/Rcv", (int)(externalReceiver.isActiveAndEnabled ? 1 : 0), externalReceiver.receivePort));
+
+
+            //【イベント送信】DirectionalLight位置・色(DirectionalLight transform & color)
+            if ((window.MainDirectionalLightTransform != null) && (window.MainDirectionalLight.color != null))
+            {
+                infoBundle.Add(new uOSC.Message("/VMC/Ext/Light",
+                    "Light",
+                    window.MainDirectionalLightTransform.position.x, window.MainDirectionalLightTransform.position.y, window.MainDirectionalLightTransform.position.z,
+                    window.MainDirectionalLightTransform.rotation.x, window.MainDirectionalLightTransform.rotation.y, window.MainDirectionalLightTransform.rotation.z, window.MainDirectionalLightTransform.rotation.w,
+                    window.MainDirectionalLight.color.r, window.MainDirectionalLight.color.g, window.MainDirectionalLight.color.b, window.MainDirectionalLight.color.a));
+            }
+
+            //【イベント送信】現在の設定
+            infoBundle.Add(new uOSC.Message("/VMC/Ext/Setting/Color",
+                ControlWPFWindow.CurrentSettings.BackgroundColor.r,
+                ControlWPFWindow.CurrentSettings.BackgroundColor.g,
+                ControlWPFWindow.CurrentSettings.BackgroundColor.b,
+                ControlWPFWindow.CurrentSettings.BackgroundColor.a
+            ));
+            infoBundle.Add(new uOSC.Message("/VMC/Ext/Setting/Win",
+                ControlWPFWindow.CurrentSettings.IsTopMost ? 1 : 0,
+                ControlWPFWindow.CurrentSettings.IsTransparent ? 1 : 0,
+                ControlWPFWindow.CurrentSettings.WindowClickThrough ? 1 : 0,
+                ControlWPFWindow.CurrentSettings.HideBorder ? 1 : 0
+            ));
+
+            //送信
+            uClient?.Send(infoBundle);
+
+            //【イベント送信】VRM基本情報(VRM information) [独立送信](大きいため単独で送る)
+            if (vrmdata != null)
+            {
+                //ファイルパス, キャラ名
+                uClient?.Send(new uOSC.Message("/VMC/Ext/VRM", vrmdata.FilePath, vrmdata.Title));
+            }
+
+            //【イベント送信】Option文字列(Option string) [独立送信](大きいため単独で送る)
+            uClient?.Send(new uOSC.Message("/VMC/Ext/Opt", optionString));
         }
-
-        //【イベント送信】VRM基本情報(VRM information)
-        if (vrmdata != null) {
-            //ファイルパス, キャラ名
-            infoBundle.Add(new uOSC.Message("/VMC/Ext/VRM",vrmdata.FilePath,vrmdata.Title));
-        }
-
-        //送信
-        uClient?.Send(infoBundle);
-
-        //【イベント送信】Option文字列(Option string) [独立送信](大きいため単独で送る)
-        uClient?.Send(new uOSC.Message("/VMC/Ext/Opt", optionString));
     }
 
     //基本的に毎フレーム送信するもの

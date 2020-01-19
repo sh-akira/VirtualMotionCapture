@@ -1671,7 +1671,7 @@ public class ControlWPFWindow : MonoBehaviour
 
     void SetWindowClickThrough(bool enable)
     {
-        CurrentSettings.HideBorder = enable;
+        CurrentSettings.WindowClickThrough = enable;
 #if !UNITY_EDITOR   // エディタ上では動きません。
         var hwnd = GetUnityWindowHandle();
         //var hwnd = GetActiveWindow();
@@ -2823,6 +2823,9 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 await server.SendCommandAsync(new PipeCommands.LoadVRMPath { Path = CurrentSettings.VRMPath });
                 ImportVRM(CurrentSettings.VRMPath, false, CurrentSettings.EnableNormalMapFix, CurrentSettings.DeleteHairNormalMap);
+
+                //メタ情報をOSC送信する
+                VRMmetaLodedAction?.Invoke(LoadVRM(CurrentSettings.VRMPath));
             }
             if (CurrentSettings.BackgroundColor != null)
             {
