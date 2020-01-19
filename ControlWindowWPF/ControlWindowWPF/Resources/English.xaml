@@ -208,7 +208,7 @@
     <system:String x:Key="SettingWindow_VirtualWebCamInstall">Virtual WebCam Install</system:String>
     <system:String x:Key="SettingWindow_WebCamInstallButton">Install</system:String>
     <system:String x:Key="SettingWindow_WebCamUninstallButton">Uninstall</system:String>
-    <system:String x:Key="SettingWindow_WebCamEnable">Emable Virtual WebCam(VMC__Camera)</system:String>
+    <system:String x:Key="SettingWindow_WebCamEnable">Enable Virtual WebCam(VMC__Camera)</system:String>
     <system:String x:Key="SettingWindow_WebCamResize">Resize(heavy)</system:String>
     <system:String x:Key="SettingWindow_WebCamMirror">Mirror(Flip Horizontal)</system:String>
     <system:String x:Key="SettingWindow_WebCamBuffering">Buffering count(light/delay)：</system:String>
