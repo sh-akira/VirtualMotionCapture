@@ -829,7 +829,7 @@ public class ControlWPFWindow : MonoBehaviour
 
     #region VRM
 
-    private VRMData LoadVRM(string path)
+    public VRMData LoadVRM(string path)
     {
         if (string.IsNullOrEmpty(path))
         {

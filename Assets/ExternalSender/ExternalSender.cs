@@ -1,5 +1,6 @@
 ﻿//gpsnmeajp
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -229,6 +230,16 @@ public class ExternalSender : MonoBehaviour
                 }
             }
         };
+
+
+        if (ControlWPFWindow.CurrentSettings.VRMPath != null)
+        {
+            //有効なVRMが読み込まれているならメタデータを記録する(低頻度送信に頼る)
+            if (File.Exists(ControlWPFWindow.CurrentSettings.VRMPath))
+            {
+                this.vrmdata = window.LoadVRM(ControlWPFWindow.CurrentSettings.VRMPath);
+            }
+        }
     }
     // Update is called once per frame
     void Update()

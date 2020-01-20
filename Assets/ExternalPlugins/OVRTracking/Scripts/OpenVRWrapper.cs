@@ -23,6 +23,7 @@ namespace sh_akira.OVRTracking
         public event EventHandler<OVREventArgs> OnOVREvent;
 
         public CVRSystem openVR { get; set; } = null;
+        public bool ConvertControllerToTracker = false;
 
         public bool Setup()
         {
@@ -77,6 +78,7 @@ namespace sh_akira.OVRTracking
             openVR.GetDeviceToAbsoluteTrackingPose(ETrackingUniverseOrigin.TrackingUniverseStanding, 0, allPoses);
             for (uint i = 0; i < allPoses.Length; i++)
             {
+                string postfix = "";
                 var pose = allPoses[i];
                 //0:HMD 1:LeftHand 2:RightHand ??
                 var deviceClass = openVR.GetTrackedDeviceClass(i);
@@ -86,7 +88,15 @@ namespace sh_akira.OVRTracking
                     {
                         serialNumbers[i] = GetTrackerSerialNumber(i);
                     }
-                    positions[deviceClass].Add(new DeviceInfo(new SteamVR_Utils.RigidTransform(pose.mDeviceToAbsoluteTracking), serialNumbers[i], pose, openVR.GetTrackedDeviceClass(i)));
+
+                    //コントローラをトラッカーとして認識させるモード
+                    if ((ConvertControllerToTracker == true) && (deviceClass == ETrackedDeviceClass.Controller))
+                    {
+                        deviceClass = ETrackedDeviceClass.GenericTracker;
+                        postfix = "[Controller]"; //シリアルナンバー重複防止
+                    }
+
+                    positions[deviceClass].Add(new DeviceInfo(new SteamVR_Utils.RigidTransform(pose.mDeviceToAbsoluteTracking), serialNumbers[i] + postfix, pose, deviceClass));
                 }
                 else {
                     //接続切れたらシリアル番号キャッシュクリア

@@ -24,6 +24,7 @@ namespace sh_akira.OVRTracking
         public List<GameObject> BaseStations = new List<GameObject>();
         public List<GameObject> BaseStationsObject = new List<GameObject>();
         public bool DisableBaseStationRotation = true;
+        public bool ConvertControllerToTracker = false;
 
         public ExternalReceiverForVMC externalReceiver;
 
@@ -60,6 +61,7 @@ namespace sh_akira.OVRTracking
             Dictionary<ETrackedDeviceClass, List<DeviceInfo>> positions;
             if (IsOVRConnected)
             {
+                OpenVRWrapper.Instance.ConvertControllerToTracker = ConvertControllerToTracker;
                 OpenVRWrapper.Instance.PollingVREvents();
                 positions = OpenVRWrapper.Instance.GetTrackerPositions();
             }
