@@ -595,5 +595,17 @@ namespace VirtualMotionCaptureControlPanel
                 fixKneeRotation = FixKneeRotationCheckBox.IsChecked.Value,
             });
         }
+
+        private async void HandleControllerAsTrackerCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            if (isSetting) return;
+            /*
+            await Globals.Client?.SendCommandAsync(new PipeCommands.EnableModelModifier
+            {
+                fixKneeRotation = FixKneeRotationCheckBox.IsChecked.Value,
+            });
+            */
+        }
+
     }
 }

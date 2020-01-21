@@ -150,21 +150,35 @@
                                 <TextBox Text="1" Grid.Row="3" Grid.Column="2" Name="PeriodDevicesTextBox"/>
                             </Grid>
                         </GroupBox>
-                    </DockPanel>
+						<Grid DockPanel.Dock="Top">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+							<TextBlock Text="Option: " Grid.Column="0"/>
+							<TextBox Text="" Grid.Column="1" VerticalAlignment="Center" Name="OptionStringTextbox"/>
+						</Grid>
+					</DockPanel>
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_ExternalMotionReceiver}">
                     <DockPanel>
                         <Button Content="{DynamicResource SettingWindow_ResolutionApply}" Name="OSCReceiverApplyButton" Click="OSCReceiverApplyButton_Click" DockPanel.Dock="Right" Padding="10,5"/>
                         <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionReceiverEnable}" Name="ExternalMotionReceiverEnableCheckBox" Checked="ExternalMotionReceiverCheckBox_Changed" Unchecked="ExternalMotionReceiverCheckBox_Changed" DockPanel.Dock="Top"/>
                         <Grid DockPanel.Dock="Top">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text=" Port:" Grid.Column="0"/>
-                            <TextBox Text="39540" Grid.Column="1" VerticalAlignment="Center" Name="ExternalMotionReceiverPortTextBox"/>
-                        </Grid>
-                    </DockPanel>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+							<TextBlock Text=" Port:" Grid.Column="0" Grid.Row="0"/>
+							<TextBox Text="39540" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Name="ExternalMotionReceiverPortTextBox"/>
+							<TextBlock Text="Response: " Grid.Column="0" Grid.Row="1"/>
+							<TextBox Text="" Grid.Column="1" Grid.Row="1" IsReadOnly="True" IsEnabled="False" VerticalAlignment="Center" Name="ResponseStringTextbox"/>
+						</Grid>
+					</DockPanel>
                 </GroupBox>
                 <GroupBox Header="MIDI CC BlendShape">
                     <Button Content="Knob to BlendShape setting" Name="MidiCCBlendShapeSettingButton" Click="MidiCCBlendShapeSettingButton_Click"/>
@@ -181,12 +195,17 @@
                         </WrapPanel>
                     </GroupBox>
                 </GroupBox>
-                <GroupBox Header="Model modifier">
-                    <StackPanel Orientation="Vertical">
-                        <CheckBox Content="Fix Knee rotation" Name="FixKneeRotationCheckBox" Checked="FixKneeRotationCheckBox_Changed" Unchecked="FixKneeRotationCheckBox_Changed"/>
-                    </StackPanel>
-                </GroupBox>
-            </StackPanel>
+				<GroupBox Header="Model modifier">
+					<StackPanel Orientation="Vertical">
+						<CheckBox Content="Fix Knee rotation" Name="FixKneeRotationCheckBox" Checked="FixKneeRotationCheckBox_Changed" Unchecked="FixKneeRotationCheckBox_Changed"/>
+					</StackPanel>
+				</GroupBox>
+				<GroupBox Header="Tracking Option">
+					<StackPanel Orientation="Vertical">
+						<CheckBox Content="Handle Controller as Tracker" Name="HandleControllerAsTrackerCheckBox" Checked="HandleControllerAsTrackerCheckBox_Changed" Unchecked="HandleControllerAsTrackerCheckBox_Changed" />
+					</StackPanel>
+				</GroupBox>
+			</StackPanel>
         </Grid>
         <Button Content="{DynamicResource SettingWindow_Close}" HorizontalAlignment="Right" Width="100" Name="CloseButton" Click="CloseButton_Click" ToolTip="{DynamicResource SettingWindow_Close_ToolTip}"/>
     </StackPanel>
