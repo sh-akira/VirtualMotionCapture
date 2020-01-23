@@ -68,6 +68,12 @@ namespace sh_akira.OVRTracking
         public Dictionary<ETrackedDeviceClass, List<DeviceInfo>> GetTrackerPositions()
         {
             var positions = new Dictionary<ETrackedDeviceClass, List<DeviceInfo>>();
+
+            if (openVR == null)
+            {
+                return positions;
+            }
+
             positions.Add(ETrackedDeviceClass.HMD, new List<DeviceInfo>());
             positions.Add(ETrackedDeviceClass.Controller, new List<DeviceInfo>());
             positions.Add(ETrackedDeviceClass.GenericTracker, new List<DeviceInfo>());
@@ -108,6 +114,11 @@ namespace sh_akira.OVRTracking
 
         public string GetTrackerSerialNumber(uint deviceIndex)
         {
+            if (openVR == null)
+            {
+                return null;
+            }
+
             var buffer = new StringBuilder();
             var error = default(ETrackedPropertyError);
             //Capacity取得
@@ -116,6 +127,25 @@ namespace sh_akira.OVRTracking
             openVR.GetStringTrackedDeviceProperty(deviceIndex, ETrackedDeviceProperty.Prop_SerialNumber_String, buffer, (uint)buffer.EnsureCapacity(capacity), ref error);
             if (error != ETrackedPropertyError.TrackedProp_Success) return null;// "No Serial Number";
             return buffer.ToString();
+        }
+
+        public bool GetIsSafeMode()
+        {
+            if (openVR == null)
+            {
+                return false;
+            }
+
+            CVRSettings cVRSettings = OpenVR.Settings;
+            EVRSettingsError eVRSettingsError = EVRSettingsError.None;
+            bool en = cVRSettings.GetBool(OpenVR.k_pch_SteamVR_Section, OpenVR.k_pch_SteamVR_EnableSafeMode, ref eVRSettingsError);
+
+            if (eVRSettingsError != EVRSettingsError.None)
+            {
+                Debug.LogError("GetIsSafeMode Failed: "+eVRSettingsError.ToString());
+                return false;
+            }
+            return en;
         }
 
         public void Close()
