@@ -257,7 +257,8 @@ public class SteamVR2Input : MonoBehaviour
                         err = OpenVR.Input.GetSkeletalBoneData(action.handle, skeletalTransformSpace, rangeOfMotion, tempBoneTransforms);
                         if (err != EVRInputError.None)
                         {
-                            Debug.LogWarning($"<b>[SteamVR]</b> GetDigitalActionData error ({action.name}): {err} handle: {action.handle}");
+                            //特定の条件においてものすごい勢いでログが出る
+                            //Debug.LogWarning($"<b>[SteamVR]</b> GetDigitalActionData error ({action.name}): {err} handle: {action.handle}");
                             continue;
                         }
                         handTracking_Skeletal.SetSkeltalBoneData(action.name.Contains("Left"), tempBoneTransforms);
