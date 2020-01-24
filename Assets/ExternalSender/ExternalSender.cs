@@ -40,6 +40,9 @@ public class ExternalSender : MonoBehaviour
     private int frameOfCamera = 1;
     private int frameOfDevices = 1;
 
+    //パケット分割数
+    const int PACKET_DIV_BONE = 12;
+
     GameObject handTrackerRoot;
     TrackerHandler trackerHandler;
 
@@ -214,6 +217,8 @@ public class ExternalSender : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        uOSC.Bundle rootBundle = new uOSC.Bundle(uOSC.Timestamp.Immediate);
+
         if (CurrentModel != null && animator != null)
         {
             //Root
@@ -232,12 +237,12 @@ public class ExternalSender : MonoBehaviour
                     var offset = handTrackerRoot.transform;
                     if (RootTransform != null && offset != null)
                     {
-                        uClient?.Send("/VMC/Ext/Root/Pos",
+                        rootBundle.Add(new uOSC.Message("/VMC/Ext/Root/Pos",
                             "root",
                             RootTransform.position.x, RootTransform.position.y, RootTransform.position.z,
                             RootTransform.rotation.x, RootTransform.rotation.y, RootTransform.rotation.z, RootTransform.rotation.w,
                             offset.localScale.x, offset.localScale.y, offset.localScale.z,
-                            offset.position.x, offset.position.y, offset.position.z);
+                            offset.position.x, offset.position.y, offset.position.z));
                     }
                 }
             }
@@ -247,17 +252,32 @@ public class ExternalSender : MonoBehaviour
             if (frameOfBone > periodBone && periodBone != 0)
             {
                 frameOfBone = 1;
+
+                uOSC.Bundle boneBundle = new uOSC.Bundle(uOSC.Timestamp.Immediate);
+                int cnt = 0;//パケット分割カウンタ
+
                 foreach (HumanBodyBones bone in Enum.GetValues(typeof(HumanBodyBones)))
                 {
                     var Transform = animator.GetBoneTransform(bone);
                     if (Transform != null)
                     {
-                        uClient?.Send("/VMC/Ext/Bone/Pos",
+                        boneBundle.Add(new uOSC.Message("/VMC/Ext/Bone/Pos",
                             bone.ToString(),
                             Transform.localPosition.x, Transform.localPosition.y, Transform.localPosition.z,
-                            Transform.localRotation.x, Transform.localRotation.y, Transform.localRotation.z, Transform.localRotation.w);
+                            Transform.localRotation.x, Transform.localRotation.y, Transform.localRotation.z, Transform.localRotation.w));
+
+                        cnt++;
+                        //1200バイトを超えない程度に分割する
+                        if (cnt > PACKET_DIV_BONE) {
+                            uClient?.Send(boneBundle);
+                            boneBundle = new uOSC.Bundle(uOSC.Timestamp.Immediate);
+                            cnt = 0;
+
+                        }
                     }
                 }
+                //余ったボーンは雑多な情報と共に送る
+                rootBundle.Add(boneBundle);
             }
             frameOfBone++;
 
@@ -272,17 +292,19 @@ public class ExternalSender : MonoBehaviour
             {
                 frameOfBlendShape = 1;
 
+                uOSC.Bundle blendShapeBundle = new uOSC.Bundle(uOSC.Timestamp.Immediate);
                 if (blendShapeProxy != null)
                 {
                     foreach (var b in blendShapeProxy.GetValues())
                     {
-                        uClient?.Send("/VMC/Ext/Blend/Val",
+                        blendShapeBundle.Add(new uOSC.Message("/VMC/Ext/Blend/Val",
                             b.Key.ToString(),
                             (float)b.Value
-                            );
+                            ));
                     }
-                    uClient?.Send("/VMC/Ext/Blend/Apply");
+                    blendShapeBundle.Add(new uOSC.Message("/VMC/Ext/Blend/Apply"));
                 }
+                uClient?.Send(blendShapeBundle);
             }
             frameOfBlendShape++;
         }
@@ -293,11 +315,11 @@ public class ExternalSender : MonoBehaviour
             frameOfCamera = 1;
             if (currentCamera != null)
             {
-                uClient?.Send("/VMC/Ext/Cam",
+                rootBundle.Add(new uOSC.Message("/VMC/Ext/Cam",
                     "Camera",
                     currentCamera.transform.position.x, currentCamera.transform.position.y, currentCamera.transform.position.z,
                     currentCamera.transform.rotation.x, currentCamera.transform.rotation.y, currentCamera.transform.rotation.z, currentCamera.transform.rotation.w,
-                    currentCamera.fieldOfView);
+                    currentCamera.fieldOfView));
             }
         }
         frameOfCamera++;
@@ -307,36 +329,36 @@ public class ExternalSender : MonoBehaviour
         {
             frameOfDevices = 1;
 
-            uClient?.Send("/VMC/Ext/Hmd/Pos",
+            rootBundle.Add(new uOSC.Message("/VMC/Ext/Hmd/Pos",
                     trackerHandler.HMDObject.name,
                     trackerHandler.HMDObject.transform.position.x, trackerHandler.HMDObject.transform.position.y, trackerHandler.HMDObject.transform.position.z,
-                    trackerHandler.HMDObject.transform.rotation.x, trackerHandler.HMDObject.transform.rotation.y, trackerHandler.HMDObject.transform.rotation.z, trackerHandler.HMDObject.transform.rotation.w);
-            uClient?.Send("/VMC/Ext/Hmd/Pos/Local",
+                    trackerHandler.HMDObject.transform.rotation.x, trackerHandler.HMDObject.transform.rotation.y, trackerHandler.HMDObject.transform.rotation.z, trackerHandler.HMDObject.transform.rotation.w));
+            rootBundle.Add(new uOSC.Message("/VMC/Ext/Hmd/Pos/Local",
                     trackerHandler.HMDObject.name,
                     trackerHandler.HMDObject.transform.localPosition.x, trackerHandler.HMDObject.transform.localPosition.y, trackerHandler.HMDObject.transform.localPosition.z,
-                    trackerHandler.HMDObject.transform.localRotation.x, trackerHandler.HMDObject.transform.localRotation.y, trackerHandler.HMDObject.transform.localRotation.z, trackerHandler.HMDObject.transform.localRotation.w);
+                    trackerHandler.HMDObject.transform.localRotation.x, trackerHandler.HMDObject.transform.localRotation.y, trackerHandler.HMDObject.transform.localRotation.z, trackerHandler.HMDObject.transform.localRotation.w));
             
             foreach (var c in trackerHandler.Controllers)
             {
-                uClient?.Send("/VMC/Ext/Con/Pos",
+                rootBundle.Add(new uOSC.Message("/VMC/Ext/Con/Pos",
                         c.name,
                         c.transform.position.x, c.transform.position.y, c.transform.position.z,
-                        c.transform.rotation.x, c.transform.rotation.y, c.transform.rotation.z, c.transform.rotation.w);
-                uClient?.Send("/VMC/Ext/Con/Pos/Local",
+                        c.transform.rotation.x, c.transform.rotation.y, c.transform.rotation.z, c.transform.rotation.w));
+                rootBundle.Add(new uOSC.Message("/VMC/Ext/Con/Pos/Local",
                         c.name,
                         c.transform.localPosition.x, c.transform.localPosition.y, c.transform.localPosition.z,
-                        c.transform.localRotation.x, c.transform.localRotation.y, c.transform.localRotation.z, c.transform.localRotation.w);
+                        c.transform.localRotation.x, c.transform.localRotation.y, c.transform.localRotation.z, c.transform.localRotation.w));
             }
             foreach (var c in trackerHandler.Trackers)
             {
-                uClient?.Send("/VMC/Ext/Tra/Pos",
+                rootBundle.Add(new uOSC.Message("/VMC/Ext/Tra/Pos",
                         c.name,
                         c.transform.position.x, c.transform.position.y, c.transform.position.z,
-                        c.transform.rotation.x, c.transform.rotation.y, c.transform.rotation.z, c.transform.rotation.w);
-                uClient?.Send("/VMC/Ext/Tra/Pos/Local",
+                        c.transform.rotation.x, c.transform.rotation.y, c.transform.rotation.z, c.transform.rotation.w));
+                rootBundle.Add(new uOSC.Message("/VMC/Ext/Tra/Pos/Local",
                         c.name,
                         c.transform.localPosition.x, c.transform.localPosition.y, c.transform.localPosition.z,
-                        c.transform.localRotation.x, c.transform.localRotation.y, c.transform.localRotation.z, c.transform.localRotation.w);
+                        c.transform.localRotation.x, c.transform.localRotation.y, c.transform.localRotation.z, c.transform.localRotation.w));
             }
         }
         frameOfDevices++;
@@ -350,15 +372,18 @@ public class ExternalSender : MonoBehaviour
             if (CurrentModel != null && animator != null)
             {
                 //Available
-                uClient?.Send("/VMC/Ext/OK", 1);
+                rootBundle.Add(new uOSC.Message("/VMC/Ext/OK", 1));
             }
             else
             {
-                uClient?.Send("/VMC/Ext/OK", 0);
+                rootBundle.Add(new uOSC.Message("/VMC/Ext/OK", 0));
             }
-            uClient?.Send("/VMC/Ext/T", Time.time);
+            rootBundle.Add(new uOSC.Message("/VMC/Ext/T", Time.time));
+
         }
         frameOfStatus++;
+
+        uClient?.Send(rootBundle);
 
         //---End of frame---
     }
