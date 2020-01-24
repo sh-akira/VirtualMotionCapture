@@ -202,7 +202,8 @@ namespace VirtualMotionCaptureControlPanel
         private void TrackerConfigButton_Click(object sender, RoutedEventArgs e)
         {
             var win = new TrackerConfigWindow();
-            win.Show();
+            win.Owner = this;
+            win.ShowDialog();
         }
 
         private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -463,12 +464,14 @@ namespace VirtualMotionCaptureControlPanel
         private void EyeTracking_TobiiSettingButton_Click(object sender, RoutedEventArgs e)
         {
             var win = new EyeTracking_TobiiSettingWindow();
+            win.Owner = this;
             win.ShowDialog();
         }
 
         private void EyeTracking_ViveProEyeSettingButton_Click(object sender, RoutedEventArgs e)
         {
             var win = new EyeTracking_ViveProEyeSettingWindow();
+            win.Owner = this;
             win.ShowDialog();
         }
 
@@ -599,6 +602,7 @@ namespace VirtualMotionCaptureControlPanel
         private void MidiCCBlendShapeSettingButton_Click(object sender, RoutedEventArgs e)
         {
             var win = new MidiCCBlendShapeSettingWIndow();
+            win.Owner = this;
             win.ShowDialog();
         }
 

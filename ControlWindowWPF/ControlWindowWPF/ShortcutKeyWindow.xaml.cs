@@ -387,6 +387,7 @@ namespace VirtualMotionCaptureControlPanel
         {
             await Globals.Client.SendCommandAsync(new PipeCommands.StartKeyConfig { });
             var win = new HandGestureControlKeyAddWindow();
+            win.Owner = this;
             if (win.ShowDialog() == true)
             {
                 UpdateKeyList();
@@ -398,6 +399,7 @@ namespace VirtualMotionCaptureControlPanel
         {
             await Globals.Client.SendCommandAsync(new PipeCommands.StartKeyConfig { });
             var win = new FaceControlKeyAddWindow();
+            win.Owner = this;
             if (win.ShowDialog() == true)
             {
                 UpdateKeyList();
@@ -409,6 +411,7 @@ namespace VirtualMotionCaptureControlPanel
         {
             await Globals.Client.SendCommandAsync(new PipeCommands.StartKeyConfig { });
             var win = new FunctionKeyAddWindow();
+            win.Owner = this;
             if (win.ShowDialog() == true)
             {
                 UpdateKeyList();
@@ -709,16 +712,19 @@ namespace VirtualMotionCaptureControlPanel
                 if (item.KeyAction.FaceAction)
                 {
                     var win = new FaceControlKeyAddWindow(item.KeyAction);
+                    win.Owner = this;
                     edited = win.ShowDialog();
                 }
                 else if (item.KeyAction.HandAction)
                 {
                     var win = new HandGestureControlKeyAddWindow(item.KeyAction);
+                    win.Owner = this;
                     edited = win.ShowDialog();
                 }
                 else if (item.KeyAction.FunctionAction)
                 {
                     var win = new FunctionKeyAddWindow(item.KeyAction);
+                    win.Owner = this;
                     edited = win.ShowDialog();
                 }
                 await Globals.Client.SendCommandAsync(new PipeCommands.EndKeyConfig { });

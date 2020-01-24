@@ -92,6 +92,7 @@ namespace VirtualMotionCaptureControlPanel
         private void ShowVRoidHubButton_Click(object sender, RoutedEventArgs e)
         {
             var win = new VRoidHubWindow();
+            win.Owner = this;
             if (win.ShowDialog() == true)
             {
                 this.Close();

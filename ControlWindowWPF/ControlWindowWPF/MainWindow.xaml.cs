@@ -344,6 +344,7 @@ namespace VirtualMotionCaptureControlPanel
         private void ImportVRMButton_Click(object sender, RoutedEventArgs e)
         {
             var win = new VRMImportWindow();
+            win.Owner = this;
             win.ShowDialog();
         }
 
@@ -355,18 +356,21 @@ namespace VirtualMotionCaptureControlPanel
                 return;
             }
             var win = new CalibrationWindow();
+            win.Owner = this;
             win.ShowDialog();
         }
 
         private void ShortcutKeyButton_Click(object sender, RoutedEventArgs e)
         {
             var win = new ShortcutKeyWindow();
+            win.Owner = this;
             win.ShowDialog();
         }
 
         private void SettingButton_Click(object sender, RoutedEventArgs e)
         {
             var win = new SettingWindow();
+            win.Owner = this;
             win.ShowDialog();
             UpdateWindowTitle();
         }
@@ -499,6 +503,7 @@ namespace VirtualMotionCaptureControlPanel
         private void PhotoButton_Click(object sender, RoutedEventArgs e)
         {
             var win = new PhotoWindow();
+            win.Owner = this;
             if (win.ShowDialog() == true)
             {
 
@@ -656,6 +661,7 @@ namespace VirtualMotionCaptureControlPanel
             var win = new ColorPickerWindow();
             win.SelectedColor = (LightColorButton.Background as SolidColorBrush).Color;
             win.SelectedColorChangedEvent += ColorPickerWindow_SelectedColorChanged;
+            win.Owner = this;
             win.ShowDialog();
             win.SelectedColorChangedEvent -= ColorPickerWindow_SelectedColorChanged;
         }
