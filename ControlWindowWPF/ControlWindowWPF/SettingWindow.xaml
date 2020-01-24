@@ -205,6 +205,15 @@
 						<CheckBox Content="Handle Controller as Tracker" Name="HandleControllerAsTrackerCheckBox" Checked="HandleControllerAsTrackerCheckBox_Changed" Unchecked="HandleControllerAsTrackerCheckBox_Changed" />
 					</StackPanel>
 				</GroupBox>
+				<GroupBox Header="Quality Settings">
+					<StackPanel Orientation="Vertical">
+                        <DockPanel>
+                            <TextBlock Text="AntiAliasing" DockPanel.Dock="Left"/>
+                            <TextBlock Text="x" DockPanel.Dock="Left" Margin="10,0,0,0"/>
+                            <ComboBox Name="AntiAliasingComboBox" SelectionChanged="AntiAliasingComboBox_SelectionChanged"/>
+                        </DockPanel>
+					</StackPanel>
+				</GroupBox>
 			</StackPanel>
         </Grid>
         <Button Content="{DynamicResource SettingWindow_Close}" HorizontalAlignment="Right" Width="100" Name="CloseButton" Click="CloseButton_Click" ToolTip="{DynamicResource SettingWindow_Close_ToolTip}"/>

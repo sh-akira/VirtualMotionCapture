@@ -327,6 +327,18 @@ namespace VirtualMotionCaptureControlPanel
                     isSetting = false;
                 });
             });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetQualitySettings { }, d =>
+            {
+                var data = (PipeCommands.SetQualitySettings)d;
+                Dispatcher.Invoke(() =>
+                {
+                    isSetting = true;
+                    var antialiasingList = new List<int> { 0, 2, 4, 8 };
+                    AntiAliasingComboBox.ItemsSource = antialiasingList;
+                    AntiAliasingComboBox.SelectedItem = data.antiAliasing;
+                    isSetting = false;
+                });
+            });
             await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = true });
             await Globals.Client?.SendCommandAsync(new PipeCommands.StatusStringChangedRequest { doSend = true });
         }
@@ -634,5 +646,19 @@ namespace VirtualMotionCaptureControlPanel
             });
         }
 
+        private void AntiAliasingComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (AntiAliasingComboBox.SelectedItem == null) return;
+            SetQualitySettings();
+        }
+
+        private async void SetQualitySettings()
+        {
+            if (isSetting) return;
+            await Globals.Client?.SendCommandAsync(new PipeCommands.SetQualitySettings
+            {
+                antiAliasing = (int)AntiAliasingComboBox.SelectedItem,
+            });
+        }
     }
 }

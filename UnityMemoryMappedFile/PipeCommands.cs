@@ -434,6 +434,11 @@ namespace UnityMemoryMappedFile
         }
 
 
+        public class GetQualitySettings { }
+        public class SetQualitySettings
+        {
+            public int antiAliasing { get; set; }
+        }
     }
 
 
@@ -1028,7 +1033,7 @@ namespace UnityMemoryMappedFile
             }
         }
     }
-    
+
     public class KeyAction
     {
         public List<KeyConfig> KeyConfigs { get; set; }
