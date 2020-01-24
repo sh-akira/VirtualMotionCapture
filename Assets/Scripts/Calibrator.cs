@@ -514,7 +514,10 @@ public class Calibrator
         {
             pelvisOffsetHeight = ik.references.pelvis.position.y;
             pelvisOffsetTransform = pelvisOffsetAdjuster;
-            pelvisOffsetAdjuster.localPosition = new Vector3(0, pelvisOffsetDivide == 0 ? 0 : -(ik.references.pelvis.position.y / pelvisOffsetDivide), 0);
+            if (LeftFootTransform != null && RightFootTransform != null)
+            {
+                pelvisOffsetAdjuster.localPosition = new Vector3(0, pelvisOffsetDivide == 0 ? 0 : -(ik.references.pelvis.position.y / pelvisOffsetDivide), 0);
+            }
         }
 
         // Additional solver settings
@@ -647,7 +650,7 @@ public class Calibrator
         }
 
         yield return new WaitForEndOfFrame();
-        
+
 
         // 手のトラッカー全体のスケールを手の位置に合わせる
         var modelHandDistance = Vector3.Distance(ik.references.leftHand.position, ik.references.rightHand.position);
@@ -841,7 +844,10 @@ public class Calibrator
         {
             pelvisOffsetHeight = ik.references.pelvis.position.y;
             pelvisOffsetTransform = pelvisOffsetAdjuster;
-            pelvisOffsetAdjuster.localPosition = new Vector3(0, pelvisOffsetDivide == 0 ? 0 : -(ik.references.pelvis.position.y / pelvisOffsetDivide), 0);
+            if (LeftFootTransform != null && RightFootTransform != null)
+            {
+                pelvisOffsetAdjuster.localPosition = new Vector3(0, pelvisOffsetDivide == 0 ? 0 : -(ik.references.pelvis.position.y / pelvisOffsetDivide), 0);
+            }
         }
 
         // Additional solver settings
@@ -1173,7 +1179,10 @@ public class Calibrator
         {
             pelvisOffsetHeight = ik.references.pelvis.position.y;
             pelvisOffsetTransform = pelvisOffsetAdjuster;
-            pelvisOffsetAdjuster.localPosition = new Vector3(0, pelvisOffsetDivide == 0 ? 0 : - (ik.references.pelvis.position.y / pelvisOffsetDivide), 0);
+            if (LeftFootTransform != null && RightFootTransform != null)
+            {
+                pelvisOffsetAdjuster.localPosition = new Vector3(0, pelvisOffsetDivide == 0 ? 0 : -(ik.references.pelvis.position.y / pelvisOffsetDivide), 0);
+            }
         }
 
         // Additional solver settings
