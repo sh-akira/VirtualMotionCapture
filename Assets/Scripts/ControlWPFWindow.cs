@@ -88,6 +88,8 @@ public class ControlWPFWindow : MonoBehaviour
     public Action<GameObject> ModelLoadedAction = null;
     public Action<GameObject> AdditionalSettingAction = null;
     public Action<Camera> CameraChangedAction = null;
+    public Action<VRMData> VRMmetaLodedAction = null;
+    public Action LightChangedAction = null;
 
     public Action<GameObject> EyeTracking_TobiiCalibrationAction = null;
     public Action<PipeCommands.SetEyeTracking_TobiiOffsets> SetEyeTracking_TobiiOffsetsAction = null;
@@ -291,6 +293,9 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 var d = (PipeCommands.ImportVRM)e.Data;
                 ImportVRM(d.Path, d.ImportForCalibration, d.UseCurrentFixSetting ? CurrentSettings.EnableNormalMapFix : d.EnableNormalMapFix, d.UseCurrentFixSetting ? CurrentSettings.DeleteHairNormalMap : d.DeleteHairNormalMap);
+
+                //メタ情報をOSC送信する
+                VRMmetaLodedAction?.Invoke(LoadVRM(d.Path));
             }
 
             else if (e.CommandType == typeof(PipeCommands.Calibrate))
@@ -804,6 +809,8 @@ public class ControlWPFWindow : MonoBehaviour
             MainDirectionalLightTransform.eulerAngles = new Vector3(x, y, MainDirectionalLightTransform.eulerAngles.z);
             CurrentSettings.LightRotationX = x;
             CurrentSettings.LightRotationY = y;
+
+            LightChangedAction?.Invoke();
         }
     }
 
@@ -813,6 +820,8 @@ public class ControlWPFWindow : MonoBehaviour
         {
             CurrentSettings.LightColor = new Color(r, g, b, a);
             MainDirectionalLight.color = CurrentSettings.LightColor;
+
+            LightChangedAction?.Invoke();
         }
     }
 
@@ -820,7 +829,7 @@ public class ControlWPFWindow : MonoBehaviour
 
     #region VRM
 
-    private VRMData LoadVRM(string path)
+    public VRMData LoadVRM(string path)
     {
         if (string.IsNullOrEmpty(path))
         {
@@ -1662,7 +1671,7 @@ public class ControlWPFWindow : MonoBehaviour
 
     void SetWindowClickThrough(bool enable)
     {
-        CurrentSettings.HideBorder = enable;
+        CurrentSettings.WindowClickThrough = enable;
 #if !UNITY_EDITOR   // エディタ上では動きません。
         var hwnd = GetUnityWindowHandle();
         //var hwnd = GetActiveWindow();
@@ -2814,6 +2823,9 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 await server.SendCommandAsync(new PipeCommands.LoadVRMPath { Path = CurrentSettings.VRMPath });
                 ImportVRM(CurrentSettings.VRMPath, false, CurrentSettings.EnableNormalMapFix, CurrentSettings.DeleteHairNormalMap);
+
+                //メタ情報をOSC送信する
+                VRMmetaLodedAction?.Invoke(LoadVRM(CurrentSettings.VRMPath));
             }
             if (CurrentSettings.BackgroundColor != null)
             {

@@ -37,6 +37,12 @@ namespace sh_akira.OVRTracking
         private TrackedDevicePose_t trackingStatus;
         float okTime = 0;
 
+        //記録情報のリセット
+        static void Reset() {
+            lastValidTransform.Clear();
+            lastStatus.Clear();
+            validFrames.Clear();
+        }
 
         public DeviceInfo() { }
 
