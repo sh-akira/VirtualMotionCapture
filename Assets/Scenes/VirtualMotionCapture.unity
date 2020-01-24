@@ -2204,6 +2204,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   externalSender: {fileID: 1155637110}
   MIDICCWrapper: {fileID: 1604201751}
+  receivePort: 39540
+  statusString: 
 --- !u!4 &389263780
 Transform:
   m_ObjectHideFlags: 0
@@ -6075,12 +6077,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   steamVR2Input: {fileID: 130023280}
   midiCCWrapper: {fileID: 1604201751}
+  externalReceiver: {fileID: 0}
+  optionString: 
   periodStatus: 1
   periodRoot: 1
   periodBone: 1
   periodBlendShape: 1
   periodCamera: 1
   periodDevices: 1
+  periodLowRateInfo: 90
 --- !u!4 &1155637111
 Transform:
   m_ObjectHideFlags: 0
