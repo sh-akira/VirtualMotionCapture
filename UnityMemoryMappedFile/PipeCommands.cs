@@ -369,6 +369,8 @@ namespace UnityMemoryMappedFile
             public int PeriodBlendShape { get; set; }
             public int PeriodCamera { get; set; }
             public int PeriodDevices { get; set; }
+
+            public string OptionString { get; set; } //OK
         }
 
         public class GetEnableExternalMotionReceiver { }
@@ -407,6 +409,31 @@ namespace UnityMemoryMappedFile
         {
             public bool fixKneeRotation { get; set; }
         }
+
+        //-------------
+        public class GetStatusString { }
+        public class SetStatusString
+        {
+            public string StatusString { get; set; }
+        }
+
+        public class StatusStringChanged
+        {
+            public string StatusString { get; set; }
+        }
+
+        public class StatusStringChangedRequest
+        {
+            public bool doSend { get; set; }
+        }
+
+        public class GetHandleControllerAsTracker { }
+        public class EnableHandleControllerAsTracker
+        {
+            public bool HandleControllerAsTracker { get; set; }
+        }
+
+
     }
 
 

@@ -24,7 +24,6 @@ namespace sh_akira.OVRTracking
         public List<GameObject> BaseStations = new List<GameObject>();
         public List<GameObject> BaseStationsObject = new List<GameObject>();
         public bool DisableBaseStationRotation = true;
-        public bool ConvertControllerToTracker = false;
 
         public ExternalReceiverForVMC externalReceiver;
 
@@ -61,7 +60,7 @@ namespace sh_akira.OVRTracking
             Dictionary<ETrackedDeviceClass, List<DeviceInfo>> positions;
             if (IsOVRConnected)
             {
-                OpenVRWrapper.Instance.ConvertControllerToTracker = ConvertControllerToTracker;
+                OpenVRWrapper.Instance.ConvertControllerToTracker = ControlWPFWindow.CurrentSettings.HandleControllerAsTracker;
                 OpenVRWrapper.Instance.PollingVREvents();
                 positions = OpenVRWrapper.Instance.GetTrackerPositions();
             }
@@ -114,6 +113,9 @@ namespace sh_akira.OVRTracking
                     if (Controllers.Contains(ControllersObject[i]) == false) Controllers.Add(ControllersObject[i]);
                 }
             }
+            else {
+                Controllers.Clear(); //残ってしまったものを削除
+            }
 
             var trackerPositions = positions[ETrackedDeviceClass.GenericTracker];
 
@@ -135,6 +137,9 @@ namespace sh_akira.OVRTracking
                     if (Trackers.Contains(TrackersObject[i]) == false) Trackers.Add(TrackersObject[i]);
                 }
             }
+            else {
+                Trackers.Clear(); //残ってしまったものを削除
+            }
 
             var baseStationPositions = positions[ETrackedDeviceClass.TrackingReference];
             if (baseStationPositions.Any())
@@ -149,6 +154,9 @@ namespace sh_akira.OVRTracking
                     }
                     if (BaseStations.Contains(BaseStationsObject[i]) == false) BaseStations.Add(BaseStationsObject[i]);
                 }
+            }
+            else {
+                BaseStations.Clear(); //残ってしまったものを削除
             }
         }
 

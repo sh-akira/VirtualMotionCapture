@@ -1,4 +1,5 @@
 ﻿//gpsnmeajp
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -20,6 +21,9 @@ public class ExternalReceiverForVMC : MonoBehaviour {
 
     public int receivePort = 39540;
     public string statusString = "";
+    private string statusStringOld = "";
+
+    static public Action<string> StatusStringUpdated = null;
 
     ControlWPFWindow window = null;
     GameObject CurrentModel = null;
@@ -280,6 +284,15 @@ public class ExternalReceiverForVMC : MonoBehaviour {
                 var newpos = Vector3.Lerp(virtualTrackerFiltered[pair.Key].pos, pair.Value.pos, filterStrength * Time.deltaTime);
                 var newrot = Quaternion.Lerp(virtualTrackerFiltered[pair.Key].rot, pair.Value.rot, filterStrength * Time.deltaTime);
                 virtualTrackerFiltered[pair.Key] = new SteamVR_Utils.RigidTransform(newpos, newrot);
+            }
+        }
+
+        //更新を検出(あまりに高速な変化に追従しないように)
+        if (statusString != statusStringOld) {
+            statusStringOld = statusString;
+
+            if (StatusStringUpdated != null) {
+                StatusStringUpdated.Invoke(statusString);
             }
         }
     }

@@ -84,6 +84,11 @@ namespace VirtualMotionCaptureControlPanel
                     }
                 });
             }
+            else if (e.CommandType == typeof(PipeCommands.StatusStringChanged))
+            {
+                var d = (PipeCommands.StatusStringChanged)e.Data;
+                Dispatcher.Invoke(() => StatusStringTextbox.Text = d.StatusString);
+            }
         }
 
         private void SetTrackersList(List<Tuple<string, string>> list, PipeCommands.SetTrackerSerialNumbers setting)
@@ -266,6 +271,7 @@ namespace VirtualMotionCaptureControlPanel
                     PeriodBlendShapeTextBox.Text = data.PeriodBlendShape.ToString();
                     PeriodCameraTextBox.Text = data.PeriodCamera.ToString();
                     PeriodDevicesTextBox.Text = data.PeriodDevices.ToString();
+                    OptionStringTextbox.Text = data.OptionString;
                 });
             });
             await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEnableExternalMotionReceiver { }, d =>
@@ -301,7 +307,28 @@ namespace VirtualMotionCaptureControlPanel
                     isSetting = false;
                 });
             });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetHandleControllerAsTracker { }, d =>
+            {
+                var data = (PipeCommands.EnableHandleControllerAsTracker)d;
+                Dispatcher.Invoke(() =>
+                {
+                    isSetting = true;
+                    HandleControllerAsTrackerCheckBox.IsChecked = data.HandleControllerAsTracker;
+                    isSetting = false;
+                });
+            });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetStatusString { }, d =>
+            {
+                var data = (PipeCommands.SetStatusString)d;
+                Dispatcher.Invoke(() =>
+                {
+                    isSetting = true;
+                    StatusStringTextbox.Text = data.StatusString;
+                    isSetting = false;
+                });
+            });
             await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = true });
+            await Globals.Client?.SendCommandAsync(new PipeCommands.StatusStringChangedRequest { doSend = true });
         }
 
         private void VirtualWebCamInstallButton_Click(object sender, RoutedEventArgs e)
@@ -418,6 +445,7 @@ namespace VirtualMotionCaptureControlPanel
         private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = false });
+            await Globals.Client?.SendCommandAsync(new PipeCommands.StatusStringChangedRequest { doSend = false });
         }
 
         private void EyeTracking_TobiiSettingButton_Click(object sender, RoutedEventArgs e)
@@ -530,6 +558,7 @@ namespace VirtualMotionCaptureControlPanel
                     PeriodBlendShape = PeriodBlendShape.Value,
                     PeriodCamera = PeriodCamera.Value,
                     PeriodDevices = PeriodDevices.Value,
+                    OptionString = OptionStringTextbox.Text,
                 });
             }
         }
@@ -595,5 +624,15 @@ namespace VirtualMotionCaptureControlPanel
                 fixKneeRotation = FixKneeRotationCheckBox.IsChecked.Value,
             });
         }
+
+        private async void HandleControllerAsTrackerCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            if (isSetting) return;
+            await Globals.Client?.SendCommandAsync(new PipeCommands.EnableHandleControllerAsTracker
+            {
+                HandleControllerAsTracker = HandleControllerAsTrackerCheckBox.IsChecked.Value,
+            });
+        }
+
     }
 }

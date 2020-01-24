@@ -245,6 +245,14 @@ public class ControlWPFWindow : MonoBehaviour
         }
     }
 
+    private bool doStatusStringUpdated = false;
+    private async void StatusStringUpdatedEvent(string e)
+    {
+        if (doStatusStringUpdated) {
+            await server.SendCommandAsync(new PipeCommands.StatusStringChanged { StatusString = e });
+        }
+    }
+
     private bool ControlPanelExecuted = false;
     private System.Diagnostics.Process controlPanelProcess = null;
     private void ExecuteControlPanel()
@@ -427,6 +435,8 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 var d = (PipeCommands.LoadSettings)e.Data;
                 LoadSettings(false, false, d.Path);
+                //イベントを登録(何度呼び出しても1回のみ)
+                RegisterEventCallBack();
             }
             else if (e.CommandType == typeof(PipeCommands.SaveSettings))
             {
@@ -620,6 +630,9 @@ public class ControlWPFWindow : MonoBehaviour
             }
             else if (e.CommandType == typeof(PipeCommands.TrackerMovedRequest))
             {
+                //イベントを登録(何度呼び出しても1回のみ)
+                RegisterEventCallBack();
+
                 var d = (PipeCommands.TrackerMovedRequest)e.Data;
                 if (d.doSend)
                 {
@@ -683,7 +696,8 @@ public class ControlWPFWindow : MonoBehaviour
                     isFirstTimeExecute = false;
                     //起動時は初期設定ロード
                     LoadSettings(true, true);
-                    TrackerTransformExtensions.TrackerMovedEvent += TransformExtensions_TrackerMovedEvent;
+                    //イベントを登録(何度呼び出しても1回のみ)
+                    RegisterEventCallBack();
                 }
                 else
                 {
@@ -723,7 +737,7 @@ public class ControlWPFWindow : MonoBehaviour
             else if (e.CommandType == typeof(PipeCommands.ChangeExternalMotionSenderAddress))
             {
                 var d = (PipeCommands.ChangeExternalMotionSenderAddress)e.Data;
-                ChangeExternalMotionSenderAddress(d.address, d.port, d.PeriodStatus, d.PeriodRoot, d.PeriodBone, d.PeriodBlendShape, d.PeriodCamera, d.PeriodDevices);
+                ChangeExternalMotionSenderAddress(d.address, d.port, d.PeriodStatus, d.PeriodRoot, d.PeriodBone, d.PeriodBlendShape, d.PeriodCamera, d.PeriodDevices, d.OptionString);
             }
             else if (e.CommandType == typeof(PipeCommands.GetExternalMotionSenderAddress))
             {
@@ -737,6 +751,7 @@ public class ControlWPFWindow : MonoBehaviour
                     PeriodBlendShape = CurrentSettings.ExternalMotionSenderPeriodBlendShape,
                     PeriodCamera = CurrentSettings.ExternalMotionSenderPeriodCamera,
                     PeriodDevices = CurrentSettings.ExternalMotionSenderPeriodDevices,
+                    OptionString = CurrentSettings.ExternalMotionSenderOptionString,
                 }, e.RequestId);
             }
             else if (e.CommandType == typeof(PipeCommands.EnableExternalMotionReceiver))
@@ -794,6 +809,37 @@ public class ControlWPFWindow : MonoBehaviour
                 await server.SendCommandAsync(new PipeCommands.EnableModelModifier
                 {
                     fixKneeRotation = CurrentSettings.FixKneeRotation,
+                }, e.RequestId);
+            }
+            //------------------------
+            else if (e.CommandType == typeof(PipeCommands.GetStatusString))
+            {
+                string statusStringBuf = "";
+                //有効な場合だけ送る
+                if (externalMotionReceiver.isActiveAndEnabled)
+                {
+                    statusStringBuf = externalMotionReceiver?.statusString;
+                }
+                await server.SendCommandAsync(new PipeCommands.SetStatusString
+                {
+                    StatusString = statusStringBuf,
+                }, e.RequestId);
+            }
+            else if (e.CommandType == typeof(PipeCommands.StatusStringChangedRequest))
+            {
+                var d = (PipeCommands.StatusStringChangedRequest)e.Data;
+                doStatusStringUpdated = d.doSend;
+            }
+            else if (e.CommandType == typeof(PipeCommands.EnableHandleControllerAsTracker))
+            {
+                var d = (PipeCommands.EnableHandleControllerAsTracker)e.Data;
+                SetHandleControllerAsTracker(d.HandleControllerAsTracker);
+            }
+            else if (e.CommandType == typeof(PipeCommands.GetHandleControllerAsTracker))
+            {
+                await server.SendCommandAsync(new PipeCommands.EnableHandleControllerAsTracker
+                {
+                    HandleControllerAsTracker = CurrentSettings.HandleControllerAsTracker
                 }, e.RequestId);
             }
         }, null);
@@ -2320,7 +2366,7 @@ public class ControlWPFWindow : MonoBehaviour
         WaitOneFrameAction(() => CameraChangedAction?.Invoke(currentCamera));
     }
 
-    private void ChangeExternalMotionSenderAddress(string address, int port, int pstatus, int proot, int pbone, int pblendshape, int pcamera, int pdevices)
+    private void ChangeExternalMotionSenderAddress(string address, int port, int pstatus, int proot, int pbone, int pblendshape, int pcamera, int pdevices, string optionstring)
     {
         CurrentSettings.ExternalMotionSenderAddress = address;
         CurrentSettings.ExternalMotionSenderPort = port;
@@ -2330,6 +2376,7 @@ public class ControlWPFWindow : MonoBehaviour
         CurrentSettings.ExternalMotionSenderPeriodBlendShape = pblendshape;
         CurrentSettings.ExternalMotionSenderPeriodCamera = pcamera;
         CurrentSettings.ExternalMotionSenderPeriodDevices = pdevices;
+        CurrentSettings.ExternalMotionSenderOptionString = optionstring;
         externalMotionSender.periodStatus = pstatus;
         externalMotionSender.periodRoot = proot;
         externalMotionSender.periodBone = pbone;
@@ -2337,6 +2384,7 @@ public class ControlWPFWindow : MonoBehaviour
         externalMotionSender.periodCamera = pcamera;
         externalMotionSender.periodDevices = pdevices;
         externalMotionSender.ChangeOSCAddress(address, port);
+        externalMotionSender.optionString = optionstring;
     }
 
     private void ChangeExternalMotionReceiverPort(int port)
@@ -2374,6 +2422,11 @@ public class ControlWPFWindow : MonoBehaviour
     private void SetModelModifierEnable(bool fixKneeRotation)
     {
         CurrentSettings.FixKneeRotation = fixKneeRotation;
+    }
+
+    private void SetHandleControllerAsTracker(bool handleCasT)
+    {
+        CurrentSettings.HandleControllerAsTracker = handleCasT;
     }
 
     #region Setting
@@ -2663,6 +2716,8 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public int ExternalMotionReceiverPort;
         [OptionalField]
+        public string ExternalMotionSenderOptionString;
+        [OptionalField]
         public List<string> MidiCCBlendShape;
 
         [OptionalField]
@@ -2679,6 +2734,9 @@ public class ControlWPFWindow : MonoBehaviour
 
         [OptionalField]
         public bool FixKneeRotation;
+
+        [OptionalField]
+        public bool HandleControllerAsTracker;
 
         //初期値
         [OnDeserializing()]
@@ -2746,6 +2804,7 @@ public class ControlWPFWindow : MonoBehaviour
             ExternalMotionSenderPeriodBlendShape = 1;
             ExternalMotionSenderPeriodCamera = 1;
             ExternalMotionSenderPeriodDevices = 1;
+            ExternalMotionSenderOptionString = "";
 
             ExternalMotionReceiverEnable = false;
             ExternalMotionReceiverPort = 39540;
@@ -2758,6 +2817,8 @@ public class ControlWPFWindow : MonoBehaviour
             TrackingFilterTrackerEnable = true;
 
             FixKneeRotation = true;
+
+            HandleControllerAsTracker = false;
         }
     }
 
@@ -2770,6 +2831,16 @@ public class ControlWPFWindow : MonoBehaviour
             return;
         }
         File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(CurrentSettings)));
+    }
+
+    private bool IsRegisteredEventCallBack = false;
+    private void RegisterEventCallBack()
+    {
+        if (IsRegisteredEventCallBack == false) {
+            IsRegisteredEventCallBack = true;
+            TrackerTransformExtensions.TrackerMovedEvent += TransformExtensions_TrackerMovedEvent;
+            ExternalReceiverForVMC.StatusStringUpdated += StatusStringUpdatedEvent;
+        }
     }
 
     private async void LoadSettings(bool LoadDefault = false, bool IsFirstTime = false, string path = null)
@@ -2953,7 +3024,7 @@ public class ControlWPFWindow : MonoBehaviour
             }
 
             SetExternalMotionSenderEnable(CurrentSettings.ExternalMotionSenderEnable);
-            ChangeExternalMotionSenderAddress(CurrentSettings.ExternalMotionSenderAddress, CurrentSettings.ExternalMotionSenderPort, CurrentSettings.ExternalMotionSenderPeriodStatus, CurrentSettings.ExternalMotionSenderPeriodRoot, CurrentSettings.ExternalMotionSenderPeriodBone, CurrentSettings.ExternalMotionSenderPeriodBlendShape, CurrentSettings.ExternalMotionSenderPeriodCamera, CurrentSettings.ExternalMotionSenderPeriodDevices);
+            ChangeExternalMotionSenderAddress(CurrentSettings.ExternalMotionSenderAddress, CurrentSettings.ExternalMotionSenderPort, CurrentSettings.ExternalMotionSenderPeriodStatus, CurrentSettings.ExternalMotionSenderPeriodRoot, CurrentSettings.ExternalMotionSenderPeriodBone, CurrentSettings.ExternalMotionSenderPeriodBlendShape, CurrentSettings.ExternalMotionSenderPeriodCamera, CurrentSettings.ExternalMotionSenderPeriodDevices,CurrentSettings.ExternalMotionSenderOptionString);
             SetExternalMotionReceiverEnable(CurrentSettings.ExternalMotionReceiverEnable);
             ChangeExternalMotionReceiverPort(CurrentSettings.ExternalMotionReceiverPort);
 
@@ -2983,6 +3054,7 @@ public class ControlWPFWindow : MonoBehaviour
             SetTrackingFilterEnable(CurrentSettings.TrackingFilterEnable, CurrentSettings.TrackingFilterHmdEnable, CurrentSettings.TrackingFilterControllerEnable, CurrentSettings.TrackingFilterTrackerEnable);
 
             SetModelModifierEnable(CurrentSettings.FixKneeRotation);
+            SetHandleControllerAsTracker(CurrentSettings.HandleControllerAsTracker);
 
             AdditionalSettingAction?.Invoke(null);
 

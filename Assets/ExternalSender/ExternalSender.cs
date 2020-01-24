@@ -28,6 +28,7 @@ public class ExternalSender : MonoBehaviour
     public MidiCCWrapper midiCCWrapper;
     public ExternalReceiverForVMC externalReceiver;
     public string optionString = "";
+    private string optionStringOld = "";
 
     //フレーム周期
     public int periodStatus = 1;
@@ -254,6 +255,12 @@ public class ExternalSender : MonoBehaviour
             SendPerLowRate();
         }
         frameOfLowRateInfo++;
+
+        //変化時送信
+        if (optionString != optionStringOld) {
+            optionStringOld = optionString;
+            SendPerLowRate();
+        }
 
     }
 
