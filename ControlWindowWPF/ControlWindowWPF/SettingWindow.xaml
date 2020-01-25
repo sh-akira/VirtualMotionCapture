@@ -166,7 +166,7 @@
                             <TextBlock Text="{DynamicResource SettingWindow_ExternalMotionReceiver}"/>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text=" IP:"/>
-                                <TextBlock Name="IPAddressTextBlock"/>
+                                <Button Content="Check IP" Name="CheckIPAddressButton" Click="CheckIPAddressButton_Click" Padding="5,0" Margin="5,1" Height="Auto"/>
                             </StackPanel>
                         </WrapPanel>
                     </GroupBox.Header>

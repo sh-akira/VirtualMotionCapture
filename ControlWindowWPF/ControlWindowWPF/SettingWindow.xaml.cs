@@ -342,27 +342,7 @@ namespace VirtualMotionCaptureControlPanel
             });
             await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = true });
             await Globals.Client?.SendCommandAsync(new PipeCommands.StatusStringChangedRequest { doSend = true });
-            
-            var ipAddress = "";
-            try
-            {
-                var hostname = System.Net.Dns.GetHostName();
-                var addresses = System.Net.Dns.GetHostAddresses(hostname);
-                foreach (var address in addresses.Reverse())
-                {
-                    var addressStr = address.ToString();
 
-                    //IPv4 && localhostでない
-                    if (addressStr.Contains(".") && addressStr.StartsWith("127.") == false)
-                    {
-                        ipAddress = addressStr;
-                        break;
-                    }
-                }
-            }
-            catch (Exception) { }
-
-            IPAddressTextBlock.Text = ipAddress;
         }
 
         private void VirtualWebCamInstallButton_Click(object sender, RoutedEventArgs e)
@@ -684,6 +664,28 @@ namespace VirtualMotionCaptureControlPanel
             {
                 antiAliasing = (int)AntiAliasingComboBox.SelectedItem,
             });
+        }
+
+        private void CheckIPAddressButton_Click(object sender, RoutedEventArgs e)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("IP Address:");
+            try
+            {
+                var hostname = System.Net.Dns.GetHostName();
+                var addresses = System.Net.Dns.GetHostAddresses(hostname);
+                foreach (var address in addresses)
+                {
+                    //IPv4
+                    if (address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                    {
+                        sb.AppendLine(address.ToString());
+                    }
+                }
+            }
+            catch (Exception) { }
+
+            MessageBox.Show(sb.ToString(), "IP Address", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }
