@@ -90,6 +90,7 @@ public class ControlWPFWindow : MonoBehaviour
     public Action<Camera> CameraChangedAction = null;
     public Action<VRMData> VRMmetaLodedAction = null;
     public Action LightChangedAction = null;
+    public Action LoadedConfigPathChangedAction = null;
 
     public Action<GameObject> EyeTracking_TobiiCalibrationAction = null;
     public Action<PipeCommands.SetEyeTracking_TobiiOffsets> SetEyeTracking_TobiiOffsetsAction = null;
@@ -99,6 +100,19 @@ public class ControlWPFWindow : MonoBehaviour
     public MidiCCWrapper midiCCWrapper;
 
     public MIDICCBlendShape midiCCBlendShape;
+
+    public enum CalibrationState
+    {
+        Uncalibrated = 0,
+        WaitingForCalibrating = 1,
+        Calibrating = 2,
+        Calibrated = 3,
+    }
+
+    public CalibrationState calibrationState = CalibrationState.Uncalibrated;
+    public PipeCommands.CalibrateType lastCalibrateType = PipeCommands.CalibrateType.Default; //最後に行ったキャリブレーションの種類
+
+    public string lastLoadedConfigPath = "";
 
     // Use this for initialization
     void Start()
@@ -951,10 +965,11 @@ public class ControlWPFWindow : MonoBehaviour
     private const float LeftHandAngle = -30f;
     private const float RightHandAngle = -30f;
 
-    private async void ImportVRM(string path, bool ImportForCalibration, bool EnableNormalMapFix, bool DeleteHairNormalMap)
+    public async void ImportVRM(string path, bool ImportForCalibration, bool EnableNormalMapFix, bool DeleteHairNormalMap)
     {
         if (ImportForCalibration == false)
         {
+            calibrationState = CalibrationState.Uncalibrated; //キャリブレーション状態を"未キャリブレーション"に設定
             CurrentSettings.VRMPath = path;
             var context = new VRMImporterContext();
 
@@ -972,6 +987,8 @@ public class ControlWPFWindow : MonoBehaviour
         }
         else
         {
+            calibrationState = CalibrationState.WaitingForCalibrating; //キャリブレーション状態を"キャリブレーション待機中"に設定
+
             if (CurrentModel != null)
             {
                 var currentvrik = CurrentModel.GetComponent<VRIK>();
@@ -1539,8 +1556,9 @@ public class ControlWPFWindow : MonoBehaviour
     }
 
 
-    private IEnumerator Calibrate(PipeCommands.CalibrateType calibrateType)
+    public IEnumerator Calibrate(PipeCommands.CalibrateType calibrateType)
     {
+        lastCalibrateType = calibrateType;//最後に実施したキャリブレーションタイプとして記録
 
         SetVRIK(CurrentModel);
         wristRotationFix.SetVRIK(vrik);
@@ -1625,9 +1643,11 @@ public class ControlWPFWindow : MonoBehaviour
         CurrentSettings.rightElbowTracker = StoreTransform.Create(rightElbowTracker);
         CurrentSettings.leftKneeTracker = StoreTransform.Create(leftKneeTracker);
         CurrentSettings.rightKneeTracker = StoreTransform.Create(rightKneeTracker);
+
+        calibrationState = CalibrationState.Calibrating; //キャリブレーション状態を"キャリブレーション中"に設定(ここまで来なければ失敗している)
     }
 
-    private void EndCalibrate()
+    public void EndCalibrate()
     {
         //トラッカー位置の非表示
         RealTrackerRoot.gameObject.SetActive(false);
@@ -1639,6 +1659,16 @@ public class ControlWPFWindow : MonoBehaviour
         UpdateHandRotation();
         SetCameraLookTarget();
         //SetTrackersToVRIK();
+
+        //直前がキャリブレーション実行中なら
+        if (calibrationState == CalibrationState.Calibrating)
+        {
+            calibrationState = CalibrationState.Calibrated; //キャリブレーション状態を"キャリブレーション完了"に設定
+        }
+        else { 
+            //キャンセルされたなど
+            calibrationState = CalibrationState.Uncalibrated; //キャリブレーション状態を"未キャリブレーション"に設定
+        }
     }
 
     #endregion
@@ -2868,7 +2898,7 @@ public class ControlWPFWindow : MonoBehaviour
         }
     }
 
-    private async void LoadSettings(bool LoadDefault = false, bool IsFirstTime = false, string path = null)
+    public async void LoadSettings(bool LoadDefault = false, bool IsFirstTime = false, string path = null)
     {
         if (LoadDefault == false)
         {
@@ -2876,6 +2906,7 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 return;
             }
+            lastLoadedConfigPath = path;
             CurrentSettings = Json.Serializer.Deserialize<Settings>(File.ReadAllText(path));
             //スケールを元に戻す
             //トラッカーのルートスケールを初期値に戻す
@@ -2900,6 +2931,7 @@ public class ControlWPFWindow : MonoBehaviour
                 try
                 {
                     path = Application.dataPath + "/../default.json";
+                    lastLoadedConfigPath = path;
                     CurrentSettings = Json.Serializer.Deserialize<Settings>(File.ReadAllText(path));
                     float divide = 0;
                     if (float.TryParse(File.ReadAllText(Application.dataPath + "/../PelvisTrackerOffsetDivide.txt"), out divide))
@@ -3090,6 +3122,7 @@ public class ControlWPFWindow : MonoBehaviour
             await server.SendCommandAsync(new PipeCommands.SetWindowNum { Num = CurrentWindowNum });
 
         }
+        LoadedConfigPathChangedAction?.Invoke();
     }
 
     #endregion

@@ -89,6 +89,11 @@ public class ExternalSender : MonoBehaviour
             SendPerLowRate(); //即時送信
         };
 
+        window.LoadedConfigPathChangedAction += () =>
+        {
+            SendPerLowRate(); //即時送信
+        };
+
         steamVR2Input.KeyDownEvent += (object sender, OVRKeyEventArgs e) =>
         {
             if (this.isActiveAndEnabled)
@@ -311,6 +316,13 @@ public class ExternalSender : MonoBehaviour
                 uClient?.Send(new uOSC.Message("/VMC/Ext/VRM", vrmdata.FilePath, vrmdata.Title));
             }
 
+            //【イベント送信】設定ファイルパス(Loaded config path) [独立送信](大きいため単独で送る)
+            if (window != null)
+            {
+                //ファイルパス, キャラ名
+                uClient?.Send(new uOSC.Message("/VMC/Ext/Config", window.lastLoadedConfigPath));
+            }
+
             //【イベント送信】Option文字列(Option string) [独立送信](大きいため単独で送る)
             uClient?.Send(new uOSC.Message("/VMC/Ext/Opt", optionString));
         }
@@ -471,14 +483,14 @@ public class ExternalSender : MonoBehaviour
         if (frameOfStatus > periodStatus && periodStatus != 0)
         {
             frameOfStatus = 1;
+            int available = 0;
             if (CurrentModel != null && animator != null)
             {
                 //Available
-                rootBundle.Add(new uOSC.Message("/VMC/Ext/OK", 1));
+                available = 1;
             }
-            else
-            {
-                rootBundle.Add(new uOSC.Message("/VMC/Ext/OK", 0));
+            if (window != null) {
+                rootBundle.Add(new uOSC.Message("/VMC/Ext/OK", (int)available, (int)window.calibrationState, (int)window.lastCalibrateType));
             }
             rootBundle.Add(new uOSC.Message("/VMC/Ext/T", Time.time));
 

@@ -1,11 +1,14 @@
 ﻿//gpsnmeajp
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using Valve.VR;
 using VRM;
+using UnityMemoryMappedFile;
+
 
 [RequireComponent(typeof(uOSC.uOscServer))]
 public class ExternalReceiverForVMC : MonoBehaviour {
@@ -253,9 +256,49 @@ public class ExternalReceiverForVMC : MonoBehaviour {
             {
                 statusString = (string)message.values[0];
             }
+            //キャリブレーション準備 V2.5
+            else if (message.address == "/VMC/Ext/Set/Calib/Ready")
+            {
+                if (File.Exists(ControlWPFWindow.CurrentSettings.VRMPath)) {
+                    window.ImportVRM(ControlWPFWindow.CurrentSettings.VRMPath, true, true, true);
+                }
+            }
+            //キャリブレーション実行 V2.5
+            else if (message.address == "/VMC/Ext/Set/Calib/Exec" && (message.values[0] is int))
+            {
+                PipeCommands.CalibrateType calibrateType = PipeCommands.CalibrateType.Default;
 
+                switch ((int)message.values[0]) {
+                    case 0:
+                        calibrateType = PipeCommands.CalibrateType.Default;
+                        break;
+                    case 1:
+                        calibrateType = PipeCommands.CalibrateType.FixedHand;
+                        break;
+                    case 2:
+                        calibrateType = PipeCommands.CalibrateType.FixedHandWithGround;
+                        break;
+                    default: return; //無視
+                }
+                StartCoroutine(window.Calibrate(calibrateType));
+                Invoke("EndCalibrate",2f);
+            }
+            //設定読み込み V2.5
+            else if (message.address == "/VMC/Ext/Set/Config" && (message.values[0] is string))
+            {
+                string path = (string)message.values[0];
+                if (File.Exists(path)) {
+                    //なぜか時間がかかる
+                    window.LoadSettings(false, false, path);
         }
     }
+        }
+    }
+
+    void EndCalibrate() {
+        window.EndCalibrate();
+    }
+
     SteamVR_Utils.RigidTransform SetTransform(ref Vector3 pos, ref Quaternion rot,ref uOSC.Message message) {
         pos.x = (float)message.values[1];
         pos.y = (float)message.values[2];
