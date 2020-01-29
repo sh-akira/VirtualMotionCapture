@@ -2877,15 +2877,44 @@ public class ControlWPFWindow : MonoBehaviour
         }
     }
 
-    public static Settings CurrentSettings = new Settings();
-
-    private void SaveSettings(string path)
+    [Serializable]
+    public class CommonSettings
     {
-        if (string.IsNullOrEmpty(path))
+        public string LoadSettingFilePathOnStart = ""; //起動時に読み込む設定ファイルパス
+        public string CurrentPathOnSettingFileDialog = ""; //設定ファイルダイアログパス
+        public string CurrentPathOnVRMFileDialog = ""; //VRMファイルダイアログパス
+        public string CurrentPathOnExternalCameraFileDialog = ""; //ExternalCameraダイアログパス
+
+        //初期値
+        [OnDeserializing()]
+        internal void OnDeserializingMethod(StreamingContext context)
+        {
+            LoadSettingFilePathOnStart = "";
+            CurrentPathOnSettingFileDialog = "";
+            CurrentPathOnVRMFileDialog = "";
+            CurrentPathOnExternalCameraFileDialog = "";
+        }
+    }
+
+    public static Settings CurrentSettings = new Settings();
+    public static CommonSettings CurrentCommonSettings = new CommonSettings();
+
+    //共通設定の書き込み
+    private void SaveCommonSettings()
+    {
+        string path = Path.GetFullPath(Application.dataPath + "/../common.json");
+        File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(CurrentCommonSettings)));
+    }
+
+    //共通設定の読み込み
+    public void LoadCommonSettings()
+    {
+        string path = Path.GetFullPath(Application.dataPath + "/../common.json");
+        if (!File.Exists(path))
         {
             return;
         }
-        File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(CurrentSettings)));
+        CurrentCommonSettings = Json.Serializer.Deserialize<CommonSettings>(File.ReadAllText(path)); //設定を読み込み
     }
 
     private bool IsRegisteredEventCallBack = false;
@@ -2899,6 +2928,23 @@ public class ControlWPFWindow : MonoBehaviour
         }
     }
 
+    private void SaveSettings(string path)
+    {
+        if (string.IsNullOrEmpty(path))
+        {
+            return;
+        }
+        File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(CurrentSettings)));
+
+        //ファイルが正常に書き込めたので、現在共通設定に記録されているパスと違う場合、共通設定に書き込む
+        if (CurrentCommonSettings.LoadSettingFilePathOnStart != path)
+        {
+            CurrentCommonSettings.LoadSettingFilePathOnStart = path;
+            SaveCommonSettings();
+            Debug.Log("Save last loaded file of " + path);
+        }
+    }
+
     //設定の読み込み
     public async void LoadSettings(string path = null)
     {
@@ -2906,7 +2952,21 @@ public class ControlWPFWindow : MonoBehaviour
         //パスが渡されていれば2回目以降の読み込み
         if (string.IsNullOrEmpty(path) || (!File.Exists(path)))
         {
-            path = Application.dataPath + "/../default.json";
+            //共通設定を読み込み
+            LoadCommonSettings();
+
+            //初回読み込みファイルが存在しなければdefault.jsonを
+            if (string.IsNullOrEmpty(CurrentCommonSettings.LoadSettingFilePathOnStart) || (!File.Exists(CurrentCommonSettings.LoadSettingFilePathOnStart)))
+            {
+                path = Application.dataPath + "/../default.json";
+                Debug.Log("Load default.json");
+            }
+            else
+            {
+                //存在すればそのPathを読みに行こうとする
+                path = CurrentCommonSettings.LoadSettingFilePathOnStart;
+                Debug.Log("Load last loaded file of "+path);
+            }
         }
 
         //設定の読み込みを試みる
@@ -2939,6 +2999,14 @@ public class ControlWPFWindow : MonoBehaviour
         if (CurrentSettings != null)
         {
             lastLoadedConfigPath = path; //パスを記録
+
+            //ファイルが正常に存在したので、現在共通設定に記録されているパスと違う場合、共通設定に書き込む
+            if (CurrentCommonSettings.LoadSettingFilePathOnStart != path)
+            {
+                CurrentCommonSettings.LoadSettingFilePathOnStart = path;
+                SaveCommonSettings();
+                Debug.Log("Save last loaded file of " + path);
+            }
         }
 
         //設定の変更を通知
