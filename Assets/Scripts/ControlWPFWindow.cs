@@ -716,7 +716,7 @@ public class ControlWPFWindow : MonoBehaviour
                 }
                 else
                 {
-                    //現在の設定を適用する
+                    //現在の設定を再適用する
                     ApplyCurrentSettings();
                 }
             }
@@ -2909,11 +2909,10 @@ public class ControlWPFWindow : MonoBehaviour
             path = Application.dataPath + "/../default.json";
         }
 
-        lastLoadedConfigPath = path; //パスを記録
-
         //設定の読み込みを試みる
         try
         {
+            path = Path.GetFullPath(path); //フルパスに変換
             CurrentSettings = Json.Serializer.Deserialize<Settings>(File.ReadAllText(path)); //設定を読み込み
             float divide = 0;
             //腰情報を読み込む
@@ -2926,12 +2925,22 @@ public class ControlWPFWindow : MonoBehaviour
         {
             //読み込めなかったときはエラーをファイルとして出力
             File.WriteAllText(Application.dataPath + "/../exception.txt", ex.ToString() + ":" + ex.Message);
+            Debug.LogError(ex.ToString() + ":" + ex.Message);
         }
+
+        Debug.Log("Loaded config: " + path);
 
         //スケールを元に戻す
         ResetTrackerScale();
         //設定を適用する
         ApplyCurrentSettings();
+
+        //有効なJSONが取得できたかチェック
+        if (CurrentSettings != null)
+        {
+            lastLoadedConfigPath = path; //パスを記録
+        }
+
         //設定の変更を通知
         LoadedConfigPathChangedAction?.Invoke();
     }
