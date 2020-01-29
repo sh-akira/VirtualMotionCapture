@@ -449,7 +449,7 @@ public class ControlWPFWindow : MonoBehaviour
             else if (e.CommandType == typeof(PipeCommands.LoadSettings))
             {
                 var d = (PipeCommands.LoadSettings)e.Data;
-                LoadSettings(false, false, d.Path);
+                LoadSettings(d.Path);
                 //イベントを登録(何度呼び出しても1回のみ)
                 RegisterEventCallBack();
             }
@@ -710,13 +710,14 @@ public class ControlWPFWindow : MonoBehaviour
                 {
                     isFirstTimeExecute = false;
                     //起動時は初期設定ロード
-                    LoadSettings(true, true);
+                    LoadSettings(null);
                     //イベントを登録(何度呼び出しても1回のみ)
                     RegisterEventCallBack();
                 }
                 else
                 {
-                    LoadSettings(true, false);
+                    //現在の設定を適用する
+                    ApplyCurrentSettings();
                 }
             }
             else if (e.CommandType == typeof(PipeCommands.ImportCameraPlus))
@@ -1665,7 +1666,7 @@ public class ControlWPFWindow : MonoBehaviour
         {
             calibrationState = CalibrationState.Calibrated; //キャリブレーション状態を"キャリブレーション完了"に設定
         }
-        else { 
+        else {
             //キャンセルされたなど
             calibrationState = CalibrationState.Uncalibrated; //キャリブレーション状態を"未キャリブレーション"に設定
         }
@@ -2898,231 +2899,245 @@ public class ControlWPFWindow : MonoBehaviour
         }
     }
 
-    public async void LoadSettings(bool LoadDefault = false, bool IsFirstTime = false, string path = null)
+    //設定の読み込み
+    public async void LoadSettings(string path = null)
     {
-        if (LoadDefault == false)
+        //設定パスがnull or 存在しないなら、default読み込み
+        //パスが渡されていれば2回目以降の読み込み
+        if (string.IsNullOrEmpty(path) || (!File.Exists(path)))
         {
-            if (string.IsNullOrEmpty(path))
-            {
-                return;
-            }
-            lastLoadedConfigPath = path;
-            CurrentSettings = Json.Serializer.Deserialize<Settings>(File.ReadAllText(path));
-            //スケールを元に戻す
-            //トラッカーのルートスケールを初期値に戻す
-            HandTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-            HeadTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-            PelvisTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-            HandTrackerRoot.position = Vector3.zero;
-            HeadTrackerRoot.position = Vector3.zero;
-            PelvisTrackerRoot.position = Vector3.zero;
-            //スケール変更時の位置オフセット設定
-            var handTrackerOffset = HandTrackerRoot.GetComponent<ScalePositionOffset>();
-            var headTrackerOffset = HeadTrackerRoot.GetComponent<ScalePositionOffset>();
-            var footTrackerOffset = PelvisTrackerRoot.GetComponent<ScalePositionOffset>();
-            handTrackerOffset.ResetTargetAndPosition();
-            headTrackerOffset.ResetTargetAndPosition();
-            footTrackerOffset.ResetTargetAndPosition();
+            path = Application.dataPath + "/../default.json";
         }
-        else
+
+        lastLoadedConfigPath = path; //パスを記録
+
+        //設定の読み込みを試みる
+        try
         {
-            if (IsFirstTime)
+            CurrentSettings = Json.Serializer.Deserialize<Settings>(File.ReadAllText(path)); //設定を読み込み
+            float divide = 0;
+            //腰情報を読み込む
+            if (float.TryParse(File.ReadAllText(Application.dataPath + "/../PelvisTrackerOffsetDivide.txt"), out divide))
             {
-                try
-                {
-                    path = Application.dataPath + "/../default.json";
-                    lastLoadedConfigPath = path;
-                    CurrentSettings = Json.Serializer.Deserialize<Settings>(File.ReadAllText(path));
-                    float divide = 0;
-                    if (float.TryParse(File.ReadAllText(Application.dataPath + "/../PelvisTrackerOffsetDivide.txt"), out divide))
-                    {
-                        Calibrator.pelvisOffsetDivide = divide;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    File.WriteAllText(Application.dataPath + "/../exception.txt", ex.ToString() + ":" + ex.Message);
-                }
+                Calibrator.pelvisOffsetDivide = divide;//腰オフセット分割数を記録
             }
         }
-        if (CurrentSettings != null)
+        catch (Exception ex)
         {
-            if (string.IsNullOrWhiteSpace(CurrentSettings.VRMPath) == false)
-            {
-                await server.SendCommandAsync(new PipeCommands.LoadVRMPath { Path = CurrentSettings.VRMPath });
-                ImportVRM(CurrentSettings.VRMPath, false, CurrentSettings.EnableNormalMapFix, CurrentSettings.DeleteHairNormalMap);
-
-                //メタ情報をOSC送信する
-                VRMmetaLodedAction?.Invoke(LoadVRM(CurrentSettings.VRMPath));
-            }
-            if (CurrentSettings.BackgroundColor != null)
-            {
-                ChangeBackgroundColor(CurrentSettings.BackgroundColor.r, CurrentSettings.BackgroundColor.g, CurrentSettings.BackgroundColor.b, false);
-            }
-            if (CurrentSettings.CustomBackgroundColor != null)
-            {
-                await server.SendCommandAsync(new PipeCommands.LoadCustomBackgroundColor { r = CurrentSettings.CustomBackgroundColor.r, g = CurrentSettings.CustomBackgroundColor.g, b = CurrentSettings.CustomBackgroundColor.b });
-            }
-            if (CurrentSettings.IsTransparent)
-            {
-                SetBackgroundTransparent();
-            }
-            SetWindowBorder(CurrentSettings.HideBorder);
-            await server.SendCommandAsync(new PipeCommands.LoadHideBorder { enable = CurrentSettings.HideBorder });
-            SetWindowTopMost(CurrentSettings.IsTopMost);
-            await server.SendCommandAsync(new PipeCommands.LoadIsTopMost { enable = CurrentSettings.IsTopMost });
-
-            SetCameraFOV(CurrentSettings.CameraFOV);
-            FreeCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
-            FrontCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
-            BackCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
-            PositionFixedCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
-
-
-            if (CurrentSettings.FreeCameraTransform != null)
-            {
-                CurrentSettings.FreeCameraTransform.ToLocalTransform(FreeCamera.transform);
-                var control = FreeCamera.GetComponent<CameraMouseControl>();
-                control.CameraAngle = -FreeCamera.transform.rotation.eulerAngles;
-                control.CameraDistance = Vector3.Distance(FreeCamera.transform.position, Vector3.zero);
-                control.CameraTarget = FreeCamera.transform.position + FreeCamera.transform.rotation * Vector3.forward * control.CameraDistance;
-            }
-            if (CurrentSettings.FrontCameraLookTargetSettings != null)
-            {
-                CurrentSettings.FrontCameraLookTargetSettings.ApplyTo(FrontCamera);
-            }
-            if (CurrentSettings.BackCameraLookTargetSettings != null)
-            {
-                CurrentSettings.BackCameraLookTargetSettings.ApplyTo(BackCamera);
-            }
-            if (CurrentSettings.PositionFixedCameraTransform != null)
-            {
-                CurrentSettings.PositionFixedCameraTransform.ToLocalTransform(PositionFixedCamera.transform);
-                var control = PositionFixedCamera.GetComponent<CameraMouseControl>();
-                control.CameraAngle = -PositionFixedCamera.transform.rotation.eulerAngles;
-                control.CameraDistance = Vector3.Distance(PositionFixedCamera.transform.position, Vector3.zero);
-                control.CameraTarget = PositionFixedCamera.transform.position + PositionFixedCamera.transform.rotation * Vector3.forward * control.CameraDistance;
-                control.UpdateRelativePosition();
-            }
-            await server.SendCommandAsync(new PipeCommands.LoadCameraFOV { fov = CurrentSettings.CameraFOV });
-
-            UpdateWebCamConfig();
-            if (CurrentSettings.CameraType.HasValue)
-            {
-                ChangeCamera(CurrentSettings.CameraType.Value);
-            }
-            SetGridVisible(CurrentSettings.ShowCameraGrid);
-            await server.SendCommandAsync(new PipeCommands.LoadShowCameraGrid { enable = CurrentSettings.ShowCameraGrid });
-            SetCameraMirrorEnable(CurrentSettings.CameraMirrorEnable);
-            await server.SendCommandAsync(new PipeCommands.LoadCameraMirror { enable = CurrentSettings.CameraMirrorEnable });
-            SetWindowClickThrough(CurrentSettings.WindowClickThrough);
-            await server.SendCommandAsync(new PipeCommands.LoadSetWindowClickThrough { enable = CurrentSettings.WindowClickThrough });
-            SetLipSyncDevice(CurrentSettings.LipSyncDevice);
-            await server.SendCommandAsync(new PipeCommands.LoadLipSyncDevice { device = CurrentSettings.LipSyncDevice });
-            SetLipSyncGain(CurrentSettings.LipSyncGain);
-            await server.SendCommandAsync(new PipeCommands.LoadLipSyncGain { gain = CurrentSettings.LipSyncGain });
-            SetLipSyncMaxWeightEnable(CurrentSettings.LipSyncMaxWeightEnable);
-            await server.SendCommandAsync(new PipeCommands.LoadLipSyncMaxWeightEnable { enable = CurrentSettings.LipSyncMaxWeightEnable });
-            SetLipSyncWeightThreashold(CurrentSettings.LipSyncWeightThreashold);
-            await server.SendCommandAsync(new PipeCommands.LoadLipSyncWeightThreashold { threashold = CurrentSettings.LipSyncWeightThreashold });
-            SetLipSyncMaxWeightEmphasis(CurrentSettings.LipSyncMaxWeightEmphasis);
-            await server.SendCommandAsync(new PipeCommands.LoadLipSyncMaxWeightEmphasis { enable = CurrentSettings.LipSyncMaxWeightEmphasis });
-
-            SetAutoBlinkEnable(CurrentSettings.AutoBlinkEnable);
-            await server.SendCommandAsync(new PipeCommands.LoadAutoBlinkEnable { enable = CurrentSettings.AutoBlinkEnable });
-            SetBlinkTimeMin(CurrentSettings.BlinkTimeMin);
-            await server.SendCommandAsync(new PipeCommands.LoadBlinkTimeMin { time = CurrentSettings.BlinkTimeMin });
-            SetBlinkTimeMax(CurrentSettings.BlinkTimeMax);
-            await server.SendCommandAsync(new PipeCommands.LoadBlinkTimeMax { time = CurrentSettings.BlinkTimeMax });
-            SetCloseAnimationTime(CurrentSettings.CloseAnimationTime);
-            await server.SendCommandAsync(new PipeCommands.LoadCloseAnimationTime { time = CurrentSettings.CloseAnimationTime });
-            SetOpenAnimationTime(CurrentSettings.OpenAnimationTime);
-            await server.SendCommandAsync(new PipeCommands.LoadOpenAnimationTime { time = CurrentSettings.OpenAnimationTime });
-            SetClosingTime(CurrentSettings.ClosingTime);
-            await server.SendCommandAsync(new PipeCommands.LoadClosingTime { time = CurrentSettings.ClosingTime });
-            SetDefaultFace(CurrentSettings.DefaultFace);
-            await server.SendCommandAsync(new PipeCommands.LoadDefaultFace { face = CurrentSettings.DefaultFace });
-
-            await server.SendCommandAsync(new PipeCommands.LoadControllerTouchPadPoints
-            {
-                IsOculus = CurrentSettings.IsOculus,
-                LeftPoints = CurrentSettings.LeftTouchPadPoints,
-                LeftCenterEnable = CurrentSettings.LeftCenterEnable,
-                RightPoints = CurrentSettings.RightTouchPadPoints,
-                RightCenterEnable = CurrentSettings.RightCenterEnable
-            });
-            await server.SendCommandAsync(new PipeCommands.LoadControllerStickPoints
-            {
-                LeftPoints = CurrentSettings.LeftThumbStickPoints,
-                RightPoints = CurrentSettings.RightThumbStickPoints,
-            });
-
-            KeyAction.KeyActionsUpgrade(CurrentSettings.KeyActions);
-
-            steamVR2Input.EnableSkeletal = CurrentSettings.EnableSkeletal;
-
-            await server.SendCommandAsync(new PipeCommands.LoadSkeletalInputEnable { enable = CurrentSettings.EnableSkeletal });
-
-            await server.SendCommandAsync(new PipeCommands.LoadKeyActions { KeyActions = CurrentSettings.KeyActions });
-            await server.SendCommandAsync(new PipeCommands.LoadHandRotations { LeftHandRotation = CurrentSettings.LeftHandRotation, RightHandRotation = CurrentSettings.RightHandRotation });
-            UpdateHandRotation();
-
-            await server.SendCommandAsync(new PipeCommands.LoadLipSyncEnable { enable = CurrentSettings.LipSyncEnable });
-            SetLipSyncEnable(CurrentSettings.LipSyncEnable);
-
-            await server.SendCommandAsync(new PipeCommands.SetLightAngle { X = CurrentSettings.LightRotationX, Y = CurrentSettings.LightRotationY });
-            SetLightAngle(CurrentSettings.LightRotationX, CurrentSettings.LightRotationY);
-            await server.SendCommandAsync(new PipeCommands.ChangeLightColor { a = CurrentSettings.LightColor.a, r = CurrentSettings.LightColor.r, g = CurrentSettings.LightColor.g, b = CurrentSettings.LightColor.b });
-            ChangeLightColor(CurrentSettings.LightColor.a, CurrentSettings.LightColor.r, CurrentSettings.LightColor.g, CurrentSettings.LightColor.b);
-
-            if (Screen.resolutions.Any(d => d.width == CurrentSettings.ScreenWidth && d.height == CurrentSettings.ScreenHeight && d.refreshRate == CurrentSettings.ScreenRefreshRate))
-            {
-                Screen.SetResolution(CurrentSettings.ScreenWidth, CurrentSettings.ScreenHeight, false, CurrentSettings.ScreenRefreshRate);
-            }
-
-            SetExternalMotionSenderEnable(CurrentSettings.ExternalMotionSenderEnable);
-            ChangeExternalMotionSenderAddress(CurrentSettings.ExternalMotionSenderAddress, CurrentSettings.ExternalMotionSenderPort, CurrentSettings.ExternalMotionSenderPeriodStatus, CurrentSettings.ExternalMotionSenderPeriodRoot, CurrentSettings.ExternalMotionSenderPeriodBone, CurrentSettings.ExternalMotionSenderPeriodBlendShape, CurrentSettings.ExternalMotionSenderPeriodCamera, CurrentSettings.ExternalMotionSenderPeriodDevices, CurrentSettings.ExternalMotionSenderOptionString);
-            SetExternalMotionReceiverEnable(CurrentSettings.ExternalMotionReceiverEnable);
-            ChangeExternalMotionReceiverPort(CurrentSettings.ExternalMotionReceiverPort);
-
-            SetMidiCCBlendShape(CurrentSettings.MidiCCBlendShape);
-
-            SetEyeTracking_TobiiOffsetsAction?.Invoke(new PipeCommands.SetEyeTracking_TobiiOffsets
-            {
-                OffsetHorizontal = CurrentSettings.EyeTracking_TobiiOffsetHorizontal,
-                OffsetVertical = CurrentSettings.EyeTracking_TobiiOffsetVertical,
-                ScaleHorizontal = CurrentSettings.EyeTracking_TobiiScaleHorizontal,
-                ScaleVertical = CurrentSettings.EyeTracking_TobiiScaleVertical
-            });
-
-            SetEyeTracking_ViveProEyeOffsetsAction?.Invoke(new PipeCommands.SetEyeTracking_ViveProEyeOffsets
-            {
-                OffsetHorizontal = CurrentSettings.EyeTracking_ViveProEyeOffsetHorizontal,
-                OffsetVertical = CurrentSettings.EyeTracking_ViveProEyeOffsetVertical,
-                ScaleHorizontal = CurrentSettings.EyeTracking_ViveProEyeScaleHorizontal,
-                ScaleVertical = CurrentSettings.EyeTracking_ViveProEyeScaleVertical
-            });
-
-            SetEyeTracking_ViveProEyeUseEyelidMovementsAction?.Invoke(new PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements
-            {
-                Use = CurrentSettings.EyeTracking_ViveProEyeUseEyelidMovements
-            });
-
-            SetTrackingFilterEnable(CurrentSettings.TrackingFilterEnable, CurrentSettings.TrackingFilterHmdEnable, CurrentSettings.TrackingFilterControllerEnable, CurrentSettings.TrackingFilterTrackerEnable);
-
-            SetModelModifierEnable(CurrentSettings.FixKneeRotation);
-            SetHandleControllerAsTracker(CurrentSettings.HandleControllerAsTracker);
-            SetQualitySettings(new PipeCommands.SetQualitySettings
-            {
-                antiAliasing = CurrentSettings.AntiAliasing,
-            });
-
-            AdditionalSettingAction?.Invoke(null);
-
-            await server.SendCommandAsync(new PipeCommands.SetWindowNum { Num = CurrentWindowNum });
-
+            //読み込めなかったときはエラーをファイルとして出力
+            File.WriteAllText(Application.dataPath + "/../exception.txt", ex.ToString() + ":" + ex.Message);
         }
+
+        //スケールを元に戻す
+        ResetTrackerScale();
+        //設定を適用する
+        ApplyCurrentSettings();
+        //設定の変更を通知
         LoadedConfigPathChangedAction?.Invoke();
+    }
+
+    private void ResetTrackerScale()
+    {
+        //jsonが正しくデコードできていなければ無視する
+        if (CurrentSettings == null)
+        {
+            return;
+        }
+
+        //トラッカーのルートスケールを初期値に戻す
+        HandTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        HeadTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        PelvisTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        HandTrackerRoot.position = Vector3.zero;
+        HeadTrackerRoot.position = Vector3.zero;
+        PelvisTrackerRoot.position = Vector3.zero;
+
+        //スケール変更時の位置オフセット設定
+        var handTrackerOffset = HandTrackerRoot.GetComponent<ScalePositionOffset>();
+        var headTrackerOffset = HeadTrackerRoot.GetComponent<ScalePositionOffset>();
+        var footTrackerOffset = PelvisTrackerRoot.GetComponent<ScalePositionOffset>();
+        handTrackerOffset.ResetTargetAndPosition();
+        headTrackerOffset.ResetTargetAndPosition();
+        footTrackerOffset.ResetTargetAndPosition();
+    }
+
+    //CurrentSettingsを各種設定に適用
+    private async void ApplyCurrentSettings()
+    {
+        //VRMのパスが有効なら読み込む
+        if (string.IsNullOrWhiteSpace(CurrentSettings.VRMPath) == false)
+        {
+            await server.SendCommandAsync(new PipeCommands.LoadVRMPath { Path = CurrentSettings.VRMPath });
+            ImportVRM(CurrentSettings.VRMPath, false, CurrentSettings.EnableNormalMapFix, CurrentSettings.DeleteHairNormalMap);
+
+            //メタ情報をOSC送信する
+            VRMmetaLodedAction?.Invoke(LoadVRM(CurrentSettings.VRMPath));
+        }
+        if (CurrentSettings.BackgroundColor != null)
+        {
+            ChangeBackgroundColor(CurrentSettings.BackgroundColor.r, CurrentSettings.BackgroundColor.g, CurrentSettings.BackgroundColor.b, false);
+        }
+        if (CurrentSettings.CustomBackgroundColor != null)
+        {
+            await server.SendCommandAsync(new PipeCommands.LoadCustomBackgroundColor { r = CurrentSettings.CustomBackgroundColor.r, g = CurrentSettings.CustomBackgroundColor.g, b = CurrentSettings.CustomBackgroundColor.b });
+        }
+        if (CurrentSettings.IsTransparent)
+        {
+            SetBackgroundTransparent();
+        }
+        SetWindowBorder(CurrentSettings.HideBorder);
+        await server.SendCommandAsync(new PipeCommands.LoadHideBorder { enable = CurrentSettings.HideBorder });
+        SetWindowTopMost(CurrentSettings.IsTopMost);
+        await server.SendCommandAsync(new PipeCommands.LoadIsTopMost { enable = CurrentSettings.IsTopMost });
+
+        SetCameraFOV(CurrentSettings.CameraFOV);
+        FreeCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
+        FrontCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
+        BackCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
+        PositionFixedCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
+
+
+        if (CurrentSettings.FreeCameraTransform != null)
+        {
+            CurrentSettings.FreeCameraTransform.ToLocalTransform(FreeCamera.transform);
+            var control = FreeCamera.GetComponent<CameraMouseControl>();
+            control.CameraAngle = -FreeCamera.transform.rotation.eulerAngles;
+            control.CameraDistance = Vector3.Distance(FreeCamera.transform.position, Vector3.zero);
+            control.CameraTarget = FreeCamera.transform.position + FreeCamera.transform.rotation * Vector3.forward * control.CameraDistance;
+        }
+        if (CurrentSettings.FrontCameraLookTargetSettings != null)
+        {
+            CurrentSettings.FrontCameraLookTargetSettings.ApplyTo(FrontCamera);
+        }
+        if (CurrentSettings.BackCameraLookTargetSettings != null)
+        {
+            CurrentSettings.BackCameraLookTargetSettings.ApplyTo(BackCamera);
+        }
+        if (CurrentSettings.PositionFixedCameraTransform != null)
+        {
+            CurrentSettings.PositionFixedCameraTransform.ToLocalTransform(PositionFixedCamera.transform);
+            var control = PositionFixedCamera.GetComponent<CameraMouseControl>();
+            control.CameraAngle = -PositionFixedCamera.transform.rotation.eulerAngles;
+            control.CameraDistance = Vector3.Distance(PositionFixedCamera.transform.position, Vector3.zero);
+            control.CameraTarget = PositionFixedCamera.transform.position + PositionFixedCamera.transform.rotation * Vector3.forward * control.CameraDistance;
+            control.UpdateRelativePosition();
+        }
+        await server.SendCommandAsync(new PipeCommands.LoadCameraFOV { fov = CurrentSettings.CameraFOV });
+
+        UpdateWebCamConfig();
+        if (CurrentSettings.CameraType.HasValue)
+        {
+            ChangeCamera(CurrentSettings.CameraType.Value);
+        }
+        SetGridVisible(CurrentSettings.ShowCameraGrid);
+        await server.SendCommandAsync(new PipeCommands.LoadShowCameraGrid { enable = CurrentSettings.ShowCameraGrid });
+        SetCameraMirrorEnable(CurrentSettings.CameraMirrorEnable);
+        await server.SendCommandAsync(new PipeCommands.LoadCameraMirror { enable = CurrentSettings.CameraMirrorEnable });
+        SetWindowClickThrough(CurrentSettings.WindowClickThrough);
+        await server.SendCommandAsync(new PipeCommands.LoadSetWindowClickThrough { enable = CurrentSettings.WindowClickThrough });
+        SetLipSyncDevice(CurrentSettings.LipSyncDevice);
+        await server.SendCommandAsync(new PipeCommands.LoadLipSyncDevice { device = CurrentSettings.LipSyncDevice });
+        SetLipSyncGain(CurrentSettings.LipSyncGain);
+        await server.SendCommandAsync(new PipeCommands.LoadLipSyncGain { gain = CurrentSettings.LipSyncGain });
+        SetLipSyncMaxWeightEnable(CurrentSettings.LipSyncMaxWeightEnable);
+        await server.SendCommandAsync(new PipeCommands.LoadLipSyncMaxWeightEnable { enable = CurrentSettings.LipSyncMaxWeightEnable });
+        SetLipSyncWeightThreashold(CurrentSettings.LipSyncWeightThreashold);
+        await server.SendCommandAsync(new PipeCommands.LoadLipSyncWeightThreashold { threashold = CurrentSettings.LipSyncWeightThreashold });
+        SetLipSyncMaxWeightEmphasis(CurrentSettings.LipSyncMaxWeightEmphasis);
+        await server.SendCommandAsync(new PipeCommands.LoadLipSyncMaxWeightEmphasis { enable = CurrentSettings.LipSyncMaxWeightEmphasis });
+
+        SetAutoBlinkEnable(CurrentSettings.AutoBlinkEnable);
+        await server.SendCommandAsync(new PipeCommands.LoadAutoBlinkEnable { enable = CurrentSettings.AutoBlinkEnable });
+        SetBlinkTimeMin(CurrentSettings.BlinkTimeMin);
+        await server.SendCommandAsync(new PipeCommands.LoadBlinkTimeMin { time = CurrentSettings.BlinkTimeMin });
+        SetBlinkTimeMax(CurrentSettings.BlinkTimeMax);
+        await server.SendCommandAsync(new PipeCommands.LoadBlinkTimeMax { time = CurrentSettings.BlinkTimeMax });
+        SetCloseAnimationTime(CurrentSettings.CloseAnimationTime);
+        await server.SendCommandAsync(new PipeCommands.LoadCloseAnimationTime { time = CurrentSettings.CloseAnimationTime });
+        SetOpenAnimationTime(CurrentSettings.OpenAnimationTime);
+        await server.SendCommandAsync(new PipeCommands.LoadOpenAnimationTime { time = CurrentSettings.OpenAnimationTime });
+        SetClosingTime(CurrentSettings.ClosingTime);
+        await server.SendCommandAsync(new PipeCommands.LoadClosingTime { time = CurrentSettings.ClosingTime });
+        SetDefaultFace(CurrentSettings.DefaultFace);
+        await server.SendCommandAsync(new PipeCommands.LoadDefaultFace { face = CurrentSettings.DefaultFace });
+
+        await server.SendCommandAsync(new PipeCommands.LoadControllerTouchPadPoints
+        {
+            IsOculus = CurrentSettings.IsOculus,
+            LeftPoints = CurrentSettings.LeftTouchPadPoints,
+            LeftCenterEnable = CurrentSettings.LeftCenterEnable,
+            RightPoints = CurrentSettings.RightTouchPadPoints,
+            RightCenterEnable = CurrentSettings.RightCenterEnable
+        });
+        await server.SendCommandAsync(new PipeCommands.LoadControllerStickPoints
+        {
+            LeftPoints = CurrentSettings.LeftThumbStickPoints,
+            RightPoints = CurrentSettings.RightThumbStickPoints,
+        });
+
+        KeyAction.KeyActionsUpgrade(CurrentSettings.KeyActions);
+
+        steamVR2Input.EnableSkeletal = CurrentSettings.EnableSkeletal;
+
+        await server.SendCommandAsync(new PipeCommands.LoadSkeletalInputEnable { enable = CurrentSettings.EnableSkeletal });
+
+        await server.SendCommandAsync(new PipeCommands.LoadKeyActions { KeyActions = CurrentSettings.KeyActions });
+        await server.SendCommandAsync(new PipeCommands.LoadHandRotations { LeftHandRotation = CurrentSettings.LeftHandRotation, RightHandRotation = CurrentSettings.RightHandRotation });
+        UpdateHandRotation();
+
+        await server.SendCommandAsync(new PipeCommands.LoadLipSyncEnable { enable = CurrentSettings.LipSyncEnable });
+        SetLipSyncEnable(CurrentSettings.LipSyncEnable);
+
+        await server.SendCommandAsync(new PipeCommands.SetLightAngle { X = CurrentSettings.LightRotationX, Y = CurrentSettings.LightRotationY });
+        SetLightAngle(CurrentSettings.LightRotationX, CurrentSettings.LightRotationY);
+        await server.SendCommandAsync(new PipeCommands.ChangeLightColor { a = CurrentSettings.LightColor.a, r = CurrentSettings.LightColor.r, g = CurrentSettings.LightColor.g, b = CurrentSettings.LightColor.b });
+        ChangeLightColor(CurrentSettings.LightColor.a, CurrentSettings.LightColor.r, CurrentSettings.LightColor.g, CurrentSettings.LightColor.b);
+
+        if (Screen.resolutions.Any(d => d.width == CurrentSettings.ScreenWidth && d.height == CurrentSettings.ScreenHeight && d.refreshRate == CurrentSettings.ScreenRefreshRate))
+        {
+            Screen.SetResolution(CurrentSettings.ScreenWidth, CurrentSettings.ScreenHeight, false, CurrentSettings.ScreenRefreshRate);
+        }
+
+        SetExternalMotionSenderEnable(CurrentSettings.ExternalMotionSenderEnable);
+        ChangeExternalMotionSenderAddress(CurrentSettings.ExternalMotionSenderAddress, CurrentSettings.ExternalMotionSenderPort, CurrentSettings.ExternalMotionSenderPeriodStatus, CurrentSettings.ExternalMotionSenderPeriodRoot, CurrentSettings.ExternalMotionSenderPeriodBone, CurrentSettings.ExternalMotionSenderPeriodBlendShape, CurrentSettings.ExternalMotionSenderPeriodCamera, CurrentSettings.ExternalMotionSenderPeriodDevices, CurrentSettings.ExternalMotionSenderOptionString);
+        SetExternalMotionReceiverEnable(CurrentSettings.ExternalMotionReceiverEnable);
+        ChangeExternalMotionReceiverPort(CurrentSettings.ExternalMotionReceiverPort);
+
+        SetMidiCCBlendShape(CurrentSettings.MidiCCBlendShape);
+
+        SetEyeTracking_TobiiOffsetsAction?.Invoke(new PipeCommands.SetEyeTracking_TobiiOffsets
+        {
+            OffsetHorizontal = CurrentSettings.EyeTracking_TobiiOffsetHorizontal,
+            OffsetVertical = CurrentSettings.EyeTracking_TobiiOffsetVertical,
+            ScaleHorizontal = CurrentSettings.EyeTracking_TobiiScaleHorizontal,
+            ScaleVertical = CurrentSettings.EyeTracking_TobiiScaleVertical
+        });
+
+        SetEyeTracking_ViveProEyeOffsetsAction?.Invoke(new PipeCommands.SetEyeTracking_ViveProEyeOffsets
+        {
+            OffsetHorizontal = CurrentSettings.EyeTracking_ViveProEyeOffsetHorizontal,
+            OffsetVertical = CurrentSettings.EyeTracking_ViveProEyeOffsetVertical,
+            ScaleHorizontal = CurrentSettings.EyeTracking_ViveProEyeScaleHorizontal,
+            ScaleVertical = CurrentSettings.EyeTracking_ViveProEyeScaleVertical
+        });
+
+        SetEyeTracking_ViveProEyeUseEyelidMovementsAction?.Invoke(new PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements
+        {
+            Use = CurrentSettings.EyeTracking_ViveProEyeUseEyelidMovements
+        });
+
+        SetTrackingFilterEnable(CurrentSettings.TrackingFilterEnable, CurrentSettings.TrackingFilterHmdEnable, CurrentSettings.TrackingFilterControllerEnable, CurrentSettings.TrackingFilterTrackerEnable);
+
+        SetModelModifierEnable(CurrentSettings.FixKneeRotation);
+        SetHandleControllerAsTracker(CurrentSettings.HandleControllerAsTracker);
+        SetQualitySettings(new PipeCommands.SetQualitySettings
+        {
+            antiAliasing = CurrentSettings.AntiAliasing,
+        });
+
+        AdditionalSettingAction?.Invoke(null);
+
+        await server.SendCommandAsync(new PipeCommands.SetWindowNum { Num = CurrentWindowNum });
     }
 
     #endregion
