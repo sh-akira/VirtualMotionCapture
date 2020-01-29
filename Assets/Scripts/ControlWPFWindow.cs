@@ -2881,18 +2881,12 @@ public class ControlWPFWindow : MonoBehaviour
     public class CommonSettings
     {
         public string LoadSettingFilePathOnStart = ""; //起動時に読み込む設定ファイルパス
-        public string CurrentPathOnSettingFileDialog = ""; //設定ファイルダイアログパス
-        public string CurrentPathOnVRMFileDialog = ""; //VRMファイルダイアログパス
-        public string CurrentPathOnExternalCameraFileDialog = ""; //ExternalCameraダイアログパス
 
         //初期値
         [OnDeserializing()]
         internal void OnDeserializingMethod(StreamingContext context)
         {
             LoadSettingFilePathOnStart = "";
-            CurrentPathOnSettingFileDialog = "";
-            CurrentPathOnVRMFileDialog = "";
-            CurrentPathOnExternalCameraFileDialog = "";
         }
     }
 

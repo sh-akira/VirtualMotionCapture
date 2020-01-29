@@ -127,9 +127,12 @@ namespace VirtualMotionCaptureControlPanel
                 MessageBox.Show(LanguageSelector.Get("SettingWindow_SelectedItemError"), LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            Globals.LoadCommonSettings();
+
             var tracker = ControllerComboBox.SelectedItem as TrackerConfigWindow.TrackerInfo;
             var ofd = new OpenFileDialog();
             ofd.Filter = "externalcamera.cfg|externalcamera.cfg";
+            ofd.InitialDirectory = Globals.CurrentCommonSettingsWPF.CurrentPathOnExternalCameraFileDialog;
             if (ofd.ShowDialog() == true)
             {
                 var configs = new Dictionary<string, string>();
@@ -157,6 +160,12 @@ namespace VirtualMotionCaptureControlPanel
                 var fov = GetFloat("fov");
 
                 await Globals.Client?.SendCommandAsync(new PipeCommands.SetExternalCameraConfig { x = x, y = y, z = z, rx = rx, ry = ry, rz = rz, fov = fov, ControllerName = tracker.SerialNumber });
+
+                if (Globals.CurrentCommonSettingsWPF.CurrentPathOnExternalCameraFileDialog != System.IO.Path.GetDirectoryName(ofd.FileName))
+                {
+                    Globals.CurrentCommonSettingsWPF.CurrentPathOnExternalCameraFileDialog = System.IO.Path.GetDirectoryName(ofd.FileName);
+                    Globals.SaveCommonSettings();
+                }
             }
         }
 
@@ -167,6 +176,8 @@ namespace VirtualMotionCaptureControlPanel
                 MessageBox.Show(LanguageSelector.Get("SettingWindow_SelectedItemError"), LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            Globals.LoadCommonSettings();
+
             var tracker = ControllerComboBox.SelectedItem as TrackerConfigWindow.TrackerInfo;
             await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetExternalCameraConfig { ControllerName = tracker.SerialNumber }, r =>
             {
@@ -177,6 +188,8 @@ namespace VirtualMotionCaptureControlPanel
                     sfd.Filter = "externalcamera.cfg|externalcamera.cfg";
                     sfd.Title = "Export externalcamera.cfg";
                     sfd.FileName = "externalcamera.cfg";
+                    sfd.InitialDirectory = Globals.CurrentCommonSettingsWPF.CurrentPathOnExternalCameraFileDialog;
+
                     if (sfd.ShowDialog() == true)
                     {
                         var culture = System.Globalization.CultureInfo.InvariantCulture;
@@ -194,6 +207,12 @@ namespace VirtualMotionCaptureControlPanel
                         lines.Add($"disableStandardAssets=False");
                         lines.Add($"frameSkip=0");
                         File.WriteAllLines(sfd.FileName, lines);
+
+                        if (Globals.CurrentCommonSettingsWPF.CurrentPathOnExternalCameraFileDialog != System.IO.Path.GetDirectoryName(sfd.FileName))
+                        {
+                            Globals.CurrentCommonSettingsWPF.CurrentPathOnExternalCameraFileDialog = System.IO.Path.GetDirectoryName(sfd.FileName);
+                            Globals.SaveCommonSettings();
+                        }
                     }
                 });
             });
@@ -478,9 +497,12 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void CameraPlus_ImportButton_Click(object sender, RoutedEventArgs e)
         {
+            Globals.LoadCommonSettings();
+
             var ofd = new OpenFileDialog();
 
             ofd.Filter = "cameraplus.cfg|cameraplus.cfg";
+            ofd.InitialDirectory = Globals.CurrentCommonSettingsWPF.CurrentPathOnCameraPlusFileDialog;
             if (ofd.ShowDialog() == true)
             {
                 var configs = new Dictionary<string, string>();
@@ -508,6 +530,11 @@ namespace VirtualMotionCaptureControlPanel
                 var fov = GetFloat("fov");
 
                 await Globals.Client?.SendCommandAsync(new PipeCommands.ImportCameraPlus { x = x, y = y, z = z, rx = rx, ry = ry, rz = rz, fov = fov });
+                if (Globals.CurrentCommonSettingsWPF.CurrentPathOnCameraPlusFileDialog != System.IO.Path.GetDirectoryName(ofd.FileName))
+                {
+                    Globals.CurrentCommonSettingsWPF.CurrentPathOnCameraPlusFileDialog = System.IO.Path.GetDirectoryName(ofd.FileName);
+                    Globals.SaveCommonSettings();
+                }
             }
         }
 
@@ -518,10 +545,13 @@ namespace VirtualMotionCaptureControlPanel
                 var d = (PipeCommands.ReturnExportCameraPlus)r;
                 Dispatcher.Invoke(() =>
                 {
+                    Globals.LoadCommonSettings();
                     var ofd = new OpenFileDialog();
                     ofd.Filter = "cameraplus.cfg|cameraplus.cfg";
                     ofd.Title = "Select cameraplus.cfg";
                     ofd.FileName = "cameraplus.cfg";
+                    ofd.InitialDirectory = Globals.CurrentCommonSettingsWPF.CurrentPathOnCameraPlusFileDialog;
+
                     if (ofd.ShowDialog() == true)
                     {
                         var culture = System.Globalization.CultureInfo.InvariantCulture;
@@ -538,6 +568,12 @@ namespace VirtualMotionCaptureControlPanel
                             if (lines[i].StartsWith("fov")) lines[i] = $"fov=" + d.fov.ToString("G", format);
                         }
                         File.WriteAllLines(ofd.FileName, lines);
+
+                        if (Globals.CurrentCommonSettingsWPF.CurrentPathOnCameraPlusFileDialog != System.IO.Path.GetDirectoryName(ofd.FileName))
+                        {
+                            Globals.CurrentCommonSettingsWPF.CurrentPathOnCameraPlusFileDialog = System.IO.Path.GetDirectoryName(ofd.FileName);
+                            Globals.SaveCommonSettings();
+                        }
                     }
                 });
             });
