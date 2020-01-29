@@ -62,6 +62,7 @@ namespace VirtualMotionCaptureControlPanel
             DefaultFaceComboBox.ItemsSource = DefaultFacesBase;
             LipSyncDeviceComboBox.ItemsSource = LipSyncDevices;
             UpdateWindowTitle();
+            Globals.LoadCommonSettings();
         }
 
         private void UpdateWindowTitle()
@@ -323,21 +324,39 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void LoadSettingsButton_Click(object sender, RoutedEventArgs e)
         {
+            Globals.LoadCommonSettings();
+
             var ofd = new Microsoft.Win32.OpenFileDialog();
             ofd.Filter = "Setting File(*.json)|*.json";
+            ofd.InitialDirectory = Globals.CurrentCommonSettingsWPF.CurrentPathOnSettingFileDialog;
             if (ofd.ShowDialog() == true)
             {
                 await Globals.Client.SendCommandAsync(new PipeCommands.LoadSettings { Path = ofd.FileName });
+
+                if (Globals.CurrentCommonSettingsWPF.CurrentPathOnSettingFileDialog != System.IO.Path.GetDirectoryName(ofd.FileName))
+                {
+                    Globals.CurrentCommonSettingsWPF.CurrentPathOnSettingFileDialog = System.IO.Path.GetDirectoryName(ofd.FileName);
+                    Globals.SaveCommonSettings();
+                }
             }
         }
 
         private async void SaveSettingsButton_Click(object sender, RoutedEventArgs e)
         {
+            Globals.LoadCommonSettings();
+
             var sfd = new Microsoft.Win32.SaveFileDialog();
             sfd.Filter = "Setting File(*.json)|*.json";
+            sfd.InitialDirectory = Globals.CurrentCommonSettingsWPF.CurrentPathOnSettingFileDialog;
             if (sfd.ShowDialog() == true)
             {
                 await Globals.Client.SendCommandAsync(new PipeCommands.SaveSettings { Path = sfd.FileName });
+
+                if (Globals.CurrentCommonSettingsWPF.CurrentPathOnSettingFileDialog != System.IO.Path.GetDirectoryName(sfd.FileName))
+                {
+                    Globals.CurrentCommonSettingsWPF.CurrentPathOnSettingFileDialog = System.IO.Path.GetDirectoryName(sfd.FileName);
+                    Globals.SaveCommonSettings();
+                }
             }
         }
 

@@ -1,8 +1,11 @@
-﻿using System;
+﻿using sh_akira;
+using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 using UnityMemoryMappedFile;
 
 namespace VirtualMotionCaptureControlPanel
@@ -59,5 +62,55 @@ namespace VirtualMotionCaptureControlPanel
             }
             return true;
         }
+
+
+        [Serializable]
+        public class CommonSettingsWPF
+        {
+            public string CurrentPathOnSettingFileDialog = ""; //設定ファイルダイアログパス
+            public string CurrentPathOnVRMFileDialog = ""; //VRMファイルダイアログパス
+            public string CurrentPathOnExternalCameraFileDialog = ""; //ExternalCameraダイアログパス
+            public string CurrentPathOnCameraPlusFileDialog = ""; //CameraPlusダイアログパス
+
+            //初期値
+            [OnDeserializing()]
+            internal void OnDeserializingMethod(StreamingContext context)
+            {
+                CurrentPathOnSettingFileDialog = "";
+                CurrentPathOnVRMFileDialog = "";
+                CurrentPathOnExternalCameraFileDialog = "";
+                CurrentPathOnCameraPlusFileDialog = "";
+            }
+        }
+
+        public static CommonSettingsWPF CurrentCommonSettingsWPF = new CommonSettingsWPF();
+
+        //共通設定の書き込み
+        public static void SaveCommonSettings()
+        {
+            string path = Path.GetFullPath(GetCurrentAppDir() + "/../commonWPF.json");
+            File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(CurrentCommonSettingsWPF)));
+        }
+
+        //共通設定の読み込み
+        public static void LoadCommonSettings()
+        {
+            string path = Path.GetFullPath(GetCurrentAppDir() + "/../commonWPF.json");
+            if (!File.Exists(path))
+            {
+                return;
+            }
+            try
+            {
+                CurrentCommonSettingsWPF = Json.Serializer.Deserialize<CommonSettingsWPF>(File.ReadAllText(path)); //設定を読み込み
+            }
+            catch (Exception e) {
+                //エラー発生時は初期値にする
+                CurrentCommonSettingsWPF = new CommonSettingsWPF();
+                SaveCommonSettings();
+            }
+        }
+
+
     }
 }

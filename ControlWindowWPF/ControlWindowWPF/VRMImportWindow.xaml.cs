@@ -34,8 +34,12 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void LoadVRMButton_Click(object sender, RoutedEventArgs e)
         {
+            Globals.LoadCommonSettings();
+
             var ofd = new Microsoft.Win32.OpenFileDialog();
             ofd.Filter = "VRM File(*.vrm)|*.vrm";
+            ofd.InitialDirectory = Globals.CurrentCommonSettingsWPF.CurrentPathOnVRMFileDialog;
+
             if (ofd.ShowDialog() == true)
             {
                 await Globals.Client.SendCommandWaitAsync(new PipeCommands.LoadVRM { Path = ofd.FileName }, d =>
@@ -43,6 +47,11 @@ namespace VirtualMotionCaptureControlPanel
                     var ret = (PipeCommands.ReturnLoadVRM)d;
                     Dispatcher.Invoke(() => LoadMetaData(ret.Data));
                 });
+                if (Globals.CurrentCommonSettingsWPF.CurrentPathOnVRMFileDialog != System.IO.Path.GetDirectoryName(ofd.FileName))
+                {
+                    Globals.CurrentCommonSettingsWPF.CurrentPathOnVRMFileDialog = System.IO.Path.GetDirectoryName(ofd.FileName);
+                    Globals.SaveCommonSettings();
+                }
             }
         }
 
