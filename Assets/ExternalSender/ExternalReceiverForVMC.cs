@@ -289,7 +289,7 @@ public class ExternalReceiverForVMC : MonoBehaviour {
                 string path = (string)message.values[0];
                 if (File.Exists(path)) {
                     //なぜか時間がかかる
-                    window.LoadSettings(false, false, path);
+                    window.LoadSettings(path);
         }
     }
         }
