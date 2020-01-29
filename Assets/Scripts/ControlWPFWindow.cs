@@ -168,7 +168,7 @@ public class ControlWPFWindow : MonoBehaviour
             if (!doKeyConfig) CheckKey(config, true);
         };
 
-        midiCCWrapper.noteOffDelegateProxy += async (channel, note) =>
+        midiCCWrapper.noteOffDelegateProxy += (channel, note) =>
         {
             Debug.Log("MidiNoteOff:" + channel + "/" + note);
 
@@ -2940,7 +2940,7 @@ public class ControlWPFWindow : MonoBehaviour
     }
 
     //設定の読み込み
-    public async void LoadSettings(string path = null)
+    public void LoadSettings(string path = null)
     {
         //設定パスがnull or 存在しないなら、default読み込み
         //パスが渡されていれば2回目以降の読み込み
