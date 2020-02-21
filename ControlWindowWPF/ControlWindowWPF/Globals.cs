@@ -85,6 +85,10 @@ namespace VirtualMotionCaptureControlPanel
 
         public static CommonSettingsWPF CurrentCommonSettingsWPF = new CommonSettingsWPF();
 
+        public static string ExistDirectoryOrNull(string path) {
+            return Directory.Exists(path) ? path : null;
+        }
+
         //共通設定の書き込み
         public static void SaveCommonSettings()
         {

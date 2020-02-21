@@ -328,7 +328,7 @@ namespace VirtualMotionCaptureControlPanel
 
             var ofd = new Microsoft.Win32.OpenFileDialog();
             ofd.Filter = "Setting File(*.json)|*.json";
-            ofd.InitialDirectory = Globals.CurrentCommonSettingsWPF.CurrentPathOnSettingFileDialog;
+            ofd.InitialDirectory = Globals.ExistDirectoryOrNull(Globals.CurrentCommonSettingsWPF.CurrentPathOnSettingFileDialog);
             if (ofd.ShowDialog() == true)
             {
                 await Globals.Client.SendCommandAsync(new PipeCommands.LoadSettings { Path = ofd.FileName });
@@ -347,7 +347,7 @@ namespace VirtualMotionCaptureControlPanel
 
             var sfd = new Microsoft.Win32.SaveFileDialog();
             sfd.Filter = "Setting File(*.json)|*.json";
-            sfd.InitialDirectory = Globals.CurrentCommonSettingsWPF.CurrentPathOnSettingFileDialog;
+            sfd.InitialDirectory = Globals.ExistDirectoryOrNull(Globals.CurrentCommonSettingsWPF.CurrentPathOnSettingFileDialog);
             if (sfd.ShowDialog() == true)
             {
                 await Globals.Client.SendCommandAsync(new PipeCommands.SaveSettings { Path = sfd.FileName });

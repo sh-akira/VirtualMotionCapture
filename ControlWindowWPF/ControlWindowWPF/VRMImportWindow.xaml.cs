@@ -38,7 +38,7 @@ namespace VirtualMotionCaptureControlPanel
 
             var ofd = new Microsoft.Win32.OpenFileDialog();
             ofd.Filter = "VRM File(*.vrm)|*.vrm";
-            ofd.InitialDirectory = Globals.CurrentCommonSettingsWPF.CurrentPathOnVRMFileDialog;
+            ofd.InitialDirectory = Globals.ExistDirectoryOrNull(Globals.CurrentCommonSettingsWPF.CurrentPathOnVRMFileDialog);
 
             if (ofd.ShowDialog() == true)
             {
