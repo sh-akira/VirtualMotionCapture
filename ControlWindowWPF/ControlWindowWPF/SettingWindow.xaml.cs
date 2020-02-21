@@ -132,7 +132,7 @@ namespace VirtualMotionCaptureControlPanel
             var tracker = ControllerComboBox.SelectedItem as TrackerConfigWindow.TrackerInfo;
             var ofd = new OpenFileDialog();
             ofd.Filter = "externalcamera.cfg|externalcamera.cfg";
-            ofd.InitialDirectory = Globals.CurrentCommonSettingsWPF.CurrentPathOnExternalCameraFileDialog;
+            ofd.InitialDirectory = Globals.ExistDirectoryOrNull(Globals.CurrentCommonSettingsWPF.CurrentPathOnExternalCameraFileDialog);
             if (ofd.ShowDialog() == true)
             {
                 var configs = new Dictionary<string, string>();
@@ -188,7 +188,7 @@ namespace VirtualMotionCaptureControlPanel
                     sfd.Filter = "externalcamera.cfg|externalcamera.cfg";
                     sfd.Title = "Export externalcamera.cfg";
                     sfd.FileName = "externalcamera.cfg";
-                    sfd.InitialDirectory = Globals.CurrentCommonSettingsWPF.CurrentPathOnExternalCameraFileDialog;
+                    sfd.InitialDirectory = Globals.ExistDirectoryOrNull(Globals.CurrentCommonSettingsWPF.CurrentPathOnExternalCameraFileDialog);
 
                     if (sfd.ShowDialog() == true)
                     {
@@ -502,7 +502,7 @@ namespace VirtualMotionCaptureControlPanel
             var ofd = new OpenFileDialog();
 
             ofd.Filter = "cameraplus.cfg|cameraplus.cfg";
-            ofd.InitialDirectory = Globals.CurrentCommonSettingsWPF.CurrentPathOnCameraPlusFileDialog;
+            ofd.InitialDirectory = Globals.ExistDirectoryOrNull(Globals.CurrentCommonSettingsWPF.CurrentPathOnCameraPlusFileDialog);
             if (ofd.ShowDialog() == true)
             {
                 var configs = new Dictionary<string, string>();
@@ -550,7 +550,7 @@ namespace VirtualMotionCaptureControlPanel
                     ofd.Filter = "cameraplus.cfg|cameraplus.cfg";
                     ofd.Title = "Select cameraplus.cfg";
                     ofd.FileName = "cameraplus.cfg";
-                    ofd.InitialDirectory = Globals.CurrentCommonSettingsWPF.CurrentPathOnCameraPlusFileDialog;
+                    ofd.InitialDirectory = Globals.ExistDirectoryOrNull(Globals.CurrentCommonSettingsWPF.CurrentPathOnCameraPlusFileDialog);
 
                     if (ofd.ShowDialog() == true)
                     {
