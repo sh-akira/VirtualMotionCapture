@@ -372,6 +372,9 @@ public class ExternalSender : MonoBehaviour
 
                 foreach (HumanBodyBones bone in Enum.GetValues(typeof(HumanBodyBones)))
                 {
+                    if (bone == HumanBodyBones.LastBone)
+                    { continue; }
+
                     var Transform = animator.GetBoneTransform(bone);
                     if (Transform != null)
                     {
