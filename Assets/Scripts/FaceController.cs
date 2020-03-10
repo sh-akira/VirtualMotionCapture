@@ -111,7 +111,7 @@ public class FaceController : MonoBehaviour
         {
             var keys = new List<string>();
             var values = new List<float>();
-            foreach(var keyname in BlendShapeKeys)
+            foreach (var keyname in BlendShapeKeys)
             {
                 var shapekey = new BlendShapeKey(keyname);
                 if (shapekey.Equals(NeutralKey))
@@ -177,16 +177,23 @@ public class FaceController : MonoBehaviour
 
     public void MixPreset(BlendShapePreset preset, float value)
     {
+        MixPresets(new[] { preset }, new[] { value });
+    }
+
+    public void MixPresets(BlendShapePreset[] presets, float[] values)
+    {
         if (proxy == null) return;
         if (CurrentShapeKeys == null) return;
-        var presetKey = new BlendShapeKey(preset);
         foreach (var shapekey in CurrentShapeKeys)
         {
-            if (shapekey.Key.Equals(presetKey)) continue;
             proxy.AccumulateValue(shapekey.Key, shapekey.Value);
         }
-        CurrentShapeKeys[presetKey] = value;
-        proxy.AccumulateValue(preset, value);
+        for (int i = 0; i < presets.Length; i++)
+        {
+            var presetKey = new BlendShapeKey(presets[i]);
+            CurrentShapeKeys[presetKey] = values[i];
+            proxy.AccumulateValue(presets[i], values[i]);
+        }
         proxy.Apply();
     }
 

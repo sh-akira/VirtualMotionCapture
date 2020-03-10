@@ -657,6 +657,7 @@ MonoBehaviour:
   audioSource: {fileID: 144144639}
   provider: 0
   enableAcceleration: 1
+  faceController: {fileID: 69806225}
   SmoothAmount: 100
   EnableLipSync: 0
   MaxLevel: 1

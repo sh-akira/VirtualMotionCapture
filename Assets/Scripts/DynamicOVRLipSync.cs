@@ -17,11 +17,11 @@ public class DynamicOVRLipSync : OVRLipSyncContextBase
     private float[] processBuffer = new float[1024];
     private float[] microphoneBuffer = new float[lengthSeconds * micFrequency];
 
+    public FaceController faceController;
+
     // smoothing amount
     public int SmoothAmount = 100;
     private GameObject VRMmodel;
-
-    private VRMBlendShapeProxy proxy;
 
     public bool EnableLipSync = false;
 
@@ -54,7 +54,6 @@ public class DynamicOVRLipSync : OVRLipSyncContextBase
     public void ImportVRMmodel(GameObject vrmmodel)
     {
         VRMmodel = vrmmodel;
-        proxy = null;
     }
 
     // Use this for initialization
@@ -80,9 +79,9 @@ public class DynamicOVRLipSync : OVRLipSyncContextBase
         {
             if (Context != 0)
             {
-                if (proxy == null)
+                if (faceController == null)
                 {
-                    if (VRMmodel != null) proxy = VRMmodel.GetComponent<VRMBlendShapeProxy>();
+                    return;
                 }
                 else
                 {
@@ -138,10 +137,8 @@ public class DynamicOVRLipSync : OVRLipSyncContextBase
                         for (int i = 0; i < presets.Length; i++)
                         {
                             visemes[i] *= MaxLevel;
-                            proxy.AccumulateValue(presets[i], visemes[i]);
                         }
-
-                        proxy.Apply();
+                        faceController.MixPresets(presets, visemes);
 
                         //Debug.Log("Visemes:" + string.Join(",", frame.Visemes.Select(d => d.ToString())));
                     }
