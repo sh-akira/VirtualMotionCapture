@@ -37,11 +37,11 @@ public class FaceController : MonoBehaviour
                 {
                     if (defaultFace != BlendShapePreset.Unknown)
                     {
-                        proxy.SetValue(defaultFace, 0.0f);
+                        SetFace(defaultFace, 0.0f, StopBlink);
                     }
                     else if (string.IsNullOrEmpty(FacePresetName) == false)
                     {
-                        proxy.SetValue(FacePresetName, 0.0f);
+                        SetFace(FacePresetName, 0.0f, StopBlink);
                     }
                 }
                 defaultFace = value;
@@ -52,6 +52,9 @@ public class FaceController : MonoBehaviour
 
     private AnimationController animationController;
 
+    private Dictionary<BlendShapeKey, float> CurrentShapeKeys;
+    private BlendShapeKey NeutralKey = new BlendShapeKey(BlendShapePreset.Neutral);
+
     public void ImportVRMmodel(GameObject vrmmodel)
     {
         VRMmodel = vrmmodel;
@@ -60,6 +63,13 @@ public class FaceController : MonoBehaviour
 
     private void Start()
     {
+        var dict = new Dictionary<BlendShapeKey, float>();
+        foreach (var key in BlendShapeKeys)
+        {
+            dict.Add(new BlendShapeKey(key), 0.0f);
+        }
+        CurrentShapeKeys = dict;
+
         CreateAnimation();
     }
 
@@ -69,31 +79,29 @@ public class FaceController : MonoBehaviour
         if (proxy != null)
         {
             animationController.ClearAnimations();
-            animationController.AddResetAction(() => proxy.SetValue(BlendShapePreset.Blink, 0.0f));
+            animationController.AddResetAction(() => MixPreset(BlendShapePreset.Blink, 0.0f));
             animationController.AddWait(null, () => BlinkTimeMin + Random.value * (BlinkTimeMax - BlinkTimeMin));
-            animationController.AddAnimation(CloseAnimationTime, 0.0f, 1.0f, v => proxy.SetValue(BlendShapePreset.Blink, v));
+            animationController.AddAnimation(CloseAnimationTime, 0.0f, 1.0f, v => MixPreset(BlendShapePreset.Blink, v));
             animationController.AddWait(ClosingTime);
-            animationController.AddAnimation(OpenAnimationTime, 1.0f, 0.0f, v => proxy.SetValue(BlendShapePreset.Blink, v));
+            animationController.AddAnimation(OpenAnimationTime, 1.0f, 0.0f, v => MixPreset(BlendShapePreset.Blink, v));
         }
     }
 
     public void SetBlink_L(float value)
     {
-        if (proxy == null) return;
         if (ViveProEyeEnabled == false)
         {
-            proxy.ImmediatelySetValue(BlendShapePreset.Blink, 0.0f);
+            MixPreset(BlendShapePreset.Blink, 0.0f);
         }
-        proxy.ImmediatelySetValue(BlendShapePreset.Blink_L, value);
+        MixPreset(BlendShapePreset.Blink_L, value);
     }
     public void SetBlink_R(float value)
     {
-        if (proxy == null) return;
         if (ViveProEyeEnabled == false)
         {
-            proxy.ImmediatelySetValue(BlendShapePreset.Blink, 0.0f);
+            MixPreset(BlendShapePreset.Blink, 0.0f);
         }
-        proxy.ImmediatelySetValue(BlendShapePreset.Blink_R, value);
+        MixPreset(BlendShapePreset.Blink_R, value);
     }
 
     private void SetFaceNeutral()
@@ -101,9 +109,22 @@ public class FaceController : MonoBehaviour
         //表情をデフォルトに戻す
         if (proxy != null)
         {
-            var NeutralKey = new BlendShapeKey(BlendShapePreset.Neutral);
-            proxy.SetValues(BlendShapeKeys.Select(d => { var k = new BlendShapeKey(d); return new KeyValuePair<BlendShapeKey, float>(k, k.Equals(NeutralKey) ? 1.0f : 0.0f); }));
-            proxy.Apply();
+            var keys = new List<string>();
+            var values = new List<float>();
+            foreach(var keyname in BlendShapeKeys)
+            {
+                var shapekey = new BlendShapeKey(keyname);
+                if (shapekey.Equals(NeutralKey))
+                {
+                    values.Add(1.0f);
+                }
+                else
+                {
+                    values.Add(0.0f);
+                }
+                keys.Add(keyname);
+            }
+            SetFace(keys, values, StopBlink);
         }
     }
 
@@ -119,25 +140,54 @@ public class FaceController : MonoBehaviour
         IsSetting = false;
     }
 
+    public void SetFace(BlendShapePreset preset, float strength, bool stopBlink)
+    {
+        SetFace(new BlendShapeKey(preset), strength, stopBlink);
+    }
+
+    public void SetFace(BlendShapeKey key, float strength, bool stopBlink)
+    {
+        SetFace(new List<string> { key.Name }, new List<float> { strength }, stopBlink);
+    }
+
+    public void SetFace(string key, float strength, bool stopBlink)
+    {
+        SetFace(new List<string> { key }, new List<float> { strength }, stopBlink);
+    }
+
     public void SetFace(List<string> keys, List<float> strength, bool stopBlink)
     {
         if (proxy != null)
         {
             StopBlink = stopBlink;
-            var NeutralKey = new BlendShapeKey(BlendShapePreset.Neutral);
             var dict = new Dictionary<BlendShapeKey, float>();
             foreach (var key in BlendShapeKeys)
             {
                 dict.Add(new BlendShapeKey(key), 0.0f);
             }
-            dict[NeutralKey] = 1.0f;
+            //dict[NeutralKey] = 1.0f;
             for (int i = 0; i < keys.Count; i++)
             {
                 dict[new BlendShapeKey(keys[i])] = strength[i];
             }
+            CurrentShapeKeys = dict;
             proxy.SetValues(dict.ToList());
-            proxy.Apply();
         }
+    }
+
+    public void MixPreset(BlendShapePreset preset, float value)
+    {
+        if (proxy == null) return;
+        if (CurrentShapeKeys == null) return;
+        var presetKey = new BlendShapeKey(preset);
+        foreach (var shapekey in CurrentShapeKeys)
+        {
+            if (shapekey.Key.Equals(presetKey)) continue;
+            proxy.AccumulateValue(shapekey.Key, shapekey.Value);
+        }
+        CurrentShapeKeys[presetKey] = value;
+        proxy.AccumulateValue(preset, value);
+        proxy.Apply();
     }
 
     private bool isReset = false;
@@ -152,6 +202,7 @@ public class FaceController : MonoBehaviour
                 proxy = VRMmodel.GetComponent<VRMBlendShapeProxy>();
                 //すべての表情の名称一覧を取得
                 if (proxy != null) BlendShapeKeys = proxy.BlendShapeAvatar.Clips.Select(d => BlendShapeKey.CreateFrom(d).Name).ToList();
+                SetFaceNeutral();
             }
             if (IsSetting == false)
             {
@@ -179,11 +230,11 @@ public class FaceController : MonoBehaviour
                 {
                     if (DefaultFace != BlendShapePreset.Unknown)
                     {
-                        proxy.SetValue(DefaultFace, 1.0f);
+                        SetFace(DefaultFace, 1.0f, StopBlink);
                     }
                     else if (string.IsNullOrEmpty(FacePresetName) == false)
                     {
-                        proxy.SetValue(FacePresetName, 1.0f);
+                        SetFace(FacePresetName, 1.0f, StopBlink);
                     }
                 }
             }
