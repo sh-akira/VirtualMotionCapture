@@ -994,6 +994,8 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 var currentvrik = CurrentModel.GetComponent<VRIK>();
                 if (currentvrik != null) Destroy(currentvrik);
+                var rootController = CurrentModel.GetComponent<VRIKRootController>();
+                if (rootController != null) Destroy(rootController);
             }
             LoadDefaultCurrentModelTransforms();
             //SetVRIK(CurrentModel);
