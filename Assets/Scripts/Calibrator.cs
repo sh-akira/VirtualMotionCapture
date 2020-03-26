@@ -458,7 +458,7 @@ public class Calibrator
         {
             var leftBendGoalTarget = CalibrateLeg(settings, LeftFootTransform, ik.solver.leftLeg, (ik.references.leftToes != null ? ik.references.leftToes : ik.references.leftFoot), hmdForwardAngle, ik.references.root.forward, true);
             ik.solver.leftLeg.bendGoal = leftBendGoalTarget;
-            ik.solver.leftLeg.bendGoalWeight = 1.0f;
+            ik.solver.leftLeg.bendGoalWeight = 0.0f;
         }
 
         if (LeftKneeTransform != null)
@@ -478,7 +478,7 @@ public class Calibrator
         {
             var rightBendGoalTarget = CalibrateLeg(settings, RightFootTransform, ik.solver.rightLeg, (ik.references.rightToes != null ? ik.references.rightToes : ik.references.rightFoot), hmdForwardAngle, ik.references.root.forward, false);
             ik.solver.rightLeg.bendGoal = rightBendGoalTarget;
-            ik.solver.rightLeg.bendGoalWeight = 1.0f;
+            ik.solver.rightLeg.bendGoalWeight = 0.0f;
         }
 
         if (RightKneeTransform != null)
@@ -788,7 +788,7 @@ public class Calibrator
         {
             var leftBendGoalTarget = CalibrateLeg(settings, LeftFootTransform, ik.solver.leftLeg, (ik.references.leftToes != null ? ik.references.leftToes : ik.references.leftFoot), hmdForwardAngle, ik.references.root.forward, true);
             ik.solver.leftLeg.bendGoal = leftBendGoalTarget;
-            ik.solver.leftLeg.bendGoalWeight = 1.0f;
+            ik.solver.leftLeg.bendGoalWeight = 0.0f;
         }
 
         if (LeftKneeTransform != null)
@@ -808,7 +808,7 @@ public class Calibrator
         {
             var rightBendGoalTarget = CalibrateLeg(settings, RightFootTransform, ik.solver.rightLeg, (ik.references.rightToes != null ? ik.references.rightToes : ik.references.rightFoot), hmdForwardAngle, ik.references.root.forward, false);
             ik.solver.rightLeg.bendGoal = rightBendGoalTarget;
-            ik.solver.rightLeg.bendGoalWeight = 1.0f;
+            ik.solver.rightLeg.bendGoalWeight = 0.0f;
         }
 
         if (RightKneeTransform != null)
@@ -1118,7 +1118,7 @@ public class Calibrator
         {
             var leftBendGoalTarget = CalibrateLeg(settings, LeftFootTransform, ik.solver.leftLeg, (ik.references.leftToes != null ? ik.references.leftToes : ik.references.leftFoot), hmdForwardAngle, ik.references.root.forward, true);
             ik.solver.leftLeg.bendGoal = leftBendGoalTarget;
-            ik.solver.leftLeg.bendGoalWeight = 1.0f;
+            ik.solver.leftLeg.bendGoalWeight = 0.0f;
         }
 
         if (LeftKneeTransform != null)
@@ -1138,7 +1138,7 @@ public class Calibrator
         {
             var rightBendGoalTarget = CalibrateLeg(settings, RightFootTransform, ik.solver.rightLeg, (ik.references.rightToes != null ? ik.references.rightToes : ik.references.rightFoot), hmdForwardAngle, ik.references.root.forward, false);
             ik.solver.rightLeg.bendGoal = rightBendGoalTarget;
-            ik.solver.rightLeg.bendGoalWeight = 1.0f;
+            ik.solver.rightLeg.bendGoalWeight = 0.0f;
         }
 
         if (RightKneeTransform != null)
