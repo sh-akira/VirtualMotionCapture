@@ -984,6 +984,13 @@ public class ControlWPFWindow : MonoBehaviour
             await context.LoadAsyncTask();
             context.ShowMeshes();
 
+            //BlendShape目線制御時の表情とのぶつかりを防ぐ
+            if (context.GLTF.extensions.VRM.firstPerson.lookAtType == LookAtType.BlendShape)
+            {
+                var applyer = context.Root.GetComponent<VRMLookAtBlendShapeApplyer>();
+                applyer.m_notSetValueApply = true;
+            }
+
             LoadNewModel(context.Root);
         }
         else
