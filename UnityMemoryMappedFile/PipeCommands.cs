@@ -352,37 +352,6 @@ namespace UnityMemoryMappedFile
             public float fov { get; set; }
         }
 
-        public class GetEnableExternalMotionSender { }
-        public class EnableExternalMotionSender
-        {
-            public bool enable { get; set; }
-        }
-        public class GetExternalMotionSenderAddress { }
-        public class ChangeExternalMotionSenderAddress
-        {
-            public string address { get; set; }
-            public int port { get; set; }
-
-            public int PeriodStatus { get; set; }
-            public int PeriodRoot { get; set; }
-            public int PeriodBone { get; set; }
-            public int PeriodBlendShape { get; set; }
-            public int PeriodCamera { get; set; }
-            public int PeriodDevices { get; set; }
-
-            public string OptionString { get; set; } //OK
-        }
-
-        public class GetEnableExternalMotionReceiver { }
-        public class EnableExternalMotionReceiver
-        {
-            public bool enable { get; set; }
-        }
-        public class GetExternalMotionReceiverPort { }
-        public class ChangeExternalMotionReceiverPort
-        {
-            public int port { get; set; }
-        }
         public class GetMidiCCBlendShape { }
         public class SetMidiCCBlendShape
         {

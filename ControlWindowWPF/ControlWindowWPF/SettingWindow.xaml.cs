@@ -84,11 +84,6 @@ namespace VirtualMotionCaptureControlPanel
                     }
                 });
             }
-            else if (e.CommandType == typeof(PipeCommands.StatusStringChanged))
-            {
-                var d = (PipeCommands.StatusStringChanged)e.Data;
-                Dispatcher.Invoke(() => StatusStringTextbox.Text = d.StatusString);
-            }
         }
 
         private void SetTrackersList(List<Tuple<string, string>> list, PipeCommands.SetTrackerSerialNumbers setting)
@@ -268,42 +263,6 @@ namespace VirtualMotionCaptureControlPanel
                     isSetting = false;
                 });
             });
-            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEnableExternalMotionSender { }, d =>
-            {
-                var data = (PipeCommands.EnableExternalMotionSender)d;
-                Dispatcher.Invoke(() =>
-                {
-                    isSetting = true;
-                    ExternalMotionSenderEnableCheckBox.IsChecked = data.enable;
-                    isSetting = false;
-                });
-            });
-            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetExternalMotionSenderAddress { }, d =>
-            {
-                var data = (PipeCommands.ChangeExternalMotionSenderAddress)d;
-                Dispatcher.Invoke(() =>
-                {
-                    ExternalMotionSenderAddressTextBox.Text = data.address;
-                    ExternalMotionSenderPortTextBox.Text = data.port.ToString();
-                    PeriodStatusTextBox.Text = data.PeriodStatus.ToString();
-                    PeriodRootTextBox.Text = data.PeriodRoot.ToString();
-                    PeriodBoneTextBox.Text = data.PeriodBone.ToString();
-                    PeriodBlendShapeTextBox.Text = data.PeriodBlendShape.ToString();
-                    PeriodCameraTextBox.Text = data.PeriodCamera.ToString();
-                    PeriodDevicesTextBox.Text = data.PeriodDevices.ToString();
-                    OptionStringTextbox.Text = data.OptionString;
-                });
-            });
-            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEnableExternalMotionReceiver { }, d =>
-            {
-                var data = (PipeCommands.EnableExternalMotionReceiver)d;
-                Dispatcher.Invoke(() =>
-                {
-                    isSetting = true;
-                    ExternalMotionReceiverEnableCheckBox.IsChecked = data.enable;
-                    isSetting = false;
-                });
-            });
             await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEnableTrackingFilter { }, d =>
             {
                 var data = (PipeCommands.EnableTrackingFilter)d;
@@ -334,16 +293,6 @@ namespace VirtualMotionCaptureControlPanel
                 {
                     isSetting = true;
                     HandleControllerAsTrackerCheckBox.IsChecked = data.HandleControllerAsTracker;
-                    isSetting = false;
-                });
-            });
-            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetStatusString { }, d =>
-            {
-                var data = (PipeCommands.SetStatusString)d;
-                Dispatcher.Invoke(() =>
-                {
-                    isSetting = true;
-                    StatusStringTextbox.Text = data.StatusString;
                     isSetting = false;
                 });
             });
@@ -578,64 +527,7 @@ namespace VirtualMotionCaptureControlPanel
                 });
             });
         }
-
-        private async void ExternalMotionSenderCheckBox_Changed(object sender, RoutedEventArgs e)
-        {
-            if (isSetting) return;
-            await Globals.Client?.SendCommandAsync(new PipeCommands.EnableExternalMotionSender
-            {
-                enable = ExternalMotionSenderEnableCheckBox.IsChecked.Value
-            });
-        }
-
-        private async void OSCApplyButton_Click(object sender, RoutedEventArgs e)
-        {
-            var port = TextBoxTryParse(ExternalMotionSenderPortTextBox);
-            var PeriodStatus = TextBoxTryParse(PeriodStatusTextBox);
-            var PeriodRoot = TextBoxTryParse(PeriodRootTextBox);
-            var PeriodBone = TextBoxTryParse(PeriodBoneTextBox);
-            var PeriodBlendShape = TextBoxTryParse(PeriodBlendShapeTextBox);
-            var PeriodCamera = TextBoxTryParse(PeriodCameraTextBox);
-            var PeriodDevices = TextBoxTryParse(PeriodDevicesTextBox);
-
-            if (port.HasValue && PeriodStatus.HasValue && PeriodRoot.HasValue && PeriodBone.HasValue && PeriodBlendShape.HasValue && PeriodCamera.HasValue && PeriodDevices.HasValue)
-            {
-                await Globals.Client?.SendCommandAsync(new PipeCommands.ChangeExternalMotionSenderAddress
-                {
-                    address = ExternalMotionSenderAddressTextBox.Text,
-                    port = port.Value,
-                    PeriodStatus = PeriodStatus.Value,
-                    PeriodRoot = PeriodRoot.Value,
-                    PeriodBone = PeriodBone.Value,
-                    PeriodBlendShape = PeriodBlendShape.Value,
-                    PeriodCamera = PeriodCamera.Value,
-                    PeriodDevices = PeriodDevices.Value,
-                    OptionString = OptionStringTextbox.Text,
-                });
-            }
-        }
-
-        private async void ExternalMotionReceiverCheckBox_Changed(object sender, RoutedEventArgs e)
-        {
-            if (isSetting) return;
-            await Globals.Client?.SendCommandAsync(new PipeCommands.EnableExternalMotionReceiver
-            {
-                enable = ExternalMotionReceiverEnableCheckBox.IsChecked.Value
-            });
-        }
-
-        private async void OSCReceiverApplyButton_Click(object sender, RoutedEventArgs e)
-        {
-            var port = TextBoxTryParse(ExternalMotionReceiverPortTextBox);
-            if (port.HasValue)
-            {
-                await Globals.Client?.SendCommandAsync(new PipeCommands.ChangeExternalMotionReceiverPort
-                {
-                    port = port.Value
-                });
-            }
-        }
-
+        
         private void MidiCCBlendShapeSettingButton_Click(object sender, RoutedEventArgs e)
         {
             var win = new MidiCCBlendShapeSettingWIndow();

@@ -25,8 +25,6 @@ namespace sh_akira.OVRTracking
         public List<GameObject> BaseStationsObject = new List<GameObject>();
         public bool DisableBaseStationRotation = true;
 
-        public ExternalReceiverForVMC externalReceiver;
-
         // Use this for initialization
         void Start()
         {
@@ -95,15 +93,6 @@ namespace sh_akira.OVRTracking
 
             var controllerPositions = positions[ETrackedDeviceClass.Controller];
 
-            //add from ExternalReceiverForVMC
-            if (externalReceiver != null)
-            {
-                foreach (var c in externalReceiver.virtualControllerFiltered)
-                {
-                    controllerPositions.Add(new DeviceInfo(c.Value, c.Key));
-                }
-            }
-
             if (controllerPositions.Any())
             {
                 if (Controllers.Count != controllerPositions.Count) Controllers.Clear();
@@ -118,15 +107,6 @@ namespace sh_akira.OVRTracking
             }
 
             var trackerPositions = positions[ETrackedDeviceClass.GenericTracker];
-
-            //add from ExternalReceiverForVMC
-            if (externalReceiver != null)
-            {
-                foreach (var t in externalReceiver.virtualTrackerFiltered)
-                {
-                    trackerPositions.Add(new DeviceInfo(t.Value, t.Key));
-                }
-            }
 
             if (trackerPositions.Any())
             {

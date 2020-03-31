@@ -69,7 +69,6 @@ public class TrackerPositionsImporter : MonoBehaviour
         if (vrik == null && CurrentModel != null)
         {
             vrik = CurrentModel.GetComponent<VRIK>();
-            Debug.Log("ExternalSender: VRIK Updated");
         }
         if (vrik == null) return;
         var path = Application.dataPath + "/../SavedTrackerPositions/";

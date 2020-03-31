@@ -225,11 +225,6 @@
     <system:String x:Key="SettingWindow_SelectedItemError">Please select tracker to assign camera</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig">Export externalcamera.cfg</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">Export externalcamera.cfg to synthesize model into VR game</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionSender">External motion sender</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">Enable OSC motion sender</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">Interval(once every specified frame)</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionReceiver">External motion receiver</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">Enable OSC motion receiver</system:String>
     
 
     <!-- TrackerConfigWindow -->

@@ -226,11 +226,6 @@
     <system:String x:Key="SettingWindow_SelectedItemError">카메라를 할당할 트래커를 선택해주세요</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig">externalcamera.cfg 출력</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">VR게임에 모델을 합성하기 위한 externalcamera.cfg를 출력합니다</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionSender">외부로 모션을 송신</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">OSC로 모션송신을 활성화합니다</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">전송 간격 (지정 프레임에 1 회)</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionReceiver">외부에서 모션 수신</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">OSC에서 모션의 수신을 활성화합니다</system:String>
 
 
 
