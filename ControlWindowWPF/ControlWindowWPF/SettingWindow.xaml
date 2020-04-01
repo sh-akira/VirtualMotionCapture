@@ -107,6 +107,13 @@
                         <Button Content="Export" Name="CameraPlus_ExportButton" Click="CameraPlus_ExportButton_Click"/>
                     </UniformGrid>
                 </GroupBox>
+                <GroupBox Header="OSC">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="モーション送信機能はpixivFANBOX,Patreon先行配信版限定機能です" TextWrapping="Wrap"/>
+                        <TextBlock><Hyperlink NavigateUri="https://www.pixiv.net/fanbox/creator/10267568" RequestNavigate="Hyperlink_RequestNavigate">pixivFANBOX</Hyperlink></TextBlock>
+                        <TextBlock><Hyperlink NavigateUri="https://www.patreon.com/sh_akira" RequestNavigate="Hyperlink_RequestNavigate">Patreon</Hyperlink></TextBlock>
+                    </StackPanel>
+                </GroupBox>
                 <GroupBox Header="MIDI CC BlendShape">
                     <Button Content="Knob to BlendShape setting" Name="MidiCCBlendShapeSettingButton" Click="MidiCCBlendShapeSettingButton_Click"/>
                 </GroupBox>
