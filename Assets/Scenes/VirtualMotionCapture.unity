@@ -7783,7 +7783,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50f533c8e82d6b540bbaeaaf98022cf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VersionString: v0.42f1
+  VersionString: v0.42f2
   handler: {fileID: 1128534203}
   LeftWristTransform: {fileID: 0}
   RightWristTransform: {fileID: 0}
