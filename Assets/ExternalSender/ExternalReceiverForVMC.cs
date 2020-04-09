@@ -8,7 +8,7 @@ using UnityEngine;
 using Valve.VR;
 using VRM;
 using UnityMemoryMappedFile;
-
+using System.Linq;
 
 [RequireComponent(typeof(uOSC.uOscServer))]
 public class ExternalReceiverForVMC : MonoBehaviour {
@@ -31,7 +31,7 @@ public class ExternalReceiverForVMC : MonoBehaviour {
     ControlWPFWindow window = null;
     GameObject CurrentModel = null;
     Camera currentCamera = null;
-    VRMBlendShapeProxy blendShapeProxy = null;
+    FaceController faceController = null;
     VRMLookAtHead vrmLookAtHead = null;
 
     //仮想視線操作用
@@ -41,17 +41,19 @@ public class ExternalReceiverForVMC : MonoBehaviour {
     Vector3 pos;
     Quaternion rot;
 
+    private Dictionary<BlendShapeKey, float> blendShapeBuffer = new Dictionary<BlendShapeKey, float>();
+
     void Start () {
         var server = GetComponent<uOSC.uOscServer>();
         server.onDataReceived.AddListener(OnDataReceived);
 
         window = GameObject.Find("ControlWPFWindow").GetComponent<ControlWPFWindow>();
+        faceController = GameObject.Find("AnimationController").GetComponent<FaceController>();
         window.ModelLoadedAction += (GameObject CurrentModel) =>
         {
             if (CurrentModel != null)
             {
                 this.CurrentModel = CurrentModel;
-                blendShapeProxy = CurrentModel.GetComponent<VRMBlendShapeProxy>();
                 vrmLookAtHead = CurrentModel.GetComponent<VRMLookAtHead>();
             }
         };
@@ -191,18 +193,14 @@ public class ExternalReceiverForVMC : MonoBehaviour {
                 && (message.values[1] is float)
                 )
             {
-                if (blendShapeProxy != null)
-                {
-                    blendShapeProxy.AccumulateValue((string)message.values[0], (float)message.values[1]);
-                }
+                blendShapeBuffer[new BlendShapeKey((string)message.values[0])] = (float)message.values[1];
             }
             //ブレンドシェープ適用
             else if (message.address == "/VMC/Ext/Blend/Apply")
             {
-                if (blendShapeProxy != null)
-                {
-                    blendShapeProxy.Apply();
-                }
+                faceController.MixPresets(nameof(ExternalReceiverForVMC), blendShapeBuffer.Keys.ToArray(), blendShapeBuffer.Values.ToArray());
+                blendShapeBuffer.Clear();
+                
             }//外部アイトラ V2.3
             else if (message.address == "/VMC/Ext/Set/Eye"
                 && (message.values[0] is int)

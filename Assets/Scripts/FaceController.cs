@@ -185,8 +185,16 @@ public class FaceController : MonoBehaviour
     {
         if (proxy == null) return;
         if (CurrentShapeKeys == null) return;
-        
-        if(AccumulateShapeKeys.ContainsKey(presetName) == false)
+
+        MixPresets(presetName, presets.Select(d => new BlendShapeKey(d)).ToArray(), values);
+    }
+
+    public void MixPresets(string presetName, BlendShapeKey[] presets, float[] values)
+    {
+        if (proxy == null) return;
+        if (CurrentShapeKeys == null) return;
+
+        if (AccumulateShapeKeys.ContainsKey(presetName) == false)
         {
             AccumulateShapeKeys.Add(presetName, new Dictionary<BlendShapeKey, float>());
         }
@@ -195,7 +203,7 @@ public class FaceController : MonoBehaviour
         //Mixしたい表情を合成する
         for (int i = 0; i < presets.Length; i++)
         {
-            var presetKey = new BlendShapeKey(presets[i]);
+            var presetKey = presets[i];
             presetDictionary.Add(presetKey, values[i]);
         }
     }
@@ -203,13 +211,13 @@ public class FaceController : MonoBehaviour
     private void AccumulateBlendShapes()
     {
         if (proxy == null) return;
-        foreach(var shapeKey in CurrentShapeKeys)
+        foreach (var shapeKey in CurrentShapeKeys)
         {
             proxy.ImmediatelySetValue(shapeKey.Key, shapeKey.Value);
         }
-        foreach(var presets in AccumulateShapeKeys)
+        foreach (var presets in AccumulateShapeKeys)
         {
-            foreach(var preset in presets.Value)
+            foreach (var preset in presets.Value)
             {
                 proxy.AccumulateValue(preset.Key, preset.Value);
             }
