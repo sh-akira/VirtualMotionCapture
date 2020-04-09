@@ -42,11 +42,6 @@ public class MIDICCBlendShape : MonoBehaviour {
                     available = true;
                 }
             }
-
-            //値が一つでも存在すれば反映、でなければ特に触らない
-            if (available) {
-                blendShapeProxy.Apply();
-            }
         }
     }
 }

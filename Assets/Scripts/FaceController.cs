@@ -53,6 +53,7 @@ public class FaceController : MonoBehaviour
     private AnimationController animationController;
 
     private Dictionary<BlendShapeKey, float> CurrentShapeKeys;
+    private Dictionary<string, Dictionary<BlendShapeKey, float>> AccumulateShapeKeys = new Dictionary<string, Dictionary<BlendShapeKey, float>>();
     private BlendShapeKey NeutralKey = new BlendShapeKey(BlendShapePreset.Neutral);
 
     public void ImportVRMmodel(GameObject vrmmodel)
@@ -79,11 +80,11 @@ public class FaceController : MonoBehaviour
         if (proxy != null)
         {
             animationController.ClearAnimations();
-            animationController.AddResetAction(() => MixPreset(BlendShapePreset.Blink, 0.0f));
+            animationController.AddResetAction(() => MixPreset("Blink", BlendShapePreset.Blink, 0.0f));
             animationController.AddWait(null, () => BlinkTimeMin + Random.value * (BlinkTimeMax - BlinkTimeMin));
-            animationController.AddAnimation(CloseAnimationTime, 0.0f, 1.0f, v => MixPreset(BlendShapePreset.Blink, v));
+            animationController.AddAnimation(CloseAnimationTime, 0.0f, 1.0f, v => MixPreset("Blink", BlendShapePreset.Blink, v));
             animationController.AddWait(ClosingTime);
-            animationController.AddAnimation(OpenAnimationTime, 1.0f, 0.0f, v => MixPreset(BlendShapePreset.Blink, v));
+            animationController.AddAnimation(OpenAnimationTime, 1.0f, 0.0f, v => MixPreset("Blink", BlendShapePreset.Blink, v));
         }
     }
 
@@ -91,17 +92,17 @@ public class FaceController : MonoBehaviour
     {
         if (ViveProEyeEnabled == false)
         {
-            MixPreset(BlendShapePreset.Blink, 0.0f);
+            MixPreset("Blink", BlendShapePreset.Blink, 0.0f);
         }
-        MixPreset(BlendShapePreset.Blink_L, value);
+        MixPreset("Blink_L", BlendShapePreset.Blink_L, value);
     }
     public void SetBlink_R(float value)
     {
         if (ViveProEyeEnabled == false)
         {
-            MixPreset(BlendShapePreset.Blink, 0.0f);
+            MixPreset("Blink", BlendShapePreset.Blink, 0.0f);
         }
-        MixPreset(BlendShapePreset.Blink_R, value);
+        MixPreset("Blink_R", BlendShapePreset.Blink_R, value);
     }
 
     private void SetFaceNeutral()
@@ -170,29 +171,48 @@ public class FaceController : MonoBehaviour
             {
                 dict[new BlendShapeKey(keys[i])] = strength[i];
             }
+            //現在のベースの表情を更新する
             CurrentShapeKeys = dict;
-            proxy.SetValues(dict.ToList());
         }
     }
 
-    public void MixPreset(BlendShapePreset preset, float value)
+    public void MixPreset(string presetName, BlendShapePreset preset, float value)
     {
-        MixPresets(new[] { preset }, new[] { value });
+        MixPresets(presetName, new[] { preset }, new[] { value });
     }
 
-    public void MixPresets(BlendShapePreset[] presets, float[] values)
+    public void MixPresets(string presetName, BlendShapePreset[] presets, float[] values)
     {
         if (proxy == null) return;
         if (CurrentShapeKeys == null) return;
-        foreach (var shapekey in CurrentShapeKeys)
+        
+        if(AccumulateShapeKeys.ContainsKey(presetName) == false)
         {
-            proxy.AccumulateValue(shapekey.Key, shapekey.Value);
+            AccumulateShapeKeys.Add(presetName, new Dictionary<BlendShapeKey, float>());
         }
+        var presetDictionary = AccumulateShapeKeys[presetName];
+        presetDictionary.Clear();
+        //Mixしたい表情を合成する
         for (int i = 0; i < presets.Length; i++)
         {
             var presetKey = new BlendShapeKey(presets[i]);
-            CurrentShapeKeys[presetKey] = values[i];
-            proxy.AccumulateValue(presets[i], values[i]);
+            presetDictionary.Add(presetKey, values[i]);
+        }
+    }
+
+    private void AccumulateBlendShapes()
+    {
+        if (proxy == null) return;
+        foreach(var shapeKey in CurrentShapeKeys)
+        {
+            proxy.ImmediatelySetValue(shapeKey.Key, shapeKey.Value);
+        }
+        foreach(var presets in AccumulateShapeKeys)
+        {
+            foreach(var preset in presets.Value)
+            {
+                proxy.AccumulateValue(preset.Key, preset.Value);
+            }
         }
         proxy.Apply();
     }
@@ -245,6 +265,8 @@ public class FaceController : MonoBehaviour
                     }
                 }
             }
+
+            AccumulateBlendShapes();
         }
 
     }
