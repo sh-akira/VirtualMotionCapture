@@ -138,7 +138,7 @@ public class DynamicOVRLipSync : OVRLipSyncContextBase
                         {
                             visemes[i] *= MaxLevel;
                         }
-                        faceController.MixPresets(presets, visemes);
+                        faceController.MixPresets(nameof(DynamicOVRLipSync), presets, visemes);
 
                         //Debug.Log("Visemes:" + string.Join(",", frame.Visemes.Select(d => d.ToString())));
                     }
