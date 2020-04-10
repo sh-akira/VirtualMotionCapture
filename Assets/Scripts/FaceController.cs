@@ -45,6 +45,18 @@ public class FaceController : MonoBehaviour
                     }
                 }
                 defaultFace = value;
+                //新しい表情を設定する
+                if (proxy != null)
+                {
+                    if (defaultFace != BlendShapePreset.Unknown)
+                    {
+                        SetFace(defaultFace, 1.0f, StopBlink);
+                    }
+                    else if (string.IsNullOrEmpty(FacePresetName) == false)
+                    {
+                        SetFace(FacePresetName, 1.0f, StopBlink);
+                    }
+                }
             }
         }
     }
@@ -205,7 +217,7 @@ public class FaceController : MonoBehaviour
         if (proxy == null) return;
         foreach(var shapeKey in CurrentShapeKeys)
         {
-            proxy.ImmediatelySetValue(shapeKey.Key, shapeKey.Value);
+            proxy.AccumulateValue(shapeKey.Key, shapeKey.Value);
         }
         foreach(var presets in AccumulateShapeKeys)
         {
@@ -253,17 +265,6 @@ public class FaceController : MonoBehaviour
                     }
                 }
 
-                if (DefaultFace != BlendShapePreset.Neutral && proxy != null)
-                {
-                    if (DefaultFace != BlendShapePreset.Unknown)
-                    {
-                        SetFace(DefaultFace, 1.0f, StopBlink);
-                    }
-                    else if (string.IsNullOrEmpty(FacePresetName) == false)
-                    {
-                        SetFace(FacePresetName, 1.0f, StopBlink);
-                    }
-                }
             }
 
             AccumulateBlendShapes();
