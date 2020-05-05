@@ -48,6 +48,11 @@ public class Calibrator
         hmdAdjusterTransform.rotation = ik.references.head.rotation;
         ik.solver.spine.headTarget = hmdAdjusterTransform;
 
+        HMDTransform.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+//            ik.references.hea = weight;
+
+        });
+
         // Size
         float sizeF = hmdAdjusterTransform.position.y / ik.references.head.position.y;
         ik.references.root.localScale = Vector3.one * sizeF;
