@@ -5813,7 +5813,7 @@ MonoBehaviour:
   - {fileID: 1255601378}
   - {fileID: 1653217471}
   DisableBaseStationRotation: 1
-  externalReceiver: {fileID: 0}
+  externalReceiver: {fileID: 389263779}
 --- !u!4 &1128534204
 Transform:
   m_ObjectHideFlags: 0
