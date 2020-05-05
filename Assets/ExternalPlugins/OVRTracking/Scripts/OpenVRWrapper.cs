@@ -97,7 +97,6 @@ namespace sh_akira.OVRTracking
                     if (trackedHistory[i] == false && pose.bPoseIsValid == false)
                     {
                         //無視する
-                        Debug.Log("" + i + " is Never Tracked");
                         continue;
                     }
                     trackedHistory[i] = true;
