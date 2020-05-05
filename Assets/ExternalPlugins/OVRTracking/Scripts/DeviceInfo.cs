@@ -14,20 +14,33 @@ namespace sh_akira.OVRTracking
         const float MAX_CHECK_SECONDS = 60f; //最大カウント時間
         const float LEAP_SECONDS = 1f; //トラッキング復帰までのなめらか時間
 
-        //有効無効
+        //-----------全デバイス情報----------------------
+
+        //有効無効(全体の情報をstaticとして保持する)
         public static bool globalEnable = true;
         public static bool hmdEnable = true;
         public static bool controllerEnable = true;
         public static bool trackerEnable = true;
 
-        //最後に正常だった位置情報
+        //最後に正常だった全位置情報
         static Dictionary<string, SteamVR_Utils.RigidTransform> lastValidTransform = new Dictionary<string, SteamVR_Utils.RigidTransform>();
-        //前回の正常性情報
+        //前回の全正常性情報
         static Dictionary<string, bool> lastStatus = new Dictionary<string, bool>();
-        //正常に取得できているフレーム数
+        //正常に取得できている全フレーム数
         static Dictionary<string, int> validFrames = new Dictionary<string, int>();
 
+        //全記録情報のリセット
+        static void Reset()
+        {
+            lastValidTransform.Clear();
+            lastStatus.Clear();
+            validFrames.Clear();
+        }
+
+        //-----------デバイスごとの情報----------------------
+
         //デバイス取得の度にnewされるのでデータ保持不可
+        public bool isOK { get; private set; } //外部公開用の飛び検出情報(true=正常, false=遮断)
 
         public string serialNumber { get; set; }
         public SteamVR_Utils.RigidTransform transform { get; set; }
@@ -36,13 +49,6 @@ namespace sh_akira.OVRTracking
         //内部で使用する用のステータス状態
         private TrackedDevicePose_t trackingStatus;
         float okTime = 0;
-
-        //記録情報のリセット
-        static void Reset() {
-            lastValidTransform.Clear();
-            lastStatus.Clear();
-            validFrames.Clear();
-        }
 
         public DeviceInfo() { }
 
@@ -58,6 +64,7 @@ namespace sh_akira.OVRTracking
             trackingStatus.eTrackingResult = ETrackingResult.Running_OK;
 
             trackedDeviceClass = ETrackedDeviceClass.GenericTracker;
+            isOK = true; //外部向けには一旦問題無しとする
 
             updateValues();
         }
@@ -68,11 +75,12 @@ namespace sh_akira.OVRTracking
             serialNumber = serial;
             trackingStatus = result;
             trackedDeviceClass = deviceClass;
+            isOK = true; //外部向けには一旦問題無しとする
 
             updateValues();
         }
 
-        //正常かどうかを判断する
+        //内部向け、正常かどうかを判断する
         private bool IsTrackingOK()
         {
             return trackingStatus.eTrackingResult == ETrackingResult.Running_OK;
@@ -105,6 +113,8 @@ namespace sh_akira.OVRTracking
             if (transform.pos == Vector3.zero && transform.rot == Quaternion.identity)
             {
                 transform = lastValidTransform[serialNumber];
+                isOK = false; //外部向けに問題ありと通知する
+                return;
             }
 
             //値保存・スワップ処理(時間を考慮する)
@@ -127,6 +137,7 @@ namespace sh_akira.OVRTracking
                     //これにより加速度的に戻る & 飛びから復帰してまた飛んだとき対策
                     lastValidTransform[serialNumber] = transform;
                 }
+                return;
             }
             else
             {
@@ -138,6 +149,8 @@ namespace sh_akira.OVRTracking
                 Quaternion rot = Quaternion.Lerp(lastValidTransform[serialNumber].rot, transform.rot, 0.5f);
 
                 transform = new SteamVR_Utils.RigidTransform(pos, rot);
+                isOK = false; //外部向けに問題ありと通知する
+                return;
             }
         }
 
@@ -148,6 +161,7 @@ namespace sh_akira.OVRTracking
             {
                 //0を検出したら、過去の値を使う
                 transform = lastValidTransform[serialNumber];
+                isOK = false; //外部向けに問題ありと通知する
             }
             else
             {
