@@ -64,6 +64,7 @@ namespace sh_akira.OVRTracking
         }
 
         private string[] serialNumbers = null;
+        private bool[] trackedHistory = null;
 
         public Dictionary<ETrackedDeviceClass, List<DeviceInfo>> GetTrackerPositions()
         {
@@ -80,6 +81,8 @@ namespace sh_akira.OVRTracking
             positions.Add(ETrackedDeviceClass.TrackingReference, new List<DeviceInfo>());
             TrackedDevicePose_t[] allPoses = new TrackedDevicePose_t[OpenVR.k_unMaxTrackedDeviceCount];
             if (serialNumbers == null) serialNumbers = new string[OpenVR.k_unMaxTrackedDeviceCount];
+            if (trackedHistory == null) trackedHistory = new bool[OpenVR.k_unMaxTrackedDeviceCount];
+            
             //TODO: TrackingUniverseStanding??
             openVR.GetDeviceToAbsoluteTrackingPose(ETrackingUniverseOrigin.TrackingUniverseStanding, 0, allPoses);
             for (uint i = 0; i < allPoses.Length; i++)
@@ -90,6 +93,15 @@ namespace sh_akira.OVRTracking
                 var deviceClass = openVR.GetTrackedDeviceClass(i);
                 if (pose.bDeviceIsConnected && (deviceClass == ETrackedDeviceClass.HMD || deviceClass == ETrackedDeviceClass.Controller || deviceClass == ETrackedDeviceClass.GenericTracker || deviceClass == ETrackedDeviceClass.TrackingReference))
                 {
+                    //過去一度でもトラッキングしたことがなく、現在も有効でない場合
+                    if (trackedHistory[i] == false && pose.bPoseIsValid == false)
+                    {
+                        //無視する
+                        Debug.Log("" + i + " is Never Tracked");
+                        continue;
+                    }
+                    trackedHistory[i] = true;
+
                     if (serialNumbers[i] == null)
                     {
                         serialNumbers[i] = GetTrackerSerialNumber(i);
@@ -107,6 +119,8 @@ namespace sh_akira.OVRTracking
                 else {
                     //接続切れたらシリアル番号キャッシュクリア
                     serialNumbers[i] = null;
+                    //トラッキングもしてない
+                    trackedHistory[i] = false;
                 }
             }
             return positions;
@@ -128,6 +142,23 @@ namespace sh_akira.OVRTracking
             if (error != ETrackedPropertyError.TrackedProp_Success) return null;// "No Serial Number";
             return buffer.ToString();
         }
+
+        /*
+        //今まで一度もトラッキングされたことがないかどうかをチェックする(True=全く位置情報がない, False=過去一度でも位置情報がある)
+        public bool GetNeverTracked(uint deviceIndex)
+        {
+            if (openVR == null)
+            {
+                return true;
+            }
+
+            var error = default(ETrackedPropertyError);
+            //Prop_NeverTracked_Bool取得
+            bool NeverTracked = openVR.GetBoolTrackedDeviceProperty(deviceIndex, ETrackedDeviceProperty.Prop_NeverTracked_Bool, ref error);
+            if (error != ETrackedPropertyError.TrackedProp_Success) return true;
+            return NeverTracked;
+        }
+        */
 
         public bool GetIsSafeMode()
         {
