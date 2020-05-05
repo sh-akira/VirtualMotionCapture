@@ -40,6 +40,21 @@ namespace sh_akira.OVRTracking
         // Use this for initialization
         void Start()
         {
+            InitializeTrackingWatcher();
+
+            OpenVRWrapper.Instance.OnOVRConnected += OpenVR_OnOVRConnected;
+            OpenVRWrapper.Instance.Setup();
+        }
+
+        private void OpenVR_OnOVRConnected(object sender, OVRConnectedEventArgs e)
+        {
+            IsOVRConnected = e.Connected;
+        }
+
+        private bool IsOVRConnected = false;
+
+        private void InitializeTrackingWatcher()
+        {
             //Watcherを用意
             HMDObjectTrackingWatcher = HMDObject.AddComponent<TrackingWatcher>();
 
@@ -55,17 +70,21 @@ namespace sh_akira.OVRTracking
             {
                 TrackersObjectTrackingWatcher[i] = TrackersObject[i].AddComponent<TrackingWatcher>();
             }
-
-            OpenVRWrapper.Instance.OnOVRConnected += OpenVR_OnOVRConnected;
-            OpenVRWrapper.Instance.Setup();
         }
 
-        private void OpenVR_OnOVRConnected(object sender, OVRConnectedEventArgs e)
+        //設定を初期化したい時に使う
+        public void ClearTrackingWatcher()
         {
-            IsOVRConnected = e.Connected;
+            HMDObjectTrackingWatcher.Clear();
+            for (int i = 0; i < ControllersObjectTrackingWatcher.Count; i++)
+            {
+                ControllersObjectTrackingWatcher[i].Clear();
+            }
+            for (int i = 0; i < TrackersObjectTrackingWatcher.Count; i++)
+            {
+                TrackersObjectTrackingWatcher[i].Clear();
+            }
         }
-
-        private bool IsOVRConnected = false;
 
         public Transform GetTrackerTransformByName(string name)
         {
