@@ -31,6 +31,11 @@ namespace VirtualMotionCaptureControlPanel
             Globals.Client.ReceivedEvent += Client_Received;
             await Globals.Client.SendCommandAsync(new PipeCommands.StartKeyConfig { });
 
+            Globals.LoadCommonSettings();
+            var calibrateType = Globals.CurrentCommonSettingsWPF.LastCalibrateType;
+            if (calibrateType == PipeCommands.CalibrateType.Default) CalibrateDefaultRadioButton.IsChecked = true;
+            else if (calibrateType == PipeCommands.CalibrateType.FixedHand) CalibrateFixedHandRadioButton.IsChecked = true;
+            else if (calibrateType == PipeCommands.CalibrateType.FixedHandWithGround) CalibrateFixedHandWithGroundRadioButton.IsChecked = true;
         }
 
         private void Client_Received(object sender, DataReceivedEventArgs e)
@@ -59,7 +64,10 @@ namespace VirtualMotionCaptureControlPanel
                 await Task.Delay(1000);
             } while (timercount-- > 0);
             StatusTextBlock.Text = LanguageSelector.Get("CalibrationWindow_Status_Calibrating");
-            await Globals.Client.SendCommandAsync(new PipeCommands.Calibrate { CalibrateType = CalibrateFixedHandRadioButton.IsChecked == true ? PipeCommands.CalibrateType.FixedHand : (CalibrateFixedHandWithGroundRadioButton.IsChecked == true ? PipeCommands.CalibrateType.FixedHandWithGround : PipeCommands.CalibrateType.Default) });
+            var calibrateType = CalibrateFixedHandRadioButton.IsChecked == true ? PipeCommands.CalibrateType.FixedHand : (CalibrateFixedHandWithGroundRadioButton.IsChecked == true ? PipeCommands.CalibrateType.FixedHandWithGround : PipeCommands.CalibrateType.Default);
+            Globals.CurrentCommonSettingsWPF.LastCalibrateType = calibrateType;
+            Globals.SaveCommonSettings();
+            await Globals.Client.SendCommandAsync(new PipeCommands.Calibrate { CalibrateType = calibrateType });
             await Task.Delay(1000);
             StatusTextBlock.Text = LanguageSelector.Get("CalibrationWindow_Status_Finish");
             await Task.Delay(1000);
