@@ -22,6 +22,7 @@ public class EyeTracking_Tobii : MonoBehaviour
     private Vector3 oldPoint;
     private bool isFirst = true;
     public ControlWPFWindow controlWPFWindow;
+    public FaceController faceController;
 
     // Use this for initialization
     void Start()
@@ -78,7 +79,12 @@ public class EyeTracking_Tobii : MonoBehaviour
         LookTarget.transform.localRotation = Quaternion.identity;
         LookTarget.transform.localPosition = new Vector3(0, 0, 0f);
         var vrmLookAtHead = currentModel.GetComponent<VRM.VRMLookAtHead>();
-        vrmLookAtHead.Target = LookTarget.transform;
+        faceController.BeforeApply += () =>
+        {
+            vrmLookAtHead.Target = LookTarget.transform;
+            vrmLookAtHead.LookWorldPosition();
+            vrmLookAtHead.Target = null;
+        };
         StartPos = LookTarget.transform.localPosition;
         isFirst = true;
     }

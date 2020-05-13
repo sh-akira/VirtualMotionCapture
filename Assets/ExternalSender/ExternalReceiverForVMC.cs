@@ -36,6 +36,7 @@ public class ExternalReceiverForVMC : MonoBehaviour {
 
     //仮想視線操作用
     GameObject lookTargetOSC;
+    Action beforeFaceApply;
 
     //バッファ
     Vector3 pos;
@@ -60,6 +61,13 @@ public class ExternalReceiverForVMC : MonoBehaviour {
         window.CameraChangedAction += (Camera currentCamera) =>
         {
             this.currentCamera = currentCamera;
+        };
+
+        beforeFaceApply = () =>
+        {
+            vrmLookAtHead.Target = lookTargetOSC.transform;
+            vrmLookAtHead.LookWorldPosition();
+            vrmLookAtHead.Target = null;
         };
     }
 
@@ -232,7 +240,7 @@ public class ExternalReceiverForVMC : MonoBehaviour {
                     //視線に書き込む
                     if (vrmLookAtHead != null)
                     {
-                        vrmLookAtHead.Target = lookTargetOSC.transform;
+                        faceController.BeforeApply += beforeFaceApply;
                     }
                 }
                 else
@@ -240,7 +248,7 @@ public class ExternalReceiverForVMC : MonoBehaviour {
                     //視線を止める
                     if (vrmLookAtHead != null)
                     {
-                        vrmLookAtHead.Target = null;
+                        faceController.BeforeApply -= beforeFaceApply;
                     }
                 }
             }

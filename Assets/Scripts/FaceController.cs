@@ -24,6 +24,8 @@ public class FaceController : MonoBehaviour
 
     public List<string> BlendShapeKeys; //読み込んだモデルの表情のキー一覧
 
+    public System.Action BeforeApply;
+
     private BlendShapePreset defaultFace = BlendShapePreset.Neutral;
     public BlendShapePreset DefaultFace
     {
@@ -234,6 +236,9 @@ public class FaceController : MonoBehaviour
                 proxy.AccumulateValue(preset.Key, preset.Value);
             }
         }
+
+        BeforeApply?.Invoke();
+
         proxy.Apply();
     }
 

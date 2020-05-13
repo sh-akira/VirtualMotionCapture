@@ -84,7 +84,12 @@ public class EyeTracking_ViveProEye : MonoBehaviour
         LookTarget.transform.localRotation = Quaternion.identity;
         LookTarget.transform.localPosition = new Vector3(0, 0, 1f); //すべて0地点にすると目が荒ぶる
         var vrmLookAtHead = currentModel.GetComponent<VRM.VRMLookAtHead>();
-        vrmLookAtHead.Target = LookTarget.transform;
+        faceController.BeforeApply += () =>
+        {
+            vrmLookAtHead.Target = LookTarget.transform;
+            vrmLookAtHead.LookWorldPosition();
+            vrmLookAtHead.Target = null;
+        };
         StartPos = LookTarget.transform.localPosition;
         isFirst = true;
     }
