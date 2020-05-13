@@ -36,6 +36,7 @@ namespace VirtualMotionCaptureControlPanel
             if (calibrateType == PipeCommands.CalibrateType.Default) CalibrateDefaultRadioButton.IsChecked = true;
             else if (calibrateType == PipeCommands.CalibrateType.FixedHand) CalibrateFixedHandRadioButton.IsChecked = true;
             else if (calibrateType == PipeCommands.CalibrateType.FixedHandWithGround) CalibrateFixedHandWithGroundRadioButton.IsChecked = true;
+            CalibrationEndSoundCheckBox.IsChecked = Globals.CurrentCommonSettingsWPF.EnableCalibrationEndSound;
         }
 
         private void Client_Received(object sender, DataReceivedEventArgs e)
@@ -66,10 +67,16 @@ namespace VirtualMotionCaptureControlPanel
             StatusTextBlock.Text = LanguageSelector.Get("CalibrationWindow_Status_Calibrating");
             var calibrateType = CalibrateFixedHandRadioButton.IsChecked == true ? PipeCommands.CalibrateType.FixedHand : (CalibrateFixedHandWithGroundRadioButton.IsChecked == true ? PipeCommands.CalibrateType.FixedHandWithGround : PipeCommands.CalibrateType.Default);
             Globals.CurrentCommonSettingsWPF.LastCalibrateType = calibrateType;
-            Globals.SaveCommonSettings();
             await Globals.Client.SendCommandAsync(new PipeCommands.Calibrate { CalibrateType = calibrateType });
             await Task.Delay(1000);
             StatusTextBlock.Text = LanguageSelector.Get("CalibrationWindow_Status_Finish");
+            Globals.CurrentCommonSettingsWPF.EnableCalibrationEndSound = CalibrationEndSoundCheckBox.IsChecked.Value;
+            if (Globals.CurrentCommonSettingsWPF.EnableCalibrationEndSound)
+            {
+                System.Media.SystemSounds.Beep.Play();
+            }
+
+            Globals.SaveCommonSettings();
             await Task.Delay(1000);
             Close();
         }

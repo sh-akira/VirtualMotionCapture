@@ -29,7 +29,10 @@
                 <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateFixedHandRadioButton}" Name="CalibrateFixedHandRadioButton" Padding="5"/>
                 <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton}" Name="CalibrateFixedHandWithGroundRadioButton" Padding="5"/>
             </StackPanel>
-            <Button Content="{DynamicResource CalibrationWindow_CalibrationButton}" Name="CalibrationButton" Click="CalibrationButton_Click" HorizontalAlignment="Center" Margin="0,20,0,0" Padding="20,5,20,5" FontSize="16" ToolTip="{DynamicResource CalibrationWindow_CalibrationButton_ToolTip}"/>
+            <Grid>
+                <Button Content="{DynamicResource CalibrationWindow_CalibrationButton}" Name="CalibrationButton" Click="CalibrationButton_Click" HorizontalAlignment="Center" Margin="0,20,0,0" Padding="20,5,20,5" FontSize="16" ToolTip="{DynamicResource CalibrationWindow_CalibrationButton_ToolTip}"/>
+                <CheckBox Content="Finish sound" Name="CalibrationEndSoundCheckBox" FontSize="15" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+            </Grid>
         </StackPanel>
     </Grid>
 </Window>
