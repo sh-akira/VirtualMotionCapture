@@ -12,7 +12,23 @@ public class FaceController : MonoBehaviour
 
     public bool EnableBlink = false;
     public bool ViveProEyeEnabled = false;
-    public bool StopBlink = false;
+
+    private bool stopBlink = false;
+    public bool StopBlink
+    {
+        get
+        {
+            return stopBlink;
+        }
+        set
+        {
+            if (value == true)
+            {
+                animationController?.Reset();
+            }
+            stopBlink = value;
+        }
+    }
 
     public float BlinkTimeMin = 1.0f;           //まばたきするまでの最短時間
     public float BlinkTimeMax = 10.0f;          //まばたきするまでの最長時間
