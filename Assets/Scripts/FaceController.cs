@@ -124,7 +124,14 @@ public class FaceController : MonoBehaviour
         {
             MixPreset("Blink", BlendShapePreset.Blink, 0.0f);
         }
-        MixPreset("Blink_L", BlendShapePreset.Blink_L, value);
+        if (StopBlink)
+        {
+            MixPreset("Blink_L", BlendShapePreset.Blink_L, 0.0f);
+        }
+        else
+        {
+            MixPreset("Blink_L", BlendShapePreset.Blink_L, value);
+        }
     }
     public void SetBlink_R(float value)
     {
@@ -132,7 +139,14 @@ public class FaceController : MonoBehaviour
         {
             MixPreset("Blink", BlendShapePreset.Blink, 0.0f);
         }
-        MixPreset("Blink_R", BlendShapePreset.Blink_R, value);
+        if (StopBlink)
+        {
+            MixPreset("Blink_R", BlendShapePreset.Blink_L, 0.0f);
+        }
+        else
+        {
+            MixPreset("Blink_R", BlendShapePreset.Blink_R, value);
+        }
     }
 
     private void SetFaceNeutral()
