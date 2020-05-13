@@ -12,9 +12,22 @@
             <TextBlock Text="{DynamicResource CalibrationWindow_CalibrationDescription1}" HorizontalAlignment="Center" FontSize="16"/>
             <TextBlock Text="{DynamicResource CalibrationWindow_CalibrationDescription2}" HorizontalAlignment="Center" FontSize="16"/>
             <StackPanel Orientation="Vertical" Margin="0,10,0,0"  HorizontalAlignment="Center">
-                <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateDefaultRadioButton}" Name="CalibrateDefaultRadioButton" IsChecked="True" FontSize="15"/>
-                <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateFixedHandRadioButton}" Name="CalibrateFixedHandRadioButton" FontSize="15"/>
-                <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton}" Name="CalibrateFixedHandWithGroundRadioButton" FontSize="15"/>
+                <StackPanel.Resources>
+                    <Style TargetType="RadioButton">
+                        <Setter Property="LayoutTransform">
+                            <Setter.Value>
+                                <ScaleTransform ScaleX="2" ScaleY="2"/>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="FontSize" Value="8"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                    </Style>
+                </StackPanel.Resources>
+                <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateDefaultRadioButton}" Name="CalibrateDefaultRadioButton" IsChecked="True" Padding="5"/>
+                <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateFixedHandRadioButton}" Name="CalibrateFixedHandRadioButton" Padding="5"/>
+                <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton}" Name="CalibrateFixedHandWithGroundRadioButton" Padding="5"/>
             </StackPanel>
             <Button Content="{DynamicResource CalibrationWindow_CalibrationButton}" Name="CalibrationButton" Click="CalibrationButton_Click" HorizontalAlignment="Center" Margin="0,20,0,0" Padding="20,5,20,5" FontSize="16" ToolTip="{DynamicResource CalibrationWindow_CalibrationButton_ToolTip}"/>
         </StackPanel>
