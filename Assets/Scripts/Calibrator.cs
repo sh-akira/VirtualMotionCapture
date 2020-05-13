@@ -16,6 +16,7 @@ public class Calibrator
     public static Transform pelvisOffsetTransform;
     public static float pelvisOffsetHeight = 0f;
 
+    /*
     /// <summary>
     /// Calibrates VRIK to the specified trackers using the VRIKTrackerCalibrator.Settings.
     /// </summary>
@@ -41,12 +42,21 @@ public class Calibrator
             return;
         }
 
+        //TrackingWatcherを初期化する
+        GameObject.Find("HandTrackerRoot").GetComponent<sh_akira.OVRTracking.TrackerHandler>().ClearTrackingWatcher();
+
         // Head
         Transform hmdAdjusterTransform = ik.solver.spine.headTarget == null ? (new GameObject("hmdAdjuster")).transform : ik.solver.spine.headTarget;
         hmdAdjusterTransform.parent = HMDTransform;
         hmdAdjusterTransform.position = HMDTransform.position + HMDTransform.rotation * Quaternion.LookRotation(settings.headTrackerForward, settings.headTrackerUp) * settings.headOffset;
         hmdAdjusterTransform.rotation = ik.references.head.rotation;
         ik.solver.spine.headTarget = hmdAdjusterTransform;
+
+        //TrackingWatcherにWeight設定用アクションを設定
+        Debug.Log("### Set");
+        HMDTransform.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            //Do noting
+        });
 
         // Size
         float sizeF = hmdAdjusterTransform.position.y / ik.references.head.position.y;
@@ -69,6 +79,12 @@ public class Calibrator
             ik.solver.spine.pelvisPositionWeight = 1f;
             ik.solver.spine.pelvisRotationWeight = 1f;
 
+            //TrackingWatcherにWeight設定用アクションを設定
+            PelvisTransform.GetComponentInChildren<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.spine.pelvisPositionWeight = weight;
+                ik.solver.spine.pelvisRotationWeight = weight;
+            });
+
             ik.solver.plantFeet = false;
             ik.solver.spine.neckStiffness = 0f;
             ik.solver.spine.maxRootAngle = 180f;
@@ -87,6 +103,14 @@ public class Calibrator
             Vector3 leftHandUp = Vector3.Cross(ik.solver.leftArm.wristToPalmAxis, ik.solver.leftArm.palmToThumbAxis);
             leftHandAdjusterTransform.rotation = QuaTools.MatchRotation(LeftHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.leftArm.wristToPalmAxis, leftHandUp);
             ik.solver.leftArm.target = leftHandAdjusterTransform;
+
+            ik.solver.leftArm.positionWeight = 1f;
+            ik.solver.leftArm.rotationWeight = 1f;
+            //TrackingWatcherにWeight設定用アクションを設定
+            LeftHandTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.leftArm.positionWeight = weight;
+                ik.solver.leftArm.rotationWeight = weight;
+            });
         }
         else
         {
@@ -103,6 +127,15 @@ public class Calibrator
             Vector3 rightHandUp = -Vector3.Cross(ik.solver.rightArm.wristToPalmAxis, ik.solver.rightArm.palmToThumbAxis);
             rightHandAdjusterTransform.rotation = QuaTools.MatchRotation(RightHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.rightArm.wristToPalmAxis, rightHandUp);
             ik.solver.rightArm.target = rightHandAdjusterTransform;
+
+            ik.solver.rightArm.positionWeight = 1f;
+            ik.solver.rightArm.rotationWeight = 1f;
+            //TrackingWatcherにWeight設定用アクションを設定
+            RightHandTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.rightArm.positionWeight = weight;
+                ik.solver.rightArm.rotationWeight = weight;
+            });
+
         }
         else
         {
@@ -135,7 +168,7 @@ public class Calibrator
         ik.solver.spine.minHeadHeight = 0f;
         ik.solver.locomotion.weight = PelvisTransform == null && LeftFootTransform == null && RightFootTransform == null ? 1f : 0f;
     }
-
+    */
     private static Transform CalibrateLeg(Settings settings, Transform FootTransform, IKSolverVR.Leg leg, Transform lastBone, Vector3 hmdForwardAngle, Vector3 rootForward, bool isLeft)
     {
         Transform footAdjusterTransform = leg.target == null ? new GameObject(isLeft ? "leftFootAdjuster" : "rightFootAdjuster").transform : leg.target;
@@ -164,6 +197,13 @@ public class Calibrator
         leg.positionWeight = 1f;
         leg.rotationWeight = 1f;
 
+        //TrackingWatcherにWeight設定用アクションを設定
+        FootTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            leg.positionWeight = weight;
+            leg.rotationWeight = weight;
+        });
+
+
         // Bend goal
 
         Transform bendGoal = leg.bendGoal == null ? (new GameObject(isLeft ? "leftFootBendGoal" : "rightFootBendGoal")).transform : leg.bendGoal;
@@ -174,7 +214,6 @@ public class Calibrator
         //leg.bendGoal = null;
         //leg.bendGoalWeight = 0f;
     }
-
     public static IEnumerator CalibrateScaled(Transform realTrackerRoot, Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
     {
         if (!ik.solver.initiated)
@@ -188,6 +227,9 @@ public class Calibrator
             Debug.LogError("Can not calibrate VRIK without the head tracker.");
             yield break;
         }
+
+        //TrackingWatcherを初期化する
+        GameObject.Find("HandTrackerRoot").GetComponent<sh_akira.OVRTracking.TrackerHandler>().ClearTrackingWatcher();
 
         //トラッカーのルートスケールを初期値に戻す
         handTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
@@ -364,6 +406,12 @@ public class Calibrator
         ik.solver.spine.headTarget = hmdAdjusterTransform;
         ik.solver.spine.headClampWeight = 0.38f;
 
+        //TrackingWatcherにWeight設定用アクションを設定
+        HMDTransform.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            //Do noting
+        });
+
+
         // Body
         if (PelvisTransform != null)
         {
@@ -374,6 +422,12 @@ public class Calibrator
             ik.solver.spine.pelvisTarget = pelvisAdjusterTransform;
             ik.solver.spine.pelvisPositionWeight = 1f;
             ik.solver.spine.pelvisRotationWeight = 1f;
+
+            //TrackingWatcherにWeight設定用アクションを設定
+            PelvisTransform.GetComponentInChildren<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.spine.pelvisPositionWeight = weight;
+                ik.solver.spine.pelvisRotationWeight = weight;
+            });
 
             ik.solver.plantFeet = false;
             ik.solver.spine.neckStiffness = 0f;
@@ -397,6 +451,14 @@ public class Calibrator
             Vector3 leftHandUp = Vector3.Cross(ik.solver.leftArm.wristToPalmAxis, ik.solver.leftArm.palmToThumbAxis);
             leftHandAdjusterTransform.rotation = QuaTools.MatchRotation(LeftHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.leftArm.wristToPalmAxis, leftHandUp);
             ik.solver.leftArm.target = leftHandAdjusterTransform;
+
+            ik.solver.leftArm.positionWeight = 1f;
+            ik.solver.leftArm.rotationWeight = 1f;
+            //TrackingWatcherにWeight設定用アクションを設定
+            LeftHandTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.leftArm.positionWeight = weight;
+                ik.solver.leftArm.rotationWeight = weight;
+            });
         }
         else
         {
@@ -413,6 +475,14 @@ public class Calibrator
             Vector3 rightHandUp = -Vector3.Cross(ik.solver.rightArm.wristToPalmAxis, ik.solver.rightArm.palmToThumbAxis);
             rightHandAdjusterTransform.rotation = QuaTools.MatchRotation(RightHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.rightArm.wristToPalmAxis, rightHandUp);
             ik.solver.rightArm.target = rightHandAdjusterTransform;
+
+            ik.solver.rightArm.positionWeight = 1f;
+            ik.solver.rightArm.rotationWeight = 1f;
+            //TrackingWatcherにWeight設定用アクションを設定
+            RightHandTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.rightArm.positionWeight = weight;
+                ik.solver.rightArm.rotationWeight = weight;
+            });
         }
         else
         {
@@ -430,6 +500,11 @@ public class Calibrator
             leftElbowAdjusterTransform.rotation = QuaTools.MatchRotation(LeftElbowTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.leftArm.wristToPalmAxis, leftHandUp);
             ik.solver.leftArm.bendGoal = leftElbowAdjusterTransform;
             ik.solver.leftArm.bendGoalWeight = 1.0f;
+
+            //TrackingWatcherにWeight設定用アクションを設定
+            LeftElbowTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.leftArm.bendGoalWeight = weight;
+            });
         }
         else
         {
@@ -446,6 +521,11 @@ public class Calibrator
             rightElbowAdjusterTransform.rotation = QuaTools.MatchRotation(RightElbowTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.rightArm.wristToPalmAxis, rightHandUp);
             ik.solver.rightArm.bendGoal = rightElbowAdjusterTransform;
             ik.solver.rightArm.bendGoalWeight = 1.0f;
+
+            //TrackingWatcherにWeight設定用アクションを設定
+            RightElbowTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.rightArm.bendGoalWeight = weight;
+            });
         }
         else
         {
@@ -471,6 +551,11 @@ public class Calibrator
             leftKneeAdjusterTransform.rotation = ik.references.leftCalf.rotation;// QuaTools.MatchRotation(LeftKneeTransform.rotation * Quaternion.LookRotation(settings.footTrackerForward, settings.footTrackerUp), settings.footTrackerForward, settings.footTrackerUp, Vector3.zero, leftHandUp);
             ik.solver.leftLeg.bendGoal = leftKneeAdjusterTransform;
             ik.solver.leftLeg.bendGoalWeight = 1.0f;
+
+            //TrackingWatcherにWeight設定用アクションを設定
+            LeftKneeTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.leftLeg.bendGoalWeight = weight;
+            });
         }
 
         ik.solver.rightLeg.bendGoalWeight = 0.0f;
@@ -491,6 +576,11 @@ public class Calibrator
             rightKneeAdjusterTransform.rotation = ik.references.rightCalf.rotation;// QuaTools.MatchRotation(RightKneeTransform.rotation * Quaternion.LookRotation(settings.footTrackerForward, settings.footTrackerUp), settings.footTrackerForward, settings.footTrackerUp, Vector3.zero, rightHandUp);
             ik.solver.rightLeg.bendGoal = rightKneeAdjusterTransform;
             ik.solver.rightLeg.bendGoalWeight = 1.0f;
+
+            //TrackingWatcherにWeight設定用アクションを設定
+            RightKneeTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.rightLeg.bendGoalWeight = weight;
+            });
         }
 
         // Root controller
@@ -539,6 +629,9 @@ public class Calibrator
             yield break;
         }
 
+        //TrackingWatcherを初期化する
+        GameObject.Find("HandTrackerRoot").GetComponent<sh_akira.OVRTracking.TrackerHandler>().ClearTrackingWatcher();
+
         //トラッカーのルートスケールを初期値に戻す
         handTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
         headTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
@@ -694,6 +787,11 @@ public class Calibrator
         ik.solver.spine.headTarget = hmdAdjusterTransform;
         ik.solver.spine.headClampWeight = 0.38f;
 
+        //TrackingWatcherにWeight設定用アクションを設定
+        HMDTransform.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            //Do noting
+        });
+
         // Body
         if (PelvisTransform != null)
         {
@@ -704,6 +802,12 @@ public class Calibrator
             ik.solver.spine.pelvisTarget = pelvisAdjusterTransform;
             ik.solver.spine.pelvisPositionWeight = 1f;
             ik.solver.spine.pelvisRotationWeight = 1f;
+
+            //TrackingWatcherにWeight設定用アクションを設定
+            PelvisTransform.GetComponentInChildren<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.spine.pelvisPositionWeight = weight;
+                ik.solver.spine.pelvisRotationWeight = weight;
+            });
 
             ik.solver.plantFeet = false;
             ik.solver.spine.neckStiffness = 0f;
@@ -727,6 +831,14 @@ public class Calibrator
             Vector3 leftHandUp = Vector3.Cross(ik.solver.leftArm.wristToPalmAxis, ik.solver.leftArm.palmToThumbAxis);
             leftHandAdjusterTransform.rotation = QuaTools.MatchRotation(LeftHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.leftArm.wristToPalmAxis, leftHandUp);
             ik.solver.leftArm.target = leftHandAdjusterTransform;
+
+            ik.solver.leftArm.positionWeight = 1f;
+            ik.solver.leftArm.rotationWeight = 1f;
+            //TrackingWatcherにWeight設定用アクションを設定
+            LeftHandTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.leftArm.positionWeight = weight;
+                ik.solver.leftArm.rotationWeight = weight;
+            });
         }
         else
         {
@@ -743,6 +855,14 @@ public class Calibrator
             Vector3 rightHandUp = -Vector3.Cross(ik.solver.rightArm.wristToPalmAxis, ik.solver.rightArm.palmToThumbAxis);
             rightHandAdjusterTransform.rotation = QuaTools.MatchRotation(RightHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.rightArm.wristToPalmAxis, rightHandUp);
             ik.solver.rightArm.target = rightHandAdjusterTransform;
+
+            ik.solver.rightArm.positionWeight = 1f;
+            ik.solver.rightArm.rotationWeight = 1f;
+            //TrackingWatcherにWeight設定用アクションを設定
+            RightHandTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.rightArm.positionWeight = weight;
+                ik.solver.rightArm.rotationWeight = weight;
+            });
         }
         else
         {
@@ -760,6 +880,11 @@ public class Calibrator
             leftElbowAdjusterTransform.rotation = QuaTools.MatchRotation(LeftElbowTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.leftArm.wristToPalmAxis, leftHandUp);
             ik.solver.leftArm.bendGoal = leftElbowAdjusterTransform;
             ik.solver.leftArm.bendGoalWeight = 1.0f;
+
+            //TrackingWatcherにWeight設定用アクションを設定
+            LeftElbowTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.leftArm.bendGoalWeight = weight;
+            });
         }
         else
         {
@@ -776,6 +901,11 @@ public class Calibrator
             rightElbowAdjusterTransform.rotation = QuaTools.MatchRotation(RightElbowTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.rightArm.wristToPalmAxis, rightHandUp);
             ik.solver.rightArm.bendGoal = rightElbowAdjusterTransform;
             ik.solver.rightArm.bendGoalWeight = 1.0f;
+
+            //TrackingWatcherにWeight設定用アクションを設定
+            RightElbowTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.rightArm.bendGoalWeight = weight;
+            });
         }
         else
         {
@@ -789,6 +919,11 @@ public class Calibrator
             var leftBendGoalTarget = CalibrateLeg(settings, LeftFootTransform, ik.solver.leftLeg, (ik.references.leftToes != null ? ik.references.leftToes : ik.references.leftFoot), hmdForwardAngle, ik.references.root.forward, true);
             ik.solver.leftLeg.bendGoal = leftBendGoalTarget;
             ik.solver.leftLeg.bendGoalWeight = 0.0f;
+
+            //TrackingWatcherにWeight設定用アクションを設定
+            LeftFootTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                //Do noting
+            });
         }
 
         if (LeftKneeTransform != null)
@@ -801,6 +936,11 @@ public class Calibrator
             leftKneeAdjusterTransform.rotation = ik.references.leftCalf.rotation;// QuaTools.MatchRotation(LeftKneeTransform.rotation * Quaternion.LookRotation(settings.footTrackerForward, settings.footTrackerUp), settings.footTrackerForward, settings.footTrackerUp, Vector3.zero, leftHandUp);
             ik.solver.leftLeg.bendGoal = leftKneeAdjusterTransform;
             ik.solver.leftLeg.bendGoalWeight = 1.0f;
+
+            //TrackingWatcherにWeight設定用アクションを設定
+            LeftKneeTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.leftLeg.bendGoalWeight = weight;
+            });
         }
 
         ik.solver.rightLeg.bendGoalWeight = 0.0f;
@@ -809,6 +949,11 @@ public class Calibrator
             var rightBendGoalTarget = CalibrateLeg(settings, RightFootTransform, ik.solver.rightLeg, (ik.references.rightToes != null ? ik.references.rightToes : ik.references.rightFoot), hmdForwardAngle, ik.references.root.forward, false);
             ik.solver.rightLeg.bendGoal = rightBendGoalTarget;
             ik.solver.rightLeg.bendGoalWeight = 0.0f;
+
+            //TrackingWatcherにWeight設定用アクションを設定
+            RightFootTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                //Do noting
+            });
         }
 
         if (RightKneeTransform != null)
@@ -821,6 +966,11 @@ public class Calibrator
             rightKneeAdjusterTransform.rotation = ik.references.rightCalf.rotation;// QuaTools.MatchRotation(RightKneeTransform.rotation * Quaternion.LookRotation(settings.footTrackerForward, settings.footTrackerUp), settings.footTrackerForward, settings.footTrackerUp, Vector3.zero, rightHandUp);
             ik.solver.rightLeg.bendGoal = rightKneeAdjusterTransform;
             ik.solver.rightLeg.bendGoalWeight = 1.0f;
+
+            //TrackingWatcherにWeight設定用アクションを設定
+            RightKneeTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.rightLeg.bendGoalWeight = weight;
+            });
         }
 
         // Root controller
@@ -869,6 +1019,9 @@ public class Calibrator
             yield break;
         }
 
+        //TrackingWatcherを初期化する
+        GameObject.Find("HandTrackerRoot").GetComponent<sh_akira.OVRTracking.TrackerHandler>().ClearTrackingWatcher();
+
         //トラッカーのルートスケールを初期値に戻す
         handTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
         headTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
@@ -1024,6 +1177,11 @@ public class Calibrator
         ik.solver.spine.headTarget = hmdAdjusterTransform;
         ik.solver.spine.headClampWeight = 0.38f;
 
+        //TrackingWatcherにWeight設定用アクションを設定
+        HMDTransform.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            //Do noting
+        });
+
         // Body
         if (PelvisTransform != null)
         {
@@ -1034,6 +1192,12 @@ public class Calibrator
             ik.solver.spine.pelvisTarget = pelvisAdjusterTransform;
             ik.solver.spine.pelvisPositionWeight = 1f;
             ik.solver.spine.pelvisRotationWeight = 1f;
+
+            //TrackingWatcherにWeight設定用アクションを設定
+            PelvisTransform.GetComponentInChildren<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.spine.pelvisPositionWeight = weight;
+                ik.solver.spine.pelvisRotationWeight = weight;
+            });
 
             ik.solver.plantFeet = false;
             ik.solver.spine.neckStiffness = 0f;
@@ -1057,6 +1221,12 @@ public class Calibrator
             Vector3 leftHandUp = Vector3.Cross(ik.solver.leftArm.wristToPalmAxis, ik.solver.leftArm.palmToThumbAxis);
             leftHandAdjusterTransform.rotation = QuaTools.MatchRotation(LeftHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.leftArm.wristToPalmAxis, leftHandUp);
             ik.solver.leftArm.target = leftHandAdjusterTransform;
+
+            //TrackingWatcherにWeight設定用アクションを設定
+            LeftHandTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.leftArm.positionWeight = weight;
+                ik.solver.leftArm.rotationWeight = weight;
+            });
         }
         else
         {
@@ -1073,6 +1243,12 @@ public class Calibrator
             Vector3 rightHandUp = -Vector3.Cross(ik.solver.rightArm.wristToPalmAxis, ik.solver.rightArm.palmToThumbAxis);
             rightHandAdjusterTransform.rotation = QuaTools.MatchRotation(RightHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.rightArm.wristToPalmAxis, rightHandUp);
             ik.solver.rightArm.target = rightHandAdjusterTransform;
+
+            //TrackingWatcherにWeight設定用アクションを設定
+            RightHandTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.rightArm.positionWeight = weight;
+                ik.solver.rightArm.rotationWeight = weight;
+            });
         }
         else
         {
@@ -1090,6 +1266,11 @@ public class Calibrator
             leftElbowAdjusterTransform.rotation = QuaTools.MatchRotation(LeftElbowTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.leftArm.wristToPalmAxis, leftHandUp);
             ik.solver.leftArm.bendGoal = leftElbowAdjusterTransform;
             ik.solver.leftArm.bendGoalWeight = 1.0f;
+
+            //TrackingWatcherにWeight設定用アクションを設定
+            LeftElbowTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.leftArm.bendGoalWeight = weight;
+            });
         }
         else
         {
@@ -1106,6 +1287,11 @@ public class Calibrator
             rightElbowAdjusterTransform.rotation = QuaTools.MatchRotation(RightElbowTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.rightArm.wristToPalmAxis, rightHandUp);
             ik.solver.rightArm.bendGoal = rightElbowAdjusterTransform;
             ik.solver.rightArm.bendGoalWeight = 1.0f;
+
+            //TrackingWatcherにWeight設定用アクションを設定
+            RightElbowTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.rightArm.bendGoalWeight = weight;
+            });
         }
         else
         {
@@ -1119,6 +1305,11 @@ public class Calibrator
             var leftBendGoalTarget = CalibrateLeg(settings, LeftFootTransform, ik.solver.leftLeg, (ik.references.leftToes != null ? ik.references.leftToes : ik.references.leftFoot), hmdForwardAngle, ik.references.root.forward, true);
             ik.solver.leftLeg.bendGoal = leftBendGoalTarget;
             ik.solver.leftLeg.bendGoalWeight = 0.0f;
+
+            //TrackingWatcherにWeight設定用アクションを設定
+            LeftFootTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                //Do noting
+            });
         }
 
         if (LeftKneeTransform != null)
@@ -1131,6 +1322,11 @@ public class Calibrator
             leftKneeAdjusterTransform.rotation = ik.references.leftCalf.rotation;// QuaTools.MatchRotation(LeftKneeTransform.rotation * Quaternion.LookRotation(settings.footTrackerForward, settings.footTrackerUp), settings.footTrackerForward, settings.footTrackerUp, Vector3.zero, leftHandUp);
             ik.solver.leftLeg.bendGoal = leftKneeAdjusterTransform;
             ik.solver.leftLeg.bendGoalWeight = 1.0f;
+
+            //TrackingWatcherにWeight設定用アクションを設定
+            LeftKneeTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.leftLeg.bendGoalWeight = weight;
+            });
         }
 
         ik.solver.rightLeg.bendGoalWeight = 0.0f;
@@ -1139,6 +1335,9 @@ public class Calibrator
             var rightBendGoalTarget = CalibrateLeg(settings, RightFootTransform, ik.solver.rightLeg, (ik.references.rightToes != null ? ik.references.rightToes : ik.references.rightFoot), hmdForwardAngle, ik.references.root.forward, false);
             ik.solver.rightLeg.bendGoal = rightBendGoalTarget;
             ik.solver.rightLeg.bendGoalWeight = 0.0f;
+            RightFootTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                //Do noting
+            });
         }
 
         if (RightKneeTransform != null)
@@ -1151,6 +1350,11 @@ public class Calibrator
             rightKneeAdjusterTransform.rotation = ik.references.rightCalf.rotation;// QuaTools.MatchRotation(RightKneeTransform.rotation * Quaternion.LookRotation(settings.footTrackerForward, settings.footTrackerUp), settings.footTrackerForward, settings.footTrackerUp, Vector3.zero, rightHandUp);
             ik.solver.rightLeg.bendGoal = rightKneeAdjusterTransform;
             ik.solver.rightLeg.bendGoalWeight = 1.0f;
+
+            //TrackingWatcherにWeight設定用アクションを設定
+            RightKneeTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+                ik.solver.rightLeg.bendGoalWeight = weight;
+            });
         }
 
         // Root controller

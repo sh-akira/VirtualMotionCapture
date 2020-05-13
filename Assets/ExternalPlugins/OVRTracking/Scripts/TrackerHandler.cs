@@ -10,16 +10,26 @@ namespace sh_akira.OVRTracking
     public class TrackerHandler : MonoBehaviour
     {
         public GameObject HMDObject;
+        public TrackingWatcher HMDObjectTrackingWatcher;
+
         public List<GameObject> Controllers = new List<GameObject>();
         public List<GameObject> ControllersObject = new List<GameObject>();
+        [System.NonSerialized]
+        public List<TrackingWatcher> ControllersObjectTrackingWatcher = null;
+
         public GameObject CameraControllerObject;
         [System.NonSerialized]
         public ETrackedDeviceClass CameraControllerType = ETrackedDeviceClass.Invalid;
         [System.NonSerialized]
         public string CameraControllerName = null;
+
         [System.NonSerialized]
         public List<GameObject> Trackers = new List<GameObject>();
         public List<GameObject> TrackersObject = new List<GameObject>();
+        [System.NonSerialized]
+        public List<TrackingWatcher> TrackersObjectTrackingWatcher = null;
+
+
         [System.NonSerialized]
         public List<GameObject> BaseStations = new List<GameObject>();
         public List<GameObject> BaseStationsObject = new List<GameObject>();
@@ -30,6 +40,8 @@ namespace sh_akira.OVRTracking
         // Use this for initialization
         void Start()
         {
+            InitializeTrackingWatcher();
+
             OpenVRWrapper.Instance.OnOVRConnected += OpenVR_OnOVRConnected;
             OpenVRWrapper.Instance.Setup();
         }
@@ -40,6 +52,39 @@ namespace sh_akira.OVRTracking
         }
 
         private bool IsOVRConnected = false;
+
+        private void InitializeTrackingWatcher()
+        {
+            //Watcherを用意
+            HMDObjectTrackingWatcher = HMDObject.AddComponent<TrackingWatcher>();
+
+            //指定サイズでListを生成
+            ControllersObjectTrackingWatcher = new List<TrackingWatcher>(new TrackingWatcher[ControllersObject.Count]);
+            for (int i = 0; i < ControllersObject.Count; i++)
+            {
+                ControllersObjectTrackingWatcher[i] = ControllersObject[i].AddComponent<TrackingWatcher>();
+            }
+
+            TrackersObjectTrackingWatcher = new List<TrackingWatcher>(new TrackingWatcher[TrackersObject.Count]);
+            for (int i = 0; i < TrackersObject.Count; i++)
+            {
+                TrackersObjectTrackingWatcher[i] = TrackersObject[i].AddComponent<TrackingWatcher>();
+            }
+        }
+
+        //設定を初期化したい時に使う
+        public void ClearTrackingWatcher()
+        {
+            HMDObjectTrackingWatcher.Clear();
+            for (int i = 0; i < ControllersObjectTrackingWatcher.Count; i++)
+            {
+                ControllersObjectTrackingWatcher[i].Clear();
+            }
+            for (int i = 0; i < TrackersObjectTrackingWatcher.Count; i++)
+            {
+                TrackersObjectTrackingWatcher[i].Clear();
+            }
+        }
 
         public Transform GetTrackerTransformByName(string name)
         {
@@ -90,7 +135,9 @@ namespace sh_akira.OVRTracking
             var hmdPositions = positions[ETrackedDeviceClass.HMD];
             if (hmdPositions.Any())
             {
-                HMDObject.transform.SetPositionAndRotationLocal(hmdPositions.FirstOrDefault());
+                DeviceInfo hmdInfo = hmdPositions.FirstOrDefault();
+                HMDObject.transform.SetPositionAndRotationLocal(hmdInfo);
+                HMDObjectTrackingWatcher.IsOK(hmdInfo.isOK);
             }
 
             var controllerPositions = positions[ETrackedDeviceClass.Controller];
@@ -109,7 +156,10 @@ namespace sh_akira.OVRTracking
                 if (Controllers.Count != controllerPositions.Count) Controllers.Clear();
                 for (int i = 0; i < controllerPositions.Count && i < ControllersObject.Count; i++)
                 {
-                    ControllersObject[i].transform.SetPositionAndRotationLocal(controllerPositions[i]);
+                    DeviceInfo deviceInfo = controllerPositions[i];
+                    ControllersObject[i].transform.SetPositionAndRotationLocal(deviceInfo);
+                    ControllersObjectTrackingWatcher[i].IsOK(deviceInfo.isOK);
+
                     if (Controllers.Contains(ControllersObject[i]) == false) Controllers.Add(ControllersObject[i]);
                 }
             }
@@ -133,7 +183,10 @@ namespace sh_akira.OVRTracking
                 if (Trackers.Count != trackerPositions.Count) Trackers.Clear();
                 for (int i = 0; i < trackerPositions.Count && i < TrackersObject.Count; i++)
                 {
-                    TrackersObject[i].transform.SetPositionAndRotationLocal(trackerPositions[i]);
+                    DeviceInfo deviceInfo = trackerPositions[i];
+                    TrackersObject[i].transform.SetPositionAndRotationLocal(deviceInfo);
+                    TrackersObjectTrackingWatcher[i].IsOK(deviceInfo.isOK);
+
                     if (Trackers.Contains(TrackersObject[i]) == false) Trackers.Add(TrackersObject[i]);
                 }
             }

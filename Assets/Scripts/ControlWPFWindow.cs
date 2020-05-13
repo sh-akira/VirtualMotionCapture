@@ -1495,6 +1495,8 @@ public class ControlWPFWindow : MonoBehaviour
 
     private void SetVRIKTargetTrackers()
     {
+        if (vrik == null) { return; } //まだmodelがない
+
         vrik.solver.spine.headTarget = GetTrackerTransformBySerialNumber(CurrentSettings.Head, TargetType.Head);
         vrik.solver.spine.headClampWeight = 0.38f;
 
