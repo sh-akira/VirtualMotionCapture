@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Tobii.Gaming;
@@ -23,6 +24,7 @@ public class EyeTracking_Tobii : MonoBehaviour
     private bool isFirst = true;
     public ControlWPFWindow controlWPFWindow;
     public FaceController faceController;
+    private Action faceBeforeApply = null;
 
     // Use this for initialization
     void Start()
@@ -79,12 +81,14 @@ public class EyeTracking_Tobii : MonoBehaviour
         LookTarget.transform.localRotation = Quaternion.identity;
         LookTarget.transform.localPosition = new Vector3(0, 0, 0f);
         var vrmLookAtHead = currentModel.GetComponent<VRM.VRMLookAtHead>();
-        faceController.BeforeApply += () =>
+        if (faceBeforeApply != null) faceController.BeforeApply -= faceBeforeApply;
+        faceBeforeApply = () =>
         {
             vrmLookAtHead.Target = LookTarget.transform;
             vrmLookAtHead.LookWorldPosition();
             vrmLookAtHead.Target = null;
         };
+        faceController.BeforeApply += faceBeforeApply;
         StartPos = LookTarget.transform.localPosition;
         isFirst = true;
     }

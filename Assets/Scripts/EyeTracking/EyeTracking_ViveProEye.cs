@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +24,7 @@ public class EyeTracking_ViveProEye : MonoBehaviour
     private bool isFirst = true;
     public ControlWPFWindow controlWPFWindow;
     public FaceController faceController;
+    private Action faceBeforeApply;
     public bool UseEyelidMovements = true;
 
     private GameObject currentModel;
@@ -84,12 +86,14 @@ public class EyeTracking_ViveProEye : MonoBehaviour
         LookTarget.transform.localRotation = Quaternion.identity;
         LookTarget.transform.localPosition = new Vector3(0, 0, 1f); //すべて0地点にすると目が荒ぶる
         var vrmLookAtHead = currentModel.GetComponent<VRM.VRMLookAtHead>();
-        faceController.BeforeApply += () =>
+        if (faceBeforeApply != null) faceController.BeforeApply -= faceBeforeApply;
+        faceBeforeApply = () =>
         {
             vrmLookAtHead.Target = LookTarget.transform;
             vrmLookAtHead.LookWorldPosition();
             vrmLookAtHead.Target = null;
         };
+        faceController.BeforeApply += faceBeforeApply;
         StartPos = LookTarget.transform.localPosition;
         isFirst = true;
     }
