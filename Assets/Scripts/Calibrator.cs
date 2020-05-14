@@ -54,7 +54,7 @@ public class Calibrator
 
         //TrackingWatcherにWeight設定用アクションを設定
         Debug.Log("### Set");
-        HMDTransform.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+        HMDTransform.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
             //Do noting
         });
 
@@ -80,7 +80,7 @@ public class Calibrator
             ik.solver.spine.pelvisRotationWeight = 1f;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            PelvisTransform.GetComponentInChildren<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            PelvisTransform.GetComponentInChildren<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.spine.pelvisPositionWeight = weight;
                 ik.solver.spine.pelvisRotationWeight = weight;
             });
@@ -107,7 +107,7 @@ public class Calibrator
             ik.solver.leftArm.positionWeight = 1f;
             ik.solver.leftArm.rotationWeight = 1f;
             //TrackingWatcherにWeight設定用アクションを設定
-            LeftHandTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            LeftHandTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.leftArm.positionWeight = weight;
                 ik.solver.leftArm.rotationWeight = weight;
             });
@@ -131,7 +131,7 @@ public class Calibrator
             ik.solver.rightArm.positionWeight = 1f;
             ik.solver.rightArm.rotationWeight = 1f;
             //TrackingWatcherにWeight設定用アクションを設定
-            RightHandTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            RightHandTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.rightArm.positionWeight = weight;
                 ik.solver.rightArm.rotationWeight = weight;
             });
@@ -198,7 +198,7 @@ public class Calibrator
         leg.rotationWeight = 1f;
 
         //TrackingWatcherにWeight設定用アクションを設定
-        FootTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+        FootTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
             leg.positionWeight = weight;
             leg.rotationWeight = weight;
         });
@@ -239,15 +239,15 @@ public class Calibrator
         headTrackerRoot.position = Vector3.zero;
         footTrackerRoot.position = Vector3.zero;
         //スケール変更時の位置オフセット設定
-        var handTrackerOffset = handTrackerRoot.GetComponent<ScalePositionOffset>();
-        var headTrackerOffset = headTrackerRoot.GetComponent<ScalePositionOffset>();
-        var footTrackerOffset = footTrackerRoot.GetComponent<ScalePositionOffset>();
-        handTrackerOffset.ResetTargetAndPosition();
-        headTrackerOffset.ResetTargetAndPosition();
-        footTrackerOffset.ResetTargetAndPosition();
-        handTrackerOffset.SetTargets(realTrackerRoot.Find(LeftHandTransform.name), realTrackerRoot.Find(RightHandTransform.name), LeftHandTransform, RightHandTransform);
-        headTrackerOffset.SetDirectPosition(handTrackerOffset);
-        footTrackerOffset.SetDirectPosition(handTrackerOffset);
+        //var handTrackerOffset = handTrackerRoot.GetComponent<ScalePositionOffset>();
+        //var headTrackerOffset = headTrackerRoot.GetComponent<ScalePositionOffset>();
+        //var footTrackerOffset = footTrackerRoot.GetComponent<ScalePositionOffset>();
+        //handTrackerOffset.ResetTargetAndPosition();
+        //headTrackerOffset.ResetTargetAndPosition();
+        //footTrackerOffset.ResetTargetAndPosition();
+        //handTrackerOffset.SetTargets(realTrackerRoot.Find(LeftHandTransform.name), realTrackerRoot.Find(RightHandTransform.name), LeftHandTransform, RightHandTransform);
+        //headTrackerOffset.SetDirectPosition(handTrackerOffset);
+        //footTrackerOffset.SetDirectPosition(handTrackerOffset);
 
         //腰トラ下げ用空Object
         var pelvisOffsetAdjuster = new GameObject("PelvisOffsetAdjuster").transform;
@@ -407,7 +407,7 @@ public class Calibrator
         ik.solver.spine.headClampWeight = 0.38f;
 
         //TrackingWatcherにWeight設定用アクションを設定
-        HMDTransform.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+        HMDTransform.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
             //Do noting
         });
 
@@ -424,7 +424,7 @@ public class Calibrator
             ik.solver.spine.pelvisRotationWeight = 1f;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            PelvisTransform.GetComponentInChildren<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            PelvisTransform.GetComponentInChildren<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.spine.pelvisPositionWeight = weight;
                 ik.solver.spine.pelvisRotationWeight = weight;
             });
@@ -455,7 +455,7 @@ public class Calibrator
             ik.solver.leftArm.positionWeight = 1f;
             ik.solver.leftArm.rotationWeight = 1f;
             //TrackingWatcherにWeight設定用アクションを設定
-            LeftHandTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            LeftHandTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.leftArm.positionWeight = weight;
                 ik.solver.leftArm.rotationWeight = weight;
             });
@@ -479,7 +479,7 @@ public class Calibrator
             ik.solver.rightArm.positionWeight = 1f;
             ik.solver.rightArm.rotationWeight = 1f;
             //TrackingWatcherにWeight設定用アクションを設定
-            RightHandTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            RightHandTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.rightArm.positionWeight = weight;
                 ik.solver.rightArm.rotationWeight = weight;
             });
@@ -502,7 +502,7 @@ public class Calibrator
             ik.solver.leftArm.bendGoalWeight = 1.0f;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            LeftElbowTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            LeftElbowTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.leftArm.bendGoalWeight = weight;
             });
         }
@@ -523,7 +523,7 @@ public class Calibrator
             ik.solver.rightArm.bendGoalWeight = 1.0f;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            RightElbowTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            RightElbowTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.rightArm.bendGoalWeight = weight;
             });
         }
@@ -553,7 +553,7 @@ public class Calibrator
             ik.solver.leftLeg.bendGoalWeight = 1.0f;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            LeftKneeTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            LeftKneeTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.leftLeg.bendGoalWeight = weight;
             });
         }
@@ -578,7 +578,7 @@ public class Calibrator
             ik.solver.rightLeg.bendGoalWeight = 1.0f;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            RightKneeTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            RightKneeTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.rightLeg.bendGoalWeight = weight;
             });
         }
@@ -640,15 +640,15 @@ public class Calibrator
         headTrackerRoot.position = Vector3.zero;
         footTrackerRoot.position = Vector3.zero;
         //スケール変更時の位置オフセット設定
-        var handTrackerOffset = handTrackerRoot.GetComponent<ScalePositionOffset>();
-        var headTrackerOffset = headTrackerRoot.GetComponent<ScalePositionOffset>();
-        var footTrackerOffset = footTrackerRoot.GetComponent<ScalePositionOffset>();
-        handTrackerOffset.ResetTargetAndPosition();
-        headTrackerOffset.ResetTargetAndPosition();
-        footTrackerOffset.ResetTargetAndPosition();
-        handTrackerOffset.SetTargets(realTrackerRoot.Find(LeftHandTransform.name), realTrackerRoot.Find(RightHandTransform.name), LeftHandTransform, RightHandTransform);
-        headTrackerOffset.SetDirectPosition(handTrackerOffset);
-        footTrackerOffset.SetDirectPosition(handTrackerOffset);
+        //var handTrackerOffset = handTrackerRoot.GetComponent<ScalePositionOffset>();
+        //var headTrackerOffset = headTrackerRoot.GetComponent<ScalePositionOffset>();
+        //var footTrackerOffset = footTrackerRoot.GetComponent<ScalePositionOffset>();
+        //handTrackerOffset.ResetTargetAndPosition();
+        //headTrackerOffset.ResetTargetAndPosition();
+        //footTrackerOffset.ResetTargetAndPosition();
+        //handTrackerOffset.SetTargets(realTrackerRoot.Find(LeftHandTransform.name), realTrackerRoot.Find(RightHandTransform.name), LeftHandTransform, RightHandTransform);
+        //headTrackerOffset.SetDirectPosition(handTrackerOffset);
+        //footTrackerOffset.SetDirectPosition(handTrackerOffset);
 
         //腰トラ下げ用空Object
         var pelvisOffsetAdjuster = new GameObject("PelvisOffsetAdjuster").transform;
@@ -788,7 +788,7 @@ public class Calibrator
         ik.solver.spine.headClampWeight = 0.38f;
 
         //TrackingWatcherにWeight設定用アクションを設定
-        HMDTransform.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+        HMDTransform.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
             //Do noting
         });
 
@@ -804,7 +804,7 @@ public class Calibrator
             ik.solver.spine.pelvisRotationWeight = 1f;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            PelvisTransform.GetComponentInChildren<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            PelvisTransform.GetComponentInChildren<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.spine.pelvisPositionWeight = weight;
                 ik.solver.spine.pelvisRotationWeight = weight;
             });
@@ -835,7 +835,7 @@ public class Calibrator
             ik.solver.leftArm.positionWeight = 1f;
             ik.solver.leftArm.rotationWeight = 1f;
             //TrackingWatcherにWeight設定用アクションを設定
-            LeftHandTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            LeftHandTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.leftArm.positionWeight = weight;
                 ik.solver.leftArm.rotationWeight = weight;
             });
@@ -859,7 +859,7 @@ public class Calibrator
             ik.solver.rightArm.positionWeight = 1f;
             ik.solver.rightArm.rotationWeight = 1f;
             //TrackingWatcherにWeight設定用アクションを設定
-            RightHandTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            RightHandTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.rightArm.positionWeight = weight;
                 ik.solver.rightArm.rotationWeight = weight;
             });
@@ -882,7 +882,7 @@ public class Calibrator
             ik.solver.leftArm.bendGoalWeight = 1.0f;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            LeftElbowTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            LeftElbowTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.leftArm.bendGoalWeight = weight;
             });
         }
@@ -903,7 +903,7 @@ public class Calibrator
             ik.solver.rightArm.bendGoalWeight = 1.0f;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            RightElbowTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            RightElbowTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.rightArm.bendGoalWeight = weight;
             });
         }
@@ -921,7 +921,7 @@ public class Calibrator
             ik.solver.leftLeg.bendGoalWeight = 0.0f;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            LeftFootTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            LeftFootTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 //Do noting
             });
         }
@@ -938,7 +938,7 @@ public class Calibrator
             ik.solver.leftLeg.bendGoalWeight = 1.0f;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            LeftKneeTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            LeftKneeTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.leftLeg.bendGoalWeight = weight;
             });
         }
@@ -951,7 +951,7 @@ public class Calibrator
             ik.solver.rightLeg.bendGoalWeight = 0.0f;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            RightFootTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            RightFootTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 //Do noting
             });
         }
@@ -968,7 +968,7 @@ public class Calibrator
             ik.solver.rightLeg.bendGoalWeight = 1.0f;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            RightKneeTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            RightKneeTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.rightLeg.bendGoalWeight = weight;
             });
         }
@@ -1030,15 +1030,15 @@ public class Calibrator
         headTrackerRoot.position = Vector3.zero;
         footTrackerRoot.position = Vector3.zero;
         //スケール変更時の位置オフセット設定
-        var handTrackerOffset = handTrackerRoot.GetComponent<ScalePositionOffset>();
-        var headTrackerOffset = headTrackerRoot.GetComponent<ScalePositionOffset>();
-        var footTrackerOffset = footTrackerRoot.GetComponent<ScalePositionOffset>();
-        handTrackerOffset.ResetTargetAndPosition();
-        headTrackerOffset.ResetTargetAndPosition();
-        footTrackerOffset.ResetTargetAndPosition();
-        handTrackerOffset.SetTargets(realTrackerRoot.Find(LeftHandTransform.name), realTrackerRoot.Find(RightHandTransform.name), LeftHandTransform, RightHandTransform);
-        headTrackerOffset.SetDirectPosition(handTrackerOffset);
-        footTrackerOffset.SetDirectPosition(handTrackerOffset);
+        //var handTrackerOffset = handTrackerRoot.GetComponent<ScalePositionOffset>();
+        //var headTrackerOffset = headTrackerRoot.GetComponent<ScalePositionOffset>();
+        //var footTrackerOffset = footTrackerRoot.GetComponent<ScalePositionOffset>();
+        //handTrackerOffset.ResetTargetAndPosition();
+        //headTrackerOffset.ResetTargetAndPosition();
+        //footTrackerOffset.ResetTargetAndPosition();
+        //handTrackerOffset.SetTargets(realTrackerRoot.Find(LeftHandTransform.name), realTrackerRoot.Find(RightHandTransform.name), LeftHandTransform, RightHandTransform);
+        //headTrackerOffset.SetDirectPosition(handTrackerOffset);
+        //footTrackerOffset.SetDirectPosition(handTrackerOffset);
 
         //腰トラ下げ用空Object
         var pelvisOffsetAdjuster = new GameObject("PelvisOffsetAdjuster").transform;
@@ -1178,7 +1178,7 @@ public class Calibrator
         ik.solver.spine.headClampWeight = 0.38f;
 
         //TrackingWatcherにWeight設定用アクションを設定
-        HMDTransform.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+        HMDTransform.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
             //Do noting
         });
 
@@ -1194,7 +1194,7 @@ public class Calibrator
             ik.solver.spine.pelvisRotationWeight = 1f;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            PelvisTransform.GetComponentInChildren<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            PelvisTransform.GetComponentInChildren<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.spine.pelvisPositionWeight = weight;
                 ik.solver.spine.pelvisRotationWeight = weight;
             });
@@ -1223,7 +1223,7 @@ public class Calibrator
             ik.solver.leftArm.target = leftHandAdjusterTransform;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            LeftHandTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            LeftHandTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.leftArm.positionWeight = weight;
                 ik.solver.leftArm.rotationWeight = weight;
             });
@@ -1245,7 +1245,7 @@ public class Calibrator
             ik.solver.rightArm.target = rightHandAdjusterTransform;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            RightHandTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            RightHandTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.rightArm.positionWeight = weight;
                 ik.solver.rightArm.rotationWeight = weight;
             });
@@ -1268,7 +1268,7 @@ public class Calibrator
             ik.solver.leftArm.bendGoalWeight = 1.0f;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            LeftElbowTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            LeftElbowTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.leftArm.bendGoalWeight = weight;
             });
         }
@@ -1289,7 +1289,7 @@ public class Calibrator
             ik.solver.rightArm.bendGoalWeight = 1.0f;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            RightElbowTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            RightElbowTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.rightArm.bendGoalWeight = weight;
             });
         }
@@ -1307,7 +1307,7 @@ public class Calibrator
             ik.solver.leftLeg.bendGoalWeight = 0.0f;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            LeftFootTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            LeftFootTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 //Do noting
             });
         }
@@ -1324,7 +1324,7 @@ public class Calibrator
             ik.solver.leftLeg.bendGoalWeight = 1.0f;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            LeftKneeTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            LeftKneeTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.leftLeg.bendGoalWeight = weight;
             });
         }
@@ -1335,7 +1335,7 @@ public class Calibrator
             var rightBendGoalTarget = CalibrateLeg(settings, RightFootTransform, ik.solver.rightLeg, (ik.references.rightToes != null ? ik.references.rightToes : ik.references.rightFoot), hmdForwardAngle, ik.references.root.forward, false);
             ik.solver.rightLeg.bendGoal = rightBendGoalTarget;
             ik.solver.rightLeg.bendGoalWeight = 0.0f;
-            RightFootTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            RightFootTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 //Do noting
             });
         }
@@ -1352,7 +1352,7 @@ public class Calibrator
             ik.solver.rightLeg.bendGoalWeight = 1.0f;
 
             //TrackingWatcherにWeight設定用アクションを設定
-            RightKneeTransform.parent.GetComponent<TrackingWatcher>().SetActionOfSetWeight((float weight) => {
+            RightKneeTransform.parent.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight((float weight) => {
                 ik.solver.rightLeg.bendGoalWeight = weight;
             });
         }
