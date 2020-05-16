@@ -265,6 +265,11 @@ public class Calibrator
         if (LeftKneeTransform != null) LeftKneeTransform.parent = footTrackerRoot;
         if (RightKneeTransform != null) RightKneeTransform.parent = footTrackerRoot;
 
+        HandSwapManagerScript handSwapManagerScript = GameObject.Find("HandSwapManager").GetComponent<HandSwapManagerScript>();
+        handSwapManagerScript.WPFLeftHandTransform = LeftHandTransform; //左手登録
+        handSwapManagerScript.WPFRightHandTransform = RightHandTransform; //右手登録
+
+
         //コントローラーの場合手首までのオフセットを追加
         if (LeftHandOffset == Vector3.zero)
         {
@@ -654,6 +659,9 @@ public class Calibrator
         var pelvisOffsetAdjuster = new GameObject("PelvisOffsetAdjuster").transform;
         pelvisOffsetAdjuster.parent = footTrackerRoot;
 
+        HandSwapManagerScript handSwapManagerScript = GameObject.Find("HandSwapManager").GetComponent<HandSwapManagerScript>();
+        handSwapManagerScript.WPFLeftHandTransform = LeftHandTransform; //左手登録
+        handSwapManagerScript.WPFRightHandTransform = RightHandTransform; //右手登録
 
         //それぞれのトラッカーを正しいルートに移動
         if (HMDTransform != null) HMDTransform.parent = headTrackerRoot;
@@ -1044,6 +1052,9 @@ public class Calibrator
         var pelvisOffsetAdjuster = new GameObject("PelvisOffsetAdjuster").transform;
         pelvisOffsetAdjuster.parent = footTrackerRoot;
 
+        HandSwapManagerScript handSwapManagerScript = GameObject.Find("HandSwapManager").GetComponent<HandSwapManagerScript>();
+        handSwapManagerScript.WPFLeftHandTransform = LeftHandTransform; //左手登録
+        handSwapManagerScript.WPFRightHandTransform = RightHandTransform; //右手登録
 
         //それぞれのトラッカーを正しいルートに移動
         if (HMDTransform != null) HMDTransform.parent = headTrackerRoot;
