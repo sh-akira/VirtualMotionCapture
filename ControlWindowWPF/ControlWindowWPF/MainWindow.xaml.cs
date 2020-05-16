@@ -313,6 +313,21 @@ namespace VirtualMotionCaptureControlPanel
                 else if (e.CommandType == typeof(PipeCommands.LogNotify))
                 {
                     var d = (PipeCommands.LogNotify)e.Data;
+
+                    switch (d.type) {
+                        case NotifyLogTypes.Error:
+                        case NotifyLogTypes.Assert:
+                        case NotifyLogTypes.Exception:
+                            UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 102, 102));
+                            break;
+                        case NotifyLogTypes.Warning:
+                            UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 0));
+                            break;
+                        default:
+                            UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(238, 238, 238));
+                            break;
+                    }
+
                     UnityLogStatusTextBlock.Text = "["+d.type.ToString()+"] "+d.condition;
                     lastLog = d;
                 }
@@ -707,6 +722,11 @@ namespace VirtualMotionCaptureControlPanel
                 Clipboard.SetText(trace);
                 MessageBox.Show("Trace log has copied.", "Trace log", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            System.Diagnostics.Process.Start(e.Uri.ToString());
         }
     }
 }
