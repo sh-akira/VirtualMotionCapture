@@ -4,12 +4,19 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
-        mc:Ignorable="d" Width="420" Height="185"
+        mc:Ignorable="d" Width="420" Height="210"
         Title="{DynamicResource MainWindowTitle}" FontSize="14" ResizeMode="CanMinimize" Background="#2A2A2A" Loaded="Window_Loaded" Closing="Window_Closing" Icon="Resources/VirtualMotionCapture_dark.ico">
     <Grid>
         <Button Visibility="Collapsed"/>
         <!--This Button for fix style bug-->
-        <TabControl Margin="5">
+		<DockPanel LastChildFill="True">
+			<StatusBar MouseDoubleClick="StatusBar_MouseDoubleClick" DockPanel.Dock="Bottom" Margin="0,0,0,0" Height="25" Background="#2A2A2A">
+				<StatusBarItem>
+					<TextBlock Name="UnityLogStatusTextBlock" FontSize="12" Foreground="#EEEEEE">Welcome to Virtual Motion Capture</TextBlock>
+				</StatusBarItem>
+			</StatusBar>
+
+			<TabControl Margin="5,5,5,0">
             <TabItem Header="{DynamicResource MainWindow_Setting}" ToolTip="{DynamicResource MainWindow_Setting_ToolTip}">
                 <UniformGrid Rows="2" Columns="3">
                     <Button Content="{DynamicResource MainWindow_LoadSetting}" Name="LoadSettingsButton" Click="LoadSettingsButton_Click" ToolTip="{DynamicResource MainWindow_LoadSetting_ToolTip}"/>
@@ -29,13 +36,19 @@
                         <Button Content="{DynamicResource MainWindow_Custom}" Background="#AED4FF" Foreground="Black" Name="ColorCustomButton" Click="ColorCustomButton_Click" MouseRightButtonDown="ColorCustomButton_MouseRightButtonDown" ToolTip="{DynamicResource MainWindow_Custom_ToolTip}"/>
                         <Button Content="{DynamicResource MainWindow_Transparent}" Name="ColorTransparentButton" Click="ColorTransparentButton_Click" ToolTip="{DynamicResource MainWindow_Transparent_ToolTip}"/>
                     </UniformGrid>
-                    <StackPanel Orientation="Horizontal">
-                        <CheckBox Content="{DynamicResource MainWindow_WindowAlwaysTopMost}" Name="TopMostCheckBox" Checked="TopMostCheckBox_Checked" Unchecked="TopMostCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_WindowAlwaysTopMost_ToolTip}"/>
-                        <CheckBox Content="{DynamicResource MainWindow_HideWindowBorder}" Name="WindowBorderCheckBox" Checked="WindowBorderCheckBox_Checked" Unchecked="WindowBorderCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_HideWindowBorder_ToolTip}"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <CheckBox Content="{DynamicResource MainWindow_MouseInputPassThrough}" Name="WindowClickThroughCheckBox" Checked="WindowClickThroughCheckBox_Checked" Unchecked="WindowClickThroughCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_MouseInputPassThrough_ToolTip}"/>
-                    </StackPanel>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition />
+								<ColumnDefinition />
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition />
+								<RowDefinition />
+							</Grid.RowDefinitions>
+							<CheckBox Grid.Column="0" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="3" Content="{DynamicResource MainWindow_WindowAlwaysTopMost}" Name="TopMostCheckBox" Checked="TopMostCheckBox_Checked" Unchecked="TopMostCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_WindowAlwaysTopMost_ToolTip}"/>
+							<CheckBox Grid.Column="1" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="3" Content="{DynamicResource MainWindow_HideWindowBorder}" Name="WindowBorderCheckBox" Checked="WindowBorderCheckBox_Checked" Unchecked="WindowBorderCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_HideWindowBorder_ToolTip}"/>
+							<CheckBox Grid.Column="0" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="3" Content="{DynamicResource MainWindow_MouseInputPassThrough}" Name="WindowClickThroughCheckBox" Checked="WindowClickThroughCheckBox_Checked" Unchecked="WindowClickThroughCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_MouseInputPassThrough_ToolTip}"/>
+						</Grid>
                 </StackPanel>
             </TabItem>
             <TabItem Header="{DynamicResource MainWindow_Camera}">
@@ -103,7 +116,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{DynamicResource MainWindow_Device}" Grid.Row="0" Grid.Column="0"/>
-                        <ComboBox Name="LipSyncDeviceComboBox" Grid.Row="0" Grid.Column="1" SelectionChanged="LipSyncDeviceComboBox_SelectionChanged" ToolTip="{DynamicResource MainWindow_Device_ToolTip}"/>
+							<ComboBox Name="LipSyncDeviceComboBox" Grid.Row="0" Grid.Column="1" Margin="10,0,0,0" SelectionChanged="LipSyncDeviceComboBox_SelectionChanged" ToolTip="{DynamicResource MainWindow_Device_ToolTip}"/>
                         <Button Content="{DynamicResource MainWindow_DeviceRefresh}" Margin="2" Height="20" Name="LipSyncDeviceRefreshButton" Grid.Row="0" Grid.Column="2" Click="LipSyncDeviceRefreshButton_Click" ToolTip="{DynamicResource MainWindow_DeviceRefresh_ToolTip}"/>
                         <TextBlock Text="{DynamicResource MainWindow_Gain}" Grid.Row="1" Grid.Column="0"/>
                         <Slider Name="GainSlider" Grid.Row="1" Grid.Column="1" Minimum="10" Value="10" Maximum="2560" SmallChange="1" ValueChanged="GainSlider_ValueChanged" ToolTip="{DynamicResource MainWindow_Gain_ToolTip}"/>
@@ -177,5 +190,6 @@
                 </DockPanel>
             </TabItem>
         </TabControl>
-    </Grid>
+		</DockPanel>
+	</Grid>
 </Window>

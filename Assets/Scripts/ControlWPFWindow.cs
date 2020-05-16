@@ -73,6 +73,8 @@ public class ControlWPFWindow : MonoBehaviour
 
     private int CurrentWindowNum = 1;
 
+    public int CriticalErrorCount = 0;
+
     public enum MouseButtons
     {
         Left = 0,
@@ -301,6 +303,8 @@ public class ControlWPFWindow : MonoBehaviour
         steamVR2Input.KeyDownEvent -= ControllerAction_KeyDown;
         steamVR2Input.KeyUpEvent -= ControllerAction_KeyUp;
         steamVR2Input.AxisChangedEvent -= ControllerAction_AxisChanged;
+
+        Application.logMessageReceived -= LogMessageHandler;
     }
 
     private void Server_Received(object sender, DataReceivedEventArgs e)
@@ -2922,6 +2926,43 @@ public class ControlWPFWindow : MonoBehaviour
         CurrentCommonSettings = Json.Serializer.Deserialize<CommonSettings>(File.ReadAllText(path)); //設定を読み込み
     }
 
+    private async void LogMessageHandler(string cond, string trace, LogType type) {
+        if (type == LogType.Log)
+        {
+            return; //Logはうるさいので飛ばさない
+        }
+
+        NotifyLogTypes notifyType = NotifyLogTypes.Log;
+        switch (type)
+        {
+            case LogType.Assert: notifyType = NotifyLogTypes.Assert; CriticalErrorCount++; break;
+            case LogType.Error: notifyType = NotifyLogTypes.Error; CriticalErrorCount++; break;
+            case LogType.Exception: notifyType = NotifyLogTypes.Exception; CriticalErrorCount++; break;
+            case LogType.Log: notifyType = NotifyLogTypes.Log; break;
+            case LogType.Warning: notifyType = NotifyLogTypes.Warning; break;
+            default: notifyType = NotifyLogTypes.Log; break;
+        }
+
+        //あまりにも致命的エラーが多すぎる場合は強制終了する
+        if (CriticalErrorCount > 10000)
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+                    Application.Quit();
+#endif
+            Debug.Log("CriticalErrorCount over");
+        }
+
+        await server.SendCommandAsync(new PipeCommands.LogNotify
+        {
+            condition = cond,
+            stackTrace = trace,
+            type = notifyType,
+            errorCount = CriticalErrorCount,
+        });
+    }
+
     private bool IsRegisteredEventCallBack = false;
     private void RegisterEventCallBack()
     {
@@ -2930,6 +2971,9 @@ public class ControlWPFWindow : MonoBehaviour
             IsRegisteredEventCallBack = true;
             TrackerTransformExtensions.TrackerMovedEvent += TransformExtensions_TrackerMovedEvent;
             ExternalReceiverForVMC.StatusStringUpdated += StatusStringUpdatedEvent;
+
+            //エラー情報をWPFに飛ばす
+            Application.logMessageReceived += LogMessageHandler;
         }
     }
 
