@@ -225,12 +225,25 @@
     <system:String x:Key="SettingWindow_SelectedItemError">请选择一个控制器当做相机</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig">输出externalcamera.cfg</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">输出externalcamera.cfg以校准VR游戏的相机</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionSender">发送外部动作</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSender">发送外部动作(VMCProtocol)</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">成功用OSC运动发送</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">传输间隔（每隔指定的帧一次）</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionReceiver">接受外部动作</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionReceiver">接受外部动作(VMCProtocol)</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">在OSC上启用运动接收</system:String>
-
+   	<system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape</system:String>
+   	<system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">Knob to BlendShape setting</system:String>
+   	<system:String x:Key="SettingWindow_PreventLosingTracking">Prevent losing tracking</system:String>
+   	<system:String x:Key="SettingWindow_TrackingFilterEnable">Enable</system:String>
+   	<system:String x:Key="SettingWindow_TrackingFilterHmdEnable">HMD</system:String>
+   	<system:String x:Key="SettingWindow_TrackingFilterControllerEnable">Controller</system:String>
+   	<system:String x:Key="SettingWindow_TrackingFilterTrackerEnable">Tracker</system:String>
+   	<system:String x:Key="SettingWindow_ModelModifier">Model modifier</system:String>
+   	<system:String x:Key="SettingWindow_FixKneeRotation">Fix Knee rotation</system:String>
+   	<system:String x:Key="SettingWindow_TrackingOption">Tracking Option</system:String>
+   	<system:String x:Key="SettingWindow_HandleControllerAsTracker">Handle Controller as Tracker</system:String>
+   	<system:String x:Key="SettingWindow_QualitySettings">Quality Settings</system:String>
+   	<system:String x:Key="SettingWindow_AntiAliasing">AntiAliasing</system:String>
+   	
     
 
     <!-- TrackerConfigWindow -->

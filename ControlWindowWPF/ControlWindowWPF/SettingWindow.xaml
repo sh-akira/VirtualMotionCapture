@@ -189,35 +189,35 @@
                         </Grid>
                     </DockPanel>
                 </GroupBox>
-                <GroupBox Header="MIDI CC BlendShape">
-                    <Button Content="Knob to BlendShape setting" Name="MidiCCBlendShapeSettingButton" Click="MidiCCBlendShapeSettingButton_Click"/>
+				<GroupBox Header="{DynamicResource SettingWindow_MIDI_CC_BlendShape}">
+					<Button Content="{DynamicResource SettingWindow_MidiCCBlendShapeSetting}" Name="MidiCCBlendShapeSettingButton" Click="MidiCCBlendShapeSettingButton_Click"/>
                 </GroupBox>
-                <GroupBox Header="Prevent losing tracking">
+				<GroupBox Header="{DynamicResource SettingWindow_PreventLosingTracking}">
                     <GroupBox>
                         <GroupBox.Header>
-                            <CheckBox Content="Enable" Name="TrackingFilterEnable" Checked="TrackingFilterEnable_Changed" Unchecked="TrackingFilterEnable_Changed"/>
+							<CheckBox Content="{DynamicResource SettingWindow_TrackingFilterEnable}" Name="TrackingFilterEnable" Checked="TrackingFilterEnable_Changed" Unchecked="TrackingFilterEnable_Changed"/>
                         </GroupBox.Header>
                         <WrapPanel>
-                            <CheckBox Content="HMD" Name="TrackingFilterHmdEnable" Checked="TrackingFilterEnable_Changed" Unchecked="TrackingFilterEnable_Changed"/>
-                            <CheckBox Content="Controller" Name="TrackingFilterControllerEnable" Checked="TrackingFilterEnable_Changed" Unchecked="TrackingFilterEnable_Changed"/>
-                            <CheckBox Content="Tracker" Name="TrackingFilterTrackerEnable" Checked="TrackingFilterEnable_Changed" Unchecked="TrackingFilterEnable_Changed"/>
+							<CheckBox Content="{DynamicResource SettingWindow_TrackingFilterHmdEnable}" Name="TrackingFilterHmdEnable" Checked="TrackingFilterEnable_Changed" Unchecked="TrackingFilterEnable_Changed"/>
+							<CheckBox Content="{DynamicResource SettingWindow_TrackingFilterControllerEnable}" Name="TrackingFilterControllerEnable" Checked="TrackingFilterEnable_Changed" Unchecked="TrackingFilterEnable_Changed"/>
+							<CheckBox Content="{DynamicResource SettingWindow_TrackingFilterTrackerEnable}" Name="TrackingFilterTrackerEnable" Checked="TrackingFilterEnable_Changed" Unchecked="TrackingFilterEnable_Changed"/>
                         </WrapPanel>
                     </GroupBox>
                 </GroupBox>
-                <GroupBox Header="Model modifier">
+				<GroupBox Header="{DynamicResource SettingWindow_ModelModifier}">
                     <StackPanel Orientation="Vertical">
-                        <CheckBox Content="Fix Knee rotation" Name="FixKneeRotationCheckBox" Checked="FixKneeRotationCheckBox_Changed" Unchecked="FixKneeRotationCheckBox_Changed"/>
+						<CheckBox Content="{DynamicResource SettingWindow_FixKneeRotation}" Name="FixKneeRotationCheckBox" Checked="FixKneeRotationCheckBox_Changed" Unchecked="FixKneeRotationCheckBox_Changed"/>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="Tracking Option">
+				<GroupBox Header="{DynamicResource SettingWindow_TrackingOption}">
                     <StackPanel Orientation="Vertical">
-                        <CheckBox Content="Handle Controller as Tracker" Name="HandleControllerAsTrackerCheckBox" Checked="HandleControllerAsTrackerCheckBox_Changed" Unchecked="HandleControllerAsTrackerCheckBox_Changed" />
+						<CheckBox Content="{DynamicResource SettingWindow_HandleControllerAsTracker}" Name="HandleControllerAsTrackerCheckBox" Checked="HandleControllerAsTrackerCheckBox_Changed" Unchecked="HandleControllerAsTrackerCheckBox_Changed" />
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="Quality Settings">
+				<GroupBox Header="{DynamicResource SettingWindow_QualitySettings}">
                     <StackPanel Orientation="Vertical">
                         <DockPanel>
-                            <TextBlock Text="AntiAliasing" DockPanel.Dock="Left"/>
+							<TextBlock Text="{DynamicResource SettingWindow_AntiAliasing}" DockPanel.Dock="Left"/>
                             <TextBlock Text="x" DockPanel.Dock="Left" Margin="10,0,0,0"/>
                             <ComboBox Name="AntiAliasingComboBox" SelectionChanged="AntiAliasingComboBox_SelectionChanged"/>
                         </DockPanel>

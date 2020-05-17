@@ -225,12 +225,25 @@
     <system:String x:Key="SettingWindow_SelectedItemError">Please select tracker to assign camera</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig">Export externalcamera.cfg</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">Export externalcamera.cfg to synthesize model into VR game</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionSender">External motion sender</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSender">VMCProtocol Motion sender</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">Enable OSC motion sender</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">Interval(once every specified frame)</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionReceiver">External motion receiver</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionReceiver">VMCProtocol Motion receiver</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">Enable OSC motion receiver</system:String>
-    
+   	<system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape</system:String>
+   	<system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">Knob to BlendShape setting</system:String>
+   	<system:String x:Key="SettingWindow_PreventLosingTracking">Prevent losing tracking</system:String>
+   	<system:String x:Key="SettingWindow_TrackingFilterEnable">Enable</system:String>
+   	<system:String x:Key="SettingWindow_TrackingFilterHmdEnable">HMD</system:String>
+   	<system:String x:Key="SettingWindow_TrackingFilterControllerEnable">Controller</system:String>
+   	<system:String x:Key="SettingWindow_TrackingFilterTrackerEnable">Tracker</system:String>
+   	<system:String x:Key="SettingWindow_ModelModifier">Model modifier</system:String>
+   	<system:String x:Key="SettingWindow_FixKneeRotation">Fix Knee rotation</system:String>
+   	<system:String x:Key="SettingWindow_TrackingOption">Tracking Option</system:String>
+   	<system:String x:Key="SettingWindow_HandleControllerAsTracker">Handle Controller as Tracker</system:String>
+   	<system:String x:Key="SettingWindow_QualitySettings">Quality Settings</system:String>
+   	<system:String x:Key="SettingWindow_AntiAliasing">AntiAliasing</system:String>
+   	
 
     <!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">Tracker assignment setting</system:String>
