@@ -15,7 +15,7 @@ using UnityMemoryMappedFile;
 [RequireComponent(typeof(uOSC.uOscClient))]
 public class ExternalSender : MonoBehaviour
 {
-    uOSC.uOscClient uClient = null;
+    public uOSC.uOscClient uClient = null;
     GameObject CurrentModel = null;
     ControlWPFWindow window = null;
     Animator animator = null;
