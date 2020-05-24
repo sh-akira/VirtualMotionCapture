@@ -97,8 +97,12 @@ namespace VirtualMotionCaptureControlPanel
         //共通設定の書き込み
         public static void SaveCommonSettings()
         {
-            string path = Path.GetFullPath(GetCurrentAppDir() + "/../commonWPF.json");
-            File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(CurrentCommonSettingsWPF)));
+            try
+            {
+                string path = Path.GetFullPath(GetCurrentAppDir() + "/../commonWPF.json");
+                File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(CurrentCommonSettingsWPF)));
+            }
+            catch (Exception) { }
         }
 
         //共通設定の読み込み
