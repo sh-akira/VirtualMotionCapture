@@ -8,6 +8,13 @@
 	max-width: 750px;
 }
 
+.youtube-container {
+	margin: 0 auto;
+	position: relative;
+	padding: 0 20px;
+	max-width: 1100px;
+}
+
 .container {
 	max-width: 1140px;
 
@@ -71,7 +78,7 @@ header {
 }
 
 section {
-	padding: 100px 0;
+	padding: 50px 0;
 }
 
 section + section {
@@ -144,3 +151,24 @@ blockquote:before {
 	text-align: center;
 }
 
+.right-text {
+	text-align: right;
+}
+
+.youtube2 {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+}
+
+.youtube2 iframe {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.top-padding {
+	padding: 50px 0 0 0;
+}
