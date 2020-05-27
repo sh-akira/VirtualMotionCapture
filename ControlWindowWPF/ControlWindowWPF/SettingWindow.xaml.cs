@@ -304,6 +304,16 @@ namespace VirtualMotionCaptureControlPanel
                     isSetting = false;
                 });
             });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetExternalMotionReceiverPort { }, d =>
+            {
+                var data = (PipeCommands.ChangeExternalMotionReceiverPort)d;
+                Dispatcher.Invoke(() =>
+                {
+                    isSetting = true;
+                    ExternalMotionReceiverPortTextBox.Text = data.port.ToString();
+                    isSetting = false;
+                });
+            });
             await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEnableTrackingFilter { }, d =>
             {
                 var data = (PipeCommands.EnableTrackingFilter)d;

@@ -787,6 +787,13 @@ public class ControlWPFWindow : MonoBehaviour
                 var d = (PipeCommands.ChangeExternalMotionReceiverPort)e.Data;
                 ChangeExternalMotionReceiverPort(d.port);
             }
+            else if (e.CommandType == typeof(PipeCommands.GetExternalMotionReceiverPort))
+            {
+                await server.SendCommandAsync(new PipeCommands.ChangeExternalMotionReceiverPort
+                {
+                    port = CurrentSettings.ExternalMotionReceiverPort
+                }, e.RequestId);
+            }
             else if (e.CommandType == typeof(PipeCommands.GetMidiCCBlendShape))
             {
                 var bs = CurrentSettings.MidiCCBlendShape;
