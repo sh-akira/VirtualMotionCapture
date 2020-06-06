@@ -127,6 +127,8 @@ namespace VirtualMotionCaptureControlPanel
             if (isSliderSetting == false && Globals.Client != null) await Globals.Client.SendCommandAsync(command);
         }
 
+        private PipeCommands.LogNotify lastLog = null;
+
         private void Client_Received(object sender, DataReceivedEventArgs e)
         {
             Dispatcher.Invoke(async () =>
@@ -307,6 +309,27 @@ namespace VirtualMotionCaptureControlPanel
                 {
                     var d = (PipeCommands.KeyUp)e.Data;
                     logKeyConfig(d.Config, false);
+                }
+                else if (e.CommandType == typeof(PipeCommands.LogNotify))
+                {
+                    var d = (PipeCommands.LogNotify)e.Data;
+
+                    switch (d.type) {
+                        case NotifyLogTypes.Error:
+                        case NotifyLogTypes.Assert:
+                        case NotifyLogTypes.Exception:
+                            UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 102, 102));
+                            break;
+                        case NotifyLogTypes.Warning:
+                            UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 0));
+                            break;
+                        default:
+                            UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(238, 238, 238));
+                            break;
+                    }
+
+                    UnityLogStatusTextBlock.Text = "["+d.type.ToString()+"] "+d.condition;
+                    lastLog = d;
                 }
             });
         }
@@ -689,6 +712,21 @@ namespace VirtualMotionCaptureControlPanel
         {
             LightColorButton.Background = new SolidColorBrush(e);
             await Globals.Client?.SendCommandAsync(new PipeCommands.ChangeLightColor { a = e.A / 255f, r = e.R / 255f, g = e.G / 255f, b = e.B / 255f });
+        }
+
+        private void StatusBar_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (lastLog != null)
+            {
+                string trace = "[" + lastLog.type.ToString() + "] " + lastLog.condition + "\n" + lastLog.stackTrace;
+                Clipboard.SetText(trace);
+                MessageBox.Show("Trace log has copied.", "Trace log", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            System.Diagnostics.Process.Start(e.Uri.ToString());
         }
     }
 }

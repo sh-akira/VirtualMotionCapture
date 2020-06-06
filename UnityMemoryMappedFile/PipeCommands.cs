@@ -439,8 +439,24 @@ namespace UnityMemoryMappedFile
         {
             public int antiAliasing { get; set; }
         }
+
+        public class LogNotify {
+            public string condition { get; set; }
+            public string stackTrace { get; set; }
+            public NotifyLogTypes type { get; set; }
+            public int errorCount { get; set; }
+        }
+
     }
 
+    public enum NotifyLogTypes
+    {
+        Error=0,
+        Assert=1,
+        Warning=2,
+        Log=3,
+        Exception=4,
+    }
 
     public enum CameraTypes
     {

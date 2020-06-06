@@ -117,7 +117,7 @@ namespace VirtualMotionCaptureControlPanel
             {
                 CurrentCommonSettingsWPF = Json.Serializer.Deserialize<CommonSettingsWPF>(File.ReadAllText(path)); //設定を読み込み
             }
-            catch (Exception e) {
+            catch (Exception) {
                 //エラー発生時は初期値にする
                 CurrentCommonSettingsWPF = new CommonSettingsWPF();
                 SaveCommonSettings();
