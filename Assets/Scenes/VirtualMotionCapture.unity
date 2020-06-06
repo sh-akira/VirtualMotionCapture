@@ -385,6 +385,7 @@ MonoBehaviour:
   skeletalTransformSpace: 0
   handTracking_Skeletal: {fileID: 483683249}
   EnableSkeletal: 1
+  handSwap: 0
 --- !u!4 &130023281
 Transform:
   m_ObjectHideFlags: 0
@@ -1814,6 +1815,55 @@ MonoBehaviour:
   LookOffset: {x: 0, y: 0.05, z: 0}
   PositionFixedTarget: {fileID: 0}
   RelativePosition: {x: 0, y: 0, z: -1}
+--- !u!1 &283794701
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 283794702}
+  - component: {fileID: 283794703}
+  m_Layer: 0
+  m_Name: HandSwapManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &283794702
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 283794701}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1177174446}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &283794703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 283794701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89af86d3dc2039647b6a14d1967186a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Enable: 1
+  OpenVRLeftHand: 
+  OpenVRRightHand: 
+  WPFLeftHandTransform: {fileID: 0}
+  WPFRightHandTransform: {fileID: 0}
+  WPFLeftHand: 
+  WPFRightHand: 
+  HandSwap: 0
+  steamVR2Input: {fileID: 130023280}
 --- !u!1 &302272467
 GameObject:
   m_ObjectHideFlags: 0
@@ -1986,18 +2036,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6fd25003140c0e47b39261ea2e0f470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MonitorPosition: {fileID: 0}
-  LookTarget: {fileID: 0}
-  StartPos: {x: 0, y: 0, z: 0}
-  ScaleX: 0.5
-  ScaleY: 0.2
-  OffsetX: 0
-  OffsetY: 0
-  CenterX: 0.5
-  CenterY: 0.5
-  Smoothing: 0.7
-  controlWPFWindow: {fileID: 1407685704}
-  faceController: {fileID: 69806225}
 --- !u!4 &326004793
 Transform:
   m_ObjectHideFlags: 0
@@ -2022,19 +2060,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fd512d95b6700d44a5763b8c74b228a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MonitorPosition: {fileID: 0}
-  LookTarget: {fileID: 0}
-  StartPos: {x: 0, y: 0, z: 0}
-  ScaleX: 2
-  ScaleY: 1.5
-  OffsetX: 0
-  OffsetY: 0
-  CenterX: 0.5
-  CenterY: 0.5
-  Smoothing: 0.7
-  controlWPFWindow: {fileID: 1407685704}
-  faceController: {fileID: 69806225}
-  UseEyelidMovements: 1
 --- !u!114 &326004795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2046,9 +2071,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47613961cde0a8b4aa4f79219b7e523c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnableEye: 1
-  EnableEyeDataCallback: 0
-  EnableEyeVersion: 0
 --- !u!1 &378345255
 GameObject:
   m_ObjectHideFlags: 0
@@ -5535,12 +5557,12 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1044902095}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 30
+  m_Father: {fileID: 1177174446}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1049932826
 GameObject:
@@ -6250,6 +6272,36 @@ Transform:
   - {fileID: 415054483}
   m_Father: {fileID: 1300838139}
   m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1177174445
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1177174446}
+  m_Layer: 0
+  m_Name: Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1177174446
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1177174445}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1044902097}
+  - {fileID: 283794702}
+  m_Father: {fileID: 0}
+  m_RootOrder: 30
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1191951026
 GameObject:
@@ -10374,8 +10426,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2f7a0c5fd055af4083cbe934b512f19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controlWPFWindow: {fileID: 1407685704}
-  sdkConfiguration: {fileID: 11400000, guid: dd276808621df4e2380660ade912baf3, type: 2}
 --- !u!4 &1770264196
 Transform:
   m_ObjectHideFlags: 0

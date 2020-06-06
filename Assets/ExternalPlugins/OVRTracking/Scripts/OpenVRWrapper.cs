@@ -178,6 +178,29 @@ namespace sh_akira.OVRTracking
             return en;
         }
 
+        //コントローラ状態を調べる
+        public void GetControllerSerial(out string LeftHandSerial, out string RightHandSerial) {
+            LeftHandSerial = null;
+            RightHandSerial = null;
+
+            uint leftHandIndex = openVR.GetTrackedDeviceIndexForControllerRole(ETrackedControllerRole.LeftHand);
+            uint rightHandIndex = openVR.GetTrackedDeviceIndexForControllerRole(ETrackedControllerRole.RightHand);
+
+            if (serialNumbers == null || (leftHandIndex == OpenVR.k_unTrackedDeviceIndexInvalid) || (rightHandIndex == OpenVR.k_unTrackedDeviceIndexInvalid))
+            {
+                return;
+            }
+
+            try
+            {
+                LeftHandSerial = serialNumbers[leftHandIndex];
+                RightHandSerial = serialNumbers[rightHandIndex];
+            }
+            catch (IndexOutOfRangeException) {
+                return;
+            }
+        }
+
         public void Close()
         {
             openVR = null;

@@ -34,6 +34,7 @@ public class SteamVR2Input : MonoBehaviour
 
     private SteamVRActions CurrentActionData;
 
+    public bool handSwap = false;
 
     void OnEnable()
     {
@@ -178,7 +179,7 @@ public class SteamVR2Input : MonoBehaviour
                         ulActionSet = actionSetHandle,
                         ulRestrictedToDevice = inputSourceHandle,
                         InputSourcePath = inputSourcePath,
-                        IsLeft = inputSourcePath.Contains("left"),
+                        IsLeft = inputSourcePath.Contains("left") != handSwap,
                     });
                 }
             }
@@ -218,7 +219,7 @@ public class SteamVR2Input : MonoBehaviour
 
                         bool isTouch = action.ShortName.StartsWith("Touch") && action.ShortName.Contains("Trigger") == false;
                         Vector3 axis = isTouch ? GetLastPosition(action.ShortName) : Vector3.zero;
-                        KeyDownEvent?.Invoke(this, new OVRKeyEventArgs(action.ShortName, axis, actionset.IsLeft, axis != Vector3.zero, isTouch));
+                        KeyDownEvent?.Invoke(this, new OVRKeyEventArgs(action.ShortName, axis, actionset.IsLeft != handSwap, axis != Vector3.zero, isTouch));
                     }
                     if (IsKeyUp(action.digitalActionData))
                     {
@@ -226,7 +227,7 @@ public class SteamVR2Input : MonoBehaviour
 
                         bool isTouch = action.ShortName.StartsWith("Touch") && action.ShortName.Contains("Trigger") == false;
                         Vector3 axis = isTouch ? GetLastPosition(action.ShortName) : Vector3.zero;
-                        KeyUpEvent?.Invoke(this, new OVRKeyEventArgs(action.ShortName, axis, actionset.IsLeft, axis != Vector3.zero, isTouch));
+                        KeyUpEvent?.Invoke(this, new OVRKeyEventArgs(action.ShortName, axis, actionset.IsLeft != handSwap, axis != Vector3.zero, isTouch));
                     }
                 }
                 else if (action.type == "vector1" || action.type == "vector2" || action.type == "vector3")
@@ -244,7 +245,7 @@ public class SteamVR2Input : MonoBehaviour
                     if (axis != Vector3.zero)
                     {
                         LastPositions[action.name] = axis;
-                        AxisChangedEvent?.Invoke(this, new OVRKeyEventArgs(action.ShortName, axis, actionset.IsLeft, true, false));
+                        AxisChangedEvent?.Invoke(this, new OVRKeyEventArgs(action.ShortName, axis, actionset.IsLeft != handSwap, true, false));
                     }
                 }
                 else if (action.type == "skeleton")
@@ -261,7 +262,7 @@ public class SteamVR2Input : MonoBehaviour
                             //Debug.LogWarning($"<b>[SteamVR]</b> GetDigitalActionData error ({action.name}): {err} handle: {action.handle}");
                             continue;
                         }
-                        handTracking_Skeletal.SetSkeltalBoneData(action.name.Contains("Left"), tempBoneTransforms);
+                        handTracking_Skeletal.SetSkeltalBoneData(action.name.Contains("Left") != handSwap, tempBoneTransforms);
                     }
                 }
             }
