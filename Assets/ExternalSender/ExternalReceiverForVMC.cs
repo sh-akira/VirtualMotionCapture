@@ -258,7 +258,10 @@ public class ExternalReceiverForVMC : MonoBehaviour {
             //情報要求 V2.4
             else if (message.address == "/VMC/Ext/Set/Req")
             {
-                externalSender.SendPerLowRate(); //即時送信
+                if (externalSender.isActiveAndEnabled && externalSender.uClient != null)
+                {
+                    externalSender.SendPerLowRate(); //即時送信
+                }
             }
             //情報表示 V2.4
             else if (message.address == "/VMC/Ext/Set/Res" && (message.values[0] is string))
@@ -296,11 +299,20 @@ public class ExternalReceiverForVMC : MonoBehaviour {
             else if (message.address == "/VMC/Ext/Set/Config" && (message.values[0] is string))
             {
                 string path = (string)message.values[0];
-                if (File.Exists(path)) {
+                if (File.Exists(path))
+                {
                     //なぜか時間がかかる
                     window.LoadSettings(path);
-        }
-    }
+                }
+            }
+            //スルー情報 V2.6
+            else if (message.address != null && message.address.StartsWith("/VMC/Thru/"))
+            {
+                //転送する
+                if (externalSender.isActiveAndEnabled && externalSender.uClient != null) {
+                    externalSender.uClient.Send(message.address,message.values);
+                }
+            }
         }
     }
 
