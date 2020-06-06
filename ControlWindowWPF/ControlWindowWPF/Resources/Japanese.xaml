@@ -226,14 +226,27 @@
     <system:String x:Key="SettingWindow_SelectedItemError">カメラを割り当てるトラッカーを選択してください</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig">externalcamera.cfgの書き出し</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">VRゲームにモデルを合成するためのexternalcamera.cfgを出力します</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionSender">外部にモーション送信</system:String>
+	<system:String x:Key="SettingWindow_ExternalMotionSender">モーション送信(VMCProtocol)</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">OSCでモーション送信を有効にする</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">送信間隔(指定フレームに1回)</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionReceiver">外部からモーション受信</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">OSCでモーション受信を有効にする</system:String>
+	<system:String x:Key="SettingWindow_ExternalMotionReceiver">モーション受信(VMCProtocol)</system:String>
+	<system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">OSCでモーション受信を有効にする</system:String>
+	<system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape割り当て</system:String>
+	<system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">MIDI CCつまみ割り当て設定を開く</system:String>
+	<system:String x:Key="SettingWindow_PreventLosingTracking">トラッキングロスト時の飛び軽減</system:String>
+	<system:String x:Key="SettingWindow_TrackingFilterEnable">有効</system:String>
+	<system:String x:Key="SettingWindow_TrackingFilterHmdEnable">HMD</system:String>
+	<system:String x:Key="SettingWindow_TrackingFilterControllerEnable">コントローラ</system:String>
+	<system:String x:Key="SettingWindow_TrackingFilterTrackerEnable">トラッカー</system:String>
+	<system:String x:Key="SettingWindow_ModelModifier">モデル調整</system:String>
+	<system:String x:Key="SettingWindow_FixKneeRotation">膝の回転の修正を試みる</system:String>
+	<system:String x:Key="SettingWindow_TrackingOption">トラッキングオプション</system:String>
+	<system:String x:Key="SettingWindow_HandleControllerAsTracker">コントローラをトラッカーとして扱う(特殊持ち対応)</system:String>
+	<system:String x:Key="SettingWindow_QualitySettings">描画品質</system:String>
+	<system:String x:Key="SettingWindow_AntiAliasing">アンチエイリアス</system:String>
 
 
-    <!-- TrackerConfigWindow -->
+	<!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">トラッカー割り当て設定</system:String>
 
     <system:String x:Key="TrackerConfigWindow_TrackerConfig">トラッカー割り当て</system:String>
