@@ -220,6 +220,11 @@ public class FaceController : MonoBehaviour
         }
     }
 
+    public void MixPreset(string presetName, string keyName, float value)
+    {
+        MixPresets(presetName, new[] { new BlendShapeKey(keyName) }, new[] { value });
+    }
+
     public void MixPreset(string presetName, BlendShapePreset preset, float value)
     {
         MixPresets(presetName, new[] { preset }, new[] { value });
@@ -231,6 +236,11 @@ public class FaceController : MonoBehaviour
         if (CurrentShapeKeys == null) return;
 
         MixPresets(presetName, presets.Select(d => new BlendShapeKey(d)).ToArray(), values);
+    }
+
+    public void MixPreset(string presetName, BlendShapeKey preset, float value)
+    {
+        MixPresets(presetName, new[] { preset }, new[] { value });
     }
 
     public void MixPresets(string presetName, BlendShapeKey[] presets, float[] values)
@@ -255,21 +265,31 @@ public class FaceController : MonoBehaviour
     private void AccumulateBlendShapes()
     {
         if (proxy == null) return;
+        var accumulatedValues = new Dictionary<BlendShapeKey, float>();
+        //ベースの表情を設定する(使わない表情には全て0が入っている)
         foreach (var shapeKey in CurrentShapeKeys)
         {
-            proxy.AccumulateValue(shapeKey.Key, shapeKey.Value);
+            accumulatedValues[shapeKey.Key] = shapeKey.Value;
         }
+
+        BeforeApply?.Invoke(); //MixPresetsする最後のチャンス
+
+        //追加表情を合成する(最大値は超えないようにする)
         foreach (var presets in AccumulateShapeKeys)
         {
             foreach (var preset in presets.Value)
             {
-                proxy.AccumulateValue(preset.Key, preset.Value);
+                var value = accumulatedValues[preset.Key];
+                value += preset.Value;
+                if (value > 1.0f) value = 1.0f;
+                accumulatedValues[preset.Key] = value;
             }
         }
 
-        BeforeApply?.Invoke();
+        //全ての表情をSetValuesで1度に反映させる
+        proxy.SetValues(accumulatedValues);
 
-        proxy.Apply();
+        //SetValuesは内部でApplyまで行うためApply不要
     }
 
     private bool isReset = false;

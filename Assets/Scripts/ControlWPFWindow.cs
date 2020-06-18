@@ -14,6 +14,7 @@ using VRM;
 using static Assets.Scripts.NativeMethods;
 using RootMotion.FinalIK;
 using Valve.VR;
+using System.Reflection;
 #if UNITY_EDITOR   // エディタ上でしか動きません。
 using UnityEditor;
 #endif
@@ -999,7 +1000,11 @@ public class ControlWPFWindow : MonoBehaviour
             if (context.GLTF.extensions.VRM.firstPerson.lookAtType == LookAtType.BlendShape)
             {
                 var applyer = context.Root.GetComponent<VRMLookAtBlendShapeApplyer>();
-                applyer.m_notSetValueApply = true;
+                applyer.enabled = false;
+
+                var vmcapplyer = context.Root.AddComponent<VMC_VRMLookAtBlendShapeApplyer>();
+                vmcapplyer.OnImported(context);
+                vmcapplyer.faceController = faceController;
             }
 
             LoadNewModel(context.Root);
@@ -1688,7 +1693,8 @@ public class ControlWPFWindow : MonoBehaviour
         {
             calibrationState = CalibrationState.Calibrated; //キャリブレーション状態を"キャリブレーション完了"に設定
         }
-        else {
+        else
+        {
             //キャンセルされたなど
             calibrationState = CalibrationState.Uncalibrated; //キャリブレーション状態を"未キャリブレーション"に設定
         }
@@ -2933,7 +2939,8 @@ public class ControlWPFWindow : MonoBehaviour
         CurrentCommonSettings = Json.Serializer.Deserialize<CommonSettings>(File.ReadAllText(path)); //設定を読み込み
     }
 
-    private async void LogMessageHandler(string cond, string trace, LogType type) {
+    private async void LogMessageHandler(string cond, string trace, LogType type)
+    {
         if (type == LogType.Log)
         {
             return; //Logはうるさいので飛ばさない
@@ -3021,7 +3028,7 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 //存在すればそのPathを読みに行こうとする
                 path = CurrentCommonSettings.LoadSettingFilePathOnStart;
-                Debug.Log("Load last loaded file of "+path);
+                Debug.Log("Load last loaded file of " + path);
             }
         }
 
