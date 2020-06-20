@@ -279,10 +279,13 @@ public class FaceController : MonoBehaviour
         {
             foreach (var preset in presets.Value)
             {
-                var value = accumulatedValues[preset.Key];
-                value += preset.Value;
-                if (value > 1.0f) value = 1.0f;
-                accumulatedValues[preset.Key] = value;
+                if (accumulatedValues.ContainsKey(preset.Key)) // waidayo等から別のモデルのBlendShapeが送られてくる場合があるので存在チェックする
+                {
+                    var value = accumulatedValues[preset.Key];
+                    value += preset.Value;
+                    if (value > 1.0f) value = 1.0f;
+                    accumulatedValues[preset.Key] = value;
+                }
             }
         }
 
