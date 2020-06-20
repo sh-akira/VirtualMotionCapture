@@ -2036,6 +2036,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6fd25003140c0e47b39261ea2e0f470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MonitorPosition: {fileID: 0}
+  LookTarget: {fileID: 0}
+  StartPos: {x: 0, y: 0, z: 0}
+  ScaleX: 0.5
+  ScaleY: 0.2
+  OffsetX: 0
+  OffsetY: 0
+  CenterX: 0.5
+  CenterY: 0.5
+  Smoothing: 0.7
+  controlWPFWindow: {fileID: 1407685704}
+  faceController: {fileID: 69806225}
 --- !u!4 &326004793
 Transform:
   m_ObjectHideFlags: 0
@@ -2060,6 +2072,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fd512d95b6700d44a5763b8c74b228a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MonitorPosition: {fileID: 0}
+  LookTarget: {fileID: 0}
+  StartPos: {x: 0, y: 0, z: 0}
+  ScaleX: 2
+  ScaleY: 1.5
+  OffsetX: 0
+  OffsetY: 0
+  CenterX: 0.5
+  CenterY: 0.5
+  Smoothing: 0.7
+  controlWPFWindow: {fileID: 1407685704}
+  faceController: {fileID: 69806225}
+  UseEyelidMovements: 1
 --- !u!114 &326004795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2071,6 +2096,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47613961cde0a8b4aa4f79219b7e523c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EnableEye: 1
+  EnableEyeDataCallback: 0
+  EnableEyeVersion: 0
 --- !u!1 &378345255
 GameObject:
   m_ObjectHideFlags: 0
@@ -6135,6 +6163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc4032a37a493bf44b54ca33ea768822, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  uClient: {fileID: 0}
   steamVR2Input: {fileID: 130023280}
   midiCCWrapper: {fileID: 1604201751}
   externalReceiver: {fileID: 389263779}
@@ -8021,6 +8050,7 @@ MonoBehaviour:
   RealTrackerRoot: {fileID: 1300838139}
   ExternalMotionSenderObject: {fileID: 1155637108}
   ExternalMotionReceiverObject: {fileID: 389263777}
+  CriticalErrorCount: 0
   midiCCWrapper: {fileID: 1604201751}
   midiCCBlendShape: {fileID: 1440382163}
   calibrationState: 0
@@ -10426,6 +10456,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2f7a0c5fd055af4083cbe934b512f19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  controlWPFWindow: {fileID: 1407685704}
+  sdkConfiguration: {fileID: 11400000, guid: dd276808621df4e2380660ade912baf3, type: 2}
 --- !u!4 &1770264196
 Transform:
   m_ObjectHideFlags: 0
