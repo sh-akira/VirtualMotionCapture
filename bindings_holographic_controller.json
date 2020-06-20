@@ -1,29 +1,150 @@
 {
-  "app_key": "application.generated.unity.steamvr.exe",
-  "bindings": {
-    "/actions/buggy": {
-      "chords": [],
-      "poses": [],
-      "haptics": [],
-      "sources": [],
-      "skeleton": []
-    },
-    "/actions/default": {
-      "chords": [],
-      "poses": [],
-      "haptics": [],
-      "sources": [],
-      "skeleton": []
-    },
-    "/actions/platformer": {
-      "chords": [],
-      "poses": [],
-      "haptics": [],
-      "sources": [],
-      "skeleton": []
-    }
-  },
+  
+   "bindings" : {
+      "/actions/buggy" : {
+         "chords" : [],
+         "haptics" : [],
+         "poses" : [],
+         "skeleton" : [],
+         "sources" : []
+      },
+      "/actions/default" : {
+         "chords" : [],
+         "haptics" : [],
+         "poses" : [],
+         "skeleton" : [],
+         "sources" : [
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/default/in/clicktrigger"
+                  },
+                  "pull" : {
+                     "output" : "/actions/default/in/pulltrigger"
+                  },
+                  "touch" : {
+                     "output" : "/actions/default/in/touchtrigger"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/left/input/trigger"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/default/in/clicktrigger"
+                  },
+                  "pull" : {
+                     "output" : "/actions/default/in/pulltrigger"
+                  },
+                  "touch" : {
+                     "output" : "/actions/default/in/touchtrigger"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/right/input/trigger"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/default/in/clicktrackpad"
+                  },
+                  "position" : {
+                     "output" : "/actions/default/in/positiontrackpad"
+                  },
+                  "touch" : {
+                     "output" : "/actions/default/in/touchtrackpad"
+                  }
+               },
+               "mode" : "trackpad",
+               "path" : "/user/hand/left/input/trackpad"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/default/in/clicktrackpad"
+                  },
+                  "position" : {
+                     "output" : "/actions/default/in/positiontrackpad"
+                  },
+                  "touch" : {
+                     "output" : "/actions/default/in/touchtrackpad"
+                  }
+               },
+               "mode" : "trackpad",
+               "path" : "/user/hand/right/input/trackpad"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/default/in/clickgrip"
+                  },
+                  "touch" : {
+                     "output" : "/actions/default/in/touchgrip"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/left/input/grip"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/default/in/clickgrip"
+                  },
+                  "touch" : {
+                     "output" : "/actions/default/in/touchgrip"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/grip"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/default/in/clickmenu"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/left/input/application_menu"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/default/in/clickmenu"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/application_menu"
+            },
+            {
+               "inputs" : {
+                  "position" : {
+                     "output" : "/actions/default/in/positionthumbstick"
+                  }
+               },
+               "mode" : "joystick",
+               "path" : "/user/hand/left/input/joystick"
+            },
+            {
+               "inputs" : {
+                  "position" : {
+                     "output" : "/actions/default/in/positionthumbstick"
+                  }
+               },
+               "mode" : "joystick",
+               "path" : "/user/hand/right/input/joystick"
+            }
+         ]
+      },
+      "/actions/platformer" : {
+         "chords" : [],
+         "haptics" : [],
+         "poses" : [],
+         "skeleton" : [],
+         "sources" : []
+      }
+   },
   "controller_type": "holographic_controller",
   "description": "",
-  "name": "Default bindings for Windows Mixed Reality Controllers"
+  "name": "VirtualMotionCapture Config for Windows Mixed Reality Controllers"
 }
