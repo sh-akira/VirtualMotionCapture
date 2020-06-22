@@ -47,7 +47,7 @@ public class HandSwapManagerScript : MonoBehaviour {
 
         OpenVRWrapper.Instance.GetControllerSerial(out OpenVRLeftHand, out OpenVRRightHand);
 
-        if (OpenVRLeftHand == WPFRightHand && OpenVRRightHand == WPFLeftHand)
+        if (OpenVRLeftHand != null && OpenVRRightHand != null && OpenVRLeftHand == WPFRightHand && OpenVRRightHand == WPFLeftHand)
         {
             HandSwap = true;
             steamVR2Input.handSwap = true;

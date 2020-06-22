@@ -183,6 +183,11 @@ namespace sh_akira.OVRTracking
             LeftHandSerial = null;
             RightHandSerial = null;
 
+            if (openVR == null)
+            {
+                return;
+            }
+
             uint leftHandIndex = openVR.GetTrackedDeviceIndexForControllerRole(ETrackedControllerRole.LeftHand);
             uint rightHandIndex = openVR.GetTrackedDeviceIndexForControllerRole(ETrackedControllerRole.RightHand);
 
