@@ -42,34 +42,38 @@ public class VMC_VRMLookAtBlendShapeApplyer : MonoBehaviour, IVRMComponent
         m_head.YawPitchChanged += ApplyRotations;
     }
 
+    private BlendShapeKey[] presets = new[] { new BlendShapeKey(BlendShapePreset.LookLeft), new BlendShapeKey(BlendShapePreset.LookRight), new BlendShapeKey(BlendShapePreset.LookUp), new BlendShapeKey(BlendShapePreset.LookDown) };
+    private float[] blendShapeValues = new float[4];
+
     void ApplyRotations(float yaw, float pitch)
     {
 #pragma warning disable 0618
         if (yaw < 0)
         {
             // Left
-            faceController.MixPreset(nameof(VMC_VRMLookAtBlendShapeApplyer), BlendShapePreset.LookRight, 0); // clear first
-            faceController.MixPreset(nameof(VMC_VRMLookAtBlendShapeApplyer), BlendShapePreset.LookLeft, Mathf.Clamp(Horizontal.Map(-yaw), 0, 1.0f));
+            blendShapeValues[1] = 0;
+            blendShapeValues[0] = Mathf.Clamp(Horizontal.Map(-yaw), 0, 1.0f);
         }
         else
         {
             // Right
-            faceController.MixPreset(nameof(VMC_VRMLookAtBlendShapeApplyer), BlendShapePreset.LookLeft, 0); // clear first
-            faceController.MixPreset(nameof(VMC_VRMLookAtBlendShapeApplyer), BlendShapePreset.LookRight, Mathf.Clamp(Horizontal.Map(yaw), 0, 1.0f));
+            blendShapeValues[0] = 0;
+            blendShapeValues[1] = Mathf.Clamp(Horizontal.Map(yaw), 0, 1.0f);
         }
 
         if (pitch < 0)
         {
             // Down
-            faceController.MixPreset(nameof(VMC_VRMLookAtBlendShapeApplyer), BlendShapePreset.LookUp, 0); // clear first
-            faceController.MixPreset(nameof(VMC_VRMLookAtBlendShapeApplyer), BlendShapePreset.LookDown, Mathf.Clamp(VerticalDown.Map(-pitch), 0, 1.0f));
+            blendShapeValues[2] = 0;
+            blendShapeValues[3] = Mathf.Clamp(VerticalDown.Map(-pitch), 0, 1.0f);
         }
         else
         {
             // Up
-            faceController.MixPreset(nameof(VMC_VRMLookAtBlendShapeApplyer), BlendShapePreset.LookDown, 0); // clear first
-            faceController.MixPreset(nameof(VMC_VRMLookAtBlendShapeApplyer), BlendShapePreset.LookUp, Mathf.Clamp(VerticalUp.Map(pitch), 0, 1.0f));
+            blendShapeValues[3] = 0;
+            blendShapeValues[2] = Mathf.Clamp(VerticalUp.Map(pitch), 0, 1.0f);
         }
+        faceController.MixPresets(nameof(VMC_VRMLookAtBlendShapeApplyer), presets, blendShapeValues);
 #pragma warning restore 0618
     }
 }
