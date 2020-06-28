@@ -207,8 +207,9 @@ public class ControlWPFWindow : MonoBehaviour
             if (!doKeyConfig) CheckKey(config, value);
         };
 
-        MidiJack.MidiMaster.knobDelegate += (MidiJack.MidiChannel channel, int knobNo, float value) =>
+        midiCCWrapper.knobUpdateFloatDelegate += (int knobNo, float value) =>
         {
+            MidiJack.MidiChannel channel = MidiJack.MidiChannel.Ch1; //仮でCh1
             CheckKnobUpdated(channel, knobNo, value);
         };
     }

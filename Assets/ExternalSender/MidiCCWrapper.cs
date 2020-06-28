@@ -9,6 +9,9 @@ public class MidiCCWrapper : MonoBehaviour {
     public const int KNOBS = 128; //最大ノブ数
     public const float Threshold = 0.5f; //bool判定しきい値
 
+    //MIDI NoteをMIDI CCとして扱う
+    public bool MIDINoteAsCC = false;
+
     //MIDIJack集約用デリゲートプロキシ(入力を即時通知する)
     public Action<MidiJack.MidiChannel, int, float> noteOnDelegateProxy = null;
     public Action<MidiJack.MidiChannel, int> noteOffDelegateProxy = null;
@@ -42,10 +45,17 @@ public class MidiCCWrapper : MonoBehaviour {
                     noteOffDelegateProxy.Invoke(channel, note);
                 }
             }
+            if (MIDINoteAsCC) {
+                KnobUpdated(channel, note, velocity);
+            }
         };
         MidiJack.MidiMaster.noteOffDelegate += (MidiJack.MidiChannel channel, int note) => {
             if (noteOffDelegateProxy != null) {
                 noteOffDelegateProxy.Invoke(channel, note);
+            }
+            if (MIDINoteAsCC)
+            {
+                KnobUpdated(channel, note, 0);
             }
         };
 
