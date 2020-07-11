@@ -129,10 +129,14 @@ public class EyeTracking_Tobii : MonoBehaviour
             //    MonitorPosition.transform.localRotation = Quaternion.Lerp(MonitorPosition.transform.localRotation, Quaternion.Inverse(headPose.Rotation), Time.unscaledDeltaTime * 10f);
             //}
 
-            var gazePoint = GazeViewportToMonitorViewport(TobiiAPI.GetGazePoint().Viewport);
+            var gazePoint = TobiiAPI.GetGazePoint();
+            if (gazePoint.IsValid)
+            {
+                var gazePointToMonitor = GazeViewportToMonitorViewport(TobiiAPI.GetGazePoint().Viewport);
 
-            Vector3 gazePointInWorld = new Vector3(StartPos.x + ((gazePoint.x - CenterX) * ScaleX) + OffsetX, StartPos.y + ((gazePoint.y - CenterY) * ScaleY) + OffsetY, StartPos.z);
-            LookTarget.transform.localPosition = Smoothify(gazePointInWorld);
+                Vector3 gazePointInWorld = new Vector3(StartPos.x + ((gazePointToMonitor.x - CenterX) * ScaleX) + OffsetX, StartPos.y + ((gazePointToMonitor.y - CenterY) * ScaleY) + OffsetY, StartPos.z);
+                LookTarget.transform.localPosition = Smoothify(gazePointInWorld);
+            }
         }
     }
     private Vector3 Smoothify(Vector3 point)
