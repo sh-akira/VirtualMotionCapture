@@ -84,6 +84,8 @@ public class EyeTracking_Tobii : MonoBehaviour
         if (faceBeforeApply != null) faceController.BeforeApply -= faceBeforeApply;
         faceBeforeApply = () =>
         {
+            if (LookTarget == null) return;
+            if (vrmLookAtHead.Head == null) return;
             vrmLookAtHead.Target = LookTarget.transform;
             vrmLookAtHead.LookWorldPosition();
             vrmLookAtHead.Target = null;
