@@ -25,6 +25,7 @@ public class EyeTracking_Tobii : MonoBehaviour
     public ControlWPFWindow controlWPFWindow;
     public FaceController faceController;
     private Action faceBeforeApply = null;
+    private bool isValidPosition = false;
 
     // Use this for initialization
     void Start()
@@ -86,6 +87,7 @@ public class EyeTracking_Tobii : MonoBehaviour
         {
             if (LookTarget == null) return;
             if (vrmLookAtHead.Head == null) return;
+            if (isValidPosition == false) return;
             vrmLookAtHead.Target = LookTarget.transform;
             vrmLookAtHead.LookWorldPosition();
             vrmLookAtHead.Target = null;
@@ -132,7 +134,8 @@ public class EyeTracking_Tobii : MonoBehaviour
             //}
 
             var gazePoint = TobiiAPI.GetGazePoint();
-            if (gazePoint.IsValid)
+            isValidPosition = gazePoint.IsValid;
+            if (isValidPosition)
             {
                 var gazePointToMonitor = GazeViewportToMonitorViewport(TobiiAPI.GetGazePoint().Viewport);
 
