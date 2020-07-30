@@ -89,6 +89,9 @@ public class EyeTracking_ViveProEye : MonoBehaviour
         if (faceBeforeApply != null) faceController.BeforeApply -= faceBeforeApply;
         faceBeforeApply = () =>
         {
+            if ((SRanipal_Eye_Framework.Status != SRanipal_Eye_Framework.FrameworkStatus.WORKING &&
+                SRanipal_Eye_Framework.Status != SRanipal_Eye_Framework.FrameworkStatus.NOT_SUPPORT) || 
+                SRanipal_Eye_Framework.Status == SRanipal_Eye_Framework.FrameworkStatus.NOT_SUPPORT) return;
             vrmLookAtHead.Target = LookTarget.transform;
             vrmLookAtHead.LookWorldPosition();
             vrmLookAtHead.Target = null;
@@ -103,8 +106,9 @@ public class EyeTracking_ViveProEye : MonoBehaviour
     {
         if (Camera.main == null) return;
 
-        if (SRanipal_Eye_Framework.Status != SRanipal_Eye_Framework.FrameworkStatus.WORKING &&
-            SRanipal_Eye_Framework.Status != SRanipal_Eye_Framework.FrameworkStatus.NOT_SUPPORT) return;
+        if ((SRanipal_Eye_Framework.Status != SRanipal_Eye_Framework.FrameworkStatus.WORKING &&
+            SRanipal_Eye_Framework.Status != SRanipal_Eye_Framework.FrameworkStatus.NOT_SUPPORT) ||
+            SRanipal_Eye_Framework.Status == SRanipal_Eye_Framework.FrameworkStatus.NOT_SUPPORT) return;
 
         //まぶた
         bool isLeftEyeActive = false;
@@ -115,11 +119,6 @@ public class EyeTracking_ViveProEye : MonoBehaviour
         {
             isLeftEyeActive = SRanipal_Eye.GetEyeOpenness(EyeIndex.LEFT, out leftEyeOpenness);
             isRightEyeActive = SRanipal_Eye.GetEyeOpenness(EyeIndex.RIGHT, out rightEyeOpenness);
-        }
-        else if (SRanipal_Eye_Framework.Status == SRanipal_Eye_Framework.FrameworkStatus.NOT_SUPPORT)
-        {
-            isLeftEyeActive = true;
-            isRightEyeActive = true;
         }
 
         if (isLeftEyeActive || isRightEyeActive)
