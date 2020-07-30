@@ -33,6 +33,7 @@ public class ExternalReceiverForVMC : MonoBehaviour {
     Camera currentCamera = null;
     FaceController faceController = null;
     VRMLookAtHead vrmLookAtHead = null;
+    Transform headTransform = null;
 
     //仮想視線操作用
     GameObject lookTargetOSC;
@@ -57,6 +58,12 @@ public class ExternalReceiverForVMC : MonoBehaviour {
             {
                 this.CurrentModel = CurrentModel;
                 vrmLookAtHead = CurrentModel.GetComponent<VRMLookAtHead>();
+                var animator = CurrentModel.GetComponent<Animator>();
+                headTransform = null;
+                if (animator != null)
+                {
+                    headTransform = animator.GetBoneTransform(HumanBodyBones.Head);
+                }
             }
         };
         window.CameraChangedAction += (Camera currentCamera) =>
@@ -229,13 +236,13 @@ public class ExternalReceiverForVMC : MonoBehaviour {
                     if (lookTargetOSC == null)
                     {
                         lookTargetOSC = new GameObject();
-                        lookTargetOSC.transform.parent = null;
                         lookTargetOSC.name = "lookTargetOSC";
                     }
                     //位置を書き込む
                     if (lookTargetOSC.transform != null)
                     {
-                        lookTargetOSC.transform.position = pos;
+                        lookTargetOSC.transform.parent = headTransform;
+                        lookTargetOSC.transform.localPosition = pos;
                     }
 
                     //視線に書き込む
