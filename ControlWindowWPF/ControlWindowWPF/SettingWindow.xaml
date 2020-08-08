@@ -107,7 +107,14 @@
                         <Button Content="Export" Name="CameraPlus_ExportButton" Click="CameraPlus_ExportButton_Click"/>
                     </UniformGrid>
                 </GroupBox>
-                <GroupBox Header="{DynamicResource SettingWindow_ExternalMotionSender}">
+                <GroupBox Header="{DynamicResource SettingWindow_ExternalMotionSender}" Name="FreeExternalMotionSenderGroupBox">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{DynamicResource SettingWindow_SendingIsOnlyFANBOX}" TextWrapping="Wrap"/>
+                        <TextBlock><Hyperlink NavigateUri="https://www.pixiv.net/fanbox/creator/10267568" RequestNavigate="Hyperlink_RequestNavigate">pixivFANBOX</Hyperlink></TextBlock>
+                        <TextBlock><Hyperlink NavigateUri="https://www.patreon.com/sh_akira" RequestNavigate="Hyperlink_RequestNavigate">Patreon</Hyperlink></TextBlock>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="{DynamicResource SettingWindow_ExternalMotionSender}" Name="FanboxExternalMotionSenderGroupBox">
                     <DockPanel>
                         <Button Content="{DynamicResource SettingWindow_ResolutionApply}" Name="OSCApplyButton" Click="OSCApplyButton_Click" DockPanel.Dock="Right" Padding="10,5"/>
                         <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionSenderEnable}" Name="ExternalMotionSenderEnableCheckBox" Checked="ExternalMotionSenderCheckBox_Changed" Unchecked="ExternalMotionSenderCheckBox_Changed" DockPanel.Dock="Top"/>

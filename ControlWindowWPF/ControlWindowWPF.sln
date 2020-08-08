@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2035
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualMotionCaptureControlPanel", "ControlWindowWPF\VirtualMotionCaptureControlPanel.csproj", "{4C96194C-31D2-4780-80BB-FE77F75FAFD0}"
 EndProject
@@ -12,19 +12,33 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		FANBOX|Any CPU = FANBOX|Any CPU
+		FREE|Any CPU = FREE|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{4C96194C-31D2-4780-80BB-FE77F75FAFD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4C96194C-31D2-4780-80BB-FE77F75FAFD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C96194C-31D2-4780-80BB-FE77F75FAFD0}.FANBOX|Any CPU.ActiveCfg = FANBOX|Any CPU
+		{4C96194C-31D2-4780-80BB-FE77F75FAFD0}.FANBOX|Any CPU.Build.0 = FANBOX|Any CPU
+		{4C96194C-31D2-4780-80BB-FE77F75FAFD0}.FREE|Any CPU.ActiveCfg = FREE|Any CPU
+		{4C96194C-31D2-4780-80BB-FE77F75FAFD0}.FREE|Any CPU.Build.0 = FREE|Any CPU
 		{4C96194C-31D2-4780-80BB-FE77F75FAFD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C96194C-31D2-4780-80BB-FE77F75FAFD0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{045EFC7F-9CF6-4DCE-83E1-3CAC35D83383}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{045EFC7F-9CF6-4DCE-83E1-3CAC35D83383}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{045EFC7F-9CF6-4DCE-83E1-3CAC35D83383}.FANBOX|Any CPU.ActiveCfg = Debug|Any CPU
+		{045EFC7F-9CF6-4DCE-83E1-3CAC35D83383}.FANBOX|Any CPU.Build.0 = Debug|Any CPU
+		{045EFC7F-9CF6-4DCE-83E1-3CAC35D83383}.FREE|Any CPU.ActiveCfg = Debug|Any CPU
+		{045EFC7F-9CF6-4DCE-83E1-3CAC35D83383}.FREE|Any CPU.Build.0 = Debug|Any CPU
 		{045EFC7F-9CF6-4DCE-83E1-3CAC35D83383}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{045EFC7F-9CF6-4DCE-83E1-3CAC35D83383}.Release|Any CPU.Build.0 = Release|Any CPU
 		{214EBE94-3AC3-4260-8664-35D803139E89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{214EBE94-3AC3-4260-8664-35D803139E89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{214EBE94-3AC3-4260-8664-35D803139E89}.FANBOX|Any CPU.ActiveCfg = Debug|Any CPU
+		{214EBE94-3AC3-4260-8664-35D803139E89}.FANBOX|Any CPU.Build.0 = Debug|Any CPU
+		{214EBE94-3AC3-4260-8664-35D803139E89}.FREE|Any CPU.ActiveCfg = Debug|Any CPU
+		{214EBE94-3AC3-4260-8664-35D803139E89}.FREE|Any CPU.Build.0 = Debug|Any CPU
 		{214EBE94-3AC3-4260-8664-35D803139E89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{214EBE94-3AC3-4260-8664-35D803139E89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

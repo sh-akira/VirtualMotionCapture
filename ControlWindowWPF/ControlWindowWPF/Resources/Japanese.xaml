@@ -244,6 +244,7 @@
 	<system:String x:Key="SettingWindow_HandleControllerAsTracker">コントローラをトラッカーとして扱う(特殊持ち対応)</system:String>
 	<system:String x:Key="SettingWindow_QualitySettings">描画品質</system:String>
 	<system:String x:Key="SettingWindow_AntiAliasing">アンチエイリアス</system:String>
+    <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">モーション送信機能はpixivFANBOX,Patreon先行配信版限定機能です</system:String>
 
 
 	<!-- TrackerConfigWindow -->

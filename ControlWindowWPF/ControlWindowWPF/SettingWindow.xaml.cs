@@ -46,6 +46,11 @@ namespace VirtualMotionCaptureControlPanel
             RightHandRotateComboBox.ItemsSource = RotationItems;
             if (RotationItems.Contains(Globals.LeftHandRotation)) LeftHandRotateComboBox.SelectedItem = Globals.LeftHandRotation;
             if (RotationItems.Contains(Globals.RightHandRotation)) RightHandRotateComboBox.SelectedItem = Globals.RightHandRotation;
+#if FREE
+            (FanboxExternalMotionSenderGroupBox.Parent as StackPanel).Children.Remove(FanboxExternalMotionSenderGroupBox);
+#elif FANBOX
+            (FreeExternalMotionSenderGroupBox.Parent as StackPanel).Children.Remove(FreeExternalMotionSenderGroupBox);
+#endif
         }
 
         private Brush WhiteBrush = new SolidColorBrush(Colors.White);
@@ -732,6 +737,11 @@ namespace VirtualMotionCaptureControlPanel
             catch (Exception) { }
 
             MessageBox.Show(sb.ToString(), "IP Address", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            System.Diagnostics.Process.Start(e.Uri.ToString());
         }
     }
 }
