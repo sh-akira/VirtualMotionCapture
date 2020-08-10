@@ -1,5 +1,5 @@
 ---
-date: 2020-08-11
+date: 0020-08-11
 title: Beat Saberとアバター合成
 categories:
   - manual
