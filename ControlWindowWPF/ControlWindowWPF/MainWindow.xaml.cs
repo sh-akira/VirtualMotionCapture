@@ -76,6 +76,11 @@ namespace VirtualMotionCaptureControlPanel
             {
                 await Task.Delay(100);
             }
+#if BETA && FANBOX
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetIsBeta { IsBeta = true , IsPreRelease = true});
+#elif FANBOX
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetIsBeta { IsBeta = false , IsPreRelease = true});
+#endif
             await GetLipSyncDevice();
             await Globals.Client.SendCommandAsync(new PipeCommands.LoadCurrentSettings());
         }
@@ -138,7 +143,7 @@ namespace VirtualMotionCaptureControlPanel
                 {
                     var d = (PipeCommands.LoadVRMPath)e.Data;
                     Globals.CurrentVRMFilePath = d.Path;
-                }
+                } 
                 else if (e.CommandType == typeof(PipeCommands.LoadControllerTouchPadPoints))
                 {
                     var d = (PipeCommands.LoadControllerTouchPadPoints)e.Data;
@@ -343,7 +348,7 @@ namespace VirtualMotionCaptureControlPanel
             System.Diagnostics.Debug.WriteLine($"Key{updown} {facehand} {leftright} {type} {key.keyCode} {key.keyIndex}");
         }
 
-        #region "設定"
+#region "設定"
 
         private async void LoadSettingsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -417,9 +422,9 @@ namespace VirtualMotionCaptureControlPanel
             UpdateWindowTitle();
         }
 
-        #endregion
+#endregion
 
-        #region "背景色"
+#region "背景色"
 
         private async void ColorGreenButton_Click(object sender, RoutedEventArgs e)
         {
@@ -493,9 +498,9 @@ namespace VirtualMotionCaptureControlPanel
             await Globals.Client.SendCommandAsync(new PipeCommands.SetWindowClickThrough { enable = false });
         }
 
-        #endregion
+#endregion
 
-        #region "カメラ"
+#region "カメラ"
 
         private async void FrontCameraButton_Click(object sender, RoutedEventArgs e)
         {
@@ -552,9 +557,9 @@ namespace VirtualMotionCaptureControlPanel
             }
         }
 
-        #endregion
+#endregion
 
-        #region "リップシンク"
+#region "リップシンク"
 
         private async void LipSyncCheckBox_Checked(object sender, RoutedEventArgs e)
         {
@@ -645,9 +650,9 @@ namespace VirtualMotionCaptureControlPanel
             await SliderValueChanged(WeightThreasholdSlider, WeightThreasholdTextBlock, 1000.0f, new PipeCommands.SetLipSyncWeightThreashold(), IsSliderSetting);
         }
 
-        #endregion
+#endregion
 
-        #region "表情制御"
+#region "表情制御"
 
         private async void AutoBlinkCheckBox_Checked(object sender, RoutedEventArgs e)
         {
@@ -690,7 +695,7 @@ namespace VirtualMotionCaptureControlPanel
             await SliderValueChanged(sender, ClosingTimeTextBlock, 100.0f, new PipeCommands.SetClosingTime(), IsSliderSetting);
         }
 
-        #endregion
+#endregion
 
         private async void LightSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {

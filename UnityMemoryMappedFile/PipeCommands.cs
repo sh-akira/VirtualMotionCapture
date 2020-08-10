@@ -19,6 +19,12 @@ namespace UnityMemoryMappedFile
             return null;
         }
 
+        public class SetIsBeta
+        {
+            public bool IsPreRelease { get; set; }
+            public bool IsBeta { get; set; }
+        }
+
         public class LoadVRM
         {
             public string Path { get; set; }

@@ -21,6 +21,9 @@ using UnityEditor;
 
 public class ControlWPFWindow : MonoBehaviour
 {
+    public bool IsBeta = false;
+    public bool IsPreRelease = false;
+
     public string VersionString;
 
     public TrackerHandler handler = null;
@@ -126,7 +129,6 @@ public class ControlWPFWindow : MonoBehaviour
         pipeName = "VMCTest";
 #else
         Debug.unityLogger.logEnabled = false;
-        CurrentWindowNum = SetWindowTitle();
         pipeName = "VMCpipe" + Guid.NewGuid().ToString();
 #endif
         server = new MemoryMappedFileServer();
@@ -239,7 +241,21 @@ public class ControlWPFWindow : MonoBehaviour
         {
             setWindowNum++;
         }
-        Assets.Scripts.NativeMethods.SetUnityWindowTitle($"{Application.productName} {VersionString} ({setWindowNum})");
+        var baseVersionString = VersionString.Split('f').First();
+        var buildString = "";
+        if (IsBeta)
+        {
+            buildString = "b" + VersionString.Split('b').Last();
+        }
+        else if (IsPreRelease)
+        {
+            buildString = "r" + VersionString.Split('r').Last().Split('b').First();
+        }
+        else
+        {
+            buildString = "f" + VersionString.Split('f').Last().Split('r').First();
+        }
+        Assets.Scripts.NativeMethods.SetUnityWindowTitle($"{Application.productName} {baseVersionString + buildString} ({setWindowNum})");
         return setWindowNum;
     }
 
@@ -312,7 +328,13 @@ public class ControlWPFWindow : MonoBehaviour
     {
         context.Post(async s =>
         {
-            if (e.CommandType == typeof(PipeCommands.LoadVRM))
+            if (e.CommandType == typeof(PipeCommands.SetIsBeta))
+            {
+                var d = (PipeCommands.SetIsBeta)e.Data;
+                IsBeta = d.IsBeta;
+                IsPreRelease = d.IsPreRelease;
+            }
+            else if (e.CommandType == typeof(PipeCommands.LoadVRM))
             {
                 var d = (PipeCommands.LoadVRM)e.Data;
                 await server.SendCommandAsync(new PipeCommands.ReturnLoadVRM { Data = LoadVRM(d.Path) }, e.RequestId);
@@ -714,6 +736,7 @@ public class ControlWPFWindow : MonoBehaviour
                 if (isFirstTimeExecute)
                 {
                     isFirstTimeExecute = false;
+                    CurrentWindowNum = SetWindowTitle();
                     //起動時は初期設定ロード
                     LoadSettings(null);
                     //イベントを登録(何度呼び出しても1回のみ)
@@ -2430,6 +2453,7 @@ public class ControlWPFWindow : MonoBehaviour
 
     private void SetExternalMotionSenderEnable(bool enable)
     {
+        if (IsPreRelease == false) return;
         CurrentSettings.ExternalMotionSenderEnable = enable;
         ExternalMotionSenderObject.SetActive(enable);
         WaitOneFrameAction(() => ModelLoadedAction?.Invoke(CurrentModel));
