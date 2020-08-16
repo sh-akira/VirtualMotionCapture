@@ -2036,18 +2036,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6fd25003140c0e47b39261ea2e0f470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MonitorPosition: {fileID: 0}
-  LookTarget: {fileID: 0}
-  StartPos: {x: 0, y: 0, z: 0}
-  ScaleX: 0.5
-  ScaleY: 0.2
-  OffsetX: 0
-  OffsetY: 0
-  CenterX: 0.5
-  CenterY: 0.5
-  Smoothing: 0.7
-  controlWPFWindow: {fileID: 1407685704}
-  faceController: {fileID: 69806225}
 --- !u!4 &326004793
 Transform:
   m_ObjectHideFlags: 0
@@ -2072,19 +2060,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fd512d95b6700d44a5763b8c74b228a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MonitorPosition: {fileID: 0}
-  LookTarget: {fileID: 0}
-  StartPos: {x: 0, y: 0, z: 0}
-  ScaleX: 2
-  ScaleY: 1.5
-  OffsetX: 0
-  OffsetY: 0
-  CenterX: 0.5
-  CenterY: 0.5
-  Smoothing: 0.7
-  controlWPFWindow: {fileID: 1407685704}
-  faceController: {fileID: 69806225}
-  UseEyelidMovements: 1
 --- !u!114 &326004795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2096,9 +2071,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47613961cde0a8b4aa4f79219b7e523c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnableEye: 1
-  EnableEyeDataCallback: 0
-  EnableEyeVersion: 0
 --- !u!1 &378345255
 GameObject:
   m_ObjectHideFlags: 0
@@ -6329,6 +6301,7 @@ Transform:
   m_Children:
   - {fileID: 1044902097}
   - {fileID: 283794702}
+  - {fileID: 1995326175}
   m_Father: {fileID: 0}
   m_RootOrder: 30
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -8052,7 +8025,9 @@ MonoBehaviour:
   RealTrackerRoot: {fileID: 1300838139}
   ExternalMotionSenderObject: {fileID: 1155637108}
   ExternalMotionReceiverObject: {fileID: 389263777}
+  currentCamera: {fileID: 0}
   CriticalErrorCount: 0
+  vmtClient: {fileID: 1995326176}
   midiCCWrapper: {fileID: 1604201751}
   midiCCBlendShape: {fileID: 1440382163}
   calibrationState: 0
@@ -10458,8 +10433,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2f7a0c5fd055af4083cbe934b512f19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controlWPFWindow: {fileID: 1407685704}
-  sdkConfiguration: {fileID: 11400000, guid: dd276808621df4e2380660ade912baf3, type: 2}
 --- !u!4 &1770264196
 Transform:
   m_ObjectHideFlags: 0
@@ -10898,6 +10871,62 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1986374866}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1995326174
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1995326175}
+  - component: {fileID: 1995326177}
+  - component: {fileID: 1995326176}
+  m_Layer: 0
+  m_Name: VMTClient
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1995326175
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1995326174}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1177174446}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1995326176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1995326174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 431fafaf9d41bb14eaf3a0464027ad04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vitrualTrackerNo: 50
+  window: {fileID: 1407685704}
+--- !u!114 &1995326177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1995326174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d36dd9fcae25042bbb815255411ff524, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  address: 127.0.0.1
+  port: 39570
 --- !u!1 &1998026826
 GameObject:
   m_ObjectHideFlags: 0
