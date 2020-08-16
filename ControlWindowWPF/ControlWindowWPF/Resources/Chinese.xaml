@@ -244,7 +244,9 @@
    	<system:String x:Key="SettingWindow_QualitySettings">Quality Settings</system:String>
    	<system:String x:Key="SettingWindow_AntiAliasing">AntiAliasing</system:String>
     <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">Sending motion is only available for pixivFANBOX and Patreon versions.</system:String>
-   	
+   	<system:String x:Key="SettingWindow_VirtualMotionTracker">Virtual Motion Tracker (VMT)</system:String>
+	<system:String x:Key="SettingWindow_VirtualMotionTrackerEnable">Enable</system:String>
+
     
 
     <!-- TrackerConfigWindow -->

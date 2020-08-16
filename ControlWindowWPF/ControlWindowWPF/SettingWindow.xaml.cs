@@ -374,6 +374,18 @@ namespace VirtualMotionCaptureControlPanel
                     isSetting = false;
                 });
             });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetVirtualMotionTracker { }, d =>
+            {
+                var data = (PipeCommands.SetVirtualMotionTracker)d;
+                Dispatcher.Invoke(() =>
+                {
+                    isSetting = true;
+                    VirtualMotionTrackerEnableCheckBox.IsChecked = data.enable;
+                    VirtualMotionTrackerNumber.Text = data.no.ToString();
+                    isSetting = false;
+                });
+            });
+
             await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = true });
             await Globals.Client?.SendCommandAsync(new PipeCommands.StatusStringChangedRequest { doSend = true });
 
@@ -742,6 +754,41 @@ namespace VirtualMotionCaptureControlPanel
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
             System.Diagnostics.Process.Start(e.Uri.ToString());
+        }
+
+        private async void VirtualMotionTrackerEnableCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            if (isSetting) return;
+
+            int result = 0;
+            if (VirtualMotionTrackerNumber?.Text != null)
+            {
+                if (!int.TryParse(VirtualMotionTrackerNumber?.Text, out result))
+                {
+                    result = 0;
+                }
+            }
+            await Globals.Client?.SendCommandAsync(new PipeCommands.SetVirtualMotionTracker
+            {
+                enable = VirtualMotionTrackerEnableCheckBox.IsChecked.Value,
+                no = result
+            });
+        }
+        private async void VirtualMotionTrackerSetButton_Click(object sender, RoutedEventArgs e)
+        {
+            int result = 0;
+            if (VirtualMotionTrackerNumber?.Text != null)
+            {
+                if (!int.TryParse(VirtualMotionTrackerNumber?.Text, out result))
+                {
+                    result = 0;
+                }
+            }
+            await Globals.Client?.SendCommandAsync(new PipeCommands.SetVirtualMotionTracker
+            {
+                enable = VirtualMotionTrackerEnableCheckBox.IsChecked.Value,
+                no = result
+            });
         }
     }
 }
