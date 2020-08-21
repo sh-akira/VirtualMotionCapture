@@ -132,14 +132,7 @@ public class SteamVR2Input : MonoBehaviour
             rangeOfMotion = EVRSkeletalMotionRange.WithoutController;
             skeletalTransformSpace = EVRSkeletalTransformSpace.Parent;
 
-            var path = Application.dataPath + "/../actions.json";
-
-            var currentPath = Application.dataPath;
-            int lastIndex = currentPath.LastIndexOf('/');
-            currentPath = currentPath.Remove(lastIndex, currentPath.Length - lastIndex);
-
-            var fullPath = currentPath + "/actions.json";
-
+            var fullPath = SteamVR_Input.GetActionsFilePath();
 
             err = OpenVR.Input.SetActionManifestPath(fullPath);
             if (err != EVRInputError.None)
