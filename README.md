@@ -385,12 +385,12 @@ Ver 0.02
   
   
 # ビルド手順  
-ビルド環境：Unity 2018.1.6f1 / Visual Studio 2017 (Windowsデスクトップ開発パッケージ)  
+ビルド環境：Unity 2019.4.8f1 / Visual Studio 2017 (Windowsデスクトップ開発パッケージ)  
   
   
 ・このリポジトリをクローンかダウンロードします。  
 ・ダウンロードした場合ColorPickerWPFフォルダがありませんので、忘れずにそちらもダウンロードして入れてください  
-※以下、UnityはUnity 2018.1.6f1で開いてください。  
+※以下、UnityはUnity 2019.4.8f1で開いてください。  
 ※以下のプラグインインポート前に、ProjectSettingsフォルダをコピーしてバックアップしてください！  
 ※API UpdaterはNo, Thanksで問題ありません。  
 ・Assets直下にExternalPluginsフォルダを作って、その下に  
@@ -398,7 +398,7 @@ Ver 0.02
 　・UnityMemoryMappedFile (共有メモリライブラリ - 入れてあります)  
 　・VMC_Camera (仮想カメラライブラリ - 入れてあります)  
 　・RootMotion(Plugins/RootMotionフォルダ) ([Final IK 1.9](https://assetstore.unity.com/packages/tools/animation/final-ik-14290))  
-　・SteamVR ([SteamVR.Plugin.unitypackage](https://github.com/ValveSoftware/steamvr_unity_plugin/releases/tag/2.3.2))  
+　・SteamVR ([SteamVR.Plugin.unitypackage](https://github.com/ValveSoftware/steamvr_unity_plugin/releases/tag/2.6.1))  
 　・VRM ([UniVRM-0.53.0_6b07.unitypackage](https://github.com/vrm-c/UniVRM/releases))  
 　・Oculus ([Oculus Lipsync Unity 1.30.0](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/1.30.0/))  
 　・uOSC([uOSC-v0.0.2.unitypackage](https://github.com/hecomi/uOSC/releases/tag/v0.0.2))  
