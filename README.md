@@ -385,7 +385,7 @@ Ver 0.02
   
   
 # ビルド手順  
-ビルド環境：Unity 2019.4.8f1 / Visual Studio 2017 (Windowsデスクトップ開発パッケージ)  
+ビルド環境：Unity 2019.4.8f1 / Visual Studio 2019 (Windowsデスクトップ開発パッケージ)  
   
   
 ・このリポジトリをクローンかダウンロードします。  
@@ -413,7 +413,7 @@ Ver 0.02
 
 ※インポートが終わったらUnityをいったん終了し、ProjectSettingsフォルダを削除して、バックアップしておいたProjectSettingsフォルダを戻してください！ 
 
-・ControlWindowWPF/ControlWindowWPF.slnをVisual Studio 2017で開きます。  
+・ControlWindowWPF/ControlWindowWPF.slnをVisual Studio 2019で開きます。  
 ・VirtualMotionCaptureControlPanelプロジェクトのプロパティを開きデバッグのコマンドライン引数を/pipeName VMCTestにする。  
 ・そのままVisualStudioで1回開始します。自動でexeが作成されます。開いたコントロールパネルは閉じて1回終了します。  
 ・Unityをもう一度起動します  
@@ -424,6 +424,11 @@ Ver 0.02
 ・ScenesフォルダのVirtualMotionCaptureシーンを開いてUnity側の実行  
 ・VisualStudioでコントロールパネルを開始  
   
+**exeのビルド手順**  
+・上記通常のデバッグ手順を完了する  
+・UnityのBuild SettingでBuildをUnityBuildフォルダに対して実行  
+・ControlWindowWPFでBETA構成のビルドを行います  
+・ControlWindowWPF/ControlWindowWPF/bin/BETAに全て生成されます  
   
 # FAQ  
 Q.アプリを使うのに表記はいりますか？  

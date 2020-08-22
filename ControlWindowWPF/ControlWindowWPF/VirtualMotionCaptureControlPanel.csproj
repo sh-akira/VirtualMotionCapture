@@ -277,6 +277,17 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>if not exist "$(ProjectDir)VRoidHubWindow.xaml" echo ^&lt;Window x:Class="VirtualMotionCaptureControlPanel.VRoidHubWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" /^&gt; &gt; "$(ProjectDir)VRoidHubWindow.xaml"
-if not exist "$(ProjectDir)VRoidHubWindow.xaml.cs" echo namespace VirtualMotionCaptureControlPanel { public partial class VRoidHubWindow : System.Windows.Window {public static bool IncludeVRoidHubWindow = false;} } &gt; "$(ProjectDir)VRoidHubWindow.xaml.cs"</PreBuildEvent>
+if not exist "$(ProjectDir)VRoidHubWindow.xaml.cs" echo namespace VirtualMotionCaptureControlPanel { public partial class VRoidHubWindow : System.Windows.Window {public static bool IncludeVRoidHubWindow = false;} } &gt; "$(ProjectDir)VRoidHubWindow.xaml.cs"
+cd "$(TargetDir)..\"
+del /s /q *.*
+</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /I /D /Y /E "$(SolutionDir)\..\UnityBuild" "$(TargetDir).."
+xcopy /I /D /Y /E "$(SolutionDir)\..\BuildRootFiles" "$(TargetDir).."
+cd "$(TargetDir)"
+del /s /q *.pdb
+cd ..
+del /s /q .gitignore</PostBuildEvent>
   </PropertyGroup>
 </Project>
