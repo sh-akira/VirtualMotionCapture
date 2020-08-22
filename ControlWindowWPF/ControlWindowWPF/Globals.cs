@@ -99,7 +99,9 @@ namespace VirtualMotionCaptureControlPanel
         {
             try
             {
-                string path = Path.GetFullPath(GetCurrentAppDir() + "/../commonWPF.json");
+                string path = Path.GetFullPath(GetCurrentAppDir() + "/../Settings/commonWPF.json");
+                var directoryName = Path.GetDirectoryName(path);
+                if (Directory.Exists(directoryName) == false) Directory.CreateDirectory(directoryName);
                 File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(CurrentCommonSettingsWPF)));
             }
             catch (Exception) { }
@@ -108,7 +110,7 @@ namespace VirtualMotionCaptureControlPanel
         //共通設定の読み込み
         public static void LoadCommonSettings()
         {
-            string path = Path.GetFullPath(GetCurrentAppDir() + "/../commonWPF.json");
+            string path = Path.GetFullPath(GetCurrentAppDir() + "/../Settings/commonWPF.json");
             if (!File.Exists(path))
             {
                 return;

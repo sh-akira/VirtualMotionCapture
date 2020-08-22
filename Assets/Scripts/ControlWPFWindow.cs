@@ -2948,14 +2948,16 @@ public class ControlWPFWindow : MonoBehaviour
     //共通設定の書き込み
     private void SaveCommonSettings()
     {
-        string path = Path.GetFullPath(Application.dataPath + "/../common.json");
+        string path = Path.GetFullPath(Application.dataPath + "/../Settings/common.json");
+        var directoryName = Path.GetDirectoryName(path);
+        if (Directory.Exists(directoryName) == false) Directory.CreateDirectory(directoryName);
         File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(CurrentCommonSettings)));
     }
 
     //共通設定の読み込み
     public void LoadCommonSettings()
     {
-        string path = Path.GetFullPath(Application.dataPath + "/../common.json");
+        string path = Path.GetFullPath(Application.dataPath + "/../Settings/common.json");
         if (!File.Exists(path))
         {
             return;
