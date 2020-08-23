@@ -49,6 +49,8 @@ public class ControlWPFWindow : MonoBehaviour
     public FaceController faceController;
     public HandController handController;
 
+    public LipTracking_Vive lipTracking_Vive;
+
     public SteamVR2Input steamVR2Input;
 
     public WristRotationFix wristRotationFix;
@@ -904,6 +906,20 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 var d = (PipeCommands.SetQualitySettings)e.Data;
                 SetQualitySettings(d);
+            }
+            else if (e.CommandType == typeof(PipeCommands.GetViveLipTrackingBlendShape))
+            {
+                await server.SendCommandAsync(new PipeCommands.SetViveLipTrackingBlendShape
+                {
+                    LipShapes = lipTracking_Vive.GetLipShapesStringList(),
+                    LipShapesToBlendShapeMap = CurrentSettings.LipShapesToBlendShapeMap,
+                }, e.RequestId);
+            }
+            else if (e.CommandType == typeof(PipeCommands.SetViveLipTrackingBlendShape))
+            {
+                var d = (PipeCommands.SetViveLipTrackingBlendShape)e.Data;
+                CurrentSettings.LipShapesToBlendShapeMap = d.LipShapesToBlendShapeMap;
+                lipTracking_Vive.SetLipShapeToBlendShapeStringMap(d.LipShapesToBlendShapeMap);
             }
         }, null);
     }
@@ -2821,6 +2837,8 @@ public class ControlWPFWindow : MonoBehaviour
         public string ExternalMotionSenderOptionString;
         [OptionalField]
         public List<string> MidiCCBlendShape;
+        [OptionalField]
+        public Dictionary<string,string> LipShapesToBlendShapeMap;
 
         [OptionalField]
         public bool EnableSkeletal;
@@ -2915,6 +2933,8 @@ public class ControlWPFWindow : MonoBehaviour
             ExternalMotionReceiverPort = 39540;
 
             MidiCCBlendShape = new List<string>(Enumerable.Repeat(default(string), MidiCCWrapper.KNOBS));
+
+            LipShapesToBlendShapeMap = new Dictionary<string, string>();
 
             TrackingFilterEnable = true;
             TrackingFilterHmdEnable = true;
@@ -3300,6 +3320,8 @@ public class ControlWPFWindow : MonoBehaviour
         {
             antiAliasing = CurrentSettings.AntiAliasing,
         });
+
+        lipTracking_Vive.SetLipShapeToBlendShapeStringMap(CurrentSettings.LipShapesToBlendShapeMap);
 
         AdditionalSettingAction?.Invoke(null);
 

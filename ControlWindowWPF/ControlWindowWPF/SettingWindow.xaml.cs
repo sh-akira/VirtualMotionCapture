@@ -743,5 +743,12 @@ namespace VirtualMotionCaptureControlPanel
         {
             System.Diagnostics.Process.Start(e.Uri.ToString());
         }
+
+        private void LipTracking_ViveSettingButton_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new LipTracking_ViveSettingWindow();
+            win.Owner = this;
+            win.ShowDialog();
+        }
     }
 }

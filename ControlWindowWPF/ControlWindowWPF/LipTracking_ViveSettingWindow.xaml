@@ -1,0 +1,42 @@
+﻿<Window x:Class="VirtualMotionCaptureControlPanel.LipTracking_ViveSettingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
+        mc:Ignorable="d"
+        Title="VIVE Lip Tracker Setting" Height="450" Width="800" Loaded="Window_Loaded">
+    <DockPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Right">
+            <Button Content="{DynamicResource FaceControlKeyAddWindow_Register}" Width="100" Name="ApplyButton" Click="ApplyButton_Click"/>
+            <Button Content="{DynamicResource FaceControlKeyAddWindow_Cancel}" Width="100" Name="IgnoreButton" Click="IgnoreButton_Click"/>
+        </StackPanel>
+        <DataGrid CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" SelectionMode="Single" Name="KeysDataGrid" AutoGenerateColumns="False">
+            <DataGrid.Resources>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                <Grid>
+                                    <ContentPresenter VerticalAlignment="Center" Margin="4,0,4,4" />
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="LipShape" Binding="{Binding LipShape}" MinWidth="160" IsReadOnly="True"/>
+                <DataGridTemplateColumn Header="BlendShape" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <ComboBox SelectedValue="{Binding BlendShape,Mode=TwoWay,NotifyOnTargetUpdated=True,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding BlendShapeKeys}"/>
+                            </DockPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>
