@@ -245,6 +245,8 @@
 	<system:String x:Key="SettingWindow_QualitySettings">描画品質</system:String>
 	<system:String x:Key="SettingWindow_AntiAliasing">アンチエイリアス</system:String>
     <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">モーション送信機能はpixivFANBOX,Patreon先行配信版限定機能です</system:String>
+	<system:String x:Key="SettingWindow_VirtualMotionTracker">Virtual Motion Tracker (VMT)</system:String>
+	<system:String x:Key="SettingWindow_VirtualMotionTrackerEnable">有効</system:String>
 
 
 	<!-- TrackerConfigWindow -->

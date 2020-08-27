@@ -235,7 +235,22 @@
                         </DockPanel>
                     </StackPanel>
                 </GroupBox>
-            </StackPanel>
+				<GroupBox Header="{DynamicResource SettingWindow_VirtualMotionTracker}">
+					<StackPanel Orientation="Vertical">
+						<CheckBox Content="{DynamicResource SettingWindow_VirtualMotionTrackerEnable}" Name="VirtualMotionTrackerEnableCheckBox" Checked="VirtualMotionTrackerEnableCheckBox_Changed" Unchecked="VirtualMotionTrackerEnableCheckBox_Changed" />
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="Auto"/>
+							</Grid.ColumnDefinitions>
+							<TextBlock Text="No: " Grid.Column="0"/>
+							<TextBox Text="" Grid.Column="1" VerticalAlignment="Center" Name="VirtualMotionTrackerNumber"/>
+							<Button Content="Set" Grid.Column="2" Name="VirtualMotionTrackerSetButton" Click="VirtualMotionTrackerSetButton_Click" Padding="5,0" Margin="5,1" Height="Auto"/>
+						</Grid>
+					</StackPanel>
+				</GroupBox>
+			</StackPanel>
         </Grid>
         <Button Content="{DynamicResource SettingWindow_Close}" HorizontalAlignment="Right" Width="100" Name="CloseButton" Click="CloseButton_Click" ToolTip="{DynamicResource SettingWindow_Close_ToolTip}"/>
     </StackPanel>

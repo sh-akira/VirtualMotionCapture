@@ -415,6 +415,12 @@ namespace UnityMemoryMappedFile
         {
             public bool fixKneeRotation { get; set; }
         }
+        public class GetVirtualMotionTracker { }
+        public class SetVirtualMotionTracker
+        {
+            public bool enable { get; set; }
+            public int no { get; set; }
+        }
 
         //-------------
         public class GetStatusString { }

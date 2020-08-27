@@ -73,13 +73,15 @@ public class ControlWPFWindow : MonoBehaviour
 
     private RootMotion.FinalIK.VRIK vrik = null;
 
-    private Camera currentCamera;
+    public Camera currentCamera;
 
     private Animator animator = null;
 
     private int CurrentWindowNum = 1;
 
     public int CriticalErrorCount = 0;
+
+    public VMTClient vmtClient;
 
     public enum MouseButtons
     {
@@ -907,6 +909,19 @@ public class ControlWPFWindow : MonoBehaviour
                 var d = (PipeCommands.SetQualitySettings)e.Data;
                 SetQualitySettings(d);
             }
+            else if (e.CommandType == typeof(PipeCommands.GetVirtualMotionTracker))
+            {
+                await server.SendCommandAsync(new PipeCommands.SetVirtualMotionTracker
+                {
+                    enable = vmtClient.GetEnable(),
+                    no = vmtClient.GetNo()
+                }, e.RequestId);
+            }
+            else if (e.CommandType == typeof(PipeCommands.SetVirtualMotionTracker))
+            {
+                var d = (PipeCommands.SetVirtualMotionTracker)e.Data;
+                SetVMT(d.enable, d.no);
+            }
             else if (e.CommandType == typeof(PipeCommands.GetViveLipTrackingBlendShape))
             {
                 await server.SendCommandAsync(new PipeCommands.SetViveLipTrackingBlendShape
@@ -954,6 +969,15 @@ public class ControlWPFWindow : MonoBehaviour
     {
         CurrentSettings.AntiAliasing = setting.antiAliasing;
         QualitySettings.antiAliasing = setting.antiAliasing;
+    }
+
+    private void SetVMT(bool enable, int no)
+    {
+        vmtClient.SetNo(no);
+        vmtClient.SetEnable(enable);
+
+        CurrentSettings.VirtualMotionTrackerNo = no;
+        CurrentSettings.VirtualMotionTrackerEnable = enable;
     }
 
     private bool isFirstTimeExecute = true;
@@ -2861,6 +2885,11 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public int AntiAliasing;
 
+        [OptionalField]
+        public bool VirtualMotionTrackerEnable;
+        [OptionalField]
+        public int VirtualMotionTrackerNo;
+
         //初期値
         [OnDeserializing()]
         internal void OnDeserializingMethod(StreamingContext context)
@@ -2946,6 +2975,9 @@ public class ControlWPFWindow : MonoBehaviour
             HandleControllerAsTracker = false;
 
             AntiAliasing = 2;
+
+            VirtualMotionTrackerEnable = false;
+            VirtualMotionTrackerNo = 50;
         }
     }
 
@@ -3320,6 +3352,7 @@ public class ControlWPFWindow : MonoBehaviour
         {
             antiAliasing = CurrentSettings.AntiAliasing,
         });
+        SetVMT(CurrentSettings.VirtualMotionTrackerEnable, CurrentSettings.VirtualMotionTrackerNo);
 
         lipTracking_Vive.SetLipShapeToBlendShapeStringMap(CurrentSettings.LipShapesToBlendShapeMap);
 

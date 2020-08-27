@@ -6930,6 +6930,7 @@ Transform:
   m_Children:
   - {fileID: 1044902097}
   - {fileID: 283794702}
+  - {fileID: 1995326175}
   m_Father: {fileID: 0}
   m_RootOrder: 31
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -8796,7 +8797,9 @@ MonoBehaviour:
   RealTrackerRoot: {fileID: 1300838139}
   ExternalMotionSenderObject: {fileID: 1155637108}
   ExternalMotionReceiverObject: {fileID: 389263777}
+  currentCamera: {fileID: 0}
   CriticalErrorCount: 0
+  vmtClient: {fileID: 1995326176}
   midiCCWrapper: {fileID: 1604201751}
   midiCCBlendShape: {fileID: 1440382163}
   calibrationState: 0
@@ -11859,6 +11862,62 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1986374866}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1995326174
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1995326175}
+  - component: {fileID: 1995326177}
+  - component: {fileID: 1995326176}
+  m_Layer: 0
+  m_Name: VMTClient
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1995326175
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1995326174}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1177174446}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1995326176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1995326174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 431fafaf9d41bb14eaf3a0464027ad04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vitrualTrackerNo: 50
+  window: {fileID: 1407685704}
+--- !u!114 &1995326177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1995326174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d36dd9fcae25042bbb815255411ff524, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  address: 127.0.0.1
+  port: 39570
 --- !u!1 &1998026826
 GameObject:
   m_ObjectHideFlags: 0
