@@ -49,6 +49,8 @@ public class ControlWPFWindow : MonoBehaviour
     public FaceController faceController;
     public HandController handController;
 
+    public LipTracking_Vive lipTracking_Vive;
+
     public SteamVR2Input steamVR2Input;
 
     public WristRotationFix wristRotationFix;
@@ -919,6 +921,20 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 var d = (PipeCommands.SetVirtualMotionTracker)e.Data;
                 SetVMT(d.enable, d.no);
+            }
+            else if (e.CommandType == typeof(PipeCommands.GetViveLipTrackingBlendShape))
+            {
+                await server.SendCommandAsync(new PipeCommands.SetViveLipTrackingBlendShape
+                {
+                    LipShapes = lipTracking_Vive.GetLipShapesStringList(),
+                    LipShapesToBlendShapeMap = CurrentSettings.LipShapesToBlendShapeMap,
+                }, e.RequestId);
+            }
+            else if (e.CommandType == typeof(PipeCommands.SetViveLipTrackingBlendShape))
+            {
+                var d = (PipeCommands.SetViveLipTrackingBlendShape)e.Data;
+                CurrentSettings.LipShapesToBlendShapeMap = d.LipShapesToBlendShapeMap;
+                lipTracking_Vive.SetLipShapeToBlendShapeStringMap(d.LipShapesToBlendShapeMap);
             }
         }, null);
     }
@@ -2845,6 +2861,8 @@ public class ControlWPFWindow : MonoBehaviour
         public string ExternalMotionSenderOptionString;
         [OptionalField]
         public List<string> MidiCCBlendShape;
+        [OptionalField]
+        public Dictionary<string,string> LipShapesToBlendShapeMap;
 
         [OptionalField]
         public bool EnableSkeletal;
@@ -2945,6 +2963,8 @@ public class ControlWPFWindow : MonoBehaviour
 
             MidiCCBlendShape = new List<string>(Enumerable.Repeat(default(string), MidiCCWrapper.KNOBS));
 
+            LipShapesToBlendShapeMap = new Dictionary<string, string>();
+
             TrackingFilterEnable = true;
             TrackingFilterHmdEnable = true;
             TrackingFilterControllerEnable = true;
@@ -2980,14 +3000,16 @@ public class ControlWPFWindow : MonoBehaviour
     //共通設定の書き込み
     private void SaveCommonSettings()
     {
-        string path = Path.GetFullPath(Application.dataPath + "/../common.json");
+        string path = Path.GetFullPath(Application.dataPath + "/../Settings/common.json");
+        var directoryName = Path.GetDirectoryName(path);
+        if (Directory.Exists(directoryName) == false) Directory.CreateDirectory(directoryName);
         File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(CurrentCommonSettings)));
     }
 
     //共通設定の読み込み
     public void LoadCommonSettings()
     {
-        string path = Path.GetFullPath(Application.dataPath + "/../common.json");
+        string path = Path.GetFullPath(Application.dataPath + "/../Settings/common.json");
         if (!File.Exists(path))
         {
             return;
@@ -3331,6 +3353,8 @@ public class ControlWPFWindow : MonoBehaviour
             antiAliasing = CurrentSettings.AntiAliasing,
         });
         SetVMT(CurrentSettings.VirtualMotionTrackerEnable, CurrentSettings.VirtualMotionTrackerNo);
+
+        lipTracking_Vive.SetLipShapeToBlendShapeStringMap(CurrentSettings.LipShapesToBlendShapeMap);
 
         AdditionalSettingAction?.Invoke(null);
 

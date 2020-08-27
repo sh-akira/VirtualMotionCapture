@@ -452,6 +452,13 @@ namespace UnityMemoryMappedFile
             public int antiAliasing { get; set; }
         }
 
+        public class GetViveLipTrackingBlendShape { }
+        public class SetViveLipTrackingBlendShape
+        {
+            public List<string> LipShapes { get; set; }
+            public Dictionary<string, string> LipShapesToBlendShapeMap { get; set; }
+        }
+
         public class LogNotify {
             public string condition { get; set; }
             public string stackTrace { get; set; }

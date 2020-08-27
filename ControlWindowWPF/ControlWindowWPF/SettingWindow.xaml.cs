@@ -790,5 +790,11 @@ namespace VirtualMotionCaptureControlPanel
                 no = result
             });
         }
+        private void LipTracking_ViveSettingButton_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new LipTracking_ViveSettingWindow();
+            win.Owner = this;
+            win.ShowDialog();
+        }
     }
 }

@@ -91,6 +91,11 @@
                         <Button Content="VIVE Pro Eye" Name="EyeTracking_ViveProEyeSettingButton" Click="EyeTracking_ViveProEyeSettingButton_Click"/>
                     </UniformGrid>
                 </GroupBox>
+                <GroupBox Header="Lip Tracking (Experimental/Prototype)">
+                    <UniformGrid Columns="2">
+                        <Button Content="VIVE Lip Tracker" Name="LipTracking_ViveSettingButton" Click="LipTracking_ViveSettingButton_Click"/>
+                    </UniformGrid>
+                </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_Language}">
                     <ComboBox Name="LanguageComboBox" SelectedIndex="0" SelectionChanged="LanguageComboBox_SelectionChanged">
                         <system:String>Japanese</system:String>

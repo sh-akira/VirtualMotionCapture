@@ -69,6 +69,68 @@ Oculus Rift Sの動作確認済みです
   
   
 # 更新履歴
+Ver 0.45  
+・VMCProtocol /VMC/Ext/Set/Eyeの座標を絶対座標からHeadからの相対座標に変更  
+　(waidayoからの目線取得時に正しい方向になるように修正)  
+・VMCProtocol受信機能(waidayo等)が無料版で使用できるようになりました  
+・Unity側でエラー発生時にコントロールパネル下部ステータスバーに表示されるように  
+　(ダブルクリックでエラーメッセージのコピーが出来ます)  
+・WinMRコントローラー用のデフォルトバインディングを追加(thx TOMさん @tonyiduo)  
+・複数立ち上げて同時にキャリブレーションした際にコントロールパネルが不正終了する問題修正  
+・Vive Pro Eye非接続時にトラッキングしない様に修正  
+・Tobii Eye Tracker 4Cがトラッキング範囲外の時に動作しない様に修正  
+・VRがインストールされてないPCで実行した時のエラーを修正  
+・MIDICCの合成の修正  
+・LookAtBlendShapeの修正  
+・左右コントローラーのボタンが途中で入れ替わってしまう問題への対処  
+・ステータスバーをダブルクリックでエラーのトレースログが取得できるように  
+・UIデザイン調整  
+・コントロールパネルに説明書へのリンクを入れたヘルプタブが追加されました  
+・Unity側で致命的なエラーが1万回発生した場合強制終了するように(毎フレーム出た場合約3分)  
+・詳細設定画面の英語表記だった設定項目が日本語になりました(他の言語は全て英語表記)  
+・OSC送信欄がVMCProtocol表記に変更になりました  
+  
+Ver 0.43  
+・キャリブレーション画面の選択肢を大きくして押しやすく  
+・最後のキャリブレーションの選択肢を記憶するように  
+・キャリブレーション完了時に音を鳴らせるように  
+・自動まばたき無効設定時にViveProEyeのまぶたの動きも同期しない様に変更  
+・externalcamera.cfgの 開く/出力 を 読み込み/書き出し に文言変更  
+・まばたき中にまばたき無効の表情に変更した時表情が壊れる問題修正  
+・ゲームパッドを認識しない様に修正(thx:gpsnmeajp)  
+・OSC送信で右手中指以降のボーン情報が正しく送信されない場合がある問題修正(thx:umiyuki)  
+・OSCで仮想トラッカーの入力が動かなかった問題修正(thx:gpsnmeajp)  
+・VRMLookAtHeadBlendShapeApplyer使用時に正しく適用、転送できていなかった問題修正  
+・OSC受信で/VMC/Ext/Set/Eyeの受信を続けると重くなる問題修正  
+・2回目以降のモデル読み込みでBlendShapeが動かなくなる問題修正  
+・一部部位のトラッカーが有効になっている際にキャリブレーションできない問題修正  
+  
+Ver 0.42  
+・コントローラーをトラッカーとして認識させるモード追加　（B-grip等の特殊持ちでのキャリブレーション想定）  
+・前回設定保存していた際は起動時にdefault.jsonではなく前回読み込んだ設定ファイルパスから自動ロードするように  
+・各ファイルを開くダイアログの初期フォルダをそれぞれ別々に保存  
+・アンチエイリアス強度設定追加  
+・詳細設定画面にローカルIP確認ボタン追加  
+・pixivFANBOX,Patreonへのリンク(無料版のみ)  
+・2回目以降のキャリブレーションでひざの方向がおかしくなったり　捻じれたりする問題修正  
+・2回目以降のキャリブレーションでフロント、バック、座標固定　カメラが追従しなくなる問題修正  
+・デフォルトでNEUTRALの表情を正しく表示できるように  
+・まばたき時に現在の表情を消さずに合成するように  
+・リップシンクの表情AIUEOを現在の表情と合成するように  
+・足トラッカーが無い時腰が下がってしまう問題修正  
+・トラッカー情報がすべて同時に消えた時にリストに残ってしまう　問題修正  
+・背景球体のサイズを100から1000に拡大  
+・英語言語パックのtypo修正  
+・子画面を開いてる時に親画面を選択できないように修正  
+・デバッグ時の設定画面の同期外れ修正  
+・特定の状況でログが大量に出力されるのを抑制  
+・基本の表情が正しく動いていなかったのを修正  
+・デフォルト表情設定をNEUTRALに戻したとき動かないのを修正  
+・表情の合成方法を作りなおしました。  
+・ベースの表情、リップシンク、まばたき、EVMC4U全てが正しく合成されるようになりました  
+・リップシンクが前のフレームの口と混ざり破綻する場合があったのを修正  
+・デフォルト表情設定時もまばたきが有効になりました  
+  
 Ver 0.41  
 ・一部モデルで腰が捻じれていた問題修正  
 ・Standardシェーダーの表示修正  
@@ -323,12 +385,12 @@ Ver 0.02
   
   
 # ビルド手順  
-ビルド環境：Unity 2018.1.6f1 / Visual Studio 2017 (Windowsデスクトップ開発パッケージ)  
+ビルド環境：Unity 2019.4.8f1 / Visual Studio 2019 (Windowsデスクトップ開発パッケージ)  
   
   
 ・このリポジトリをクローンかダウンロードします。  
 ・ダウンロードした場合ColorPickerWPFフォルダがありませんので、忘れずにそちらもダウンロードして入れてください  
-※以下、UnityはUnity 2018.1.6f1で開いてください。  
+※以下、UnityはUnity 2019.4.8f1で開いてください。  
 ※以下のプラグインインポート前に、ProjectSettingsフォルダをコピーしてバックアップしてください！  
 ※API UpdaterはNo, Thanksで問題ありません。  
 ・Assets直下にExternalPluginsフォルダを作って、その下に  
@@ -336,7 +398,7 @@ Ver 0.02
 　・UnityMemoryMappedFile (共有メモリライブラリ - 入れてあります)  
 　・VMC_Camera (仮想カメラライブラリ - 入れてあります)  
 　・RootMotion(Plugins/RootMotionフォルダ) ([Final IK 1.9](https://assetstore.unity.com/packages/tools/animation/final-ik-14290))  
-　・SteamVR ([SteamVR.Plugin.unitypackage](https://github.com/ValveSoftware/steamvr_unity_plugin/releases/tag/2.3.2))  
+　・SteamVR ([SteamVR.Plugin.unitypackage](https://github.com/ValveSoftware/steamvr_unity_plugin/releases/tag/2.6.1))  
 　・VRM ([UniVRM-0.53.0_6b07.unitypackage](https://github.com/vrm-c/UniVRM/releases))  
 　・Oculus ([Oculus Lipsync Unity 1.30.0](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/1.30.0/))  
 　・uOSC([uOSC-v0.0.2.unitypackage](https://github.com/hecomi/uOSC/releases/tag/v0.0.2))  
@@ -351,7 +413,7 @@ Ver 0.02
 
 ※インポートが終わったらUnityをいったん終了し、ProjectSettingsフォルダを削除して、バックアップしておいたProjectSettingsフォルダを戻してください！ 
 
-・ControlWindowWPF/ControlWindowWPF.slnをVisual Studio 2017で開きます。  
+・ControlWindowWPF/ControlWindowWPF.slnをVisual Studio 2019で開きます。  
 ・VirtualMotionCaptureControlPanelプロジェクトのプロパティを開きデバッグのコマンドライン引数を/pipeName VMCTestにする。  
 ・そのままVisualStudioで1回開始します。自動でexeが作成されます。開いたコントロールパネルは閉じて1回終了します。  
 ・Unityをもう一度起動します  
@@ -362,6 +424,11 @@ Ver 0.02
 ・ScenesフォルダのVirtualMotionCaptureシーンを開いてUnity側の実行  
 ・VisualStudioでコントロールパネルを開始  
   
+**exeのビルド手順**  
+・上記通常のデバッグ手順を完了する  
+・UnityのBuild SettingでBuildをUnityBuildフォルダに対して実行  
+・ControlWindowWPFでBETA構成のビルドを行います  
+・ControlWindowWPF/ControlWindowWPF/bin/BETAに全て生成されます  
   
 # FAQ  
 Q.アプリを使うのに表記はいりますか？  
