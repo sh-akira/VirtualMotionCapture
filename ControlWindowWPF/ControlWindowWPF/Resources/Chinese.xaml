@@ -192,6 +192,9 @@
     <system:String x:Key="SettingWindow_HandRotate">手部角度修正</system:String>
     <system:String x:Key="SettingWindow_LeftHand">左手</system:String>
     <system:String x:Key="SettingWindow_RightHand">右手</system:String>
+    <system:String x:Key="SettingWindow_VMTInstall">安装VMT</system:String>
+    <system:String x:Key="SettingWindow_VMTInstallButton">安装</system:String>
+    <system:String x:Key="SettingWindow_VMTUninstallButton">卸载</system:String>
     <system:String x:Key="SettingWindow_ExternalCameraConfig">externalcamera.cfg（设置自由相机的位置）</system:String>
     <system:String x:Key="SettingWindow_ControllerNumber">控制器代号：</system:String>
     <system:String x:Key="SettingWindow_OpenExternalCameraConfig">打开externalcamera.cfg</system:String>
@@ -215,6 +218,7 @@
     <system:String x:Key="SettingWindow_ResolutionSetting">分辨率（请与虚拟摄像头设置的一致）</system:String>
     <system:String x:Key="SettingWindow_ResolutionApply">应用</system:String>
     <system:String x:Key="SettingWindow_FailedFolderCreate">创建文件夹失败。请手动创建C:\VMC_Camera</system:String>
+    <system:String x:Key="SettingWindow_VMTFailedFolderCreate">创建文件夹失败。</system:String>
     <system:String x:Key="SettingWindow_FailedFileCopy">F复制文件失败。请手动复制VMC_CameraFilter32bit.dll以及64bit.dll到C:\VMC_Camera文件夹下。</system:String>
     <system:String x:Key="SettingWindow_SuccessDriverInstall">成功安装摄像头驱动，VMC_Camera将可选</system:String>
     <system:String x:Key="SettingWindow_FailedDriverInstall">成功安装摄像头驱动失败。打开命令提示符。 移动到C:\VMC_Camera，并执行regsvr32 VMC_CameraFilter32bit.dll以及regsvr32 VMC_CameraFilter64bit.dll</system:String>
@@ -224,6 +228,7 @@
     <system:String x:Key="SettingWindow_FailedDriverUninstall">卸载摄像机驱动失败。打开命令提示符，移动到C:\VMC_Camera 文件夹，并运行regsvr32 / u VMC_CameraFilter32bit.dll和regsvr32 / u VMC_CameraFilter64bit.dll。之后删除C:\VMC_Camera文件</system:String>
     <system:String x:Key="SettingWindow_SelectedItemError">请选择一个控制器当做相机</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig">输出externalcamera.cfg</system:String>
+    <system:String x:Key="SettingWindow_ExportVMTExternalCameraConfig">>Export externalcamera.cfg for LIV</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">输出externalcamera.cfg以校准VR游戏的相机</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSender">发送外部动作(VMCProtocol)</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">成功用OSC运动发送</system:String>
@@ -246,6 +251,7 @@
     <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">Sending motion is only available for pixivFANBOX and Patreon versions.</system:String>
    	<system:String x:Key="SettingWindow_VirtualMotionTracker">Virtual Motion Tracker (VMT)</system:String>
 	<system:String x:Key="SettingWindow_VirtualMotionTrackerEnable">Enable</system:String>
+	<system:String x:Key="SettingWindow_VirtualMotionTrackerInstallSuccess">Success! Restart SteamVR and VirtualMotionCapture. Press OK and wait auto restart.</system:String>
 
     
 

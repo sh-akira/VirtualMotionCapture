@@ -422,6 +422,16 @@ namespace UnityMemoryMappedFile
             public int no { get; set; }
         }
 
+        public class SetupVirtualMotionTracker
+        {
+            public bool install { get; set; }
+        }
+
+        public class ResultSetupVirtualMotionTracker
+        {
+            public string result { get; set; }
+        }
+
         //-------------
         public class GetStatusString { }
         public class SetStatusString
@@ -466,6 +476,7 @@ namespace UnityMemoryMappedFile
             public int errorCount { get; set; }
         }
 
+        public class Alive { }
     }
 
     public enum NotifyLogTypes

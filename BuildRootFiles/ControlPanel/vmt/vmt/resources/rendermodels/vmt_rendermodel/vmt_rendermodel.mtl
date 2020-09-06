@@ -1,0 +1,13 @@
+# Blender MTL File: 'vmt_rendermodel.blend'
+# Material Count: 1
+
+newmtl マテリアル
+Ns 661.224480
+Ka 0.260504 0.260504 0.260504
+Kd 0.800000 0.800000 0.800000
+Ks 0.294118 0.294118 0.294118
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd vmt_texture.png

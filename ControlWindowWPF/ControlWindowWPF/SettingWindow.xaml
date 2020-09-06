@@ -24,27 +24,25 @@
                         </GroupBox>
                     </UniformGrid>
                 </GroupBox>
-                <GroupBox Header="{DynamicResource SettingWindow_ExternalCameraConfig}">
-                    <DockPanel>
-                        <DockPanel.Resources>
-                            <Style TargetType="ComboBox">
-                                <Setter Property="ItemTemplate">
-                                    <Setter.Value>
-                                        <DataTemplate>
-                                            <TextBlock HorizontalAlignment="Stretch" Text="{Binding Text}" Background="{Binding Background}"/>
-                                        </DataTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </DockPanel.Resources>
-                        <Button DockPanel.Dock="Bottom" Content="{DynamicResource SettingWindow_ExportExternalCameraConfig}" Name="ExternalCameraConigExportButton" Click="ExternalCameraConigExportButton_Click" ToolTip="{DynamicResource SettingWindow_ExportExternalCameraConfig_ToolTip}"/>
-                        <Button DockPanel.Dock="Bottom" Content="{DynamicResource SettingWindow_OpenExternalCameraConfig}" Name="ExternalCameraConigButton" Click="ExternalCameraConigButton_Click" ToolTip="{DynamicResource SettingWindow_OpenExternalCameraConfig_ToolTip}"/>
-                        <TextBlock Text="{DynamicResource SettingWindow_ControllerNumber}"/>
-                        <ComboBox  Name="ControllerComboBox" VerticalAlignment="Center" ItemsSource="{Binding TrackersList}" ToolTip="{DynamicResource SettingWindow_ControllerNumber_ToolTip}"/>
-                    </DockPanel>
-                </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_TrackerConfig}">
                     <Button Content="{DynamicResource SettingWindow_OpenTrackerConfig}" Name="TrackerConfigButton" Click="TrackerConfigButton_Click"/>
+                </GroupBox>
+                <GroupBox Header="{DynamicResource SettingWindow_VirtualMotionTracker}">
+                    <StackPanel Orientation="Vertical">
+                        <DockPanel>
+                            <CheckBox Content="{DynamicResource SettingWindow_VirtualMotionTrackerEnable}" Name="VirtualMotionTrackerEnableCheckBox" Checked="VirtualMotionTrackerEnableCheckBox_Changed" Unchecked="VirtualMotionTrackerEnableCheckBox_Changed"  DockPanel.Dock="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0"/>
+                            <TextBlock Text="No: " DockPanel.Dock="Left" VerticalAlignment="Center" Margin="15,0,0,0"/>
+                            <Button Content="Set" Name="VirtualMotionTrackerSetButton" Click="VirtualMotionTrackerSetButton_Click" Padding="5,0" Margin="5,0" Height="Auto" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                            <TextBox Text="50" VerticalAlignment="Center" Name="VirtualMotionTrackerNumber"/>
+                        </DockPanel>
+                        <GroupBox Header="{DynamicResource SettingWindow_VMTInstall}" DockPanel.Dock="Top">
+                            <UniformGrid Columns="2">
+                                <Button Content="{DynamicResource SettingWindow_VMTInstallButton}" Name="VMTInstallButton" Click="VMTInstallButton_Click"/>
+                                <Button Content="{DynamicResource SettingWindow_VMTUninstallButton}" Name="VMTUninstallButton" Click="VMTUninstallButton_Click"/>
+                            </UniformGrid>
+                        </GroupBox>
+                        <Button DockPanel.Dock="Bottom" Content="{DynamicResource SettingWindow_ExportVMTExternalCameraConfig}" Name="LIVExternalCameraConigExportButton" Click="LIVExternalCameraConigExportButton_Click" ToolTip="{DynamicResource SettingWindow_ExportExternalCameraConfig_ToolTip}"/>
+                    </StackPanel>
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_VirtualWebCamSetting}">
                     <DockPanel>
@@ -201,56 +199,60 @@
                         </Grid>
                     </DockPanel>
                 </GroupBox>
-				<GroupBox Header="{DynamicResource SettingWindow_MIDI_CC_BlendShape}">
-					<Button Content="{DynamicResource SettingWindow_MidiCCBlendShapeSetting}" Name="MidiCCBlendShapeSettingButton" Click="MidiCCBlendShapeSettingButton_Click"/>
+                <GroupBox Header="{DynamicResource SettingWindow_MIDI_CC_BlendShape}">
+                    <Button Content="{DynamicResource SettingWindow_MidiCCBlendShapeSetting}" Name="MidiCCBlendShapeSettingButton" Click="MidiCCBlendShapeSettingButton_Click"/>
                 </GroupBox>
-				<GroupBox Header="{DynamicResource SettingWindow_PreventLosingTracking}">
+                <GroupBox Header="{DynamicResource SettingWindow_PreventLosingTracking}">
                     <GroupBox>
                         <GroupBox.Header>
-							<CheckBox Content="{DynamicResource SettingWindow_TrackingFilterEnable}" Name="TrackingFilterEnable" Checked="TrackingFilterEnable_Changed" Unchecked="TrackingFilterEnable_Changed"/>
+                            <CheckBox Content="{DynamicResource SettingWindow_TrackingFilterEnable}" Name="TrackingFilterEnable" Checked="TrackingFilterEnable_Changed" Unchecked="TrackingFilterEnable_Changed"/>
                         </GroupBox.Header>
                         <WrapPanel>
-							<CheckBox Content="{DynamicResource SettingWindow_TrackingFilterHmdEnable}" Name="TrackingFilterHmdEnable" Checked="TrackingFilterEnable_Changed" Unchecked="TrackingFilterEnable_Changed"/>
-							<CheckBox Content="{DynamicResource SettingWindow_TrackingFilterControllerEnable}" Name="TrackingFilterControllerEnable" Checked="TrackingFilterEnable_Changed" Unchecked="TrackingFilterEnable_Changed"/>
-							<CheckBox Content="{DynamicResource SettingWindow_TrackingFilterTrackerEnable}" Name="TrackingFilterTrackerEnable" Checked="TrackingFilterEnable_Changed" Unchecked="TrackingFilterEnable_Changed"/>
+                            <CheckBox Content="{DynamicResource SettingWindow_TrackingFilterHmdEnable}" Name="TrackingFilterHmdEnable" Checked="TrackingFilterEnable_Changed" Unchecked="TrackingFilterEnable_Changed"/>
+                            <CheckBox Content="{DynamicResource SettingWindow_TrackingFilterControllerEnable}" Name="TrackingFilterControllerEnable" Checked="TrackingFilterEnable_Changed" Unchecked="TrackingFilterEnable_Changed"/>
+                            <CheckBox Content="{DynamicResource SettingWindow_TrackingFilterTrackerEnable}" Name="TrackingFilterTrackerEnable" Checked="TrackingFilterEnable_Changed" Unchecked="TrackingFilterEnable_Changed"/>
                         </WrapPanel>
                     </GroupBox>
                 </GroupBox>
-				<GroupBox Header="{DynamicResource SettingWindow_ModelModifier}">
+                <GroupBox Header="{DynamicResource SettingWindow_ModelModifier}">
                     <StackPanel Orientation="Vertical">
-						<CheckBox Content="{DynamicResource SettingWindow_FixKneeRotation}" Name="FixKneeRotationCheckBox" Checked="FixKneeRotationCheckBox_Changed" Unchecked="FixKneeRotationCheckBox_Changed"/>
+                        <CheckBox Content="{DynamicResource SettingWindow_FixKneeRotation}" Name="FixKneeRotationCheckBox" Checked="FixKneeRotationCheckBox_Changed" Unchecked="FixKneeRotationCheckBox_Changed"/>
                     </StackPanel>
                 </GroupBox>
-				<GroupBox Header="{DynamicResource SettingWindow_TrackingOption}">
+                <GroupBox Header="{DynamicResource SettingWindow_TrackingOption}">
                     <StackPanel Orientation="Vertical">
-						<CheckBox Content="{DynamicResource SettingWindow_HandleControllerAsTracker}" Name="HandleControllerAsTrackerCheckBox" Checked="HandleControllerAsTrackerCheckBox_Changed" Unchecked="HandleControllerAsTrackerCheckBox_Changed" />
+                        <CheckBox Content="{DynamicResource SettingWindow_HandleControllerAsTracker}" Name="HandleControllerAsTrackerCheckBox" Checked="HandleControllerAsTrackerCheckBox_Changed" Unchecked="HandleControllerAsTrackerCheckBox_Changed" />
                     </StackPanel>
                 </GroupBox>
-				<GroupBox Header="{DynamicResource SettingWindow_QualitySettings}">
+                <GroupBox Header="{DynamicResource SettingWindow_QualitySettings}">
                     <StackPanel Orientation="Vertical">
                         <DockPanel>
-							<TextBlock Text="{DynamicResource SettingWindow_AntiAliasing}" DockPanel.Dock="Left"/>
+                            <TextBlock Text="{DynamicResource SettingWindow_AntiAliasing}" DockPanel.Dock="Left"/>
                             <TextBlock Text="x" DockPanel.Dock="Left" Margin="10,0,0,0"/>
                             <ComboBox Name="AntiAliasingComboBox" SelectionChanged="AntiAliasingComboBox_SelectionChanged"/>
                         </DockPanel>
                     </StackPanel>
                 </GroupBox>
-				<GroupBox Header="{DynamicResource SettingWindow_VirtualMotionTracker}">
-					<StackPanel Orientation="Vertical">
-						<CheckBox Content="{DynamicResource SettingWindow_VirtualMotionTrackerEnable}" Name="VirtualMotionTrackerEnableCheckBox" Checked="VirtualMotionTrackerEnableCheckBox_Changed" Unchecked="VirtualMotionTrackerEnableCheckBox_Changed" />
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto"/>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="Auto"/>
-							</Grid.ColumnDefinitions>
-							<TextBlock Text="No: " Grid.Column="0"/>
-							<TextBox Text="" Grid.Column="1" VerticalAlignment="Center" Name="VirtualMotionTrackerNumber"/>
-							<Button Content="Set" Grid.Column="2" Name="VirtualMotionTrackerSetButton" Click="VirtualMotionTrackerSetButton_Click" Padding="5,0" Margin="5,1" Height="Auto"/>
-						</Grid>
-					</StackPanel>
-				</GroupBox>
-			</StackPanel>
+                <GroupBox Header="{DynamicResource SettingWindow_ExternalCameraConfig}">
+                    <DockPanel>
+                        <DockPanel.Resources>
+                            <Style TargetType="ComboBox">
+                                <Setter Property="ItemTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <TextBlock HorizontalAlignment="Stretch" Text="{Binding Text}" Background="{Binding Background}"/>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DockPanel.Resources>
+                        <Button DockPanel.Dock="Bottom" Content="{DynamicResource SettingWindow_ExportExternalCameraConfig}" Name="ExternalCameraConigExportButton" Click="ExternalCameraConigExportButton_Click" ToolTip="{DynamicResource SettingWindow_ExportExternalCameraConfig_ToolTip}"/>
+                        <Button DockPanel.Dock="Bottom" Content="{DynamicResource SettingWindow_OpenExternalCameraConfig}" Name="ExternalCameraConigButton" Click="ExternalCameraConigButton_Click" ToolTip="{DynamicResource SettingWindow_OpenExternalCameraConfig_ToolTip}"/>
+                        <TextBlock Text="{DynamicResource SettingWindow_ControllerNumber}"/>
+                        <ComboBox  Name="ControllerComboBox" VerticalAlignment="Center" ItemsSource="{Binding TrackersList}" ToolTip="{DynamicResource SettingWindow_ControllerNumber_ToolTip}"/>
+                    </DockPanel>
+                </GroupBox>
+            </StackPanel>
         </Grid>
         <Button Content="{DynamicResource SettingWindow_Close}" HorizontalAlignment="Right" Width="100" Name="CloseButton" Click="CloseButton_Click" ToolTip="{DynamicResource SettingWindow_Close_ToolTip}"/>
     </StackPanel>

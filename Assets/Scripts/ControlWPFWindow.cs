@@ -922,6 +922,15 @@ public class ControlWPFWindow : MonoBehaviour
                 var d = (PipeCommands.SetVirtualMotionTracker)e.Data;
                 SetVMT(d.enable, d.no);
             }
+            else if (e.CommandType == typeof(PipeCommands.SetupVirtualMotionTracker))
+            {
+                var d = (PipeCommands.SetupVirtualMotionTracker)e.Data;
+                var ret = d.install ? await VMTServer.InstallVMT() : await VMTServer.UninstallVMT();
+                await server.SendCommandAsync(new PipeCommands.ResultSetupVirtualMotionTracker
+                {
+                    result = ret,
+                }, e.RequestId);                
+            }
             else if (e.CommandType == typeof(PipeCommands.GetViveLipTrackingBlendShape))
             {
                 await server.SendCommandAsync(new PipeCommands.SetViveLipTrackingBlendShape
@@ -935,6 +944,10 @@ public class ControlWPFWindow : MonoBehaviour
                 var d = (PipeCommands.SetViveLipTrackingBlendShape)e.Data;
                 CurrentSettings.LipShapesToBlendShapeMap = d.LipShapesToBlendShapeMap;
                 lipTracking_Vive.SetLipShapeToBlendShapeStringMap(d.LipShapesToBlendShapeMap);
+            }
+            else if (e.CommandType == typeof(PipeCommands.Alive))
+            {
+                await server.SendCommandAsync(new PipeCommands.Alive { });
             }
         }, null);
     }
