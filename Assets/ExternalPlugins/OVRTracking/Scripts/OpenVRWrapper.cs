@@ -30,9 +30,17 @@ namespace sh_akira.OVRTracking
             var error = EVRInitError.None;
             openVR = OpenVR.Init(ref error, EVRApplicationType.VRApplication_Overlay);
 
+            if (error == EVRInitError.Init_HmdNotFound)
+            {
+                Close();
+                //HMD require fallback
+                openVR = OpenVR.Init(ref error, EVRApplicationType.VRApplication_Background);
+            }
+
             if (error != EVRInitError.None)
             { //Error Init OpenVR
                 Close();
+                System.IO.File.WriteAllText(Application.dataPath + "/../OpenVRInitError.txt", error.ToString());
                 return false;
             }
 
@@ -82,7 +90,7 @@ namespace sh_akira.OVRTracking
             TrackedDevicePose_t[] allPoses = new TrackedDevicePose_t[OpenVR.k_unMaxTrackedDeviceCount];
             if (serialNumbers == null) serialNumbers = new string[OpenVR.k_unMaxTrackedDeviceCount];
             if (trackedHistory == null) trackedHistory = new bool[OpenVR.k_unMaxTrackedDeviceCount];
-            
+
             //TODO: TrackingUniverseStanding??
             openVR.GetDeviceToAbsoluteTrackingPose(ETrackingUniverseOrigin.TrackingUniverseStanding, 0, allPoses);
             for (uint i = 0; i < allPoses.Length; i++)
@@ -115,7 +123,8 @@ namespace sh_akira.OVRTracking
 
                     positions[deviceClass].Add(new DeviceInfo(new SteamVR_Utils.RigidTransform(pose.mDeviceToAbsoluteTracking), serialNumbers[i] + postfix, pose, deviceClass));
                 }
-                else {
+                else
+                {
                     //接続切れたらシリアル番号キャッシュクリア
                     serialNumbers[i] = null;
                     //トラッキングもしてない
@@ -172,14 +181,15 @@ namespace sh_akira.OVRTracking
 
             if (eVRSettingsError != EVRSettingsError.None)
             {
-                Debug.LogError("GetIsSafeMode Failed: "+eVRSettingsError.ToString());
+                Debug.LogError("GetIsSafeMode Failed: " + eVRSettingsError.ToString());
                 return false;
             }
             return en;
         }
 
         //コントローラ状態を調べる
-        public void GetControllerSerial(out string LeftHandSerial, out string RightHandSerial) {
+        public void GetControllerSerial(out string LeftHandSerial, out string RightHandSerial)
+        {
             LeftHandSerial = null;
             RightHandSerial = null;
 
@@ -201,7 +211,8 @@ namespace sh_akira.OVRTracking
                 LeftHandSerial = serialNumbers[leftHandIndex];
                 RightHandSerial = serialNumbers[rightHandIndex];
             }
-            catch (IndexOutOfRangeException) {
+            catch (IndexOutOfRangeException)
+            {
                 return;
             }
         }
