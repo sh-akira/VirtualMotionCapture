@@ -252,7 +252,7 @@
    	<system:String x:Key="SettingWindow_VirtualMotionTracker">Virtual Motion Tracker (VMT)</system:String>
 	<system:String x:Key="SettingWindow_VirtualMotionTrackerEnable">Enable</system:String>
 	<system:String x:Key="SettingWindow_VirtualMotionTrackerInstallSuccess">Success! Restart SteamVR and VirtualMotionCapture. Press OK and wait auto restart.</system:String>
-
+	<system:String x:Key="SettingWindow_VMTContinue">Continue VMT setup? Game will be interrupted, and VR system will restart.</system:String>
     
 
     <!-- TrackerConfigWindow -->

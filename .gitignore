@@ -71,3 +71,4 @@ sysinfo.txt
 *.apk
 *.unitypackage
 common.json
+Assets/_TerrainAutoUpgrade/

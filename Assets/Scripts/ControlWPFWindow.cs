@@ -988,6 +988,7 @@ public class ControlWPFWindow : MonoBehaviour
     {
         vmtClient.SetNo(no);
         vmtClient.SetEnable(enable);
+        vmtClient.SendRoomMatrixTemporary();
 
         CurrentSettings.VirtualMotionTrackerNo = no;
         CurrentSettings.VirtualMotionTrackerEnable = enable;

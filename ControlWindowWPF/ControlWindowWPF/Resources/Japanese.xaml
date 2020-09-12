@@ -253,9 +253,9 @@
 	<system:String x:Key="SettingWindow_VirtualMotionTracker">Virtual Motion Tracker (VMT)</system:String>
     <system:String x:Key="SettingWindow_VirtualMotionTrackerEnable">有効</system:String>
     <system:String x:Key="SettingWindow_VirtualMotionTrackerInstallSuccess">成功しました。SteamVRとバーチャルモーションキャプチャーが自動で再起動されますので、OKを押してしばらくお待ちください。</system:String>
+	<system:String x:Key="SettingWindow_VMTContinue">VMTのセットアップを実行しますか？ゲームが中断され、VRシステムは自動で再起動します。</system:String>
 
-
-    <!-- TrackerConfigWindow -->
+	<!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">トラッカー割り当て設定</system:String>
 
     <system:String x:Key="TrackerConfigWindow_TrackerConfig">トラッカー割り当て</system:String>
