@@ -13,10 +13,11 @@ public class VMTServer : MonoBehaviour
 
     private static string driverVersion = null;
     private static string installPath = null;
+    private static uOSC.uOscServer server;
 
     private void Start()
     {
-        var server = GetComponent<uOSC.uOscServer>();
+        server = GetComponent<uOSC.uOscServer>();
         server.onDataReceived.AddListener(OnDataReceived);
     }
 
@@ -42,6 +43,17 @@ public class VMTServer : MonoBehaviour
 
     public static async Task<string> InstallVMT()
     {
+        server.enabled = true; //インストール情報を調べるために一時的に有効化
+
+        await Task.Delay(1000);
+        //インストールパスが受信できていない場合少し待つ
+        if (string.IsNullOrEmpty(installPath))
+        {
+            await Task.Delay(2000);
+        }
+
+        server.enabled = false; //無効化
+
         if (string.IsNullOrEmpty(driverVersion) == false)
         {
             return "Please uninstall VMT before install.\nインストールを続ける前に、VMTをアンインストールしてください";
@@ -68,7 +80,11 @@ public class VMTServer : MonoBehaviour
         {
             return "Error:" + ex.Message + "\n" + ex.StackTrace;
         }
+#if UNITY_EDITOR
+        return "Restart skipped due to application running on editor.";
+#else
         return null;
+#endif
     }
 
     public static async Task<string> UninstallVMT()
@@ -76,11 +92,17 @@ public class VMTServer : MonoBehaviour
         string driverPath_rel = @"C:\VirtualMotionTracker\vmt";
         string driverPath = System.IO.Path.GetFullPath(driverPath_rel);
 
+        server.enabled = true; //インストール情報を調べるために一時的に有効化
+
+        await Task.Delay(1000);
+        //インストールパスが受信できていない場合少し待つ
         if (string.IsNullOrEmpty(installPath))
         {
-            //インストールパスが受信できていない場合少し待つ
             await Task.Delay(2000);
         }
+
+        server.enabled = false; //無効化
+
 
         if (string.IsNullOrEmpty(installPath) == false)
         {
@@ -106,7 +128,11 @@ public class VMTServer : MonoBehaviour
         {
             return "Error:" + ex.Message + "\n" + ex.StackTrace;
         }
+#if UNITY_EDITOR
+        return "Restart skipped due to application running on editor.";
+#else
         return null;
+#endif
     }
 
 }

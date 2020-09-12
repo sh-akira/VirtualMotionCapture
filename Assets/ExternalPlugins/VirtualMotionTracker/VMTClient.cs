@@ -16,6 +16,7 @@ public class VMTClient : MonoBehaviour
     void Start()
     {
         client = GetComponent<uOscClient>();
+        SendRoomMatrixTemporary(); //とりあえず起動時にぶん投げておく
     }
 
     public int GetNo()
@@ -46,7 +47,20 @@ public class VMTClient : MonoBehaviour
         sendEnable = en;
     }
 
-    private float lastRoomMatrixSendTime = 0;
+    public void SendRoomMatrixTemporary()
+    {
+        if (client == null || sendEnable == false)
+        {
+            return;
+        }
+
+        HmdMatrix34_t m = new HmdMatrix34_t();
+        OpenVR.ChaperoneSetup.GetWorkingStandingZeroPoseToRawTrackingPose(ref m);
+        client.Send("/VMT/SetRoomMatrix/Temporary",
+            m.m0, m.m1, m.m2, m.m3,
+            m.m4, m.m5, m.m6, m.m7,
+            m.m8, m.m9, m.m10, m.m11);
+    }
 
     void Update()
     {
@@ -69,18 +83,6 @@ public class VMTClient : MonoBehaviour
                 (float)target.localRotation.z,
                 (float)target.localRotation.w
             );
-
-            if (lastRoomMatrixSendTime + 5f < Time.realtimeSinceStartup)
-            {
-                lastRoomMatrixSendTime = Time.realtimeSinceStartup;
-
-                HmdMatrix34_t m = new HmdMatrix34_t();
-                OpenVR.ChaperoneSetup.GetWorkingStandingZeroPoseToRawTrackingPose(ref m);
-                client.Send("/VMT/SetRoomMatrix/Temporary",
-                    m.m0, m.m1, m.m2, m.m3,
-                    m.m4, m.m5, m.m6, m.m7,
-                    m.m8, m.m9, m.m10, m.m11);
-            }
         }
     }
 

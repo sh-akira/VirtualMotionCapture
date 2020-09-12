@@ -431,6 +431,8 @@ namespace VirtualMotionCaptureControlPanel
             if (process32.ExitCode == 0 && process64.ExitCode == 0)
             {
                 MessageBox.Show(LanguageSelector.Get("SettingWindow_SuccessDriverInstall"));
+                WebCamEnableCheckBox.IsChecked = true; //インストールと同時にチェックを入れる
+                UpdateWebCamConfig();
             }
             else
             {
@@ -468,6 +470,8 @@ namespace VirtualMotionCaptureControlPanel
                     return;
                 }
                 MessageBox.Show(LanguageSelector.Get("SettingWindow_SuccessDriverUninstall"));
+                WebCamEnableCheckBox.IsChecked = false; //アンストールと同時にチェックを外す
+                UpdateWebCamConfig();
             }
             else
             {
@@ -806,16 +810,23 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void VMTInstallButton_Click(object sender, RoutedEventArgs e)
         {
+            VirtualMotionTrackerEnableCheckBox.IsChecked = true; //インストールと同時にチェックを入れる
             await SetupVirtualMotionTracker(true);
         }
 
         private async void VMTUninstallButton_Click(object sender, RoutedEventArgs e)
         {
+            VirtualMotionTrackerEnableCheckBox.IsChecked = false; //アンイストールと同時にチェックを外す
             await SetupVirtualMotionTracker(false);
         }
 
         private async Task SetupVirtualMotionTracker(bool install)
         {
+            var messageBoxResult = MessageBox.Show(LanguageSelector.Get("SettingWindow_VMTContinue"), LanguageSelector.Get("Confirm"), MessageBoxButton.OKCancel, MessageBoxImage.Question);
+            if (messageBoxResult != MessageBoxResult.OK) {
+                return;
+            }
+
             if (install)
             {
                 try
@@ -840,12 +851,12 @@ namespace VirtualMotionCaptureControlPanel
                 {
                     if (string.IsNullOrEmpty(data.result))
                     {
-                        MessageBox.Show(LanguageSelector.Get("SettingWindow_VirtualMotionTrackerInstallSuccess"));
+                        MessageBox.Show(LanguageSelector.Get("SettingWindow_VirtualMotionTrackerInstallSuccess"), "VMT Setup", MessageBoxButton.OK, MessageBoxImage.Information);
                         RestartSteamVRandVirtualMotionCapture();
                     }
                     else
                     {
-                        MessageBox.Show(data.result);
+                        MessageBox.Show(data.result, LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 });
             });
