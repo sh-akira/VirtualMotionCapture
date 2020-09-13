@@ -49,8 +49,6 @@ public class ControlWPFWindow : MonoBehaviour
     public FaceController faceController;
     public HandController handController;
 
-    public LipTracking_Vive lipTracking_Vive;
-
     public SteamVR2Input steamVR2Input;
 
     public WristRotationFix wristRotationFix;
@@ -106,6 +104,8 @@ public class ControlWPFWindow : MonoBehaviour
     public Action<PipeCommands.SetEyeTracking_TobiiOffsets> SetEyeTracking_TobiiOffsetsAction = null;
     public Action<PipeCommands.SetEyeTracking_ViveProEyeOffsets> SetEyeTracking_ViveProEyeOffsetsAction = null;
     public Action<PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements> SetEyeTracking_ViveProEyeUseEyelidMovementsAction = null;
+    public Action<Dictionary<string, string>> SetLipShapeToBlendShapeStringMapAction = null;
+    public Func<List<string>> GetLipShapesStringListFunc = null;
 
     public MidiCCWrapper midiCCWrapper;
 
@@ -933,17 +933,20 @@ public class ControlWPFWindow : MonoBehaviour
             }
             else if (e.CommandType == typeof(PipeCommands.GetViveLipTrackingBlendShape))
             {
-                await server.SendCommandAsync(new PipeCommands.SetViveLipTrackingBlendShape
+                if (GetLipShapesStringListFunc != null)
                 {
-                    LipShapes = lipTracking_Vive.GetLipShapesStringList(),
-                    LipShapesToBlendShapeMap = CurrentSettings.LipShapesToBlendShapeMap,
-                }, e.RequestId);
+                    await server.SendCommandAsync(new PipeCommands.SetViveLipTrackingBlendShape
+                    {
+                        LipShapes = GetLipShapesStringListFunc(),
+                        LipShapesToBlendShapeMap = CurrentSettings.LipShapesToBlendShapeMap,
+                    }, e.RequestId);
+                }
             }
             else if (e.CommandType == typeof(PipeCommands.SetViveLipTrackingBlendShape))
             {
                 var d = (PipeCommands.SetViveLipTrackingBlendShape)e.Data;
                 CurrentSettings.LipShapesToBlendShapeMap = d.LipShapesToBlendShapeMap;
-                lipTracking_Vive.SetLipShapeToBlendShapeStringMap(d.LipShapesToBlendShapeMap);
+                SetLipShapeToBlendShapeStringMapAction?.Invoke(d.LipShapesToBlendShapeMap);
             }
             else if (e.CommandType == typeof(PipeCommands.Alive))
             {
@@ -3368,7 +3371,7 @@ public class ControlWPFWindow : MonoBehaviour
         });
         SetVMT(CurrentSettings.VirtualMotionTrackerEnable, CurrentSettings.VirtualMotionTrackerNo);
 
-        lipTracking_Vive.SetLipShapeToBlendShapeStringMap(CurrentSettings.LipShapesToBlendShapeMap);
+        SetLipShapeToBlendShapeStringMapAction?.Invoke(CurrentSettings.LipShapesToBlendShapeMap);
 
         AdditionalSettingAction?.Invoke(null);
 

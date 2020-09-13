@@ -284,6 +284,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   faceController: {fileID: 69806225}
+  controlWPFWindow: {fileID: 1407685704}
 --- !u!114 &65266793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8790,7 +8791,6 @@ MonoBehaviour:
   LipSync: {fileID: 144144637}
   faceController: {fileID: 69806225}
   handController: {fileID: 69806227}
-  lipTracking_Vive: {fileID: 65266792}
   steamVR2Input: {fileID: 130023280}
   wristRotationFix: {fileID: 1793473874}
   HandTrackerRoot: {fileID: 1128534204}

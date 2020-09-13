@@ -9,13 +9,18 @@ using VRM;
 public class LipTracking_Vive : MonoBehaviour
 {
     public FaceController faceController;
+    public ControlWPFWindow controlWPFWindow;
 
     private Dictionary<LipShape_v2, float> LipWeightings;
     public Dictionary<LipShape_v2, BlendShapeKey> LipShapeToBlendShapeMap = new Dictionary<LipShape_v2, BlendShapeKey>();
     public Dictionary<string, LipShape_v2> LipShapeNameToEnumMap = new Dictionary<string, LipShape_v2>();
 
+
     void Start()
     {
+        controlWPFWindow.SetLipShapeToBlendShapeStringMapAction += SetLipShapeToBlendShapeStringMap;
+        controlWPFWindow.GetLipShapesStringListFunc = GetLipShapesStringList;
+
         if (!SRanipal_Lip_Framework.Instance.EnableLip)
         {
             enabled = false;
