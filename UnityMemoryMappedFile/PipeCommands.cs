@@ -469,6 +469,34 @@ namespace UnityMemoryMappedFile
             public Dictionary<string, string> LipShapesToBlendShapeMap { get; set; }
         }
 
+        public class GetPostProcessing { }
+        public class SetPostProcessing
+        {
+            public bool AntiAliasing_Enable { get; set; }
+
+            public bool Bloom_Enable { get; set; }
+            public float Bloom_Intensity { get; set; }
+
+            public bool DoF_Enable { get; set; }
+            public float DoF_FocusDistance { get; set; }
+            public float DoF_Aperture { get; set; }
+            public float DoF_FocusLength { get; set; }
+            public float DoF_MaxBlurSize { get; set; }
+
+            public bool CG_Enable { get; set; }
+            public float CG_Temperature { get; set; }
+            public float CG_Saturation { get; set; }
+            public float CG_Contrast { get; set; }
+
+            public bool Vignette_Enable { get; set; }
+            public float Vignette_Intensity { get; set; }
+            public float Vignette_Smoothness { get; set; }
+            public float Vignette_Rounded { get; set; }
+
+            public bool CA_Enable { get; set; }
+            public float CA_Intensity { get; set; }
+        }
+
         public class LogNotify {
             public string condition { get; set; }
             public string stackTrace { get; set; }
