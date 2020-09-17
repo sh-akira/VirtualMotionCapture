@@ -52,26 +52,27 @@ namespace VirtualMotionCaptureControlPanel
             await Globals.Client.SendCommandAsync(new PipeCommands.SetPostProcessing { 
                 AntiAliasing_Enable = AntiAliasing_Enable_CheckBox.IsChecked.Value,
                 
-                Bloom_Enable = Bloom_Enable_CheckBox.IsChecked.Value,
+                Bloom_Enable = Bloom_Enable_CheckBox.IsChecked ?? false,
                 Bloom_Intensity = (float)Bloom_Intensity_Slider.Value,
+                Bloom_Threshold = (float)Bloom_Threshold_Slider.Value,
 
-                DoF_Enable = DoF_Enable_CheckBox.IsChecked.Value,
+                DoF_Enable = DoF_Enable_CheckBox.IsChecked ?? false,
                 DoF_FocusDistance = (float)DoF_FocusDistance_Slider.Value,
                 DoF_Aperture = (float)DoF_Aperture_Slider.Value,
                 DoF_FocusLength = (float)DoF_FocusLength_Slider.Value,
                 DoF_MaxBlurSize = (float)DoF_MaxBlurSize_Slider.Value,
 
-                CG_Enable = CG_Enable_CheckBox.IsChecked.Value,
+                CG_Enable = CG_Enable_CheckBox.IsChecked ?? false,
                 CG_Temperature = (float)CG_Temperature_Slider.Value,
                 CG_Saturation = (float)CG_Saturation_Slider.Value,
                 CG_Contrast = (float)CG_Contrast_Slider.Value,
 
-                Vignette_Enable = Vignette_Enable_CheckBox.IsChecked.Value,
+                Vignette_Enable = Vignette_Enable_CheckBox.IsChecked ?? false,
                 Vignette_Intensity = (float)Vignette_Intensity_Slider.Value,
                 Vignette_Smoothness = (float)Vignette_Smoothness_Slider.Value,
                 Vignette_Rounded = (float)Vignette_Rounded_Slider.Value,
 
-                CA_Enable = CA_Enable_CheckBox.IsChecked.Value,
+                CA_Enable = CA_Enable_CheckBox.IsChecked ?? false,
                 CA_Intensity = (float)CA_Intensity_Slider.Value
             });
         }
@@ -82,6 +83,7 @@ namespace VirtualMotionCaptureControlPanel
 
             Bloom_Enable_CheckBox.IsChecked = d.Bloom_Enable;
             Bloom_Intensity_Slider.Value = d.Bloom_Intensity;
+            Bloom_Threshold_Slider.Value = d.Bloom_Threshold;
 
             DoF_Enable_CheckBox.IsChecked = d.DoF_Enable;
             DoF_FocusDistance_Slider.Value = d.DoF_FocusDistance;

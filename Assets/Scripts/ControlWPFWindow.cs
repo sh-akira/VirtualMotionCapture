@@ -81,6 +81,8 @@ public class ControlWPFWindow : MonoBehaviour
 
     public VMTClient vmtClient;
 
+    public PostProcessingManager postProcessingManager;
+
     public enum MouseButtons
     {
         Left = 0,
@@ -929,7 +931,7 @@ public class ControlWPFWindow : MonoBehaviour
                 await server.SendCommandAsync(new PipeCommands.ResultSetupVirtualMotionTracker
                 {
                     result = ret,
-                }, e.RequestId);                
+                }, e.RequestId);
             }
             else if (e.CommandType == typeof(PipeCommands.GetViveLipTrackingBlendShape))
             {
@@ -947,6 +949,14 @@ public class ControlWPFWindow : MonoBehaviour
                 var d = (PipeCommands.SetViveLipTrackingBlendShape)e.Data;
                 CurrentSettings.LipShapesToBlendShapeMap = d.LipShapesToBlendShapeMap;
                 SetLipShapeToBlendShapeStringMapAction?.Invoke(d.LipShapesToBlendShapeMap);
+            }
+            else if (e.CommandType == typeof(PipeCommands.GetPostProcessing))
+            {
+                //TODO
+            }
+            else if (e.CommandType == typeof(PipeCommands.SetPostProcessing)) {
+                var d = (PipeCommands.SetPostProcessing)e.Data;
+                postProcessingManager.Apply(d);
             }
             else if (e.CommandType == typeof(PipeCommands.Alive))
             {

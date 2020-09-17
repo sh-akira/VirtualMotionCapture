@@ -8,7 +8,7 @@
         Title="Graphics Option" Width="400" SizeToContent="Height" Loaded="Window_Loaded" Closing="Window_Closing">
 	<DockPanel LastChildFill="False" Margin="5">
 		
-		<GroupBox Header="Anti-aliasing" DockPanel.Dock="Top">
+		<GroupBox Header="Anti-aliasing" DockPanel.Dock="Top" Visibility="Collapsed">
 			<DockPanel DockPanel.Dock="Top" LastChildFill="False">
 				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
 					<CheckBox Name="AntiAliasing_Enable_CheckBox" Content="Enable" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>

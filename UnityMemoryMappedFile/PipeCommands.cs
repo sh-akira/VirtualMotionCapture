@@ -476,6 +476,7 @@ namespace UnityMemoryMappedFile
 
             public bool Bloom_Enable { get; set; }
             public float Bloom_Intensity { get; set; }
+            public float Bloom_Threshold { get; set; }
 
             public bool DoF_Enable { get; set; }
             public float DoF_FocusDistance { get; set; }
