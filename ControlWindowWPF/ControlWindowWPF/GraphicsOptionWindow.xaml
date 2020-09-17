@@ -1,0 +1,117 @@
+﻿<Window x:Class="VirtualMotionCaptureControlPanel.GraphicsOptionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
+        mc:Ignorable="d"
+        Title="Graphics Option" Width="400" SizeToContent="Height" Loaded="Window_Loaded" Closing="Window_Closing">
+	<DockPanel LastChildFill="False" Margin="5">
+		
+		<GroupBox Header="Anti-aliasing" DockPanel.Dock="Top">
+			<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<CheckBox Content="Enable" DockPanel.Dock="Left"/>
+				</DockPanel>
+			</DockPanel>
+		</GroupBox>
+		
+		<GroupBox Header="Bloom" DockPanel.Dock="Top">
+			<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<CheckBox Content="Enable" DockPanel.Dock="Left"/>
+					<Button Content="Reset" DockPanel.Dock="Right" Height="Auto" />
+				</DockPanel>
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<TextBlock Text="Intensity" DockPanel.Dock="Left"/>
+					<Slider DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1"/>
+				</DockPanel>
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<TextBlock Text="Threshold" DockPanel.Dock="Left"/>
+					<Slider DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1"/>
+				</DockPanel>
+			</DockPanel>
+		</GroupBox>
+		
+		<GroupBox Header="Depth of Field" DockPanel.Dock="Top">
+			<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<CheckBox Content="Enable" DockPanel.Dock="Left"/>
+					<Button Content="Reset" DockPanel.Dock="Right" Height="Auto" />
+				</DockPanel>
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<TextBlock Text="Focus Distance" DockPanel.Dock="Left"/>
+					<Slider DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1"/>
+				</DockPanel>
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<TextBlock Text="Aperture" DockPanel.Dock="Left"/>
+					<Slider DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1"/>
+				</DockPanel>
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<TextBlock Text="Focus Length" DockPanel.Dock="Left"/>
+					<Slider DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1"/>
+				</DockPanel>
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<TextBlock Text="Max Blur Size" DockPanel.Dock="Left"/>
+					<Slider DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1"/>
+				</DockPanel>
+			</DockPanel>
+		</GroupBox>
+
+		<GroupBox Header="Color Grading" DockPanel.Dock="Top">
+			<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<CheckBox Content="Enable" DockPanel.Dock="Left"/>
+					<Button Content="Reset" DockPanel.Dock="Right" Height="Auto" />
+				</DockPanel>
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<TextBlock Text="Temperature" DockPanel.Dock="Left"/>
+					<Slider DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1"/>
+				</DockPanel>
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<TextBlock Text="Saturation" DockPanel.Dock="Left"/>
+					<Slider DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1"/>
+				</DockPanel>
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<TextBlock Text="Contrast" DockPanel.Dock="Left"/>
+					<Slider DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1"/>
+				</DockPanel>
+			</DockPanel>
+		</GroupBox>
+
+		<GroupBox Header="Vignette" DockPanel.Dock="Top">
+			<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<CheckBox Content="Enable" DockPanel.Dock="Left"/>
+					<Button Content="Reset" DockPanel.Dock="Right" Height="Auto" />
+				</DockPanel>
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<TextBlock Text="Intensity" DockPanel.Dock="Left"/>
+					<Slider DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1"/>
+				</DockPanel>
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<TextBlock Text="Smoothness" DockPanel.Dock="Left"/>
+					<Slider DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1"/>
+				</DockPanel>
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<TextBlock Text="Rounded" DockPanel.Dock="Left"/>
+					<Slider DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1"/>
+				</DockPanel>
+			</DockPanel>
+		</GroupBox>
+
+		<GroupBox Header="Chromatic Aberrattion" DockPanel.Dock="Top">
+			<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<Button Content="Reset" DockPanel.Dock="Right" Height="Auto" />
+					<CheckBox Content="Enable" DockPanel.Dock="Left"/>
+				</DockPanel>
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<TextBlock Text="Intensity" DockPanel.Dock="Left"/>
+					<Slider DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1"/>
+				</DockPanel>
+			</DockPanel>
+		</GroupBox>
+
+	</DockPanel>
+</Window>

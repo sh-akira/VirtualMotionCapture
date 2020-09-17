@@ -186,7 +186,7 @@
 								</DockPanel>
 							</StackPanel>
 						</GroupBox>
-						<Grid/>
+						<Button Content="Advanced Graphics Option" Name="GraphicsOptionButton" Click="GraphicsOptionButton_Click" Height="AUto"/>
 					</DockPanel>
 				</TabItem>
 				<TabItem Header="ヘルプ">
