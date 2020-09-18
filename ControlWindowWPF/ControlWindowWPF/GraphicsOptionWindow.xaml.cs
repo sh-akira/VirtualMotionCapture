@@ -52,28 +52,28 @@ namespace VirtualMotionCaptureControlPanel
             await Globals.Client.SendCommandAsync(new PipeCommands.SetPostProcessing { 
                 AntiAliasing_Enable = AntiAliasing_Enable_CheckBox.IsChecked.Value,
                 
-                Bloom_Enable = Bloom_Enable_CheckBox.IsChecked ?? false,
-                Bloom_Intensity = (float)Bloom_Intensity_Slider.Value,
-                Bloom_Threshold = (float)Bloom_Threshold_Slider.Value,
+                Bloom_Enable = Bloom_Enable_CheckBox?.IsChecked ?? false,
+                Bloom_Intensity = (float)Bloom_Intensity_Slider?.Value,
+                Bloom_Threshold = (float)Bloom_Threshold_Slider?.Value,
 
-                DoF_Enable = DoF_Enable_CheckBox.IsChecked ?? false,
-                DoF_FocusDistance = (float)DoF_FocusDistance_Slider.Value,
-                DoF_Aperture = (float)DoF_Aperture_Slider.Value,
-                DoF_FocusLength = (float)DoF_FocusLength_Slider.Value,
-                DoF_MaxBlurSize = (float)DoF_MaxBlurSize_Slider.Value,
+                DoF_Enable = DoF_Enable_CheckBox?.IsChecked ?? false,
+                DoF_FocusDistance = (float)(DoF_FocusDistance_Slider?.Value ?? 0f),
+                DoF_Aperture = (float)(DoF_Aperture_Slider?.Value ?? 0f),
+                DoF_FocusLength = (float)(DoF_FocusLength_Slider?.Value ?? 0f),
+                DoF_MaxBlurSize = (float)(DoF_MaxBlurSize_Slider?.Value ?? 0f),
 
-                CG_Enable = CG_Enable_CheckBox.IsChecked ?? false,
-                CG_Temperature = (float)CG_Temperature_Slider.Value,
-                CG_Saturation = (float)CG_Saturation_Slider.Value,
-                CG_Contrast = (float)CG_Contrast_Slider.Value,
+                CG_Enable = CG_Enable_CheckBox?.IsChecked ?? false,
+                CG_Temperature = (float)(CG_Temperature_Slider?.Value ?? 0f),
+                CG_Saturation = (float)(CG_Saturation_Slider?.Value ?? 0f),
+                CG_Contrast = (float)(CG_Contrast_Slider?.Value ?? 0f),
 
-                Vignette_Enable = Vignette_Enable_CheckBox.IsChecked ?? false,
-                Vignette_Intensity = (float)Vignette_Intensity_Slider.Value,
-                Vignette_Smoothness = (float)Vignette_Smoothness_Slider.Value,
-                Vignette_Rounded = (float)Vignette_Rounded_Slider.Value,
+                Vignette_Enable = Vignette_Enable_CheckBox?.IsChecked ?? false,
+                Vignette_Intensity = (float)(Vignette_Intensity_Slider?.Value ?? 0f),
+                Vignette_Smoothness = (float)(Vignette_Smoothness_Slider?.Value ?? 0f),
+                Vignette_Rounded = (float)(Vignette_Rounded_Slider?.Value ?? 0f),
 
-                CA_Enable = CA_Enable_CheckBox.IsChecked ?? false,
-                CA_Intensity = (float)CA_Intensity_Slider.Value
+                CA_Enable = CA_Enable_CheckBox?.IsChecked ?? false,
+                CA_Intensity = (float)(CA_Intensity_Slider?.Value ?? 0f)
             });
         }
         private async void ValueApply(PipeCommands.SetPostProcessing d)
