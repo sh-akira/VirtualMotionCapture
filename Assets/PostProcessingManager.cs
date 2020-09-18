@@ -13,7 +13,7 @@ public class PostProcessingManager : MonoBehaviour
         postProcessVolume = gameObject.AddComponent<PostProcessVolume>();
     }
 
-    public void Apply(PipeCommands.SetPostProcessing d)
+    public void Apply(ControlWPFWindow.Settings d)
     {
         postProcessVolume.isGlobal = true;
         var sp = postProcessVolume.sharedProfile;
@@ -27,11 +27,11 @@ public class PostProcessingManager : MonoBehaviour
         }
         bloom.active = true;
         bloom.enabled.overrideState = true;
-        bloom.enabled.value = d.Bloom_Enable;
+        bloom.enabled.value = d.PPS_Bloom_Enable;
         bloom.intensity.overrideState = true;
-        bloom.intensity.value = d.Bloom_Intensity;
+        bloom.intensity.value = d.PPS_Bloom_Intensity;
         bloom.threshold.overrideState = true;
-        bloom.threshold.value = d.Bloom_Threshold;
+        bloom.threshold.value = d.PPS_Bloom_Threshold;
 
         var dof = sp.GetSetting<DepthOfField>();
         if (dof == null) {
@@ -39,16 +39,16 @@ public class PostProcessingManager : MonoBehaviour
         }
         dof.active = true;
         dof.enabled.overrideState = true;
-        dof.enabled.value = d.DoF_Enable;
+        dof.enabled.value = d.PPS_DoF_Enable;
         dof.focusDistance.overrideState = true;
-        dof.focusDistance.value = d.DoF_FocusDistance;
+        dof.focusDistance.value = d.PPS_DoF_FocusDistance;
         dof.aperture.overrideState = true;
-        dof.aperture.value = d.DoF_Aperture;
+        dof.aperture.value = d.PPS_DoF_Aperture;
         dof.focalLength.overrideState = true;
-        dof.focalLength.value = d.DoF_FocusLength;
+        dof.focalLength.value = d.PPS_DoF_FocusLength;
 
         dof.kernelSize.overrideState = true;
-        switch (d.DoF_MaxBlurSize) {
+        switch (d.PPS_DoF_MaxBlurSize) {
             case 0:
                 dof.kernelSize.value = KernelSize.Small;
                 break;
@@ -73,11 +73,11 @@ public class PostProcessingManager : MonoBehaviour
         }
         cg.active = true;
         cg.enabled.overrideState = true;
-        cg.enabled.value = d.CG_Enable;
+        cg.enabled.value = d.PPS_CG_Enable;
         cg.saturation.overrideState = true;
-        cg.saturation.value = d.CG_Saturation;
+        cg.saturation.value = d.PPS_CG_Saturation;
         cg.contrast.overrideState = true;
-        cg.contrast.value = d.CG_Contrast;
+        cg.contrast.value = d.PPS_CG_Contrast;
 
         var vg = sp.GetSetting<Vignette>();
         if (vg == null) {
@@ -85,13 +85,13 @@ public class PostProcessingManager : MonoBehaviour
         }
         vg.active = true;
         vg.enabled.overrideState = true;
-        vg.enabled.value = d.Vignette_Enable;
+        vg.enabled.value = d.PPS_Vignette_Enable;
         vg.intensity.overrideState = true;
-        vg.intensity.value = d.Vignette_Intensity;
+        vg.intensity.value = d.PPS_Vignette_Intensity;
         vg.smoothness.overrideState = true;
-        vg.smoothness.value = d.Vignette_Smoothness;
+        vg.smoothness.value = d.PPS_Vignette_Smoothness;
         vg.roundness.overrideState = true;
-        vg.roundness.value = d.Vignette_Rounded;
+        vg.roundness.value = d.PPS_Vignette_Rounded;
 
         var ca = sp.GetSetting<ChromaticAberration>();
         if (ca == null) {
@@ -99,9 +99,9 @@ public class PostProcessingManager : MonoBehaviour
         }
         ca.active = true;
         ca.enabled.overrideState = true;
-        ca.enabled.value = d.CA_Enable;
+        ca.enabled.value = d.PPS_CA_Enable;
         ca.intensity.overrideState = true;
-        ca.intensity.value = d.CA_Intensity;
+        ca.intensity.value = d.PPS_CA_Intensity;
 
 
         postProcessVolume.sharedProfile = sp;

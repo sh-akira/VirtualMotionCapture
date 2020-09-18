@@ -472,8 +472,7 @@ namespace UnityMemoryMappedFile
         public class GetPostProcessing { }
         public class SetPostProcessing
         {
-            public bool AntiAliasing_Enable { get; set; }
-
+            public bool PPS_Enable { get; set; }
             public bool Bloom_Enable { get; set; }
             public float Bloom_Intensity { get; set; }
             public float Bloom_Threshold { get; set; }
@@ -482,7 +481,7 @@ namespace UnityMemoryMappedFile
             public float DoF_FocusDistance { get; set; }
             public float DoF_Aperture { get; set; }
             public float DoF_FocusLength { get; set; }
-            public float DoF_MaxBlurSize { get; set; }
+            public int DoF_MaxBlurSize { get; set; }
 
             public bool CG_Enable { get; set; }
             public float CG_Temperature { get; set; }
