@@ -469,8 +469,8 @@ namespace UnityMemoryMappedFile
             public Dictionary<string, string> LipShapesToBlendShapeMap { get; set; }
         }
 
-        public class GetPostProcessing { }
-        public class SetPostProcessing
+        public class GetAdvancedGraphicsOption { }
+        public class SetAdvancedGraphicsOption
         {
             public bool PPS_Enable { get; set; }
             public bool Bloom_Enable { get; set; }
@@ -487,14 +487,32 @@ namespace UnityMemoryMappedFile
             public float CG_Temperature { get; set; }
             public float CG_Saturation { get; set; }
             public float CG_Contrast { get; set; }
+            public float CG_Gamma { get; set; }
 
             public bool Vignette_Enable { get; set; }
             public float Vignette_Intensity { get; set; }
             public float Vignette_Smoothness { get; set; }
-            public float Vignette_Rounded { get; set; }
+            public float Vignette_Roundness { get; set; }
 
             public bool CA_Enable { get; set; }
             public float CA_Intensity { get; set; }
+            public bool CA_FastMode { get; set; }
+
+            public float Bloom_Color_a { get; set; }
+            public float Bloom_Color_r { get; set; }
+            public float Bloom_Color_g { get; set; }
+            public float Bloom_Color_b { get; set; }
+
+            public float CG_ColorFilter_a { get; set; }
+            public float CG_ColorFilter_r { get; set; }
+            public float CG_ColorFilter_g { get; set; }
+            public float CG_ColorFilter_b { get; set; }
+
+            public float Vignette_Color_a { get; set; }
+            public float Vignette_Color_r { get; set; }
+            public float Vignette_Color_g { get; set; }
+            public float Vignette_Color_b { get; set; }
+
         }
 
         public class LogNotify {

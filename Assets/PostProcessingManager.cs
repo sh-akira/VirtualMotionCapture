@@ -15,6 +15,8 @@ public class PostProcessingManager : MonoBehaviour
 
     public void Apply(ControlWPFWindow.Settings d)
     {
+        postProcessVolume.enabled = d.PPS_Enable;
+
         postProcessVolume.isGlobal = true;
         var sp = postProcessVolume.sharedProfile;
         if (sp == null) {
@@ -32,6 +34,10 @@ public class PostProcessingManager : MonoBehaviour
         bloom.intensity.value = d.PPS_Bloom_Intensity;
         bloom.threshold.overrideState = true;
         bloom.threshold.value = d.PPS_Bloom_Threshold;
+        bloom.fastMode.overrideState = true;
+        bloom.fastMode.value = true;
+        bloom.color.overrideState = true;
+        bloom.color.value = new Color(d.PPS_Bloom_Color_r, d.PPS_Bloom_Color_g, d.PPS_Bloom_Color_b, d.PPS_Bloom_Color_a);
 
         var dof = sp.GetSetting<DepthOfField>();
         if (dof == null) {
@@ -74,10 +80,16 @@ public class PostProcessingManager : MonoBehaviour
         cg.active = true;
         cg.enabled.overrideState = true;
         cg.enabled.value = d.PPS_CG_Enable;
+        cg.temperature.overrideState = true;
+        cg.temperature.value = d.PPS_CG_Temperature;
         cg.saturation.overrideState = true;
         cg.saturation.value = d.PPS_CG_Saturation;
         cg.contrast.overrideState = true;
         cg.contrast.value = d.PPS_CG_Contrast;
+        cg.gamma.overrideState = true;
+        cg.gamma.value = new Vector4(0,0,0, d.PPS_CG_Gamma);
+        cg.colorFilter.overrideState = true;
+        cg.colorFilter.value = new Color(d.PPS_CG_ColorFilter_r, d.PPS_CG_ColorFilter_g, d.PPS_CG_ColorFilter_b, d.PPS_CG_ColorFilter_a);
 
         var vg = sp.GetSetting<Vignette>();
         if (vg == null) {
@@ -91,7 +103,9 @@ public class PostProcessingManager : MonoBehaviour
         vg.smoothness.overrideState = true;
         vg.smoothness.value = d.PPS_Vignette_Smoothness;
         vg.roundness.overrideState = true;
-        vg.roundness.value = d.PPS_Vignette_Rounded;
+        vg.roundness.value = d.PPS_Vignette_Roundness;
+        vg.color.overrideState = true;
+        vg.color.value = new Color(d.PPS_Vignette_Color_r, d.PPS_Vignette_Color_g, d.PPS_Vignette_Color_b, d.PPS_Vignette_Color_a);
 
         var ca = sp.GetSetting<ChromaticAberration>();
         if (ca == null) {
@@ -102,6 +116,8 @@ public class PostProcessingManager : MonoBehaviour
         ca.enabled.value = d.PPS_CA_Enable;
         ca.intensity.overrideState = true;
         ca.intensity.value = d.PPS_CA_Intensity;
+        ca.fastMode.overrideState = true;
+        ca.fastMode.value = d.PPS_CA_FastMode;
 
 
         postProcessVolume.sharedProfile = sp;

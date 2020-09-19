@@ -721,9 +721,12 @@ namespace VirtualMotionCaptureControlPanel
 
         private void GraphicsOptionButton_Click(object sender, RoutedEventArgs e)
         {
-            var win = new GraphicsOptionWindow();
-            win.Owner = this;
-            win.ShowDialog();
+            //重複ウィンドウを許容しない
+            if (!Application.Current.Windows.OfType<GraphicsOptionWindow>().Any()) {
+                var win = new GraphicsOptionWindow();
+                win.Owner = this;
+                win.Show();
+            }
         }
 
         private void StatusBar_MouseDoubleClick(object sender, MouseButtonEventArgs e)

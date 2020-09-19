@@ -7,109 +7,125 @@
         mc:Ignorable="d"
         Title="Graphics Option" Width="400" SizeToContent="Height" Loaded="Window_Loaded" Closing="Window_Closing">
 	<DockPanel LastChildFill="False" Margin="5">
-		
-		<GroupBox Header="Anti-aliasing" DockPanel.Dock="Top" Visibility="Collapsed">
-			<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-					<CheckBox Name="AntiAliasing_Enable_CheckBox" Content="Enable" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
-				</DockPanel>
-			</DockPanel>
-		</GroupBox>
-		
-		<GroupBox Header="Bloom" DockPanel.Dock="Top">
-			<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-					<CheckBox Name="Bloom_Enable_CheckBox" Content="Enable" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
-					<Button Content="Reset" DockPanel.Dock="Right" Height="Auto" />
-				</DockPanel>
-				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-					<TextBlock Text="Intensity" DockPanel.Dock="Left"/>
-					<Slider Name="Bloom_Intensity_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="10" TickFrequency="0.01" ValueChanged="SliverValueChanged"/>
-				</DockPanel>
-				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-					<TextBlock Text="Threshold" DockPanel.Dock="Left"/>
-					<Slider Name="Bloom_Threshold_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1.5" TickFrequency="0.01" ValueChanged="SliverValueChanged"/>
-				</DockPanel>
-			</DockPanel>
-		</GroupBox>
-		
-		<GroupBox Header="Depth of Field" DockPanel.Dock="Top">
-			<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-					<CheckBox Name="DoF_Enable_CheckBox" Content="Enable" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
-					<Button Content="Reset" DockPanel.Dock="Right" Height="Auto" />
-				</DockPanel>
-				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-					<TextBlock Text="Focus Distance" DockPanel.Dock="Left"/>
-					<Slider Name="DoF_FocusDistance_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="100" TickFrequency="0.01" ValueChanged="SliverValueChanged"/>
-				</DockPanel>
-				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-					<TextBlock Text="Aperture" DockPanel.Dock="Left"/>
-					<Slider Name="DoF_Aperture_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="32" TickFrequency="0.01" ValueChanged="SliverValueChanged"/>
-				</DockPanel>
-				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-					<TextBlock Text="Focus Length" DockPanel.Dock="Left"/>
-					<Slider Name="DoF_FocusLength_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="300" TickFrequency="0.01" ValueChanged="SliverValueChanged"/>
-				</DockPanel>
-				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-					<TextBlock Text="Max Blur Size" DockPanel.Dock="Left"/>
-					<Slider Name="DoF_MaxBlurSize_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="3" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="SliverValueChanged"/>
-				</DockPanel>
-			</DockPanel>
-		</GroupBox>
 
-		<GroupBox Header="Color Grading" DockPanel.Dock="Top">
-			<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+		<GroupBox Header="PostProcessing" DockPanel.Dock="Top">
+			<DockPanel DockPanel.Dock="Top" LastChildFill="True">
 				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-					<CheckBox Name="CG_Enable_CheckBox" Content="Enable" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
-					<Button Content="Reset" DockPanel.Dock="Right" Height="Auto" />
+					<CheckBox Name="Global_Enable_CheckBox" Content="Enable" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
 				</DockPanel>
-				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-					<TextBlock Text="Temperature" DockPanel.Dock="Left"/>
-					<Slider Name="CG_Temperature_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="-100" Maximum="100" ValueChanged="SliverValueChanged"/>
-				</DockPanel>
-				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-					<TextBlock Text="Saturation" DockPanel.Dock="Left"/>
-					<Slider Name="CG_Saturation_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="-100" Maximum="100" ValueChanged="SliverValueChanged"/>
-				</DockPanel>
-				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-					<TextBlock Text="Contrast" DockPanel.Dock="Left"/>
-					<Slider Name="CG_Contrast_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="-100" Maximum="100" ValueChanged="SliverValueChanged"/>
-				</DockPanel>
-			</DockPanel>
-		</GroupBox>
 
-		<GroupBox Header="Vignette" DockPanel.Dock="Top">
-			<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-					<CheckBox Name="Vignette_Enable_CheckBox" Content="Enable" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
-					<Button Content="Reset" DockPanel.Dock="Right" Height="Auto" />
-				</DockPanel>
-				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-					<TextBlock Text="Intensity" DockPanel.Dock="Left"/>
-					<Slider Name="Vignette_Intensity_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1" ValueChanged="SliverValueChanged"/>
-				</DockPanel>
-				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-					<TextBlock Text="Smoothness" DockPanel.Dock="Left"/>
-					<Slider Name="Vignette_Smoothness_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0.01" Maximum="1" ValueChanged="SliverValueChanged"/>
-				</DockPanel>
-				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-					<TextBlock Text="Rounded" DockPanel.Dock="Left"/>
-					<Slider Name="Vignette_Rounded_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1" ValueChanged="SliverValueChanged"/>
-				</DockPanel>
-			</DockPanel>
-		</GroupBox>
+				<GroupBox Header="Bloom" DockPanel.Dock="Top">
+					<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<CheckBox Name="Bloom_Enable_CheckBox" Content="Enable" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
+							<Button Content="Reset" DockPanel.Dock="Right" Height="Auto" />
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<TextBlock Text="Intensity" DockPanel.Dock="Left"/>
+							<Slider Name="Bloom_Intensity_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="10" TickFrequency="0.01" ValueChanged="SliverValueChanged"/>
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<TextBlock Text="Threshold" DockPanel.Dock="Left"/>
+							<Slider Name="Bloom_Threshold_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1.5" TickFrequency="0.01" ValueChanged="SliverValueChanged"/>
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<Button Content="Color" Name="Bloom_Color_Button" DockPanel.Dock="Left" Height="Auto"  Click="Bloom_Color_Button_Clicked" />
+						</DockPanel>
+					</DockPanel>
+				</GroupBox>
 
-		<GroupBox Header="Chromatic Aberrattion" DockPanel.Dock="Top">
-			<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-					<CheckBox Name="CA_Enable_CheckBox" Content="Enable" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
-					<Button Content="Reset" DockPanel.Dock="Right" Height="Auto" />
-				</DockPanel>
-				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-					<TextBlock Text="Intensity" DockPanel.Dock="Left"/>
-					<Slider Name="CA_Intensity_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1" ValueChanged="SliverValueChanged"/>
-				</DockPanel>
+				<GroupBox Header="Depth of Field" DockPanel.Dock="Top">
+					<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<CheckBox Name="DoF_Enable_CheckBox" Content="Enable" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
+							<Button Content="Reset" DockPanel.Dock="Right" Height="Auto" />
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<TextBlock Text="Focus Distance" DockPanel.Dock="Left"/>
+							<Slider Name="DoF_FocusDistance_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="5" TickFrequency="0.01" ValueChanged="SliverValueChanged"/>
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<TextBlock Text="Aperture" DockPanel.Dock="Left"/>
+							<Slider Name="DoF_Aperture_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="32" TickFrequency="0.01" ValueChanged="SliverValueChanged"/>
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<TextBlock Text="Focus Length" DockPanel.Dock="Left"/>
+							<Slider Name="DoF_FocusLength_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="300" TickFrequency="0.01" ValueChanged="SliverValueChanged"/>
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<TextBlock Text="Max Blur Size" DockPanel.Dock="Left"/>
+							<Slider Name="DoF_MaxBlurSize_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="3" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="SliverValueChanged"/>
+						</DockPanel>
+					</DockPanel>
+				</GroupBox>
+
+				<GroupBox Header="Color Grading" DockPanel.Dock="Top">
+					<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<CheckBox Name="CG_Enable_CheckBox" Content="Enable" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
+							<Button Content="Reset" DockPanel.Dock="Right" Height="Auto" />
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<TextBlock Text="Temperature" DockPanel.Dock="Left"/>
+							<Slider Name="CG_Temperature_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="-100" Maximum="100" ValueChanged="SliverValueChanged"/>
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<TextBlock Text="Saturation" DockPanel.Dock="Left"/>
+							<Slider Name="CG_Saturation_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="-100" Maximum="100" ValueChanged="SliverValueChanged"/>
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<TextBlock Text="Contrast" DockPanel.Dock="Left"/>
+							<Slider Name="CG_Contrast_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="-100" Maximum="100" ValueChanged="SliverValueChanged"/>
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<TextBlock Text="Gamma" DockPanel.Dock="Left"/>
+							<Slider Name="CG_Gamma_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="-2" Maximum="5" ValueChanged="SliverValueChanged"/>
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<Button Content="Color Filter*" Name="CG_ColorFilter_Button" DockPanel.Dock="Left" Height="Auto" Click="CG_ColorFilter_Button_Clicked" />
+						</DockPanel>
+					</DockPanel>
+				</GroupBox>
+
+				<GroupBox Header="Vignette" DockPanel.Dock="Top">
+					<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<CheckBox Name="Vignette_Enable_CheckBox" Content="Enable" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
+							<Button Content="Reset" DockPanel.Dock="Right" Height="Auto" />
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<TextBlock Text="Intensity" DockPanel.Dock="Left"/>
+							<Slider Name="Vignette_Intensity_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1" ValueChanged="SliverValueChanged"/>
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<TextBlock Text="Smoothness" DockPanel.Dock="Left"/>
+							<Slider Name="Vignette_Smoothness_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0.01" Maximum="1" ValueChanged="SliverValueChanged"/>
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<TextBlock Text="Roundness" DockPanel.Dock="Left"/>
+							<Slider Name="Vignette_Roundness_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="2" ValueChanged="SliverValueChanged"/>
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<Button Content="Color*" Name="Vignette_Color_Button"  DockPanel.Dock="Left" Height="Auto"  Click="Vignette_Color_Button_Clicked" Background="Black"  />
+						</DockPanel>
+					</DockPanel>
+				</GroupBox>
+
+				<GroupBox Header="Chromatic Aberrattion" DockPanel.Dock="Top">
+					<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<CheckBox Name="CA_Enable_CheckBox" Content="Enable" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
+							<Button Content="Reset" DockPanel.Dock="Right" Height="Auto" />
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<TextBlock Text="Intensity" DockPanel.Dock="Left"/>
+							<Slider Name="CA_Intensity_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="10" ValueChanged="SliverValueChanged"/>
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+							<CheckBox Name="CA_FastMode_CheckBox" Content="Fast Mode*" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
+						</DockPanel>
+					</DockPanel>
+				</GroupBox>
 			</DockPanel>
 		</GroupBox>
 
