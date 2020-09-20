@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
-        mc:Ignorable="d" Width="420" Height="210"
+        mc:Ignorable="d" Width="420" MinHeight="210" SizeToContent="Height"
         Title="{DynamicResource MainWindowTitle}" FontSize="14" ResizeMode="CanMinimize" Background="#2A2A2A" Loaded="Window_Loaded" Closing="Window_Closing" Icon="Resources/VirtualMotionCapture_dark.ico">
 	<Grid>
 		<Button Visibility="Collapsed"/>
@@ -77,17 +77,22 @@
 								</Viewbox>
 							</Button>
 							<Button Content="{DynamicResource MainWindow_PositionFixed}" Name="PositionFixedCameraButton" Click="PositionFixedCameraButton_Click" Grid.Row="1" Grid.Column="0"/>
-							<StackPanel Orientation="Vertical" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3">
-								<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-									<CheckBox Content="{DynamicResource MainWindow_Mirror}" Name="CameraMirrorCheckBox" Checked="CameraMirrorCheckBox_Checked" Unchecked="CameraMirrorCheckBox_Unchecked"/>
-									<CheckBox Content="{DynamicResource MainWindow_ShowGrid}" Name="CameraGridCheckBox" Checked="CameraGridCheckBox_Checked" Unchecked="CameraGridCheckBox_Unchecked"/>
-								</StackPanel>
-								<DockPanel>
+							<DockPanel VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3">
+								<DockPanel DockPanel.Dock="Bottom">
 									<TextBlock Text="FOV" DockPanel.Dock="Left"/>
 									<TextBlock Text="60" DockPanel.Dock="Right" Width="30" Name="FOVTextBlock"/>
 									<Slider Name="FOVSlider" Grid.Row="1" Grid.Column="1" Minimum="1" Value="60" Maximum="179" SmallChange="1" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="FOVSlider_ValueChanged"/>
-								</DockPanel>
-							</StackPanel>
+                                </DockPanel>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" DockPanel.Dock="Right">
+                                    <CheckBox Content="{DynamicResource MainWindow_Mirror}" Name="CameraMirrorCheckBox" Checked="CameraMirrorCheckBox_Checked" Unchecked="CameraMirrorCheckBox_Unchecked"/>
+                                    <CheckBox Content="{DynamicResource MainWindow_ShowGrid}" Name="CameraGridCheckBox" Checked="CameraGridCheckBox_Checked" Unchecked="CameraGridCheckBox_Unchecked"/>
+                                </StackPanel>
+                                <DockPanel>
+                                    <TextBlock Text="Smooth" DockPanel.Dock="Left"/>
+                                    <TextBlock Text="0" DockPanel.Dock="Right" Width="20" Name="CameraSmoothTextBlock"/>
+                                    <Slider Name="CameraSmoothSlider" Minimum="0" Value="0" Maximum="20" SmallChange="1" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="CameraSmoothSlider_ValueChanged"/>
+                                </DockPanel>
+                            </DockPanel>
 						</Grid>
 						<StackPanel Orientation="Horizontal">
 							<TextBlock Text="{DynamicResource MainWindow_CameraDescription}" Margin="0,-3,0,0"/>

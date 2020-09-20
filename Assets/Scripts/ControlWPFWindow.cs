@@ -35,10 +35,10 @@ public class ControlWPFWindow : MonoBehaviour
     public GameObject LeftHandCamera;
     public GameObject RightHandCamera;
 
-    public Camera FreeCamera;
-    public Camera FrontCamera;
-    public Camera BackCamera;
-    public Camera PositionFixedCamera;
+    public CameraMouseControl FreeCamera;
+    public CameraMouseControl FrontCamera;
+    public CameraMouseControl BackCamera;
+    public CameraMouseControl PositionFixedCamera;
 
     public Renderer BackgroundRenderer;
 
@@ -71,7 +71,9 @@ public class ControlWPFWindow : MonoBehaviour
 
     private RootMotion.FinalIK.VRIK vrik = null;
 
-    public Camera currentCamera;
+    public Camera ControlCamera;
+    public CameraMouseControl CurrentCameraControl;
+
 
     private Animator animator = null;
 
@@ -145,9 +147,7 @@ public class ControlWPFWindow : MonoBehaviour
 #endif
 
         Application.targetFrameRate = 60;
-
-        currentCamera = FreeCamera;
-
+        
         CurrentSettings.BackgroundColor = BackgroundRenderer.material.color;
         CurrentSettings.CustomBackgroundColor = BackgroundRenderer.material.color;
 
@@ -158,7 +158,7 @@ public class ControlWPFWindow : MonoBehaviour
         KeyboardAction.KeyDownEvent += KeyboardAction_KeyDown;
         KeyboardAction.KeyUpEvent += KeyboardAction_KeyUp;
 
-        CameraChangedAction?.Invoke(currentCamera);
+        CameraChangedAction?.Invoke(ControlCamera);
 
         externalMotionSender = ExternalMotionSenderObject.GetComponent<ExternalSender>();
         externalMotionReceiver = ExternalMotionReceiverObject.GetComponent<ExternalReceiverForVMC>();
@@ -442,6 +442,11 @@ public class ControlWPFWindow : MonoBehaviour
                 var d = (PipeCommands.SetCameraFOV)e.Data;
                 SetCameraFOV(d.value);
             }
+            else if (e.CommandType == typeof(PipeCommands.SetCameraSmooth))
+            {
+                var d = (PipeCommands.SetCameraSmooth)e.Data;
+                SetCameraSmooth(d.value);
+            }
             else if (e.CommandType == typeof(PipeCommands.SetAutoBlinkEnable))
             {
                 var d = (PipeCommands.SetAutoBlinkEnable)e.Data;
@@ -582,8 +587,8 @@ public class ControlWPFWindow : MonoBehaviour
                 var d = (PipeCommands.GetExternalCameraConfig)e.Data;
                 var tracker = handler.GetTrackerTransformByName(d.ControllerName);
                 //InverseTransformPoint  Thanks: えむにわ(@m2wasabi)
-                var rposition = tracker.InverseTransformPoint(currentCamera.transform.position);
-                var rrotation = (Quaternion.Inverse(tracker.rotation) * currentCamera.transform.rotation).eulerAngles;
+                var rposition = tracker.InverseTransformPoint(ControlCamera.transform.position);
+                var rrotation = (Quaternion.Inverse(tracker.rotation) * ControlCamera.transform.rotation).eulerAngles;
                 await server.SendCommandAsync(new PipeCommands.SetExternalCameraConfig
                 {
                     x = rposition.x,
@@ -592,7 +597,7 @@ public class ControlWPFWindow : MonoBehaviour
                     rx = rrotation.x,
                     ry = rrotation.y,
                     rz = rrotation.z,
-                    fov = currentCamera.fieldOfView,
+                    fov = ControlCamera.fieldOfView,
                     ControllerName = d.ControllerName
                 }, e.RequestId);
             }
@@ -767,7 +772,7 @@ public class ControlWPFWindow : MonoBehaviour
                     rx = CurrentSettings.FreeCameraTransform.localRotation.eulerAngles.x,
                     ry = CurrentSettings.FreeCameraTransform.localRotation.eulerAngles.y,
                     rz = CurrentSettings.FreeCameraTransform.localRotation.eulerAngles.z,
-                    fov = currentCamera.fieldOfView
+                    fov = ControlCamera.fieldOfView
                 }, e.RequestId);
             }
             else if (e.CommandType == typeof(PipeCommands.EnableExternalMotionSender))
@@ -1921,28 +1926,28 @@ public class ControlWPFWindow : MonoBehaviour
         CurrentSettings.CameraType = type;
     }
 
-    private void SetCameraEnable(Camera camera)
+    private void SetCameraEnable(CameraMouseControl camera)
     {
         if (camera != null)
         {
-            var virtualCam = camera.gameObject.GetComponent<VirtualCamera>();
+            var virtualCam = ControlCamera.GetComponent<VirtualCamera>();
             if (virtualCam != null)
             {
                 virtualCam.enabled = CurrentSettings.WebCamEnabled;
             }
             camera.gameObject.SetActive(true);
-            if (currentCamera != null && currentCamera != camera) currentCamera.gameObject.SetActive(false);
+            if (CurrentCameraControl != null && CurrentCameraControl != camera) CurrentCameraControl.gameObject.SetActive(false);
             camera.GetComponent<CameraMouseControl>().enabled = true;
-            currentCamera = camera;
+            CurrentCameraControl = camera;
             SetCameraMirrorEnable(CurrentSettings.CameraMirrorEnable);
 
-            CameraChangedAction?.Invoke(currentCamera);
+            CameraChangedAction?.Invoke(ControlCamera);
         }
     }
 
     private void SetCameraMirrorEnable(bool mirrorEnable)
     {
-        var mirror = currentCamera.GetComponent<CameraMirror>();
+        var mirror = ControlCamera.GetComponent<CameraMirror>();
         if (mirror != null) mirror.MirrorEnable = mirrorEnable;
     }
 
@@ -1952,7 +1957,7 @@ public class ControlWPFWindow : MonoBehaviour
     {
         RightHandCamera.SetActive(isLeft == false);
         LeftHandCamera.SetActive(isLeft == true);
-        saveCurrentCamera = currentCamera;
+        saveCurrentCamera = ControlCamera;
         if (saveCurrentCamera != null) saveCurrentCamera.gameObject.SetActive(false);
     }
 
@@ -2014,10 +2019,10 @@ public class ControlWPFWindow : MonoBehaviour
         handler.CameraControllerName = d.ControllerName;
         yield return null;
         //指定のコントローラーの子にして座標指定
-        currentCamera.transform.SetParent(handler.CameraControllerObject.transform);
-        currentCamera.transform.localPosition = new Vector3(d.x, d.y, d.z);
-        currentCamera.transform.localRotation = Quaternion.Euler(d.rx, d.ry, d.rz);
-        currentCamera.fieldOfView = d.fov;
+        CurrentCameraControl.transform.SetParent(handler.CameraControllerObject.transform);
+        CurrentCameraControl.transform.localPosition = new Vector3(d.x, d.y, d.z);
+        CurrentCameraControl.transform.localRotation = Quaternion.Euler(d.rx, d.ry, d.rz);
+        ControlCamera.fieldOfView = d.fov;
         //コントローラーは動くのでカメラ位置の保存はできない
         //if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
         //CurrentSettings.FreeCameraTransform.SetPosition(currentCamera.transform);
@@ -2028,7 +2033,7 @@ public class ControlWPFWindow : MonoBehaviour
         ChangeCamera(CameraTypes.Free);
         CurrentSettings.FreeCameraTransform.localPosition = new Vector3(d.x, d.y, d.z);
         CurrentSettings.FreeCameraTransform.localRotation = Quaternion.Euler(d.rx, d.ry, d.rz);
-        FreeCamera.fieldOfView = d.fov;
+        ControlCamera.fieldOfView = d.fov;
         CurrentSettings.FreeCameraTransform.ToLocalTransform(FreeCamera.transform);
         var control = FreeCamera.GetComponent<CameraMouseControl>();
         control.CameraAngle = -FreeCamera.transform.rotation.eulerAngles;
@@ -2036,28 +2041,21 @@ public class ControlWPFWindow : MonoBehaviour
         control.CameraTarget = FreeCamera.transform.localPosition + FreeCamera.transform.rotation * Vector3.forward * control.CameraDistance;
         await server.SendCommandAsync(new PipeCommands.LoadCameraFOV { fov = d.fov });
     }
-
-    private CameraMouseControl frontCameraMouseControl = null;
-    private CameraMouseControl backCameraMouseControl = null;
-    private CameraMouseControl freeCameraMouseControl = null;
-    private CameraMouseControl positionFixedCameraMouseControl = null;
-
+    
     private void SetCameraFOV(float fov)
     {
-        if (frontCameraMouseControl == null)
-        {
-
-
-            frontCameraMouseControl = FrontCamera.GetComponent<CameraMouseControl>();
-            backCameraMouseControl = BackCamera.GetComponent<CameraMouseControl>();
-            freeCameraMouseControl = FreeCamera.GetComponent<CameraMouseControl>();
-            positionFixedCameraMouseControl = PositionFixedCamera.GetComponent<CameraMouseControl>();
-        }
         CurrentSettings.CameraFOV = fov;
-        frontCameraMouseControl.SetCameraFOV(fov);
-        backCameraMouseControl.SetCameraFOV(fov);
-        freeCameraMouseControl.SetCameraFOV(fov);
-        positionFixedCameraMouseControl.SetCameraFOV(fov);
+        FrontCamera.SetCameraFOV(fov);
+        BackCamera.SetCameraFOV(fov);
+        FreeCamera.SetCameraFOV(fov);
+        PositionFixedCamera.SetCameraFOV(fov);
+        ControlCamera.fieldOfView = fov;
+    }
+
+    private void SetCameraSmooth(float speed)
+    {
+        CurrentSettings.CameraSmooth = speed;
+        ControlCamera.GetComponent<CameraFollower>().Speed = speed;
     }
 
     #endregion
@@ -2514,7 +2512,7 @@ public class ControlWPFWindow : MonoBehaviour
         CurrentSettings.ExternalMotionSenderEnable = enable;
         ExternalMotionSenderObject.SetActive(enable);
         WaitOneFrameAction(() => ModelLoadedAction?.Invoke(CurrentModel));
-        WaitOneFrameAction(() => CameraChangedAction?.Invoke(currentCamera));
+        WaitOneFrameAction(() => CameraChangedAction?.Invoke(ControlCamera));
     }
 
     private void SetExternalMotionReceiverEnable(bool enable)
@@ -2522,7 +2520,7 @@ public class ControlWPFWindow : MonoBehaviour
         CurrentSettings.ExternalMotionReceiverEnable = enable;
         ExternalMotionReceiverObject.SetActive(enable);
         WaitOneFrameAction(() => ModelLoadedAction?.Invoke(CurrentModel));
-        WaitOneFrameAction(() => CameraChangedAction?.Invoke(currentCamera));
+        WaitOneFrameAction(() => CameraChangedAction?.Invoke(ControlCamera));
     }
 
     private void ChangeExternalMotionSenderAddress(string address, int port, int pstatus, int proot, int pbone, int pblendshape, int pcamera, int pdevices, string optionstring)
@@ -2810,6 +2808,8 @@ public class ControlWPFWindow : MonoBehaviour
 
         [OptionalField]
         public float CameraFOV = 60.0f;
+        [OptionalField]
+        public float CameraSmooth = 0.0f;
 
         [OptionalField]
         public Color LightColor;
@@ -2947,6 +2947,7 @@ public class ControlWPFWindow : MonoBehaviour
             WebCamBuffering = 0;
 
             CameraFOV = 60.0f;
+            CameraSmooth = 0f;
 
             LightColor = Color.white;
             LightRotationX = 130;
@@ -3226,6 +3227,7 @@ public class ControlWPFWindow : MonoBehaviour
         await server.SendCommandAsync(new PipeCommands.LoadIsTopMost { enable = CurrentSettings.IsTopMost });
 
         SetCameraFOV(CurrentSettings.CameraFOV);
+        SetCameraSmooth(CurrentSettings.CameraSmooth);
         FreeCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
         FrontCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
         BackCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
@@ -3258,6 +3260,7 @@ public class ControlWPFWindow : MonoBehaviour
             control.UpdateRelativePosition();
         }
         await server.SendCommandAsync(new PipeCommands.LoadCameraFOV { fov = CurrentSettings.CameraFOV });
+        await server.SendCommandAsync(new PipeCommands.LoadCameraSmooth { speed = CurrentSettings.CameraSmooth });
 
         UpdateWebCamConfig();
         if (CurrentSettings.CameraType.HasValue)
@@ -3388,7 +3391,7 @@ public class ControlWPFWindow : MonoBehaviour
 
     private void UpdateWebCamConfig()
     {
-        SetCameraEnable(currentCamera);
+        SetCameraEnable(CurrentCameraControl);
         VirtualCamera.Buffering_Global = CurrentSettings.WebCamBuffering;
         VirtualCamera.MirrorMode_Global = CurrentSettings.WebCamMirroring ? VirtualCamera.EMirrorMode.MirrorHorizontally : VirtualCamera.EMirrorMode.Disabled;
         VirtualCamera.ResizeMode_Global = CurrentSettings.WebCamResize ? VirtualCamera.EResizeMode.LinearResize : VirtualCamera.EResizeMode.Disabled;
@@ -3435,7 +3438,7 @@ public class ControlWPFWindow : MonoBehaviour
         }
         var filename = $"VirtualMotionCapture_{res.width}x{res.height}_{DateTime.Now:yyyy-MM-dd_HH-mm-ss.fff}.png";
         if (transparentBackground) BackgroundRenderer.gameObject.SetActive(false);
-        File.WriteAllBytes(Path.Combine(directory, filename), Photo.TakePNGPhoto(currentCamera, res, transparentBackground));
+        File.WriteAllBytes(Path.Combine(directory, filename), Photo.TakePNGPhoto(ControlCamera, res, transparentBackground));
         if (transparentBackground) BackgroundRenderer.gameObject.SetActive(true);
         Debug.Log($"Save Photo: {filename}");
     }

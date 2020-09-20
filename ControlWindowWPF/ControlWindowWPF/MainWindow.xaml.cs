@@ -212,6 +212,11 @@ namespace VirtualMotionCaptureControlPanel
                     var d = (PipeCommands.LoadCameraFOV)e.Data;
                     LoadSlider(d.fov, 1.0f, FOVSlider, FOVSlider_ValueChanged);
                 }
+                else if (e.CommandType == typeof(PipeCommands.LoadCameraSmooth))
+                {
+                    var d = (PipeCommands.LoadCameraSmooth)e.Data;
+                    LoadSlider(d.speed, 1.0f, CameraSmoothSlider, CameraSmoothSlider_ValueChanged);
+                }
                 //"リップシンク"
                 else if (e.CommandType == typeof(PipeCommands.LoadLipSyncEnable))
                 {
@@ -545,6 +550,11 @@ namespace VirtualMotionCaptureControlPanel
         private async void FOVSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             await SliderValueChanged(FOVSlider, FOVTextBlock, 1.0f, new PipeCommands.SetCameraFOV(), IsSliderSetting);
+        }
+
+        private async void CameraSmoothSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            await SliderValueChanged(CameraSmoothSlider, CameraSmoothTextBlock, 1.0f, new PipeCommands.SetCameraSmooth(), IsSliderSetting);
         }
 
         private void PhotoButton_Click(object sender, RoutedEventArgs e)

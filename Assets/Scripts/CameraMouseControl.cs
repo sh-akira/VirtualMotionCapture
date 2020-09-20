@@ -6,106 +6,10 @@ using static ControlWPFWindow;
 
 public class CameraMouseControl : MonoBehaviour
 {
-    /*
+    public static CameraMouseControl Current;
 
-    private Vector3 cameraMouseOldPos; // マウスの位置を保存する変数
+    public Camera TargetCamera;
 
-
-    // マウス関係のイベント
-    private void CameraMouseEvent()
-    {
-        var mousePos = Input.mousePosition;
-        //Debug.Log(mousePos.ToString() + " " + Screen.safeArea.ToString());
-        //SetUnityWindowTitle(mousePos.ToString() + " " + Screen.safeArea.ToString());
-        if (mousePos.x >= 0 && mousePos.y >= 0 && mousePos.x < Screen.safeArea.width && mousePos.y < Screen.safeArea.height)
-        {
-            float delta = Input.GetAxis("Mouse ScrollWheel");
-            if (delta != 0.0f)
-            {
-                if (CurrentSettings.CameraType == CameraTypes.Free) //フリーカメラ
-                {
-                    transform.position += transform.forward * delta;
-                    if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(transform);
-                    CurrentSettings.FreeCameraTransform.SetPosition(transform);
-                }
-                else if (CurrentSettings.CameraType == CameraTypes.PositionFixed)
-                {
-                    transform.position += transform.forward * delta;
-                    if (CurrentSettings.PositionFixedCameraTransform == null) CurrentSettings.PositionFixedCameraTransform = new StoreTransform(transform);
-                    CurrentSettings.PositionFixedCameraTransform.SetPosition(transform);
-                    positionFixedCamera.UpdatePosition();
-
-                }
-                else //固定カメラ
-                {
-                    if (currentCameraLookTarget != null)
-                    {
-                        currentCameraLookTarget.Distance += delta;
-                        SaveLookTarget(currentCamera);
-                    }
-                }
-            }
-        }
-
-        // 押されたとき
-        if (Input.GetMouseButtonDown((int)MouseButtons.Right) || Input.GetMouseButtonDown((int)MouseButtons.Center))
-            cameraMouseOldPos = mousePos;
-
-        Vector3 diff = mousePos - cameraMouseOldPos;
-        if (CurrentSettings.CameraMirrorEnable)
-        {
-            diff.x *= -1;
-        }
-
-        // 差分の長さが極小数より小さかったら、ドラッグしていないと判断する
-        if (diff.magnitude >= Vector3.kEpsilon)
-        {
-
-            if (Input.GetMouseButton((int)MouseButtons.Center))
-            { // 注視点
-                if (CurrentSettings.CameraType == CameraTypes.Free) //フリーカメラ
-                {
-                    transform.Translate(-diff * Time.deltaTime * 1.1f);
-                    if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(transform);
-                    CurrentSettings.FreeCameraTransform.SetPosition(transform);
-                }
-                else if (CurrentSettings.CameraType == CameraTypes.PositionFixed)
-                {
-                    transform.Translate(-diff * Time.deltaTime * 1.1f);
-                    if (CurrentSettings.PositionFixedCameraTransform == null) CurrentSettings.PositionFixedCameraTransform = new StoreTransform(transform);
-                    CurrentSettings.PositionFixedCameraTransform.SetPosition(transform);
-                    positionFixedCamera.UpdatePosition();
-                }
-                else //固定カメラ
-                {
-                    currentCameraLookTarget.Offset += new Vector3(0, -diff.y, 0) * Time.deltaTime * 1.1f;
-                    SaveLookTarget(currentCamera);
-                }
-            }
-            else if (Input.GetMouseButton((int)MouseButtons.Right))
-            { // 回転
-                if (CurrentSettings.CameraType == CameraTypes.Free)
-                {
-                    transform.RotateAround(transform.position, transform.right, -diff.y * Time.deltaTime * 30.0f);
-                    transform.RotateAround(transform.position, Vector3.up, diff.x * Time.deltaTime * 30.0f);
-                    if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(transform);
-                    CurrentSettings.FreeCameraTransform.SetRotation(transform);
-                }
-                else if (CurrentSettings.CameraType == CameraTypes.PositionFixed)
-                {
-                    transform.RotateAround(transform.position, transform.right, -diff.y * Time.deltaTime * 30.0f);
-                    transform.RotateAround(transform.position, Vector3.up, diff.x * Time.deltaTime * 30.0f);
-                    if (CurrentSettings.PositionFixedCameraTransform == null) CurrentSettings.PositionFixedCameraTransform = new StoreTransform(transform);
-                    CurrentSettings.PositionFixedCameraTransform.SetRotation(transform);
-                    positionFixedCamera.UpdatePosition();
-                }
-            }
-
-            this.cameraMouseOldPos = mousePos;
-        }
-        return;
-    }
-    */
     public Vector3 cameraSpeed = new Vector3(0.2f, 0.2f, 1.0f);
     public Vector3 CameraTarget = new Vector3(0.0f, 1.0f, 0.0f);
     public Vector3 CameraAngle = new Vector3(-30.0f, -150.0f, 0.0f);
@@ -120,15 +24,17 @@ public class CameraMouseControl : MonoBehaviour
 
     private Vector3 lastMousePosition;
 
-    private Camera currentCamera;
-
     private Transform parentTransform;
 
     private Vector3 currentNoScaledPosition = Vector3.zero;
 
+    private void OnEnable()
+    {
+        Current = this;
+    }
+
     void Start()
     {
-        currentCamera = GetComponent<Camera>();
         UpdateCamera();
         if (transform.parent != null)
         {
@@ -173,8 +79,8 @@ public class CameraMouseControl : MonoBehaviour
                 Vector3 dragOffset = mousePosition - lastMousePosition;
                 if (Input.GetMouseButtonDown((int)MouseButtons.Right) == false)
                 {
-                    CameraAngle.x = (CameraAngle.x + dragOffset.y * cameraSpeed.x * (currentCamera.fieldOfView / 60.0f)) % 360.0f;
-                    CameraAngle.y = (CameraAngle.y - dragOffset.x * cameraSpeed.y * (currentCamera.fieldOfView / 60.0f)) % 360.0f;
+                    CameraAngle.x = (CameraAngle.x + dragOffset.y * cameraSpeed.x * (currentFOV / 60.0f)) % 360.0f;
+                    CameraAngle.y = (CameraAngle.y - dragOffset.x * cameraSpeed.y * (currentFOV / 60.0f)) % 360.0f;
                     var setPosition = transform.position;
                     //TODO:元の座標を取っておいて計算しないと計算誤差で微妙にずれる
                     setPosition = new Vector3((setPosition.x - parentTransform.position.x) / parentTransform.localScale.x, (setPosition.y - parentTransform.position.y) / parentTransform.localScale.y, (setPosition.z - parentTransform.position.z) / parentTransform.localScale.z);
@@ -192,9 +98,8 @@ public class CameraMouseControl : MonoBehaviour
         // カメラ移動
         if (Input.GetMouseButton((int)MouseButtons.Center))
         {
-            Camera camera = GetComponent<Camera>();
-            Vector3 mousePositionInWorld = camera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, CameraDistance));
-            Vector3 lastMousePositionInWorld = camera.ScreenToWorldPoint(new Vector3(lastMousePosition.x, lastMousePosition.y, CameraDistance));
+            Vector3 mousePositionInWorld = TargetCamera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, CameraDistance));
+            Vector3 lastMousePositionInWorld = TargetCamera.ScreenToWorldPoint(new Vector3(lastMousePosition.x, lastMousePosition.y, CameraDistance));
             Vector3 dragOffset = mousePositionInWorld - lastMousePositionInWorld;
 
             if (Input.GetMouseButtonDown((int)MouseButtons.Center) == false)
@@ -229,7 +134,7 @@ public class CameraMouseControl : MonoBehaviour
                 var mousePos = mousePosition;
                 if (mousePos.x >= 0 && mousePos.y >= 0 && mousePos.x < Screen.safeArea.width && mousePos.y < Screen.safeArea.height)
                 {
-                    CameraDistance = Mathf.Max(CameraDistance - mouseScrollWheel * cameraSpeed.z * (60.0f / currentCamera.fieldOfView), 0.1f);
+                    CameraDistance = Mathf.Max(CameraDistance - mouseScrollWheel * cameraSpeed.z * (60.0f / currentFOV), 0.1f);
                     settingChanged = true;
                 }
             }
@@ -238,12 +143,11 @@ public class CameraMouseControl : MonoBehaviour
         if (changeFOV)
         {
             changeFOV = false;
-            if (currentCamera == null) currentCamera = GetComponent<Camera>();
-            var normalPos = FovToPos(currentFOV);
-            var currentNormalPos = FovToPos(currentCamera.fieldOfView);
+            var normalPos = FovToPos(newFOV);
+            var currentNormalPos = FovToPos(currentFOV);
             var ratio = CameraDistance / currentNormalPos;
             CameraDistance = normalPos * ratio;
-            currentCamera.fieldOfView = currentFOV;
+            currentFOV = newFOV;
         }
 
         UpdateCamera();
@@ -252,7 +156,7 @@ public class CameraMouseControl : MonoBehaviour
         {
             if (LookTarget != null)
             {
-                SaveLookTarget(currentCamera);
+                SaveLookTarget();
             }
             if (CurrentSettings.CameraType == CameraTypes.Free)
             {
@@ -309,7 +213,7 @@ public class CameraMouseControl : MonoBehaviour
         transform.position = setPosition;
     }
 
-    private void SaveLookTarget(Camera camera)
+    private void SaveLookTarget()
     {
         if (CurrentSettings.CameraType == CameraTypes.Front)
         {
@@ -341,11 +245,12 @@ public class CameraMouseControl : MonoBehaviour
     }
 
     private float currentFOV = 60.0f;
+    private float newFOV = 60.0f;
     private bool changeFOV = false;
 
     public void SetCameraFOV(float fov)
     {
-        currentFOV = fov;
+        newFOV = fov;
         changeFOV = true;
     }
 }

@@ -202,7 +202,7 @@ public class ExternalReceiverForVMC : MonoBehaviour {
                 //座標とFOVを適用
                 window.FreeCamera.transform.position = pos;
                 window.FreeCamera.transform.rotation = rot;
-                window.FreeCamera.fieldOfView = fov;
+                window.ControlCamera.fieldOfView = fov;
             } //ブレンドシェープ同期
             else if (message.address == "/VMC/Ext/Blend/Val"
                 && (message.values[0] is string)
