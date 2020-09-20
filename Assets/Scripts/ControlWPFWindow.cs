@@ -442,6 +442,11 @@ public class ControlWPFWindow : MonoBehaviour
                 var d = (PipeCommands.SetCameraFOV)e.Data;
                 SetCameraFOV(d.value);
             }
+            else if (e.CommandType == typeof(PipeCommands.SetCameraSmooth))
+            {
+                var d = (PipeCommands.SetCameraSmooth)e.Data;
+                SetCameraSmooth(d.value);
+            }
             else if (e.CommandType == typeof(PipeCommands.SetAutoBlinkEnable))
             {
                 var d = (PipeCommands.SetAutoBlinkEnable)e.Data;
@@ -2047,6 +2052,12 @@ public class ControlWPFWindow : MonoBehaviour
         ControlCamera.fieldOfView = fov;
     }
 
+    private void SetCameraSmooth(float speed)
+    {
+        CurrentSettings.CameraSmooth = speed;
+        ControlCamera.GetComponent<CameraFollower>().Speed = speed;
+    }
+
     #endregion
 
     #region BlinkControl
@@ -2797,6 +2808,8 @@ public class ControlWPFWindow : MonoBehaviour
 
         [OptionalField]
         public float CameraFOV = 60.0f;
+        [OptionalField]
+        public float CameraSmooth = 0.0f;
 
         [OptionalField]
         public Color LightColor;
@@ -2934,6 +2947,7 @@ public class ControlWPFWindow : MonoBehaviour
             WebCamBuffering = 0;
 
             CameraFOV = 60.0f;
+            CameraSmooth = 0f;
 
             LightColor = Color.white;
             LightRotationX = 130;
@@ -3213,6 +3227,7 @@ public class ControlWPFWindow : MonoBehaviour
         await server.SendCommandAsync(new PipeCommands.LoadIsTopMost { enable = CurrentSettings.IsTopMost });
 
         SetCameraFOV(CurrentSettings.CameraFOV);
+        SetCameraSmooth(CurrentSettings.CameraSmooth);
         FreeCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
         FrontCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
         BackCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
@@ -3245,6 +3260,7 @@ public class ControlWPFWindow : MonoBehaviour
             control.UpdateRelativePosition();
         }
         await server.SendCommandAsync(new PipeCommands.LoadCameraFOV { fov = CurrentSettings.CameraFOV });
+        await server.SendCommandAsync(new PipeCommands.LoadCameraSmooth { speed = CurrentSettings.CameraSmooth });
 
         UpdateWebCamConfig();
         if (CurrentSettings.CameraType.HasValue)

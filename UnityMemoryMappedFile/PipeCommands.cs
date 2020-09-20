@@ -109,6 +109,7 @@ namespace UnityMemoryMappedFile
         public class LoadShowCameraGrid { public bool enable { get; set; } }
         public class LoadCameraMirror { public bool enable { get; set; } }
         public class LoadCameraFOV { public float fov { get; set; } }
+        public class LoadCameraSmooth { public float speed { get; set; } }
         public class LoadLipSyncEnable { public bool enable { get; set; } }
         public class LoadLipSyncDevice { public string device { get; set; } }
         public class LoadLipSyncGain { public float gain { get; set; } }
@@ -143,6 +144,7 @@ namespace UnityMemoryMappedFile
         public class SetGridVisible { public bool enable { get; set; } }
         public class SetCameraMirror { public bool enable { get; set; } }
         public class SetCameraFOV : SetFloatValueBase { }
+        public class SetCameraSmooth : SetFloatValueBase { }
 
         public class KeyDown
         {
