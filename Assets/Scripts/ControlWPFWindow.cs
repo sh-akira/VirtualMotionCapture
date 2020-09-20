@@ -999,6 +999,8 @@ public class ControlWPFWindow : MonoBehaviour
                 CurrentSettings.PPS_Vignette_Color_g = d.Vignette_Color_g;
                 CurrentSettings.PPS_Vignette_Color_b = d.Vignette_Color_b;
 
+                CurrentSettings.TurnOffAmbientLight = d.TurnOffAmbientLight;
+
                 SetAdvancedGraphicsOption();
             }
             else if (e.CommandType == typeof(PipeCommands.Alive))
@@ -1096,7 +1098,9 @@ public class ControlWPFWindow : MonoBehaviour
             Vignette_Color_r = CurrentSettings.PPS_Vignette_Color_r,
             Vignette_Color_g = CurrentSettings.PPS_Vignette_Color_g,
             Vignette_Color_b = CurrentSettings.PPS_Vignette_Color_b,
-        });
+
+            TurnOffAmbientLight = CurrentSettings.TurnOffAmbientLight
+    });
     }
 
     private void SetAdvancedGraphicsOption() {
@@ -3088,6 +3092,9 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public float PPS_Vignette_Color_b;
 
+        [OptionalField]
+        public bool TurnOffAmbientLight;
+
         //初期値
         [OnDeserializing()]
         internal void OnDeserializingMethod(StreamingContext context)
@@ -3217,6 +3224,8 @@ public class ControlWPFWindow : MonoBehaviour
             PPS_Vignette_Color_r = 0f;
             PPS_Vignette_Color_g = 0f;
             PPS_Vignette_Color_b = 0f;
+
+            TurnOffAmbientLight = false;
         }
     }
 

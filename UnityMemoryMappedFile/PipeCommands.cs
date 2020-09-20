@@ -513,6 +513,8 @@ namespace UnityMemoryMappedFile
             public float Vignette_Color_g { get; set; }
             public float Vignette_Color_b { get; set; }
 
+            public bool TurnOffAmbientLight { get; set; }
+
         }
 
         public class LogNotify {

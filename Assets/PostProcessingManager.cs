@@ -122,6 +122,13 @@ public class PostProcessingManager : MonoBehaviour
 
         postProcessVolume.sharedProfile = sp;
 
-
+        if (d.TurnOffAmbientLight)
+        {
+            RenderSettings.ambientLight = Color.black;
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+        }
+        else {
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Skybox;
+        }
     }
 }

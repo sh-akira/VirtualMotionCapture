@@ -128,6 +128,12 @@
 				</GroupBox>
 			</DockPanel>
 		</GroupBox>
-
+		<GroupBox Header="Other" DockPanel.Dock="Top">
+			<DockPanel DockPanel.Dock="Top" LastChildFill="True">
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<CheckBox Name="TurnOffAmbientLight_CheckBox" Content="Turn OFF Ambient Light" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
+				</DockPanel>
+			</DockPanel>
+		</GroupBox>
 	</DockPanel>
 </Window>

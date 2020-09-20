@@ -51,9 +51,9 @@ namespace VirtualMotionCaptureControlPanel
             if (Initializing) { return; }
             //セットされたpostProcessingValueを送信する
             await Globals.Client.SendCommandAsync(new PipeCommands.SetAdvancedGraphicsOption
-            { 
+            {
                 PPS_Enable = Global_Enable_CheckBox?.IsChecked ?? false,
-                
+
                 Bloom_Enable = Bloom_Enable_CheckBox?.IsChecked ?? false,
                 Bloom_Intensity = (float)Bloom_Intensity_Slider?.Value,
                 Bloom_Threshold = (float)Bloom_Threshold_Slider?.Value,
@@ -89,7 +89,9 @@ namespace VirtualMotionCaptureControlPanel
 
                 CA_Enable = CA_Enable_CheckBox?.IsChecked ?? false,
                 CA_Intensity = (float)(CA_Intensity_Slider?.Value ?? 0f),
-                CA_FastMode = CA_FastMode_CheckBox?.IsChecked ?? false
+                CA_FastMode = CA_FastMode_CheckBox?.IsChecked ?? false,
+
+                TurnOffAmbientLight = TurnOffAmbientLight_CheckBox?.IsChecked ?? false
             });
         }
         private void ValueApply(PipeCommands.SetAdvancedGraphicsOption d)
@@ -203,6 +205,11 @@ namespace VirtualMotionCaptureControlPanel
                 {
                     CA_FastMode_CheckBox.IsChecked = d.CA_FastMode;
                 }
+
+                if (TurnOffAmbientLight_CheckBox != null) {
+                    TurnOffAmbientLight_CheckBox.IsChecked = d.TurnOffAmbientLight;
+                }
+
                 Task.Delay(100);
                 Initializing = false;
             });
