@@ -69,7 +69,7 @@ public class VMTClient : MonoBehaviour
             return;
         }
 
-        Transform target = window.currentCamera.transform;
+        Transform target = window.ControlCamera.transform;
         bool enable = true;
         if (target != null)
         {
