@@ -29,9 +29,7 @@ namespace VirtualMotionCaptureControlPanel
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Globals.Client.ReceivedEvent += Client_Received;
-
             await Globals.Client.SendCommandAsync(new PipeCommands.GetAdvancedGraphicsOption { });
-            Initializing = false;
         }
 
         private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -99,6 +97,8 @@ namespace VirtualMotionCaptureControlPanel
             //postProcessingValueを画面に反映する
             Dispatcher.Invoke(() =>
             {
+                Initializing = true; //ループ防止
+
                 if (Global_Enable_CheckBox != null)
                 {
                     Global_Enable_CheckBox.IsChecked = d.PPS_Enable;
@@ -203,7 +203,8 @@ namespace VirtualMotionCaptureControlPanel
                 {
                     CA_FastMode_CheckBox.IsChecked = d.CA_FastMode;
                 }
-
+                Task.Delay(100);
+                Initializing = false;
             });
 
         }
@@ -266,22 +267,51 @@ namespace VirtualMotionCaptureControlPanel
             ValueChanged();
         }
 
-    }
-}
-/*
-         private void LightColorButton_Click(object sender, RoutedEventArgs e)
+        private void Bloom_Reset_Clicked(object sender, RoutedEventArgs e)
         {
-            var win = new ColorPickerWindow();
-            win.SelectedColor = (LightColorButton.Background as SolidColorBrush).Color;
-            win.SelectedColorChangedEvent += ColorPickerWindow_SelectedColorChanged;
-            win.Owner = this;
-            win.ShowDialog();
-            win.SelectedColorChangedEvent -= ColorPickerWindow_SelectedColorChanged;
+            Bloom_Intensity_Slider.Value = 2.7f;
+            Bloom_Threshold_Slider.Value = 0.5f;
+
+            Color c = Color.FromArgb(255,255,255,255);
+            Bloom_Color_Button.Background = new SolidColorBrush(c);
+            ValueChanged();
         }
 
-        private async void ColorPickerWindow_SelectedColorChanged(object sender, Color e)
+        private void DoF_Reset_Clicked(object sender, RoutedEventArgs e)
         {
-            LightColorButton.Background = new SolidColorBrush(e);
-            await Globals.Client?.SendCommandAsync(new PipeCommands.ChangeLightColor { a = e.A / 255f, r = e.R / 255f, g = e.G / 255f, b = e.B / 255f });
+            DoF_FocusDistance_Slider.Value = 1.65f;
+            DoF_Aperture_Slider.Value = 16f;
+            DoF_FocusLength_Slider.Value = 16.4f;
+            DoF_MaxBlurSize_Slider.Value = 3;
+            ValueChanged();
         }
-*/
+
+        private void CG_Reset_Clicked(object sender, RoutedEventArgs e)
+        {
+            CG_Temperature_Slider.Value = 0f;
+            CG_Saturation_Slider.Value = 0f;
+            CG_Contrast_Slider.Value = 0f;
+            CG_Gamma_Slider.Value = 0f;
+            Color c = Color.FromArgb(255,255,255,255);
+            CG_ColorFilter_Button.Background = new SolidColorBrush(c);
+            ValueChanged();
+        }
+
+        private void Vignette_Reset_Clicked(object sender, RoutedEventArgs e)
+        {
+            Vignette_Intensity_Slider.Value = 0.65f;
+            Vignette_Smoothness_Slider.Value = 0.35f;
+            Vignette_Roundness_Slider.Value = 1f;
+            Color c = Color.FromArgb(255,0,0,0);
+            Vignette_Color_Button.Background = new SolidColorBrush(c);
+            ValueChanged();
+        }
+
+        private void CA_Reset_Clicked(object sender, RoutedEventArgs e)
+        {
+            CA_Intensity_Slider.Value = 1f;
+            CA_FastMode_CheckBox.IsChecked = false;
+            ValueChanged();
+        }
+    }
+}

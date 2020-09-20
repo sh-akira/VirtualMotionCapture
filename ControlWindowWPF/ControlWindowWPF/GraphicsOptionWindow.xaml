@@ -18,7 +18,7 @@
 					<DockPanel DockPanel.Dock="Top" LastChildFill="False">
 						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
 							<CheckBox Name="Bloom_Enable_CheckBox" Content="Enable" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
-							<Button Content="Reset" DockPanel.Dock="Right" Height="Auto" />
+							<Button Content="Reset" Click="Bloom_Reset_Clicked" DockPanel.Dock="Right" Height="Auto" />
 						</DockPanel>
 						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
 							<TextBlock Text="Intensity" DockPanel.Dock="Left"/>
@@ -38,7 +38,7 @@
 					<DockPanel DockPanel.Dock="Top" LastChildFill="False">
 						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
 							<CheckBox Name="DoF_Enable_CheckBox" Content="Enable" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
-							<Button Content="Reset" DockPanel.Dock="Right" Height="Auto" />
+							<Button Content="Reset" Click="DoF_Reset_Clicked"  DockPanel.Dock="Right" Height="Auto" />
 						</DockPanel>
 						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
 							<TextBlock Text="Focus Distance" DockPanel.Dock="Left"/>
@@ -63,7 +63,7 @@
 					<DockPanel DockPanel.Dock="Top" LastChildFill="False">
 						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
 							<CheckBox Name="CG_Enable_CheckBox" Content="Enable" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
-							<Button Content="Reset" DockPanel.Dock="Right" Height="Auto" />
+							<Button Content="Reset" Click="CG_Reset_Clicked"  DockPanel.Dock="Right" Height="Auto" />
 						</DockPanel>
 						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
 							<TextBlock Text="Temperature" DockPanel.Dock="Left"/>
@@ -82,7 +82,7 @@
 							<Slider Name="CG_Gamma_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="-2" Maximum="5" ValueChanged="SliverValueChanged"/>
 						</DockPanel>
 						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-							<Button Content="Color Filter*" Name="CG_ColorFilter_Button" DockPanel.Dock="Left" Height="Auto" Click="CG_ColorFilter_Button_Clicked" />
+							<Button Content="Color Filter" Name="CG_ColorFilter_Button" DockPanel.Dock="Left" Height="Auto" Click="CG_ColorFilter_Button_Clicked" />
 						</DockPanel>
 					</DockPanel>
 				</GroupBox>
@@ -91,7 +91,7 @@
 					<DockPanel DockPanel.Dock="Top" LastChildFill="False">
 						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
 							<CheckBox Name="Vignette_Enable_CheckBox" Content="Enable" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
-							<Button Content="Reset" DockPanel.Dock="Right" Height="Auto" />
+							<Button Content="Reset" Click="Vignette_Reset_Clicked"  DockPanel.Dock="Right" Height="Auto" />
 						</DockPanel>
 						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
 							<TextBlock Text="Intensity" DockPanel.Dock="Left"/>
@@ -103,10 +103,10 @@
 						</DockPanel>
 						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
 							<TextBlock Text="Roundness" DockPanel.Dock="Left"/>
-							<Slider Name="Vignette_Roundness_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="2" ValueChanged="SliverValueChanged"/>
+							<Slider Name="Vignette_Roundness_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1" ValueChanged="SliverValueChanged"/>
 						</DockPanel>
 						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-							<Button Content="Color*" Name="Vignette_Color_Button"  DockPanel.Dock="Left" Height="Auto"  Click="Vignette_Color_Button_Clicked" Background="Black"  />
+							<Button Content="Color" Name="Vignette_Color_Button"  DockPanel.Dock="Left" Height="Auto"  Click="Vignette_Color_Button_Clicked" Background="Black"  />
 						</DockPanel>
 					</DockPanel>
 				</GroupBox>
@@ -115,14 +115,14 @@
 					<DockPanel DockPanel.Dock="Top" LastChildFill="False">
 						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
 							<CheckBox Name="CA_Enable_CheckBox" Content="Enable" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
-							<Button Content="Reset" DockPanel.Dock="Right" Height="Auto" />
+							<Button Content="Reset" Click="CA_Reset_Clicked"  DockPanel.Dock="Right" Height="Auto" />
 						</DockPanel>
 						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
 							<TextBlock Text="Intensity" DockPanel.Dock="Left"/>
-							<Slider Name="CA_Intensity_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="10" ValueChanged="SliverValueChanged"/>
+							<Slider Name="CA_Intensity_Slider" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" Value="0" Minimum="0" Maximum="1" ValueChanged="SliverValueChanged"/>
 						</DockPanel>
 						<DockPanel DockPanel.Dock="Top" LastChildFill="False">
-							<CheckBox Name="CA_FastMode_CheckBox" Content="Fast Mode*" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
+							<CheckBox Name="CA_FastMode_CheckBox" Content="Fast Mode" DockPanel.Dock="Left" Checked="Checked" Unchecked="Checked"/>
 						</DockPanel>
 					</DockPanel>
 				</GroupBox>
