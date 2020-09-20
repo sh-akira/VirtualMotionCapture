@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
-        mc:Ignorable="d" Width="420" Height="210"
+        mc:Ignorable="d" Width="420" MinHeight="210" SizeToContent="Height"
         Title="{DynamicResource MainWindowTitle}" FontSize="14" ResizeMode="CanMinimize" Background="#2A2A2A" Loaded="Window_Loaded" Closing="Window_Closing" Icon="Resources/VirtualMotionCapture_dark.ico">
 	<Grid>
 		<Button Visibility="Collapsed"/>
