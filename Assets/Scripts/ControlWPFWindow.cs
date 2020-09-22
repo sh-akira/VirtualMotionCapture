@@ -1856,17 +1856,22 @@ public class ControlWPFWindow : MonoBehaviour
 
     void SetWindowBorder(bool enable)
     {
+        if (CurrentSettings.HideBorder == enable) return;
         CurrentSettings.HideBorder = enable;
 #if !UNITY_EDITOR   // エディタ上では動きません。
         var hwnd = GetUnityWindowHandle();
         //var hwnd = GetActiveWindow();
         if (enable)
         {
+            var clientrect = GetUnityWindowClientPosition();
             SetWindowLong(hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE); //ウインドウ枠の削除
+            SetUnityWindowSize(clientrect.right - clientrect.left, clientrect.bottom - clientrect.top);
         }
         else
         {
+            var windowrect = GetUnityWindowPosition();
             SetWindowLong(hwnd, GWL_STYLE, defaultWindowStyle);
+            Screen.SetResolution(windowrect.right - windowrect.left, windowrect.bottom - windowrect.top, false);
         }
 #endif
     }
