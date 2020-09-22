@@ -1,4 +1,5 @@
 ---
+weight: 600
 date: 2018-11-26
 title: MR合成用のexternalcamera.cfgの作成
 categories:
