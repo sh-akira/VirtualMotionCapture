@@ -109,6 +109,7 @@ namespace UnityMemoryMappedFile
         public class LoadShowCameraGrid { public bool enable { get; set; } }
         public class LoadCameraMirror { public bool enable { get; set; } }
         public class LoadCameraFOV { public float fov { get; set; } }
+        public class LoadCameraSmooth { public float speed { get; set; } }
         public class LoadLipSyncEnable { public bool enable { get; set; } }
         public class LoadLipSyncDevice { public string device { get; set; } }
         public class LoadLipSyncGain { public float gain { get; set; } }
@@ -143,6 +144,7 @@ namespace UnityMemoryMappedFile
         public class SetGridVisible { public bool enable { get; set; } }
         public class SetCameraMirror { public bool enable { get; set; } }
         public class SetCameraFOV : SetFloatValueBase { }
+        public class SetCameraSmooth : SetFloatValueBase { }
 
         public class KeyDown
         {
@@ -415,6 +417,22 @@ namespace UnityMemoryMappedFile
         {
             public bool fixKneeRotation { get; set; }
         }
+        public class GetVirtualMotionTracker { }
+        public class SetVirtualMotionTracker
+        {
+            public bool enable { get; set; }
+            public int no { get; set; }
+        }
+
+        public class SetupVirtualMotionTracker
+        {
+            public bool install { get; set; }
+        }
+
+        public class ResultSetupVirtualMotionTracker
+        {
+            public string result { get; set; }
+        }
 
         //-------------
         public class GetStatusString { }
@@ -460,6 +478,7 @@ namespace UnityMemoryMappedFile
             public int errorCount { get; set; }
         }
 
+        public class Alive { }
     }
 
     public enum NotifyLogTypes

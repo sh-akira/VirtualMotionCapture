@@ -192,6 +192,9 @@
     <system:String x:Key="SettingWindow_HandRotate">Hand Rotate Fix</system:String>
     <system:String x:Key="SettingWindow_LeftHand">Left Hand</system:String>
     <system:String x:Key="SettingWindow_RightHand">RightHand</system:String>
+    <system:String x:Key="SettingWindow_VMTInstall">VMT Install</system:String>
+    <system:String x:Key="SettingWindow_VMTInstallButton">Install</system:String>
+    <system:String x:Key="SettingWindow_VMTUninstallButton">Uninstall</system:String>
     <system:String x:Key="SettingWindow_ExternalCameraConfig">externalcamera.cfg(Set free camera position)</system:String>
     <system:String x:Key="SettingWindow_ControllerNumber">Controller number：</system:String>
     <system:String x:Key="SettingWindow_OpenExternalCameraConfig">Open externalcamera.cfg</system:String>
@@ -215,6 +218,7 @@
     <system:String x:Key="SettingWindow_ResolutionSetting">Resolution(Set same resolution as webcam setting)</system:String>
     <system:String x:Key="SettingWindow_ResolutionApply">Apply</system:String>
     <system:String x:Key="SettingWindow_FailedFolderCreate">Failed to create the folder. Please create C:\VMC_Camera folder manually.</system:String>
+    <system:String x:Key="SettingWindow_VMTFailedFolderCreate">Failed to create the folder.</system:String>
     <system:String x:Key="SettingWindow_FailedFileCopy">Failed to copy files. Please manually copy VMC_CameraFilter32bit.dll and 64bit.dll to C:\VMC_Camera folder.</system:String>
     <system:String x:Key="SettingWindow_SuccessDriverInstall">The installation of the camera driver was successful. VMC_Camera will be added to the camera selection</system:String>
     <system:String x:Key="SettingWindow_FailedDriverInstall">The installation of the camera driver has failed. Open a command prompt, move to C:\VMC_Camera folder, and execute regsvr32 VMC_CameraFilter32bit.dll and regsvr32 VMC_CameraFilter64bit.dll</system:String>
@@ -223,6 +227,7 @@
     <system:String x:Key="SettingWindow_SuccessDriverUninstall">The camera driver has been uninstalled. VMC_Camera will be deleted from camera selection</system:String>
     <system:String x:Key="SettingWindow_FailedDriverUninstall">Failed to uninstall the camera driver. Open a command prompt, move to C:\VMC_Camera folder, and execute regsvr32 / u VMC_CameraFilter32bit.dll and regsvr32 / u VMC_CameraFilter64bit.dll. Then delete the C:\VMC_Camera folder</system:String>
     <system:String x:Key="SettingWindow_SelectedItemError">Please select tracker to assign camera</system:String>
+    <system:String x:Key="SettingWindow_ExportVMTExternalCameraConfig">>Export externalcamera.cfg for LIV</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig">Export externalcamera.cfg</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">Export externalcamera.cfg to synthesize model into VR game</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSender">VMCProtocol Motion sender</system:String>
@@ -244,7 +249,11 @@
    	<system:String x:Key="SettingWindow_QualitySettings">Quality Settings</system:String>
    	<system:String x:Key="SettingWindow_AntiAliasing">AntiAliasing</system:String>
     <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">Sending motion is only available for pixivFANBOX and Patreon versions.</system:String>
-   	
+   	<system:String x:Key="SettingWindow_VirtualMotionTracker">Virtual Motion Tracker (VMT)</system:String>
+	<system:String x:Key="SettingWindow_VirtualMotionTrackerEnable">Enable</system:String>
+	<system:String x:Key="SettingWindow_VirtualMotionTrackerInstallSuccess">Success! Restart SteamVR and VirtualMotionCapture. Press OK and wait auto restart.</system:String>
+	<system:String x:Key="SettingWindow_VMTContinue">Continue VMT setup? Game will be interrupted, and VR system will restart.</system:String>
+
 
     <!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">Tracker assignment setting</system:String>

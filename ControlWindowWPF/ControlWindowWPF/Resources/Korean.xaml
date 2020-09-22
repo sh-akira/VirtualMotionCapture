@@ -193,6 +193,9 @@
     <system:String x:Key="SettingWindow_HandRotate">손의 각도 조절</system:String>
     <system:String x:Key="SettingWindow_LeftHand">왼손</system:String>
     <system:String x:Key="SettingWindow_RightHand">오른손</system:String>
+    <system:String x:Key="SettingWindow_VMTInstall">VMT 인스톨</system:String>
+    <system:String x:Key="SettingWindow_VMTInstallButton">인스톨</system:String>
+    <system:String x:Key="SettingWindow_VMTUninstallButton">언인스톨</system:String>
     <system:String x:Key="SettingWindow_ExternalCameraConfig">externalcamera.cfg(자유시점카메라 좌표를 설정)</system:String>
     <system:String x:Key="SettingWindow_ControllerNumber">컨트롤러 번호：</system:String>
     <system:String x:Key="SettingWindow_OpenExternalCameraConfig">externalcamera.cfg 열기</system:String>
@@ -216,6 +219,7 @@
     <system:String x:Key="SettingWindow_ResolutionSetting">해상도설정(웹캠사용처와 같은 해상도로 지정)</system:String>
     <system:String x:Key="SettingWindow_ResolutionApply">적용</system:String>
     <system:String x:Key="SettingWindow_FailedFolderCreate">폴더 생성에 실패했습니다. C:\VMC_Camera폴더를 직접 생성해주세요.</system:String>
+    <system:String x:Key="SettingWindow_VMTFailedFolderCreate">폴더 생성에 실패했습니다.</system:String>
     <system:String x:Key="SettingWindow_FailedFileCopy">파일 복사에 실패했습니다. C:\VMC_Camera폴더에VMC_CameraFilter32bit.dll와64bit.dll을 직접 붙여넣어주세요.</system:String>
     <system:String x:Key="SettingWindow_SuccessDriverInstall">카메라 드라이버를 성공적으로 설치했습니다.카메라 선택에 VMC_Camera가 추가됩니다</system:String>
     <system:String x:Key="SettingWindow_FailedDriverInstall">카메라 드라이버 설치를 실패했습니다.명령 프롬프트를 연 뒤C:\VMC_Camera폴더로 이동하여 regsvr32 VMC_CameraFilter32bit.dll 과  regsvr32 VMC_CameraFilter64bit.dll 을 실행해주세요.</system:String>
@@ -224,6 +228,7 @@
     <system:String x:Key="SettingWindow_SuccessDriverUninstall">카메라 드라이버를 제거했습니다. 카메라 선택에서 VMC_Camera가 삭제됩니다</system:String>
     <system:String x:Key="SettingWindow_FailedDriverUninstall">카메라 드라이버의 제거에 실패했습니다. 명령 프롬프트를 연 뒤, C:\VMC_Camera폴더로 이동하여 regsvr32 /u VMC_CameraFilter32bit.dll regsvr32 /u VMC_CameraFilter64bit.dll 를 실행해주세요.그 후 C:\VMC_Camera 폴더를 삭제해주세요</system:String>
     <system:String x:Key="SettingWindow_SelectedItemError">카메라를 할당할 트래커를 선택해주세요</system:String>
+    <system:String x:Key="SettingWindow_ExportVMTExternalCameraConfig">>Export externalcamera.cfg for LIV</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig">externalcamera.cfg 출력</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">VR게임에 모델을 합성하기 위한 externalcamera.cfg를 출력합니다</system:String>
 	<system:String x:Key="SettingWindow_ExternalMotionSender">외부로 모션을 송신(VMCProtocol)</system:String>
@@ -245,8 +250,10 @@
 	<system:String x:Key="SettingWindow_QualitySettings">Quality Settings</system:String>
     <system:String x:Key="SettingWindow_AntiAliasing">AntiAliasing</system:String>
     <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">Sending motion is only available for pixivFANBOX and Patreon versions.</system:String>
-
-
+	<system:String x:Key="SettingWindow_VirtualMotionTracker">Virtual Motion Tracker (VMT)</system:String>
+    <system:String x:Key="SettingWindow_VirtualMotionTrackerEnable">Enable</system:String>
+    <system:String x:Key="SettingWindow_VirtualMotionTrackerInstallSuccess">Success! Restart SteamVR and VirtualMotionCapture. Press OK and wait auto restart.</system:String>
+	<system:String x:Key="SettingWindow_VMTContinue">Continue VMT setup? Game will be interrupted, and VR system will restart.</system:String>
 
     <!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">트래커 할당 설정</system:String>

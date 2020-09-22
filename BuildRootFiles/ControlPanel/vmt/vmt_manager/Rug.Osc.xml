@@ -1,0 +1,2130 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Rug.Osc</name>
+    </assembly>
+    <members>
+        <member name="F:Rug.Osc.OscLiteralEvent.Address">
+            <summary>
+            The literal address of the event
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscLiteralEvent.Invoke(Rug.Osc.OscMessage)">
+            <summary>
+            Invoke the event
+            </summary>
+            <param name="message">message that caused the event</param>
+        </member>
+        <member name="M:Rug.Osc.OscLiteralEvent.Clear">
+            <summary>
+            Nullify the event
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.OscBundleInvokeMode">
+            <summary>
+            Flags to define when bundles are to be invoked 
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscBundleInvokeMode.NeverInvoke">
+            <summary>
+            Bundles should never be invoked
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscBundleInvokeMode.InvokeOnTimeBundles">
+            <summary>
+            Invoke bundles that arrived within the current frame 
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscBundleInvokeMode.InvokeLateBundlesImmediately">
+            <summary>
+            Invoke bundles that arrive late immediately
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscBundleInvokeMode.PosponeEarlyBundles">
+            <summary>
+            Pospone the ivokation of bundles that arrive early 
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscBundleInvokeMode.InvokeEarlyBundlesImmediately">
+            <summary>
+            Invoke bundles that arrive early immediately
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscBundleInvokeMode.InvokeAllBundlesImmediately">
+            <summary>
+            Invoke all bundles immediately. Equivilent of InvokeOnTimeBundles | InvokeLateBundlesImmediately | InvokeEarlyBundlesImmediately
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.OscAddressPartType">
+            <summary>
+            Type of address part
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscAddressPartType.AddressSeparator">
+            <summary>
+            Address seperator char i.e. '/'  
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscAddressPartType.AddressWildcard">
+            <summary>
+            Address wildcared i.e. '//'
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscAddressPartType.Literal">
+            <summary>
+            Any string literal i.e [^\s#\*,/\?\[\]\{}]+ 
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscAddressPartType.Wildcard">
+            <summary>
+            Either single char or anylength wildcard i.e '?' or '*'
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscAddressPartType.CharSpan">
+            <summary>
+            Char span e.g. [a-z]+
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscAddressPartType.List">
+            <summary>
+            List of literal matches
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscAddressPartType.CharList">
+            <summary>
+            List of posible char matches e.g. [abcdefg]+
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.OscPacket">
+            <summary>
+            Base class for all osc packets
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscPacket.ToByteArray">
+            <summary>
+            Get an array of bytes containing the entire packet
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Rug.Osc.OscPacket.Write(System.Byte[])">
+            <summary>
+            Write the packet into a byte array
+            </summary>
+            <param name="data">the destination for the packet</param>
+            <returns>the length of the packet in bytes</returns>
+        </member>
+        <member name="M:Rug.Osc.OscPacket.Write(System.Byte[],System.Int32)">
+            <summary>
+            Write the packet into a byte array
+            </summary>
+            <param name="data">the destination for the packet</param>
+            <param name="index">the offset within the array where writing should begin</param>
+            <returns>the length of the packet in bytes</returns>
+        </member>
+        <member name="M:Rug.Osc.OscPacket.Read(System.Byte[],System.Int32)">
+            <summary>
+            Read the osc packet from a byte array
+            </summary>
+            <param name="bytes">array to read from</param>
+            <param name="count">the number of bytes in the packet</param>
+            <returns>the packet</returns>
+        </member>
+        <member name="M:Rug.Osc.OscPacket.Read(System.Byte[],System.Int32,System.Net.IPEndPoint)">
+            <summary>
+            Read the osc packet from a byte array
+            </summary>
+            <param name="bytes">array to read from</param>
+            <param name="count">the number of bytes in the packet</param>
+            <param name="origin">the origin that is the origin of this packet</param>
+            <returns>the packet</returns>
+        </member>
+        <member name="M:Rug.Osc.OscPacket.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Read the osc packet from a byte array
+            </summary>
+            <param name="bytes">array to read from</param>
+            <param name="index">the offset within the array where reading should begin</param>
+            <param name="count">the number of bytes in the packet</param>
+            <returns>the packet</returns>
+        </member>
+        <member name="M:Rug.Osc.OscPacket.Read(System.Byte[],System.Int32,System.Int32,System.Net.IPEndPoint)">
+            <summary>
+            Read the osc packet from a byte array
+            </summary>
+            <param name="bytes">array to read from</param>
+            <param name="index">the offset within the array where reading should begin</param>
+            <param name="count">the number of bytes in the packet</param>
+            <param name="origin">the origin that is the origin of this packet</param>
+            <returns>the packet</returns>
+        </member>
+        <member name="M:Rug.Osc.OscPacket.ScanForward_Array(System.String,System.Int32)">
+            <summary>
+            Scan for array start and end control chars
+            </summary>
+            <param name="str">the string to scan</param>
+            <param name="controlChar">the index of the starting control char</param>
+            <returns>the index of the end char</returns>
+        </member>
+        <member name="M:Rug.Osc.OscPacket.ScanForward_Object(System.String,System.Int32)">
+            <summary>
+            Scan for object start and end control chars
+            </summary>
+            <param name="str">the string to scan</param>
+            <param name="controlChar">the index of the starting control char</param>
+            <returns>the index of the end char</returns>
+        </member>
+        <member name="M:Rug.Osc.OscPacket.ScanForward(System.String,System.Int32,System.Char,System.Char,System.String)">
+            <summary>
+            Scan for start and end control chars
+            </summary>
+            <param name="str">the string to scan</param>
+            <param name="controlChar">the index of the starting control char</param>
+            <param name="startChar">start control char</param>
+            <param name="endChar">end control char</param>
+            <param name="errorString">string to use in the case of an error</param>
+            <returns>the index of the end char</returns>
+        </member>
+        <member name="M:Rug.Osc.OscPacket.IsSameInstance(System.Object)">
+            <summary>
+            Is the supplied object exactly the same instance as this object
+            </summary>
+            <param name="obj">an object</param>
+            <returns>returns true if </returns>
+        </member>
+        <member name="P:Rug.Osc.OscPacket.SizeInBytes">
+            <summary>
+            The size of the packet in bytes
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscPacket.Error">
+            <summary>
+            If anything other than OscPacketError.None then an error occured while the packet was being parsed
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscPacket.ErrorMessage">
+            <summary>
+            The descriptive string associated with Error
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscPacket.Origin">
+            <summary>
+            The IP end point that the packet originated from
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.OscAddressRegexCache">
+            <summary>
+            Regex cache is an optimisation for regexes for address patterns. Caching is enabled by default. 
+            </summary>
+            <remarks>
+            This mechanism assumes that the same addresses will be used multiple times
+            and that there will be a finite number of unique addresses parsed over the course 
+            of the execution of the program.
+            
+            If there are to be many unique addresses used of the course of the execution of 
+            the program then it maybe desirable to disable caching. 
+            </remarks>
+        </member>
+        <member name="M:Rug.Osc.OscAddressRegexCache.Clear">
+            <summary>
+            Clear the entire cache 
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscAddressRegexCache.Aquire(System.String)">
+            <summary>
+            Aquire a regex, either by creating it if no cached one can be found or retrieving a cached one  
+            </summary>
+            <param name="regex">regex pattern</param>
+            <returns>a regex created from or retrieved for the pattern</returns>
+        </member>
+        <member name="P:Rug.Osc.OscAddressRegexCache.Enabled">
+            <summary>
+            Enable regex caching for the entire program (Enabled by default)
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscAddressRegexCache.Count">
+            <summary>
+            The number of cached regex(s) 
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.IOscTimeProvider">
+            <summary>
+            Provides osc timeing information
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.IOscTimeProvider.IsWithinTimeFrame(Rug.Osc.OscTimeTag)">
+            <summary>
+            Is the supplied time within the current frame according to this time provider
+            </summary>
+            <param name="time">the time to check</param>
+            <returns>true if within the frame else false</returns>
+        </member>
+        <member name="M:Rug.Osc.IOscTimeProvider.DifferenceInSeconds(Rug.Osc.OscTimeTag)">
+            <summary>
+            Get the difference in seconds between the current time and the suppied time
+            </summary>
+            <param name="time">the time to compair</param>
+            <returns>the difference in seconds between the current time and the suppied time</returns>
+        </member>
+        <member name="P:Rug.Osc.IOscTimeProvider.Now">
+            <summary>
+            Get the current time 
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.OscBundle">
+            <summary>
+            Bundle of osc messages
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.#ctor(Rug.Osc.OscTimeTag,Rug.Osc.OscPacket[])">
+            <summary>
+            Create a bundle of messages
+            </summary>
+            <param name="timestamp">timestamp</param>
+            <param name="messages">messages to bundle</param>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.#ctor(System.UInt64,Rug.Osc.OscPacket[])">
+            <summary>
+            Create a bundle of messages
+            </summary>
+            <param name="timestamp">timestamp</param>
+            <param name="messages">messages to bundle</param>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.#ctor(System.DateTime,Rug.Osc.OscPacket[])">
+            <summary>
+            Create a bundle of messages
+            </summary>
+            <param name="timestamp">timestamp</param>
+            <param name="messages">messages to bundle</param>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.#ctor(System.Net.IPEndPoint,Rug.Osc.OscTimeTag,Rug.Osc.OscPacket[])">
+            <summary>
+            Create a bundle of messages
+            </summary>
+            <param name="origin">the origin of the osc bundle</param>
+            <param name="timestamp">timestamp</param>
+            <param name="messages">messages to bundle</param>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.#ctor(System.Net.IPEndPoint,System.UInt64,Rug.Osc.OscPacket[])">
+            <summary>
+            Create a bundle of messages
+            </summary>
+            <param name="origin">the origin of the osc bundle</param>
+            <param name="timestamp">timestamp</param>
+            <param name="messages">messages to bundle</param>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.#ctor(System.Net.IPEndPoint,System.DateTime,Rug.Osc.OscPacket[])">
+            <summary>
+            Create a bundle of messages
+            </summary>
+            <param name="origin">the origin of the osc bundle</param>
+            <param name="timestamp">timestamp</param>
+            <param name="messages">messages to bundle</param>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.IsSameInstance(System.Object)">
+            <summary>
+            Is the supplied object exactly the same instance as this object
+            </summary>
+            <param name="obj">an object</param>
+            <returns>true if the objects are equivalent</returns>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.Equals(System.Object)">
+            <summary>
+            Does a deep comparison of the suppied object and this instance
+            </summary>
+            <param name="obj">An object</param>
+            <returns>true if the objects are equivalent</returns>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.BundlesAreEqual(Rug.Osc.OscBundle,Rug.Osc.OscBundle)">
+            <summary>
+            Are 2 bundles equivalent
+            </summary>
+            <param name="bundle1">A bundle</param>
+            <param name="bundle2">A bundle</param>
+            <returns>true if the objects are equivalent</returns>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.PacketArraysAreEqual(Rug.Osc.OscPacket[],Rug.Osc.OscPacket[])">
+            <summary>
+            Are 2 packet arrays equivalent
+            </summary>
+            <param name="array1">A packet array</param>
+            <param name="array2">A packet array</param>
+            <returns>true if the packet arrays are equivalent</returns>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.PacketsAreEqual(Rug.Osc.OscPacket,Rug.Osc.OscPacket)">
+            <summary>
+            Are 2 packets equivalent 
+            </summary>
+            <param name="packet1">A packet</param>
+            <param name="packet2">A packet</param>
+            <returns>true if the packets are equivalent</returns>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.GetHashCode">
+            <summary>
+            Get the hash code for this object 
+            </summary>
+            <returns>The hash code</returns>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.ToByteArray">
+            <summary>
+            Creates a byte array that contains the osc message
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.Write(System.Byte[])">
+            <summary>
+            Write the bundle into a byte array 
+            </summary>
+            <param name="data">an array ouf bytes to write the bundle into</param>
+            <returns>the number of bytes in the message</returns>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.Write(System.Byte[],System.Int32)">
+            <summary>
+            Write the bundle into a byte array 
+            </summary>
+            <param name="data">an array ouf bytes to write the bundle into</param>
+            <param name="index">the index within the array where writing should begin</param>
+            <returns>the number of bytes in the message</returns>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.IsBundle(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Does the array contain a bundle packet? 
+            </summary>
+            <param name="bytes">the array that contains a packet</param>
+            <param name="index">the offset within the array where the packet starts</param>
+            <param name="count">the number of bytes in the packet</param>
+            <returns>true if the packet contains a valid bundle header</returns>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.Read(System.Byte[],System.Int32)">
+            <summary>
+            Read a OscBundle from a array of bytes
+            </summary>
+            <param name="bytes">the array that countains the bundle</param>
+            <param name="count">the number of bytes in the bundle</param>
+            <returns>the bundle</returns>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Read a OscBundle from a array of bytes
+            </summary>
+            <param name="bytes">the array that countains the bundle</param>
+            <param name="index">the offset within the array where reading should begin</param>
+            <param name="count">the number of bytes in the bundle</param>
+            <returns>the bundle</returns>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.Read(System.Byte[],System.Int32,System.Int32,System.Net.IPEndPoint)">
+            <summary>
+            Read a OscBundle from a array of bytes
+            </summary>
+            <param name="bytes">the array that countains the bundle</param>
+            <param name="index">the offset within the array where reading should begin</param>
+            <param name="count">the number of bytes in the bundle</param>
+            <param name="origin">the origin that is the origin of this bundle</param>
+            <returns>the bundle</returns>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.TryParse(System.String,Rug.Osc.OscBundle@)">
+            <summary>
+            Try to parse a bundle from a string using the InvariantCulture
+            </summary>
+            <param name="str">the bundle as a string</param>
+            <param name="bundle">the parsed bundle</param>
+            <returns>true if the bundle could be parsed else false</returns>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.TryParse(System.String,System.IFormatProvider,Rug.Osc.OscBundle@)">
+            <summary>
+            Try to parse a bundle from a string using a supplied format provider
+            </summary>
+            <param name="str">the bundle as a string</param>
+            <param name="provider">the format provider to use</param>
+            <param name="bundle">the parsed bundle</param>
+            <returns>true if the bundle could be parsed else false</returns>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.Parse(System.String)">
+            <summary>
+            Parse a bundle from a string using the InvariantCulture
+            </summary>
+            <param name="str">a string containing a bundle</param>
+            <returns>the parsed bundle</returns>
+        </member>
+        <member name="M:Rug.Osc.OscBundle.Parse(System.String,System.IFormatProvider)">
+            <summary>
+            parse a bundle from a string using a supplied format provider
+            </summary>
+            <param name="str">a string containing a bundle</param>
+            <param name="provider">the format provider to use</param>
+            <returns>the parsed bundle</returns>
+        </member>
+        <member name="P:Rug.Osc.OscBundle.Error">
+            <summary>
+            If anything other than OscPacketError.None then an error occured while the packet was being parsed
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscBundle.ErrorMessage">
+            <summary>
+            The descriptive string associated with Error
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscBundle.Origin">
+            <summary>
+            The IP end point that the bundle originated from
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscBundle.Timestamp">
+            <summary>
+            Osc timestamp associated with this bundle
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscBundle.Item(System.Int32)">
+            <summary>
+            Access bundle messages by index 
+            </summary>
+            <param name="index">the index of the message</param>
+            <returns>message at the supplied index</returns>
+        </member>
+        <member name="P:Rug.Osc.OscBundle.Count">
+            <summary>
+            The number of messages in the bundle
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscBundle.SizeInBytes">
+            <summary>
+            The size of the packet in bytes
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.Helper.FloatAndUIntUnion">
+            <summary>
+            UInt to Float Conversion Helper 
+            http://stackoverflow.com/questions/8037645/cast-float-to-int-without-any-conversion
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.OscSocketState">
+            <summary>
+            The connection state of an osc socket
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscSocketState.NotConnected">
+            <summary>
+            The socket has never been connected
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscSocketState.Connected">
+            <summary>
+            The socket is connected
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscSocketState.Closing">
+            <summary>
+            The socket is closing
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscSocketState.Closed">
+            <summary>
+            The socket has been closed
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.OscSocketType">
+            <summary>
+            Socket direction type
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscSocketType.Send">
+            <summary>
+            Sender
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscSocketType.Receive">
+            <summary>
+            Receiver
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.OscSocket">
+            <summary>
+            Base class for all osc UDP communication
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscSocket.DefaultPacketSize">
+            <summary>
+            Default maximum packet size
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscSocket.DefaultMulticastTimeToLive">
+            <summary>
+            Default time to live for multicast packets
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscSocket.IsMulticastAddress(System.Net.IPAddress)">
+            <summary>
+            Is the supplied address a UDP multicast address
+            </summary>
+            <param name="address">An address</param>
+            <returns>true if it is a multicast address</returns>
+        </member>
+        <member name="M:Rug.Osc.OscSocket.#ctor(System.Net.IPAddress,System.Int32,System.Net.IPAddress,System.Int32,System.Int32)">
+            <summary>
+            Create a new socket for an address and port
+            </summary>
+            <param name="local">The ip address of the local end point</param>
+            <param name="localPort">the local port, use 0 for dynamically assigned</param>
+            <param name="remote">The ip address of the remote end point</param>
+            <param name="remotePort">the remote port</param>
+            <param name="timeToLive">TTL value to apply to packets</param>
+        </member>
+        <member name="M:Rug.Osc.OscSocket.#ctor(System.Net.IPAddress,System.Net.IPAddress,System.Int32,System.Int32)">
+            <summary>
+            Create a new socket for an address and port
+            </summary>
+            <param name="local">The ip address of the local end point</param>
+            <param name="remote">The ip address of the remote end point</param>
+            <param name="port">the port, use 0 for dynamically assigned (receiver only)</param>
+            <param name="timeToLive">TTL value to apply to packets</param>
+        </member>
+        <member name="M:Rug.Osc.OscSocket.#ctor(System.Net.IPAddress,System.Net.IPAddress,System.Int32)">
+            <summary>
+            Create a new socket for an address and port
+            </summary>
+            <param name="local">The ip address of the local end point</param>
+            <param name="remote">The ip address of the remote end point</param>
+            <param name="port">the port, use 0 for dynamically assigned (receiver only)</param>
+        </member>
+        <member name="M:Rug.Osc.OscSocket.#ctor(System.Net.IPAddress,System.Int32)">
+            <summary>
+            Create a new socket for an address and port
+            </summary>
+            <param name="address">The ip address of the local or remote end point</param>
+            <param name="port">the port, use 0 for dynamically assigned (receiver only)</param>
+        </member>
+        <member name="M:Rug.Osc.OscSocket.#ctor(System.Int32)">
+            <summary>
+            Create a new socket for any local IP address and a port
+            </summary>
+            <param name="port">the port to bind to, use 0 for dynamically assigned (receiver only)</param>
+        </member>
+        <member name="M:Rug.Osc.OscSocket.Connect">
+            <summary>
+            Connect the socket
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscSocket.OnConnect">
+            <summary>
+            Called when the socket is connected
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscSocket.OnClosing">
+            <summary>
+            Called when the socket is closing
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscSocket.Close">
+            <summary>
+            Closes the socket and releases all resources associated with it
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscSocket.Dispose">
+            <summary>
+            Closes the socket and releases all resources associated with it
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscSocket.Port">
+            <summary>
+            Network port
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscSocket.LocalPort">
+            <summary>
+            Local network port, this is the result of dynamic port allocation is UseDynamicLocalPort is true
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscSocket.UseDynamicLocalPort">
+            <summary>
+            True of the socket should use dynamic local port assignment
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscSocket.LocalAddress">
+            <summary>
+            Local IP address
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscSocket.LocalEndPoint">
+            <summary>
+            Local Ip end point 
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscSocket.RemoteAddress">
+            <summary>
+            Remote IP address
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscSocket.RemoteEndPoint">
+            <summary>
+            Remote Ip end point 
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscSocket.IsMulticastEndPoint">
+            <summary>
+            Is the remote origin a multicast address
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscSocket.TimeToLive">
+            <summary>
+            Time to live for multicast packets
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscSocket.UseIPv6">
+            <summary>
+            If true this socket uses IPv6 
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscSocket.State">
+            <summary>
+            The current state of the socket
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscSocket.OscSocketType">
+            <summary>
+            The socket type
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscSocket.Socket">
+            <summary>
+            The instance of the socket 
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscSocket.SocketFlags">
+            <summary>
+            Flags for the socket
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.OscTimeTag">
+            <summary>
+            Osc time tag
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscTimeTag.BaseDate">
+            <summary>
+            The miniumn date for any Osc time tag
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscTimeTag.Value">
+            <summary>
+            Ntp Timestamp value
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscTimeTag.#ctor(System.UInt64)">
+            <summary>
+            Build a osc timetag from a Ntp 64 bit integer 
+            </summary>
+            <param name="value">the 64 bit integer containing the time stamp</param>
+        </member>
+        <member name="M:Rug.Osc.OscTimeTag.Equals(System.Object)">
+            <summary>
+            Does this OSC-timetag equal another object
+            </summary>
+            <param name="obj">An object</param>
+            <returns>true if the objects are the same</returns>
+        </member>
+        <member name="M:Rug.Osc.OscTimeTag.GetHashCode">
+            <summary>
+            Gets a hashcode for this OSC-timetag
+            </summary>
+            <returns>A hashcode</returns>
+        </member>
+        <member name="M:Rug.Osc.OscTimeTag.ToString">
+            <summary>
+            Get a string of this OSC-timetag in the format "dd-MM-yyyy HH:mm:ss.ffffZ"
+            </summary>
+            <returns>The string value of this OSC-timetag</returns>
+        </member>
+        <member name="M:Rug.Osc.OscTimeTag.ToDataTime">
+            <summary>
+            Get the equivient datetime value from the osc timetag 
+            </summary>
+            <returns>the equivilent value as a datetime</returns>
+        </member>
+        <member name="M:Rug.Osc.OscTimeTag.FromDataTime(System.DateTime)">
+            <summary>
+            Get a Osc timstamp from a datetime value
+            </summary>
+            <param name="datetime">datetime value</param>
+            <returns>the equivilent value as an osc timetag</returns>
+        </member>
+        <member name="M:Rug.Osc.OscTimeTag.Parse(System.String,System.IFormatProvider)">
+            <summary>
+            Parse a osc time tag from datetime string
+            </summary>
+            <param name="str">string to parse</param>
+            <param name="provider">format provider</param>
+            <returns>the parsed time tag</returns>
+        </member>
+        <member name="M:Rug.Osc.OscTimeTag.Parse(System.String)">
+            <summary>
+            Parse a osc time tag from datetime string
+            </summary>
+            <param name="str">string to parse</param>
+            <returns>the parsed time tag</returns>
+        </member>
+        <member name="M:Rug.Osc.OscTimeTag.TryParse(System.String,System.IFormatProvider,Rug.Osc.OscTimeTag@)">
+            <summary>
+            Try to parse a osc time tag from datetime string
+            </summary>
+            <param name="str">string to parse</param>
+            <param name="provider">format provider</param>
+            <param name="value">the parsed time tag</param>
+            <returns>true if parsed else false</returns>
+        </member>
+        <member name="M:Rug.Osc.OscTimeTag.TryParse(System.String,Rug.Osc.OscTimeTag@)">
+            <summary>
+            Try to parse a osc time tag from datetime string
+            </summary>
+            <param name="str">string to parse</param>
+            <param name="value">the parsed time tag</param>
+            <returns>true if parsed else false</returns>
+        </member>
+        <member name="T:Rug.Osc.OscSymbol">
+            <summary>
+            Osc symbol 
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscSymbol.Value">
+            <summary>
+            The string value of the symbol
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscSymbol.#ctor(System.String)">
+            <summary>
+            Create a new symbol
+            </summary>
+            <param name="value">literal string value</param>
+        </member>
+        <member name="T:Rug.Osc.OscMidiMessage">
+            <summary>
+            Midi Message
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscMidiMessage.#ctor(System.UInt32)">
+            <summary>
+            Parse a midi message from a single 4 byte integer 
+            </summary>
+            <param name="value">4 byte integer portID | (type | channel) | data1 | data2</param>
+        </member>
+        <member name="M:Rug.Osc.OscMidiMessage.#ctor(System.Byte,System.Byte,System.Byte,System.Byte)">
+            <summary>
+            Create midi message
+            </summary>
+            <param name="portID">port id</param>
+            <param name="statusByte">status byte</param>
+            <param name="data1">data 1</param>
+            <param name="data2">data 2</param>
+        </member>
+        <member name="M:Rug.Osc.OscMidiMessage.#ctor(System.Byte,Rug.Osc.OscMidiMessageType,System.Byte,System.Byte,System.Byte)">
+            <summary>
+            Create midi message
+            </summary>
+            <param name="portID">the id of the destination port</param>
+            <param name="type">the type of message</param>
+            <param name="channel">the channel</param>
+            <param name="data1">data argument 1</param>
+            <param name="data2">data argument 2</param>
+        </member>
+        <member name="M:Rug.Osc.OscMidiMessage.#ctor(System.Byte,Rug.Osc.OscMidiMessageType,System.Byte,System.Byte)">
+            <summary>
+            Create midi message
+            </summary>
+            <param name="portID">port id</param>
+            <param name="type">midi message type</param>
+            <param name="channel">midi channel</param>
+            <param name="data1">data 1</param>
+        </member>
+        <member name="M:Rug.Osc.OscMidiMessage.#ctor(System.Byte,Rug.Osc.OscMidiMessageType,System.Byte,System.UInt16)">
+            <summary>
+            Create midi message
+            </summary>
+            <param name="portID">port id</param>
+            <param name="type">midi message type</param>
+            <param name="channel">midi channel</param>
+            <param name="value">14 bit data value</param>
+        </member>
+        <member name="M:Rug.Osc.OscMidiMessage.#ctor(System.Byte,Rug.Osc.OscMidiSystemMessageType,System.UInt16)">
+            <summary>
+            Create midi message
+            </summary>
+            <param name="portID">port id</param>
+            <param name="type">midi system message type</param>
+            <param name="value">14 bit data value</param>
+        </member>
+        <member name="M:Rug.Osc.OscMidiMessage.#ctor(System.Byte,Rug.Osc.OscMidiSystemMessageType,System.Byte)">
+            <summary>
+            Create midi message
+            </summary>
+            <param name="portID">port id</param>
+            <param name="type">midi system message type</param>
+            <param name="data1">data 1</param>
+        </member>
+        <member name="M:Rug.Osc.OscMidiMessage.#ctor(System.Byte,Rug.Osc.OscMidiSystemMessageType,System.Byte,System.Byte)">
+            <summary>
+            Create midi message
+            </summary>
+            <param name="portID">port id</param>
+            <param name="type">midi system message type</param>
+            <param name="data1">data 1</param>
+            <param name="data2">data 2</param>
+        </member>
+        <member name="P:Rug.Osc.OscMidiMessage.MessageType">
+            <summary>
+            The midi message type
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscMidiMessage.SystemMessageType">
+            <summary>
+            The system message type, only valid when MessageType is SystemExclusive
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscMidiMessage.Channel">
+            <summary>
+            The channel, only valid when MessageType is not SystemExclusive
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscMidiMessage.Data14BitValue">
+            <summary>
+            14 bit data value, for pitch bend messages
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.OscWriter">
+            <summary>
+            Writes osc packets to a stream
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscWriter.#ctor(System.IO.Stream,Rug.Osc.OscPacketFormat)">
+            <summary>
+            Initializes a new instance of the OscWriter class based on the supplied stream. 
+            </summary>
+            <param name="stream">a stream</param>
+            <param name="format">packet format</param>
+        </member>
+        <member name="M:Rug.Osc.OscWriter.Write(Rug.Osc.OscPacket)">
+            <summary>
+            Writes a single packet to the stream at the current position.
+            </summary>
+            <param name="packet">A osc packet</param>
+        </member>
+        <member name="M:Rug.Osc.OscWriter.Close">
+            <summary>
+            Closes the current reader and the underlying stream.
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscWriter.Dispose">
+            <summary>
+            Disposes the current reader and the underlying stream.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscWriter.BaseStream">
+            <summary>
+            Exposes access to the underlying stream of the OscWriter.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscWriter.Format">
+            <summary>
+            Packet format 
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.OscReader">
+            <summary>
+            Reads osc packets from a stream
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscReader.#ctor(System.IO.Stream,Rug.Osc.OscPacketFormat)">
+            <summary>
+            Initializes a new instance of the OscReader class based on the supplied stream. 
+            </summary>
+            <param name="stream">a stream</param>
+            <param name="mode">the format of the packets in the stream</param>
+        </member>
+        <member name="M:Rug.Osc.OscReader.Read">
+            <summary>
+            Read a single packet from the stream at the current position
+            </summary>
+            <returns>An osc packet</returns>
+        </member>
+        <member name="M:Rug.Osc.OscReader.Close">
+            <summary>
+            Closes the current reader and the underlying stream.
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscReader.Dispose">
+            <summary>
+            Disposes the current reader and the underlying stream.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscReader.BaseStream">
+            <summary>
+            Exposes access to the underlying stream of the OscReader.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscReader.Format">
+            <summary>
+            Packet format 
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscReader.EndOfStream">
+            <summary>
+            Gets a value that indicates whether the current stream position is at the end of the stream.
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.OscListener">
+            <summary>
+            Preforms common functions needed when listening for osc messages
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscListener.#ctor(System.Net.IPAddress,System.Net.IPAddress,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Create a new Osc UDP listener. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="address">the local ip address to listen to</param>
+            <param name="multicast">a multicast address to join</param>
+            <param name="port">the port to listen on, use 0 for dynamically assigned</param>
+            <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
+            <param name="maxPacketSize">the maximum packet size of any message</param>
+        </member>
+        <member name="M:Rug.Osc.OscListener.#ctor(System.Net.IPAddress,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Create a new Osc UDP listener. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="address">the local ip address to listen to</param>
+            <param name="port">the port to listen on, use 0 for dynamically assigned</param>
+            <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
+            <param name="maxPacketSize">the maximum packet size of any message</param>
+        </member>
+        <member name="M:Rug.Osc.OscListener.#ctor(System.Net.IPAddress,System.Int32)">
+            <summary>
+            Create a new Osc UDP listener. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="address">the local ip address to listen to</param>
+            <param name="port">the port to listen on</param>
+        </member>
+        <member name="M:Rug.Osc.OscListener.#ctor(System.Net.IPAddress,System.Net.IPAddress,System.Int32)">
+            <summary>
+            Create a new Osc UDP listener. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="address">the local ip address to listen to</param>
+            <param name="multicast">a multicast address to join</param>
+            <param name="port">the port to listen on, use 0 for dynamically assigned</param>
+        </member>
+        <member name="M:Rug.Osc.OscListener.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Create a new Osc UDP listener. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="port">the port to listen on</param>
+            <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
+            <param name="maxPacketSize">the maximum packet size of any message</param>
+        </member>
+        <member name="M:Rug.Osc.OscListener.#ctor(System.Int32)">
+            <summary>
+            Create a new Osc UDP listener. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="port">the port to listen on</param>
+        </member>
+        <member name="M:Rug.Osc.OscListener.Attach(System.String,Rug.Osc.OscMessageEvent)">
+            <summary>
+            Attach an event listener on to the given address
+            </summary>
+            <param name="address">the address of the contianer</param>
+            <param name="event">the event to attach</param>
+        </member>
+        <member name="M:Rug.Osc.OscListener.Detach(System.String,Rug.Osc.OscMessageEvent)">
+            <summary>
+            Detach an event listener 
+            </summary>
+            <param name="address">the address of the container</param>
+            <param name="event">the event to remove</param>
+        </member>
+        <member name="E:Rug.Osc.OscListener.UnknownAddress">
+            <summary>
+            This event will be raised whenever an unknown address is encountered
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.OscAddress">
+            <summary>
+            Encompasses an entire osc address
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscAddress.#ctor(System.String)">
+            <summary>
+            Create an osc address from a string, must follow the rules set out in http://opensoundcontrol.org/spec-1_0 and http://opensoundcontrol.org/spec-1_1
+            </summary>
+            <param name="address">the address string</param>
+        </member>
+        <member name="M:Rug.Osc.OscAddress.Match(System.String)">
+            <summary>
+            Match this address against an address string
+            </summary>
+            <param name="address">the address string to match against</param>
+            <returns>true if the addresses match, otherwise false</returns>
+        </member>
+        <member name="M:Rug.Osc.OscAddress.Match(Rug.Osc.OscAddress)">
+            <summary>
+            Match this address against another
+            </summary>
+            <param name="address">the address to match against</param>
+            <returns>true if the addresses match, otherwise false</returns>
+        </member>
+        <member name="M:Rug.Osc.OscAddress.ToString_Rebuild">
+            <summary>
+            Only used for testing
+            </summary>
+            <returns>a string that would produce the same address pattern but not a copy of the original string</returns>
+        </member>
+        <member name="M:Rug.Osc.OscAddress.IsValidAddressLiteral(System.String)">
+            <summary>
+            Is the supplied address a valid literal address (no wildcards or lists) 
+            </summary>
+            <param name="address">the address to check</param>
+            <returns>true if the address is valid</returns>
+        </member>
+        <member name="M:Rug.Osc.OscAddress.IsValidAddressPattern(System.String)">
+            <summary>
+            Is the supplied address a valid address pattern (may include wildcards and lists) 
+            </summary>
+            <param name="addressPattern">the address pattern to check</param>
+            <returns>true if the address pattern is valid</returns>
+        </member>
+        <member name="M:Rug.Osc.OscAddress.IsMatch(System.String,System.String)">
+            <summary>
+            Does a address match a address pattern
+            </summary>
+            <param name="addressPattern">address pattern (may include wildcards and lists)</param>
+            <param name="address">literal address</param>
+            <returns>true if the addess matches the pattern</returns>
+        </member>
+        <member name="P:Rug.Osc.OscAddress.OrigialString">
+            <summary>
+            The string used to create the address 
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscAddress.Count">
+            <summary>
+            The number of parts in the address
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscAddress.Item(System.Int32)">
+            <summary>
+            Address parts
+            </summary>
+            <param name="index">the index of the part</param>
+            <returns>the address part at the given index</returns>
+        </member>
+        <member name="P:Rug.Osc.OscAddress.IsLiteral">
+            <summary>
+            Is this address a literal
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscPatternEvent.Address">
+            <summary>
+            The pattern address of the event
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscPatternEvent.Invoke(Rug.Osc.OscMessage)">
+            <summary>
+            Invoke the event
+            </summary>
+            <param name="message">message that caused the event</param>
+        </member>
+        <member name="M:Rug.Osc.OscPatternEvent.Clear">
+            <summary>
+            Nullify the event
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.OscMessage">
+            <summary>
+            Any osc message
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.#ctor(System.String,System.Object[])">
+            <summary>
+            Construct a osc message
+            </summary>
+            <param name="address">An osc address that is the destination for this message</param>
+            <param name="args">Object array of OSC argument values. The type tag string will be created automatically according to each argument type</param>
+            <example>OscMessage message = new OscMessage("/test/test", 1, 2, 3);</example>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.#ctor(System.Net.IPEndPoint,System.String,System.Object[])">
+            <summary>
+            Construct a osc message
+            </summary>
+            <param name="origin">the origin of the osc message</param>
+            <param name="address">An osc address that is the destination for this message</param>		
+            <param name="args">Object array of OSC argument values. The type tag string will be created automatically according to each argument type</param>
+            <example>OscMessage message = new OscMessage("/test/test", 1, 2, 3);</example>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.SizeOfObjectArray_TypeTag(System.Object[])">
+            <summary>
+            Calculate the size of the type tag of an object array 
+            </summary>
+            <param name="args">the array</param>
+            <returns>the size of the type tag for the array</returns>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.SizeOfObjectArray(System.Object[])">
+            <summary>
+            Calculate the size of the an object array in bytes
+            </summary>
+            <param name="args">the array</param>
+            <returns>the size of the array in bytes</returns>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.ToArray">
+            <summary>
+            Get the arguments as an array 
+            </summary>
+            <returns>arguments array</returns>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.ToByteArray">
+            <summary>
+            Creates a byte array that contains the osc message
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.Write(System.Byte[])">
+            <summary>
+            Write the message body into a byte array 
+            </summary>
+            <param name="data">an array ouf bytes to write the message body into</param>
+            <returns>the number of bytes in the message</returns>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.Write(System.Byte[],System.Int32)">
+            <summary>
+            Write the message body into a byte array 
+            </summary>
+            <param name="data">an array ouf bytes to write the message body into</param>
+            <param name="index">the index within the array where writing should begin</param>
+            <returns>the number of bytes in the message</returns>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.Read(System.Byte[],System.Int32)">
+            <summary>
+            Read a OscMessage from a array of bytes
+            </summary>
+            <param name="bytes">the array that countains the message</param>
+            <param name="count">the number of bytes in the message</param>
+            <returns>the parsed osc message or an empty message if their was an error while parsing</returns>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Read a OscMessage from a array of bytes
+            </summary>
+            <param name="bytes">the array that countains the message</param>
+            <param name="index">the offset within the array where reading should begin</param>
+            <param name="count">the number of bytes in the message</param>
+            <returns>the parsed osc message or an empty message if their was an error while parsing</returns>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.Read(System.Byte[],System.Int32,System.Int32,System.Net.IPEndPoint)">
+            <summary>
+            Read a OscMessage from a array of bytes
+            </summary>
+            <param name="bytes">the array that countains the message</param>
+            <param name="index">the offset within the array where reading should begin</param>
+            <param name="count">the number of bytes in the message</param>
+            <param name="origin">the origin of the packet</param>
+            <returns>the parsed osc message or an empty message if their was an error while parsing</returns>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.IsSameInstance(System.Object)">
+            <summary>
+            Is the supplied object exactly the same instance as this object
+            </summary>
+            <param name="obj">an object</param>
+            <returns>returns true if </returns>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.Equals(System.Object)">
+            <summary>
+            Does a deep comparison of the suppied object and this instance
+            </summary>
+            <param name="obj">An object</param>
+            <returns>true if the objects are equivalent</returns>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.MessagesAreEqual(Rug.Osc.OscMessage,Rug.Osc.OscMessage)">
+            <summary>
+            Are 2 messages equivalent
+            </summary>
+            <param name="message1">A message</param>
+            <param name="message2">A message</param>
+            <returns>true if the objects are equivalent</returns>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.ArgumentsAreEqual(System.Object[],System.Object[])">
+            <summary>
+            Are the contents of 2 argument arrays the equivalent
+            </summary>
+            <param name="array1">An array containing argument objects</param>
+            <param name="array2">An array containing argument objects</param>
+            <returns>true if the object arrays are equivalent</returns>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.GetHashCode">
+            <summary>
+            Get the hash code for this object 
+            </summary>
+            <returns>The hash code</returns>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.TryParse(System.String,Rug.Osc.OscMessage@)">
+            <summary>
+            Try to parse a message from a string using the InvariantCulture
+            </summary>
+            <param name="str">the message as a string</param>
+            <param name="message">the parsed message</param>
+            <returns>true if the message could be parsed else false</returns>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.TryParse(System.String,System.IFormatProvider,Rug.Osc.OscMessage@)">
+            <summary>
+            Try to parse a message from a string using a supplied format provider
+            </summary>
+            <param name="str">the message as a string</param>
+            <param name="provider">the format provider to use</param>
+            <param name="message">the parsed message</param>
+            <returns>true if the message could be parsed else false</returns>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.Parse(System.String)">
+            <summary>
+            Parse a message from a string using the InvariantCulture
+            </summary>
+            <param name="str">a string containing a message</param>
+            <returns>the parsed message</returns>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.Parse(System.String,System.IFormatProvider)">
+            <summary>
+            parse a message from a string using a supplied format provider
+            </summary>
+            <param name="str">a string containing a message</param>
+            <param name="provider">the format provider to use</param>
+            <returns>the parsed message</returns>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.ParseArguments(System.String,System.Collections.Generic.List{System.Object},System.Int32,System.IFormatProvider)">
+            <summary>
+            Parse arguments
+            </summary>
+            <param name="str">string to parse</param>
+            <param name="arguments">the list to put the parsed arguments into</param>
+            <param name="index">the current index within the string</param>
+            <param name="provider">the format to use</param>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.ParseArgument(System.String,System.IFormatProvider)">
+            <summary>
+            Parse a single argument
+            </summary>
+            <param name="str">string contain the argument to parse</param>
+            <param name="provider">format provider to use</param>
+            <returns>the parsed argument</returns>
+        </member>
+        <member name="M:Rug.Osc.OscMessage.ParseObject(System.String,System.IFormatProvider)">
+            <summary>
+            Parse an object
+            </summary>
+            <param name="str">string contain the object to parse</param>
+            <param name="provider">format provider to use</param>
+            <returns>the parsed argument</returns>
+        </member>
+        <member name="P:Rug.Osc.OscMessage.Address">
+            <summary>
+            The address of the message
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscMessage.IsEmpty">
+            <summary>
+            IS the argument list empty
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscMessage.Count">
+            <summary>
+            Number of arguments in the message 
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscMessage.Item(System.Int32)">
+            <summary>
+            Access message arguments by index 
+            </summary>
+            <param name="index">the index of the message</param>
+            <returns>message at the supplied index</returns>
+        </member>
+        <member name="P:Rug.Osc.OscMessage.Error">
+            <summary>
+            The error accosiated with the message
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscMessage.ErrorMessage">
+            <summary>
+             Error message 
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscMessage.Origin">
+            <summary>
+            The IP end point that the message originated from
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscMessage.SizeInBytes">
+            <summary>
+            The size of the message in bytes
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.OscImpulse">
+            <summary>
+            Osc Impulse Singleton
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscImpulse.IsImpulse(System.String)">
+            <summary>
+            Matches the string against "Impulse", "Bang", "Infinitum", "Inf" the comparison is StringComparison.InvariantCultureIgnoreCase
+            </summary>
+            <param name="str">string to check</param>
+            <returns>true if the string matches any of the recognised impulse strings else false</returns>
+        </member>
+        <member name="T:Rug.Osc.OscSender">
+            <summary>
+            Osc udp sender
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscSender.DefaultMessageBufferSize">
+            <summary>
+            The default number of messages that can be queued for sending before messages start to get dropped
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscSender.#ctor(System.Net.IPAddress,System.Int32)">
+            <summary>
+            Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="address">the ip address to send to</param>
+            <param name="port">the port to send to</param>
+        </member>
+        <member name="M:Rug.Osc.OscSender.#ctor(System.Net.IPAddress,System.Int32,System.Int32)">
+            <summary>
+            Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="address">the ip address to send to</param>
+            <param name="localPort">the local port to bind, use 0 for dynamically assigned</param>
+            <param name="port">the port to send to</param>
+        </member>
+        <member name="M:Rug.Osc.OscSender.#ctor(System.Net.IPAddress,System.Net.IPAddress,System.Int32)">
+            <summary>
+            Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="local">the ip address to send from</param>
+            <param name="remote">the ip address to send to</param>
+            <param name="port">the port to send to</param>
+        </member>
+        <member name="M:Rug.Osc.OscSender.#ctor(System.Net.IPAddress,System.Net.IPAddress,System.Int32,System.Int32)">
+            <summary>
+            Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="local">the ip address to send from</param>
+            <param name="remote">the ip address to send to</param>
+            <param name="port">the port to send to</param>
+            <param name="timeToLive">TTL value to apply to packets</param>
+        </member>
+        <member name="M:Rug.Osc.OscSender.#ctor(System.Net.IPAddress,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="address">the ip address to send to</param>
+            <param name="port">the port to send to</param>		
+            <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
+            <param name="maxPacketSize">the maximum packet size of any message</param>
+        </member>
+        <member name="M:Rug.Osc.OscSender.#ctor(System.Net.IPAddress,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="address">the ip address to send to</param>
+            <param name="localPort">the local port to bind, use 0 for dynamically assigned</param>
+            <param name="remotePort">the port to send to</param>		
+            <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
+            <param name="maxPacketSize">the maximum packet size of any message</param>
+        </member>
+        <member name="M:Rug.Osc.OscSender.#ctor(System.Net.IPAddress,System.Net.IPAddress,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="local">the ip address to send from</param>
+            <param name="remote">the ip address to send to</param>
+            <param name="port">the port to send to</param>
+            <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
+            <param name="maxPacketSize">the maximum packet size of any message</param>
+        </member>
+        <member name="M:Rug.Osc.OscSender.#ctor(System.Net.IPAddress,System.Net.IPAddress,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="local">the ip address to send from</param>
+            <param name="remote">the ip address to send to</param>
+            <param name="port">the port to send to</param>
+            <param name="timeToLive">TTL value to apply to packets</param>
+            <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
+            <param name="maxPacketSize">the maximum packet size of any message</param>
+        </member>
+        <member name="M:Rug.Osc.OscSender.#ctor(System.Net.IPAddress,System.Int32,System.Net.IPAddress,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Create a new Osc UDP sender. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="local">the ip address to send from</param>
+            <param name="localPort">the local port to bind, use 0 for dynamically assigned</param>
+            <param name="remote">the ip address to send to</param>
+            <param name="remotePort">the port to send to</param>
+            <param name="timeToLive">TTL value to apply to packets</param>
+            <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
+            <param name="maxPacketSize">the maximum packet size of any message</param>
+        </member>
+        <member name="M:Rug.Osc.OscSender.Send(Rug.Osc.OscPacket)">
+            <summary>
+            Add a osc message to the send queue
+            </summary>
+            <param name="message">message to send</param>
+        </member>
+        <member name="M:Rug.Osc.OscSender.WaitForAllMessagesToComplete">
+            <summary>
+            Wait till all messages in the queue have been sent
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscSender.DisconnectTimeout">
+            <summary>
+            Use a value greater than 0 to set the disconnect time out in miliseconds use a value less than or equal to 0 for an infinite timeout
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscSender.NextWriteIndex">
+            <summary>
+            The next queue index to write messages to 
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscSender.NextReadIndex">
+            <summary>
+            The next queue index to read messages from 
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.OscAddressPart">
+            <summary>
+            Encompasses a single part of an osc address
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscAddressPart.Type">
+            <summary>
+            The address part type 
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscAddressPart.Value">
+            <summary>
+            The original string value of this part
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscAddressPart.Interpreted">
+            <summary>
+            How the string was interpreted (only used for testing) 
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscAddressPart.PartRegex">
+            <summary>
+            The regex representation of this part
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscAddressPart.#ctor(Rug.Osc.OscAddressPartType,System.String,System.String,System.String)">
+            <summary>
+            Create a address part
+            </summary>
+            <param name="type">the type of part</param>
+            <param name="value">the original string value</param>
+            <param name="interpreted">the representation of the original value as interpreted by the parser</param>
+            <param name="partRegex">the part as a regex expression</param>
+        </member>
+        <member name="M:Rug.Osc.OscAddressPart.AddressSeparator">
+            <summary>
+            Create a address separator part '/' 
+            </summary>
+            <returns>the part</returns>
+        </member>
+        <member name="M:Rug.Osc.OscAddressPart.AddressWildcard">
+            <summary>
+            Create a address wildcard part "//" 
+            </summary>
+            <returns>the part</returns>
+        </member>
+        <member name="M:Rug.Osc.OscAddressPart.Literal(System.String)">
+            <summary>
+            Create a literal address part
+            </summary>
+            <param name="value">the literal</param>
+            <returns>the part</returns>
+        </member>
+        <member name="M:Rug.Osc.OscAddressPart.Wildcard(System.String)">
+            <summary>
+            Create a part for a wildcard part
+            </summary>
+            <param name="value">the original string</param>
+            <returns>the part</returns>
+        </member>
+        <member name="M:Rug.Osc.OscAddressPart.CharSpan(System.String)">
+            <summary>
+            Character span e.g. [a-e] 
+            </summary>
+            <param name="value">the original string</param>
+            <returns>the part</returns>
+        </member>
+        <member name="M:Rug.Osc.OscAddressPart.CharList(System.String)">
+            <summary>
+            Character list e.g. [abcde]
+            </summary>
+            <param name="value">the original string</param>
+            <returns>the part</returns>
+        </member>
+        <member name="M:Rug.Osc.OscAddressPart.List(System.String)">
+            <summary>
+            Literal list e.g. {thing1,THING1}
+            </summary>
+            <param name="value">the original string</param>
+            <returns>the part</returns>
+        </member>
+        <member name="T:Rug.Osc.OscColor">
+            <summary>
+            Represents a 32bit ARGB color 
+            </summary>
+            <remarks>
+            This is a poor replacement for System.Drawing.Color but unfortunatly many platforms do not support 
+            the System.Drawing namespace. 
+            </remarks>
+        </member>
+        <member name="M:Rug.Osc.OscColor.#ctor(System.Int32)">
+            <summary>
+            Initate a new Osc-Color from an ARGB color value
+            </summary>
+            <param name="value">An 32bit ARGB integer</param>
+        </member>
+        <member name="M:Rug.Osc.OscColor.FromArgb(System.Int32)">
+            <summary>
+            Create a Osc-Color from an 32bit ARGB integer
+            </summary>
+            <param name="argb">An ARGB integer</param>
+            <returns>An Osc Color</returns>
+        </member>
+        <member name="M:Rug.Osc.OscColor.FromArgb(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Create a Osc-Color from 4 channels 
+            </summary>
+            <param name="alpha">Alpha channel component</param>
+            <param name="red">Red channel component</param>
+            <param name="green">Green channel component</param>
+            <param name="blue">Blue channel component</param>
+            <returns>An Osc Color</returns>
+        </member>
+        <member name="P:Rug.Osc.OscColor.ARGB">
+            <summary>
+            Alpha, red, green and blue components packed into a single 32bit int
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscColor.R">
+            <summary>
+            Red component
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscColor.G">
+            <summary>
+            Green component
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscColor.B">
+            <summary>
+            Blue component
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscColor.A">
+            <summary>
+            Alpha component
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.OscAddressManager">
+            <summary>
+            Manages osc address event listening
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscAddressManager.m_LiteralAddresses">
+            <summary>
+            Lookup of all literal addresses to listeners 
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscAddressManager.m_PatternAddresses">
+            <summary>
+            Lookup of all pattern address to filters
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscAddressManager.Attach(System.String,Rug.Osc.OscMessageEvent)">
+            <summary>
+            Attach an event listener on to the given address
+            </summary>
+            <param name="address">the address of the contianer</param>
+            <param name="event">the event to attach</param>
+        </member>
+        <member name="M:Rug.Osc.OscAddressManager.Detach(System.String,Rug.Osc.OscMessageEvent)">
+            <summary>
+            Detach an event listener 
+            </summary>
+            <param name="address">the address of the container</param>
+            <param name="event">the event to remove</param>
+        </member>
+        <member name="M:Rug.Osc.OscAddressManager.ShouldInvoke(Rug.Osc.OscPacket)">
+            <summary>
+            Determin if the packet should be invoked
+            </summary>
+            <param name="packet">A packet</param>
+            <returns>The appropriate action that should be taken with the packet</returns>
+        </member>
+        <member name="M:Rug.Osc.OscAddressManager.Invoke(Rug.Osc.OscPacket)">
+            <summary>
+            Invoke a osc packet 
+            </summary>
+            <param name="packet">the packet</param>
+            <returns>true if any thing was invoked</returns>
+        </member>
+        <member name="M:Rug.Osc.OscAddressManager.Invoke(Rug.Osc.OscBundle)">
+            <summary>
+            Invoke all the messages within a bundle
+            </summary>
+            <param name="bundle">an osc bundle of messages</param>
+            <returns>true if there was a listener to invoke for any message in the otherwise false</returns>
+        </member>
+        <member name="M:Rug.Osc.OscAddressManager.Invoke(Rug.Osc.OscMessage)">
+            <summary>
+            Invoke any event that matches the address on the message
+            </summary>
+            <param name="message">the message argument</param>
+            <returns>true if there was a listener to invoke otherwise false</returns>
+        </member>
+        <member name="M:Rug.Osc.OscAddressManager.Dispose">
+            <summary>
+            Disposes of any resources and releases all events 
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscAddressManager.TimeProvider">
+            <summary>
+            Osc time provider, used for filtering bundles by time, if null then the DefaultTimeProvider is used 
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscAddressManager.BundleInvokeMode">
+            <summary>
+            Bundle invoke mode, the default is OscBundleInvokeMode.InvokeAllBundlesImmediately
+            </summary>
+        </member>
+        <member name="E:Rug.Osc.OscAddressManager.UnknownAddress">
+            <summary>
+            This event will be raised whenever an unknown address is encountered
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.Strings">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Address_NullOrEmpty">
+            <summary>
+              Looks up a localized string similar to Address string may not be null or empty.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Arguments_UnsupportedType">
+            <summary>
+              Looks up a localized string similar to Unsupported arguemnt type &apos;{0}&apos;.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Bundle_InvalidBundleMessageLength">
+            <summary>
+              Looks up a localized string similar to Invalid bundle message length.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Bundle_InvalidIdent">
+            <summary>
+              Looks up a localized string similar to Invalid bundle ident &apos;{0}&apos;.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Bundle_InvalidMessageHeader">
+            <summary>
+              Looks up a localized string similar to Invalid bundle message header.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Bundle_InvalidTimestamp">
+            <summary>
+              Looks up a localized string similar to Invalid bundle timestamp &apos;{0}&apos;.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Bundle_MissingIdent">
+            <summary>
+              Looks up a localized string similar to Missing bundle ident.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Bundle_MissingOpenBracket">
+            <summary>
+              Looks up a localized string similar to Missing &apos;{{&apos;. Found &apos;{0}&apos;.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Container_IsValidContainerAddress">
+            <summary>
+              Looks up a localized string similar to Invalid container address &apos;{0}&apos;.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Listener_UnknownOscPacketType">
+            <summary>
+              Looks up a localized string similar to Unknown osc packet type &apos;{0}&apos;.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.MidiMessage_NotAMidiMessage">
+            <summary>
+              Looks up a localized string similar to Not a midi message &apos;{0}&apos;.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.OscAddress_CannotMatch2AddressPatterns">
+            <summary>
+              Looks up a localized string similar to Cannot match 2 address patterns.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.OscAddress_CannotMatchNonLiteral">
+            <summary>
+              Looks up a localized string similar to {0} cannot match non literal address parts.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.OscAddress_NotAValidOscAddress">
+            <summary>
+              Looks up a localized string similar to The address &apos;{0}&apos; is not a valid osc address.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.OscAddress_UnexpectedMatch">
+            <summary>
+              Looks up a localized string similar to Unexpected match.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.OscAddress_UnknownAddressPart">
+            <summary>
+              Looks up a localized string similar to Unknown address part &apos;{0}&apos;.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.OscColor_ChannelInvalidValue">
+            <summary>
+              Looks up a localized string similar to The {0} channel has a value of {1}, color channel values must be in the range {2} to {3}.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_ArgumentEmpty">
+            <summary>
+              Looks up a localized string similar to Argument is empty.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_ArgumentUnexpectedEndOfMessage">
+            <summary>
+              Looks up a localized string similar to Unexpected end of message while parsing argument &apos;{0}&apos;.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_InvalidAddress">
+            <summary>
+              Looks up a localized string similar to Invalid address.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_InvalidBlobStringLength">
+            <summary>
+              Looks up a localized string similar to Invalid blob string length.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_InvalidColor">
+            <summary>
+              Looks up a localized string similar to Invalid color &apos;{0}&apos;.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_InvalidPacket">
+            <summary>
+              Looks up a localized string similar to An error occured while parsing an osc packet.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_InvalidSegmentLength">
+            <summary>
+              Looks up a localized string similar to The packet length is not the correct size.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_MalformedArrayArgument">
+            <summary>
+              Looks up a localized string similar to Malformed array &apos;{0}&apos;.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_MalformedObjectArgument">
+            <summary>
+              Looks up a localized string similar to Malformed object &apos;{0}&apos;.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_MalformedObjectArgument_MissingType">
+            <summary>
+              Looks up a localized string similar to Malformed object &apos;{0}&apos;, missing type name.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_MalformedStringArgument">
+            <summary>
+              Looks up a localized string similar to Malformed string argument &apos;{0}&apos; .
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_MalformedTypeTag">
+            <summary>
+              Looks up a localized string similar to Malformed type tag.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_MissingAddressEmpty">
+            <summary>
+              Looks up a localized string similar to Address was empty.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_MissingAddressTerminator">
+            <summary>
+              Looks up a localized string similar to Address terminator could not be found.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_MissingArgumentTerminator">
+            <summary>
+              Looks up a localized string similar to Terminator could not be found while parsing argument &apos;{0}&apos;.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_MissingArrayEndChar">
+            <summary>
+              Looks up a localized string similar to Expected &apos;]&apos;.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_MissingComma">
+            <summary>
+              Looks up a localized string similar to No comma found.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_MissingObjectEndChar">
+            <summary>
+              Looks up a localized string similar to Expected &apos;}&apos;.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_MissingStringEndChar">
+            <summary>
+              Looks up a localized string similar to Expected &apos;&quot;&apos;.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_MissingTypeTag">
+            <summary>
+              Looks up a localized string similar to Type tag terminator could not be found.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_UnexpectedEndOfMessage">
+            <summary>
+              Looks up a localized string similar to Unexpected end of message.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_UnknownArgumentType">
+            <summary>
+              Looks up a localized string similar to Unknown argument type &apos;{0}&apos; on argument &apos;{1}&apos;.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Parser_UnknownObjectType">
+            <summary>
+              Looks up a localized string similar to Unknown object type &apos;{0}&apos;.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Receiver_ErrorWhileWaitingForMessage">
+            <summary>
+              Looks up a localized string similar to An unexpected error occured while waiting for a message.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Receiver_NotMulticastAddress">
+            <summary>
+              Looks up a localized string similar to The suppied address must be a multicast address.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Receiver_SocketIsClosed">
+            <summary>
+              Looks up a localized string similar to The receiver socket has been disconnected.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Socket_AddressFamilyIncompatible">
+            <summary>
+              Looks up a localized string similar to Both local and remote must belong to the same address family.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Socket_AlreadyOpenOrNotClosed">
+            <summary>
+              Looks up a localized string similar to The socket is already open or is not fully closed.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Socket_LocalPortOutOfRange">
+            <summary>
+              Looks up a localized string similar to The valid range for local port numbers is 1 to 65535 or 0 for a dynamically assigned port.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Socket_PortOutOfRange">
+            <summary>
+              Looks up a localized string similar to The valid range for port numbers is 1 to 65535.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Socket_RemotePortOutOfRange">
+            <summary>
+              Looks up a localized string similar to The valid range for remote port numbers is 1 to 65535.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.Socket_UnsupportedAddressFamily">
+            <summary>
+              Looks up a localized string similar to Unsupported address family &apos;{0}&apos;.
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.Strings.TimeTag_InvalidString">
+            <summary>
+              Looks up a localized string similar to Invalid osc-timetag string &apos;{0}&apos;.
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.OscReceiver">
+            <summary>
+            Osc UDP receiver
+            </summary>
+        </member>
+        <member name="F:Rug.Osc.OscReceiver.DefaultMessageBufferSize">
+            <summary>
+            The default number of messages that can be queued for processing after being received before messages start to get dropped
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.OscReceiver.#ctor(System.Net.IPAddress,System.Net.IPAddress,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Create a new Osc UDP receiver. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="address">the local ip address to listen to</param>
+            <param name="multicast">a multicast address to join</param>
+            <param name="port">the port to listen on, use 0 for dynamically assigned</param>
+            <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
+            <param name="maxPacketSize">the maximum packet size of any message</param>
+        </member>
+        <member name="M:Rug.Osc.OscReceiver.#ctor(System.Net.IPAddress,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Create a new Osc UDP receiver. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="address">the local ip address to listen to</param>
+            <param name="port">the port to listen on, use 0 for dynamically assigned</param>
+            <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
+            <param name="maxPacketSize">the maximum packet size of any message</param>
+        </member>
+        <member name="M:Rug.Osc.OscReceiver.#ctor(System.Net.IPAddress,System.Int32)">
+            <summary>
+            Create a new Osc UDP receiver. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="address">the local ip address to listen to</param>
+            <param name="port">the port to listen on</param>
+        </member>
+        <member name="M:Rug.Osc.OscReceiver.#ctor(System.Net.IPAddress,System.Net.IPAddress,System.Int32)">
+            <summary>
+            Create a new Osc UDP receiver. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="address">the local ip address to listen to</param>
+            <param name="multicast">a multicast address to join</param>
+            <param name="port">the port to listen on, use 0 for dynamically assigned</param>
+        </member>
+        <member name="M:Rug.Osc.OscReceiver.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Create a new Osc UDP receiver. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="port">the port to listen on</param>
+            <param name="messageBufferSize">the number of messages that should be cached before messages get dropped</param>
+            <param name="maxPacketSize">the maximum packet size of any message</param>
+        </member>
+        <member name="M:Rug.Osc.OscReceiver.#ctor(System.Int32)">
+            <summary>
+            Create a new Osc UDP receiver. Note the underlying socket will not be connected untill Connect is called
+            </summary>
+            <param name="port">the port to listen on</param>
+        </member>
+        <member name="M:Rug.Osc.OscReceiver.TryReceive(Rug.Osc.OscPacket@)">
+            <summary>
+            Try to receive a osc message, this method is non-blocking and will return imediatly with a message or null
+            </summary>
+            <param name="message">an osc message if one is ready else null if there are none</param>
+            <returns>true if a message was ready</returns>
+        </member>
+        <member name="M:Rug.Osc.OscReceiver.Receive">
+            <summary>
+            Receive a osc message, this method is blocking and will only return once a message is recived
+            </summary>
+            <returns>an osc message</returns>
+        </member>
+        <member name="P:Rug.Osc.OscReceiver.NextWriteIndex">
+            <summary>
+            The next queue index to write messages to 
+            </summary>
+        </member>
+        <member name="P:Rug.Osc.OscReceiver.NextReadIndex">
+            <summary>
+            The next queue index to read messages from 
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.EnumHelper">
+            <summary>
+            Enum Helper class orginal code by Simon Mourier codefluententities.com
+            http://stackoverflow.com/questions/1082532/how-to-tryparse-for-enum-value
+            </summary>
+        </member>
+        <member name="M:Rug.Osc.EnumHelper.TryParse``1(System.String,``0@)">
+            <summary>
+            Converts the string representation of an enum to its Enum equivalent value. A return value indicates whether the operation succeeded.
+            This method does not rely on Enum.Parse and therefore will never raise any first or second chance exception.
+            </summary>
+            <typeparam name="T">The enum target type</typeparam>
+            <param name="input">The input text. May be null.</param>
+            <param name="value">When this method returns, contains Enum equivalent value to the enum contained in input, if the conversion succeeded.</param>
+            <returns>true if s was converted successfully; otherwise, false.</returns>
+        </member>
+        <member name="M:Rug.Osc.EnumHelper.TryParse``1(System.String,System.Boolean,``0@)">
+            <summary>
+            Converts the string representation of an enum to its Enum equivalent value. A return value indicates whether the operation succeeded.
+            This method does not rely on Enum.Parse and therefore will never raise any first or second chance exception.
+            </summary>
+            <typeparam name="T">The enum target type</typeparam>
+            <param name="input">The input text. May be null.</param>
+            <param name="ignoreCase">ignore the case of the input string</param>
+            <param name="value">When this method returns, contains Enum equivalent value to the enum contained in input, if the conversion succeeded.</param>
+            <returns>true if s was converted successfully; otherwise, false.</returns>
+        </member>
+        <member name="M:Rug.Osc.EnumHelper.TryParse(System.Type,System.String,System.Object@)">
+            <summary>
+            Converts the string representation of an enum to its Enum equivalent value. A return value indicates whether the operation succeeded.
+            This method does not rely on Enum.Parse and therefore will never raise any first or second chance exception.
+            </summary>
+            <param name="type">The enum target type. May not be null.</param>
+            <param name="input">The input text. May be null.</param>
+            <param name="value">When this method returns, contains Enum equivalent value to the enum contained in input, if the conversion succeeded.</param>
+            <returns>
+            true if s was converted successfully; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:Rug.Osc.EnumHelper.TryParse(System.Type,System.String,System.Boolean,System.Object@)">
+            <summary>
+            Converts the string representation of an enum to its Enum equivalent value. A return value indicates whether the operation succeeded.
+            This method does not rely on Enum.Parse and therefore will never raise any first or second chance exception.
+            </summary>
+            <param name="type">The enum target type. May not be null.</param>
+            <param name="input">The input text. May be null.</param>
+            <param name="ignoreCase">ignore the case of the input string</param>
+            <param name="value">When this method returns, contains Enum equivalent value to the enum contained in input, if the conversion succeeded.</param>
+            <returns>
+            true if s was converted successfully; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:Rug.Osc.DefaultTimeProvider.IsWithinTimeFrame(Rug.Osc.OscTimeTag)">
+            <summary>
+            Is the supplied time within the current frame according to this time provider
+            </summary>
+            <param name="time">the time to check</param>
+            <returns>true if within the frame else false</returns>
+        </member>
+        <member name="M:Rug.Osc.DefaultTimeProvider.DifferenceInSeconds(Rug.Osc.OscTimeTag)">
+            <summary>
+            Get the difference in seconds between the current time and the suppied time
+            </summary>
+            <param name="time">the time to compair</param>
+            <returns>the difference in seconds between the current time and the suppied time</returns>
+        </member>
+        <member name="P:Rug.Osc.DefaultTimeProvider.Now">
+            <summary>
+            Get the current time 
+            </summary>
+        </member>
+        <member name="T:Rug.Osc.OscNull">
+            <summary>
+            Osc Null Singleton
+            </summary>
+        </member>
+    </members>
+</doc>

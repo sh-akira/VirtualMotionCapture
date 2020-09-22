@@ -404,7 +404,7 @@ Ver 0.02
 　・uOSC([uOSC-v0.0.2.unitypackage](https://github.com/hecomi/uOSC/releases/tag/v0.0.2))  
 　・MidiJack([MidiJack.unitypackage](https://github.com/keijiro/MidiJack))  
 以上のようなフォルダになるように各アセットをインポートしてください。  
-アイトラッキングが不要な場合Assets\Scripts\EyeTrackingフォルダを削除します  
+アイトラッキングが不要な場合Assets\Scripts\EyeTrackingフォルダとLipTrackingフォルダを削除します  
 アイトラッキング対応する場合は  
 　・ViveSR([Vive-SRanipal-Unity-Plugin.unitypackage](https://hub.vive.com/en-US/profile/material-download)) SRanipal_SDK_1.1.0.1_Eye.zip内  
 　・Tobii([TobiiUnitySDKForDesktop_4.0.3.unitypackage](https://github.com/Tobii/UnitySDK/releases)) アセットストアからインポート(インポートしたままフォルダは移動しないでください)  

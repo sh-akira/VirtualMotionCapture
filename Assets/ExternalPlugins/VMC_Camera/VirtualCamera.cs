@@ -73,14 +73,39 @@ public class VirtualCamera : MonoBehaviour
         switch (CaptureInterface.SendTexture(source, Timeout, buffering, resizeMode, mirrorMode))
         {
             case ECaptureSendResult.SUCCESS: break;
-            case ECaptureSendResult.WARNING_FRAMESKIP: Debug.LogWarning("[VirtualCamera] キャプチャデバイスがフレームをスキップしました。キャプチャフレームレートがレンダリングフレームレートと一致しません。"); break;
-            case ECaptureSendResult.WARNING_CAPTUREINACTIVE: Debug.LogWarning("[VirtualCamera] キャプチャデバイスが非アクティブです"); break;
-            case ECaptureSendResult.ERROR_UNSUPPORTEDGRAPHICSDEVICE: Debug.LogError("[VirtualCamera] 非対応のグラフィックデバイス (D3D11のみ対応しています)"); break;
-            case ECaptureSendResult.ERROR_PARAMETER: Debug.LogError("[VirtualCamera] 入力パラメータが不正です"); break;
-            case ECaptureSendResult.ERROR_TOOLARGERESOLUTION: Debug.LogError("[VirtualCamera] 解像度が大きすぎます"); break;
-            case ECaptureSendResult.ERROR_TEXTUREFORMAT: Debug.LogError("[VirtualCamera] 非対応のテクスチャフォーマット (非HDR(ARGB32)かHDR(FP16/ARGB Half)のみ対応)"); break;
-            case ECaptureSendResult.ERROR_READTEXTURE: Debug.LogError("[VirtualCamera] テクスチャの読出しに失敗"); break;
-            case ECaptureSendResult.ERROR_INVALIDCAPTUREINSTANCEPTR: Debug.LogError("[VirtualCamera] キャプチャインスタンスのポインタが不正です"); break;
+            case ECaptureSendResult.WARNING_FRAMESKIP: CheckWarning("[VirtualCamera] キャプチャデバイスがフレームをスキップしました。キャプチャフレームレートがレンダリングフレームレートと一致しません。"); break;
+            case ECaptureSendResult.WARNING_CAPTUREINACTIVE: CheckWarning("[VirtualCamera] キャプチャデバイスが非アクティブです"); break;
+            case ECaptureSendResult.ERROR_UNSUPPORTEDGRAPHICSDEVICE: CheckError("[VirtualCamera] 非対応のグラフィックデバイス (D3D11のみ対応しています)"); break;
+            case ECaptureSendResult.ERROR_PARAMETER: CheckError("[VirtualCamera] 入力パラメータが不正です"); break;
+            case ECaptureSendResult.ERROR_TOOLARGERESOLUTION: CheckError("[VirtualCamera] 解像度が大きすぎます"); break;
+            case ECaptureSendResult.ERROR_TEXTUREFORMAT: CheckError("[VirtualCamera] 非対応のテクスチャフォーマット (非HDR(ARGB32)かHDR(FP16/ARGB Half)のみ対応)"); break;
+            case ECaptureSendResult.ERROR_READTEXTURE: CheckError("[VirtualCamera] テクスチャの読出しに失敗"); break;
+            case ECaptureSendResult.ERROR_INVALIDCAPTUREINSTANCEPTR: CheckError("[VirtualCamera] キャプチャインスタンスのポインタが不正です"); break;
+        }
+    }
+
+    private const float errorSkipTime = 5f;
+    private float lastWarningTime;
+    private string lastWarning = "";
+    private float lastErrorTime;
+    private string lastError = "";
+
+    private void CheckWarning(string message)
+    {
+        if (lastWarning != message || lastWarningTime + errorSkipTime < Time.realtimeSinceStartup)
+        {
+            lastWarning = message;
+            lastWarningTime = Time.realtimeSinceStartup;
+            Debug.LogWarning(message);
+        }
+    }
+    private void CheckError(string message)
+    {
+        if (lastError != message || lastErrorTime + errorSkipTime < Time.realtimeSinceStartup)
+        {
+            lastError = message;
+            lastErrorTime = Time.realtimeSinceStartup;
+            Debug.LogError(message);
         }
     }
 

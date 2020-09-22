@@ -57,6 +57,9 @@ namespace VirtualMotionCaptureControlPanel
         private Brush ActiveBrush = new SolidColorBrush(Colors.Green);
 
         private ConcurrentDictionary<string, DateTime> endTime = new ConcurrentDictionary<string, DateTime>();
+
+        private bool VMCisAlive = true;
+
         private void Client_Received(object sender, DataReceivedEventArgs e)
         {
             if (e.CommandType == typeof(PipeCommands.TrackerMoved))
@@ -93,6 +96,10 @@ namespace VirtualMotionCaptureControlPanel
             {
                 var d = (PipeCommands.StatusStringChanged)e.Data;
                 Dispatcher.Invoke(() => StatusStringTextbox.Text = d.StatusString);
+            }
+            else if (e.CommandType == typeof(PipeCommands.Alive))
+            {
+                VMCisAlive = true;
             }
         }
 
@@ -374,6 +381,18 @@ namespace VirtualMotionCaptureControlPanel
                     isSetting = false;
                 });
             });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetVirtualMotionTracker { }, d =>
+            {
+                var data = (PipeCommands.SetVirtualMotionTracker)d;
+                Dispatcher.Invoke(() =>
+                {
+                    isSetting = true;
+                    VirtualMotionTrackerEnableCheckBox.IsChecked = data.enable;
+                    VirtualMotionTrackerNumber.Text = data.no.ToString();
+                    isSetting = false;
+                });
+            });
+
             await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = true });
             await Globals.Client?.SendCommandAsync(new PipeCommands.StatusStringChangedRequest { doSend = true });
 
@@ -412,6 +431,8 @@ namespace VirtualMotionCaptureControlPanel
             if (process32.ExitCode == 0 && process64.ExitCode == 0)
             {
                 MessageBox.Show(LanguageSelector.Get("SettingWindow_SuccessDriverInstall"));
+                WebCamEnableCheckBox.IsChecked = true; //インストールと同時にチェックを入れる
+                UpdateWebCamConfig();
             }
             else
             {
@@ -449,6 +470,8 @@ namespace VirtualMotionCaptureControlPanel
                     return;
                 }
                 MessageBox.Show(LanguageSelector.Get("SettingWindow_SuccessDriverUninstall"));
+                WebCamEnableCheckBox.IsChecked = false; //アンストールと同時にチェックを外す
+                UpdateWebCamConfig();
             }
             else
             {
@@ -744,11 +767,198 @@ namespace VirtualMotionCaptureControlPanel
             System.Diagnostics.Process.Start(e.Uri.ToString());
         }
 
+        private async void VirtualMotionTrackerEnableCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            if (isSetting) return;
+
+            int result = 0;
+            if (VirtualMotionTrackerNumber?.Text != null)
+            {
+                if (!int.TryParse(VirtualMotionTrackerNumber?.Text, out result))
+                {
+                    result = 0;
+                }
+            }
+            await Globals.Client?.SendCommandAsync(new PipeCommands.SetVirtualMotionTracker
+            {
+                enable = VirtualMotionTrackerEnableCheckBox.IsChecked.Value,
+                no = result
+            });
+        }
+        private async void VirtualMotionTrackerSetButton_Click(object sender, RoutedEventArgs e)
+        {
+            int result = 0;
+            if (VirtualMotionTrackerNumber?.Text != null)
+            {
+                if (!int.TryParse(VirtualMotionTrackerNumber?.Text, out result))
+                {
+                    result = 0;
+                }
+            }
+            await Globals.Client?.SendCommandAsync(new PipeCommands.SetVirtualMotionTracker
+            {
+                enable = VirtualMotionTrackerEnableCheckBox.IsChecked.Value,
+                no = result
+            });
+        }
         private void LipTracking_ViveSettingButton_Click(object sender, RoutedEventArgs e)
         {
             var win = new LipTracking_ViveSettingWindow();
             win.Owner = this;
             win.ShowDialog();
+        }
+
+        private async void VMTInstallButton_Click(object sender, RoutedEventArgs e)
+        {
+            VirtualMotionTrackerEnableCheckBox.IsChecked = true; //インストールと同時にチェックを入れる
+            await SetupVirtualMotionTracker(true);
+        }
+
+        private async void VMTUninstallButton_Click(object sender, RoutedEventArgs e)
+        {
+            VirtualMotionTrackerEnableCheckBox.IsChecked = false; //アンイストールと同時にチェックを外す
+            await SetupVirtualMotionTracker(false);
+        }
+
+        private async Task SetupVirtualMotionTracker(bool install)
+        {
+            var messageBoxResult = MessageBox.Show(LanguageSelector.Get("SettingWindow_VMTContinue"), LanguageSelector.Get("Confirm"), MessageBoxButton.OKCancel, MessageBoxImage.Question);
+            if (messageBoxResult != MessageBoxResult.OK) {
+                return;
+            }
+
+            if (install)
+            {
+                try
+                {
+                    var targetDirectory = @"C:\VirtualMotionTracker";
+                    if (Directory.Exists(targetDirectory) == false)
+                    {
+                        Directory.CreateDirectory(targetDirectory);
+                        DirectoryCopy(Globals.GetCurrentAppDir() + "vmt", targetDirectory, true);
+                    }
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show(LanguageSelector.Get("SettingWindow_VMTFailedFolderCreate"), LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.SetupVirtualMotionTracker { install = install }, d =>
+            {
+                var data = (PipeCommands.ResultSetupVirtualMotionTracker)d;
+                Dispatcher.Invoke(() =>
+                {
+                    if (string.IsNullOrEmpty(data.result))
+                    {
+                        MessageBox.Show(LanguageSelector.Get("SettingWindow_VirtualMotionTrackerInstallSuccess"), "VMT Setup", MessageBoxButton.OK, MessageBoxImage.Information);
+                        RestartSteamVRandVirtualMotionCapture();
+                    }
+                    else
+                    {
+                        MessageBox.Show(data.result, LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                });
+            });
+        }
+
+        private static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
+        {
+            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+
+            if (!dir.Exists)
+            {
+                throw new DirectoryNotFoundException(
+                    "Source directory does not exist or could not be found: "
+                    + sourceDirName);
+            }
+
+            DirectoryInfo[] dirs = dir.GetDirectories();
+
+            Directory.CreateDirectory(destDirName);
+
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                string temppath = System.IO.Path.Combine(destDirName, file.Name);
+                file.CopyTo(temppath, false);
+            }
+
+            if (copySubDirs)
+            {
+                foreach (DirectoryInfo subdir in dirs)
+                {
+                    string temppath = System.IO.Path.Combine(destDirName, subdir.Name);
+                    DirectoryCopy(subdir.FullName, temppath, copySubDirs);
+                }
+            }
+        }
+
+        private async void RestartSteamVRandVirtualMotionCapture()
+        {
+            System.Diagnostics.Process.Start("vrmonitor://restartsystem");
+
+            while (VMCisAlive)
+            {
+                await Globals.Client?.SendCommandAsync(new PipeCommands.Alive { });
+                VMCisAlive = false;
+                await Task.Delay(1000);
+            }
+
+            await Task.Delay(10000);
+
+            var vmcPath_rel = Globals.GetCurrentAppDir() + @"..\VirtualMotionCapture.exe";
+            var vmcPath = System.IO.Path.GetFullPath(vmcPath_rel);
+
+            System.Diagnostics.Process.Start(vmcPath);
+
+            await Task.Delay(1000);
+
+            Application.Current.Shutdown();
+        }
+
+        private async void LIVExternalCameraConigExportButton_Click(object sender, RoutedEventArgs e)
+        {
+            Globals.LoadCommonSettings();
+
+            var tracker = TrackersList.First(); //なんでもいい。fovだけ返してもらう
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetExternalCameraConfig { ControllerName = tracker.SerialNumber }, r =>
+            {
+                var d = (PipeCommands.SetExternalCameraConfig)r;
+                Dispatcher.Invoke(() =>
+                {
+                    var sfd = new SaveFileDialog();
+                    sfd.Filter = "externalcamera.cfg|externalcamera.cfg";
+                    sfd.Title = "Export externalcamera.cfg";
+                    sfd.FileName = "externalcamera.cfg";
+                    sfd.InitialDirectory = Globals.ExistDirectoryOrNull(Globals.CurrentCommonSettingsWPF.CurrentPathOnExternalCameraFileDialog);
+
+                    if (sfd.ShowDialog() == true)
+                    {
+                        var culture = System.Globalization.CultureInfo.InvariantCulture;
+                        var format = culture.NumberFormat;
+                        var lines = new List<string>();
+                        lines.Add($"x=" + 0f.ToString("G", format));
+                        lines.Add($"y=" + 0f.ToString("G", format));
+                        lines.Add($"z=" + 0f.ToString("G", format));
+                        lines.Add($"rx=" + 0f.ToString("G", format));
+                        lines.Add($"ry=" + 0f.ToString("G", format));
+                        lines.Add($"rz=" + 0f.ToString("G", format));
+                        lines.Add($"fov=" + d.fov.ToString("G", format));
+                        lines.Add($"near=0.01");
+                        lines.Add($"far=1000");
+                        lines.Add($"disableStandardAssets=False");
+                        lines.Add($"frameSkip=0");
+                        File.WriteAllLines(sfd.FileName, lines);
+
+                        if (Globals.CurrentCommonSettingsWPF.CurrentPathOnExternalCameraFileDialog != System.IO.Path.GetDirectoryName(sfd.FileName))
+                        {
+                            Globals.CurrentCommonSettingsWPF.CurrentPathOnExternalCameraFileDialog = System.IO.Path.GetDirectoryName(sfd.FileName);
+                            Globals.SaveCommonSettings();
+                        }
+                    }
+                });
+            });
         }
     }
 }

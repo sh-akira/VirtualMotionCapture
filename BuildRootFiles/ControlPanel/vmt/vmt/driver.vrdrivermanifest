@@ -1,0 +1,11 @@
+{
+	"alwaysActivate": true,
+	"name" : "vmt",
+	"directory" : "",
+	"resourceOnly" : false,
+
+	"hmd_presence" :
+	[
+		"*.*"
+	]
+}

@@ -1,0 +1,85 @@
+{
+  "jsonid" : "input_profile",
+  "controller_type": "vmt",
+  "device_class" : "TrackedDeviceClass_Controller",
+  "resource_root" : "vmt",
+  "driver_name" : "vmt",
+  "legacy_binding" :  "{vmt}/input/legacy_bindings_vmt.json",
+  "input_bindingui_mode" : "single_device",
+  "should_show_binding_errors": true,
+  "input_bindingui_left" :
+  {
+    "image": "{vmt}/input/binding_image_light.png"
+  },
+  "input_bindingui_right" :
+  {
+    "image": "{vmt}/input/binding_image_light.png"
+  },
+  "input_source" :
+  {
+    "/input/Button0" : { 
+        "type" : "button",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Button1" : { 
+        "type" : "button",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Button2" : { 
+        "type" : "button",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Button3" : { 
+        "type" : "button",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Button4" : { 
+        "type" : "button",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Button5" : { 
+        "type" : "button",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Button6" : { 
+        "type" : "button",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Button7" : { 
+        "type" : "button",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Joystick0" : { 
+        "type" : "joystick",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Trigger0" : { 
+        "type" : "trigger",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Trigger1" : { 
+        "type" : "trigger",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/pose/raw" : {
+        "type" : "pose",
+        "binding_image_point" : [ 0, 0 ]
+    },
+    "/output/haptic" : {
+        "type" : "vibration",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    }
+  }
+}

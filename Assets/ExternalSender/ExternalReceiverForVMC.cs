@@ -202,7 +202,7 @@ public class ExternalReceiverForVMC : MonoBehaviour {
                 //座標とFOVを適用
                 window.FreeCamera.transform.position = pos;
                 window.FreeCamera.transform.rotation = rot;
-                window.FreeCamera.fieldOfView = fov;
+                window.ControlCamera.fieldOfView = fov;
             } //ブレンドシェープ同期
             else if (message.address == "/VMC/Ext/Blend/Val"
                 && (message.values[0] is string)
@@ -320,6 +320,39 @@ public class ExternalReceiverForVMC : MonoBehaviour {
                     externalSender.uClient.Send(message.address,message.values);
                 }
             }
+            //Directional Light V2.9
+            else if (message.address == "/VMC/Ext/Light"
+                && (message.values[0] is string)
+                && (message.values[1] is float)
+                && (message.values[2] is float)
+                && (message.values[3] is float)
+                && (message.values[4] is float)
+                && (message.values[5] is float)
+                && (message.values[6] is float)
+                && (message.values[7] is float)
+                && (message.values[8] is float)
+                && (message.values[9] is float)
+                && (message.values[10] is float)
+                && (message.values[11] is float)
+            )
+            {
+                pos.x = (float)message.values[1];
+                pos.y = (float)message.values[2];
+                pos.z = (float)message.values[3];
+                rot.x = (float)message.values[4];
+                rot.y = (float)message.values[5];
+                rot.z = (float)message.values[6];
+                rot.w = (float)message.values[7];
+                float r = (float)message.values[8];
+                float g = (float)message.values[9];
+                float b = (float)message.values[10];
+                float a = (float)message.values[11];
+
+                window.MainDirectionalLight.color = new Color(r, g, b, a);
+                window.MainDirectionalLightTransform.position = pos;
+                window.MainDirectionalLightTransform.rotation = rot;
+            }
+
         }
     }
 
