@@ -3214,6 +3214,13 @@ public class ControlWPFWindow : MonoBehaviour
             //メタ情報をOSC送信する
             VRMmetaLodedAction?.Invoke(LoadVRM(CurrentSettings.VRMPath));
         }
+
+        //SetResolutionは強制的にウインドウ枠を復活させるのでBorder設定の前にやっておく必要がある
+        if (Screen.resolutions.Any(d => d.width == CurrentSettings.ScreenWidth && d.height == CurrentSettings.ScreenHeight && d.refreshRate == CurrentSettings.ScreenRefreshRate))
+        {
+            Screen.SetResolution(CurrentSettings.ScreenWidth, CurrentSettings.ScreenHeight, false, CurrentSettings.ScreenRefreshRate);
+        }
+
         if (CurrentSettings.BackgroundColor != null)
         {
             ChangeBackgroundColor(CurrentSettings.BackgroundColor.r, CurrentSettings.BackgroundColor.g, CurrentSettings.BackgroundColor.b, false);
@@ -3335,11 +3342,6 @@ public class ControlWPFWindow : MonoBehaviour
         SetLightAngle(CurrentSettings.LightRotationX, CurrentSettings.LightRotationY);
         await server.SendCommandAsync(new PipeCommands.ChangeLightColor { a = CurrentSettings.LightColor.a, r = CurrentSettings.LightColor.r, g = CurrentSettings.LightColor.g, b = CurrentSettings.LightColor.b });
         ChangeLightColor(CurrentSettings.LightColor.a, CurrentSettings.LightColor.r, CurrentSettings.LightColor.g, CurrentSettings.LightColor.b);
-
-        if (Screen.resolutions.Any(d => d.width == CurrentSettings.ScreenWidth && d.height == CurrentSettings.ScreenHeight && d.refreshRate == CurrentSettings.ScreenRefreshRate))
-        {
-            Screen.SetResolution(CurrentSettings.ScreenWidth, CurrentSettings.ScreenHeight, false, CurrentSettings.ScreenRefreshRate);
-        }
 
         SetExternalMotionSenderEnable(CurrentSettings.ExternalMotionSenderEnable);
         ChangeExternalMotionSenderAddress(CurrentSettings.ExternalMotionSenderAddress, CurrentSettings.ExternalMotionSenderPort, CurrentSettings.ExternalMotionSenderPeriodStatus, CurrentSettings.ExternalMotionSenderPeriodRoot, CurrentSettings.ExternalMotionSenderPeriodBone, CurrentSettings.ExternalMotionSenderPeriodBlendShape, CurrentSettings.ExternalMotionSenderPeriodCamera, CurrentSettings.ExternalMotionSenderPeriodDevices, CurrentSettings.ExternalMotionSenderOptionString);
