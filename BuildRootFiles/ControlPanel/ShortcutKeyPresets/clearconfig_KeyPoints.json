@@ -1,0 +1,29 @@
+{
+    "EnableSkeletal":true,
+    "LeftCenterKeyEnable":true,
+    "LeftStickPoints":[
+        {
+            "x":1.95937025E-16,
+            "y":0.8
+        }
+    ],
+    "LeftTouchPadPoints":[
+        {
+            "x":1.95937025E-16,
+            "y":0.8
+        }
+    ],
+    "RightCenterKeyEnable":true,
+    "RightStickPoints":[
+        {
+            "x":-1.95937025E-16,
+            "y":0.8
+        }
+    ],
+    "RightTouchPadPoints":[
+        {
+            "x":-1.95937025E-16,
+            "y":0.8
+        }
+    ]
+}
