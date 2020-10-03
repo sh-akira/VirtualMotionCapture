@@ -3445,8 +3445,11 @@ public class ControlWPFWindow : MonoBehaviour
         }
         var filename = $"VirtualMotionCapture_{res.width}x{res.height}_{DateTime.Now:yyyy-MM-dd_HH-mm-ss.fff}.png";
         if (transparentBackground) BackgroundRenderer.gameObject.SetActive(false);
-        File.WriteAllBytes(Path.Combine(directory, filename), Photo.TakePNGPhoto(ControlCamera, res, transparentBackground));
-        if (transparentBackground) BackgroundRenderer.gameObject.SetActive(true);
+        StartCoroutine(Photo.TakePNGPhoto(ControlCamera, res, transparentBackground, bytes =>
+        {
+            File.WriteAllBytes(Path.Combine(directory, filename), bytes);
+            if (transparentBackground) BackgroundRenderer.gameObject.SetActive(true);
+        }));
         Debug.Log($"Save Photo: {filename}");
     }
 
