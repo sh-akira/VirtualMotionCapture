@@ -15,11 +15,11 @@
   new_window: false
   highlight: false
 - name: 日本語
-  link: https://sh-akira.github.io/VirtualMotionCapture/
+  link: https://vmc.info/
   new_window: false
   highlight: false
 - name: 한국어
-  link: https://sh-akira.github.io/VirtualMotionCapture-ko/
+  link: https://akira.works/VirtualMotionCapture-ko/
   new_window: false
   highlight: false
 
