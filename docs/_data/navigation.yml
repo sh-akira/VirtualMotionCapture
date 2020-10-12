@@ -6,6 +6,10 @@
   link: /manual/
   new_window: false
   highlight: true
+- name: 連携ツール一覧
+  link: https://protocol.vmc.info/Reference
+  new_window: false
+  highlight: true
 - name: ダウンロード
   link: /download.html
   new_window: false
