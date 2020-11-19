@@ -7,8 +7,12 @@ using EasyDeviceDiscoveryProtocolClient;
 
 public class EasyDeviceDiscoveryProtocolManager : MonoBehaviour
 {
+    public ExternalSender externalSender;
     public ExternalReceiverForVMC externalReceiver;
     Requester requester;
+    Responder responder;
+
+    string myname = "Virtual Motion Capture";
 
     public float time = 0;
     public bool found = false;
@@ -16,11 +20,27 @@ public class EasyDeviceDiscoveryProtocolManager : MonoBehaviour
     void Start()
     {
         requester = gameObject.AddComponent<Requester>();
-        requester.deivceName = "Virtual Motion Capture";
+        requester.deivceName = myname;
+
+        responder = gameObject.AddComponent<Responder>();
+        responder.deivceName = myname;
+        responder.OnRequested = ()=> {
+            if (responder.requestDeviceName != myname) {
+                if(externalSender != null)
+                {
+                    externalSender.ChangeOSCAddress(responder.requestIpAddress, responder.requestServicePort);
+                }
+            }
+        };
     }
 
     void Update()
     {
+        if (externalSender != null)
+        {
+            responder.servicePort = externalReceiver.receivePort;
+        }
+
         if (externalReceiver != null)
         {
             time += Time.deltaTime;
@@ -30,7 +50,9 @@ public class EasyDeviceDiscoveryProtocolManager : MonoBehaviour
                 {
                     requester.servicePort = externalReceiver.receivePort;
                     requester.StartDiscover(() => {
-                        found = true;
+                        if (requester.deivceName != myname) {
+                            found = true;
+                        }
                     });
                 }
                 time = 0;
