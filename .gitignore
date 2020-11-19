@@ -43,6 +43,7 @@ SteamVR*csproj
 Backup*
 Assets/ExternalPlugins/uOSC*
 Assets/ExternalPlugins/MidiJack*
+Assets/ExternalPlugins/EasyDeviceDiscoveryProtocol*
 
 # Visual Studio cache directory
 .vs/
