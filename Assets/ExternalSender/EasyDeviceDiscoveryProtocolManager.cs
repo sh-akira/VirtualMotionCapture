@@ -21,15 +21,17 @@ public class EasyDeviceDiscoveryProtocolManager : MonoBehaviour
     {
         requester = gameObject.AddComponent<Requester>();
         requester.deivceName = myname;
+        requester.ignoreDeivceName = myname;
+        requester.desktopMode = true;
 
         responder = gameObject.AddComponent<Responder>();
         responder.deivceName = myname;
+        responder.ignoreDeivceName = myname;
+        responder.desktopMode = true;
         responder.OnRequested = ()=> {
-            if (responder.requestDeviceName != myname) {
-                if(externalSender != null)
-                {
-                    externalSender.ChangeOSCAddress(responder.requestIpAddress, responder.requestServicePort);
-                }
+            if (externalSender != null)
+            {
+                externalSender.ChangeOSCAddress(responder.requestIpAddress, responder.requestServicePort);
             }
         };
     }
@@ -46,13 +48,11 @@ public class EasyDeviceDiscoveryProtocolManager : MonoBehaviour
             time += Time.deltaTime;
             if (time > 5.0)
             {
-                if (!found)
+                if (!found && externalReceiver.isActiveAndEnabled)
                 {
                     requester.servicePort = externalReceiver.receivePort;
                     requester.StartDiscover(() => {
-                        if (requester.deivceName != myname) {
-                            found = true;
-                        }
+                        found = true;
                     });
                 }
                 time = 0;
