@@ -46,6 +46,8 @@ public class ExternalReceiverForVMC : MonoBehaviour {
     Vector3 pos;
     Quaternion rot;
 
+    public int packets = 0;
+
     private Dictionary<BlendShapeKey, float> blendShapeBuffer = new Dictionary<BlendShapeKey, float>();
 
     void Start () {
@@ -88,6 +90,12 @@ public class ExternalReceiverForVMC : MonoBehaviour {
         //有効なとき以外処理しない
         if (this.isActiveAndEnabled)
         {
+            //生存チェックのためのパケットカウンタ
+            packets++;
+            if (packets > int.MaxValue / 2) {
+                packets = 0;
+            }
+
             //仮想コントローラー V2.3
             if (message.address == "/VMC/Ext/Con/Pos"
                 && (message.values[0] is string)

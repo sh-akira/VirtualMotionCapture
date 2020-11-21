@@ -253,6 +253,8 @@
 	<system:String x:Key="SettingWindow_VirtualMotionTrackerEnable">Enable</system:String>
 	<system:String x:Key="SettingWindow_VirtualMotionTrackerInstallSuccess">Success! Restart SteamVR and VirtualMotionCapture. Press OK and wait auto restart.</system:String>
 	<system:String x:Key="SettingWindow_VMTContinue">Continue VMT setup? Game will be interrupted, and VR system will restart.</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSenderResponderEnable">Allow device detection response</system:String>
+	<system:String x:Key="SettingWindow_ExternalMotionReceiverRequesterEnable">Auto device detection</system:String>
 
 
     <!-- TrackerConfigWindow -->

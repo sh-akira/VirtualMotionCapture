@@ -304,6 +304,7 @@ namespace VirtualMotionCaptureControlPanel
                     PeriodCameraTextBox.Text = data.PeriodCamera.ToString();
                     PeriodDevicesTextBox.Text = data.PeriodDevices.ToString();
                     OptionStringTextbox.Text = data.OptionString;
+                    ExternalMotionSenderResponderEnableCheckBox.IsChecked = data.ResponderEnable;
                 });
             });
             await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEnableExternalMotionReceiver { }, d =>
@@ -323,6 +324,7 @@ namespace VirtualMotionCaptureControlPanel
                 {
                     isSetting = true;
                     ExternalMotionReceiverPortTextBox.Text = data.port.ToString();
+                    ExternalMotionReceiverRequesterEnableCheckBox.IsChecked = data.RequesterEnable;
                     isSetting = false;
                 });
             });
@@ -649,6 +651,7 @@ namespace VirtualMotionCaptureControlPanel
                     PeriodCamera = PeriodCamera.Value,
                     PeriodDevices = PeriodDevices.Value,
                     OptionString = OptionStringTextbox.Text,
+                    ResponderEnable = ExternalMotionSenderResponderEnableCheckBox.IsChecked.Value
                 });
             }
         }
@@ -669,7 +672,8 @@ namespace VirtualMotionCaptureControlPanel
             {
                 await Globals.Client?.SendCommandAsync(new PipeCommands.ChangeExternalMotionReceiverPort
                 {
-                    port = port.Value
+                    port = port.Value,
+                    RequesterEnable = ExternalMotionReceiverRequesterEnableCheckBox.IsChecked.Value
                 });
             }
         }

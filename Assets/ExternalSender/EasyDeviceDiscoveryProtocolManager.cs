@@ -7,15 +7,23 @@ using EasyDeviceDiscoveryProtocolClient;
 
 public class EasyDeviceDiscoveryProtocolManager : MonoBehaviour
 {
+    public ControlWPFWindow window;
     public ExternalSender externalSender;
     public ExternalReceiverForVMC externalReceiver;
     Requester requester;
     Responder responder;
 
-    string myname = "Virtual Motion Capture";
+    public string myname = "Virtual Motion Capture";
 
-    public float time = 0;
+    [Header("Read Only")]
+
+    private float time = 0;
     public bool found = false;
+
+    public bool requesterEnable = true;
+    public bool responderEnable = false;
+
+    public int lastPackets = 0;
 
     void Start()
     {
@@ -29,34 +37,39 @@ public class EasyDeviceDiscoveryProtocolManager : MonoBehaviour
         responder.ignoreDeivceName = myname;
         responder.desktopMode = true;
         responder.OnRequested = ()=> {
-            if (externalSender != null)
-            {
-                externalSender.ChangeOSCAddress(responder.requestIpAddress, responder.requestServicePort);
-            }
+            //見つけた相手のアドレスとポートを自動設定
+            window.ChangeExternalMotionSenderAddress(responder.requestIpAddress, responder.requestServicePort);
         };
     }
 
     void Update()
     {
-        if (externalSender != null)
-        {
-            responder.servicePort = externalReceiver.receivePort;
-        }
+        //受信ポートを常に反映
+        responder.servicePort = externalReceiver.receivePort;
+        requester.servicePort = externalReceiver.receivePort;
 
-        if (externalReceiver != null)
+        //各通信コンポーネントの有効状態と、個別の有効状態の両方(AND)で動く
+        requester.enabled = externalReceiver.isActiveAndEnabled && requesterEnable;
+        responder.enabled = externalSender.isActiveAndEnabled && responderEnable;
+
+        //3秒間隔でリクエストするかを判断する
+        time += Time.deltaTime;
+        if (time > 3.0)
         {
-            time += Time.deltaTime;
-            if (time > 5.0)
-            {
-                if (!found && externalReceiver.isActiveAndEnabled)
-                {
-                    requester.servicePort = externalReceiver.receivePort;
-                    requester.StartDiscover(() => {
-                        found = true;
-                    });
-                }
-                time = 0;
+            //受信できていなければ、発見状態はリセット
+            if (lastPackets == externalReceiver.packets) {
+                found = false;
             }
+            lastPackets = externalReceiver.packets;
+
+            //発見状態ではなく、探索有効ならビーコン発信を行う
+            if (!found && externalReceiver.isActiveAndEnabled)
+            {
+                requester.StartDiscover(() => {
+                    found = true;
+                });
+            }
+            time = 0;
         }
     }
 }

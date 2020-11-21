@@ -379,6 +379,7 @@ namespace UnityMemoryMappedFile
             public int PeriodDevices { get; set; }
 
             public string OptionString { get; set; } //OK
+            public bool ResponderEnable { get; set; } 
         }
 
         public class GetEnableExternalMotionReceiver { }
@@ -390,6 +391,7 @@ namespace UnityMemoryMappedFile
         public class ChangeExternalMotionReceiverPort
         {
             public int port { get; set; }
+            public bool RequesterEnable { get; set; }
         }
         public class GetMidiCCBlendShape { }
         public class SetMidiCCBlendShape
