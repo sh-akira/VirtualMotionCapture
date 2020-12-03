@@ -471,6 +471,54 @@ namespace UnityMemoryMappedFile
             public Dictionary<string, string> LipShapesToBlendShapeMap { get; set; }
         }
 
+        public class GetAdvancedGraphicsOption { }
+        public class SetAdvancedGraphicsOption
+        {
+            public bool PPS_Enable { get; set; }
+            public bool Bloom_Enable { get; set; }
+            public float Bloom_Intensity { get; set; }
+            public float Bloom_Threshold { get; set; }
+
+            public bool DoF_Enable { get; set; }
+            public float DoF_FocusDistance { get; set; }
+            public float DoF_Aperture { get; set; }
+            public float DoF_FocusLength { get; set; }
+            public int DoF_MaxBlurSize { get; set; }
+
+            public bool CG_Enable { get; set; }
+            public float CG_Temperature { get; set; }
+            public float CG_Saturation { get; set; }
+            public float CG_Contrast { get; set; }
+            public float CG_Gamma { get; set; }
+
+            public bool Vignette_Enable { get; set; }
+            public float Vignette_Intensity { get; set; }
+            public float Vignette_Smoothness { get; set; }
+            public float Vignette_Roundness { get; set; }
+
+            public bool CA_Enable { get; set; }
+            public float CA_Intensity { get; set; }
+            public bool CA_FastMode { get; set; }
+
+            public float Bloom_Color_a { get; set; }
+            public float Bloom_Color_r { get; set; }
+            public float Bloom_Color_g { get; set; }
+            public float Bloom_Color_b { get; set; }
+
+            public float CG_ColorFilter_a { get; set; }
+            public float CG_ColorFilter_r { get; set; }
+            public float CG_ColorFilter_g { get; set; }
+            public float CG_ColorFilter_b { get; set; }
+
+            public float Vignette_Color_a { get; set; }
+            public float Vignette_Color_r { get; set; }
+            public float Vignette_Color_g { get; set; }
+            public float Vignette_Color_b { get; set; }
+
+            public bool TurnOffAmbientLight { get; set; }
+
+        }
+
         public class LogNotify {
             public string condition { get; set; }
             public string stackTrace { get; set; }

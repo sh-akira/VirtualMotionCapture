@@ -83,6 +83,8 @@ public class ControlWPFWindow : MonoBehaviour
 
     public VMTClient vmtClient;
 
+    public PostProcessingManager postProcessingManager;
+
     public enum MouseButtons
     {
         Left = 0,
@@ -934,7 +936,7 @@ public class ControlWPFWindow : MonoBehaviour
                 await server.SendCommandAsync(new PipeCommands.ResultSetupVirtualMotionTracker
                 {
                     result = ret,
-                }, e.RequestId);                
+                }, e.RequestId);
             }
             else if (e.CommandType == typeof(PipeCommands.GetViveLipTrackingBlendShape))
             {
@@ -952,6 +954,59 @@ public class ControlWPFWindow : MonoBehaviour
                 var d = (PipeCommands.SetViveLipTrackingBlendShape)e.Data;
                 CurrentSettings.LipShapesToBlendShapeMap = d.LipShapesToBlendShapeMap;
                 SetLipShapeToBlendShapeStringMapAction?.Invoke(d.LipShapesToBlendShapeMap);
+            }
+            else if (e.CommandType == typeof(PipeCommands.GetAdvancedGraphicsOption))
+            {
+                LoadAdvancedGraphicsOption();
+            }
+            else if (e.CommandType == typeof(PipeCommands.SetAdvancedGraphicsOption)) {
+                var d = (PipeCommands.SetAdvancedGraphicsOption)e.Data;
+
+                CurrentSettings.PPS_Enable = d.PPS_Enable;
+
+                CurrentSettings.PPS_Bloom_Enable = d.Bloom_Enable;
+                CurrentSettings.PPS_Bloom_Intensity = d.Bloom_Intensity;
+                CurrentSettings.PPS_Bloom_Threshold = d.Bloom_Threshold;
+
+                CurrentSettings.PPS_DoF_Enable = d.DoF_Enable;
+                CurrentSettings.PPS_DoF_FocusDistance = d.DoF_FocusDistance;
+                CurrentSettings.PPS_DoF_Aperture = d.DoF_Aperture;
+                CurrentSettings.PPS_DoF_FocusLength = d.DoF_FocusLength;
+                CurrentSettings.PPS_DoF_MaxBlurSize = d.DoF_MaxBlurSize;
+
+                CurrentSettings.PPS_CG_Enable = d.CG_Enable;
+                CurrentSettings.PPS_CG_Temperature = d.CG_Temperature;
+                CurrentSettings.PPS_CG_Saturation = d.CG_Saturation;
+                CurrentSettings.PPS_CG_Contrast = d.CG_Contrast;
+                CurrentSettings.PPS_CG_Gamma = d.CG_Gamma;
+
+                CurrentSettings.PPS_Vignette_Enable = d.Vignette_Enable;
+                CurrentSettings.PPS_Vignette_Intensity = d.Vignette_Intensity;
+                CurrentSettings.PPS_Vignette_Smoothness = d.Vignette_Smoothness;
+                CurrentSettings.PPS_Vignette_Roundness = d.Vignette_Roundness;
+
+                CurrentSettings.PPS_CA_Enable = d.CA_Enable;
+                CurrentSettings.PPS_CA_Intensity = d.CA_Intensity;
+                CurrentSettings.PPS_CA_FastMode = d.CA_FastMode;
+
+                CurrentSettings.PPS_Bloom_Color_a = d.Bloom_Color_a;
+                CurrentSettings.PPS_Bloom_Color_r = d.Bloom_Color_r;
+                CurrentSettings.PPS_Bloom_Color_g = d.Bloom_Color_g;
+                CurrentSettings.PPS_Bloom_Color_b = d.Bloom_Color_b;
+
+                CurrentSettings.PPS_CG_ColorFilter_a = d.CG_ColorFilter_a;
+                CurrentSettings.PPS_CG_ColorFilter_r = d.CG_ColorFilter_r;
+                CurrentSettings.PPS_CG_ColorFilter_g = d.CG_ColorFilter_g;
+                CurrentSettings.PPS_CG_ColorFilter_b = d.CG_ColorFilter_b;
+
+                CurrentSettings.PPS_Vignette_Color_a = d.Vignette_Color_a;
+                CurrentSettings.PPS_Vignette_Color_r = d.Vignette_Color_r;
+                CurrentSettings.PPS_Vignette_Color_g = d.Vignette_Color_g;
+                CurrentSettings.PPS_Vignette_Color_b = d.Vignette_Color_b;
+
+                CurrentSettings.TurnOffAmbientLight = d.TurnOffAmbientLight;
+
+                SetAdvancedGraphicsOption();
             }
             else if (e.CommandType == typeof(PipeCommands.Alive))
             {
@@ -1000,6 +1055,61 @@ public class ControlWPFWindow : MonoBehaviour
 
         CurrentSettings.VirtualMotionTrackerNo = no;
         CurrentSettings.VirtualMotionTrackerEnable = enable;
+    }
+
+    private async void LoadAdvancedGraphicsOption()
+    {
+        SetAdvancedGraphicsOption();
+        await server.SendCommandAsync(new PipeCommands.SetAdvancedGraphicsOption
+        {
+            PPS_Enable = CurrentSettings.PPS_Enable,
+
+            Bloom_Enable = CurrentSettings.PPS_Bloom_Enable,
+            Bloom_Intensity = CurrentSettings.PPS_Bloom_Intensity,
+            Bloom_Threshold = CurrentSettings.PPS_Bloom_Threshold,
+
+            DoF_Enable = CurrentSettings.PPS_DoF_Enable,
+            DoF_FocusDistance = CurrentSettings.PPS_DoF_FocusDistance,
+            DoF_Aperture = CurrentSettings.PPS_DoF_Aperture,
+            DoF_FocusLength = CurrentSettings.PPS_DoF_FocusLength,
+            DoF_MaxBlurSize = CurrentSettings.PPS_DoF_MaxBlurSize,
+
+            CG_Enable = CurrentSettings.PPS_CG_Enable,
+            CG_Temperature = CurrentSettings.PPS_CG_Temperature,
+            CG_Saturation = CurrentSettings.PPS_CG_Saturation,
+            CG_Contrast = CurrentSettings.PPS_CG_Contrast,
+            CG_Gamma = CurrentSettings.PPS_CG_Gamma,
+
+            Vignette_Enable = CurrentSettings.PPS_Vignette_Enable,
+            Vignette_Intensity = CurrentSettings.PPS_Vignette_Intensity,
+            Vignette_Smoothness = CurrentSettings.PPS_Vignette_Smoothness,
+            Vignette_Roundness = CurrentSettings.PPS_Vignette_Roundness,
+
+            CA_Enable = CurrentSettings.PPS_CA_Enable,
+            CA_Intensity = CurrentSettings.PPS_CA_Intensity,
+            CA_FastMode = CurrentSettings.PPS_CA_FastMode,
+
+            Bloom_Color_a = CurrentSettings.PPS_Bloom_Color_a,
+            Bloom_Color_r = CurrentSettings.PPS_Bloom_Color_r,
+            Bloom_Color_g = CurrentSettings.PPS_Bloom_Color_g,
+            Bloom_Color_b = CurrentSettings.PPS_Bloom_Color_b,
+
+            CG_ColorFilter_a = CurrentSettings.PPS_CG_ColorFilter_a,
+            CG_ColorFilter_r = CurrentSettings.PPS_CG_ColorFilter_r,
+            CG_ColorFilter_g = CurrentSettings.PPS_CG_ColorFilter_g,
+            CG_ColorFilter_b = CurrentSettings.PPS_CG_ColorFilter_b,
+
+            Vignette_Color_a = CurrentSettings.PPS_Vignette_Color_a,
+            Vignette_Color_r = CurrentSettings.PPS_Vignette_Color_r,
+            Vignette_Color_g = CurrentSettings.PPS_Vignette_Color_g,
+            Vignette_Color_b = CurrentSettings.PPS_Vignette_Color_b,
+
+            TurnOffAmbientLight = CurrentSettings.TurnOffAmbientLight
+    });
+    }
+
+    private void SetAdvancedGraphicsOption() {
+        postProcessingManager.Apply(CurrentSettings);
     }
 
     private bool isFirstTimeExecute = true;
@@ -2912,6 +3022,84 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public int VirtualMotionTrackerNo;
 
+
+        [OptionalField]
+        public bool PPS_Enable;
+        [OptionalField]
+        public bool PPS_Bloom_Enable;
+        [OptionalField]
+        public float PPS_Bloom_Intensity;
+        [OptionalField]
+        public float PPS_Bloom_Threshold;
+
+        [OptionalField]
+        public bool PPS_DoF_Enable;
+        [OptionalField]
+        public float PPS_DoF_FocusDistance;
+        [OptionalField]
+        public float PPS_DoF_Aperture;
+        [OptionalField]
+        public float PPS_DoF_FocusLength;
+        [OptionalField]
+        public int PPS_DoF_MaxBlurSize;
+
+        [OptionalField]
+        public bool PPS_CG_Enable;
+        [OptionalField]
+        public float PPS_CG_Temperature;
+        [OptionalField]
+        public float PPS_CG_Saturation;
+        [OptionalField]
+        public float PPS_CG_Contrast;
+        [OptionalField]
+        public float PPS_CG_Gamma;
+
+        [OptionalField]
+        public bool PPS_Vignette_Enable;
+        [OptionalField]
+        public float PPS_Vignette_Intensity;
+        [OptionalField]
+        public float PPS_Vignette_Smoothness;
+        [OptionalField]
+        public float PPS_Vignette_Roundness;
+
+        [OptionalField]
+        public bool PPS_CA_Enable;
+        [OptionalField]
+        public float PPS_CA_Intensity;
+        [OptionalField]
+        public bool PPS_CA_FastMode;
+
+        [OptionalField]
+        public float PPS_Bloom_Color_a;
+        [OptionalField]
+        public float PPS_Bloom_Color_r;
+        [OptionalField]
+        public float PPS_Bloom_Color_g;
+        [OptionalField]
+        public float PPS_Bloom_Color_b;
+
+        [OptionalField]
+        public float PPS_CG_ColorFilter_a;
+        [OptionalField]
+        public float PPS_CG_ColorFilter_r;
+        [OptionalField]
+        public float PPS_CG_ColorFilter_g;
+        [OptionalField]
+        public float PPS_CG_ColorFilter_b;
+
+        [OptionalField]
+        public float PPS_Vignette_Color_a;
+        [OptionalField]
+        public float PPS_Vignette_Color_r;
+        [OptionalField]
+        public float PPS_Vignette_Color_g;
+        [OptionalField]
+        public float PPS_Vignette_Color_b;
+
+        [OptionalField]
+        public bool TurnOffAmbientLight;
+
         //初期値
         [OnDeserializing()]
         internal void OnDeserializingMethod(StreamingContext context)
@@ -3001,6 +3189,49 @@ public class ControlWPFWindow : MonoBehaviour
 
             VirtualMotionTrackerEnable = false;
             VirtualMotionTrackerNo = 50;
+
+            PPS_Enable = false;
+            PPS_Bloom_Enable = false;
+            PPS_Bloom_Intensity = 2.7f;
+            PPS_Bloom_Threshold = 0.5f;
+
+            PPS_DoF_Enable = false;
+            PPS_DoF_FocusDistance = 1.65f;
+            PPS_DoF_Aperture = 16f;
+            PPS_DoF_FocusLength = 16.4f;
+            PPS_DoF_MaxBlurSize = 3;
+
+            PPS_CG_Enable = false;
+            PPS_CG_Temperature = 0f;
+            PPS_CG_Saturation = 0f;
+            PPS_CG_Contrast = 0f;
+            PPS_CG_Gamma = 0f;
+
+            PPS_Vignette_Enable = false;
+            PPS_Vignette_Intensity = 0.65f;
+            PPS_Vignette_Smoothness = 0.35f;
+            PPS_Vignette_Roundness = 1f;
+
+            PPS_CA_Enable = false;
+            PPS_CA_Intensity = 1f;
+            PPS_CA_FastMode = false;
+
+            PPS_Bloom_Color_a = 1f;
+            PPS_Bloom_Color_r = 1f;
+            PPS_Bloom_Color_g = 1f;
+            PPS_Bloom_Color_b = 1f;
+
+            PPS_CG_ColorFilter_a = 1f;
+            PPS_CG_ColorFilter_r = 1f;
+            PPS_CG_ColorFilter_g = 1f;
+            PPS_CG_ColorFilter_b = 1f;
+
+            PPS_Vignette_Color_a = 1f;
+            PPS_Vignette_Color_r = 0f;
+            PPS_Vignette_Color_g = 0f;
+            PPS_Vignette_Color_b = 0f;
+
+            TurnOffAmbientLight = false;
         }
     }
 
@@ -3382,6 +3613,8 @@ public class ControlWPFWindow : MonoBehaviour
         SetVMT(CurrentSettings.VirtualMotionTrackerEnable, CurrentSettings.VirtualMotionTrackerNo);
 
         SetLipShapeToBlendShapeStringMapAction?.Invoke(CurrentSettings.LipShapesToBlendShapeMap);
+
+        LoadAdvancedGraphicsOption();
 
         AdditionalSettingAction?.Invoke(null);
 
