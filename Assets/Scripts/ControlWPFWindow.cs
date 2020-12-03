@@ -1966,17 +1966,22 @@ public class ControlWPFWindow : MonoBehaviour
 
     void SetWindowBorder(bool enable)
     {
+        if (CurrentSettings.HideBorder == enable) return;
         CurrentSettings.HideBorder = enable;
 #if !UNITY_EDITOR   // エディタ上では動きません。
         var hwnd = GetUnityWindowHandle();
         //var hwnd = GetActiveWindow();
         if (enable)
         {
+            var clientrect = GetUnityWindowClientPosition();
             SetWindowLong(hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE); //ウインドウ枠の削除
+            SetUnityWindowSize(clientrect.right - clientrect.left, clientrect.bottom - clientrect.top);
         }
         else
         {
+            var windowrect = GetUnityWindowPosition();
             SetWindowLong(hwnd, GWL_STYLE, defaultWindowStyle);
+            Screen.SetResolution(windowrect.right - windowrect.left, windowrect.bottom - windowrect.top, false);
         }
 #endif
     }
@@ -3440,6 +3445,13 @@ public class ControlWPFWindow : MonoBehaviour
             //メタ情報をOSC送信する
             VRMmetaLodedAction?.Invoke(LoadVRM(CurrentSettings.VRMPath));
         }
+
+        //SetResolutionは強制的にウインドウ枠を復活させるのでBorder設定の前にやっておく必要がある
+        if (Screen.resolutions.Any(d => d.width == CurrentSettings.ScreenWidth && d.height == CurrentSettings.ScreenHeight && d.refreshRate == CurrentSettings.ScreenRefreshRate))
+        {
+            Screen.SetResolution(CurrentSettings.ScreenWidth, CurrentSettings.ScreenHeight, false, CurrentSettings.ScreenRefreshRate);
+        }
+
         if (CurrentSettings.BackgroundColor != null)
         {
             ChangeBackgroundColor(CurrentSettings.BackgroundColor.r, CurrentSettings.BackgroundColor.g, CurrentSettings.BackgroundColor.b, false);
@@ -3562,11 +3574,6 @@ public class ControlWPFWindow : MonoBehaviour
         await server.SendCommandAsync(new PipeCommands.ChangeLightColor { a = CurrentSettings.LightColor.a, r = CurrentSettings.LightColor.r, g = CurrentSettings.LightColor.g, b = CurrentSettings.LightColor.b });
         ChangeLightColor(CurrentSettings.LightColor.a, CurrentSettings.LightColor.r, CurrentSettings.LightColor.g, CurrentSettings.LightColor.b);
 
-        if (Screen.resolutions.Any(d => d.width == CurrentSettings.ScreenWidth && d.height == CurrentSettings.ScreenHeight && d.refreshRate == CurrentSettings.ScreenRefreshRate))
-        {
-            Screen.SetResolution(CurrentSettings.ScreenWidth, CurrentSettings.ScreenHeight, false, CurrentSettings.ScreenRefreshRate);
-        }
-
         SetExternalMotionSenderEnable(CurrentSettings.ExternalMotionSenderEnable);
         ChangeExternalMotionSenderAddress(CurrentSettings.ExternalMotionSenderAddress, CurrentSettings.ExternalMotionSenderPort, CurrentSettings.ExternalMotionSenderPeriodStatus, CurrentSettings.ExternalMotionSenderPeriodRoot, CurrentSettings.ExternalMotionSenderPeriodBone, CurrentSettings.ExternalMotionSenderPeriodBlendShape, CurrentSettings.ExternalMotionSenderPeriodCamera, CurrentSettings.ExternalMotionSenderPeriodDevices, CurrentSettings.ExternalMotionSenderOptionString);
         SetExternalMotionReceiverEnable(CurrentSettings.ExternalMotionReceiverEnable);
@@ -3671,8 +3678,11 @@ public class ControlWPFWindow : MonoBehaviour
         }
         var filename = $"VirtualMotionCapture_{res.width}x{res.height}_{DateTime.Now:yyyy-MM-dd_HH-mm-ss.fff}.png";
         if (transparentBackground) BackgroundRenderer.gameObject.SetActive(false);
-        File.WriteAllBytes(Path.Combine(directory, filename), Photo.TakePNGPhoto(ControlCamera, res, transparentBackground));
-        if (transparentBackground) BackgroundRenderer.gameObject.SetActive(true);
+        StartCoroutine(Photo.TakePNGPhoto(ControlCamera, res, transparentBackground, bytes =>
+        {
+            File.WriteAllBytes(Path.Combine(directory, filename), bytes);
+            if (transparentBackground) BackgroundRenderer.gameObject.SetActive(true);
+        }));
         Debug.Log($"Save Photo: {filename}");
     }
 

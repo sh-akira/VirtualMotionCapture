@@ -18,9 +18,9 @@ VirtualMotionCapture.sln
 ControlWindow/bin*
 ControlWindow/ControlWindowTester/bin*
 VirtualMotionCapture/
-HandPresets/
+ControlWindowWPF/ControlWindowWPF/HandPresets/
 VMCPipeServerTest/
-ShortcutKeyPresets/
+ControlWindowWPF/ControlWindowWPF/ShortcutKeyPresets/
 UnityNamedPipe.dll
 #default.json
 VirtualMotionCaptureControlPanel.exe

@@ -80,6 +80,41 @@ namespace VirtualMotionCaptureControlPanel
             await Globals.Client.SendCommandAsync(new PipeCommands.SetIsBeta { IsBeta = true , IsPreRelease = true});
 #elif FANBOX
             await Globals.Client.SendCommandAsync(new PipeCommands.SetIsBeta { IsBeta = false , IsPreRelease = true});
+
+            //thanks 1000 supporters
+            var imgpath = System.IO.Path.Combine(Globals.GetCurrentAppDir(), "startup.png");
+            if (System.IO.File.Exists(imgpath))
+            {
+                var win = new Window();
+                win.SizeToContent = SizeToContent.WidthAndHeight;
+                win.ResizeMode = ResizeMode.NoResize;
+                var image = new Image();
+                var bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.CreateOptions = BitmapCreateOptions.None;
+                bitmapImage.UriSource = new Uri(imgpath);
+                bitmapImage.EndInit();
+                bitmapImage.Freeze();
+                image.Source = bitmapImage;
+                image.Width = bitmapImage.PixelWidth;
+                image.Height = bitmapImage.PixelHeight;
+                var grid = new Grid();
+                grid.Children.Add(image);
+                var button = new Button();
+                button.Content = "閉じる/Close";
+                button.FontSize = 24;
+                button.Height = double.NaN;
+                button.Padding = new Thickness(10);
+                button.Margin = new Thickness(10);
+                button.Click += (csender, ce) => win.Close();
+                button.HorizontalAlignment = HorizontalAlignment.Right;
+                button.VerticalAlignment = VerticalAlignment.Bottom;
+                grid.Children.Add(button);
+                win.Content = grid;
+                win.Closed += (wsender, we) => System.IO.File.Delete(imgpath);
+                win.Show();
+            }
 #endif
             await GetLipSyncDevice();
             await Globals.Client.SendCommandAsync(new PipeCommands.LoadCurrentSettings());

@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Photo
 {
-    public static byte[] TakePNGPhoto(Camera camera, Resolution resolution, bool transparentBackground)
+    public static IEnumerator TakePNGPhoto(Camera camera, Resolution resolution, bool transparentBackground, System.Action<byte[]> returnAction)
     {
+        yield return new WaitForEndOfFrame();
         var renderTexture = new RenderTexture(resolution.width, resolution.height, 24, RenderTextureFormat.ARGB32);
         var oldtarget = camera.targetTexture;
         camera.targetTexture = renderTexture;
@@ -29,6 +30,6 @@ public class Photo
             camera.clearFlags = oldClearFlags;
         }
         Object.Destroy(renderTexture);
-        return photoTexture.EncodeToPNG();
+        returnAction(photoTexture.EncodeToPNG());
     }
 }

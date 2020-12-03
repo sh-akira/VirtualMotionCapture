@@ -6,6 +6,10 @@
   link: /manual/
   new_window: false
   highlight: true
+- name: 連携ツール一覧
+  link: https://protocol.vmc.info/Reference
+  new_window: false
+  highlight: true
 - name: ダウンロード
   link: /download.html
   new_window: false
@@ -15,11 +19,11 @@
   new_window: false
   highlight: false
 - name: 日本語
-  link: https://sh-akira.github.io/VirtualMotionCapture/
+  link: https://vmc.info/
   new_window: false
   highlight: false
 - name: 한국어
-  link: https://sh-akira.github.io/VirtualMotionCapture-ko/
+  link: https://akira.works/VirtualMotionCapture-ko/
   new_window: false
   highlight: false
 
