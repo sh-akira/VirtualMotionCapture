@@ -2474,6 +2474,8 @@ MonoBehaviour:
   MIDICCWrapper: {fileID: 1604201751}
   receivePort: 39540
   statusString: 
+  eddp: {fileID: 1549762413}
+  packets: 0
 --- !u!4 &389263780
 Transform:
   m_ObjectHideFlags: 0
@@ -6957,6 +6959,7 @@ Transform:
   - {fileID: 283794702}
   - {fileID: 1995326175}
   - {fileID: 795349837}
+  - {fileID: 1549762412}
   m_Father: {fileID: 0}
   m_RootOrder: 29
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -8796,6 +8799,7 @@ MonoBehaviour:
   calibrationState: 0
   lastCalibrateType: 0
   lastLoadedConfigPath: 
+  easyDeviceDiscoveryProtocolManager: {fileID: 1549762413}
   MainDirectionalLightTransform: {fileID: 170076735}
   MainDirectionalLight: {fileID: 170076734}
 --- !u!4 &1407685705
@@ -10096,6 +10100,57 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1549393086}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1549762411
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1549762412}
+  - component: {fileID: 1549762413}
+  m_Layer: 0
+  m_Name: EasyDeviceDiscoveryProtocolManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1549762412
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1549762411}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1177174446}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1549762413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1549762411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f50efccca70940498337c91237b5a96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  window: {fileID: 1407685704}
+  externalSender: {fileID: 1155637110}
+  externalReceiver: {fileID: 389263779}
+  myname: Virtual Motion Capture
+  found: 0
+  requesterEnable: 1
+  responderEnable: 0
+  lastPackets: 0
 --- !u!1 &1549848321
 GameObject:
   m_ObjectHideFlags: 0
