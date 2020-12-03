@@ -403,6 +403,7 @@ Ver 0.02
 　・Oculus ([Oculus Lipsync Unity 1.30.0](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/1.30.0/))  
 　・uOSC([uOSC-v0.0.2.unitypackage](https://github.com/hecomi/uOSC/releases/tag/v0.0.2))  
 　・MidiJack([MidiJack.unitypackage](https://github.com/keijiro/MidiJack))  
+　・EasyDeviceDiscoveryProtocolForUnity([EasyDeviceDiscoveryProtocolForUnity_v002.unitypackage](https://github.com/gpsnmeajp/EasyDeviceDiscoveryProtocolForUnity/releases/tag/v0.02))  
 以上のようなフォルダになるように各アセットをインポートしてください。  
 アイトラッキングが不要な場合Assets\Scripts\EyeTrackingフォルダとLipTrackingフォルダを削除します  
 アイトラッキング対応する場合は  
