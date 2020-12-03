@@ -729,6 +729,16 @@ namespace VirtualMotionCaptureControlPanel
             await Globals.Client?.SendCommandAsync(new PipeCommands.ChangeLightColor { a = e.A / 255f, r = e.R / 255f, g = e.G / 255f, b = e.B / 255f });
         }
 
+        private void GraphicsOptionButton_Click(object sender, RoutedEventArgs e)
+        {
+            //重複ウィンドウを許容しない
+            if (!Application.Current.Windows.OfType<GraphicsOptionWindow>().Any()) {
+                var win = new GraphicsOptionWindow();
+                win.Owner = this;
+                win.Show();
+            }
+        }
+
         private void StatusBar_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (lastLog != null)
