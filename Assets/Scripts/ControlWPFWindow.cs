@@ -128,6 +128,8 @@ public class ControlWPFWindow : MonoBehaviour
 
     public string lastLoadedConfigPath = "";
 
+    public EasyDeviceDiscoveryProtocolManager easyDeviceDiscoveryProtocolManager;
+
     // Use this for initialization
     void Start()
     {
@@ -792,7 +794,8 @@ public class ControlWPFWindow : MonoBehaviour
             else if (e.CommandType == typeof(PipeCommands.ChangeExternalMotionSenderAddress))
             {
                 var d = (PipeCommands.ChangeExternalMotionSenderAddress)e.Data;
-                ChangeExternalMotionSenderAddress(d.address, d.port, d.PeriodStatus, d.PeriodRoot, d.PeriodBone, d.PeriodBlendShape, d.PeriodCamera, d.PeriodDevices, d.OptionString);
+                ChangeExternalMotionSenderAddress(d.address, d.port, d.PeriodStatus, d.PeriodRoot, d.PeriodBone, d.PeriodBlendShape, d.PeriodCamera, d.PeriodDevices, d.OptionString, d.ResponderEnable);
+
             }
             else if (e.CommandType == typeof(PipeCommands.GetExternalMotionSenderAddress))
             {
@@ -807,6 +810,7 @@ public class ControlWPFWindow : MonoBehaviour
                     PeriodCamera = CurrentSettings.ExternalMotionSenderPeriodCamera,
                     PeriodDevices = CurrentSettings.ExternalMotionSenderPeriodDevices,
                     OptionString = CurrentSettings.ExternalMotionSenderOptionString,
+                    ResponderEnable = CurrentSettings.ExternalMotionSenderResponderEnable
                 }, e.RequestId);
             }
             else if (e.CommandType == typeof(PipeCommands.EnableExternalMotionReceiver))
@@ -824,13 +828,15 @@ public class ControlWPFWindow : MonoBehaviour
             else if (e.CommandType == typeof(PipeCommands.ChangeExternalMotionReceiverPort))
             {
                 var d = (PipeCommands.ChangeExternalMotionReceiverPort)e.Data;
-                ChangeExternalMotionReceiverPort(d.port);
+                ChangeExternalMotionReceiverPort(d.port, d.RequesterEnable);
+
             }
             else if (e.CommandType == typeof(PipeCommands.GetExternalMotionReceiverPort))
             {
                 await server.SendCommandAsync(new PipeCommands.ChangeExternalMotionReceiverPort
                 {
-                    port = CurrentSettings.ExternalMotionReceiverPort
+                    port = CurrentSettings.ExternalMotionReceiverPort,
+                    RequesterEnable = CurrentSettings.ExternalMotionReceiverRequesterEnable
                 }, e.RequestId);
             }
             else if (e.CommandType == typeof(PipeCommands.GetMidiCCBlendShape))
@@ -2638,7 +2644,7 @@ public class ControlWPFWindow : MonoBehaviour
         WaitOneFrameAction(() => CameraChangedAction?.Invoke(ControlCamera));
     }
 
-    private void ChangeExternalMotionSenderAddress(string address, int port, int pstatus, int proot, int pbone, int pblendshape, int pcamera, int pdevices, string optionstring)
+    private void ChangeExternalMotionSenderAddress(string address, int port, int pstatus, int proot, int pbone, int pblendshape, int pcamera, int pdevices, string optionstring, bool responderEnable)
     {
         CurrentSettings.ExternalMotionSenderAddress = address;
         CurrentSettings.ExternalMotionSenderPort = port;
@@ -2649,6 +2655,8 @@ public class ControlWPFWindow : MonoBehaviour
         CurrentSettings.ExternalMotionSenderPeriodCamera = pcamera;
         CurrentSettings.ExternalMotionSenderPeriodDevices = pdevices;
         CurrentSettings.ExternalMotionSenderOptionString = optionstring;
+        CurrentSettings.ExternalMotionSenderResponderEnable = responderEnable;
+
         externalMotionSender.periodStatus = pstatus;
         externalMotionSender.periodRoot = proot;
         externalMotionSender.periodBone = pbone;
@@ -2657,14 +2665,25 @@ public class ControlWPFWindow : MonoBehaviour
         externalMotionSender.periodDevices = pdevices;
         externalMotionSender.ChangeOSCAddress(address, port);
         externalMotionSender.optionString = optionstring;
+        easyDeviceDiscoveryProtocolManager.responderEnable = responderEnable;
     }
 
-    private void ChangeExternalMotionReceiverPort(int port)
+    public void ChangeExternalMotionSenderAddress(string address, int port)
+    {
+        CurrentSettings.ExternalMotionSenderAddress = address;
+        CurrentSettings.ExternalMotionSenderPort = port;
+
+        externalMotionSender.ChangeOSCAddress(address, port);
+    }
+
+    private void ChangeExternalMotionReceiverPort(int port, bool requesterEnable)
     {
         CurrentSettings.ExternalMotionReceiverPort = port;
         externalMotionReceiver.ChangeOSCPort(port);
-    }
 
+        CurrentSettings.ExternalMotionReceiverRequesterEnable = requesterEnable;
+        easyDeviceDiscoveryProtocolManager.requesterEnable = requesterEnable;
+    }
 
     private void WaitOneFrameAction(Action action)
     {
@@ -2986,9 +3005,13 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public int ExternalMotionSenderPeriodDevices;
         [OptionalField]
+        public bool ExternalMotionSenderResponderEnable;
+        [OptionalField]
         public bool ExternalMotionReceiverEnable;
         [OptionalField]
         public int ExternalMotionReceiverPort;
+        [OptionalField]
+        public bool ExternalMotionReceiverRequesterEnable;
         [OptionalField]
         public string ExternalMotionSenderOptionString;
         [OptionalField]
@@ -3168,11 +3191,13 @@ public class ControlWPFWindow : MonoBehaviour
             ExternalMotionSenderPeriodCamera = 1;
             ExternalMotionSenderPeriodDevices = 1;
             ExternalMotionSenderOptionString = "";
+            ExternalMotionSenderResponderEnable = false;
 
             ExternalMotionReceiverEnable = false;
             ExternalMotionReceiverPort = 39540;
+            ExternalMotionReceiverRequesterEnable = true;
 
-            MidiCCBlendShape = new List<string>(Enumerable.Repeat(default(string), MidiCCWrapper.KNOBS));
+           MidiCCBlendShape = new List<string>(Enumerable.Repeat(default(string), MidiCCWrapper.KNOBS));
 
             LipShapesToBlendShapeMap = new Dictionary<string, string>();
 
@@ -3575,9 +3600,9 @@ public class ControlWPFWindow : MonoBehaviour
         ChangeLightColor(CurrentSettings.LightColor.a, CurrentSettings.LightColor.r, CurrentSettings.LightColor.g, CurrentSettings.LightColor.b);
 
         SetExternalMotionSenderEnable(CurrentSettings.ExternalMotionSenderEnable);
-        ChangeExternalMotionSenderAddress(CurrentSettings.ExternalMotionSenderAddress, CurrentSettings.ExternalMotionSenderPort, CurrentSettings.ExternalMotionSenderPeriodStatus, CurrentSettings.ExternalMotionSenderPeriodRoot, CurrentSettings.ExternalMotionSenderPeriodBone, CurrentSettings.ExternalMotionSenderPeriodBlendShape, CurrentSettings.ExternalMotionSenderPeriodCamera, CurrentSettings.ExternalMotionSenderPeriodDevices, CurrentSettings.ExternalMotionSenderOptionString);
+        ChangeExternalMotionSenderAddress(CurrentSettings.ExternalMotionSenderAddress, CurrentSettings.ExternalMotionSenderPort, CurrentSettings.ExternalMotionSenderPeriodStatus, CurrentSettings.ExternalMotionSenderPeriodRoot, CurrentSettings.ExternalMotionSenderPeriodBone, CurrentSettings.ExternalMotionSenderPeriodBlendShape, CurrentSettings.ExternalMotionSenderPeriodCamera, CurrentSettings.ExternalMotionSenderPeriodDevices, CurrentSettings.ExternalMotionSenderOptionString, CurrentSettings.ExternalMotionSenderResponderEnable);
         SetExternalMotionReceiverEnable(CurrentSettings.ExternalMotionReceiverEnable);
-        ChangeExternalMotionReceiverPort(CurrentSettings.ExternalMotionReceiverPort);
+        ChangeExternalMotionReceiverPort(CurrentSettings.ExternalMotionReceiverPort, CurrentSettings.ExternalMotionReceiverRequesterEnable);
 
         SetMidiCCBlendShape(CurrentSettings.MidiCCBlendShape);
 

@@ -171,7 +171,8 @@
                             <TextBlock Text="Option: " Grid.Column="0"/>
                             <TextBox Text="" Grid.Column="1" VerticalAlignment="Center" Name="OptionStringTextbox"/>
                         </Grid>
-                    </DockPanel>
+						<CheckBox Content="{DynamicResource SettingWindow_ExternalMotionSenderResponderEnable}" Name="ExternalMotionSenderResponderEnableCheckBox" DockPanel.Dock="Top"/>
+					</DockPanel>
                 </GroupBox>
                 <GroupBox>
                     <GroupBox.Header>
@@ -181,7 +182,7 @@
                                 <TextBlock Text=" IP:"/>
                                 <Button Content="Check IP" Name="CheckIPAddressButton" Click="CheckIPAddressButton_Click" Padding="5,0" Margin="5,1" Height="Auto"/>
                             </StackPanel>
-                        </WrapPanel>
+						</WrapPanel>
                     </GroupBox.Header>
                     <DockPanel>
                         <Button Content="{DynamicResource SettingWindow_ResolutionApply}" Name="OSCReceiverApplyButton" Click="OSCReceiverApplyButton_Click" DockPanel.Dock="Right" Padding="10,5"/>
@@ -200,7 +201,8 @@
                             <TextBlock Text="Status: " Grid.Column="0" Grid.Row="1"/>
                             <TextBox Text="" Grid.Column="1" Grid.Row="1" IsReadOnly="True" IsEnabled="False" VerticalAlignment="Center" Name="StatusStringTextbox"/>
                         </Grid>
-                    </DockPanel>
+						<CheckBox Content="{DynamicResource SettingWindow_ExternalMotionReceiverRequesterEnable}" Name="ExternalMotionReceiverRequesterEnableCheckBox" DockPanel.Dock="Top"/>
+					</DockPanel>
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_MIDI_CC_BlendShape}">
                     <Button Content="{DynamicResource SettingWindow_MidiCCBlendShapeSetting}" Name="MidiCCBlendShapeSettingButton" Click="MidiCCBlendShapeSettingButton_Click"/>

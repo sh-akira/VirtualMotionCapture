@@ -26,6 +26,8 @@ public class ExternalReceiverForVMC : MonoBehaviour {
     public string statusString = "";
     private string statusStringOld = "";
 
+    public EasyDeviceDiscoveryProtocolManager eddp;
+
     static public Action<string> StatusStringUpdated = null;
 
     ControlWPFWindow window = null;
@@ -43,6 +45,8 @@ public class ExternalReceiverForVMC : MonoBehaviour {
     //バッファ
     Vector3 pos;
     Quaternion rot;
+
+    public int packets = 0;
 
     private Dictionary<BlendShapeKey, float> blendShapeBuffer = new Dictionary<BlendShapeKey, float>();
 
@@ -86,6 +90,12 @@ public class ExternalReceiverForVMC : MonoBehaviour {
         //有効なとき以外処理しない
         if (this.isActiveAndEnabled)
         {
+            //生存チェックのためのパケットカウンタ
+            packets++;
+            if (packets > int.MaxValue / 2) {
+                packets = 0;
+            }
+
             //仮想コントローラー V2.3
             if (message.address == "/VMC/Ext/Con/Pos"
                 && (message.values[0] is string)
@@ -404,6 +414,8 @@ public class ExternalReceiverForVMC : MonoBehaviour {
     public void ChangeOSCPort(int port)
     {
         receivePort = port;
+        eddp.found = false;
+
         var uServer = GetComponent<uOSC.uOscServer>();
         uServer.enabled = false;
         var type = typeof(uOSC.uOscServer);
