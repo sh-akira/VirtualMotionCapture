@@ -407,8 +407,8 @@ Ver 0.02
 以上のようなフォルダになるように各アセットをインポートしてください。  
 アイトラッキングが不要な場合Assets\Scripts\EyeTrackingフォルダとLipTrackingフォルダを削除します  
 アイトラッキング対応する場合は  
-　・ViveSR([Vive-SRanipal-Unity-Plugin.unitypackage](https://hub.vive.com/en-US/profile/material-download)) SRanipal_SDK_1.1.0.1_Eye.zip内  
-　・Tobii([TobiiUnitySDKForDesktop_4.0.3.unitypackage](https://github.com/Tobii/UnitySDK/releases)) アセットストアからインポート(インポートしたままフォルダは移動しないでください)  
+　・ViveSR([Vive-SRanipal-Unity-Plugin.unitypackage](https://hub.vive.com/en-US/profile/material-download)) SDK_v1.3.1.1.zip内  
+　・Tobii([tobii-unity-sdk-4.0.6.unitypackage](https://developer.tobii.com/pc-gaming/unity-sdk/getting-started/)) tobii/developer zoneからインポート(インポートしたままフォルダは移動しないでください)  
 以上の二つをインポート  
 ※face2vmcなどを使って外部からのモーションを受信する場合にアイトラッキング対応をすると、モーションが競合して目のアニメーションが正常に動作しない場合があります。外部からのモーション受信をする場合はアイトラッキング対応をしないことを推奨します。
 
