@@ -12,7 +12,7 @@ public class LipTracking_Vive : MonoBehaviour
     public ControlWPFWindow controlWPFWindow;
 
     private Dictionary<LipShape_v2, float> LipWeightings;
-    public Dictionary<LipShape_v2, BlendShapeKey> LipShapeToBlendShapeMap = new Dictionary<LipShape_v2, BlendShapeKey>();
+    public Dictionary<LipShape_v2, string> LipShapeToStringKeyMap = new Dictionary<LipShape_v2, string>();
     public Dictionary<string, LipShape_v2> LipShapeNameToEnumMap = new Dictionary<string, LipShape_v2>();
 
 
@@ -44,12 +44,12 @@ public class LipTracking_Vive : MonoBehaviour
 
         SRanipal_Lip_v2.GetLipWeightings(out LipWeightings);
 
-        var keyvalues = new Dictionary<BlendShapeKey, float>();
+        var keyvalues = new Dictionary<string, float>();
         foreach(var weighting in LipWeightings)
         {
-            if (LipShapeToBlendShapeMap.ContainsKey(weighting.Key))
+            if (LipShapeToStringKeyMap.ContainsKey(weighting.Key))
             {
-                keyvalues[LipShapeToBlendShapeMap[weighting.Key]] = weighting.Value;
+                keyvalues[LipShapeToStringKeyMap[weighting.Key]] = weighting.Value;
             }
         }
         if (keyvalues.Any())
@@ -66,22 +66,21 @@ public class LipTracking_Vive : MonoBehaviour
     public Dictionary<string, string> GetLipShapeToBlendShapeStringMap()
     {
         var dict = new Dictionary<string, string>();
-        foreach (var map in LipShapeToBlendShapeMap)
+        foreach (var map in LipShapeToStringKeyMap)
         {
-            dict.Add(map.Key.ToString(), map.Value.Name);
+            dict.Add(map.Key.ToString(), map.Value);
         }
         return dict;
     }
 
     public void SetLipShapeToBlendShapeStringMap(Dictionary<string, string> stringMap)
     {
-        LipShapeToBlendShapeMap.Clear();
+        LipShapeToStringKeyMap.Clear();
         foreach (var map in stringMap)
         {
             if (LipShapeNameToEnumMap.ContainsKey(map.Key))
             {
-                var blendShapeKey = new BlendShapeKey(map.Value);
-                LipShapeToBlendShapeMap[LipShapeNameToEnumMap[map.Key]] = blendShapeKey;
+                LipShapeToStringKeyMap[LipShapeNameToEnumMap[map.Key]] = map.Value;
             }
         }
     }

@@ -563,7 +563,7 @@ public class ControlWPFWindow : MonoBehaviour
             }
             else if (e.CommandType == typeof(PipeCommands.GetFaceKeys))
             {
-                await server.SendCommandAsync(new PipeCommands.ReturnFaceKeys { Keys = faceController.BlendShapeKeys }, e.RequestId);
+                await server.SendCommandAsync(new PipeCommands.ReturnFaceKeys { Keys = faceController.BlendShapeClips.Select(d => d.BlendShapeName).ToList() }, e.RequestId);
             }
             else if (e.CommandType == typeof(PipeCommands.SetFace))
             {
