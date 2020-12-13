@@ -48,7 +48,7 @@ public class ExternalReceiverForVMC : MonoBehaviour {
 
     public int packets = 0;
 
-    private Dictionary<BlendShapeKey, float> blendShapeBuffer = new Dictionary<BlendShapeKey, float>();
+    private Dictionary<string, float> blendShapeBuffer = new Dictionary<string, float>();
 
     void Start () {
         var server = GetComponent<uOSC.uOscServer>();
@@ -219,7 +219,7 @@ public class ExternalReceiverForVMC : MonoBehaviour {
                 && (message.values[1] is float)
                 )
             {
-                blendShapeBuffer[new BlendShapeKey((string)message.values[0])] = (float)message.values[1];
+                blendShapeBuffer[(string)message.values[0]] = (float)message.values[1];
             }
             //ブレンドシェープ適用
             else if (message.address == "/VMC/Ext/Blend/Apply")
@@ -289,7 +289,7 @@ public class ExternalReceiverForVMC : MonoBehaviour {
             else if (message.address == "/VMC/Ext/Set/Calib/Ready")
             {
                 if (File.Exists(ControlWPFWindow.CurrentSettings.VRMPath)) {
-                    window.ImportVRM(ControlWPFWindow.CurrentSettings.VRMPath, true, true, true);
+                    var t = window.ImportVRM(ControlWPFWindow.CurrentSettings.VRMPath, true, true, true);
                 }
             }
             //キャリブレーション実行 V2.5

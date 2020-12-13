@@ -15,7 +15,7 @@ public class MIDICCBlendShape : MonoBehaviour
     //キーが存在するか
     bool available = false;
 
-    private Dictionary<string, BlendShapeKey> nameToKeyDictionary = new Dictionary<string, BlendShapeKey>();
+    private string[] keyArray = new string[] { };
     private Dictionary<string, float> nameToValueDictionary = new Dictionary<string, float>();
 
     void Start()
@@ -44,20 +44,19 @@ public class MIDICCBlendShape : MonoBehaviour
                     valuecount++;
                 }
             }
-            if (nameToKeyDictionary.Count != valuecount) UpdateDictionary();
-            if (valuecount > 0) faceController.MixPresets(nameof(MIDICCBlendShape), nameToKeyDictionary.Values.ToArray(), nameToValueDictionary.Values.ToArray());
+            if (keyArray.Length != valuecount) UpdateDictionary();
+            if (valuecount > 0) faceController.MixPresets(nameof(MIDICCBlendShape), keyArray, nameToValueDictionary.Values.ToArray());
         }
     }
 
     private void UpdateDictionary()
     {
-        nameToKeyDictionary.Clear();
         nameToValueDictionary.Clear();
         var keys = KnobToBlendShape.Where(d => d != null && d != "");
         foreach (var key in keys)
         {
-            nameToKeyDictionary.Add(key, new BlendShapeKey(key));
             nameToValueDictionary.Add(key, 0);
         }
+        keyArray = keys.ToArray();
     }
 }

@@ -42,7 +42,7 @@ public class VMC_VRMLookAtBlendShapeApplyer : MonoBehaviour, IVRMComponent
         m_head.YawPitchChanged += ApplyRotations;
     }
 
-    private BlendShapeKey[] presets = new[] { new BlendShapeKey(BlendShapePreset.LookLeft), new BlendShapeKey(BlendShapePreset.LookRight), new BlendShapeKey(BlendShapePreset.LookUp), new BlendShapeKey(BlendShapePreset.LookDown) };
+    private BlendShapeKey[] presets = new[] { BlendShapeKey.CreateFromPreset(BlendShapePreset.LookLeft), BlendShapeKey.CreateFromPreset(BlendShapePreset.LookRight), BlendShapeKey.CreateFromPreset(BlendShapePreset.LookUp), BlendShapeKey.CreateFromPreset(BlendShapePreset.LookDown) };
     private float[] blendShapeValues = new float[4];
 
     void ApplyRotations(float yaw, float pitch)

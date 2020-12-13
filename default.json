@@ -1,4 +1,10 @@
 {
+    "AAA_0":"========================================",
+    "AAA_1":" Virtual Motion Capture Setting File",
+    "AAA_2":" See more : vmc.info",
+    "AAA_3":"========================================",
+    "AAA_SavedVersion":"v0.48",
+    "AntiAliasing":2,
     "AutoBlinkEnable":true,
     "BackCameraLookTargetSettings":null,
     "BackgroundColor":{
@@ -9,7 +15,9 @@
     },
     "BlinkTimeMax":10,
     "BlinkTimeMin":1,
+    "CameraFOV":60,
     "CameraMirrorEnable":false,
+    "CameraSmooth":0,
     "CameraType":1,
     "CloseAnimationTime":0.06,
     "ClosingTime":0.1,
@@ -22,6 +30,34 @@
     "DefaultFace":"通常(NEUTRAL)",
     "DeleteHairNormalMap":true,
     "EnableNormalMapFix":true,
+    "EnableSkeletal":true,
+    "ExternalMotionReceiverEnable":false,
+    "ExternalMotionReceiverPort":39540,
+    "ExternalMotionReceiverRequesterEnable":true,
+    "ExternalMotionSenderAddress":"127.0.0.1",
+    "ExternalMotionSenderEnable":false,
+    "ExternalMotionSenderOptionString":"",
+    "ExternalMotionSenderPeriodBlendShape":1,
+    "ExternalMotionSenderPeriodBone":1,
+    "ExternalMotionSenderPeriodCamera":1,
+    "ExternalMotionSenderPeriodDevices":1,
+    "ExternalMotionSenderPeriodRoot":1,
+    "ExternalMotionSenderPeriodStatus":1,
+    "ExternalMotionSenderPort":39539,
+    "ExternalMotionSenderResponderEnable":false,
+    "EyeTracking_TobiiCenterX":0,
+    "EyeTracking_TobiiCenterY":0,
+    "EyeTracking_TobiiOffsetHorizontal":0,
+    "EyeTracking_TobiiOffsetVertical":0,
+    "EyeTracking_TobiiPosition":null,
+    "EyeTracking_TobiiScaleHorizontal":0.5,
+    "EyeTracking_TobiiScaleVertical":0.2,
+    "EyeTracking_ViveProEyeOffsetHorizontal":0,
+    "EyeTracking_ViveProEyeOffsetVertical":0,
+    "EyeTracking_ViveProEyeScaleHorizontal":2,
+    "EyeTracking_ViveProEyeScaleVertical":1.5,
+    "EyeTracking_ViveProEyeUseEyelidMovements":false,
+    "FixKneeRotation":true,
     "FreeCameraTransform":{
         "localPosition":{
             "x":0.869873643,
@@ -69,6 +105,7 @@
             "z":0
         }
     },
+    "HandleControllerAsTracker":false,
     "Head":{
         "m_Item1":1,
         "m_Item2":null
@@ -235,10 +272,10 @@
                     "actionType":1,
                     "isLeft":true,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":1,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -265,10 +302,10 @@
                     "actionType":1,
                     "isLeft":true,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":2,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -295,10 +332,10 @@
                     "actionType":1,
                     "isLeft":true,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":3,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -325,10 +362,10 @@
                     "actionType":1,
                     "isLeft":true,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":4,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -355,10 +392,10 @@
                     "actionType":1,
                     "isLeft":true,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":5,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -385,10 +422,10 @@
                     "actionType":1,
                     "isLeft":true,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":6,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -415,10 +452,10 @@
                     "actionType":1,
                     "isLeft":false,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":1,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -445,10 +482,10 @@
                     "actionType":1,
                     "isLeft":false,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":2,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -475,10 +512,10 @@
                     "actionType":1,
                     "isLeft":false,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":3,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -505,10 +542,10 @@
                     "actionType":1,
                     "isLeft":false,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":4,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -535,10 +572,10 @@
                     "actionType":1,
                     "isLeft":false,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":5,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -565,10 +602,10 @@
                     "actionType":1,
                     "isLeft":false,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":6,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -596,9 +633,9 @@
                     "isLeft":true,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":33,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickTrigger",
                     "type":0
                 }
             ],
@@ -626,9 +663,9 @@
                     "isLeft":true,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":33,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickTrigger",
                     "type":0
                 }
             ],
@@ -656,9 +693,9 @@
                     "isLeft":false,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":33,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickTrigger",
                     "type":0
                 }
             ],
@@ -686,9 +723,9 @@
                     "isLeft":false,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":33,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickTrigger",
                     "type":0
                 }
             ],
@@ -716,9 +753,9 @@
                     "isLeft":true,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":2,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickGrip",
                     "type":0
                 }
             ],
@@ -746,9 +783,9 @@
                     "isLeft":false,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":2,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickGrip",
                     "type":0
                 }
             ],
@@ -776,9 +813,9 @@
                     "isLeft":true,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":2,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickGrip",
                     "type":0
                 }
             ],
@@ -806,9 +843,9 @@
                     "isLeft":false,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":2,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickGrip",
                     "type":0
                 }
             ],
@@ -820,7 +857,7 @@
         },{
             "FaceAction":true,
             "FaceNames":[
-                "JOY"
+                "Joy"
             ],
             "FaceStrength":[
                 1
@@ -838,18 +875,18 @@
                     "isLeft":true,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":2,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickGrip",
                     "type":0
                 },{
                     "actionType":1,
                     "isLeft":true,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":1,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -861,7 +898,7 @@
         },{
             "FaceAction":true,
             "FaceNames":[
-                "ANGRY"
+                "Angry"
             ],
             "FaceStrength":[
                 1
@@ -879,18 +916,18 @@
                     "isLeft":true,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":2,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickGrip",
                     "type":0
                 },{
                     "actionType":1,
                     "isLeft":true,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":2,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -902,7 +939,7 @@
         },{
             "FaceAction":true,
             "FaceNames":[
-                "SORROW"
+                "Sorrow"
             ],
             "FaceStrength":[
                 1
@@ -920,18 +957,18 @@
                     "isLeft":true,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":2,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickGrip",
                     "type":0
                 },{
                     "actionType":1,
                     "isLeft":true,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":3,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -943,7 +980,7 @@
         },{
             "FaceAction":true,
             "FaceNames":[
-                "FUN"
+                "Fun"
             ],
             "FaceStrength":[
                 1
@@ -961,18 +998,18 @@
                     "isLeft":true,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":2,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickGrip",
                     "type":0
                 },{
                     "actionType":1,
                     "isLeft":true,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":4,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -1002,18 +1039,18 @@
                     "isLeft":true,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":2,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickGrip",
                     "type":0
                 },{
                     "actionType":1,
                     "isLeft":true,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":5,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -1025,7 +1062,7 @@
         },{
             "FaceAction":true,
             "FaceNames":[
-                "BLINK_L"
+                "Blink_L"
             ],
             "FaceStrength":[
                 1
@@ -1043,18 +1080,18 @@
                     "isLeft":true,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":2,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickGrip",
                     "type":0
                 },{
                     "actionType":1,
                     "isLeft":true,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":6,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -1066,7 +1103,7 @@
         },{
             "FaceAction":true,
             "FaceNames":[
-                "JOY"
+                "Joy"
             ],
             "FaceStrength":[
                 1
@@ -1084,18 +1121,18 @@
                     "isLeft":false,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":2,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickGrip",
                     "type":0
                 },{
                     "actionType":1,
                     "isLeft":false,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":1,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -1107,7 +1144,7 @@
         },{
             "FaceAction":true,
             "FaceNames":[
-                "ANGRY"
+                "Angry"
             ],
             "FaceStrength":[
                 1
@@ -1125,18 +1162,18 @@
                     "isLeft":false,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":2,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickGrip",
                     "type":0
                 },{
                     "actionType":1,
                     "isLeft":false,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":2,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -1148,7 +1185,7 @@
         },{
             "FaceAction":true,
             "FaceNames":[
-                "SORROW"
+                "Sorrow"
             ],
             "FaceStrength":[
                 1
@@ -1166,18 +1203,18 @@
                     "isLeft":false,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":2,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickGrip",
                     "type":0
                 },{
                     "actionType":1,
                     "isLeft":false,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":3,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -1189,7 +1226,7 @@
         },{
             "FaceAction":true,
             "FaceNames":[
-                "FUN"
+                "Fun"
             ],
             "FaceStrength":[
                 1
@@ -1207,18 +1244,18 @@
                     "isLeft":false,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":2,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickGrip",
                     "type":0
                 },{
                     "actionType":1,
                     "isLeft":false,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":4,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -1248,18 +1285,18 @@
                     "isLeft":false,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":2,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickGrip",
                     "type":0
                 },{
                     "actionType":1,
                     "isLeft":false,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":5,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -1271,7 +1308,7 @@
         },{
             "FaceAction":true,
             "FaceNames":[
-                "BLINK_R"
+                "Blink_R"
             ],
             "FaceStrength":[
                 1
@@ -1289,18 +1326,18 @@
                     "isLeft":false,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":2,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickGrip",
                     "type":0
                 },{
                     "actionType":1,
                     "isLeft":false,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":32,
+                    "isTouch":true,
+                    "keyCode":-2,
                     "keyIndex":6,
-                    "keyName":null,
+                    "keyName":"TouchTrackpad",
                     "type":0
                 }
             ],
@@ -1312,7 +1349,7 @@
         },{
             "FaceAction":true,
             "FaceNames":[
-                "NEUTRAL"
+                "Neutral"
             ],
             "FaceStrength":[
                 1
@@ -1330,9 +1367,9 @@
                     "isLeft":true,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":2,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickGrip",
                     "type":0
                 }
             ],
@@ -1344,7 +1381,7 @@
         },{
             "FaceAction":true,
             "FaceNames":[
-                "NEUTRAL"
+                "Neutral"
             ],
             "FaceStrength":[
                 1
@@ -1362,9 +1399,9 @@
                     "isLeft":false,
                     "isOculus":false,
                     "isTouch":false,
-                    "keyCode":2,
+                    "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":null,
+                    "keyName":"ClickGrip",
                     "type":0
                 }
             ],
@@ -1395,6 +1432,7 @@
         "m_Item1":0,
         "m_Item2":null
     },
+    "LeftThumbStickPoints":null,
     "LeftTouchPadPoints":[
         {
             "x":-0.760845244,
@@ -1413,13 +1451,60 @@
             "y":0.8
         }
     ],
+    "LightColor":{
+        "a":1,
+        "b":1,
+        "g":1,
+        "r":1
+    },
+    "LightRotationX":130,
+    "LightRotationY":43,
+    "LipShapesToBlendShapeMap":[
+        
+    ],
     "LipSyncDevice":"",
     "LipSyncEnable":true,
     "LipSyncGain":100.023239,
     "LipSyncMaxWeightEmphasis":true,
     "LipSyncMaxWeightEnable":true,
     "LipSyncWeightThreashold":0.03,
+    "MidiCCBlendShape":[
+        null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null
+    ],
     "OpenAnimationTime":0.03,
+    "PPS_Bloom_Color_a":1,
+    "PPS_Bloom_Color_b":1,
+    "PPS_Bloom_Color_g":1,
+    "PPS_Bloom_Color_r":1,
+    "PPS_Bloom_Enable":false,
+    "PPS_Bloom_Intensity":2.7,
+    "PPS_Bloom_Threshold":0.5,
+    "PPS_CA_Enable":false,
+    "PPS_CA_FastMode":false,
+    "PPS_CA_Intensity":1,
+    "PPS_CG_ColorFilter_a":1,
+    "PPS_CG_ColorFilter_b":1,
+    "PPS_CG_ColorFilter_g":1,
+    "PPS_CG_ColorFilter_r":1,
+    "PPS_CG_Contrast":0,
+    "PPS_CG_Enable":false,
+    "PPS_CG_Gamma":0,
+    "PPS_CG_Saturation":0,
+    "PPS_CG_Temperature":0,
+    "PPS_DoF_Aperture":16,
+    "PPS_DoF_Enable":false,
+    "PPS_DoF_FocusDistance":1.65,
+    "PPS_DoF_FocusLength":16.4,
+    "PPS_DoF_MaxBlurSize":3,
+    "PPS_Enable":false,
+    "PPS_Vignette_Color_a":1,
+    "PPS_Vignette_Color_b":0,
+    "PPS_Vignette_Color_g":0,
+    "PPS_Vignette_Color_r":0,
+    "PPS_Vignette_Enable":false,
+    "PPS_Vignette_Intensity":0.65,
+    "PPS_Vignette_Roundness":1,
+    "PPS_Vignette_Smoothness":0.35,
     "Pelvis":{
         "m_Item1":3,
         "m_Item2":null
@@ -1483,6 +1568,7 @@
         "m_Item1":0,
         "m_Item2":null
     },
+    "RightThumbStickPoints":null,
     "RightTouchPadPoints":[
         {
             "x":0.760845244,
@@ -1501,8 +1587,18 @@
             "y":0.8
         }
     ],
+    "ScreenHeight":0,
+    "ScreenRefreshRate":0,
+    "ScreenWidth":0,
     "ShowCameraGrid":false,
+    "TrackingFilterControllerEnable":true,
+    "TrackingFilterEnable":true,
+    "TrackingFilterHmdEnable":true,
+    "TrackingFilterTrackerEnable":true,
+    "TurnOffAmbientLight":false,
     "VRMPath":null,
+    "VirtualMotionTrackerEnable":false,
+    "VirtualMotionTrackerNo":50,
     "WebCamBuffering":0,
     "WebCamEnabled":false,
     "WebCamMirroring":false,

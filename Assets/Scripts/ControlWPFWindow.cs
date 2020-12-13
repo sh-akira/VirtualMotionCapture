@@ -15,6 +15,7 @@ using static Assets.Scripts.NativeMethods;
 using RootMotion.FinalIK;
 using Valve.VR;
 using System.Reflection;
+using System.Threading.Tasks;
 #if UNITY_EDITOR   // エディタ上でしか動きません。
 using UnityEditor;
 #endif
@@ -25,6 +26,7 @@ public class ControlWPFWindow : MonoBehaviour
     public bool IsPreRelease = false;
 
     public string VersionString;
+    private string baseVersionString;
 
     public TrackerHandler handler = null;
     public Transform LeftWristTransform = null;
@@ -249,7 +251,6 @@ public class ControlWPFWindow : MonoBehaviour
         {
             setWindowNum++;
         }
-        var baseVersionString = VersionString.Split('f').First();
         var buildString = "";
         if (IsBeta)
         {
@@ -350,7 +351,7 @@ public class ControlWPFWindow : MonoBehaviour
             else if (e.CommandType == typeof(PipeCommands.ImportVRM))
             {
                 var d = (PipeCommands.ImportVRM)e.Data;
-                ImportVRM(d.Path, d.ImportForCalibration, d.UseCurrentFixSetting ? CurrentSettings.EnableNormalMapFix : d.EnableNormalMapFix, d.UseCurrentFixSetting ? CurrentSettings.DeleteHairNormalMap : d.DeleteHairNormalMap);
+                var t = ImportVRM(d.Path, d.ImportForCalibration, d.UseCurrentFixSetting ? CurrentSettings.EnableNormalMapFix : d.EnableNormalMapFix, d.UseCurrentFixSetting ? CurrentSettings.DeleteHairNormalMap : d.DeleteHairNormalMap);
 
                 //メタ情報をOSC送信する
                 VRMmetaLodedAction?.Invoke(LoadVRM(d.Path));
@@ -563,7 +564,7 @@ public class ControlWPFWindow : MonoBehaviour
             }
             else if (e.CommandType == typeof(PipeCommands.GetFaceKeys))
             {
-                await server.SendCommandAsync(new PipeCommands.ReturnFaceKeys { Keys = faceController.BlendShapeKeys }, e.RequestId);
+                await server.SendCommandAsync(new PipeCommands.ReturnFaceKeys { Keys = faceController.BlendShapeClips.Select(d => d.BlendShapeName).ToList() }, e.RequestId);
             }
             else if (e.CommandType == typeof(PipeCommands.SetFace))
             {
@@ -1179,7 +1180,7 @@ public class ControlWPFWindow : MonoBehaviour
     private const float LeftHandAngle = -30f;
     private const float RightHandAngle = -30f;
 
-    public async void ImportVRM(string path, bool ImportForCalibration, bool EnableNormalMapFix, bool DeleteHairNormalMap)
+    public async Task ImportVRM(string path, bool ImportForCalibration, bool EnableNormalMapFix, bool DeleteHairNormalMap)
     {
         if (ImportForCalibration == false)
         {
@@ -2815,6 +2816,16 @@ public class ControlWPFWindow : MonoBehaviour
     [Serializable]
     public class Settings
     {
+        [OptionalField]
+        public string AAA_0 = null;
+        [OptionalField]
+        public string AAA_1 = null;
+        [OptionalField]
+        public string AAA_2 = null;
+        [OptionalField]
+        public string AAA_3 = null;
+        [OptionalField]
+        public string AAA_SavedVersion = null;
         public string VRMPath = null;
         public StoreTransform headTracker = null;
         public StoreTransform bodyTracker = null;
@@ -3127,6 +3138,13 @@ public class ControlWPFWindow : MonoBehaviour
         [OnDeserializing()]
         internal void OnDeserializingMethod(StreamingContext context)
         {
+            AAA_0 = "========================================";
+            AAA_1 = " Virtual Motion Capture Setting File";
+            AAA_2 = " See more : vmc.info";
+            AAA_3 = "========================================";
+
+            AAA_SavedVersion = null;
+
             BlinkTimeMin = 1.0f;
             BlinkTimeMax = 10.0f;
             CloseAnimationTime = 0.06f;
@@ -3354,6 +3372,9 @@ public class ControlWPFWindow : MonoBehaviour
         {
             return;
         }
+
+        CurrentSettings.AAA_SavedVersion = baseVersionString;
+
         File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(CurrentSettings)));
 
         //ファイルが正常に書き込めたので、現在共通設定に記録されているパスと違う場合、共通設定に書き込む
@@ -3465,7 +3486,7 @@ public class ControlWPFWindow : MonoBehaviour
         if (string.IsNullOrWhiteSpace(CurrentSettings.VRMPath) == false)
         {
             await server.SendCommandAsync(new PipeCommands.LoadVRMPath { Path = CurrentSettings.VRMPath });
-            ImportVRM(CurrentSettings.VRMPath, false, CurrentSettings.EnableNormalMapFix, CurrentSettings.DeleteHairNormalMap);
+            await ImportVRM(CurrentSettings.VRMPath, false, CurrentSettings.EnableNormalMapFix, CurrentSettings.DeleteHairNormalMap);
 
             //メタ情報をOSC送信する
             VRMmetaLodedAction?.Invoke(LoadVRM(CurrentSettings.VRMPath));
@@ -3583,6 +3604,20 @@ public class ControlWPFWindow : MonoBehaviour
 
         KeyAction.KeyActionsUpgrade(CurrentSettings.KeyActions);
 
+        if (string.IsNullOrWhiteSpace(CurrentSettings.AAA_SavedVersion))
+        {
+            //before 0.47 _SaveVersion is null.
+
+            //v0.48 BlendShapeKey case sensitive.
+            foreach (var keyAction in CurrentSettings.KeyActions)
+            {
+                if (keyAction.FaceNames != null && keyAction.FaceNames.Count > 0)
+                {
+                    keyAction.FaceNames = keyAction.FaceNames.Select(d => faceController.GetCaseSensitiveKeyName(d)).ToList();
+                }
+            }
+        }
+
         steamVR2Input.EnableSkeletal = CurrentSettings.EnableSkeletal;
 
         await server.SendCommandAsync(new PipeCommands.LoadSkeletalInputEnable { enable = CurrentSettings.EnableSkeletal });
@@ -3677,6 +3712,7 @@ public class ControlWPFWindow : MonoBehaviour
 
     private void Awake()
     {
+        baseVersionString = VersionString.Split('f').First();
         defaultWindowStyle = GetWindowLong(GetUnityWindowHandle(), GWL_STYLE);
         defaultExWindowStyle = GetWindowLong(GetUnityWindowHandle(), GWL_EXSTYLE);
     }

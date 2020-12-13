@@ -38,7 +38,7 @@ public class FaceController : MonoBehaviour
 
     private bool IsSetting = false;
 
-    public List<string> BlendShapeKeys; //読み込んだモデルの表情のキー一覧
+    public List<BlendShapeClip> BlendShapeClips; //読み込んだモデルの表情のキー一覧
 
     public System.Action BeforeApply;
 
@@ -59,7 +59,7 @@ public class FaceController : MonoBehaviour
                     }
                     else if (string.IsNullOrEmpty(FacePresetName) == false)
                     {
-                        SetFace(FacePresetName, 0.0f, StopBlink);
+                        SetFace(BlendShapeKey.CreateUnknown(FacePresetName), 0.0f, StopBlink);
                     }
                 }
                 defaultFace = value;
@@ -72,7 +72,7 @@ public class FaceController : MonoBehaviour
                     }
                     else if (string.IsNullOrEmpty(FacePresetName) == false)
                     {
-                        SetFace(FacePresetName, 1.0f, StopBlink);
+                        SetFace(BlendShapeKey.CreateUnknown(FacePresetName), 1.0f, StopBlink);
                     }
                 }
             }
@@ -84,20 +84,35 @@ public class FaceController : MonoBehaviour
 
     private Dictionary<BlendShapeKey, float> CurrentShapeKeys;
     private Dictionary<string, Dictionary<BlendShapeKey, float>> AccumulateShapeKeys = new Dictionary<string, Dictionary<BlendShapeKey, float>>();
-    private BlendShapeKey NeutralKey = new BlendShapeKey(BlendShapePreset.Neutral);
+    private BlendShapeKey NeutralKey = BlendShapeKey.CreateFromPreset(BlendShapePreset.Neutral);
+
+    private Dictionary<string, BlendShapeKey> BlendShapeKeyString = new Dictionary<string, BlendShapeKey>();
+    private Dictionary<string, string> KeyUpperCaseDictionary = new Dictionary<string, string>();
+    public string GetCaseSensitiveKeyName(string upperCase)
+    {
+        if (KeyUpperCaseDictionary.Count == 0)
+        {
+            foreach (var presetName in System.Enum.GetNames(typeof(BlendShapePreset)))
+            {
+                KeyUpperCaseDictionary[presetName.ToUpper()] = presetName;
+            }
+        }
+        return KeyUpperCaseDictionary.ContainsKey(upperCase) ? KeyUpperCaseDictionary[upperCase] : upperCase;
+    }
 
     public void ImportVRMmodel(GameObject vrmmodel)
     {
         VRMmodel = vrmmodel;
         proxy = null;
+        InitializeProxy();
     }
 
     private void Start()
     {
         var dict = new Dictionary<BlendShapeKey, float>();
-        foreach (var key in BlendShapeKeys)
+        foreach (var clip in BlendShapeClips)
         {
-            dict.Add(new BlendShapeKey(key), 0.0f);
+            dict.Add(clip.Key, 0.0f);
         }
         CurrentShapeKeys = dict;
 
@@ -154,11 +169,11 @@ public class FaceController : MonoBehaviour
         //表情をデフォルトに戻す
         if (proxy != null)
         {
-            var keys = new List<string>();
+            var keys = new List<BlendShapeKey>();
             var values = new List<float>();
-            foreach (var keyname in BlendShapeKeys)
+            foreach (var clip in BlendShapeClips)
             {
-                var shapekey = new BlendShapeKey(keyname);
+                var shapekey = clip.Key;
                 if (shapekey.Equals(NeutralKey))
                 {
                     values.Add(1.0f);
@@ -167,7 +182,7 @@ public class FaceController : MonoBehaviour
                 {
                     values.Add(0.0f);
                 }
-                keys.Add(keyname);
+                keys.Add(shapekey);
             }
             SetFace(keys, values, StopBlink);
         }
@@ -187,42 +202,40 @@ public class FaceController : MonoBehaviour
 
     public void SetFace(BlendShapePreset preset, float strength, bool stopBlink)
     {
-        SetFace(new BlendShapeKey(preset), strength, stopBlink);
+        SetFace(BlendShapeKey.CreateFromPreset(preset), strength, stopBlink);
     }
 
     public void SetFace(BlendShapeKey key, float strength, bool stopBlink)
     {
-        SetFace(new List<string> { key.Name }, new List<float> { strength }, stopBlink);
-    }
-
-    public void SetFace(string key, float strength, bool stopBlink)
-    {
-        SetFace(new List<string> { key }, new List<float> { strength }, stopBlink);
+        SetFace(new List<BlendShapeKey> { key }, new List<float> { strength }, stopBlink);
     }
 
     public void SetFace(List<string> keys, List<float> strength, bool stopBlink)
     {
         if (proxy != null)
         {
+            SetFace(keys.Select(d => BlendShapeKeyString[d]).ToList(), strength, stopBlink);
+        }
+    }
+
+    public void SetFace(List<BlendShapeKey> keys, List<float> strength, bool stopBlink)
+    {
+        if (proxy != null)
+        {
             StopBlink = stopBlink;
             var dict = new Dictionary<BlendShapeKey, float>();
-            foreach (var key in BlendShapeKeys)
+            foreach (var clip in BlendShapeClips)
             {
-                dict.Add(new BlendShapeKey(key), 0.0f);
+                dict.Add(clip.Key, 0.0f);
             }
             //dict[NeutralKey] = 1.0f;
             for (int i = 0; i < keys.Count; i++)
             {
-                dict[new BlendShapeKey(keys[i])] = strength[i];
+                dict[keys[i]] = strength[i];
             }
             //現在のベースの表情を更新する
             CurrentShapeKeys = dict;
         }
-    }
-
-    public void MixPreset(string presetName, string keyName, float value)
-    {
-        MixPresets(presetName, new[] { new BlendShapeKey(keyName) }, new[] { value });
     }
 
     public void MixPreset(string presetName, BlendShapePreset preset, float value)
@@ -232,15 +245,17 @@ public class FaceController : MonoBehaviour
 
     public void MixPresets(string presetName, BlendShapePreset[] presets, float[] values)
     {
-        if (proxy == null) return;
-        if (CurrentShapeKeys == null) return;
-
-        MixPresets(presetName, presets.Select(d => new BlendShapeKey(d)).ToArray(), values);
+        MixPresets(presetName, presets.Select(d => BlendShapeKey.CreateFromPreset(d)).ToArray(), values);
     }
 
     public void MixPreset(string presetName, BlendShapeKey preset, float value)
     {
         MixPresets(presetName, new[] { preset }, new[] { value });
+    }
+
+    public void MixPresets(string presetName, string[] keys, float[] values)
+    {
+        MixPresets(presetName, keys.Select(d => BlendShapeKeyString[d]).ToArray(), values);
     }
 
     public void MixPresets(string presetName, BlendShapeKey[] presets, float[] values)
@@ -295,6 +310,32 @@ public class FaceController : MonoBehaviour
         //SetValuesは内部でApplyまで行うためApply不要
     }
 
+    private void InitializeProxy()
+    {
+        proxy = VRMmodel.GetComponent<VRMBlendShapeProxy>();
+        //すべての表情の名称一覧を取得
+        if (proxy != null)
+        {
+            BlendShapeClips = proxy.BlendShapeAvatar.Clips;
+            foreach (var clip in BlendShapeClips)
+            {
+                if (clip.Preset == BlendShapePreset.Unknown)
+                {
+                    //非プリセット(Unknown)であれば、Unknown用の名前変数を参照する
+                    BlendShapeKeyString[clip.BlendShapeName] = clip.Key;
+                    KeyUpperCaseDictionary[clip.BlendShapeName.ToUpper()] = clip.BlendShapeName;
+                }
+                else
+                {
+                    //プリセットであればENUM値をToStringした値を利用する
+                    BlendShapeKeyString[clip.Preset.ToString()] = clip.Key;
+                    KeyUpperCaseDictionary[clip.Preset.ToString().ToUpper()] = clip.Preset.ToString();
+                }
+            }
+        }
+        SetFaceNeutral();
+    }
+
     private bool isReset = false;
 
     // Update is called once per frame
@@ -304,10 +345,7 @@ public class FaceController : MonoBehaviour
         {
             if (proxy == null)
             {
-                proxy = VRMmodel.GetComponent<VRMBlendShapeProxy>();
-                //すべての表情の名称一覧を取得
-                if (proxy != null) BlendShapeKeys = proxy.BlendShapeAvatar.Clips.Select(d => BlendShapeKey.CreateFrom(d).Name).ToList();
-                SetFaceNeutral();
+                InitializeProxy();
             }
             if (IsSetting == false)
             {

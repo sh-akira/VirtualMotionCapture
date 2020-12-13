@@ -8,6 +8,7 @@ Assets/ExternalPlugins/RootMotion*
 Assets/ExternalPlugins/SteamVR*
 Assets/ExternalPlugins/VRM*
 Assets/ExternalPlugins/VRM.Samples*
+Assets/ExternalPlugins/MeshUtility*
 Assets/ExternalPlugins/StreamingAssets*
 Assets/ExternalPlugins/OVRLipSync*
 Assets/ExternalPlugins/Oculus*
@@ -44,6 +45,17 @@ Backup*
 Assets/ExternalPlugins/uOSC*
 Assets/ExternalPlugins/MidiJack*
 Assets/ExternalPlugins/EasyDeviceDiscoveryProtocol*
+DepthFirstScheduler*csproj
+MeshUtility*csproj
+MToon*csproj
+ShaderProperty*csproj
+UniGLTF*csproj
+UniHumanoid*csproj
+UniJSON*csproj
+UniUnlit*csproj
+UniVRM*csproj
+VRM*csproj
+
 
 # Visual Studio cache directory
 .vs/
