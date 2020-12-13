@@ -289,7 +289,7 @@ public class ExternalReceiverForVMC : MonoBehaviour {
             else if (message.address == "/VMC/Ext/Set/Calib/Ready")
             {
                 if (File.Exists(ControlWPFWindow.CurrentSettings.VRMPath)) {
-                    window.ImportVRM(ControlWPFWindow.CurrentSettings.VRMPath, true, true, true);
+                    var t = window.ImportVRM(ControlWPFWindow.CurrentSettings.VRMPath, true, true, true);
                 }
             }
             //キャリブレーション実行 V2.5

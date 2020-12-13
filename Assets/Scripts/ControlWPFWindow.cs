@@ -350,7 +350,7 @@ public class ControlWPFWindow : MonoBehaviour
             else if (e.CommandType == typeof(PipeCommands.ImportVRM))
             {
                 var d = (PipeCommands.ImportVRM)e.Data;
-                ImportVRM(d.Path, d.ImportForCalibration, d.UseCurrentFixSetting ? CurrentSettings.EnableNormalMapFix : d.EnableNormalMapFix, d.UseCurrentFixSetting ? CurrentSettings.DeleteHairNormalMap : d.DeleteHairNormalMap);
+                var t = ImportVRM(d.Path, d.ImportForCalibration, d.UseCurrentFixSetting ? CurrentSettings.EnableNormalMapFix : d.EnableNormalMapFix, d.UseCurrentFixSetting ? CurrentSettings.DeleteHairNormalMap : d.DeleteHairNormalMap);
 
                 //メタ情報をOSC送信する
                 VRMmetaLodedAction?.Invoke(LoadVRM(d.Path));
@@ -1179,7 +1179,7 @@ public class ControlWPFWindow : MonoBehaviour
     private const float LeftHandAngle = -30f;
     private const float RightHandAngle = -30f;
 
-    public async void ImportVRM(string path, bool ImportForCalibration, bool EnableNormalMapFix, bool DeleteHairNormalMap)
+    public async Task ImportVRM(string path, bool ImportForCalibration, bool EnableNormalMapFix, bool DeleteHairNormalMap)
     {
         if (ImportForCalibration == false)
         {
@@ -3465,7 +3465,7 @@ public class ControlWPFWindow : MonoBehaviour
         if (string.IsNullOrWhiteSpace(CurrentSettings.VRMPath) == false)
         {
             await server.SendCommandAsync(new PipeCommands.LoadVRMPath { Path = CurrentSettings.VRMPath });
-            ImportVRM(CurrentSettings.VRMPath, false, CurrentSettings.EnableNormalMapFix, CurrentSettings.DeleteHairNormalMap);
+            await ImportVRM(CurrentSettings.VRMPath, false, CurrentSettings.EnableNormalMapFix, CurrentSettings.DeleteHairNormalMap);
 
             //メタ情報をOSC送信する
             VRMmetaLodedAction?.Invoke(LoadVRM(CurrentSettings.VRMPath));
