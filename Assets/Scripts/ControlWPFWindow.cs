@@ -15,6 +15,7 @@ using static Assets.Scripts.NativeMethods;
 using RootMotion.FinalIK;
 using Valve.VR;
 using System.Reflection;
+using System.Threading.Tasks;
 #if UNITY_EDITOR   // エディタ上でしか動きません。
 using UnityEditor;
 #endif
@@ -25,6 +26,7 @@ public class ControlWPFWindow : MonoBehaviour
     public bool IsPreRelease = false;
 
     public string VersionString;
+    private string baseVersionString;
 
     public TrackerHandler handler = null;
     public Transform LeftWristTransform = null;
@@ -249,7 +251,6 @@ public class ControlWPFWindow : MonoBehaviour
         {
             setWindowNum++;
         }
-        var baseVersionString = VersionString.Split('f').First();
         var buildString = "";
         if (IsBeta)
         {
@@ -2815,6 +2816,16 @@ public class ControlWPFWindow : MonoBehaviour
     [Serializable]
     public class Settings
     {
+        [OptionalField]
+        public string AAA_0 = null;
+        [OptionalField]
+        public string AAA_1 = null;
+        [OptionalField]
+        public string AAA_2 = null;
+        [OptionalField]
+        public string AAA_3 = null;
+        [OptionalField]
+        public string AAA_SavedVersion = null;
         public string VRMPath = null;
         public StoreTransform headTracker = null;
         public StoreTransform bodyTracker = null;
@@ -3127,6 +3138,13 @@ public class ControlWPFWindow : MonoBehaviour
         [OnDeserializing()]
         internal void OnDeserializingMethod(StreamingContext context)
         {
+            AAA_0 = "========================================";
+            AAA_1 = " Virtual Motion Capture Setting File";
+            AAA_2 = " See more : vmc.info";
+            AAA_3 = "========================================";
+
+            AAA_SavedVersion = null;
+
             BlinkTimeMin = 1.0f;
             BlinkTimeMax = 10.0f;
             CloseAnimationTime = 0.06f;
@@ -3354,6 +3372,9 @@ public class ControlWPFWindow : MonoBehaviour
         {
             return;
         }
+
+        CurrentSettings.AAA_SavedVersion = baseVersionString;
+
         File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(CurrentSettings)));
 
         //ファイルが正常に書き込めたので、現在共通設定に記録されているパスと違う場合、共通設定に書き込む
@@ -3677,6 +3698,7 @@ public class ControlWPFWindow : MonoBehaviour
 
     private void Awake()
     {
+        baseVersionString = VersionString.Split('f').First();
         defaultWindowStyle = GetWindowLong(GetUnityWindowHandle(), GWL_STYLE);
         defaultExWindowStyle = GetWindowLong(GetUnityWindowHandle(), GWL_EXSTYLE);
     }
