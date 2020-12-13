@@ -3604,6 +3604,20 @@ public class ControlWPFWindow : MonoBehaviour
 
         KeyAction.KeyActionsUpgrade(CurrentSettings.KeyActions);
 
+        if (string.IsNullOrWhiteSpace(CurrentSettings.AAA_SavedVersion))
+        {
+            //before 0.47 _SaveVersion is null.
+
+            //v0.48 BlendShapeKey case sensitive.
+            foreach (var keyAction in CurrentSettings.KeyActions)
+            {
+                if (keyAction.FaceNames != null && keyAction.FaceNames.Count > 0)
+                {
+                    keyAction.FaceNames = keyAction.FaceNames.Select(d => faceController.GetCaseSensitiveKeyName(d)).ToList();
+                }
+            }
+        }
+
         steamVR2Input.EnableSkeletal = CurrentSettings.EnableSkeletal;
 
         await server.SendCommandAsync(new PipeCommands.LoadSkeletalInputEnable { enable = CurrentSettings.EnableSkeletal });

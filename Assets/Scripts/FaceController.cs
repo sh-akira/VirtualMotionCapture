@@ -87,11 +87,24 @@ public class FaceController : MonoBehaviour
     private BlendShapeKey NeutralKey = BlendShapeKey.CreateFromPreset(BlendShapePreset.Neutral);
 
     private Dictionary<string, BlendShapeKey> BlendShapeKeyString = new Dictionary<string, BlendShapeKey>();
+    private Dictionary<string, string> KeyUpperCaseDictionary = new Dictionary<string, string>();
+    public string GetCaseSensitiveKeyName(string upperCase)
+    {
+        if (KeyUpperCaseDictionary.Count == 0)
+        {
+            foreach (var presetName in System.Enum.GetNames(typeof(BlendShapePreset)))
+            {
+                KeyUpperCaseDictionary[presetName.ToUpper()] = presetName;
+            }
+        }
+        return KeyUpperCaseDictionary.ContainsKey(upperCase) ? KeyUpperCaseDictionary[upperCase] : upperCase;
+    }
 
     public void ImportVRMmodel(GameObject vrmmodel)
     {
         VRMmodel = vrmmodel;
         proxy = null;
+        InitializeProxy();
     }
 
     private void Start()
@@ -199,7 +212,10 @@ public class FaceController : MonoBehaviour
 
     public void SetFace(List<string> keys, List<float> strength, bool stopBlink)
     {
-        SetFace(keys.Select(d => BlendShapeKeyString[d]).ToList(), strength, stopBlink);
+        if (proxy != null)
+        {
+            SetFace(keys.Select(d => BlendShapeKeyString[d]).ToList(), strength, stopBlink);
+        }
     }
 
     public void SetFace(List<BlendShapeKey> keys, List<float> strength, bool stopBlink)
@@ -294,6 +310,32 @@ public class FaceController : MonoBehaviour
         //SetValuesは内部でApplyまで行うためApply不要
     }
 
+    private void InitializeProxy()
+    {
+        proxy = VRMmodel.GetComponent<VRMBlendShapeProxy>();
+        //すべての表情の名称一覧を取得
+        if (proxy != null)
+        {
+            BlendShapeClips = proxy.BlendShapeAvatar.Clips;
+            foreach (var clip in BlendShapeClips)
+            {
+                if (clip.Preset == BlendShapePreset.Unknown)
+                {
+                    //非プリセット(Unknown)であれば、Unknown用の名前変数を参照する
+                    BlendShapeKeyString[clip.BlendShapeName] = clip.Key;
+                    KeyUpperCaseDictionary[clip.BlendShapeName.ToUpper()] = clip.BlendShapeName;
+                }
+                else
+                {
+                    //プリセットであればENUM値をToStringした値を利用する
+                    BlendShapeKeyString[clip.Preset.ToString()] = clip.Key;
+                    KeyUpperCaseDictionary[clip.Preset.ToString().ToUpper()] = clip.Preset.ToString();
+                }
+            }
+        }
+        SetFaceNeutral();
+    }
+
     private bool isReset = false;
 
     // Update is called once per frame
@@ -303,26 +345,7 @@ public class FaceController : MonoBehaviour
         {
             if (proxy == null)
             {
-                proxy = VRMmodel.GetComponent<VRMBlendShapeProxy>();
-                //すべての表情の名称一覧を取得
-                if (proxy != null)
-                {
-                    BlendShapeClips = proxy.BlendShapeAvatar.Clips;
-                    foreach (var clip in BlendShapeClips)
-                    {
-                        if (clip.Preset == BlendShapePreset.Unknown)
-                        {
-                            //非プリセット(Unknown)であれば、Unknown用の名前変数を参照する
-                            BlendShapeKeyString[clip.BlendShapeName] = clip.Key;
-                        }
-                        else
-                        {
-                            //プリセットであればENUM値をToStringした値を利用する
-                            BlendShapeKeyString[clip.Preset.ToString()] = clip.Key;
-                        }
-                    }
-                }
-                SetFaceNeutral();
+                InitializeProxy();
             }
             if (IsSetting == false)
             {
