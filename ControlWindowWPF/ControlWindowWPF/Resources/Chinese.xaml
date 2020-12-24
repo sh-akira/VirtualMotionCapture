@@ -474,4 +474,10 @@
 
     <system:String x:Key="VRoidHubWindow_SelectModelMessage">请选择模型并载入</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionConfirm">使用这个模型，你需要确认协议；一定要保证信用、 是否使用？</system:String>
+
+    <!-- DMMVRConnectWindow -->
+    <system:String x:Key="DMMVRConnectWindowTitle">从DMM VR Connect载入模型</system:String>
+    <system:String x:Key="DMMVRConnectCreateAccount">Create account</system:String>
+    <system:String x:Key="DMMVRConnectOpenBrowserDescription1">Browser will open automatically, please complete login.</system:String>
+    <system:String x:Key="DMMVRConnectOpenBrowserDescription2">If not, please access this URL and enter code.</system:String>
 </ResourceDictionary>

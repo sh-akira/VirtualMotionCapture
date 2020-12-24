@@ -475,4 +475,10 @@
 
     <system:String x:Key="VRoidHubWindow_SelectModelMessage">Please select the model to load</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionConfirm">When using this model, you need to display the license. &#xa; Credit must be stated clearly when using it. OK?</system:String>
+        
+    <!-- DMMVRConnectWindow -->
+    <system:String x:Key="DMMVRConnectWindowTitle">Import model from DMM VR Connect</system:String>
+    <system:String x:Key="DMMVRConnectCreateAccount">Create account</system:String>
+    <system:String x:Key="DMMVRConnectOpenBrowserDescription1">Browser will open automatically, please complete login.</system:String>
+    <system:String x:Key="DMMVRConnectOpenBrowserDescription2">If not, please access this URL and enter code.</system:String>
 </ResourceDictionary>
