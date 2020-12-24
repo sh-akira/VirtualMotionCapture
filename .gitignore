@@ -55,6 +55,11 @@ UniJSON*csproj
 UniUnlit*csproj
 UniVRM*csproj
 VRM*csproj
+Assets/DVRSDK*
+Assets/Resources*
+Assets/Scripts/DMMVRConnectConnector*
+ControlWindowWPF/ControlWindowWPF/DMMVRConnectWindow*
+UnityMemoryMappedFile/PipeCommands_DMMVRConnect*
 
 
 # Visual Studio cache directory

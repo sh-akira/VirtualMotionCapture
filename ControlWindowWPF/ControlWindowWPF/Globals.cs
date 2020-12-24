@@ -38,6 +38,8 @@ namespace VirtualMotionCaptureControlPanel
         public static float RightHandRotation = 90.0f;
 
         public static List<KeyAction> KeyActions = new List<KeyAction>();
+
+        public static bool IsDMMVRConnectLoaded = false;
         
         public static string GetCurrentAppDir()
         {

@@ -49,6 +49,7 @@
     <Compile Include="MemoryMappedFileServer.cs" />
     <Compile Include="MemoryMappedFileClient.cs" />
     <Compile Include="PipeCommands.cs" />
+    <Compile Include="PipeCommands_DMMVRConnect.cs" />
     <Compile Include="PipeCommands_VRoidSDK.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
