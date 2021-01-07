@@ -58,6 +58,7 @@
     <PostBuildEvent>xcopy /Y "$(TargetPath)" "$(SolutionDir)\..\Assets\ExternalPlugins\UnityMemoryMappedFile\"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>if not exist "$(ProjectDir)PipeCommands_VRoidSDK.cs" echo namespace UnityMemoryMappedFile{public partial class PipeCommands{}} &gt; "$(ProjectDir)PipeCommands_VRoidSDK.cs"</PreBuildEvent>
+    <PreBuildEvent>if not exist "$(ProjectDir)PipeCommands_VRoidSDK.cs" echo namespace UnityMemoryMappedFile{public partial class PipeCommands{}} &gt; "$(ProjectDir)PipeCommands_VRoidSDK.cs"
+if not exist "$(ProjectDir)PipeCommands_DMMVRConnect.cs" echo namespace UnityMemoryMappedFile{public partial class PipeCommands{}} &gt; "$(ProjectDir)PipeCommands_DMMVRConnect.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>
