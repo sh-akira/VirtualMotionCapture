@@ -453,7 +453,7 @@ public class Calibrator
             Transform leftHandAdjusterTransform = ik.solver.leftArm.target == null ? (new GameObject("leftHandAdjuster")).transform : ik.solver.leftArm.target;
             leftHandAdjusterTransform.parent = LeftHandTransform;
             leftHandAdjusterTransform.position = LeftHandTransform.position + LeftHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp) * settings.handOffset;
-            Vector3 leftHandUp = Vector3.Cross(ik.solver.leftArm.wristToPalmAxis, ik.solver.leftArm.palmToThumbAxis);
+            Vector3 leftHandUp = new Vector3(0, 1, 0);
             leftHandAdjusterTransform.rotation = QuaTools.MatchRotation(LeftHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.leftArm.wristToPalmAxis, leftHandUp);
             ik.solver.leftArm.target = leftHandAdjusterTransform;
 
@@ -477,7 +477,7 @@ public class Calibrator
             Transform rightHandAdjusterTransform = ik.solver.rightArm.target == null ? (new GameObject("rightHandAdjuster")).transform : ik.solver.rightArm.target;
             rightHandAdjusterTransform.parent = RightHandTransform;
             rightHandAdjusterTransform.position = RightHandTransform.position + RightHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp) * settings.handOffset;
-            Vector3 rightHandUp = -Vector3.Cross(ik.solver.rightArm.wristToPalmAxis, ik.solver.rightArm.palmToThumbAxis);
+            Vector3 rightHandUp = new Vector3(0, 1, 0);
             rightHandAdjusterTransform.rotation = QuaTools.MatchRotation(RightHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.rightArm.wristToPalmAxis, rightHandUp);
             ik.solver.rightArm.target = rightHandAdjusterTransform;
 
@@ -501,7 +501,7 @@ public class Calibrator
             Transform leftElbowAdjusterTransform = ik.solver.leftArm.bendGoal == null ? (new GameObject("leftHandAdjuster")).transform : ik.solver.leftArm.bendGoal;
             leftElbowAdjusterTransform.parent = LeftElbowTransform;
             leftElbowAdjusterTransform.position = LeftElbowTransform.position + LeftElbowTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp) * settings.handOffset;
-            Vector3 leftHandUp = Vector3.Cross(ik.solver.leftArm.wristToPalmAxis, ik.solver.leftArm.palmToThumbAxis);
+            Vector3 leftHandUp = new Vector3(0, 1, 0);
             leftElbowAdjusterTransform.rotation = QuaTools.MatchRotation(LeftElbowTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.leftArm.wristToPalmAxis, leftHandUp);
             ik.solver.leftArm.bendGoal = leftElbowAdjusterTransform;
             ik.solver.leftArm.bendGoalWeight = 1.0f;
@@ -522,7 +522,7 @@ public class Calibrator
             Transform rightElbowAdjusterTransform = ik.solver.rightArm.bendGoal == null ? (new GameObject("rightHandAdjuster")).transform : ik.solver.rightArm.bendGoal;
             rightElbowAdjusterTransform.parent = RightElbowTransform;
             rightElbowAdjusterTransform.position = RightElbowTransform.position + RightElbowTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp) * settings.handOffset;
-            Vector3 rightHandUp = Vector3.Cross(ik.solver.rightArm.wristToPalmAxis, ik.solver.rightArm.palmToThumbAxis);
+            Vector3 rightHandUp = new Vector3(0, 1, 0);
             rightElbowAdjusterTransform.rotation = QuaTools.MatchRotation(RightElbowTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.rightArm.wristToPalmAxis, rightHandUp);
             ik.solver.rightArm.bendGoal = rightElbowAdjusterTransform;
             ik.solver.rightArm.bendGoalWeight = 1.0f;
@@ -836,7 +836,7 @@ public class Calibrator
             Transform leftHandAdjusterTransform = ik.solver.leftArm.target == null ? (new GameObject("leftHandAdjuster")).transform : ik.solver.leftArm.target;
             leftHandAdjusterTransform.parent = LeftHandTransform;
             leftHandAdjusterTransform.position = LeftHandTransform.position + LeftHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp) * settings.handOffset;
-            Vector3 leftHandUp = Vector3.Cross(ik.solver.leftArm.wristToPalmAxis, ik.solver.leftArm.palmToThumbAxis);
+            Vector3 leftHandUp = new Vector3(0, 1, 0);
             leftHandAdjusterTransform.rotation = QuaTools.MatchRotation(LeftHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.leftArm.wristToPalmAxis, leftHandUp);
             ik.solver.leftArm.target = leftHandAdjusterTransform;
 
@@ -860,7 +860,7 @@ public class Calibrator
             Transform rightHandAdjusterTransform = ik.solver.rightArm.target == null ? (new GameObject("rightHandAdjuster")).transform : ik.solver.rightArm.target;
             rightHandAdjusterTransform.parent = RightHandTransform;
             rightHandAdjusterTransform.position = RightHandTransform.position + RightHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp) * settings.handOffset;
-            Vector3 rightHandUp = -Vector3.Cross(ik.solver.rightArm.wristToPalmAxis, ik.solver.rightArm.palmToThumbAxis);
+            Vector3 rightHandUp = new Vector3(0, 1, 0);
             rightHandAdjusterTransform.rotation = QuaTools.MatchRotation(RightHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.rightArm.wristToPalmAxis, rightHandUp);
             ik.solver.rightArm.target = rightHandAdjusterTransform;
 
@@ -1229,7 +1229,7 @@ public class Calibrator
             Transform leftHandAdjusterTransform = ik.solver.leftArm.target == null ? (new GameObject("leftHandAdjuster")).transform : ik.solver.leftArm.target;
             leftHandAdjusterTransform.parent = LeftHandTransform;
             leftHandAdjusterTransform.position = LeftHandTransform.position + LeftHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp) * settings.handOffset;
-            Vector3 leftHandUp = Vector3.Cross(ik.solver.leftArm.wristToPalmAxis, ik.solver.leftArm.palmToThumbAxis);
+            Vector3 leftHandUp = new Vector3(0, 1, 0);
             leftHandAdjusterTransform.rotation = QuaTools.MatchRotation(LeftHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.leftArm.wristToPalmAxis, leftHandUp);
             ik.solver.leftArm.target = leftHandAdjusterTransform;
 
@@ -1251,7 +1251,7 @@ public class Calibrator
             Transform rightHandAdjusterTransform = ik.solver.rightArm.target == null ? (new GameObject("rightHandAdjuster")).transform : ik.solver.rightArm.target;
             rightHandAdjusterTransform.parent = RightHandTransform;
             rightHandAdjusterTransform.position = RightHandTransform.position + RightHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp) * settings.handOffset;
-            Vector3 rightHandUp = -Vector3.Cross(ik.solver.rightArm.wristToPalmAxis, ik.solver.rightArm.palmToThumbAxis);
+            Vector3 rightHandUp = new Vector3(0, 1, 0);
             rightHandAdjusterTransform.rotation = QuaTools.MatchRotation(RightHandTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.rightArm.wristToPalmAxis, rightHandUp);
             ik.solver.rightArm.target = rightHandAdjusterTransform;
 
@@ -1273,7 +1273,7 @@ public class Calibrator
             Transform leftElbowAdjusterTransform = ik.solver.leftArm.bendGoal == null ? (new GameObject("leftHandAdjuster")).transform : ik.solver.leftArm.bendGoal;
             leftElbowAdjusterTransform.parent = LeftElbowTransform;
             leftElbowAdjusterTransform.position = LeftElbowTransform.position + LeftElbowTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp) * settings.handOffset;
-            Vector3 leftHandUp = Vector3.Cross(ik.solver.leftArm.wristToPalmAxis, ik.solver.leftArm.palmToThumbAxis);
+            Vector3 leftHandUp = new Vector3(0, 1, 0);
             leftElbowAdjusterTransform.rotation = QuaTools.MatchRotation(LeftElbowTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.leftArm.wristToPalmAxis, leftHandUp);
             ik.solver.leftArm.bendGoal = leftElbowAdjusterTransform;
             ik.solver.leftArm.bendGoalWeight = 1.0f;
@@ -1294,7 +1294,7 @@ public class Calibrator
             Transform rightElbowAdjusterTransform = ik.solver.rightArm.bendGoal == null ? (new GameObject("rightHandAdjuster")).transform : ik.solver.rightArm.bendGoal;
             rightElbowAdjusterTransform.parent = RightElbowTransform;
             rightElbowAdjusterTransform.position = RightElbowTransform.position + RightElbowTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp) * settings.handOffset;
-            Vector3 rightHandUp = Vector3.Cross(ik.solver.rightArm.wristToPalmAxis, ik.solver.rightArm.palmToThumbAxis);
+            Vector3 rightHandUp = new Vector3(0, 1, 0);
             rightElbowAdjusterTransform.rotation = QuaTools.MatchRotation(RightElbowTransform.rotation * Quaternion.LookRotation(settings.handTrackerForward, settings.handTrackerUp), settings.handTrackerForward, settings.handTrackerUp, ik.solver.rightArm.wristToPalmAxis, rightHandUp);
             ik.solver.rightArm.bendGoal = rightElbowAdjusterTransform;
             ik.solver.rightArm.bendGoalWeight = 1.0f;
