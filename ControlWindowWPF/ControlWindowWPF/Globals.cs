@@ -34,8 +34,7 @@ namespace VirtualMotionCaptureControlPanel
 
         public static bool EnableSkeletal = true;
 
-        public static float LeftHandRotation = -90.0f;
-        public static float RightHandRotation = 90.0f;
+        public static FreeOffsetItem FreeOffset = new FreeOffsetItem();
 
         public static List<KeyAction> KeyActions = new List<KeyAction>();
 

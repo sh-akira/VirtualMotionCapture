@@ -42,10 +42,6 @@ namespace VirtualMotionCaptureControlPanel
             this.DataContext = this;
             var languageitem = LanguageComboBox.Items.Cast<string>().First(d => d.Contains(language));
             LanguageComboBox.SelectedItem = languageitem;
-            LeftHandRotateComboBox.ItemsSource = RotationItems;
-            RightHandRotateComboBox.ItemsSource = RotationItems;
-            if (RotationItems.Contains(Globals.LeftHandRotation)) LeftHandRotateComboBox.SelectedItem = Globals.LeftHandRotation;
-            if (RotationItems.Contains(Globals.RightHandRotation)) RightHandRotateComboBox.SelectedItem = Globals.RightHandRotation;
 #if FREE
             (FanboxExternalMotionSenderGroupBox.Parent as StackPanel).Children.Remove(FanboxExternalMotionSenderGroupBox);
 #elif FANBOX
@@ -111,20 +107,6 @@ namespace VirtualMotionCaptureControlPanel
                 var trackerinfo = new TrackerConfigWindow.TrackerInfo { TypeName = d.Item1, SerialNumber = d.Item2, Background = WhiteBrush };
                 TrackersList.Add(trackerinfo);
             }
-        }
-
-        private async void LeftHandRotateComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (LeftHandRotateComboBox.SelectedItem == null) return;
-            Globals.LeftHandRotation = (float)LeftHandRotateComboBox.SelectedItem;
-            await Globals.Client.SendCommandAsync(new PipeCommands.SetHandRotations { LeftHandRotation = Globals.LeftHandRotation, RightHandRotation = Globals.RightHandRotation });
-        }
-
-        private async void RightHandRotateComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (RightHandRotateComboBox.SelectedItem == null) return;
-            Globals.RightHandRotation = (float)RightHandRotateComboBox.SelectedItem;
-            await Globals.Client.SendCommandAsync(new PipeCommands.SetHandRotations { LeftHandRotation = Globals.LeftHandRotation, RightHandRotation = Globals.RightHandRotation });
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -963,6 +945,13 @@ namespace VirtualMotionCaptureControlPanel
                     }
                 });
             });
+        }
+
+        private void HandFreeOffsetButton_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new HandFreeOffsetWindow();
+            win.Owner = this;
+            win.ShowDialog();
         }
     }
 }

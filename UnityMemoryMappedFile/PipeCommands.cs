@@ -123,7 +123,6 @@ namespace UnityMemoryMappedFile
         public class LoadOpenAnimationTime { public float time { get; set; } }
         public class LoadClosingTime { public float time { get; set; } }
         public class LoadDefaultFace { public string face { get; set; } }
-        public class LoadHandRotations { public float LeftHandRotation { get; set; } public float RightHandRotation { get; set; } }
 
         public class LoadControllerTouchPadPoints
         {
@@ -205,7 +204,22 @@ namespace UnityMemoryMappedFile
             public List<string> Keys { get; set; }
         }
 
-        public class SetHandRotations { public float LeftHandRotation { get; set; } public float RightHandRotation { get; set; } }
+
+        public class SetHandFreeOffset
+        {
+            public int LeftHandPositionX { get; set; }
+            public int LeftHandPositionY { get; set; }
+            public int LeftHandPositionZ { get; set; }
+            public int LeftHandRotationX { get; set; }
+            public int LeftHandRotationY { get; set; }
+            public int LeftHandRotationZ { get; set; }
+            public int RightHandPositionX { get; set; }
+            public int RightHandPositionY { get; set; }
+            public int RightHandPositionZ { get; set; }
+            public int RightHandRotationX { get; set; }
+            public int RightHandRotationY { get; set; }
+            public int RightHandRotationZ { get; set; }
+        }
 
         public class SetExternalCameraConfig
         {

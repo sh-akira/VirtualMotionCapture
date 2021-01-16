@@ -201,6 +201,7 @@
     <system:String x:Key="SettingWindow_OpenExternalCameraConfig">externalcamera.cfg 열기</system:String>
     <system:String x:Key="SettingWindow_TrackerConfig">사용 트래커 설정</system:String>
     <system:String x:Key="SettingWindow_OpenTrackerConfig">트래커 할당 설정 열기</system:String>
+    <system:String x:Key="SettingWindow_OpenHandFreeOffset">설정 열기</system:String>
     <system:String x:Key="SettingWindow_Close">닫기</system:String>
     <system:String x:Key="SettingWindow_LeftHand_ToolTip">왼손의 회전을 조정합니다. 실제 손과 모델의 손의 각도가 어긋난 경우 변경해주세요</system:String>
     <system:String x:Key="SettingWindow_RightHand_ToolTip">오른손의 회전을 조정합니다. 실제 손과 모델의 손의 각도가 어긋난 경우 변경해주세요</system:String>

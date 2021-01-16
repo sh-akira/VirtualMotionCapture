@@ -201,6 +201,7 @@
     <system:String x:Key="SettingWindow_OpenExternalCameraConfig">externalcamera.cfgの読み込み</system:String>
     <system:String x:Key="SettingWindow_TrackerConfig">使用トラッカー設定</system:String>
     <system:String x:Key="SettingWindow_OpenTrackerConfig">トラッカー割り当て設定を開く</system:String>
+    <system:String x:Key="SettingWindow_OpenHandFreeOffset">設定を開く</system:String>
     <system:String x:Key="SettingWindow_Close">閉じる</system:String>
     <system:String x:Key="SettingWindow_LeftHand_ToolTip">左手の回転を調整します。実際の手とモデルの手の回転がずれている場合に変更してください</system:String>
     <system:String x:Key="SettingWindow_RightHand_ToolTip">右手の回転を調整します。実際の手とモデルの手の回転がずれている場合に変更してください</system:String>

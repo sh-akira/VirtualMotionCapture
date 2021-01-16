@@ -15,14 +15,7 @@
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Vertical">
                 <GroupBox Header="{DynamicResource SettingWindow_HandRotate}" DockPanel.Dock="Top">
-                    <UniformGrid Rows="1" Columns="2">
-                        <GroupBox Header="{DynamicResource SettingWindow_LeftHand}">
-                            <ComboBox Name="LeftHandRotateComboBox" SelectionChanged="LeftHandRotateComboBox_SelectionChanged" ToolTip="{DynamicResource SettingWindow_LeftHand_ToolTip}"/>
-                        </GroupBox>
-                        <GroupBox Header="{DynamicResource SettingWindow_RightHand}">
-                            <ComboBox Name="RightHandRotateComboBox" SelectionChanged="RightHandRotateComboBox_SelectionChanged" ToolTip="{DynamicResource SettingWindow_RightHand_ToolTip}"/>
-                        </GroupBox>
-                    </UniformGrid>
+                    <Button Content="{DynamicResource SettingWindow_OpenHandFreeOffset}" Name="HandFreeOffsetButton" Click="HandFreeOffsetButton_Click"/>
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_TrackerConfig}">
                     <Button Content="{DynamicResource SettingWindow_OpenTrackerConfig}" Name="TrackerConfigButton" Click="TrackerConfigButton_Click"/>

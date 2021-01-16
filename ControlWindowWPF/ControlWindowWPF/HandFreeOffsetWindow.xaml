@@ -1,0 +1,100 @@
+﻿<Window x:Class="VirtualMotionCaptureControlPanel.HandFreeOffsetWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
+        mc:Ignorable="d"
+        Title="{DynamicResource SettingWindow_HandRotate}" SizeToContent="Height" Width="400" Loaded="Window_Loaded" Unloaded="Window_Unloaded">
+    <DockPanel>
+        <GroupBox DockPanel.Dock="Top" Margin="10,10,10,0">
+            <GroupBox.Header>
+                <TextBlock Text="Left Hand"/>
+            </GroupBox.Header>
+            <StackPanel Orientation="Vertical">
+                <DockPanel DockPanel.Dock="Top" Margin="10,5,10,0">
+                    <TextBlock Text="Position X : " VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                    <TextBlock Text="cm" VerticalAlignment="Center" DockPanel.Dock="Right" Width="20"/>
+                    <TextBlock Text="{Binding LeftHandPositionX}" Width="30" TextAlignment="Right" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                    <Slider Value="{Binding LeftHandPositionX}" Minimum="-50" Maximum="50" IsSnapToTickEnabled="True" TickFrequency="1" LargeChange="1" SmallChange="1" TickPlacement="None"/>
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Top" Margin="10,5,10,0">
+                    <TextBlock Text="Position Y : " VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                    <TextBlock Text="cm" VerticalAlignment="Center" DockPanel.Dock="Right" Width="20"/>
+                    <TextBlock Text="{Binding LeftHandPositionY}" Width="30" TextAlignment="Right" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                    <Slider Value="{Binding LeftHandPositionY}" Minimum="-50" Maximum="50" IsSnapToTickEnabled="True" TickFrequency="1" LargeChange="1" SmallChange="1" TickPlacement="None"/>
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Top" Margin="10,5,10,0">
+                    <TextBlock Text="Position Z : " VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                    <TextBlock Text="cm" VerticalAlignment="Center" DockPanel.Dock="Right" Width="20"/>
+                    <TextBlock Text="{Binding LeftHandPositionZ}" Width="30" TextAlignment="Right" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                    <Slider Value="{Binding LeftHandPositionZ}" Minimum="-50" Maximum="50" IsSnapToTickEnabled="True" TickFrequency="1" LargeChange="1" SmallChange="1" TickPlacement="None"/>
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Top" Margin="10,5,10,0">
+                    <TextBlock Text="Rotation X : " VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                    <TextBlock Text="°" VerticalAlignment="Center" DockPanel.Dock="Right" Width="20"/>
+                    <TextBlock Text="{Binding LeftHandRotationX}" Width="30" TextAlignment="Right" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                    <Slider Value="{Binding LeftHandRotationX}" Minimum="-180" Maximum="180" IsSnapToTickEnabled="True" TickFrequency="1" LargeChange="1" SmallChange="1" TickPlacement="None"/>
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Top" Margin="10,5,10,0">
+                    <TextBlock Text="Rotation Y : " VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                    <TextBlock Text="°" VerticalAlignment="Center" DockPanel.Dock="Right" Width="20"/>
+                    <TextBlock Text="{Binding LeftHandRotationY}" Width="30" TextAlignment="Right" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                    <Slider Value="{Binding LeftHandRotationY}" Minimum="-180" Maximum="180" IsSnapToTickEnabled="True" TickFrequency="1" LargeChange="1" SmallChange="1" TickPlacement="None"/>
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Top" Margin="10,5,10,0">
+                    <TextBlock Text="Rotation Z : " VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                    <TextBlock Text="°" VerticalAlignment="Center" DockPanel.Dock="Right" Width="20"/>
+                    <TextBlock Text="{Binding LeftHandRotationZ}" Width="30" TextAlignment="Right" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                    <Slider Value="{Binding LeftHandRotationZ}" Minimum="-180" Maximum="180" IsSnapToTickEnabled="True" TickFrequency="1" LargeChange="1" SmallChange="1" TickPlacement="None"/>
+                </DockPanel>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox DockPanel.Dock="Top" Margin="10,10,10,10">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Right Hand" VerticalAlignment="Center"/>
+                    <CheckBox Content="Sync to Left" VerticalContentAlignment="Center" VerticalAlignment="Center" Margin="10,0,0,0" Name="SyncToLeftCheckBox" Checked="SyncToLeftCheckBox_Checked" Unchecked="SyncToLeftCheckBox_Unchecked"/>
+                </StackPanel>
+            </GroupBox.Header>
+            <StackPanel Orientation="Vertical" Name="RightHandStackPanel">
+                <DockPanel DockPanel.Dock="Top" Margin="10,5,10,0">
+                    <TextBlock Text="Position X : " VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                    <TextBlock Text="cm" VerticalAlignment="Center" DockPanel.Dock="Right" Width="20"/>
+                    <TextBlock Text="{Binding RightHandPositionX}" Width="30" TextAlignment="Right" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                    <Slider Value="{Binding RightHandPositionX}" Minimum="-50" Maximum="50" IsSnapToTickEnabled="True" TickFrequency="1" LargeChange="1" SmallChange="1" TickPlacement="None"/>
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Top" Margin="10,5,10,0">
+                    <TextBlock Text="Position Y : " VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                    <TextBlock Text="cm" VerticalAlignment="Center" DockPanel.Dock="Right" Width="20"/>
+                    <TextBlock Text="{Binding RightHandPositionY}" Width="30" TextAlignment="Right" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                    <Slider Value="{Binding RightHandPositionY}" Minimum="-50" Maximum="50" IsSnapToTickEnabled="True" TickFrequency="1" LargeChange="1" SmallChange="1" TickPlacement="None"/>
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Top" Margin="10,5,10,0">
+                    <TextBlock Text="Position Z : " VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                    <TextBlock Text="cm" VerticalAlignment="Center" DockPanel.Dock="Right" Width="20"/>
+                    <TextBlock Text="{Binding RightHandPositionZ}" Width="30" TextAlignment="Right" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                    <Slider Value="{Binding RightHandPositionZ}" Minimum="-50" Maximum="50" IsSnapToTickEnabled="True" TickFrequency="1" LargeChange="1" SmallChange="1" TickPlacement="None"/>
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Top" Margin="10,5,10,0">
+                    <TextBlock Text="Rotation X : " VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                    <TextBlock Text="°" VerticalAlignment="Center" DockPanel.Dock="Right" Width="20"/>
+                    <TextBlock Text="{Binding RightHandRotationX}" Width="30" TextAlignment="Right" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                    <Slider Value="{Binding RightHandRotationX}" Minimum="-180" Maximum="180" IsSnapToTickEnabled="True" TickFrequency="1" LargeChange="1" SmallChange="1" TickPlacement="None"/>
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Top" Margin="10,5,10,0">
+                    <TextBlock Text="Rotation Y : " VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                    <TextBlock Text="°" VerticalAlignment="Center" DockPanel.Dock="Right" Width="20"/>
+                    <TextBlock Text="{Binding RightHandRotationY}" Width="30" TextAlignment="Right" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                    <Slider Value="{Binding RightHandRotationY}" Minimum="-180" Maximum="180" IsSnapToTickEnabled="True" TickFrequency="1" LargeChange="1" SmallChange="1" TickPlacement="None"/>
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Top" Margin="10,5,10,0">
+                    <TextBlock Text="Rotation Z : " VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                    <TextBlock Text="°" VerticalAlignment="Center" DockPanel.Dock="Right" Width="20"/>
+                    <TextBlock Text="{Binding RightHandRotationZ}" Width="30" TextAlignment="Right" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                    <Slider Value="{Binding RightHandRotationZ}" Minimum="-180" Maximum="180" IsSnapToTickEnabled="True" TickFrequency="1" LargeChange="1" SmallChange="1" TickPlacement="None"/>
+                </DockPanel>
+            </StackPanel>
+        </GroupBox>
+    </DockPanel>
+</Window>

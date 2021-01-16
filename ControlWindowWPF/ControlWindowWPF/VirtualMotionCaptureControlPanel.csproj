@@ -120,6 +120,9 @@
     <Compile Include="GraphicsOptionWindow.xaml.cs">
       <DependentUpon>GraphicsOptionWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="HandFreeOffsetWindow.xaml.cs">
+      <DependentUpon>HandFreeOffsetWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HandGestureControlKeyAddWindow.xaml.cs">
       <DependentUpon>HandGestureControlKeyAddWindow.xaml</DependentUpon>
     </Compile>
@@ -178,6 +181,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GraphicsOptionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HandFreeOffsetWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

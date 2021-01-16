@@ -203,11 +203,10 @@ namespace VirtualMotionCaptureControlPanel
                     var d = (PipeCommands.LoadKeyActions)e.Data;
                     Globals.KeyActions = d.KeyActions;
                 }
-                else if (e.CommandType == typeof(PipeCommands.LoadHandRotations))
+                else if (e.CommandType == typeof(PipeCommands.SetHandFreeOffset))
                 {
-                    var d = (PipeCommands.LoadHandRotations)e.Data;
-                    Globals.LeftHandRotation = d.LeftHandRotation;
-                    Globals.RightHandRotation = d.RightHandRotation;
+                    var d = (PipeCommands.SetHandFreeOffset)e.Data;
+                    Globals.FreeOffset.SetFromPipeCommands(d);
                 }
                 //"背景色"
                 else if (e.CommandType == typeof(PipeCommands.LoadCustomBackgroundColor))
