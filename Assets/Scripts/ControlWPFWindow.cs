@@ -575,12 +575,22 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 ControlPanelExecuted = false;
             }
-            else if (e.CommandType == typeof(PipeCommands.SetHandRotations))
+            else if (e.CommandType == typeof(PipeCommands.SetHandFreeOffset))
             {
-                var d = (PipeCommands.SetHandRotations)e.Data;
-                CurrentSettings.LeftHandRotation = d.LeftHandRotation;
-                CurrentSettings.RightHandRotation = d.RightHandRotation;
-                UpdateHandRotation();
+                var d = (PipeCommands.SetHandFreeOffset)e.Data;
+                CurrentSettings.LeftHandPositionX = d.LeftHandPositionX / 100f;
+                CurrentSettings.LeftHandPositionY = d.LeftHandPositionY / 100f;
+                CurrentSettings.LeftHandPositionZ = d.LeftHandPositionZ / 100f;
+                CurrentSettings.LeftHandRotationX = d.LeftHandRotationX;
+                CurrentSettings.LeftHandRotationY = d.LeftHandRotationY;
+                CurrentSettings.LeftHandRotationZ = d.LeftHandRotationZ;
+                CurrentSettings.RightHandPositionX = d.RightHandPositionX / 100f;
+                CurrentSettings.RightHandPositionY = d.RightHandPositionY / 100f;
+                CurrentSettings.RightHandPositionZ = d.RightHandPositionZ / 100f;
+                CurrentSettings.RightHandRotationX = d.RightHandRotationX;
+                CurrentSettings.RightHandRotationY = d.RightHandRotationY;
+                CurrentSettings.RightHandRotationZ = d.RightHandRotationZ;
+                SetHandFreeOffset();
             }
             else if (e.CommandType == typeof(PipeCommands.SetExternalCameraConfig))
             {
@@ -966,7 +976,8 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 LoadAdvancedGraphicsOption();
             }
-            else if (e.CommandType == typeof(PipeCommands.SetAdvancedGraphicsOption)) {
+            else if (e.CommandType == typeof(PipeCommands.SetAdvancedGraphicsOption))
+            {
                 var d = (PipeCommands.SetAdvancedGraphicsOption)e.Data;
 
                 CurrentSettings.PPS_Enable = d.PPS_Enable;
@@ -1785,13 +1796,23 @@ public class ControlWPFWindow : MonoBehaviour
         }
     }
 
+    private Transform leftHandFreeOffset;
+    private Transform rightHandFreeOffset;
 
     public IEnumerator Calibrate(PipeCommands.CalibrateType calibrateType)
     {
         lastCalibrateType = calibrateType;//最後に実施したキャリブレーションタイプとして記録
 
         SetVRIK(CurrentModel);
-        wristRotationFix.SetVRIK(vrik);
+        //wristRotationFix.SetVRIK(vrik);
+        var leftLowerArm = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm);
+        var leftRelaxer = leftLowerArm.gameObject.AddComponent<TwistRelaxer>();
+        leftRelaxer.ik = vrik;
+        leftRelaxer.twistSolvers = new TwistSolver[] { new TwistSolver { transform = leftLowerArm } };
+        var rightLowerArm = animator.GetBoneTransform(HumanBodyBones.RightLowerArm);
+        var rightRelaxer = rightLowerArm.gameObject.AddComponent<TwistRelaxer>();
+        rightRelaxer.ik = vrik;
+        rightRelaxer.twistSolvers = new TwistSolver[] { new TwistSolver { transform = rightLowerArm } };
 
         Transform headTracker = GetTrackerTransformBySerialNumber(CurrentSettings.Head, TargetType.Head);
         leftHandTracker = GetTrackerTransformBySerialNumber(CurrentSettings.LeftHand, TargetType.LeftArm, headTracker);
@@ -1804,6 +1825,7 @@ public class ControlWPFWindow : MonoBehaviour
         leftKneeTracker = GetTrackerTransformBySerialNumber(CurrentSettings.LeftKnee, TargetType.LeftKnee, headTracker);
         rightKneeTracker = GetTrackerTransformBySerialNumber(CurrentSettings.RightKnee, TargetType.RightKnee, headTracker);
 
+        ClearChildren(headTracker, leftHandTracker, rightHandTracker, bodyTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
 
         var settings = new RootMotion.FinalIK.VRIKCalibrator.Settings();
 
@@ -1874,7 +1896,36 @@ public class ControlWPFWindow : MonoBehaviour
         CurrentSettings.leftKneeTracker = StoreTransform.Create(leftKneeTracker);
         CurrentSettings.rightKneeTracker = StoreTransform.Create(rightKneeTracker);
 
+        leftHandFreeOffset = new GameObject(nameof(leftHandFreeOffset)).transform;
+        rightHandFreeOffset = new GameObject(nameof(rightHandFreeOffset)).transform;
+        var calibratedLeftHandTransform = leftHandTracker.GetChild(0);
+        var calibratedRightHandTransform = rightHandTracker.GetChild(0);
+        leftHandFreeOffset.SetParent(leftHandTracker);
+        rightHandFreeOffset.SetParent(rightHandTracker);
+        leftHandFreeOffset.localPosition = Vector3.zero;
+        leftHandFreeOffset.localRotation = Quaternion.identity;
+        rightHandFreeOffset.localPosition = Vector3.zero;
+        rightHandFreeOffset.localRotation = Quaternion.identity;
+        calibratedLeftHandTransform.parent = leftHandFreeOffset;
+        calibratedRightHandTransform.parent = rightHandFreeOffset;
+
+        SetHandFreeOffset();
+
         calibrationState = CalibrationState.Calibrating; //キャリブレーション状態を"キャリブレーション中"に設定(ここまで来なければ失敗している)
+    }
+
+    private void ClearChildren(params Transform[] Parents)
+    {
+        foreach (var parent in Parents)
+        {
+            if (parent != null)
+            {
+                foreach (Transform child in parent)
+                {
+                    Destroy(child.gameObject);
+                }
+            }
+        }
     }
 
     public void EndCalibrate()
@@ -1886,7 +1937,7 @@ public class ControlWPFWindow : MonoBehaviour
         {
             CalibrationCamera.gameObject.SetActive(false);
         }
-        UpdateHandRotation();
+        SetHandFreeOffset();
         SetCameraLookTarget();
         //SetTrackersToVRIK();
 
@@ -2903,9 +2954,33 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public List<KeyAction> KeyActions = null;
         [OptionalField]
-        public float LeftHandRotation = -90.0f;
+        public float LeftHandRotation = 0; //unused
         [OptionalField]
-        public float RightHandRotation = -90.0f;
+        public float RightHandRotation = 0; //unused
+        [OptionalField]
+        public float LeftHandPositionX;
+        [OptionalField]
+        public float LeftHandPositionY;
+        [OptionalField]
+        public float LeftHandPositionZ;
+        [OptionalField]
+        public float LeftHandRotationX;
+        [OptionalField]
+        public float LeftHandRotationY;
+        [OptionalField]
+        public float LeftHandRotationZ;
+        [OptionalField]
+        public float RightHandPositionX;
+        [OptionalField]
+        public float RightHandPositionY;
+        [OptionalField]
+        public float RightHandPositionZ;
+        [OptionalField]
+        public float RightHandRotationX;
+        [OptionalField]
+        public float RightHandRotationY;
+        [OptionalField]
+        public float RightHandRotationZ;
 
         [OptionalField]
         public Tuple<ETrackedDeviceClass, string> Head = Tuple.Create(ETrackedDeviceClass.HMD, default(string));
@@ -3623,8 +3698,22 @@ public class ControlWPFWindow : MonoBehaviour
         await server.SendCommandAsync(new PipeCommands.LoadSkeletalInputEnable { enable = CurrentSettings.EnableSkeletal });
 
         await server.SendCommandAsync(new PipeCommands.LoadKeyActions { KeyActions = CurrentSettings.KeyActions });
-        await server.SendCommandAsync(new PipeCommands.LoadHandRotations { LeftHandRotation = CurrentSettings.LeftHandRotation, RightHandRotation = CurrentSettings.RightHandRotation });
-        UpdateHandRotation();
+        await server.SendCommandAsync(new PipeCommands.SetHandFreeOffset
+        {
+            LeftHandPositionX = (int)Mathf.Round(CurrentSettings.LeftHandPositionX * 100),
+            LeftHandPositionY = (int)Mathf.Round(CurrentSettings.LeftHandPositionY * 100),
+            LeftHandPositionZ = (int)Mathf.Round(CurrentSettings.LeftHandPositionZ * 100),
+            LeftHandRotationX = (int)CurrentSettings.LeftHandRotationX,
+            LeftHandRotationY = (int)CurrentSettings.LeftHandRotationY,
+            LeftHandRotationZ = (int)CurrentSettings.LeftHandRotationZ,
+            RightHandPositionX = (int)Mathf.Round(CurrentSettings.RightHandPositionX * 100),
+            RightHandPositionY = (int)Mathf.Round(CurrentSettings.RightHandPositionY * 100),
+            RightHandPositionZ = (int)Mathf.Round(CurrentSettings.RightHandPositionZ * 100),
+            RightHandRotationX = (int)CurrentSettings.RightHandRotationX,
+            RightHandRotationY = (int)CurrentSettings.RightHandRotationY,
+            RightHandRotationZ = (int)CurrentSettings.RightHandRotationZ
+        });
+        SetHandFreeOffset();
 
         await server.SendCommandAsync(new PipeCommands.LoadLipSyncEnable { enable = CurrentSettings.LipSyncEnable });
         SetLipSyncEnable(CurrentSettings.LipSyncEnable);
@@ -3697,17 +3786,36 @@ public class ControlWPFWindow : MonoBehaviour
         VirtualCamera.ResizeMode_Global = CurrentSettings.WebCamResize ? VirtualCamera.EResizeMode.LinearResize : VirtualCamera.EResizeMode.Disabled;
     }
 
-    private void UpdateHandRotation()
+    private void SetHandFreeOffset()
     {
         //return; // return for debug
         if (vrik == null) return;
-        Transform leftHandAdjusterTransform = vrik.solver.leftArm.target;
-        Transform rightHandAdjusterTransform = vrik.solver.rightArm.target;
-        if (leftHandAdjusterTransform == null || rightHandAdjusterTransform == null) return;
-        var angles = leftHandAdjusterTransform.localEulerAngles;
-        leftHandAdjusterTransform.localEulerAngles = new Vector3(CurrentSettings.LeftHandRotation, angles.y, angles.z);
-        angles = rightHandAdjusterTransform.localEulerAngles;
-        rightHandAdjusterTransform.localEulerAngles = new Vector3(CurrentSettings.RightHandRotation, angles.y, angles.z);
+        if (leftHandFreeOffset == null) return;
+        if (rightHandFreeOffset == null) return;
+
+        //flip and invert Y-Z
+
+        leftHandFreeOffset.localPosition = new Vector3(
+            CurrentSettings.LeftHandPositionX,
+            -CurrentSettings.LeftHandPositionZ,
+            CurrentSettings.LeftHandPositionY
+        );
+        leftHandFreeOffset.localRotation = Quaternion.Euler(
+            CurrentSettings.LeftHandRotationX,
+            -CurrentSettings.LeftHandRotationZ,
+            CurrentSettings.LeftHandRotationY
+        );
+
+        rightHandFreeOffset.localPosition = new Vector3(
+            -CurrentSettings.RightHandPositionX,
+            -CurrentSettings.RightHandPositionZ,
+            CurrentSettings.RightHandPositionY
+        );
+        rightHandFreeOffset.localRotation = Quaternion.Euler(
+            CurrentSettings.RightHandRotationX,
+            CurrentSettings.RightHandRotationZ,
+            -CurrentSettings.RightHandRotationY
+        );
     }
 
     private void Awake()

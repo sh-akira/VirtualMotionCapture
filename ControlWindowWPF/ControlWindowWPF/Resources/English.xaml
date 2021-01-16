@@ -200,6 +200,7 @@
     <system:String x:Key="SettingWindow_OpenExternalCameraConfig">Open externalcamera.cfg</system:String>
     <system:String x:Key="SettingWindow_TrackerConfig">Tracker Config</system:String>
     <system:String x:Key="SettingWindow_OpenTrackerConfig">Open tracker assignment settings</system:String>
+    <system:String x:Key="SettingWindow_OpenHandFreeOffset">Open settings</system:String>
     <system:String x:Key="SettingWindow_Close">Close</system:String>
     <system:String x:Key="SettingWindow_LeftHand_ToolTip">Adjust the rotation of the left hand. Please change when actual hand rotation and model hand rotation are different.</system:String>
     <system:String x:Key="SettingWindow_RightHand_ToolTip">Adjust the rotation of the right hand. Please change when actual hand rotation and model hand rotation are different.</system:String>
