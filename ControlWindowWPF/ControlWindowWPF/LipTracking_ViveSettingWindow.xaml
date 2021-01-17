@@ -7,6 +7,11 @@
         mc:Ignorable="d"
         Title="VIVE Lip Tracker Setting" Height="450" Width="800" Loaded="Window_Loaded">
     <DockPanel>
+        <GroupBox Header="VIVE Lip Tracker" DockPanel.Dock="Top">
+            <DockPanel>
+                <CheckBox Content="{DynamicResource EyeTracking_ViveProEyeSettingWindow_UseEyelidMovementsCheckBox}" Name="UseViveLipTrackerCheckBox" Checked="UseViveLipTrackerCheckBox_ValueChanged" Unchecked="UseViveLipTrackerCheckBox_ValueChanged"/>
+            </DockPanel>
+        </GroupBox>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Right">
             <Button Content="{DynamicResource FaceControlKeyAddWindow_Register}" Width="100" Name="ApplyButton" Click="ApplyButton_Click"/>
             <Button Content="{DynamicResource FaceControlKeyAddWindow_Cancel}" Width="100" Name="IgnoreButton" Click="IgnoreButton_Click"/>

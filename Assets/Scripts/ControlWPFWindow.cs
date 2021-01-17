@@ -113,6 +113,11 @@ public class ControlWPFWindow : MonoBehaviour
     public Action<Dictionary<string, string>> SetLipShapeToBlendShapeStringMapAction = null;
     public Func<List<string>> GetLipShapesStringListFunc = null;
 
+    public Behaviour EyeTracking_ViveProEyeComponent = null;
+    public Behaviour SRanipal_Eye_FrameworkComponent = null;
+    public Behaviour LipTracking_ViveComponent = null;
+    public Behaviour SRanipal_Lip_FrameworkComponent = null;
+
     public MidiCCWrapper midiCCWrapper;
 
     public MIDICCBlendShape midiCCBlendShape;
@@ -748,11 +753,24 @@ public class ControlWPFWindow : MonoBehaviour
                 var d = (PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements)e.Data;
                 SetEyeTracking_ViveProEyeUseEyelidMovements(d);
             }
+            else if (e.CommandType == typeof(PipeCommands.SetEyeTracking_ViveProEyeEnable))
+            {
+                var d = (PipeCommands.SetEyeTracking_ViveProEyeEnable)e.Data;
+                CurrentSettings.EyeTracking_ViveProEyeEnable = d.enable;
+                SetEyeTracking_ViveProEyeEnable(d.enable);
+            }
             else if (e.CommandType == typeof(PipeCommands.GetEyeTracking_ViveProEyeUseEyelidMovements))
             {
                 await server.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements
                 {
                     Use = CurrentSettings.EyeTracking_ViveProEyeUseEyelidMovements,
+                }, e.RequestId);
+            }
+            else if (e.CommandType == typeof(PipeCommands.GetEyeTracking_ViveProEyeEnable))
+            {
+                await server.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeEnable
+                {
+                    enable = CurrentSettings.EyeTracking_ViveProEyeEnable,
                 }, e.RequestId);
             }
             else if (e.CommandType == typeof(PipeCommands.LoadCurrentSettings))
@@ -970,6 +988,19 @@ public class ControlWPFWindow : MonoBehaviour
                         LipShapesToBlendShapeMap = CurrentSettings.LipShapesToBlendShapeMap,
                     }, e.RequestId);
                 }
+            }
+            else if (e.CommandType == typeof(PipeCommands.GetViveLipTrackingEnable))
+            {
+                await server.SendCommandAsync(new PipeCommands.SetViveLipTrackingEnable
+                {
+                    enable = CurrentSettings.LipTracking_ViveEnable,
+                }, e.RequestId);
+            }
+            else if (e.CommandType == typeof(PipeCommands.SetViveLipTrackingEnable))
+            {
+                var d = (PipeCommands.SetViveLipTrackingEnable)e.Data;
+                CurrentSettings.LipTracking_ViveEnable = d.enable;
+                SetLipTracking_ViveEnable(d.enable);
             }
             else if (e.CommandType == typeof(PipeCommands.SetViveLipTrackingBlendShape))
             {
@@ -3075,6 +3106,8 @@ public class ControlWPFWindow : MonoBehaviour
         public float EyeTracking_ViveProEyeOffsetVertical;
         [OptionalField]
         public bool EyeTracking_ViveProEyeUseEyelidMovements;
+        [OptionalField]
+        public bool EyeTracking_ViveProEyeEnable;
 
         //ExternalMotionSender
         [OptionalField]
@@ -3109,6 +3142,8 @@ public class ControlWPFWindow : MonoBehaviour
         public List<string> MidiCCBlendShape;
         [OptionalField]
         public Dictionary<string,string> LipShapesToBlendShapeMap;
+        [OptionalField]
+        public bool LipTracking_ViveEnable;
 
         [OptionalField]
         public bool EnableSkeletal;
@@ -3276,6 +3311,7 @@ public class ControlWPFWindow : MonoBehaviour
             EyeTracking_ViveProEyeScaleHorizontal = 2.0f;
             EyeTracking_ViveProEyeScaleVertical = 1.5f;
             EyeTracking_ViveProEyeUseEyelidMovements = false;
+            EyeTracking_ViveProEyeEnable = false;
 
             EnableSkeletal = true;
 
@@ -3295,9 +3331,10 @@ public class ControlWPFWindow : MonoBehaviour
             ExternalMotionReceiverPort = 39540;
             ExternalMotionReceiverRequesterEnable = true;
 
-           MidiCCBlendShape = new List<string>(Enumerable.Repeat(default(string), MidiCCWrapper.KNOBS));
+            MidiCCBlendShape = new List<string>(Enumerable.Repeat(default(string), MidiCCWrapper.KNOBS));
 
             LipShapesToBlendShapeMap = new Dictionary<string, string>();
+            LipTracking_ViveEnable = false;
 
             TrackingFilterEnable = true;
             TrackingFilterHmdEnable = true;
@@ -3755,6 +3792,7 @@ public class ControlWPFWindow : MonoBehaviour
         {
             Use = CurrentSettings.EyeTracking_ViveProEyeUseEyelidMovements
         });
+        SetEyeTracking_ViveProEyeEnable(CurrentSettings.EyeTracking_ViveProEyeEnable);
 
         SetTrackingFilterEnable(CurrentSettings.TrackingFilterEnable, CurrentSettings.TrackingFilterHmdEnable, CurrentSettings.TrackingFilterControllerEnable, CurrentSettings.TrackingFilterTrackerEnable);
 
@@ -3767,12 +3805,25 @@ public class ControlWPFWindow : MonoBehaviour
         SetVMT(CurrentSettings.VirtualMotionTrackerEnable, CurrentSettings.VirtualMotionTrackerNo);
 
         SetLipShapeToBlendShapeStringMapAction?.Invoke(CurrentSettings.LipShapesToBlendShapeMap);
+        SetLipTracking_ViveEnable(CurrentSettings.LipTracking_ViveEnable);
 
         LoadAdvancedGraphicsOption();
 
         AdditionalSettingAction?.Invoke(null);
 
         await server.SendCommandAsync(new PipeCommands.SetWindowNum { Num = CurrentWindowNum });
+    }
+
+    private void SetEyeTracking_ViveProEyeEnable(bool enable)
+    {
+        if (EyeTracking_ViveProEyeComponent != null) EyeTracking_ViveProEyeComponent.enabled = enable;
+        if (SRanipal_Eye_FrameworkComponent != null) SRanipal_Eye_FrameworkComponent.enabled = enable;
+    }
+
+    private void SetLipTracking_ViveEnable(bool enable)
+    {
+        if (LipTracking_ViveComponent != null) LipTracking_ViveComponent.enabled = enable;
+        if (SRanipal_Lip_FrameworkComponent != null) SRanipal_Lip_FrameworkComponent.enabled = enable;
     }
 
     #endregion

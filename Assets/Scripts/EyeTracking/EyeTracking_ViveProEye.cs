@@ -32,11 +32,14 @@ public class EyeTracking_ViveProEye : MonoBehaviour
     private Dictionary<EyeShape, float> EyeWeightings = new Dictionary<EyeShape, float>();
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
         controlWPFWindow.ModelLoadedAction += ModelLoaded;
         controlWPFWindow.SetEyeTracking_ViveProEyeOffsetsAction += SetEyeTracking_ViveProEyeOffsets;
         controlWPFWindow.SetEyeTracking_ViveProEyeUseEyelidMovementsAction += SetEyeTracking_ViveProEyeUseEyelidMovements;
+        controlWPFWindow.EyeTracking_ViveProEyeComponent = this;
+        controlWPFWindow.SRanipal_Eye_FrameworkComponent = GetComponent<SRanipal_Eye_Framework>();
+        enabled = false;
     }
 
     private void ModelLoaded(GameObject currentModel)
@@ -91,7 +94,7 @@ public class EyeTracking_ViveProEye : MonoBehaviour
         {
             if ((SRanipal_Eye_Framework.Status != SRanipal_Eye_Framework.FrameworkStatus.WORKING &&
                 SRanipal_Eye_Framework.Status != SRanipal_Eye_Framework.FrameworkStatus.NOT_SUPPORT) || 
-                SRanipal_Eye_Framework.Status == SRanipal_Eye_Framework.FrameworkStatus.NOT_SUPPORT) return;
+                SRanipal_Eye_Framework.Status == SRanipal_Eye_Framework.FrameworkStatus.NOT_SUPPORT || enabled == false) return;
             vrmLookAtHead.Target = LookTarget.transform;
             vrmLookAtHead.LookWorldPosition();
             vrmLookAtHead.Target = null;

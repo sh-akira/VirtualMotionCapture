@@ -22,6 +22,8 @@ namespace VirtualMotionCaptureControlPanel
     /// </summary>
     public partial class LipTracking_ViveSettingWindow : Window
     {
+        private bool IsSetting = true;
+
         public LipTracking_ViveSettingWindow()
         {
             InitializeComponent();
@@ -81,8 +83,27 @@ namespace VirtualMotionCaptureControlPanel
                     }
                 });
             });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetViveLipTrackingEnable(), d =>
+            {
+                var data = (PipeCommands.SetViveLipTrackingEnable)d;
+                Dispatcher.Invoke(() =>
+                {
+                    IsSetting = true;
+                    UseViveLipTrackerCheckBox.IsChecked = data.enable;
+                    IsSetting = false;
+                });
+            });
             KeysDataGrid.DataContext = this;
             KeysDataGrid.ItemsSource = BlendShapeItems;
+        }
+
+        private async void UseViveLipTrackerCheckBox_ValueChanged(object sender, RoutedEventArgs e)
+        {
+            if (IsSetting) return;
+            await Globals.Client?.SendCommandAsync(new PipeCommands.SetViveLipTrackingEnable
+            {
+                enable = UseViveLipTrackerCheckBox.IsChecked.Value
+            });
         }
     }
 }

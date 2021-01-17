@@ -16,31 +16,37 @@ public class LipTracking_Vive : MonoBehaviour
     public Dictionary<string, LipShape_v2> LipShapeNameToEnumMap = new Dictionary<string, LipShape_v2>();
 
 
-    void Start()
+    void Awake()
     {
         controlWPFWindow.SetLipShapeToBlendShapeStringMapAction += SetLipShapeToBlendShapeStringMap;
         controlWPFWindow.GetLipShapesStringListFunc = GetLipShapesStringList;
-
-        if (!SRanipal_Lip_Framework.Instance.EnableLip)
-        {
-            enabled = false;
-            return;
-        }
-
-        //Get All Shapes
-        SRanipal_Lip_v2.GetLipWeightings(out LipWeightings);
-        foreach (var weighting in LipWeightings)
-        {
-            if (Enum.IsDefined(typeof(LipShape_v2), weighting.Key))
-            {
-                LipShapeNameToEnumMap[weighting.Key.ToString()] = weighting.Key;
-            }
-        }
+        controlWPFWindow.LipTracking_ViveComponent = this;
+        controlWPFWindow.SRanipal_Lip_FrameworkComponent = GetComponent<SRanipal_Lip_Framework>();
+        enabled = false;
     }
 
     void Update()
     {
         if (SRanipal_Lip_Framework.Status != SRanipal_Lip_Framework.FrameworkStatus.WORKING) return;
+
+        if (LipWeightings == null)
+        {
+            if (!SRanipal_Lip_Framework.Instance.EnableLip)
+            {
+                enabled = false;
+                return;
+            }
+
+            //Get All Shapes
+            SRanipal_Lip_v2.GetLipWeightings(out LipWeightings);
+            foreach (var weighting in LipWeightings)
+            {
+                if (Enum.IsDefined(typeof(LipShape_v2), weighting.Key))
+                {
+                    LipShapeNameToEnumMap[weighting.Key.ToString()] = weighting.Key;
+                }
+            }
+        }
 
         SRanipal_Lip_v2.GetLipWeightings(out LipWeightings);
 

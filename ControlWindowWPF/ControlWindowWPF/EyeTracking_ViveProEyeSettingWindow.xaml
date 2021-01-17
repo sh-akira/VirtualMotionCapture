@@ -5,8 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
         mc:Ignorable="d"
-        Title="EyeTracking VIVE Pro Eye" Width="400" SizeToContent="Height" Loaded="Window_Loaded">
+        Title="EyeTracking VIVE Pro Eye/Droolon F1" Width="400" SizeToContent="Height" Loaded="Window_Loaded">
     <DockPanel>
+        <GroupBox Header="VIVE Pro Eye/Droolon F1" DockPanel.Dock="Top">
+            <DockPanel>
+                <CheckBox Content="{DynamicResource EyeTracking_ViveProEyeSettingWindow_UseEyelidMovementsCheckBox}" Name="UseViveProEyeCheckBox" Checked="UseViveProEyeCheckBox_ValueChanged" Unchecked="UseViveProEyeCheckBox_ValueChanged"/>
+            </DockPanel>
+        </GroupBox>
         <GroupBox Header="{DynamicResource EyeTracking_ViveProEyeSettingWindow_EyeScale}" DockPanel.Dock="Top">
             <UniformGrid Rows="1" Columns="2">
                 <StackPanel>

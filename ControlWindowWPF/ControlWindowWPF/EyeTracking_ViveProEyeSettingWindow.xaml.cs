@@ -44,6 +44,16 @@ namespace VirtualMotionCaptureControlPanel
                     IsSetting = false;
                 });
             });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEyeTracking_ViveProEyeEnable(), d =>
+            {
+                var data = (PipeCommands.SetEyeTracking_ViveProEyeEnable)d;
+                Dispatcher.Invoke(() =>
+                {
+                    IsSetting = true;
+                    UseViveProEyeCheckBox.IsChecked = data.enable;
+                    IsSetting = false;
+                });
+            });
         }
 
         private void SetEyeTracking_ViveProEyeOffsets(PipeCommands.SetEyeTracking_ViveProEyeOffsets offsets)
@@ -92,5 +102,13 @@ namespace VirtualMotionCaptureControlPanel
             });
         }
 
+        private async void UseViveProEyeCheckBox_ValueChanged(object sender, RoutedEventArgs e)
+        {
+            if (IsSetting) return;
+            await Globals.Client?.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeEnable
+            {
+                enable = UseViveProEyeCheckBox.IsChecked.Value
+            });
+        }
     }
 }
