@@ -1479,7 +1479,7 @@
     },{
         "FaceAction":true,
         "FaceNames":[
-            "JOY"
+            "Joy"
         ],
         "FaceStrength":[
             1
@@ -1511,7 +1511,7 @@
     },{
         "FaceAction":true,
         "FaceNames":[
-            "ANGRY"
+            "Angry"
         ],
         "FaceStrength":[
             1
@@ -1543,7 +1543,7 @@
     },{
         "FaceAction":true,
         "FaceNames":[
-            "SORROW"
+            "Sorrow"
         ],
         "FaceStrength":[
             1
@@ -1575,7 +1575,7 @@
     },{
         "FaceAction":true,
         "FaceNames":[
-            "FUN"
+            "Fun"
         ],
         "FaceStrength":[
             1
@@ -1639,7 +1639,7 @@
     },{
         "FaceAction":true,
         "FaceNames":[
-            "BLINK_L"
+            "Blink_L"
         ],
         "FaceStrength":[
             1
@@ -1671,7 +1671,7 @@
     },{
         "FaceAction":true,
         "FaceNames":[
-            "JOY"
+            "Joy"
         ],
         "FaceStrength":[
             1
@@ -1703,7 +1703,7 @@
     },{
         "FaceAction":true,
         "FaceNames":[
-            "ANGRY"
+            "Angry"
         ],
         "FaceStrength":[
             1
@@ -1735,7 +1735,7 @@
     },{
         "FaceAction":true,
         "FaceNames":[
-            "SORROW"
+            "Sorrow"
         ],
         "FaceStrength":[
             1
@@ -1767,7 +1767,7 @@
     },{
         "FaceAction":true,
         "FaceNames":[
-            "FUN"
+            "Fun"
         ],
         "FaceStrength":[
             1
@@ -1831,7 +1831,7 @@
     },{
         "FaceAction":true,
         "FaceNames":[
-            "BLINK_R"
+            "Blink_R"
         ],
         "FaceStrength":[
             1
@@ -1863,7 +1863,7 @@
     },{
         "FaceAction":true,
         "FaceNames":[
-            "NEUTRAL"
+            "Neutral"
         ],
         "FaceStrength":[
             1
@@ -1895,7 +1895,7 @@
     },{
         "FaceAction":true,
         "FaceNames":[
-            "NEUTRAL"
+            "Neutral"
         ],
         "FaceStrength":[
             1
@@ -1927,7 +1927,7 @@
     },{
         "FaceAction":true,
         "FaceNames":[
-            "NEUTRAL"
+            "Neutral"
         ],
         "FaceStrength":[
             1
@@ -1959,7 +1959,7 @@
     },{
         "FaceAction":true,
         "FaceNames":[
-            "NEUTRAL"
+            "Neutral"
         ],
         "FaceStrength":[
             1
