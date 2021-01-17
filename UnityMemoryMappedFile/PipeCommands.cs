@@ -351,6 +351,11 @@ namespace UnityMemoryMappedFile
         {
             public bool Use { get; set; }
         }
+        public class GetEyeTracking_ViveProEyeEnable { }
+        public class SetEyeTracking_ViveProEyeEnable
+        {
+            public bool enable { get; set; }
+        }
 
         public class ImportCameraPlus
         {
@@ -490,6 +495,11 @@ namespace UnityMemoryMappedFile
         {
             public List<string> LipShapes { get; set; }
             public Dictionary<string, string> LipShapesToBlendShapeMap { get; set; }
+        }
+        public class GetViveLipTrackingEnable { }
+        public class SetViveLipTrackingEnable
+        {
+            public bool enable { get; set; }
         }
 
         public class GetAdvancedGraphicsOption { }
