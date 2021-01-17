@@ -953,5 +953,15 @@ namespace VirtualMotionCaptureControlPanel
             win.Owner = this;
             win.ShowDialog();
         }
+
+        private async void PauseTrackingCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client?.SendCommandAsync(new PipeCommands.PauseTracking { enable = true });
+        }
+
+        private async void PauseTrackingCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client?.SendCommandAsync(new PipeCommands.PauseTracking { enable = false });
+        }
     }
 }

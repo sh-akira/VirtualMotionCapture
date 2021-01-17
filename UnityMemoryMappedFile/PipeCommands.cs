@@ -428,6 +428,11 @@ namespace UnityMemoryMappedFile
             public bool trackerEnable { get; set; }
         }
 
+        public class PauseTracking
+        {
+            public bool enable { get; set; }
+        }
+
         public class GetEnableModelModifier { }
         public class EnableModelModifier
         {

@@ -21,6 +21,7 @@ namespace sh_akira.OVRTracking
         public static bool hmdEnable = true;
         public static bool controllerEnable = true;
         public static bool trackerEnable = true;
+        public static bool pauseTracking = false;
 
         //最後に正常だった全位置情報
         static Dictionary<string, SteamVR_Utils.RigidTransform> lastValidTransform = new Dictionary<string, SteamVR_Utils.RigidTransform>();
@@ -83,7 +84,7 @@ namespace sh_akira.OVRTracking
         //内部向け、正常かどうかを判断する
         private bool IsTrackingOK()
         {
-            return trackingStatus.eTrackingResult == ETrackingResult.Running_OK;
+            return trackingStatus.eTrackingResult == ETrackingResult.Running_OK && pauseTracking == false;
         }
 
         private void measureValidFrames()
@@ -146,7 +147,7 @@ namespace sh_akira.OVRTracking
                 Vector3 pos = lastValidTransform[serialNumber].pos;
 
                 //回転情報は部分的に反映する(飛びの影響を受けづらいのと、不自然さ防止)
-                Quaternion rot = Quaternion.Lerp(lastValidTransform[serialNumber].rot, transform.rot, 0.5f);
+                Quaternion rot = Quaternion.Lerp(lastValidTransform[serialNumber].rot, transform.rot, pauseTracking ? 0.0f : 0.5f);
 
                 transform = new SteamVR_Utils.RigidTransform(pos, rot);
                 isOK = false; //外部向けに問題ありと通知する
@@ -231,7 +232,7 @@ namespace sh_akira.OVRTracking
                 }
                 
                 measureValidFrames();
-                if (process)
+                if (process || pauseTracking)
                 {
                     saveAndSwapInvalidTransform();
                 }
