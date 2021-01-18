@@ -75,11 +75,18 @@ namespace VirtualMotionCaptureControlPanel
         public int RightHandRotationY { get => Getter<int>(); set => Setter(value); }
         public int RightHandRotationZ { get => Getter<int>(); set => Setter(value); }
 
+        public float LeftHandPositionXcm { get => Getter<float>(); set { LeftHandPositionX = Convert.ToInt32(value * 10); Setter(value); } }
+        public float LeftHandPositionYcm { get => Getter<float>(); set { LeftHandPositionY = Convert.ToInt32(value * 10); Setter(value); } }
+        public float LeftHandPositionZcm { get => Getter<float>(); set { LeftHandPositionZ = Convert.ToInt32(value * 10); Setter(value); } }
+        public float RightHandPositionXcm { get => Getter<float>(); set { RightHandPositionX = Convert.ToInt32(value * 10); Setter(value); } }
+        public float RightHandPositionYcm { get => Getter<float>(); set { RightHandPositionY = Convert.ToInt32(value * 10); Setter(value); } }
+        public float RightHandPositionZcm { get => Getter<float>(); set { RightHandPositionZ = Convert.ToInt32(value * 10); Setter(value); } }
+
         public void SyncToLeft()
         {
-            RightHandPositionX = LeftHandPositionX;
-            RightHandPositionY = LeftHandPositionY;
-            RightHandPositionZ = LeftHandPositionZ;
+            RightHandPositionXcm = LeftHandPositionXcm;
+            RightHandPositionYcm = LeftHandPositionYcm;
+            RightHandPositionZcm = LeftHandPositionZcm;
             RightHandRotationX = LeftHandRotationX;
             RightHandRotationY = LeftHandRotationY;
             RightHandRotationZ = LeftHandRotationZ;
@@ -106,15 +113,15 @@ namespace VirtualMotionCaptureControlPanel
 
         public void SetFromPipeCommands(PipeCommands.SetHandFreeOffset FreeOffset)
         {
-            LeftHandPositionX = FreeOffset.LeftHandPositionX;
-            LeftHandPositionY = FreeOffset.LeftHandPositionY;
-            LeftHandPositionZ = FreeOffset.LeftHandPositionZ;
+            LeftHandPositionXcm = FreeOffset.LeftHandPositionX / 10f;
+            LeftHandPositionYcm = FreeOffset.LeftHandPositionY / 10f;
+            LeftHandPositionZcm = FreeOffset.LeftHandPositionZ / 10f;
             LeftHandRotationX = FreeOffset.LeftHandRotationX;
             LeftHandRotationY = FreeOffset.LeftHandRotationY;
             LeftHandRotationZ = FreeOffset.LeftHandRotationZ;
-            RightHandPositionX = FreeOffset.RightHandPositionX;
-            RightHandPositionY = FreeOffset.RightHandPositionY;
-            RightHandPositionZ = FreeOffset.RightHandPositionZ;
+            RightHandPositionXcm = FreeOffset.RightHandPositionX / 10f;
+            RightHandPositionYcm = FreeOffset.RightHandPositionY / 10f;
+            RightHandPositionZcm = FreeOffset.RightHandPositionZ / 10f;
             RightHandRotationX = FreeOffset.RightHandRotationX;
             RightHandRotationY = FreeOffset.RightHandRotationY;
             RightHandRotationZ = FreeOffset.RightHandRotationZ;
