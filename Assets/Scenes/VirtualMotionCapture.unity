@@ -8389,7 +8389,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsBeta: 0
   IsPreRelease: 0
-  VersionString: v0.49f1r1b2
+  VersionString: v0.49f2r2b3
   handler: {fileID: 1128534203}
   LeftWristTransform: {fileID: 0}
   RightWristTransform: {fileID: 0}
@@ -8418,6 +8418,10 @@ MonoBehaviour:
   CriticalErrorCount: 0
   vmtClient: {fileID: 1995326176}
   postProcessingManager: {fileID: 795349838}
+  EyeTracking_ViveProEyeComponent: {fileID: 0}
+  SRanipal_Eye_FrameworkComponent: {fileID: 0}
+  LipTracking_ViveComponent: {fileID: 0}
+  SRanipal_Lip_FrameworkComponent: {fileID: 0}
   midiCCWrapper: {fileID: 1604201751}
   midiCCBlendShape: {fileID: 1440382163}
   calibrationState: 0
