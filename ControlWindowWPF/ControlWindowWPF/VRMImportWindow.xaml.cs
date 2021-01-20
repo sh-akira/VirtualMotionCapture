@@ -115,8 +115,6 @@ namespace VirtualMotionCaptureControlPanel
         private void ShowDMMVRConnectButton_Click(object sender, RoutedEventArgs e)
         {
             var win = new DMMVRConnectWindow();
-            win.Show();
-            return;
             win.Owner = this;
             if (win.ShowDialog() == true)
             {
