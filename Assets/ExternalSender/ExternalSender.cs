@@ -94,7 +94,7 @@ public class ExternalSender : MonoBehaviour
             {
                 var parsed = path.Substring("dmmvrconnect://".Length).Split('/');
                 remoteName = "dmmvrconnect";
-                remoteJson = Json.Serializer.Serialize(new DMMVRConnectRemote { uesr_id = parsed[0], avatar_id = parsed[1] });
+                remoteJson = Json.Serializer.Serialize(new DMMVRConnectRemote { user_id = parsed[0], avatar_id = parsed[1] });
             }
             else if (path.StartsWith("vroidhub://"))
             {
@@ -539,7 +539,7 @@ public class ExternalSender : MonoBehaviour
 [Serializable]
 public class DMMVRConnectRemote
 {
-    public string uesr_id;
+    public string user_id;
     public string avatar_id;
 }
 
