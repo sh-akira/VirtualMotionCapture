@@ -103,6 +103,7 @@ public class ControlWPFWindow : MonoBehaviour
     public Action<GameObject> AdditionalSettingAction = null;
     public Action<Camera> CameraChangedAction = null;
     public Action<VRMData> VRMmetaLodedAction = null;
+    public Action<string> VRMRemoteLoadedAction = null;
     public Action LightChangedAction = null;
     public Action LoadedConfigPathChangedAction = null;
 
@@ -352,6 +353,11 @@ public class ControlWPFWindow : MonoBehaviour
             {
                 var d = (PipeCommands.LoadVRM)e.Data;
                 await server.SendCommandAsync(new PipeCommands.ReturnLoadVRM { Data = LoadVRM(d.Path) }, e.RequestId);
+            }
+            else if (e.CommandType == typeof(PipeCommands.LoadRemoteVRM))
+            {
+                var d = (PipeCommands.LoadRemoteVRM)e.Data;
+                VRMRemoteLoadedAction?.Invoke(d.Path);
             }
             else if (e.CommandType == typeof(PipeCommands.ImportVRM))
             {

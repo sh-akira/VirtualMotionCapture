@@ -30,6 +30,11 @@ namespace UnityMemoryMappedFile
             public string Path { get; set; }
         }
 
+        public class LoadRemoteVRM
+        {
+            public string Path { get; set; }
+        }
+
         public class ReturnLoadVRM
         {
             public VRMData Data { get; set; }

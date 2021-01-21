@@ -23,6 +23,8 @@ public class ExternalSender : MonoBehaviour
     VRMBlendShapeProxy blendShapeProxy = null;
     Camera currentCamera = null;
     VRMData vrmdata = null;
+    string remoteName = null;
+    string remoteJson = null;
 
     public SteamVR2Input steamVR2Input;
     public MidiCCWrapper midiCCWrapper;
@@ -81,6 +83,25 @@ public class ExternalSender : MonoBehaviour
         window.VRMmetaLodedAction += (VRMData vrmdata) =>
         {
             this.vrmdata = vrmdata;
+            this.remoteName = null;
+            this.remoteJson = null;
+            SendPerLowRate(); //即時送信
+        };
+        window.VRMRemoteLoadedAction += (string path) =>
+        {
+            this.vrmdata = null;
+            if (path.StartsWith("dmmvrconnect://"))
+            {
+                var parsed = path.Substring("dmmvrconnect://".Length).Split('/');
+                remoteName = "dmmvrconnect";
+                remoteJson = Json.Serializer.Serialize(new DMMVRConnectRemote { uesr_id = parsed[0], avatar_id = parsed[1] });
+            }
+            else if (path.StartsWith("vroidhub://"))
+            {
+                var characterModelId = path.Substring("vroidhub://".Length);
+                remoteName = "vroidhub";
+                remoteJson = Json.Serializer.Serialize(new VRoidHubRemote { characterModelId = characterModelId });
+            }
             SendPerLowRate(); //即時送信
         };
 
@@ -237,15 +258,8 @@ public class ExternalSender : MonoBehaviour
             }
         };
 
-
-        if (ControlWPFWindow.CurrentSettings.VRMPath != null)
-        {
-            //有効なVRMが読み込まれているならメタデータを記録する(低頻度送信に頼る)
-            if (File.Exists(ControlWPFWindow.CurrentSettings.VRMPath))
-            {
-                this.vrmdata = window.LoadVRM(ControlWPFWindow.CurrentSettings.VRMPath);
-            }
-        }
+        this.gameObject.SetActive(false);
+        uClient.enabled = true;        
     }
     // Update is called once per frame
     void Update()
@@ -314,6 +328,10 @@ public class ExternalSender : MonoBehaviour
             {
                 //ファイルパス, キャラ名
                 uClient?.Send(new uOSC.Message("/VMC/Ext/VRM", vrmdata.FilePath, vrmdata.Title));
+            }
+            else if (string.IsNullOrEmpty(remoteName) == false)
+            {
+                uClient?.Send(new uOSC.Message("/VMC/Ext/Remote", remoteName, remoteJson));
             }
 
             //【イベント送信】設定ファイルパス(Loaded config path) [独立送信](大きいため単独で送る)
@@ -516,5 +534,18 @@ public class ExternalSender : MonoBehaviour
         portfield.SetValue(uClient, port);
         uClient.enabled = true;
     }
+}
+
+[Serializable]
+public class DMMVRConnectRemote
+{
+    public string uesr_id;
+    public string avatar_id;
+}
+
+[Serializable]
+public class VRoidHubRemote
+{
+    public string characterModelId;
 }
 
