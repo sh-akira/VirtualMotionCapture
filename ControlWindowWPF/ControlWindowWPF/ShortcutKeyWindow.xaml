@@ -17,6 +17,7 @@
                                     <Grid>
                                         <Image Width="150" Height="150" Name="LeftImage"/>
                                         <Canvas Name="LeftCanvas" ToolTip="{DynamicResource ShortcutKeyWindow_LeftController_ToolTip}"/>
+                                        <TextBlock Text="" HorizontalAlignment="Center" VerticalAlignment="Center" Name="LeftCenterIndexTextBlock"/>
                                     </Grid>
                                 </GroupBox>
                                 <CheckBox Content="{DynamicResource ShortcutKeyWindow_LeftCenterKey}" Name="LeftCenterKeyCheckBox" Checked="LeftCenterKeyCheckBox_Checked" Unchecked="LeftCenterKeyCheckBox_Unchecked" ToolTip="{DynamicResource ShortcutKeyWindow_LeftCenterKey_ToolTip}"/>
@@ -35,6 +36,7 @@
                                     <Grid>
                                         <Image Width="150" Height="150" Name="RightImage"/>
                                         <Canvas Name="RightCanvas" ToolTip="{DynamicResource ShortcutKeyWindow_RightController_ToolTip}"/>
+                                        <TextBlock Text="" HorizontalAlignment="Center" VerticalAlignment="Center" Name="RightCenterIndexTextBlock"/>
                                     </Grid>
                                 </GroupBox>
                                 <CheckBox Content="{DynamicResource ShortcutKeyWindow_RightCenterKey}" Name="RightCenterKeyCheckBox" Checked="RightCenterKeyCheckBox_Checked" Unchecked="RightCenterKeyCheckBox_Unchecked" ToolTip="{DynamicResource ShortcutKeyWindow_RightCenterKey_ToolTip}"/>
@@ -57,6 +59,7 @@
                                     <Grid>
                                         <Image Width="150" Height="150" Name="LeftStickImage"/>
                                         <Canvas Name="LeftStickCanvas" ToolTip="{DynamicResource ShortcutKeyWindow_LeftController_ToolTip}"/>
+                                        <TextBlock Text="" HorizontalAlignment="Center" VerticalAlignment="Center" Name="LeftStickCenterIndexTextBlock"/>
                                     </Grid>
                                 </GroupBox>
                                                                 <DockPanel>
@@ -74,6 +77,7 @@
                                     <Grid>
                                         <Image Width="150" Height="150" Name="RightStickImage"/>
                                         <Canvas Name="RightStickCanvas" ToolTip="{DynamicResource ShortcutKeyWindow_RightController_ToolTip}"/>
+                                        <TextBlock Text="" HorizontalAlignment="Center" VerticalAlignment="Center" Name="RightStickCenterIndexTextBlock"/>
                                     </Grid>
                                 </GroupBox>
                                 <DockPanel>

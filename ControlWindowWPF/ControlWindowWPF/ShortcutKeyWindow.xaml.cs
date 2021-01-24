@@ -122,6 +122,7 @@ namespace VirtualMotionCaptureControlPanel
             public Pen Pen;
             public Thumb Thumb;
             public WriteableBitmap Wb;
+            public TextBlock Tb;
         }
 
         public List<ControllerPoint> LeftPoints = new List<ControllerPoint>();
@@ -156,6 +157,10 @@ namespace VirtualMotionCaptureControlPanel
             point.Thumb.Tag = point;
             point.Wb = TargetWB(isLeft, isTouchPad);
             TargetPoints(isLeft, isTouchPad).Add(point);
+            point.Tb = new TextBlock { Text = (TargetPoints(isLeft, isTouchPad).IndexOf(point) + 1).ToString() };
+            Canvas.SetLeft(point.Tb, (int)((point.Point.X * 0.8 + 1.0f) * TargetImage(isLeft, isTouchPad).Width) / 2);
+            Canvas.SetTop(point.Tb, (int)((point.Point.Y * 0.8 + 1.0f) * TargetImage(isLeft, isTouchPad).Height) / 2);
+            TargetCanvas(isLeft, isTouchPad).Children.Add(point.Tb);
         }
 
         //h:0～360 s:0～1.0 v:0～1.0
@@ -211,6 +216,7 @@ namespace VirtualMotionCaptureControlPanel
                 p.Thumb.PreviewMouseMove -= Thumb_PreviewMouseMove;
                 p.Thumb.PreviewMouseLeftButtonUp -= Thumb_PreviewMouseLeftButtonUp;
                 TargetCanvas(isLeft, isTouchPad).Children.Remove(p.Thumb);
+                TargetCanvas(isLeft, isTouchPad).Children.Remove(p.Tb);
             }
             points.Clear();
             //(isLeft ? Globals.LeftControllerPoints : Globals.RightControllerPoints).Clear();
@@ -244,6 +250,34 @@ namespace VirtualMotionCaptureControlPanel
                 var cheight = height * 2 / 5;
                 FillEllipse(wb, (int)(width / 2.0), (int)(height / 2.0), (int)(cwidth / 2), (int)(cheight / 2), isTouchPad ? CenterColor : Color.FromRgb(80, 80, 80));
             }
+            var isChecked = false;
+            TextBlock centerIndexTextBlock;
+            if (isTouchPad)
+            {
+                if (isLeft)
+                {
+                    isChecked = LeftCenterKeyCheckBox.IsChecked.Value;
+                    centerIndexTextBlock = LeftCenterIndexTextBlock;
+                }
+                else
+                {
+                    isChecked = RightCenterKeyCheckBox.IsChecked.Value;
+                    centerIndexTextBlock = RightCenterIndexTextBlock;
+                }
+            }
+            else
+            {
+                isChecked = true;
+                if (isLeft)
+                {
+                    centerIndexTextBlock = LeftStickCenterIndexTextBlock;
+                }
+                else
+                {
+                    centerIndexTextBlock = RightStickCenterIndexTextBlock;
+                }
+            }
+            centerIndexTextBlock.Text = isChecked ? (points.Count + 1).ToString() : "" ;
             //円形に切り取り
             FillEllipse(wb, (int)(width / 2), (int)(height / 2), (int)(width / 2), (int)(height / 2), Colors.White, true);
             wb.AddDirtyRect(new Int32Rect(0, 0, wb.PixelWidth, wb.PixelHeight));
@@ -287,6 +321,8 @@ namespace VirtualMotionCaptureControlPanel
                 var height = (float)canvas.ActualHeight;
                 point.Point.X = (Canvas.GetLeft(point.Thumb) * 2 - width) / width;
                 point.Point.Y = (Canvas.GetTop(point.Thumb) * 2 - width) / height;
+                Canvas.SetLeft(point.Tb, (int)((point.Point.X * 0.8 + 1.0f) * width) / 2);
+                Canvas.SetTop(point.Tb, (int)((point.Point.Y * 0.8 + 1.0f) * height) / 2);
                 UpdateView((thumb.Tag as ControllerPoint).Wb);
             }
         }
