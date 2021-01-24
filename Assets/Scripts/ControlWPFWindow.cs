@@ -1713,7 +1713,7 @@ public class ControlWPFWindow : MonoBehaviour
         }
         else if (serial.Item1 == ETrackedDeviceClass.GenericTracker)
         {
-            foreach (var tracker in handler.Trackers.Where(d => d != handler.CameraControllerObject && d.name.Contains("LIV Virtual Camera") == false))
+            foreach (var tracker in handler.Trackers.Where(d => d != handler.CameraControllerObject && d.name.Contains("LIV Virtual Camera") == false && !(CurrentSettings.VirtualMotionTrackerEnable && d.name.Contains($"VMT_{CurrentSettings.VirtualMotionTrackerNo}"))))
             {
                 if (tracker != null && tracker.transform.name == serial.Item2)
                 {
