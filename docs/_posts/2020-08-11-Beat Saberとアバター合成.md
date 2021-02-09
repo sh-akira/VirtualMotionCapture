@@ -99,6 +99,11 @@ OBSで録画する際は設定の出力のエンコーダをNVENC等のハード
 
 # LIVを使用する
 <span style="color: red;">**現在Beat SaberにおいてLIVの使用は非推奨です。上記VMCAvatarもしくはCameraPlusとOBS合成を先にお試しください。** </span>   
+<span style="color: red;">**・動作にかなりのスペックを要求する** </span>  
+<span style="color: red;">**・上記2つの方法より軽くなることはありません** </span>  
+<span style="color: red;">**・正しく設定しても正常に動作しないことが多いです** </span>  
+<span style="color: red;">**・動作しない場合LIV側の問題の為こちらでの対応が不可能です** </span>  
+<span style="color: red;">**・検索して出てくる古い手順はすべて動作しません** </span>  
   
 LIVはBeat Saberに限らず対応しているゲームでMR合成(リアルの映像を合成)を行うためのツールです。  
 バーチャルモーションキャプチャーはリアルの映像の代わりに仮想カメラでアバターの映像を出力してゲーム内にアバターを合成させることが出来ます  
