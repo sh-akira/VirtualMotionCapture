@@ -601,6 +601,7 @@ public class ControlWPFWindow : MonoBehaviour
                 CurrentSettings.RightHandRotationX = d.RightHandRotationX;
                 CurrentSettings.RightHandRotationY = d.RightHandRotationY;
                 CurrentSettings.RightHandRotationZ = d.RightHandRotationZ;
+                CurrentSettings.SwivelOffset = d.SwivelOffset;
                 SetHandFreeOffset();
             }
             else if (e.CommandType == typeof(PipeCommands.SetExternalCameraConfig))
@@ -3041,6 +3042,8 @@ public class ControlWPFWindow : MonoBehaviour
         public float RightHandRotationY;
         [OptionalField]
         public float RightHandRotationZ;
+        [OptionalField]
+        public int SwivelOffset;
 
         [OptionalField]
         public Tuple<ETrackedDeviceClass, string> Head = Tuple.Create(ETrackedDeviceClass.HMD, default(string));
@@ -3777,7 +3780,8 @@ public class ControlWPFWindow : MonoBehaviour
             RightHandPositionZ = (int)Mathf.Round(CurrentSettings.RightHandPositionZ * 1000),
             RightHandRotationX = (int)CurrentSettings.RightHandRotationX,
             RightHandRotationY = (int)CurrentSettings.RightHandRotationY,
-            RightHandRotationZ = (int)CurrentSettings.RightHandRotationZ
+            RightHandRotationZ = (int)CurrentSettings.RightHandRotationZ,
+            SwivelOffset = CurrentSettings.SwivelOffset,
         });
         SetHandFreeOffset();
 
@@ -3897,6 +3901,9 @@ public class ControlWPFWindow : MonoBehaviour
             CurrentSettings.RightHandPositionY,
             CurrentSettings.RightHandPositionZ
         );
+
+        vrik.solver.leftArm.swivelOffset = CurrentSettings.SwivelOffset;
+        vrik.solver.rightArm.swivelOffset = -CurrentSettings.SwivelOffset;
     }
 
     private void Awake()

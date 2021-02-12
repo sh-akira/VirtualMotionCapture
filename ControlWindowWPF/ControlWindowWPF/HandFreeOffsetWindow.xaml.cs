@@ -74,6 +74,7 @@ namespace VirtualMotionCaptureControlPanel
         public int RightHandRotationX { get => Getter<int>(); set => Setter(value); }
         public int RightHandRotationY { get => Getter<int>(); set => Setter(value); }
         public int RightHandRotationZ { get => Getter<int>(); set => Setter(value); }
+        public int SwivelOffset { get => Getter<int>(); set => Setter(value); }
 
         public float LeftHandPositionXcm { get => Getter<float>(); set { LeftHandPositionX = Convert.ToInt32(value * 10); Setter(value); } }
         public float LeftHandPositionYcm { get => Getter<float>(); set { LeftHandPositionY = Convert.ToInt32(value * 10); Setter(value); } }
@@ -107,7 +108,8 @@ namespace VirtualMotionCaptureControlPanel
                 RightHandPositionZ = RightHandPositionZ,
                 RightHandRotationX = RightHandRotationX,
                 RightHandRotationY = RightHandRotationY,
-                RightHandRotationZ = RightHandRotationZ
+                RightHandRotationZ = RightHandRotationZ,
+                SwivelOffset = SwivelOffset
             };
         }
 
@@ -125,6 +127,7 @@ namespace VirtualMotionCaptureControlPanel
             RightHandRotationX = FreeOffset.RightHandRotationX;
             RightHandRotationY = FreeOffset.RightHandRotationY;
             RightHandRotationZ = FreeOffset.RightHandRotationZ;
+            SwivelOffset = FreeOffset.SwivelOffset;
         }
     }
 }

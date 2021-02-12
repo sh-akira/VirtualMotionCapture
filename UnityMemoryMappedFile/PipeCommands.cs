@@ -224,6 +224,7 @@ namespace UnityMemoryMappedFile
             public int RightHandRotationX { get; set; }
             public int RightHandRotationY { get; set; }
             public int RightHandRotationZ { get; set; }
+            public int SwivelOffset { get; set; }
         }
 
         public class SetExternalCameraConfig
