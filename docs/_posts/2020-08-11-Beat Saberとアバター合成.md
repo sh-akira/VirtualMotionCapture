@@ -11,7 +11,7 @@ Beat Saberと合成するための3つの方法
 
 # 3つの方法
 
-現在バーチャルモーションキャプチャーを用いてBeat Saberとアバター合成を行う方法は簡単な順に以下の3つの方法があります。
+現在バーチャルモーションキャプチャーを用いてBeat Saberとアバター合成を行う方法は**簡単な順**に以下の3つの方法があります。
 
 - VMCAvatarとCameraPlus
 - CameraPlusとOBSで合成
@@ -24,8 +24,10 @@ Beat Saberと合成するための3つの方法
 # VMCAvatarとCameraPlusを使用する方法
 
 VMCAvatarはバーチャルモーションキャプチャーのVMCProtocol送信機能を利用して、Beat Saber内に直接VRMのアバターを表示するMODです。  
+<span style="color: red;">**VMCAvatarの作者は[長月ゆきな(@ngtkd)](https://twitter.com/ngtkd)さんです** </span>   
+
   
-<span style="color: red;">**2020/08/11現在 バーチャルモーションキャプチャーのVMCProtocol送信機能は[pixivFANBOX](https://akira.fanbox.cc/),[Patreon](https://www.patreon.com/sh_akira)の支援者限定の先行配信版のみの機能です**</span>  
+**2020/08/11現在 バーチャルモーションキャプチャーのVMCProtocol送信機能は[pixivFANBOX](https://akira.fanbox.cc/),[Patreon](https://www.patreon.com/sh_akira)の支援者限定の先行配信版のみの機能です**  
   
 VMCAvatarは直接ゲーム内にアバターを表示するため、後述するLIVやCameraPlus合成における合成処理や位置合わせが一切不要でキャリブレーションするだけですぐに使用することが出来ます。  
 
@@ -36,7 +38,8 @@ VMCAvatarは直接ゲーム内にアバターを表示するため、後述す�
 確認できたらBeat Saberは一度終了します。
 
 ## 2. VMCAvatarを導入する
-[VMCAvatarのページ](https://github.com/nagatsuki/VMCAvatar-BS)のダウンロードからリリース版バイナリをダウンロードします。  
+<span style="color: red;">**VMCAvatarの作者は[長月ゆきな(@ngtkd)](https://twitter.com/ngtkd)さんです** </span>   
+長月ゆきなさんが公開している[VMCAvatarのページ](https://github.com/nagatsuki/VMCAvatar-BS)のダウンロードからリリース版バイナリをダウンロードします。  
 <span style="color: red;">**このページには困ったときのよくある質問が全て書いてありますので1度目を通してください**</span>  
 ダウンロードして解凍したら中にあるVMCAvatar.dllをBeat SaberのインストールフォルダのPluginsフォルダ  
 (通常はC:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins)にコピーします。  
@@ -50,7 +53,7 @@ VRMモデルを読み込み、MR合成モードでキャリブレーションを
   
 以上で完了です。Beat Saber内に自分のアバターが表示されているはずです。  
 アバターが白くなったりする場合はVMCAvatarのページを再度確認してください。  
-または[VMCAvatarMaterialChange](https://github.com/Reiya1013/VMCAvatarMaterialChange)もお試しください。  
+または**[Reiya(@Reiya__)](https://twitter.com/Reiya__)さんが公開している[VMCAvatarMaterialChange](https://github.com/Reiya1013/VMCAvatarMaterialChange)**もお試しください。  
   
 CameraPlusは自由に複数のカメラを設置したり、ゲーム内でカメラを移動できるので好きな画面構成を作ることが出来ます。  
 好みの画面が完成したら後はOBSで録画や配信をしましょう！  
@@ -95,6 +98,13 @@ OBSで録画する際は設定の出力のエンコーダをNVENC等のハード
 ***
 
 # LIVを使用する
+<span style="color: red;">**現在Beat SaberにおいてLIVの使用は非推奨です。上記VMCAvatarもしくはCameraPlusとOBS合成を先にお試しください。** </span>   
+<span style="color: red;">**・動作にかなりのスペックを要求する** </span>  
+<span style="color: red;">**・上記2つの方法より軽くなることはありません** </span>  
+<span style="color: red;">**・正しく設定しても正常に動作しないことが多いです** </span>  
+<span style="color: red;">**・動作しない場合LIV側の問題の為こちらでの対応が不可能です** </span>  
+<span style="color: red;">**・検索して出てくる古い手順はすべて動作しません** </span>  
+  
 LIVはBeat Saberに限らず対応しているゲームでMR合成(リアルの映像を合成)を行うためのツールです。  
 バーチャルモーションキャプチャーはリアルの映像の代わりに仮想カメラでアバターの映像を出力してゲーム内にアバターを合成させることが出来ます  
 ただし映像合成の負荷が高くPCのスペックがかなり必要です。また、複数のゲームに対応するため基本的にカメラ位置の変更には手順を毎回踏む必要があります。そのため上記方法で実現できないような撮影を行いたい場合にのみ使うことをお勧めします  
