@@ -1,6 +1,6 @@
 ---
 weight: 100
-date: 2020-08-11
+date: 2021-03-16
 title: Beat Saberとアバター合成
 categories:
   - manual
@@ -30,14 +30,26 @@ VMCAvatarはバーチャルモーションキャプチャーのVMCProtocol送信
 **2020/08/11現在 バーチャルモーションキャプチャーのVMCProtocol送信機能は[pixivFANBOX](https://akira.fanbox.cc/),[Patreon](https://www.patreon.com/sh_akira)の支援者限定の先行配信版のみの機能です**  
   
 VMCAvatarは直接ゲーム内にアバターを表示するため、後述するLIVやCameraPlus合成における合成処理や位置合わせが一切不要でキャリブレーションするだけですぐに使用することが出来ます。  
+  
+  
+CameraPlusは通常主観視点しか映らないBeatSaberに、第三者視点のカメラや滑らかな主観視点、それらを組み合わせた画面構成を可能にするカメラ機能拡張MODです。  
+<span style="color: red;">**CameraPlusのメンテナは[すのー(@snow_mil)](https://twitter.com/snow_mil)さんです** </span>   
 
 ## 1. Beat SaberでMODを使用可能にする
-まだBeat SaberでMODを導入していない場合は、[ModAssistant](https://github.com/Assistant/ModAssistant/releases)をダウンロードして、デフォルトでチェックされているものとCameraPlusにチェックを入れInstallしてください。  
+まだBeat SaberでMODを導入していない場合は、[ModAssistant](https://github.com/Assistant/ModAssistant/releases)をダウンロードして、デフォルトでチェックされているものをそのままInstallしてください。  
+すでにMODを導入している場合は競合する場合があるので1度削除してください。  
+**特にカメラ系のMOD(Camera2)やアバター系のMOD(CustomAvatar)は競合しますので導入しないでください。**  
+
+## 2. CameraPlusを導入する
+<span style="color: red;">**CameraPlusのメンテナは[すのー(@snow_mil)](https://twitter.com/snow_mil)さんです** </span>   
+すのーさんが公開している[CameraPlusのページ](https://github.com/Snow1226/CameraPlus)のLatest version DownloadにあるRelease PageからCameraPlus.dllをダウンロードします。  
+ダウンロードしたCameraPlus.dllをBeat SaberのインストールフォルダのPluginsフォルダ  
+(通常はC:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins)にコピーします。  
 その後Beat Saberを1度起動して終了し、再度Beat Saberを起動してBeat Saberの画面が3人称視点になっていることを確認してください。  
 (なっていない場合は画面を右クリックしCameraPlusのメニューからThird Personを押して3人称視点にしてください。)  
 確認できたらBeat Saberは一度終了します。
 
-## 2. VMCAvatarを導入する
+## 3. VMCAvatarを導入する
 <span style="color: red;">**VMCAvatarの作者は[長月ゆきな(@ngtkd)](https://twitter.com/ngtkd)さんです** </span>   
 長月ゆきなさんが公開している[VMCAvatarのページ](https://github.com/nagatsuki/VMCAvatar-BS)のダウンロードからリリース版バイナリをダウンロードします。  
 <span style="color: red;">**このページには困ったときのよくある質問が全て書いてありますので1度目を通してください**</span>  
@@ -66,7 +78,7 @@ VMCAvatarをご使用の際は是非ハッシュタグ #VMCAvatar と #バーチ
 バーチャルモーションキャプチャーはCameraPlusのcfgファイル読み込みに対応しているため、OBSを使用してぴったりBeat Saberとバーチャルモーションキャプチャーの画面を重ね合わせることが出来ます。  
 
 ## 1. Beat SaberでMODを使用可能にする
-上記VMCAvatarの手順と同じようにCameraPlusを導入してください。
+上記VMCAvatarの手順1,2と同じようにCameraPlusを導入してください。
 
 ## 2. Beat Saberとバーチャルモーションキャプチャーの解像度を合わせる
 Beat Saberはゲーム内SETTINGSのGRAPHICSのNonVR Resolutionから  
@@ -114,6 +126,6 @@ LIVはBeat Saberに限らず対応しているゲームでMR合成(リアルの�
 
 ### 注記事項
 
-* 本ドキュメントはBeat Saber v1.10.0(2020/08/11)現在の仕様で確認したものです。
+* 本ドキュメントはBeat Saber v1.13.5(2021/03/16)現在の仕様で確認したものです。
 * Beat Saber側の仕様変更にMODが対応するまで使用できない場合があります。
 * ソフトウェアの仕様・見た目はアップデート等により、予告なく変更されることがあります
