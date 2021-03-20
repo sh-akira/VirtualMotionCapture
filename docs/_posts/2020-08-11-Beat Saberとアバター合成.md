@@ -1,6 +1,6 @@
 ---
 weight: 100
-date: 2021-03-16
+date: 2021-03-21
 title: Beat Saberとアバター合成
 categories:
   - manual
@@ -42,8 +42,8 @@ CameraPlusは通常主観視点しか映らないBeatSaberに、第三者視点�
 
 ## 2. CameraPlusを導入する
 <span style="color: red;">**CameraPlusのメンテナは[すのー(@snow_mil)](https://twitter.com/snow_mil)さんです** </span>   
-すのーさんが公開している[CameraPlusのページ](https://github.com/Snow1226/CameraPlus)のLatest version DownloadにあるRelease PageからCameraPlus.dllをダウンロードします。  
-ダウンロードしたCameraPlus.dllをBeat SaberのインストールフォルダのPluginsフォルダ  
+すのーさんが公開している[CameraPlusのページ](https://github.com/Snow1226/CameraPlus)のLatest version DownloadにあるRelease Pageからリリース版バイナリをダウンロードします。  
+ダウンロードして解凍したら中にあるCameraPlus.dllをBeat SaberのインストールフォルダのPluginsフォルダ  
 (通常はC:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins)にコピーします。  
 その後Beat Saberを1度起動して終了し、再度Beat Saberを起動してBeat Saberの画面が3人称視点になっていることを確認してください。  
 (なっていない場合は画面を右クリックしCameraPlusのメニューからThird Personを押して3人称視点にしてください。)  
