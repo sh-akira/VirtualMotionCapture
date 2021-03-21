@@ -607,7 +607,10 @@ public class ExternalReceiverForVMC : MonoBehaviour
                         bone == HumanBodyBones.RightRingProximal ||
                         bone == HumanBodyBones.RightThumbDistal ||
                         bone == HumanBodyBones.RightThumbIntermediate ||
-                        bone == HumanBodyBones.RightThumbProximal)
+                        bone == HumanBodyBones.RightThumbProximal ||
+                        //目のボーン
+                        bone == HumanBodyBones.LeftEye ||
+                        bone == HumanBodyBones.RightEye)
                 {
                     BoneSynchronizeSingle(t, ref bone, ref pos, ref rot);
                 }
