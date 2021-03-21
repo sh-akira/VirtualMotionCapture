@@ -31,6 +31,7 @@ public class ExternalReceiverForVMC : MonoBehaviour
     public string statusString = "";
     private string statusStringOld = "";
 
+    public EasyDeviceDiscoveryProtocolManager eddp;
     //ここから追加
     public bool receiveBonesFlag;
     //ここまで
@@ -505,6 +506,8 @@ public class ExternalReceiverForVMC : MonoBehaviour
     public void ChangeOSCPort(int port)
     {
         receivePort = port;
+        eddp.found = false;
+
         var uServer = GetComponent<uOSC.uOscServer>();
         uServer.enabled = false;
         var type = typeof(uOSC.uOscServer);

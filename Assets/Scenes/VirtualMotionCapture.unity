@@ -2369,6 +2369,7 @@ MonoBehaviour:
   MIDICCWrapper: {fileID: 1604201751}
   receivePort: 39540
   statusString: 
+  eddp: {fileID: 1549762413}
   receiveBonesFlag: 0
   packets: 0
   BonePositionSynchronize: 1
