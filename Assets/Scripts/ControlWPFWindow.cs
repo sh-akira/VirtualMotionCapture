@@ -1069,6 +1069,22 @@ public class ControlWPFWindow : MonoBehaviour
 
                 SetAdvancedGraphicsOption();
             }
+            //ここから追加
+            else if (e.CommandType == typeof(PipeCommands.ExternalReceiveBones))
+            {
+                var d = (PipeCommands.ExternalReceiveBones)e.Data;
+                SetExternalBonesReceiverEnable(d.ReceiveBonesEnable);
+            }
+            
+            else if (e.CommandType == typeof(PipeCommands.GetExternalReceiveBones))
+            {
+                await server.SendCommandAsync(new PipeCommands.ExternalReceiveBones
+                {
+                    ReceiveBonesEnable = CurrentSettings.ExternalBonesReceiverEnable
+                }, e.RequestId);
+            }
+            
+            //ここまで
             else if (e.CommandType == typeof(PipeCommands.Alive))
             {
                 await server.SendCommandAsync(new PipeCommands.Alive { });
@@ -1850,6 +1866,7 @@ public class ControlWPFWindow : MonoBehaviour
 
         SetVRIK(CurrentModel);
         //wristRotationFix.SetVRIK(vrik);
+
         var leftLowerArm = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm);
         var leftRelaxer = leftLowerArm.gameObject.AddComponent<TwistRelaxer>();
         leftRelaxer.ik = vrik;
@@ -2756,6 +2773,15 @@ public class ControlWPFWindow : MonoBehaviour
         WaitOneFrameAction(() => ModelLoadedAction?.Invoke(CurrentModel));
         WaitOneFrameAction(() => CameraChangedAction?.Invoke(ControlCamera));
     }
+    //ここから追加
+    private void SetExternalBonesReceiverEnable(bool enable)
+    {
+        CurrentSettings.ExternalBonesReceiverEnable = enable;
+        externalMotionReceiver.receiveBonesFlag = enable;
+        WaitOneFrameAction(() => ModelLoadedAction?.Invoke(CurrentModel));
+        WaitOneFrameAction(() => CameraChangedAction?.Invoke(ControlCamera));
+    }
+    //ここまで
 
     private void ChangeExternalMotionSenderAddress(string address, int port, int pstatus, int proot, int pbone, int pblendshape, int pcamera, int pdevices, string optionstring, bool responderEnable)
     {
@@ -3172,6 +3198,11 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public bool LipTracking_ViveEnable;
 
+        //ここから追加
+        [OptionalField]
+        public bool ExternalBonesReceiverEnable;
+        //ここまで
+
         [OptionalField]
         public bool EnableSkeletal;
 
@@ -3419,6 +3450,9 @@ public class ControlWPFWindow : MonoBehaviour
             PPS_Vignette_Color_b = 0f;
 
             TurnOffAmbientLight = false;
+            //ここから追加
+            ExternalBonesReceiverEnable = false;
+            //ここまで
         }
     }
 
@@ -3834,6 +3868,10 @@ public class ControlWPFWindow : MonoBehaviour
 
         SetLipShapeToBlendShapeStringMapAction?.Invoke(CurrentSettings.LipShapesToBlendShapeMap);
         SetLipTracking_ViveEnable(CurrentSettings.LipTracking_ViveEnable);
+
+        //ここから追加
+        SetExternalBonesReceiverEnable(CurrentSettings.ExternalBonesReceiverEnable);
+        //ここまで
 
         LoadAdvancedGraphicsOption();
 

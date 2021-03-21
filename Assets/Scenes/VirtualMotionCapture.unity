@@ -1858,7 +1858,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &282840814
 Transform:
   m_ObjectHideFlags: 0
@@ -2369,8 +2369,9 @@ MonoBehaviour:
   MIDICCWrapper: {fileID: 1604201751}
   receivePort: 39540
   statusString: 
-  eddp: {fileID: 1549762413}
+  receiveBonesFlag: 0
   packets: 0
+  BonePositionSynchronize: 1
 --- !u!4 &389263780
 Transform:
   m_ObjectHideFlags: 0
@@ -5474,7 +5475,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0a1ab228b5c3c24cade24e1cc124c64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controlWPFWindow: {fileID: 1407685704}
 --- !u!1 &923408696
 GameObject:
   m_ObjectHideFlags: 0
@@ -8291,7 +8291,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1404284883
 Transform:
   m_ObjectHideFlags: 0
@@ -8389,7 +8389,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsBeta: 0
   IsPreRelease: 0
-  VersionString: v0.49f3r3b4
+  VersionString: v0.49_HI5
   handler: {fileID: 1128534203}
   LeftWristTransform: {fileID: 0}
   RightWristTransform: {fileID: 0}
@@ -8537,7 +8537,7 @@ MonoBehaviour:
   volumeLayer:
     serializedVersion: 2
     m_Bits: 1
-  stopNaNPropagation: 1
+  stopNaNPropagation: 0
   finalBlitToCameraTarget: 0
   antialiasingMode: 0
   temporalAntialiasing:
@@ -8575,8 +8575,8 @@ MonoBehaviour:
       colorBlindnessType: 0
       colorBlindnessStrength: 1
   m_Resources: {fileID: 11400000, guid: d82512f9c8e5d4a4d938b575d47f88d4, type: 2}
-  m_ShowToolkit: 0
-  m_ShowCustomSorter: 0
+  m_ShowToolkit: 1
+  m_ShowCustomSorter: 1
   breakBeforeColorGrading: 0
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
@@ -11242,8 +11242,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2f7a0c5fd055af4083cbe934b512f19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controlWPFWindow: {fileID: 1407685704}
-  sdkConfiguration: {fileID: 11400000, guid: dd276808621df4e2380660ade912baf3, type: 2}
 --- !u!4 &1770264196
 Transform:
   m_ObjectHideFlags: 0

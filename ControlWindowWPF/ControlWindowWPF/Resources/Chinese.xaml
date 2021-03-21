@@ -257,7 +257,10 @@
 	<system:String x:Key="SettingWindow_VMTContinue">Continue VMT setup? Game will be interrupted, and VR system will restart.</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderResponderEnable">Allow device detection response</system:String>
 	<system:String x:Key="SettingWindow_ExternalMotionReceiverRequesterEnable">Auto device detection</system:String>
-
+    <!--ここから追加-->
+    <system:String x:Key="SettingWindow_ReceiveBonesEnable">手骨接收</system:String>
+    <!--ここまで-->
+        
     <!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">追踪器详细设置</system:String>
 

@@ -258,7 +258,9 @@
 	<system:String x:Key="SettingWindow_VMTContinue">VMTのセットアップを実行しますか？ゲームが中断され、VRシステムは自動で再起動します。</system:String>
 	<system:String x:Key="SettingWindow_ExternalMotionSenderResponderEnable">デバイス探索要求への応答を許可</system:String>
 	<system:String x:Key="SettingWindow_ExternalMotionReceiverRequesterEnable">自動デバイス探索を行う</system:String>
-
+    <!--ここから追加-->
+    <system:String x:Key="SettingWindow_ReceiveBonesEnable">手ボーン取得</system:String>
+    <!--ここまで-->
 
 	<!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">トラッカー割り当て設定</system:String>

@@ -10,8 +10,13 @@ using VRM;
 using UnityMemoryMappedFile;
 using System.Linq;
 
+//ここから追加
+[DefaultExecutionOrder(15002)]
+//ここまで
+
 [RequireComponent(typeof(uOSC.uOscServer))]
-public class ExternalReceiverForVMC : MonoBehaviour {
+public class ExternalReceiverForVMC : MonoBehaviour
+{
     public ExternalSender externalSender;
     public MidiCCWrapper MIDICCWrapper;
 
@@ -26,7 +31,9 @@ public class ExternalReceiverForVMC : MonoBehaviour {
     public string statusString = "";
     private string statusStringOld = "";
 
-    public EasyDeviceDiscoveryProtocolManager eddp;
+    //ここから追加
+    public bool receiveBonesFlag;
+    //ここまで
 
     static public Action<string> StatusStringUpdated = null;
 
@@ -48,9 +55,27 @@ public class ExternalReceiverForVMC : MonoBehaviour {
 
     public int packets = 0;
 
+    //ここから追加
+    //ボーン情報取得
+    Animator animator = null;
+    //VRMのブレンドシェーププロキシ
+    VRMBlendShapeProxy blendShapeProxy = null;
+
+    //ボーンENUM情報テーブル
+    Dictionary<string, HumanBodyBones> HumanBodyBonesTable = new Dictionary<string, HumanBodyBones>();
+
+    //ボーン情報テーブル
+    Dictionary<HumanBodyBones, Vector3> HumanBodyBonesPositionTable = new Dictionary<HumanBodyBones, Vector3>();
+    Dictionary<HumanBodyBones, Quaternion> HumanBodyBonesRotationTable = new Dictionary<HumanBodyBones, Quaternion>();
+
+    public bool BonePositionSynchronize = true; //ボーン位置適用(回転は強制)
+
+    //ここまで
+
     private Dictionary<string, float> blendShapeBuffer = new Dictionary<string, float>();
 
-    void Start () {
+    void Start()
+    {
         var server = GetComponent<uOSC.uOscServer>();
         server.onDataReceived.AddListener(OnDataReceived);
 
@@ -62,7 +87,9 @@ public class ExternalReceiverForVMC : MonoBehaviour {
             {
                 this.CurrentModel = CurrentModel;
                 vrmLookAtHead = CurrentModel.GetComponent<VRMLookAtHead>();
-                var animator = CurrentModel.GetComponent<Animator>();
+                //var animator = CurrentModel.GetComponent<Animator>();
+                //追加
+                animator = CurrentModel.GetComponent<Animator>();
                 headTransform = null;
                 if (animator != null)
                 {
@@ -92,7 +119,8 @@ public class ExternalReceiverForVMC : MonoBehaviour {
         {
             //生存チェックのためのパケットカウンタ
             packets++;
-            if (packets > int.MaxValue / 2) {
+            if (packets > int.MaxValue / 2)
+            {
                 packets = 0;
             }
 
@@ -226,7 +254,7 @@ public class ExternalReceiverForVMC : MonoBehaviour {
             {
                 faceController.MixPresets(nameof(ExternalReceiverForVMC), blendShapeBuffer.Keys.ToArray(), blendShapeBuffer.Values.ToArray());
                 blendShapeBuffer.Clear();
-                
+
             }//外部アイトラ V2.3
             else if (message.address == "/VMC/Ext/Set/Eye"
                 && (message.values[0] is int)
@@ -288,8 +316,9 @@ public class ExternalReceiverForVMC : MonoBehaviour {
             //キャリブレーション準備 V2.5
             else if (message.address == "/VMC/Ext/Set/Calib/Ready")
             {
-                if (File.Exists(ControlWPFWindow.CurrentSettings.VRMPath)) {
-                    var t = window.ImportVRM(ControlWPFWindow.CurrentSettings.VRMPath, true, true, true);
+                if (File.Exists(ControlWPFWindow.CurrentSettings.VRMPath))
+                {
+                    window.ImportVRM(ControlWPFWindow.CurrentSettings.VRMPath, true, true, true);
                 }
             }
             //キャリブレーション実行 V2.5
@@ -297,7 +326,8 @@ public class ExternalReceiverForVMC : MonoBehaviour {
             {
                 PipeCommands.CalibrateType calibrateType = PipeCommands.CalibrateType.Default;
 
-                switch ((int)message.values[0]) {
+                switch ((int)message.values[0])
+                {
                     case 0:
                         calibrateType = PipeCommands.CalibrateType.Default;
                         break;
@@ -310,7 +340,7 @@ public class ExternalReceiverForVMC : MonoBehaviour {
                     default: return; //無視
                 }
                 StartCoroutine(window.Calibrate(calibrateType));
-                Invoke("EndCalibrate",2f);
+                Invoke("EndCalibrate", 2f);
             }
             //設定読み込み V2.5
             else if (message.address == "/VMC/Ext/Set/Config" && (message.values[0] is string))
@@ -326,8 +356,9 @@ public class ExternalReceiverForVMC : MonoBehaviour {
             else if (message.address != null && message.address.StartsWith("/VMC/Thru/"))
             {
                 //転送する
-                if (externalSender.isActiveAndEnabled && externalSender.uClient != null) {
-                    externalSender.uClient.Send(message.address,message.values);
+                if (externalSender.isActiveAndEnabled && externalSender.uClient != null)
+                {
+                    externalSender.uClient.Send(message.address, message.values);
                 }
             }
             //Directional Light V2.9
@@ -363,14 +394,64 @@ public class ExternalReceiverForVMC : MonoBehaviour {
                 window.MainDirectionalLightTransform.rotation = rot;
             }
 
+            //ここから追加
+            //ボーン姿勢
+            else if (message.address == "/VMC/Ext/Bone/Pos"
+                && (message.values[0] is string)
+                && (message.values[1] is float)
+                && (message.values[2] is float)
+                && (message.values[3] is float)
+                && (message.values[4] is float)
+                && (message.values[5] is float)
+                && (message.values[6] is float)
+                && (message.values[7] is float)
+                )
+            {
+                string boneName = (string)message.values[0];
+                pos.x = (float)message.values[1];
+                pos.y = (float)message.values[2];
+                pos.z = (float)message.values[3];
+                rot.x = (float)message.values[4];
+                rot.y = (float)message.values[5];
+                rot.z = (float)message.values[6];
+                rot.w = (float)message.values[7];
+
+                //Humanoidボーンに該当するボーンがあるか調べる
+                HumanBodyBones bone;
+                if (HumanBodyBonesTryParse(ref boneName, out bone))
+                {
+                    //あれば位置と回転をキャッシュする
+                    if (HumanBodyBonesPositionTable.ContainsKey(bone))
+                    {
+                        HumanBodyBonesPositionTable[bone] = pos;
+                    }
+                    else
+                    {
+                        HumanBodyBonesPositionTable.Add(bone, pos);
+                    }
+
+                    if (HumanBodyBonesRotationTable.ContainsKey(bone))
+                    {
+                        HumanBodyBonesRotationTable[bone] = rot;
+                    }
+                    else
+                    {
+                        HumanBodyBonesRotationTable.Add(bone, rot);
+                    }
+                }
+                //受信と更新のタイミングは切り離した
+            }
+            //ここまで
         }
     }
 
-    void EndCalibrate() {
+    void EndCalibrate()
+    {
         window.EndCalibrate();
     }
 
-    SteamVR_Utils.RigidTransform SetTransform(ref Vector3 pos, ref Quaternion rot,ref uOSC.Message message) {
+    SteamVR_Utils.RigidTransform SetTransform(ref Vector3 pos, ref Quaternion rot, ref uOSC.Message message)
+    {
         pos.x = (float)message.values[1];
         pos.y = (float)message.values[2];
         pos.z = (float)message.values[3];
@@ -383,7 +464,8 @@ public class ExternalReceiverForVMC : MonoBehaviour {
 
     public static float filterStrength = 10.0f;
 
-    private void Update()
+    //修正（LateUpdateに変更）
+    private void LateUpdate()
     {
         lock (LockObject)
         {
@@ -402,20 +484,27 @@ public class ExternalReceiverForVMC : MonoBehaviour {
         }
 
         //更新を検出(あまりに高速な変化に追従しないように)
-        if (statusString != statusStringOld) {
+        if (statusString != statusStringOld)
+        {
             statusStringOld = statusString;
 
-            if (StatusStringUpdated != null) {
+            if (StatusStringUpdated != null)
+            {
                 StatusStringUpdated.Invoke(statusString);
             }
         }
+        //ここから追加
+        if(receiveBonesFlag)
+        {
+            BoneSynchronizeByTable();
+            //Debug.Log(receiveBonesFlag);
+        }
+        //ここまで
     }
 
     public void ChangeOSCPort(int port)
     {
         receivePort = port;
-        eddp.found = false;
-
         var uServer = GetComponent<uOSC.uOscServer>();
         uServer.enabled = false;
         var type = typeof(uOSC.uOscServer);
@@ -423,4 +512,160 @@ public class ExternalReceiverForVMC : MonoBehaviour {
         portfield.SetValue(uServer, port);
         uServer.enabled = true;
     }
+
+    //ここから追加
+    //ボーン位置をキャッシュテーブルに基づいて更新
+    private void BoneSynchronizeByTable()
+    {
+        //キャッシュテーブルを参照
+        foreach (var bone in HumanBodyBonesTable)
+        {
+            //キャッシュされた位置・回転を適用
+            if (HumanBodyBonesPositionTable.ContainsKey(bone.Value) && HumanBodyBonesRotationTable.ContainsKey(bone.Value))
+            {
+                BoneSynchronize(bone.Value, HumanBodyBonesPositionTable[bone.Value], HumanBodyBonesRotationTable[bone.Value]);
+            }
+        }
+    }
+
+    //ボーン位置同期
+    private void BoneSynchronize(HumanBodyBones bone, Vector3 pos, Quaternion rot)
+    {
+        //操作可能な状態かチェック
+        if (animator != null && bone != HumanBodyBones.LastBone)
+        {
+            //ローカル座標系の回転打ち消し用にHipsのボーンを押さえる
+            Transform hipBone = animator.GetBoneTransform(HumanBodyBones.Hips);
+            Transform targetTransform;
+            Transform tempTransform;
+            //ボーンによって操作を分ける
+            Transform t = animator.GetBoneTransform(bone);
+            if (t != null)
+            {
+                //左手ボーン
+                if (bone == HumanBodyBones.LeftHand)
+                {
+                    //ローカル座標系の回転打ち消し
+                    Quaternion allLocalRotationLeft = Quaternion.identity;
+                    targetTransform = animator.GetBoneTransform(HumanBodyBones.LeftHand);
+                    tempTransform = targetTransform;
+                    while (tempTransform != hipBone)
+                    {
+                        tempTransform = tempTransform.parent;
+                        //後から逆回転をかけて打ち消し
+                        allLocalRotationLeft = allLocalRotationLeft * Quaternion.Inverse(tempTransform.localRotation);
+                    }
+                    Quaternion receivedRotationLeft = allLocalRotationLeft * rot;
+                    //外部からのボーンへの反映
+                    BoneSynchronizeSingle(t, ref bone, ref pos, ref receivedRotationLeft);
+                }
+                //右手ボーン
+                else if (bone == HumanBodyBones.RightHand)
+                {
+                    //ローカル座標系の回転打ち消し
+                    Quaternion allLocalRotationRight = Quaternion.identity;
+                    targetTransform = animator.GetBoneTransform(HumanBodyBones.RightHand);
+                    tempTransform = targetTransform;
+                    while (tempTransform != hipBone)
+                    {
+                        tempTransform = tempTransform.parent;
+                        //逆回転にかけて打ち消し
+                        allLocalRotationRight = allLocalRotationRight * Quaternion.Inverse(tempTransform.localRotation);
+                    }
+                    Quaternion receivedRotationRight = allLocalRotationRight * rot;
+                    //外部からのボーンへの反映
+                    BoneSynchronizeSingle(t, ref bone, ref pos, ref receivedRotationRight);
+                }
+                //指ボーン
+                else if (bone == HumanBodyBones.LeftIndexDistal ||
+                        bone == HumanBodyBones.LeftIndexIntermediate ||
+                        bone == HumanBodyBones.LeftIndexProximal ||
+                        bone == HumanBodyBones.LeftLittleDistal ||
+                        bone == HumanBodyBones.LeftLittleIntermediate ||
+                        bone == HumanBodyBones.LeftLittleProximal ||
+                        bone == HumanBodyBones.LeftMiddleDistal ||
+                        bone == HumanBodyBones.LeftMiddleIntermediate ||
+                        bone == HumanBodyBones.LeftMiddleProximal ||
+                        bone == HumanBodyBones.LeftRingDistal ||
+                        bone == HumanBodyBones.LeftRingIntermediate ||
+                        bone == HumanBodyBones.LeftRingProximal ||
+                        bone == HumanBodyBones.LeftThumbDistal ||
+                        bone == HumanBodyBones.LeftThumbIntermediate ||
+                        bone == HumanBodyBones.LeftThumbProximal ||
+
+                        bone == HumanBodyBones.RightIndexDistal ||
+                        bone == HumanBodyBones.RightIndexIntermediate ||
+                        bone == HumanBodyBones.RightIndexProximal ||
+                        bone == HumanBodyBones.RightLittleDistal ||
+                        bone == HumanBodyBones.RightLittleIntermediate ||
+                        bone == HumanBodyBones.RightLittleProximal ||
+                        bone == HumanBodyBones.RightMiddleDistal ||
+                        bone == HumanBodyBones.RightMiddleIntermediate ||
+                        bone == HumanBodyBones.RightMiddleProximal ||
+                        bone == HumanBodyBones.RightRingDistal ||
+                        bone == HumanBodyBones.RightRingIntermediate ||
+                        bone == HumanBodyBones.RightRingProximal ||
+                        bone == HumanBodyBones.RightThumbDistal ||
+                        bone == HumanBodyBones.RightThumbIntermediate ||
+                        bone == HumanBodyBones.RightThumbProximal)
+                {
+                    BoneSynchronizeSingle(t, ref bone, ref pos, ref rot);
+                }
+            }
+        }
+    }
+    //1本のボーンの同期
+    private void BoneSynchronizeSingle(Transform t, ref HumanBodyBones bone, ref Vector3 pos, ref Quaternion rot)
+    {
+        t.localPosition = pos;
+        t.localRotation = rot;
+    }
+    //ボーンENUM情報をキャッシュして高速化
+    private bool HumanBodyBonesTryParse(ref string boneName, out HumanBodyBones bone)
+    {
+        //ボーンキャッシュテーブルに存在するなら
+        if (HumanBodyBonesTable.ContainsKey(boneName))
+        {
+            //キャッシュテーブルから返す
+            bone = HumanBodyBonesTable[boneName];
+            //ただしLastBoneは発見しなかったことにする(無効値として扱う)
+            if (bone == HumanBodyBones.LastBone)
+            {
+                return false;
+            }
+            return true;
+        }
+        else
+        {
+            //キャッシュテーブルにない場合、検索する
+            var res = EnumTryParse<HumanBodyBones>(boneName, out bone);
+            if (!res)
+            {
+                //見つからなかった場合はLastBoneとして登録する(無効値として扱う)ことにより次回から検索しない
+                bone = HumanBodyBones.LastBone;
+            }
+            //キャシュテーブルに登録する
+            HumanBodyBonesTable.Add(boneName, bone);
+            return res;
+        }
+    }
+    //互換性を持ったTryParse
+    private static bool EnumTryParse<T>(string value, out T result) where T : struct
+    {
+#if NET_4_6
+        return Enum.TryParse(value, out result);
+#else
+        try
+        {
+            result = (T)Enum.Parse(typeof(T), value, true);
+            return true;
+        }
+        catch
+        {
+            result = default(T);
+            return false;
+        }
+#endif
+    }
+    //ここまで
 }

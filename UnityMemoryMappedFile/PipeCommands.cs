@@ -418,6 +418,13 @@ namespace UnityMemoryMappedFile
             public int port { get; set; }
             public bool RequesterEnable { get; set; }
         }
+        //ここから追加
+        public class GetExternalReceiveBones { }
+        public class ExternalReceiveBones
+        {
+            public bool ReceiveBonesEnable { get; set; }
+        }
+        //ここまで
         public class GetMidiCCBlendShape { }
         public class SetMidiCCBlendShape
         {
