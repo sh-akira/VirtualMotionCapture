@@ -195,9 +195,7 @@
                             <TextBox Text="" Grid.Column="1" Grid.Row="1" IsReadOnly="True" IsEnabled="False" VerticalAlignment="Center" Name="StatusStringTextbox"/>
                         </Grid>
                         <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionReceiverRequesterEnable}" Name="ExternalMotionReceiverRequesterEnableCheckBox" DockPanel.Dock="Top"/>
-                        <!--ここから追加-->
                         <CheckBox Content="{DynamicResource SettingWindow_ReceiveBonesEnable}" Name="ReceiveBonesEnableCheckBox" Checked="ReceiveBonesEnableCheckBox_Changed" Unchecked="ReceiveBonesEnableCheckBox_Changed" DockPanel.Dock="Top"/>
-					    <!--ここまで-->
                     </DockPanel>
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_MIDI_CC_BlendShape}">

@@ -10,9 +10,7 @@ using VRM;
 using UnityMemoryMappedFile;
 using System.Linq;
 
-//ここから追加
 [DefaultExecutionOrder(15002)]
-//ここまで
 
 [RequireComponent(typeof(uOSC.uOscServer))]
 public class ExternalReceiverForVMC : MonoBehaviour
@@ -32,9 +30,7 @@ public class ExternalReceiverForVMC : MonoBehaviour
     private string statusStringOld = "";
 
     public EasyDeviceDiscoveryProtocolManager eddp;
-    //ここから追加
     public bool receiveBonesFlag;
-    //ここまで
 
     static public Action<string> StatusStringUpdated = null;
 
@@ -56,7 +52,6 @@ public class ExternalReceiverForVMC : MonoBehaviour
 
     public int packets = 0;
 
-    //ここから追加
     //ボーン情報取得
     Animator animator = null;
     //VRMのブレンドシェーププロキシ
@@ -70,8 +65,6 @@ public class ExternalReceiverForVMC : MonoBehaviour
     Dictionary<HumanBodyBones, Quaternion> HumanBodyBonesRotationTable = new Dictionary<HumanBodyBones, Quaternion>();
 
     public bool BonePositionSynchronize = true; //ボーン位置適用(回転は強制)
-
-    //ここまで
 
     private Dictionary<string, float> blendShapeBuffer = new Dictionary<string, float>();
 
@@ -88,8 +81,6 @@ public class ExternalReceiverForVMC : MonoBehaviour
             {
                 this.CurrentModel = CurrentModel;
                 vrmLookAtHead = CurrentModel.GetComponent<VRMLookAtHead>();
-                //var animator = CurrentModel.GetComponent<Animator>();
-                //追加
                 animator = CurrentModel.GetComponent<Animator>();
                 headTransform = null;
                 if (animator != null)
@@ -395,7 +386,6 @@ public class ExternalReceiverForVMC : MonoBehaviour
                 window.MainDirectionalLightTransform.rotation = rot;
             }
 
-            //ここから追加
             //ボーン姿勢
             else if (message.address == "/VMC/Ext/Bone/Pos"
                 && (message.values[0] is string)
@@ -442,7 +432,6 @@ public class ExternalReceiverForVMC : MonoBehaviour
                 }
                 //受信と更新のタイミングは切り離した
             }
-            //ここまで
         }
     }
 
@@ -466,7 +455,7 @@ public class ExternalReceiverForVMC : MonoBehaviour
     public static float filterStrength = 10.0f;
 
     //修正（LateUpdateに変更）
-    private void LateUpdate()
+    private void Update()
     {
         lock (LockObject)
         {
@@ -494,13 +483,13 @@ public class ExternalReceiverForVMC : MonoBehaviour
                 StatusStringUpdated.Invoke(statusString);
             }
         }
-        //ここから追加
-        if(receiveBonesFlag)
+    }
+    private void LateUpdate()
+    {
+        if (receiveBonesFlag)
         {
             BoneSynchronizeByTable();
-            //Debug.Log(receiveBonesFlag);
         }
-        //ここまで
     }
 
     public void ChangeOSCPort(int port)
@@ -516,7 +505,6 @@ public class ExternalReceiverForVMC : MonoBehaviour
         uServer.enabled = true;
     }
 
-    //ここから追加
     //ボーン位置をキャッシュテーブルに基づいて更新
     private void BoneSynchronizeByTable()
     {
@@ -545,39 +533,22 @@ public class ExternalReceiverForVMC : MonoBehaviour
             Transform t = animator.GetBoneTransform(bone);
             if (t != null)
             {
-                //左手ボーン
-                if (bone == HumanBodyBones.LeftHand)
+                //手首ボーン
+                if (bone == HumanBodyBones.LeftHand || bone == HumanBodyBones.RightHand)
                 {
                     //ローカル座標系の回転打ち消し
-                    Quaternion allLocalRotationLeft = Quaternion.identity;
-                    targetTransform = animator.GetBoneTransform(HumanBodyBones.LeftHand);
+                    Quaternion allLocalRotation = Quaternion.identity;
+                    targetTransform = animator.GetBoneTransform(bone);
                     tempTransform = targetTransform;
                     while (tempTransform != hipBone)
                     {
                         tempTransform = tempTransform.parent;
                         //後から逆回転をかけて打ち消し
-                        allLocalRotationLeft = allLocalRotationLeft * Quaternion.Inverse(tempTransform.localRotation);
+                        allLocalRotation = allLocalRotation * Quaternion.Inverse(tempTransform.localRotation);
                     }
-                    Quaternion receivedRotationLeft = allLocalRotationLeft * rot;
+                    Quaternion receivedRotation = allLocalRotation * rot;
                     //外部からのボーンへの反映
-                    BoneSynchronizeSingle(t, ref bone, ref pos, ref receivedRotationLeft);
-                }
-                //右手ボーン
-                else if (bone == HumanBodyBones.RightHand)
-                {
-                    //ローカル座標系の回転打ち消し
-                    Quaternion allLocalRotationRight = Quaternion.identity;
-                    targetTransform = animator.GetBoneTransform(HumanBodyBones.RightHand);
-                    tempTransform = targetTransform;
-                    while (tempTransform != hipBone)
-                    {
-                        tempTransform = tempTransform.parent;
-                        //逆回転にかけて打ち消し
-                        allLocalRotationRight = allLocalRotationRight * Quaternion.Inverse(tempTransform.localRotation);
-                    }
-                    Quaternion receivedRotationRight = allLocalRotationRight * rot;
-                    //外部からのボーンへの反映
-                    BoneSynchronizeSingle(t, ref bone, ref pos, ref receivedRotationRight);
+                    BoneSynchronizeSingle(t, ref bone, ref pos, ref receivedRotation);
                 }
                 //指ボーン
                 else if (bone == HumanBodyBones.LeftIndexDistal ||
@@ -670,5 +641,4 @@ public class ExternalReceiverForVMC : MonoBehaviour
         }
 #endif
     }
-    //ここまで
 }

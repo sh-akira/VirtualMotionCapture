@@ -310,7 +310,6 @@ namespace VirtualMotionCaptureControlPanel
                     isSetting = false;
                 });
             });
-            //ここから追加
             await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetExternalReceiveBones { }, d =>
             {
                 var data = (PipeCommands.ExternalReceiveBones)d;
@@ -321,7 +320,6 @@ namespace VirtualMotionCaptureControlPanel
                     isSetting = false;
                 });
             });
-            //ここまで
             await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEnableTrackingFilter { }, d =>
             {
                 var data = (PipeCommands.EnableTrackingFilter)d;
@@ -671,7 +669,6 @@ namespace VirtualMotionCaptureControlPanel
                 });
             }
         }
-        //ここから追加
         private async void ReceiveBonesEnableCheckBox_Changed(object sender, RoutedEventArgs e)
         {
             if (isSetting) return;
@@ -680,7 +677,6 @@ namespace VirtualMotionCaptureControlPanel
                 ReceiveBonesEnable = ReceiveBonesEnableCheckBox.IsChecked.Value
             });
         }
-        //ここまで
 
         private void MidiCCBlendShapeSettingButton_Click(object sender, RoutedEventArgs e)
         {
