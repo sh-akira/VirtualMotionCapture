@@ -22,20 +22,21 @@
                 </GroupBox>
                 <DockPanel DockPanel.Dock="Top">
                     <GroupBox Header="{DynamicResource PhotoWindow_Resolution}" DockPanel.Dock="Left">
-                        <DockPanel>
+                        <DockPanel VerticalAlignment="Top">
                             <TextBlock Text="{DynamicResource PhotoWindow_Width}" DockPanel.Dock="Left"/>
                             <TextBox Text="7680" Name="ResolutionWidthTextBox" VerticalAlignment="Center" Width="50"/>
                         </DockPanel>
                     </GroupBox>
                     <GroupBox Header="{DynamicResource PhotoWindow_Timer}" DockPanel.Dock="Left">
                         <DockPanel>
+                            <CheckBox Content="{DynamicResource PhotoWindow_ContinuousCheckBox}" Name="ContinuousCheckBox" IsChecked="False" DockPanel.Dock="Bottom"/>
                             <TextBlock Text="{DynamicResource PhotoWindow_TimeToPhoto}" DockPanel.Dock="Left"/>
                             <TextBlock Text="{DynamicResource PhotoWindow_Sec}" DockPanel.Dock="Right"/>
                             <TextBox Text="3" Name="TimerSecondsTextBox" VerticalAlignment="Center" Width="30"/>
                         </DockPanel>
                     </GroupBox>
                     <GroupBox Header="{DynamicResource PhotoWindow_Transparent}" DockPanel.Dock="Left">
-                        <CheckBox Content="{DynamicResource PhotoWindow_TransparentCheckBox}" Name="TransparentCheckBox" IsChecked="True" DockPanel.Dock="Top"/>
+                        <CheckBox Content="{DynamicResource PhotoWindow_TransparentCheckBox}" Name="TransparentCheckBox" IsChecked="True" DockPanel.Dock="Top" VerticalAlignment="Top"/>
                     </GroupBox>
                     <Button Name="TakePhotoButton" Click="TakePhotoButton_Click" Margin="10,0,0,0" Padding="20,0">
                         <Viewbox Width="30" Height="30">

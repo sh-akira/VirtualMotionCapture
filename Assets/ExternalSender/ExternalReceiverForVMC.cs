@@ -230,8 +230,8 @@ public class ExternalReceiverForVMC : MonoBehaviour
                 window.FreeCamera.GetComponent<CameraMouseControl>().enabled = false;
 
                 //座標とFOVを適用
-                window.FreeCamera.transform.position = pos;
-                window.FreeCamera.transform.rotation = rot;
+                window.FreeCamera.transform.localPosition = pos;
+                window.FreeCamera.transform.localRotation = rot;
                 window.ControlCamera.fieldOfView = fov;
             } //ブレンドシェープ同期
             else if (message.address == "/VMC/Ext/Blend/Val"

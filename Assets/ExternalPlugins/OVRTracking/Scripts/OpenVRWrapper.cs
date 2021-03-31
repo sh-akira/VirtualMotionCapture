@@ -99,6 +99,7 @@ namespace sh_akira.OVRTracking
                 var pose = allPoses[i];
                 //0:HMD 1:LeftHand 2:RightHand ??
                 var deviceClass = openVR.GetTrackedDeviceClass(i);
+                //ここでbDeviceIsConnected使って除外すると一度認識して外れたときに配列の要素数ずれちゃうで
                 if (pose.bDeviceIsConnected && (deviceClass == ETrackedDeviceClass.HMD || deviceClass == ETrackedDeviceClass.Controller || deviceClass == ETrackedDeviceClass.GenericTracker || deviceClass == ETrackedDeviceClass.TrackingReference))
                 {
                     //過去一度でもトラッキングしたことがなく、現在も有効でない場合

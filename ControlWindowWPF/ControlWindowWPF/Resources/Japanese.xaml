@@ -423,6 +423,7 @@
     <system:String x:Key="PhotoWindow_ErrorWidth">横幅は半角整数で入力してください</system:String>
     <system:String x:Key="PhotoWindow_ErrorFolderExist">フォルダが存在しません</system:String>
     <system:String x:Key="PhotoWindow_FolderSelect">フォルダーを選択してください。</system:String>
+    <system:String x:Key="PhotoWindow_ContinuousCheckBox">連続撮影</system:String>
 
     <!-- EyeTracking_TobiiSettingWindow -->
     <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeScale">目の移動範囲(マイナスで反転します)</system:String>

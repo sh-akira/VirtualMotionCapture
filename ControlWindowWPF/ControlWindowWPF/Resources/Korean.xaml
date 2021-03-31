@@ -423,6 +423,7 @@
     <system:String x:Key="PhotoWindow_ErrorWidth">가로길이는 정수로 입력해주세요</system:String>
     <system:String x:Key="PhotoWindow_ErrorFolderExist">폴더가 없습니다</system:String>
     <system:String x:Key="PhotoWindow_FolderSelect">폴더를 선택해주세요.</system:String>
+    <system:String x:Key="PhotoWindow_ContinuousCheckBox">Continuous</system:String>
 
     <!-- EyeTracking_TobiiSettingWindow -->
     <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeScale">눈 이동범위(마이너스로 거꾸로합니다)</system:String>

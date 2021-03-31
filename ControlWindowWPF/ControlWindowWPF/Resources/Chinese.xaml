@@ -422,6 +422,7 @@
     <system:String x:Key="PhotoWindow_ErrorWidth">请输入半角整数</system:String>
     <system:String x:Key="PhotoWindow_ErrorFolderExist">文件夹不存在</system:String>
     <system:String x:Key="PhotoWindow_FolderSelect">请选择文件夹</system:String>
+    <system:String x:Key="PhotoWindow_ContinuousCheckBox">Continuous</system:String>
 
     <!-- EyeTracking_TobiiSettingWindow -->
     <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeScale">眼动范围（负号相反）</system:String>
