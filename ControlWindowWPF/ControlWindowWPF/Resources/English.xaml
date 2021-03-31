@@ -422,6 +422,7 @@
     <system:String x:Key="PhotoWindow_ErrorWidth">Please enter width in half-width integer</system:String>
     <system:String x:Key="PhotoWindow_ErrorFolderExist">Folder does not exist</system:String>
     <system:String x:Key="PhotoWindow_FolderSelect">Please select a folder.</system:String>
+    <system:String x:Key="PhotoWindow_ContinuousCheckBox">Continuous</system:String>
 
     <!-- EyeTracking_TobiiSettingWindow -->
     <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeScale">Eye movement range (inverted with minus)</system:String>

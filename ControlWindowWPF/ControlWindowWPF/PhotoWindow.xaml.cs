@@ -31,10 +31,45 @@ namespace VirtualMotionCaptureControlPanel
             }
         }
 
+        private bool cancelShot = false;
+        private bool continuous = false;
+        private Brush oldBrush = null;
+
         private async void TakePhoto()
         {
-            if (TakePhotoButton.IsEnabled == false) return; //何度も実行しないように
-            TakePhotoButton.IsEnabled = false;
+            if (ContinuousCheckBox.IsChecked == true)
+            {
+                if (continuous)
+                {
+                    continuous = false;
+                    TakePhotoButton.Background = oldBrush;
+                    ContinuousCheckBox.IsEnabled = true;
+                    cancelShot = true;
+                }
+                else
+                {
+                    continuous = true;
+                    oldBrush = TakePhotoButton.Background;
+                    TakePhotoButton.Background = new SolidColorBrush(Colors.LightPink);
+                    ContinuousCheckBox.IsEnabled = false;
+                    while(cancelShot == false)
+                    {
+                        await TakePhotoOneShot();
+                    }
+                    cancelShot = false;
+                    TimerTextBlock.Text = "";
+                }
+            }
+            else
+            {
+                TakePhotoButton.IsEnabled = false;
+                await TakePhotoOneShot();
+                TakePhotoButton.IsEnabled = true;
+            }
+        }
+
+        private async Task TakePhotoOneShot()
+        {
             if (int.TryParse(TimerSecondsTextBox.Text, out var timerSeconds) == false)
             {
                 MessageBox.Show(LanguageSelector.Get("PhotoWindow_ErrorTimer"), LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
@@ -55,10 +90,13 @@ namespace VirtualMotionCaptureControlPanel
                 TimerTextBlock.Text = timerSeconds.ToString();
                 await Task.Delay(1000);
                 timerSeconds--;
+                if (cancelShot) break;
             }
-            await Globals.Client.SendCommandAsync(new PipeCommands.TakePhoto { Width = width, TransparentBackground = TransparentCheckBox.IsChecked == true, Directory = PathTextBox.Text });
+            if (cancelShot == false)
+            {
+                await Globals.Client.SendCommandAsync(new PipeCommands.TakePhoto { Width = width, TransparentBackground = TransparentCheckBox.IsChecked == true, Directory = PathTextBox.Text });
+            }
             TimerTextBlock.Text = "";
-            TakePhotoButton.IsEnabled = true;
         }
 
         private void TakePhotoButton_Click(object sender, RoutedEventArgs e)
