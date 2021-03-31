@@ -2370,7 +2370,9 @@ MonoBehaviour:
   receivePort: 39540
   statusString: 
   eddp: {fileID: 1549762413}
+  receiveBonesFlag: 0
   packets: 0
+  BonePositionSynchronize: 1
 --- !u!4 &389263780
 Transform:
   m_ObjectHideFlags: 0
@@ -5474,7 +5476,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0a1ab228b5c3c24cade24e1cc124c64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controlWPFWindow: {fileID: 1407685704}
 --- !u!1 &923408696
 GameObject:
   m_ObjectHideFlags: 0
@@ -11242,8 +11243,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2f7a0c5fd055af4083cbe934b512f19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controlWPFWindow: {fileID: 1407685704}
-  sdkConfiguration: {fileID: 11400000, guid: dd276808621df4e2380660ade912baf3, type: 2}
 --- !u!4 &1770264196
 Transform:
   m_ObjectHideFlags: 0

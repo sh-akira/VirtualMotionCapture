@@ -257,10 +257,10 @@
     <system:String x:Key="SettingWindow_VirtualMotionTrackerInstallSuccess">成功しました。SteamVRとバーチャルモーションキャプチャーが自動で再起動されますので、OKを押してしばらくお待ちください。</system:String>
 	<system:String x:Key="SettingWindow_VMTContinue">VMTのセットアップを実行しますか？ゲームが中断され、VRシステムは自動で再起動します。</system:String>
 	<system:String x:Key="SettingWindow_ExternalMotionSenderResponderEnable">デバイス探索要求への応答を許可</system:String>
-	<system:String x:Key="SettingWindow_ExternalMotionReceiverRequesterEnable">自動デバイス探索を行う</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionReceiverRequesterEnable">自動デバイス探索を行う</system:String>
+    <system:String x:Key="SettingWindow_ReceiveBonesEnable">手ボーン取得</system:String>
 
-
-	<!-- TrackerConfigWindow -->
+    <!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">トラッカー割り当て設定</system:String>
 
     <system:String x:Key="TrackerConfigWindow_TrackerConfig">トラッカー割り当て</system:String>

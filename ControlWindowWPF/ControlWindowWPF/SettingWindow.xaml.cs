@@ -310,6 +310,16 @@ namespace VirtualMotionCaptureControlPanel
                     isSetting = false;
                 });
             });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetExternalReceiveBones { }, d =>
+            {
+                var data = (PipeCommands.ExternalReceiveBones)d;
+                Dispatcher.Invoke(() =>
+                {
+                    isSetting = true;
+                    ReceiveBonesEnableCheckBox.IsChecked = data.ReceiveBonesEnable;
+                    isSetting = false;
+                });
+            });
             await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEnableTrackingFilter { }, d =>
             {
                 var data = (PipeCommands.EnableTrackingFilter)d;
@@ -658,6 +668,14 @@ namespace VirtualMotionCaptureControlPanel
                     RequesterEnable = ExternalMotionReceiverRequesterEnableCheckBox.IsChecked.Value
                 });
             }
+        }
+        private async void ReceiveBonesEnableCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            if (isSetting) return;
+            await Globals.Client?.SendCommandAsync(new PipeCommands.ExternalReceiveBones
+            {
+                ReceiveBonesEnable = ReceiveBonesEnableCheckBox.IsChecked.Value
+            });
         }
 
         private void MidiCCBlendShapeSettingButton_Click(object sender, RoutedEventArgs e)
