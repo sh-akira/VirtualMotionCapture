@@ -525,8 +525,6 @@ public class ExternalReceiverForVMC : MonoBehaviour
         //操作可能な状態かチェック
         if (animator != null && bone != HumanBodyBones.LastBone)
         {
-            //ローカル座標系の回転打ち消し用にHipsのボーンを押さえる
-            Transform hipBone = animator.GetBoneTransform(HumanBodyBones.Hips);
             Transform targetTransform;
             Transform tempTransform;
             //ボーンによって操作を分ける
@@ -540,7 +538,7 @@ public class ExternalReceiverForVMC : MonoBehaviour
                     Quaternion allLocalRotation = Quaternion.identity;
                     targetTransform = animator.GetBoneTransform(bone);
                     tempTransform = targetTransform;
-                    while (tempTransform != hipBone)
+                    while (tempTransform != CurrentModel.transform)
                     {
                         tempTransform = tempTransform.parent;
                         //後から逆回転をかけて打ち消し
