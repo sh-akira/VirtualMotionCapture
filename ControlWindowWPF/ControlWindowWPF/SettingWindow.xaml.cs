@@ -387,6 +387,17 @@ namespace VirtualMotionCaptureControlPanel
                 });
             });
 
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetPauseTracking { }, d =>
+            {
+                var data = (PipeCommands.PauseTracking)d;
+                Dispatcher.Invoke(() =>
+                {
+                    isSetting = true;
+                    PauseTrackingCheckBox.IsChecked = data.enable;
+                    isSetting = false;
+                });
+            });
+
             await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = true });
             await Globals.Client?.SendCommandAsync(new PipeCommands.StatusStringChangedRequest { doSend = true });
 

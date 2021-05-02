@@ -893,6 +893,13 @@ public class ControlWPFWindow : MonoBehaviour
                 var d = (PipeCommands.EnableTrackingFilter)e.Data;
                 SetTrackingFilterEnable(d.globalEnable, d.hmdEnable, d.controllerEnable, d.trackerEnable);
             }
+            else if (e.CommandType == typeof(PipeCommands.GetPauseTracking))
+            {
+                await server.SendCommandAsync(new PipeCommands.PauseTracking
+                {
+                    enable = DeviceInfo.pauseTracking
+                }, e.RequestId);
+            }
             else if (e.CommandType == typeof(PipeCommands.PauseTracking))
             {
                 var d = (PipeCommands.PauseTracking)e.Data;
