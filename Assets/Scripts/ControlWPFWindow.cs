@@ -2388,13 +2388,22 @@ public class ControlWPFWindow : MonoBehaviour
         config.keyCode = -2;
         config.keyName = e.Name;
         config.isLeft = e.IsLeft;
-        config.keyIndex = e.IsAxis == false ? -1 : NearestPointIndex(e.IsLeft, e.Axis.x, e.Axis.y, e.Name.Contains("Stick"));
+        bool isStick = e.Name.Contains("Stick");
+        config.keyIndex = e.IsAxis == false ? -1 : NearestPointIndex(e.IsLeft, e.Axis.x, e.Axis.y, isStick);
         config.isTouch = e.IsTouch;
         if (e.IsAxis)
         {
             if (config.keyIndex < 0) return;
-            if (e.IsLeft) lastLeftAxisPoint = config.keyIndex;
-            else lastRightAxisPoint = config.keyIndex;
+            if (e.IsLeft)
+            {
+                if (isStick) lastStickLeftAxisPoint = config.keyIndex;
+                else lastTouchpadLeftAxisPoint = config.keyIndex;
+            }
+            else
+            {
+                if (isStick) lastStickRightAxisPoint = config.keyIndex;
+                else lastTouchpadRightAxisPoint = config.keyIndex;
+            }
         }
         if (doKeyConfig || doKeySend) await server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
         if (!doKeyConfig) CheckKey(config, true);
@@ -2409,12 +2418,13 @@ public class ControlWPFWindow : MonoBehaviour
         config.keyCode = -2;
         config.keyName = e.Name;
         config.isLeft = e.IsLeft;
-        config.keyIndex = e.IsAxis == false ? -1 : NearestPointIndex(e.IsLeft, e.Axis.x, e.Axis.y, e.Name.Contains("Stick"));
+        bool isStick = e.Name.Contains("Stick");
+        config.keyIndex = e.IsAxis == false ? -1 : NearestPointIndex(e.IsLeft, e.Axis.x, e.Axis.y, isStick);
         config.isTouch = e.IsTouch;
-        if (e.IsAxis && config.keyIndex != (e.IsLeft ? lastLeftAxisPoint : lastRightAxisPoint))
+        if (e.IsAxis && config.keyIndex != (isStick ? (e.IsLeft ? lastStickLeftAxisPoint : lastStickRightAxisPoint) : (e.IsLeft ? lastTouchpadLeftAxisPoint : lastTouchpadRightAxisPoint)))
         {//タッチパッド離した瞬間違うポイントだった場合
             var newindex = config.keyIndex;
-            config.keyIndex = (e.IsLeft ? lastLeftAxisPoint : lastRightAxisPoint);
+            config.keyIndex = (isStick ? (e.IsLeft ? lastStickLeftAxisPoint : lastStickRightAxisPoint) : (e.IsLeft ? lastTouchpadLeftAxisPoint : lastTouchpadRightAxisPoint));
             //前のキーを離す
             if (doKeyConfig) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
             else CheckKey(config, false);
@@ -2428,8 +2438,10 @@ public class ControlWPFWindow : MonoBehaviour
         if (!doKeyConfig) CheckKey(config, false);
     }
 
-    private int lastLeftAxisPoint = -1;
-    private int lastRightAxisPoint = -1;
+    private int lastTouchpadLeftAxisPoint = -1;
+    private int lastTouchpadRightAxisPoint = -1;
+    private int lastStickLeftAxisPoint = -1;
+    private int lastStickRightAxisPoint = -1;
 
     private bool isSendingKey = false;
     //タッチパッドやアナログスティックの変動
@@ -2439,8 +2451,9 @@ public class ControlWPFWindow : MonoBehaviour
         var keyName = e.Name;
         if (keyName.Contains("Trigger")) return; //トリガーは現時点ではアナログ入力無効
         if (keyName.Contains("Position")) keyName = keyName.Replace("Position", "Touch"); //ポジションはいったんタッチと同じにする
-        var newindex = NearestPointIndex(e.IsLeft, e.Axis.x, e.Axis.y, keyName.Contains("Stick"));
-        if ((e.IsLeft ? lastLeftAxisPoint : lastRightAxisPoint) != newindex)
+        bool isStick = keyName.Contains("Stick");
+        var newindex = NearestPointIndex(e.IsLeft, e.Axis.x, e.Axis.y, isStick);
+        if ((isStick ? (e.IsLeft ? lastStickLeftAxisPoint : lastStickRightAxisPoint) : (e.IsLeft ? lastTouchpadLeftAxisPoint : lastTouchpadRightAxisPoint)) != newindex)
         {//ドラッグで隣の領域に入った場合
             var config = new KeyConfig();
             config.type = KeyTypes.Controller;
@@ -2448,7 +2461,7 @@ public class ControlWPFWindow : MonoBehaviour
             config.keyCode = -2;
             config.keyName = keyName;
             config.isLeft = e.IsLeft;
-            config.keyIndex = (e.IsLeft ? lastLeftAxisPoint : lastRightAxisPoint);
+            config.keyIndex = (isStick ? (e.IsLeft ? lastStickLeftAxisPoint : lastStickRightAxisPoint) : (e.IsLeft ? lastTouchpadLeftAxisPoint : lastTouchpadRightAxisPoint));
             config.isTouch = true;// e.IsTouch; //ポジションはいったんタッチと同じにする
             //前のキーを離す
             if (doKeyConfig || doKeySend) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
@@ -2465,8 +2478,16 @@ public class ControlWPFWindow : MonoBehaviour
                 }
             }
             if (!doKeyConfig) CheckKey(config, true);
-            if (e.IsLeft) lastLeftAxisPoint = newindex;
-            else lastRightAxisPoint = newindex;
+            if (e.IsLeft)
+            {
+                if (isStick) lastStickLeftAxisPoint = newindex;
+                else lastTouchpadLeftAxisPoint = newindex;
+            }
+            else
+            {
+                if (isStick) lastStickRightAxisPoint = newindex;
+                else lastTouchpadRightAxisPoint = newindex;
+            }
         }
     }
 

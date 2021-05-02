@@ -206,6 +206,9 @@ public class SteamVR2Input : MonoBehaviour
                         Debug.LogWarning($"<b>[SteamVR]</b> GetDigitalActionData error ({action.name}): {err} handle: {action.handle}");
                         continue;
                     }
+                    
+                    if (action.name == "/actions/default/in/TouchSystem") continue;
+
                     if (IsKeyDown(action.digitalActionData))
                     {
                         Debug.Log($"<b>[SteamVR]</b> GetDigitalActionData IsKeyDown ({action.name}): {err} handle: {action.handle}");
