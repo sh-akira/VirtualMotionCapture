@@ -134,7 +134,7 @@ public class CameraMouseControl : MonoBehaviour
                 var mousePos = mousePosition;
                 if (mousePos.x >= 0 && mousePos.y >= 0 && mousePos.x < Screen.safeArea.width && mousePos.y < Screen.safeArea.height)
                 {
-                    CameraDistance = Mathf.Max(CameraDistance - mouseScrollWheel * cameraSpeed.z * (60.0f / currentFOV), 0.1f);
+                    CameraDistance = Mathf.Max(CameraDistance - mouseScrollWheel * cameraSpeed.z * (60.0f / currentFOV) * ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) ? 0.05f : 1f), 0.1f);
                     settingChanged = true;
                 }
             }
