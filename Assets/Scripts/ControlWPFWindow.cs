@@ -2105,9 +2105,11 @@ public class ControlWPFWindow : MonoBehaviour
 #endif
     }
 
+    private bool lastWindowBorder = true;
     void SetWindowBorder(bool enable)
     {
-        if (CurrentSettings.HideBorder == enable) return;
+        if (lastWindowBorder == enable) return;
+        lastWindowBorder = enable;
         CurrentSettings.HideBorder = enable;
 #if !UNITY_EDITOR   // エディタ上では動きません。
         var hwnd = GetUnityWindowHandle();
@@ -3692,24 +3694,28 @@ public class ControlWPFWindow : MonoBehaviour
         //SetResolutionは強制的にウインドウ枠を復活させるのでBorder設定の前にやっておく必要がある
         if (Screen.resolutions.Any(d => d.width == CurrentSettings.ScreenWidth && d.height == CurrentSettings.ScreenHeight && d.refreshRate == CurrentSettings.ScreenRefreshRate))
         {
-            Screen.SetResolution(CurrentSettings.ScreenWidth, CurrentSettings.ScreenHeight, false, CurrentSettings.ScreenRefreshRate);
+            UpdateActionQueue.Enqueue(() => Screen.SetResolution(CurrentSettings.ScreenWidth, CurrentSettings.ScreenHeight, false, CurrentSettings.ScreenRefreshRate));
         }
 
         if (CurrentSettings.BackgroundColor != null)
         {
-            ChangeBackgroundColor(CurrentSettings.BackgroundColor.r, CurrentSettings.BackgroundColor.g, CurrentSettings.BackgroundColor.b, false);
+            UpdateActionQueue.Enqueue(() => ChangeBackgroundColor(CurrentSettings.BackgroundColor.r, CurrentSettings.BackgroundColor.g, CurrentSettings.BackgroundColor.b, false));
         }
+
         if (CurrentSettings.CustomBackgroundColor != null)
         {
             await server.SendCommandAsync(new PipeCommands.LoadCustomBackgroundColor { r = CurrentSettings.CustomBackgroundColor.r, g = CurrentSettings.CustomBackgroundColor.g, b = CurrentSettings.CustomBackgroundColor.b });
         }
+
         if (CurrentSettings.IsTransparent)
         {
-            SetBackgroundTransparent();
+            UpdateActionQueue.Enqueue(() => SetBackgroundTransparent());
         }
-        SetWindowBorder(CurrentSettings.HideBorder);
+
+        UpdateActionQueue.Enqueue(() => SetWindowBorder(CurrentSettings.HideBorder));
         await server.SendCommandAsync(new PipeCommands.LoadHideBorder { enable = CurrentSettings.HideBorder });
-        SetWindowTopMost(CurrentSettings.IsTopMost);
+
+        UpdateActionQueue.Enqueue(() => SetWindowTopMost(CurrentSettings.IsTopMost));
         await server.SendCommandAsync(new PipeCommands.LoadIsTopMost { enable = CurrentSettings.IsTopMost });
 
         SetCameraFOV(CurrentSettings.CameraFOV);
@@ -3969,6 +3975,8 @@ public class ControlWPFWindow : MonoBehaviour
         defaultExWindowStyle = GetWindowLong(GetUnityWindowHandle(), GWL_EXSTYLE);
     }
 
+    private ConcurrentQueue<Action> UpdateActionQueue = new ConcurrentQueue<Action>();
+
     // Update is called once per frame
     void Update()
     {
@@ -3978,6 +3986,9 @@ public class ControlWPFWindow : MonoBehaviour
         //{
         //    TakePhoto(16000, true);
         //}
+
+        Action action;
+        if (UpdateActionQueue.TryDequeue(out action)) action();
     }
 
     private void TakePhoto(int width, bool transparentBackground, string directory = null)
