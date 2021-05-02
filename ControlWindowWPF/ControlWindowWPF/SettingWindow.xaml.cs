@@ -387,6 +387,17 @@ namespace VirtualMotionCaptureControlPanel
                 });
             });
 
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetPauseTracking { }, d =>
+            {
+                var data = (PipeCommands.PauseTracking)d;
+                Dispatcher.Invoke(() =>
+                {
+                    isSetting = true;
+                    PauseTrackingCheckBox.IsChecked = data.enable;
+                    isSetting = false;
+                });
+            });
+
             await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = true });
             await Globals.Client?.SendCommandAsync(new PipeCommands.StatusStringChangedRequest { doSend = true });
 
@@ -974,11 +985,13 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void PauseTrackingCheckBox_Checked(object sender, RoutedEventArgs e)
         {
+            if (isSetting) return;
             await Globals.Client?.SendCommandAsync(new PipeCommands.PauseTracking { enable = true });
         }
 
         private async void PauseTrackingCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
+            if (isSetting) return;
             await Globals.Client?.SendCommandAsync(new PipeCommands.PauseTracking { enable = false });
         }
     }

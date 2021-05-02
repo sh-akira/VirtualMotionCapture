@@ -444,6 +444,7 @@ namespace UnityMemoryMappedFile
             public bool trackerEnable { get; set; }
         }
 
+        public class GetPauseTracking { }
         public class PauseTracking
         {
             public bool enable { get; set; }
