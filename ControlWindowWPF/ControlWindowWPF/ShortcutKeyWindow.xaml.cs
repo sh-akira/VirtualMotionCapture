@@ -879,6 +879,7 @@ namespace VirtualMotionCaptureControlPanel
         private async void EnableSkeletalInputCheckBox_CheckedChanged(object sender, RoutedEventArgs e)
         {
             await Globals.Client?.SendCommandAsync(new PipeCommands.SetSkeletalInputEnable { enable = EnableSkeletalInputCheckBox.IsChecked.Value });
+            Globals.EnableSkeletal = EnableSkeletalInputCheckBox.IsChecked.Value;
         }
     }
 }
