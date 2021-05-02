@@ -2767,7 +2767,7 @@ public class ControlWPFWindow : MonoBehaviour
     private void SetExternalMotionReceiverEnable(bool enable)
     {
         CurrentSettings.ExternalMotionReceiverEnable = enable;
-        ExternalMotionReceiverObject.SetActive(enable);
+        externalMotionReceiver.SetObjectActive(enable);
         WaitOneFrameAction(() => ModelLoadedAction?.Invoke(CurrentModel));
         WaitOneFrameAction(() => CameraChangedAction?.Invoke(ControlCamera));
     }
@@ -3820,8 +3820,9 @@ public class ControlWPFWindow : MonoBehaviour
 
         SetExternalMotionSenderEnable(CurrentSettings.ExternalMotionSenderEnable);
         ChangeExternalMotionSenderAddress(CurrentSettings.ExternalMotionSenderAddress, CurrentSettings.ExternalMotionSenderPort, CurrentSettings.ExternalMotionSenderPeriodStatus, CurrentSettings.ExternalMotionSenderPeriodRoot, CurrentSettings.ExternalMotionSenderPeriodBone, CurrentSettings.ExternalMotionSenderPeriodBlendShape, CurrentSettings.ExternalMotionSenderPeriodCamera, CurrentSettings.ExternalMotionSenderPeriodDevices, CurrentSettings.ExternalMotionSenderOptionString, CurrentSettings.ExternalMotionSenderResponderEnable);
-        SetExternalMotionReceiverEnable(CurrentSettings.ExternalMotionReceiverEnable);
+        
         ChangeExternalMotionReceiverPort(CurrentSettings.ExternalMotionReceiverPort, CurrentSettings.ExternalMotionReceiverRequesterEnable);
+        SetExternalMotionReceiverEnable(CurrentSettings.ExternalMotionReceiverEnable);
 
         SetMidiCCBlendShape(CurrentSettings.MidiCCBlendShape);
 

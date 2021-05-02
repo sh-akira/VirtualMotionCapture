@@ -9,6 +9,7 @@ using Valve.VR;
 using VRM;
 using UnityMemoryMappedFile;
 using System.Linq;
+using System.Net.Sockets;
 
 [DefaultExecutionOrder(15002)]
 
@@ -492,6 +493,39 @@ public class ExternalReceiverForVMC : MonoBehaviour
         }
     }
 
+    private bool internalActive = false;
+
+    public void SetObjectActive(bool enable)
+    {
+        internalActive = enable;
+        if (enable)
+        {
+            if (isPortFree(receivePort))
+            {
+                var uServer = GetComponent<uOSC.uOscServer>();
+                uServer.enabled = true;
+                gameObject.SetActive(enable);
+            }
+            else
+            {
+                Debug.LogError("受信ポートが他のアプリと被っています。変更してください");
+            }
+        }
+        else
+        {
+            var uServer = GetComponent<uOSC.uOscServer>();
+            uServer.enabled = false;
+            gameObject.SetActive(enable);
+        }
+    }
+
+    private bool isPortFree(int port)
+    {
+        var ipGlobalProp = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties();
+        var usedPorts = ipGlobalProp.GetActiveUdpListeners();
+        return usedPorts.Any(d => d.Port == port) == false;
+    }
+
     public void ChangeOSCPort(int port)
     {
         receivePort = port;
@@ -502,7 +536,10 @@ public class ExternalReceiverForVMC : MonoBehaviour
         var type = typeof(uOSC.uOscServer);
         var portfield = type.GetField("port", BindingFlags.SetField | BindingFlags.NonPublic | BindingFlags.Instance);
         portfield.SetValue(uServer, port);
-        uServer.enabled = true;
+        if (internalActive == true)
+        {
+            SetObjectActive(true);
+        }
     }
 
     //ボーン位置をキャッシュテーブルに基づいて更新
