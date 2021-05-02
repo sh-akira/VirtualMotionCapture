@@ -1863,16 +1863,16 @@ public class ControlWPFWindow : MonoBehaviour
         lastCalibrateType = calibrateType;//最後に実施したキャリブレーションタイプとして記録
 
         SetVRIK(CurrentModel);
-        //wristRotationFix.SetVRIK(vrik);
+        wristRotationFix.SetVRIK(vrik);
 
-        var leftLowerArm = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm);
-        var leftRelaxer = leftLowerArm.gameObject.AddComponent<TwistRelaxer>();
-        leftRelaxer.ik = vrik;
-        leftRelaxer.twistSolvers = new TwistSolver[] { new TwistSolver { transform = leftLowerArm } };
-        var rightLowerArm = animator.GetBoneTransform(HumanBodyBones.RightLowerArm);
-        var rightRelaxer = rightLowerArm.gameObject.AddComponent<TwistRelaxer>();
-        rightRelaxer.ik = vrik;
-        rightRelaxer.twistSolvers = new TwistSolver[] { new TwistSolver { transform = rightLowerArm } };
+        //var leftLowerArm = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm);
+        //var leftRelaxer = leftLowerArm.gameObject.AddComponent<TwistRelaxer>();
+        //leftRelaxer.ik = vrik;
+        //leftRelaxer.twistSolvers = new TwistSolver[] { new TwistSolver { transform = leftLowerArm } };
+        //var rightLowerArm = animator.GetBoneTransform(HumanBodyBones.RightLowerArm);
+        //var rightRelaxer = rightLowerArm.gameObject.AddComponent<TwistRelaxer>();
+        //rightRelaxer.ik = vrik;
+        //rightRelaxer.twistSolvers = new TwistSolver[] { new TwistSolver { transform = rightLowerArm } };
 
         Transform headTracker = GetTrackerTransformBySerialNumber(CurrentSettings.Head, TargetType.Head);
         leftHandTracker = GetTrackerTransformBySerialNumber(CurrentSettings.LeftHand, TargetType.LeftArm, headTracker);
