@@ -888,6 +888,18 @@ public class ControlWPFWindow : MonoBehaviour
                 var d = (PipeCommands.SetMidiCCBlendShape)e.Data;
                 SetMidiCCBlendShape(d.BlendShapes);
             }
+            else if (e.CommandType == typeof(PipeCommands.GetMidiEnable))
+            {
+                await server.SendCommandAsync(new PipeCommands.MidiEnable
+                {
+                    enable = CurrentSettings.MidiEnable,
+                }, e.RequestId);
+            }
+            else if (e.CommandType == typeof(PipeCommands.MidiEnable))
+            {
+                var d = (PipeCommands.MidiEnable)e.Data;
+                SetMidiEnable(d.enable);
+            }
             else if (e.CommandType == typeof(PipeCommands.EnableTrackingFilter))
             {
                 var d = (PipeCommands.EnableTrackingFilter)e.Data;
@@ -3219,6 +3231,8 @@ public class ControlWPFWindow : MonoBehaviour
         [OptionalField]
         public List<string> MidiCCBlendShape;
         [OptionalField]
+        public bool MidiEnable;
+        [OptionalField]
         public Dictionary<string,string> LipShapesToBlendShapeMap;
         [OptionalField]
         public bool LipTracking_ViveEnable;
@@ -3413,6 +3427,7 @@ public class ControlWPFWindow : MonoBehaviour
             ExternalMotionReceiverRequesterEnable = true;
 
             MidiCCBlendShape = new List<string>(Enumerable.Repeat(default(string), MidiCCWrapper.KNOBS));
+            MidiEnable = false;
 
             LipShapesToBlendShapeMap = new Dictionary<string, string>();
             LipTracking_ViveEnable = false;
@@ -3859,6 +3874,7 @@ public class ControlWPFWindow : MonoBehaviour
         SetExternalMotionReceiverEnable(CurrentSettings.ExternalMotionReceiverEnable);
 
         SetMidiCCBlendShape(CurrentSettings.MidiCCBlendShape);
+        SetMidiEnable(CurrentSettings.MidiEnable);
 
         SetEyeTracking_TobiiOffsetsAction?.Invoke(new PipeCommands.SetEyeTracking_TobiiOffsets
         {
@@ -3922,6 +3938,12 @@ public class ControlWPFWindow : MonoBehaviour
     {
         CurrentSettings.MidiCCBlendShape = blendshapes;
         midiCCBlendShape.KnobToBlendShape = blendshapes.ToArray();
+    }
+
+    private void SetMidiEnable(bool enable)
+    {
+        CurrentSettings.MidiEnable = enable;
+        midiCCWrapper.gameObject.SetActive(enable);
     }
 
     private void UpdateWebCamConfig()

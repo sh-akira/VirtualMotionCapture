@@ -199,7 +199,10 @@
                     </DockPanel>
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_MIDI_CC_BlendShape}">
-                    <Button Content="{DynamicResource SettingWindow_MidiCCBlendShapeSetting}" Name="MidiCCBlendShapeSettingButton" Click="MidiCCBlendShapeSettingButton_Click"/>
+                    <StackPanel Orientation="Vertical">
+                        <CheckBox Content="{DynamicResource SettingWindow_MidiEnable}" Name="MidiEnableCheckBox" Checked="MidiEnableCheckBox_Checked" Unchecked="MidiEnableCheckBox_Unchecked"/>
+                        <Button Content="{DynamicResource SettingWindow_MidiCCBlendShapeSetting}" Name="MidiCCBlendShapeSettingButton" Click="MidiCCBlendShapeSettingButton_Click"/>
+                    </StackPanel>
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_PreventLosingTracking}">
                     <GroupBox>

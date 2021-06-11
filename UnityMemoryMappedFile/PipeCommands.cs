@@ -435,6 +435,12 @@ namespace UnityMemoryMappedFile
             public float value { get; set; }
         }
 
+        public class GetMidiEnable { }
+        public class MidiEnable
+        {
+            public bool enable { get; set; }
+        }
+
         public class GetEnableTrackingFilter { }
         public class EnableTrackingFilter
         {

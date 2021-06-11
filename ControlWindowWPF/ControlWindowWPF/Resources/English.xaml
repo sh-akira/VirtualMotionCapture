@@ -238,6 +238,7 @@
     <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">Enable OSC motion receiver</system:String>
    	<system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape</system:String>
    	<system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">Knob to BlendShape setting</system:String>
+    <system:String x:Key="SettingWindow_MidiEnable">Enable MIDI Device</system:String>
    	<system:String x:Key="SettingWindow_PreventLosingTracking">Prevent losing tracking</system:String>
    	<system:String x:Key="SettingWindow_TrackingFilterEnable">Enable</system:String>
    	<system:String x:Key="SettingWindow_TrackingFilterHmdEnable">HMD</system:String>

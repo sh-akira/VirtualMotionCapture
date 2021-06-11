@@ -239,6 +239,7 @@
 	<system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">OSCでモーション受信を有効にする</system:String>
 	<system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape割り当て</system:String>
 	<system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">MIDI CCつまみ割り当て設定を開く</system:String>
+    <system:String x:Key="SettingWindow_MidiEnable">MIDIデバイスを有効にする</system:String>
 	<system:String x:Key="SettingWindow_PreventLosingTracking">トラッキングロスト時の飛び軽減</system:String>
 	<system:String x:Key="SettingWindow_TrackingFilterEnable">有効</system:String>
 	<system:String x:Key="SettingWindow_TrackingFilterHmdEnable">HMD</system:String>

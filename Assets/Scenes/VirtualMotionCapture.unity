@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4465782, g: 0.49641412, b: 0.5748167, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028492, g: 0.22571525, b: 0.3069259, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -8391,7 +8391,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsBeta: 0
   IsPreRelease: 0
-  VersionString: v0.50f1r1b5
+  VersionString: v0.50f1r1b8
   handler: {fileID: 1128534203}
   LeftWristTransform: {fileID: 0}
   RightWristTransform: {fileID: 0}
@@ -10097,7 +10097,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1604201751
 MonoBehaviour:
   m_ObjectHideFlags: 0

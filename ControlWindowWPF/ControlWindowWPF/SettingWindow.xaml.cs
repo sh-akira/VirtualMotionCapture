@@ -398,6 +398,17 @@ namespace VirtualMotionCaptureControlPanel
                 });
             });
 
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetMidiEnable { }, d =>
+            {
+                var data = (PipeCommands.MidiEnable)d;
+                Dispatcher.Invoke(() =>
+                {
+                    isSetting = true;
+                    MidiEnableCheckBox.IsChecked = data.enable;
+                    isSetting = false;
+                });
+            });
+
             await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = true });
             await Globals.Client?.SendCommandAsync(new PipeCommands.StatusStringChangedRequest { doSend = true });
 
@@ -993,6 +1004,24 @@ namespace VirtualMotionCaptureControlPanel
         {
             if (isSetting) return;
             await Globals.Client?.SendCommandAsync(new PipeCommands.PauseTracking { enable = false });
+        }
+
+        private async void MidiEnableCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (isSetting) return;
+            await Globals.Client?.SendCommandAsync(new PipeCommands.MidiEnable
+            {
+                enable = MidiEnableCheckBox.IsChecked.Value
+            });
+        }
+
+        private async void MidiEnableCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (isSetting) return;
+            await Globals.Client?.SendCommandAsync(new PipeCommands.MidiEnable
+            {
+                enable = MidiEnableCheckBox.IsChecked.Value
+            });
         }
     }
 }
