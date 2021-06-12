@@ -327,6 +327,9 @@ public class ControlWPFWindow : MonoBehaviour
 
     private void OnApplicationQuit()
     {
+        // アプリが終了したらコントロールパネルも終了する。
+        server?.SendCommandAsync(new PipeCommands.QuitApplication { });
+
         server.ReceivedEvent -= Server_Received;
         server?.Dispose();
         KeyboardAction.KeyDownEvent -= KeyboardAction_KeyDown;
@@ -3696,8 +3699,9 @@ public class ControlWPFWindow : MonoBehaviour
     //CurrentSettingsを各種設定に適用
     private async void ApplyCurrentSettings()
     {
-        //VRMのパスが有効なら読み込む
-        if (string.IsNullOrWhiteSpace(CurrentSettings.VRMPath) == false)
+        //VRMのパスが有効で、存在するなら読み込む
+        if (string.IsNullOrWhiteSpace(CurrentSettings.VRMPath) == false
+            && File.Exists(CurrentSettings.VRMPath))
         {
             await server.SendCommandAsync(new PipeCommands.LoadVRMPath { Path = CurrentSettings.VRMPath });
             await ImportVRM(CurrentSettings.VRMPath, false, CurrentSettings.EnableNormalMapFix, CurrentSettings.DeleteHairNormalMap);

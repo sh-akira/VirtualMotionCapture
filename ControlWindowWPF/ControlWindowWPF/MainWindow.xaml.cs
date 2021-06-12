@@ -343,6 +343,11 @@ namespace VirtualMotionCaptureControlPanel
                     CurrentWindowNum = d.Num;
                     UpdateWindowTitle();
                 }
+                // "VMC本体終了"
+                else if (e.CommandType == typeof(PipeCommands.QuitApplication))
+                {
+                    Application.Current.Shutdown();
+                }
                 //for Debug
                 else if (e.CommandType == typeof(PipeCommands.KeyDown))
                 {
