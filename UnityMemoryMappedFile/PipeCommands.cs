@@ -68,6 +68,8 @@ namespace UnityMemoryMappedFile
 
         public class EndCalibrate { }
 
+        public class QuitApplication { }
+
         public class SetFloatValueBase { public float value { get; set; } }
 
         public class SetLipSyncEnable { public bool enable { get; set; } }

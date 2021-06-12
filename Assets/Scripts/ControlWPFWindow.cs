@@ -327,6 +327,9 @@ public class ControlWPFWindow : MonoBehaviour
 
     private void OnApplicationQuit()
     {
+        // アプリが終了したらコントロールパネルも終了する。
+        server?.SendCommandAsync(new PipeCommands.QuitApplication { });
+
         server.ReceivedEvent -= Server_Received;
         server?.Dispose();
         KeyboardAction.KeyDownEvent -= KeyboardAction_KeyDown;
