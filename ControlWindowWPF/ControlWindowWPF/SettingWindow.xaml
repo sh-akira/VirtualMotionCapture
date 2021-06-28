@@ -89,8 +89,11 @@
 					<UniformGrid Columns="2">
 						<Button Content="VIVE Lip Tracker" Name="LipTracking_ViveSettingButton" Click="LipTracking_ViveSettingButton_Click"/>
 					</UniformGrid>
-				</GroupBox>
-				<GroupBox Header="{DynamicResource SettingWindow_Language}">
+                </GroupBox>
+                <GroupBox Header="{DynamicResource SettingWindow_VMCMod}">
+                    <Button Content="{DynamicResource SettingWindow_VMCModSetting}" Name="ModSetting" Click="ModSetting_Click"/>
+                </GroupBox>
+                <GroupBox Header="{DynamicResource SettingWindow_Language}">
                     <ComboBox Name="LanguageComboBox" SelectedIndex="0" SelectionChanged="LanguageComboBox_SelectionChanged">
                         <system:String>Japanese</system:String>
                         <system:String>English</system:String>

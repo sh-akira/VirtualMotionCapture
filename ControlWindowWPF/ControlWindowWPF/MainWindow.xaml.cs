@@ -116,6 +116,25 @@ namespace VirtualMotionCaptureControlPanel
                 win.Show();
             }
 #endif
+            if (VRoidHubWindow.IncludeVRoidHubWindow)
+            {
+                VRoidHubWindow.IncludeVRoidHubWindow = false;
+                DMMVRConnectWindow.IncludeDMMVRConnectWindow = false;
+                await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetModIsLoaded(), d =>
+                {
+                    var data = (PipeCommands.ReturnModIsLoaded)d;
+                    if (data.IsLoaded)
+                    {
+                        VRoidHubWindow.IncludeVRoidHubWindow = false;
+                        DMMVRConnectWindow.IncludeDMMVRConnectWindow = false;
+                    }
+                    else
+                    {
+                        VRoidHubWindow.IncludeVRoidHubWindow = true;
+                        DMMVRConnectWindow.IncludeDMMVRConnectWindow = true;
+                    }
+                });
+            }
             await GetLipSyncDevice();
             await Globals.Client.SendCommandAsync(new PipeCommands.LoadCurrentSettings());
         }

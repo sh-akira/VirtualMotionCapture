@@ -1,0 +1,48 @@
+﻿<Window x:Class="VirtualMotionCaptureControlPanel.ModSetting"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
+        mc:Ignorable="d"
+        Title="{DynamicResource SettingWindow_VMCModSetting}" Height="450" Width="800" Loaded="Window_Loaded">
+    <DockPanel>
+        <GroupBox Header="Mod Description" DockPanel.Dock="Bottom" Name="ModDescriptionPanel">
+            <Grid>
+                <DockPanel Height="100">
+                    <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Right">
+                        <Button Content="Setting" Command="{Binding SettingCommand}"/>
+                        <Button Content="Open Mod Folder" Command="{Binding OpenModFolderCommand}"/>
+                    </StackPanel>
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="5">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontSize="16" FontWeight="Bold" Visibility="{Binding PluginURLVisibility}"><Hyperlink NavigateUri="{Binding PluginURL}" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="{Binding Name}"/></Hyperlink></TextBlock>
+                                <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold" Visibility="{Binding ModNameOnlyVisibility}"/>
+                                <TextBlock Text="{Binding Version}" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <TextBlock Text="Author" FontWeight="Bold"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Visibility="{Binding AuthorURLVisibility}"><Hyperlink NavigateUri="{Binding AuthorURL}" RequestNavigate="Hyperlink_RequestNavigate" ><Run Text="{Binding Author}"/></Hyperlink></TextBlock>
+                                <TextBlock Text="{Binding Author}" Visibility="{Binding AuthorOnlyVisibility}"/>
+                            </StackPanel>
+                            <TextBlock Margin="0,5,0,0" Text="{Binding Description}" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </DockPanel>
+                <DockPanel Background="White" Name="ModInstructionPanel">
+                    
+                </DockPanel>
+            </Grid>
+        </GroupBox>
+
+        <DataGrid CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" SelectionMode="Single" Name="ModsDataGrid" AutoGenerateColumns="False" SelectionChanged="ModsDataGrid_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Mod Name" Binding="{Binding Name}" MinWidth="200"/>
+                <DataGridTextColumn Header="Version" Binding="{Binding Version}" MinWidth="50"/>
+                <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*"/>
+                <DataGridTextColumn Header="Author" Binding="{Binding Author}" MinWidth="150"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>

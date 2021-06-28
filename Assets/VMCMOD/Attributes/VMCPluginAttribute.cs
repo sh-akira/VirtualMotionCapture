@@ -24,7 +24,8 @@ namespace VMCMod
         public string Description { get; }
         public string PluginURL { get; }
 
-        internal string InstanceId { get; set; }
+        public string InstanceId { get; set; }
+        public string AssemblyPath { get; set; }
         internal List<Action> OnSetting { get; set; }
     }
 }

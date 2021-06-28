@@ -1023,5 +1023,11 @@ namespace VirtualMotionCaptureControlPanel
                 enable = MidiEnableCheckBox.IsChecked.Value
             });
         }
+
+        private void ModSetting_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new ModSetting();
+            win.Show();
+        }
     }
 }

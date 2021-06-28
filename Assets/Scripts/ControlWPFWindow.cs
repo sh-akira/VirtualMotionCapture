@@ -16,6 +16,7 @@ using RootMotion.FinalIK;
 using Valve.VR;
 using System.Reflection;
 using System.Threading.Tasks;
+using VMCMod;
 #if UNITY_EDITOR   // エディタ上でしか動きません。
 using UnityEditor;
 #endif
@@ -138,6 +139,8 @@ public class ControlWPFWindow : MonoBehaviour
 
     public EasyDeviceDiscoveryProtocolManager easyDeviceDiscoveryProtocolManager;
 
+    public ModManager modManager;
+
     // Use this for initialization
     void Start()
     {
@@ -229,6 +232,9 @@ public class ControlWPFWindow : MonoBehaviour
         {
             CheckKnobUpdated(channel, knobNo, value);
         };
+
+        ModelLoadedAction += gameObject => VMCEvents.OnModelLoaded?.Invoke(gameObject);
+        CameraChangedAction += camera => VMCEvents.OnCameraChanged?.Invoke(camera);
     }
 
     private string MidiName(MidiJack.MidiChannel channel, int note)
@@ -1104,12 +1110,54 @@ public class ControlWPFWindow : MonoBehaviour
                     ReceiveBonesEnable = CurrentSettings.ExternalBonesReceiverEnable
                 }, e.RequestId);
             }
-          
+            else if (e.CommandType == typeof(PipeCommands.GetModIsLoaded))
+            {
+                await server.SendCommandAsync(new PipeCommands.ReturnModIsLoaded
+                {
+                    IsLoaded = modManager.IsModLoaded,
+                }, e.RequestId);
+            }
+            else if (e.CommandType == typeof(PipeCommands.GetModList))
+            {
+                await server.SendCommandAsync(new PipeCommands.ReturnModList
+                {
+                    ModList = GetModList(),
+                }, e.RequestId);
+            }
+            else if (e.CommandType == typeof(PipeCommands.ModSettingEvent))
+            {
+                var d = (PipeCommands.ModSettingEvent)e.Data;
+                modManager.InvokeSetting(d.InstanceId);
+            }
+
             else if (e.CommandType == typeof(PipeCommands.Alive))
             {
                 await server.SendCommandAsync(new PipeCommands.Alive { });
             }
         }, null);
+    }
+
+    private List<ModItem> GetModList()
+    {
+        var modList = new List<ModItem>();
+
+        foreach (var attribute in modManager.GetModsList())
+        {
+            var item = new ModItem
+            {
+                Name = attribute.Name,
+                Version = attribute.Version,
+                Author = attribute.Author,
+                AuthorURL = attribute.AuthorURL,
+                Description = attribute.Description,
+                PluginURL = attribute.PluginURL,
+                InstanceId = attribute.InstanceId,
+                AssemblyPath = attribute.AssemblyPath,
+            };
+            modList.Add(item);
+        }
+
+        return modList;
     }
 
     public Transform MainDirectionalLightTransform;
