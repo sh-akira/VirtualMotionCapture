@@ -134,6 +134,9 @@
     <Compile Include="MidiCCBlendShapeSettingWIndow.xaml.cs">
       <DependentUpon>MidiCCBlendShapeSettingWIndow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ModSetting.xaml.cs">
+      <DependentUpon>ModSetting.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PhotoWindow.xaml.cs">
       <DependentUpon>PhotoWindow.xaml</DependentUpon>
     </Compile>
@@ -212,6 +215,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="MidiCCBlendShapeSettingWIndow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ModSetting.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

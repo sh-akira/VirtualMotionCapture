@@ -578,6 +578,35 @@ namespace UnityMemoryMappedFile
         }
 
         public class Alive { }
+
+        public class GetModIsLoaded { }
+        public class ReturnModIsLoaded
+        {
+            public bool IsLoaded { get; set; }
+        }
+
+        public class GetModList { }
+        public class ReturnModList
+        {
+            public List<ModItem> ModList { get; set; }
+        }
+
+        public class ModSettingEvent
+        {
+            public string InstanceId { get; set; }
+        }
+    }
+
+    public class ModItem
+    {
+        public string Name { get; set; }
+        public string Version { get; set; }
+        public string Author { get; set; }
+        public string AuthorURL { get; set; }
+        public string Description { get; set; }
+        public string PluginURL { get; set; }
+        public string InstanceId { get; set; }
+        public string AssemblyPath { get; set; }
     }
 
     public enum NotifyLogTypes

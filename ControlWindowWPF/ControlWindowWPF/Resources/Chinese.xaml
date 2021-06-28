@@ -259,6 +259,8 @@
     <system:String x:Key="SettingWindow_ExternalMotionSenderResponderEnable">Allow device detection response</system:String>
 	<system:String x:Key="SettingWindow_ExternalMotionReceiverRequesterEnable">Auto device detection</system:String>
     <system:String x:Key="SettingWindow_ReceiveBonesEnable">手骨接收</system:String>
+    <system:String x:Key="SettingWindow_VMCMod">VMC Mod (No warranty/no support)</system:String>
+    <system:String x:Key="SettingWindow_VMCModSetting">Loaded MOD List</system:String>
         
     <!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">追踪器详细设置</system:String>
