@@ -87,7 +87,7 @@ namespace VirtualMotionCaptureControlPanel
             InstanceId = modItem.InstanceId;
             AssemblyPath = modItem.AssemblyPath;
 
-            if (PluginURL != null)
+            if (string.IsNullOrWhiteSpace(PluginURL) == false)
             {
                 PluginURLVisibility = Visibility.Visible;
                 ModNameOnlyVisibility = Visibility.Collapsed;
@@ -97,7 +97,7 @@ namespace VirtualMotionCaptureControlPanel
                 PluginURLVisibility = Visibility.Collapsed;
                 ModNameOnlyVisibility = Visibility.Visible;
             }
-            if (AuthorURL != null)
+            if (string.IsNullOrWhiteSpace(AuthorURL) == false)
             {
                 AuthorURLVisibility = Visibility.Visible;
                 AuthorOnlyVisibility = Visibility.Collapsed;
