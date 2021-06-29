@@ -33,6 +33,7 @@ namespace VMCMod
 
         private void ImportMods()
         {
+            Debug.Log("Start Loading Mods");
             var attributeTypesList = new Dictionary<List<Type>, string>();
             foreach (var dllFile in Directory.GetFiles(ModsPath, "*.dll", SearchOption.AllDirectories))
             {
@@ -45,7 +46,10 @@ namespace VMCMod
                         attributeTypesList.Add(attributeTypes.ToList(), dllFile);
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Debug.LogException(ex);
+                }
             }
 
             if (attributeTypesList.Any())
@@ -53,11 +57,11 @@ namespace VMCMod
                 OnBeforeModLoad?.Invoke();
             }
 
-            try
+            foreach (var attributeTypes in attributeTypesList)
             {
-                foreach (var attributeTypes in attributeTypesList)
+                foreach (Type t in attributeTypes.Key)
                 {
-                    foreach (Type t in attributeTypes.Key)
+                    try
                     {
                         var attribute = (VMCPluginAttribute)Attribute.GetCustomAttribute(t, typeof(VMCPluginAttribute));
                         attribute.InstanceId = Guid.NewGuid().ToString();
@@ -70,9 +74,12 @@ namespace VMCMod
                         }
                         LoadedMods[attribute] = component;
                     }
+                    catch (Exception ex)
+                    {
+                        Debug.LogException(ex);
+                    }
                 }
             }
-            catch { }
         }
 
         public List<VMCPluginAttribute> GetModsList()
