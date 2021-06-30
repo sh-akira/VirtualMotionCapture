@@ -9,12 +9,22 @@ namespace UnityMemoryMappedFile
 {
     public partial class PipeCommands
     {
+        private static Dictionary<string, Type> commandTypeCache = new Dictionary<string, Type>();
+
         public static Type GetCommandType(string commandStr)
         {
+            if (commandTypeCache.TryGetValue(commandStr,out Type value))
+            {
+                return value;
+            }
             var commands = typeof(PipeCommands).GetNestedTypes(System.Reflection.BindingFlags.Public);
             foreach (var command in commands)
             {
-                if (command.Name == commandStr) return command;
+                if (command.Name == commandStr)
+                {
+                    commandTypeCache[commandStr] = command;
+                    return command;
+                }
             }
             return null;
         }
