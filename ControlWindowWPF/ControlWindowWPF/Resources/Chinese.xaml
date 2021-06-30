@@ -229,7 +229,7 @@
     <system:String x:Key="SettingWindow_FailedDriverUninstall">卸载摄像机驱动失败。打开命令提示符，移动到C:\VMC_Camera 文件夹，并运行regsvr32 / u VMC_CameraFilter32bit.dll和regsvr32 / u VMC_CameraFilter64bit.dll。之后删除C:\VMC_Camera文件</system:String>
     <system:String x:Key="SettingWindow_SelectedItemError">请选择一个控制器当做相机</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig">输出externalcamera.cfg</system:String>
-    <system:String x:Key="SettingWindow_ExportVMTExternalCameraConfig">>Export externalcamera.cfg for LIV</system:String>
+    <system:String x:Key="SettingWindow_ExportVMTExternalCameraConfig">>输出externalcamera.cfg到LIV</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">输出externalcamera.cfg以校准VR游戏的相机</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSender">发送外部动作(VMCProtocol)</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">成功用OSC运动发送</system:String>
@@ -237,30 +237,30 @@
     <system:String x:Key="SettingWindow_ExternalMotionReceiver">接受外部动作(VMCProtocol)</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">在OSC上启用运动接收</system:String>
    	<system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape</system:String>
-   	<system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">Knob to BlendShape setting</system:String>
-    <system:String x:Key="SettingWindow_MidiEnable">Enable MIDI Device</system:String>
-   	<system:String x:Key="SettingWindow_PreventLosingTracking">Prevent losing tracking</system:String>
-   	<system:String x:Key="SettingWindow_TrackingFilterEnable">Enable</system:String>
-   	<system:String x:Key="SettingWindow_TrackingFilterHmdEnable">HMD</system:String>
-   	<system:String x:Key="SettingWindow_TrackingFilterControllerEnable">Controller</system:String>
-   	<system:String x:Key="SettingWindow_TrackingFilterTrackerEnable">Tracker</system:String>
+   	<system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">BlendShape旋钮设定</system:String>
+    <system:String x:Key="SettingWindow_MidiEnable">允许使用MIDI设备</system:String>
+   	<system:String x:Key="SettingWindow_PreventLosingTracking">防丢追踪</system:String>
+   	<system:String x:Key="SettingWindow_TrackingFilterEnable">开启</system:String>
+   	<system:String x:Key="SettingWindow_TrackingFilterHmdEnable">头显</system:String>
+   	<system:String x:Key="SettingWindow_TrackingFilterControllerEnable">控制器</system:String>
+   	<system:String x:Key="SettingWindow_TrackingFilterTrackerEnable">追踪器</system:String>
    	<system:String x:Key="SettingWindow_ModelModifier">Model modifier</system:String>
-   	<system:String x:Key="SettingWindow_FixKneeRotation">Fix Knee rotation</system:String>
-   	<system:String x:Key="SettingWindow_TrackingOption">Tracking Option</system:String>
-   	<system:String x:Key="SettingWindow_PauseTracking">Pause Tracking</system:String>
-   	<system:String x:Key="SettingWindow_HandleControllerAsTracker">Handle Controller as Tracker</system:String>
-   	<system:String x:Key="SettingWindow_QualitySettings">Quality Settings</system:String>
-   	<system:String x:Key="SettingWindow_AntiAliasing">AntiAliasing</system:String>
-    <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">Sending motion is only available for pixivFANBOX and Patreon versions.</system:String>
-   	<system:String x:Key="SettingWindow_VirtualMotionTracker">Virtual Motion Tracker (VMT)</system:String>
-	<system:String x:Key="SettingWindow_VirtualMotionTrackerEnable">Enable</system:String>
-	<system:String x:Key="SettingWindow_VirtualMotionTrackerInstallSuccess">Success! Restart SteamVR and VirtualMotionCapture. Press OK and wait auto restart.</system:String>
-	<system:String x:Key="SettingWindow_VMTContinue">Continue VMT setup? Game will be interrupted, and VR system will restart.</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionSenderResponderEnable">Allow device detection response</system:String>
-	<system:String x:Key="SettingWindow_ExternalMotionReceiverRequesterEnable">Auto device detection</system:String>
+   	<system:String x:Key="SettingWindow_FixKneeRotation">修正膝盖角度</system:String>
+   	<system:String x:Key="SettingWindow_TrackingOption">捕捉设置</system:String>
+   	<system:String x:Key="SettingWindow_PauseTracking">暂停捕捉</system:String>
+   	<system:String x:Key="SettingWindow_HandleControllerAsTracker">控制器当做追踪器</system:String>
+   	<system:String x:Key="SettingWindow_QualitySettings">画质设置</system:String>
+   	<system:String x:Key="SettingWindow_AntiAliasing">抗锯齿</system:String>
+    <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">发送动作功能仅在pixivFANBOX以及Patreon版本下可使用。</system:String>
+   	<system:String x:Key="SettingWindow_VirtualMotionTracker">虚拟追踪器(VMT)</system:String>
+	<system:String x:Key="SettingWindow_VirtualMotionTrackerEnable">开启</system:String>
+	<system:String x:Key="SettingWindow_VirtualMotionTrackerInstallSuccess">安装成功！重启SteamVR和VirtualMotionCapture。点击OK并等待重启。</system:String>
+	<system:String x:Key="SettingWindow_VMTContinue">是否继续进行VMT的安装？ SteamVR将会重启并且进行中的游戏将会被中断。</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSenderResponderEnable">允许设备检测应答</system:String>
+	<system:String x:Key="SettingWindow_ExternalMotionReceiverRequesterEnable">自动检测设备</system:String>
     <system:String x:Key="SettingWindow_ReceiveBonesEnable">手骨接收</system:String>
-    <system:String x:Key="SettingWindow_VMCMod">VMC Mod (No warranty/no support)</system:String>
-    <system:String x:Key="SettingWindow_VMCModSetting">Loaded MOD List</system:String>
+    <system:String x:Key="SettingWindow_VMCMod">VMC Mod(无法保证稳定性/未支持)</system:String>
+    <system:String x:Key="SettingWindow_VMCModSetting">已加载MOD列表</system:String>
         
     <!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">追踪器详细设置</system:String>
@@ -484,7 +484,7 @@
 
     <!-- DMMVRConnectWindow -->
     <system:String x:Key="DMMVRConnectWindowTitle">从DMM VR Connect载入模型</system:String>
-    <system:String x:Key="DMMVRConnectCreateAccount">Create account</system:String>
-    <system:String x:Key="DMMVRConnectOpenBrowserDescription1">Browser will open automatically, please complete login.</system:String>
-    <system:String x:Key="DMMVRConnectOpenBrowserDescription2">If not, please access this URL and enter code.</system:String>
+    <system:String x:Key="DMMVRConnectCreateAccount">创建账号</system:String>
+    <system:String x:Key="DMMVRConnectOpenBrowserDescription1">窗口将会自动开启，请登录。</system:String>
+    <system:String x:Key="DMMVRConnectOpenBrowserDescription2">如果没有开启，请允许此链接并输入代码。</system:String>
 </ResourceDictionary>
