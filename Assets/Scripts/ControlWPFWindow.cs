@@ -149,7 +149,7 @@ public class ControlWPFWindow : MonoBehaviour
 #if UNITY_EDITOR   // エディタ上でしか動きません。
         pipeName = "VMCTest";
 #else
-        Debug.unityLogger.logEnabled = false;
+        //Debug.unityLogger.logEnabled = false;
         pipeName = "VMCpipe" + Guid.NewGuid().ToString();
 #endif
         server = new MemoryMappedFileServer();
