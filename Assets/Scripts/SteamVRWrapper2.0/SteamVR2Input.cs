@@ -184,7 +184,7 @@ public class SteamVR2Input : MonoBehaviour
                 ulRestrictedToDevice = d.ulRestrictedToDevice
             }).ToArray();
 
-            OpenVR.Compositor.SetTrackingSpace(ETrackingUniverseOrigin.TrackingUniverseStanding);
+            if (OpenVR.Compositor != null) OpenVR.Compositor.SetTrackingSpace(ETrackingUniverseOrigin.TrackingUniverseStanding);
         }
 
         //すべてのActionSetに対して新しいイベントがないか更新する
