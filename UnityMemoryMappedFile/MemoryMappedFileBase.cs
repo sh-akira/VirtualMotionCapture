@@ -121,11 +121,14 @@ namespace UnityMemoryMappedFile
         public async Task<string> SendCommandAsync(object command, string requestId = null, bool needWait = false)
         {
             System.Diagnostics.Debug.WriteLine($"MemoryMappedFileBase SendCommandAsync WaitLock [{command.GetType().Name}]");
-            using (await SendLock.LockAsync())
+            return await Task.Run(async () =>
             {
-                System.Diagnostics.Debug.WriteLine($"MemoryMappedFileBase SendCommandAsync EnterLock [{command.GetType().Name}]");
-                return await Task.Run(() => SendCommand(command, requestId, needWait));
-            }
+                using (await SendLock.LockAsync())
+                {
+                    System.Diagnostics.Debug.WriteLine($"MemoryMappedFileBase SendCommandAsync EnterLock [{command.GetType().Name}]");
+                    return SendCommand(command, requestId, needWait);
+                }
+            });
         }
 
         public string SendCommand(object command, string requestId = null, bool needWait = false)
@@ -140,6 +143,7 @@ namespace UnityMemoryMappedFile
             while (senderAccessor.ReadByte(0) == 1) // Wait finish flag
             {
                 if (readCts.Token.IsCancellationRequested) return null;
+                Thread.Sleep(1);// await Task.Delay(1);
             }
             //Need to wait requestID before send (because sometime return data very fast)
             if (needWait) WaitReceivedDictionary.TryAdd(requestId, null);
