@@ -190,7 +190,7 @@ namespace VirtualMotionCaptureControlPanel
 
         private void Client_Received(object sender, DataReceivedEventArgs e)
         {
-            Dispatcher.Invoke(async () =>
+            Dispatcher.BeginInvoke((Action)(async () =>
             {
                 //"設定"
                 if (e.CommandType == typeof(PipeCommands.LoadVRMPath))
@@ -392,14 +392,14 @@ namespace VirtualMotionCaptureControlPanel
                             UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 0));
                             break;
                         default:
-                            UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(238, 238, 238));
-                            break;
+                            //UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(238, 238, 238));
+                            return;
                     }
 
                     UnityLogStatusTextBlock.Text = "["+d.type.ToString()+"] "+d.condition;
                     lastLog = d;
                 }
-            });
+            }));
         }
 
         private void logKeyConfig(KeyConfig key, bool isDown)

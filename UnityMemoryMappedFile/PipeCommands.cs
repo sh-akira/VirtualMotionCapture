@@ -587,6 +587,11 @@ namespace UnityMemoryMappedFile
             public int errorCount { get; set; }
         }
 
+        public class SetLogNotifyLevel
+        {
+            public NotifyLogTypes type { get; set; }
+        }
+
         public class Alive { }
 
         public class GetModIsLoaded { }
@@ -621,11 +626,11 @@ namespace UnityMemoryMappedFile
 
     public enum NotifyLogTypes
     {
-        Error=0,
-        Assert=1,
-        Warning=2,
-        Log=3,
-        Exception=4,
+        Exception = 0,
+        Error = 1,
+        Assert = 2,
+        Warning = 3,
+        Log = 4,
     }
 
     public enum CameraTypes

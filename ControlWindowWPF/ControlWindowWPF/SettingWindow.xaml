@@ -91,7 +91,10 @@
 					</UniformGrid>
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_VMCMod}">
-                    <Button Content="{DynamicResource SettingWindow_VMCModSetting}" Name="ModSetting" Click="ModSetting_Click"/>
+                    <DockPanel>
+                        <Button Content="Log" DockPanel.Dock="Right" Name="DebugLogButton" Click="DebugLogButton_Click"/>
+                        <Button Content="{DynamicResource SettingWindow_VMCModSetting}" Name="ModSetting" Click="ModSetting_Click"/>
+                    </DockPanel>
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_Language}">
                     <ComboBox Name="LanguageComboBox" SelectedIndex="0" SelectionChanged="LanguageComboBox_SelectionChanged">

@@ -1029,5 +1029,11 @@ namespace VirtualMotionCaptureControlPanel
             var win = new ModSetting();
             win.Show();
         }
+
+        private void DebugLogButton_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new DebugLogWindow();
+            win.Show();
+        }
     }
 }

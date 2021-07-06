@@ -104,6 +104,9 @@
     <Compile Include="ColorPickerWindow.xaml.cs">
       <DependentUpon>ColorPickerWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DebugLogWindow.xaml.cs">
+      <DependentUpon>DebugLogWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="EyeTracking_ViveProEyeSettingWindow.xaml.cs">
       <DependentUpon>EyeTracking_ViveProEyeSettingWindow.xaml</DependentUpon>
     </Compile>
@@ -164,6 +167,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ColorPickerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DebugLogWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

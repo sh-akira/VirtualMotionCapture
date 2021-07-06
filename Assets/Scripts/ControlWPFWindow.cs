@@ -1129,6 +1129,11 @@ public class ControlWPFWindow : MonoBehaviour
                 var d = (PipeCommands.ModSettingEvent)e.Data;
                 modManager.InvokeSetting(d.InstanceId);
             }
+            else if (e.CommandType == typeof(PipeCommands.SetLogNotifyLevel))
+            {
+                var d = (PipeCommands.SetLogNotifyLevel)e.Data;
+                notifyLogLevel = d.type;
+            }
 
             else if (e.CommandType == typeof(PipeCommands.Alive))
             {
@@ -3579,13 +3584,9 @@ public class ControlWPFWindow : MonoBehaviour
         CurrentCommonSettings = Json.Serializer.Deserialize<CommonSettings>(File.ReadAllText(path)); //設定を読み込み
     }
 
+    private NotifyLogTypes notifyLogLevel = NotifyLogTypes.Warning;
     private async void LogMessageHandler(string cond, string trace, LogType type)
     {
-        if (type == LogType.Log)
-        {
-            return; //Logはうるさいので飛ばさない
-        }
-
         NotifyLogTypes notifyType = NotifyLogTypes.Log;
         switch (type)
         {
@@ -3595,6 +3596,11 @@ public class ControlWPFWindow : MonoBehaviour
             case LogType.Log: notifyType = NotifyLogTypes.Log; break;
             case LogType.Warning: notifyType = NotifyLogTypes.Warning; break;
             default: notifyType = NotifyLogTypes.Log; break;
+        }
+
+        if (notifyLogLevel <  notifyType)
+        {
+            return; //Logはうるさいので飛ばさない
         }
 
         //あまりにも致命的エラーが多すぎる場合は強制終了する
