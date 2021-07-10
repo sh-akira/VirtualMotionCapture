@@ -35,7 +35,7 @@ namespace VirtualMotionCaptureControlPanel
             LipSyncMaxLevelTextBlock.Text = action.LipSyncMaxLevel.ToString("0.00");
             LipSyncMaxLevelSlider.Value = action.LipSyncMaxLevel;
             AutoBlinkCheckBox.IsChecked = action.StopBlink;
-            DisableBlendShape.IsChecked = action.StopReceptionBlendShape;
+            DisableBlendShapeCheckBox.IsChecked = action.DisableBlendShapeReception;
             CustomNameTextBox.Text = action.Name;
             KeyUpCheckBox.IsChecked = action.IsKeyUp;
             KeyConfigs.AddRange(action.KeyConfigs);
@@ -156,7 +156,7 @@ namespace VirtualMotionCaptureControlPanel
             action.FaceNames = faceItems.Select(d => d.Key).ToList();
             action.FaceStrength = faceItems.Select(d => d.Value).ToList();
             action.StopBlink = AutoBlinkCheckBox.IsChecked.Value;
-            action.StopReceptionBlendShape = DisableBlendShape.IsChecked.Value;
+            action.DisableBlendShapeReception = DisableBlendShapeCheckBox.IsChecked.Value;
             action.IsKeyUp = KeyUpCheckBox.IsChecked.Value;
             action.LipSyncMaxLevel = (float)LipSyncMaxLevelSlider.Value;
 

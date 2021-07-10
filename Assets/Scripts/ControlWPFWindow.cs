@@ -2626,11 +2626,6 @@ public class ControlWPFWindow : MonoBehaviour
 
     private List<KeyConfig> CurrentKeyConfigs = new List<KeyConfig>();
     private List<KeyAction> CurrentKeyUpActions = new List<KeyAction>();
-    private bool CurrentKeyDown_StopReceptionBlendShape;
-    public bool IsKeyActions()
-    {
-        return CurrentKeyUpActions.Where(d => d.StopReceptionBlendShape).Any() || CurrentKeyDown_StopReceptionBlendShape;
-    }
 
     private void CheckKey(KeyConfig config, bool isKeyDown)
     {
@@ -2771,7 +2766,7 @@ public class ControlWPFWindow : MonoBehaviour
         }
         else if (action.FaceAction)
         {
-            CurrentKeyDown_StopReceptionBlendShape = action.StopReceptionBlendShape;
+            externalMotionReceiver.DisableBlendShapeReception = action.DisableBlendShapeReception;
             LipSync.MaxLevel = action.LipSyncMaxLevel;
             faceController.SetFace(action.FaceNames, action.FaceStrength, action.StopBlink);
         }

@@ -69,6 +69,8 @@ public class ExternalReceiverForVMC : MonoBehaviour
 
     private Dictionary<string, float> blendShapeBuffer = new Dictionary<string, float>();
 
+    public bool DisableBlendShapeReception { get; set; }
+
     void Start()
     {
         var server = GetComponent<uOSC.uOscServer>();
@@ -245,7 +247,7 @@ public class ExternalReceiverForVMC : MonoBehaviour
             //ブレンドシェープ適用
             else if (message.address == "/VMC/Ext/Blend/Apply")
             {
-                if (!window.IsKeyActions())
+                if (DisableBlendShapeReception == false)
                 {
                     faceController.MixPresets(nameof(ExternalReceiverForVMC), blendShapeBuffer.Keys.ToArray(), blendShapeBuffer.Values.ToArray());
                 }
