@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -549,41 +551,74 @@ namespace VirtualMotionCaptureControlPanel
             win.ShowDialog();
         }
 
+        [DataContract]
+        private class CameraPlusConfig
+        {
+            [DataMember]
+            public float FieldOfView { get; set; }
+            [DataMember]
+            public TransformElements ThirdPersonPos = new TransformElements();
+            [DataMember]
+            public TransformElements ThirdPersonRot = new TransformElements();
+        }
+        [DataContract]
+        private class TransformElements
+        {
+            [DataMember]
+            public float x { get; set; }
+            [DataMember]
+            public float y { get; set; }
+            [DataMember]
+            public float z { get; set; }
+        }
         private async void CameraPlus_ImportButton_Click(object sender, RoutedEventArgs e)
         {
             Globals.LoadCommonSettings();
 
             var ofd = new OpenFileDialog();
 
-            ofd.Filter = "cameraplus.cfg|cameraplus.cfg";
+            ofd.Filter = "cameraplus (*.cfg;*.json) | *.cfg;*.json";
             ofd.InitialDirectory = Globals.ExistDirectoryOrNull(Globals.CurrentCommonSettingsWPF.CurrentPathOnCameraPlusFileDialog);
             if (ofd.ShowDialog() == true)
             {
                 var configs = new Dictionary<string, string>();
-                var lines = File.ReadAllLines(ofd.FileName);
-                foreach (var line in lines)
+                if (ofd.FileName.ToLower().Contains(".json"))
                 {
-                    if (line.Contains("="))
+                    var c = new CameraPlusConfig();
+                    using (var ms = new FileStream(ofd.FileName, FileMode.Open))
                     {
-                        var items = line.Split(new string[] { "=" }, 2, StringSplitOptions.None);
-                        configs.Add(items[0], items[1]);
+                        var serializer = new DataContractJsonSerializer(typeof(CameraPlusConfig));
+                        c = (CameraPlusConfig)serializer.ReadObject(ms);
                     }
+                    await Globals.Client?.SendCommandAsync(new PipeCommands.ImportCameraPlus { x = c.ThirdPersonPos.x, y = c.ThirdPersonPos.y, z = c.ThirdPersonPos.z, rx = c.ThirdPersonRot.x, ry = c.ThirdPersonRot.y, rz = c.ThirdPersonRot.z, fov = c.FieldOfView });
                 }
-                Func<string, float> GetFloat = (string key) =>
+                else
                 {
-                    if (configs.ContainsKey(key) == false) { return 0.0f; }
-                    if (float.TryParse(configs[key], out var ret)) { return ret; }
-                    return 0.0f;
-                };
-                var x = GetFloat("posx");
-                var y = GetFloat("posy");
-                var z = GetFloat("posz");
-                var rx = GetFloat("angx");
-                var ry = GetFloat("angy");
-                var rz = GetFloat("angz");
-                var fov = GetFloat("fov");
+                    var lines = File.ReadAllLines(ofd.FileName);
+                    foreach (var line in lines)
+                    {
+                        if (line.Contains("="))
+                        {
+                            var items = line.Split(new string[] { "=" }, 2, StringSplitOptions.None);
+                            configs.Add(items[0], items[1]);
+                        }
+                    }
+                    Func<string, float> GetFloat = (string key) =>
+                    {
+                        if (configs.ContainsKey(key) == false) { return 0.0f; }
+                        if (float.TryParse(configs[key], out var ret)) { return ret; }
+                        return 0.0f;
+                    };
+                    var x = GetFloat("posx");
+                    var y = GetFloat("posy");
+                    var z = GetFloat("posz");
+                    var rx = GetFloat("angx");
+                    var ry = GetFloat("angy");
+                    var rz = GetFloat("angz");
+                    var fov = GetFloat("fov");
 
-                await Globals.Client?.SendCommandAsync(new PipeCommands.ImportCameraPlus { x = x, y = y, z = z, rx = rx, ry = ry, rz = rz, fov = fov });
+                    await Globals.Client?.SendCommandAsync(new PipeCommands.ImportCameraPlus { x = x, y = y, z = z, rx = rx, ry = ry, rz = rz, fov = fov });
+                }
                 if (Globals.CurrentCommonSettingsWPF.CurrentPathOnCameraPlusFileDialog != System.IO.Path.GetDirectoryName(ofd.FileName))
                 {
                     Globals.CurrentCommonSettingsWPF.CurrentPathOnCameraPlusFileDialog = System.IO.Path.GetDirectoryName(ofd.FileName);
