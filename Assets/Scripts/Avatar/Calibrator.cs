@@ -166,7 +166,7 @@ namespace VMC
             ik.solver.locomotion.weight = PelvisTransform == null && LeftFootTransform == null && RightFootTransform == null ? 1f : 0f;
         }
         */
-        private static Transform CalibrateLeg(Settings settings, Transform FootTransform, IKSolverVR.Leg leg, Transform lastBone, Vector3 hmdForwardAngle, Vector3 rootForward, bool isLeft)
+        private static Transform CalibrateLeg(VRIKCalibrator.Settings settings, Transform FootTransform, IKSolverVR.Leg leg, Transform lastBone, Vector3 hmdForwardAngle, Vector3 rootForward, bool isLeft)
         {
             Transform footAdjusterTransform = leg.target == null ? new GameObject(isLeft ? "leftFootAdjuster" : "rightFootAdjuster").transform : leg.target;
             footAdjusterTransform.parent = FootTransform;
@@ -212,7 +212,7 @@ namespace VMC
             //leg.bendGoal = null;
             //leg.bendGoalWeight = 0f;
         }
-        public static IEnumerator CalibrateScaled(Transform realTrackerRoot, Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
+        public static IEnumerator CalibrateScaled(Transform realTrackerRoot, Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
         {
             if (!ik.solver.initiated)
             {
@@ -615,7 +615,7 @@ namespace VMC
             ik.solver.locomotion.weight = PelvisTransform == null && LeftFootTransform == null && RightFootTransform == null ? 1f : 0f;
         }
 
-        public static IEnumerator CalibrateFixedHand(Transform realTrackerRoot, Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
+        public static IEnumerator CalibrateFixedHand(Transform realTrackerRoot, Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
         {
             if (!ik.solver.initiated)
             {
@@ -1018,7 +1018,7 @@ namespace VMC
             ik.solver.locomotion.weight = PelvisTransform == null && LeftFootTransform == null && RightFootTransform == null ? 1f : 0f;
         }
 
-        public static IEnumerator CalibrateFixedHandWithGround(Transform realTrackerRoot, Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
+        public static IEnumerator CalibrateFixedHandWithGround(Transform realTrackerRoot, Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
         {
             if (!ik.solver.initiated)
             {

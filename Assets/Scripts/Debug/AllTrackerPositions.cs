@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using static VMC.ControlWPFWindow;
 
 namespace VMC
 {

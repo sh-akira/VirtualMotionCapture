@@ -106,7 +106,7 @@ namespace sh_akira.OVRTracking
             Dictionary<ETrackedDeviceClass, List<DeviceInfo>> positions;
             if (IsOVRConnected)
             {
-                OpenVRWrapper.Instance.ConvertControllerToTracker = ControlWPFWindow.CurrentSettings.HandleControllerAsTracker;
+                OpenVRWrapper.Instance.ConvertControllerToTracker = Settings.Current.HandleControllerAsTracker;
                 OpenVRWrapper.Instance.PollingVREvents();
                 positions = OpenVRWrapper.Instance.GetTrackerPositions();
             }

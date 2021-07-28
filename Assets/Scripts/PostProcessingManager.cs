@@ -13,7 +13,7 @@ namespace VMC
             postProcessVolume = gameObject.AddComponent<PostProcessVolume>();
         }
 
-        public void Apply(ControlWPFWindow.Settings d)
+        public void Apply(Settings d)
         {
             postProcessVolume.enabled = d.PPS_Enable;
 

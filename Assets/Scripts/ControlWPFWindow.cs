@@ -52,8 +52,6 @@ namespace VMC
         public FaceController faceController;
         public HandController handController;
 
-        public SteamVR2Input steamVR2Input;
-
         public WristRotationFix wristRotationFix;
 
         public Transform HandTrackerRoot;
@@ -88,13 +86,6 @@ namespace VMC
 
         public PostProcessingManager postProcessingManager;
 
-        public enum MouseButtons
-        {
-            Left = 0,
-            Right = 1,
-            Center = 2,
-        }
-
         private uint defaultWindowStyle;
         private uint defaultExWindowStyle;
 
@@ -120,8 +111,6 @@ namespace VMC
         public Behaviour LipTracking_ViveComponent = null;
         public Behaviour SRanipal_Lip_FrameworkComponent = null;
 
-        public MidiCCWrapper midiCCWrapper;
-
         public MIDICCBlendShape midiCCBlendShape;
 
         public enum CalibrationState
@@ -141,117 +130,45 @@ namespace VMC
 
         public ModManager modManager;
 
-        // Use this for initialization
-        void Start()
+        private void Awake()
         {
-            context = System.Threading.SynchronizationContext.Current;
+            Application.targetFrameRate = 60;
 
 #if UNITY_EDITOR   // エディタ上でしか動きません。
             pipeName = "VMCTest";
 #else
-        //Debug.unityLogger.logEnabled = false;
-        pipeName = "VMCpipe" + Guid.NewGuid().ToString();
+            //Debug.unityLogger.logEnabled = false;
+            pipeName = "VMCpipe" + Guid.NewGuid().ToString();
 #endif
+
+#if !UNITY_EDITOR
+            //start control panel
+            ExecuteControlPanel();
+#endif
+
+            context = System.Threading.SynchronizationContext.Current;
+
+            baseVersionString = VersionString.Split('f').First();
+            defaultWindowStyle = GetWindowLong(GetUnityWindowHandle(), GWL_STYLE);
+            defaultExWindowStyle = GetWindowLong(GetUnityWindowHandle(), GWL_EXSTYLE);
+
             server = new MemoryMappedFileServer();
             server.ReceivedEvent += Server_Received;
             server.Start(pipeName);
+        }
 
-            //start control panel
-#if !UNITY_EDITOR
-        ExecuteControlPanel();
-#endif
-
-            Application.targetFrameRate = 60;
-
-            CurrentSettings.BackgroundColor = BackgroundRenderer.material.color;
-            CurrentSettings.CustomBackgroundColor = BackgroundRenderer.material.color;
-
-            steamVR2Input.KeyDownEvent += ControllerAction_KeyDown;
-            steamVR2Input.KeyUpEvent += ControllerAction_KeyUp;
-            steamVR2Input.AxisChangedEvent += ControllerAction_AxisChanged;
-
-            KeyboardAction.KeyDownEvent += KeyboardAction_KeyDown;
-            KeyboardAction.KeyUpEvent += KeyboardAction_KeyUp;
+        void Start()
+        {
+            Settings.Current.BackgroundColor = BackgroundRenderer.material.color;
+            Settings.Current.CustomBackgroundColor = BackgroundRenderer.material.color;
 
             CameraChangedAction?.Invoke(ControlCamera);
 
             externalMotionSender = ExternalMotionSenderObject.GetComponent<ExternalSender>();
             externalMotionReceiver = ExternalMotionReceiverObject.GetComponent<ExternalReceiverForVMC>();
 
-            midiCCWrapper.noteOnDelegateProxy += async (channel, note, velocity) =>
-            {
-                Debug.Log("MidiNoteOn:" + channel + "/" + note + "/" + velocity);
-
-                var config = new KeyConfig();
-                config.type = KeyTypes.Midi;
-                config.actionType = KeyActionTypes.Face;
-                config.keyCode = (int)channel;
-                config.keyIndex = note;
-                config.keyName = MidiName(channel, note);
-                if (doKeyConfig || doKeySend) await server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
-                if (!doKeyConfig) CheckKey(config, true);
-            };
-
-            midiCCWrapper.noteOffDelegateProxy += (channel, note) =>
-            {
-                Debug.Log("MidiNoteOff:" + channel + "/" + note);
-
-                var config = new KeyConfig();
-                config.type = KeyTypes.Midi;
-                config.actionType = KeyActionTypes.Face;
-                config.keyCode = (int)channel;
-                config.keyIndex = note;
-                config.keyName = MidiName(channel, note);
-                if (doKeyConfig || doKeySend) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
-            if (!doKeyConfig) CheckKey(config, false);
-            };
-            midiCCWrapper.knobUpdateBoolDelegate += async (int knobNo, bool value) =>
-            {
-                MidiJack.MidiChannel channel = MidiJack.MidiChannel.Ch1; //仮でCh1
-            Debug.Log("MidiCC:" + channel + "/" + knobNo + "/" + value);
-
-                var config = new KeyConfig();
-                config.type = KeyTypes.MidiCC;
-                config.actionType = KeyActionTypes.Face;
-                config.keyCode = (int)channel;
-                config.keyIndex = knobNo;
-                config.keyName = MidiName(channel, knobNo);
-
-                if (value)
-                {
-                    if (doKeyConfig || doKeySend) await server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
-                }
-                else
-                {
-                    if (doKeyConfig || doKeySend) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
-            }
-                if (!doKeyConfig) CheckKey(config, value);
-            };
-
-            midiCCWrapper.knobDelegateProxy += (MidiJack.MidiChannel channel, int knobNo, float value) =>
-            {
-                CheckKnobUpdated(channel, knobNo, value);
-            };
-
             ModelLoadedAction += gameObject => VMCEvents.OnModelLoaded?.Invoke(gameObject);
             CameraChangedAction += camera => VMCEvents.OnCameraChanged?.Invoke(camera);
-        }
-
-        private string MidiName(MidiJack.MidiChannel channel, int note)
-        {
-            return $"MIDI Ch{(int)channel + 1} {note}";
-        }
-
-        private float[] lastKnobUpdatedSendTime = new float[MidiCCWrapper.KNOBS];
-
-        private async void CheckKnobUpdated(MidiJack.MidiChannel channel, int knobNo, float value)
-        {
-            if (doKeySend == false) return;
-            if (lastKnobUpdatedSendTime[knobNo] + 3f < Time.realtimeSinceStartup)
-            {
-                lastKnobUpdatedSendTime[knobNo] = Time.realtimeSinceStartup;
-                await server?.SendCommandAsync(new PipeCommands.MidiCCKnobUpdate { channel = (int)channel, knobNo = knobNo, value = value });
-            }
         }
 
         private int SetWindowTitle()
@@ -338,12 +255,6 @@ namespace VMC
 
             server.ReceivedEvent -= Server_Received;
             server?.Dispose();
-            KeyboardAction.KeyDownEvent -= KeyboardAction_KeyDown;
-            KeyboardAction.KeyUpEvent -= KeyboardAction_KeyUp;
-
-            steamVR2Input.KeyDownEvent -= ControllerAction_KeyDown;
-            steamVR2Input.KeyUpEvent -= ControllerAction_KeyUp;
-            steamVR2Input.AxisChangedEvent -= ControllerAction_AxisChanged;
 
             Application.logMessageReceived -= LogMessageHandler;
         }
@@ -371,10 +282,10 @@ namespace VMC
                 else if (e.CommandType == typeof(PipeCommands.ImportVRM))
                 {
                     var d = (PipeCommands.ImportVRM)e.Data;
-                    var t = ImportVRM(d.Path, d.ImportForCalibration, d.UseCurrentFixSetting ? CurrentSettings.EnableNormalMapFix : d.EnableNormalMapFix, d.UseCurrentFixSetting ? CurrentSettings.DeleteHairNormalMap : d.DeleteHairNormalMap);
+                    var t = ImportVRM(d.Path, d.ImportForCalibration, d.UseCurrentFixSetting ? Settings.Current.EnableNormalMapFix : d.EnableNormalMapFix, d.UseCurrentFixSetting ? Settings.Current.DeleteHairNormalMap : d.DeleteHairNormalMap);
 
-                //メタ情報をOSC送信する
-                VRMmetaLodedAction?.Invoke(LoadVRM(d.Path));
+                    //メタ情報をOSC送信する
+                    VRMmetaLodedAction?.Invoke(LoadVRM(d.Path));
                 }
 
                 else if (e.CommandType == typeof(PipeCommands.Calibrate))
@@ -511,8 +422,8 @@ namespace VMC
                 {
                     var d = (PipeCommands.LoadSettings)e.Data;
                     LoadSettings(d.Path);
-                //イベントを登録(何度呼び出しても1回のみ)
-                RegisterEventCallBack();
+                    //イベントを登録(何度呼び出しても1回のみ)
+                    RegisterEventCallBack();
                 }
                 else if (e.CommandType == typeof(PipeCommands.SaveSettings))
                 {
@@ -524,22 +435,16 @@ namespace VMC
                     var d = (PipeCommands.SetControllerTouchPadPoints)e.Data;
                     if (d.isStick)
                     {
-                        CurrentSettings.LeftThumbStickPoints = d.LeftPoints;
-                        CurrentSettings.RightThumbStickPoints = d.RightPoints;
+                        Settings.Current.LeftThumbStickPoints = d.LeftPoints;
+                        Settings.Current.RightThumbStickPoints = d.RightPoints;
                     }
                     else
                     {
-                        CurrentSettings.LeftCenterEnable = d.LeftCenterEnable;
-                        CurrentSettings.RightCenterEnable = d.RightCenterEnable;
-                        CurrentSettings.LeftTouchPadPoints = d.LeftPoints;
-                        CurrentSettings.RightTouchPadPoints = d.RightPoints;
+                        Settings.Current.LeftCenterEnable = d.LeftCenterEnable;
+                        Settings.Current.RightCenterEnable = d.RightCenterEnable;
+                        Settings.Current.LeftTouchPadPoints = d.LeftPoints;
+                        Settings.Current.RightTouchPadPoints = d.RightPoints;
                     }
-                }
-                else if (e.CommandType == typeof(PipeCommands.SetSkeletalInputEnable))
-                {
-                    var d = (PipeCommands.SetSkeletalInputEnable)e.Data;
-                    CurrentSettings.EnableSkeletal = d.enable;
-                    steamVR2Input.EnableSkeletal = CurrentSettings.EnableSkeletal;
                 }
                 else if (e.CommandType == typeof(PipeCommands.StartHandCamera))
                 {
@@ -554,33 +459,6 @@ namespace VMC
                 {
                     var d = (PipeCommands.SetHandAngle)e.Data;
                     handController.SetHandEulerAngles(d.LeftEnable, d.RightEnable, handController.CalcHandEulerAngles(d.HandAngles));
-                }
-                else if (e.CommandType == typeof(PipeCommands.StartKeyConfig))
-                {
-                    doKeyConfig = true;
-                    faceController.StartSetting();
-                    CurrentKeyConfigs.Clear();
-                }
-                else if (e.CommandType == typeof(PipeCommands.EndKeyConfig))
-                {
-                    faceController.EndSetting();
-                    doKeyConfig = false;
-                    CurrentKeyConfigs.Clear();
-                }
-                else if (e.CommandType == typeof(PipeCommands.StartKeySend))
-                {
-                    doKeySend = true;
-                    CurrentKeyConfigs.Clear();
-                }
-                else if (e.CommandType == typeof(PipeCommands.EndKeySend))
-                {
-                    doKeySend = false;
-                    CurrentKeyConfigs.Clear();
-                }
-                else if (e.CommandType == typeof(PipeCommands.SetKeyActions))
-                {
-                    var d = (PipeCommands.SetKeyActions)e.Data;
-                    CurrentSettings.KeyActions = d.KeyActions;
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetFaceKeys))
                 {
@@ -598,19 +476,19 @@ namespace VMC
                 else if (e.CommandType == typeof(PipeCommands.SetHandFreeOffset))
                 {
                     var d = (PipeCommands.SetHandFreeOffset)e.Data;
-                    CurrentSettings.LeftHandPositionX = d.LeftHandPositionX / 1000f;
-                    CurrentSettings.LeftHandPositionY = d.LeftHandPositionY / 1000f;
-                    CurrentSettings.LeftHandPositionZ = d.LeftHandPositionZ / 1000f;
-                    CurrentSettings.LeftHandRotationX = d.LeftHandRotationX;
-                    CurrentSettings.LeftHandRotationY = d.LeftHandRotationY;
-                    CurrentSettings.LeftHandRotationZ = d.LeftHandRotationZ;
-                    CurrentSettings.RightHandPositionX = d.RightHandPositionX / 1000f;
-                    CurrentSettings.RightHandPositionY = d.RightHandPositionY / 1000f;
-                    CurrentSettings.RightHandPositionZ = d.RightHandPositionZ / 1000f;
-                    CurrentSettings.RightHandRotationX = d.RightHandRotationX;
-                    CurrentSettings.RightHandRotationY = d.RightHandRotationY;
-                    CurrentSettings.RightHandRotationZ = d.RightHandRotationZ;
-                    CurrentSettings.SwivelOffset = d.SwivelOffset;
+                    Settings.Current.LeftHandPositionX = d.LeftHandPositionX / 1000f;
+                    Settings.Current.LeftHandPositionY = d.LeftHandPositionY / 1000f;
+                    Settings.Current.LeftHandPositionZ = d.LeftHandPositionZ / 1000f;
+                    Settings.Current.LeftHandRotationX = d.LeftHandRotationX;
+                    Settings.Current.LeftHandRotationY = d.LeftHandRotationY;
+                    Settings.Current.LeftHandRotationZ = d.LeftHandRotationZ;
+                    Settings.Current.RightHandPositionX = d.RightHandPositionX / 1000f;
+                    Settings.Current.RightHandPositionY = d.RightHandPositionY / 1000f;
+                    Settings.Current.RightHandPositionZ = d.RightHandPositionZ / 1000f;
+                    Settings.Current.RightHandRotationX = d.RightHandRotationX;
+                    Settings.Current.RightHandRotationY = d.RightHandRotationY;
+                    Settings.Current.RightHandRotationZ = d.RightHandRotationZ;
+                    Settings.Current.SwivelOffset = d.SwivelOffset;
                     SetHandFreeOffset();
                 }
                 else if (e.CommandType == typeof(PipeCommands.SetExternalCameraConfig))
@@ -622,8 +500,8 @@ namespace VMC
                 {
                     var d = (PipeCommands.GetExternalCameraConfig)e.Data;
                     var tracker = handler.GetTrackerTransformByName(d.ControllerName);
-                //InverseTransformPoint  Thanks: えむにわ(@m2wasabi)
-                var rposition = tracker.InverseTransformPoint(ControlCamera.transform.position);
+                    //InverseTransformPoint  Thanks: えむにわ(@m2wasabi)
+                    var rposition = tracker.InverseTransformPoint(ControlCamera.transform.position);
                     var rrotation = (Quaternion.Inverse(tracker.rotation) * ControlCamera.transform.rotation).eulerAngles;
                     await server.SendCommandAsync(new PipeCommands.SetExternalCameraConfig
                     {
@@ -651,38 +529,38 @@ namespace VMC
                 {
                     await server.SendCommandAsync(new PipeCommands.SetTrackerOffsets
                     {
-                        LeftHandTrackerOffsetToBodySide = CurrentSettings.LeftHandTrackerOffsetToBodySide,
-                        LeftHandTrackerOffsetToBottom = CurrentSettings.LeftHandTrackerOffsetToBottom,
-                        RightHandTrackerOffsetToBodySide = CurrentSettings.RightHandTrackerOffsetToBodySide,
-                        RightHandTrackerOffsetToBottom = CurrentSettings.RightHandTrackerOffsetToBottom
+                        LeftHandTrackerOffsetToBodySide = Settings.Current.LeftHandTrackerOffsetToBodySide,
+                        LeftHandTrackerOffsetToBottom = Settings.Current.LeftHandTrackerOffsetToBottom,
+                        RightHandTrackerOffsetToBodySide = Settings.Current.RightHandTrackerOffsetToBodySide,
+                        RightHandTrackerOffsetToBottom = Settings.Current.RightHandTrackerOffsetToBottom
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.SetTrackerOffsets))
                 {
                     var d = (PipeCommands.SetTrackerOffsets)e.Data;
-                    CurrentSettings.LeftHandTrackerOffsetToBodySide = d.LeftHandTrackerOffsetToBodySide;
-                    CurrentSettings.LeftHandTrackerOffsetToBottom = d.LeftHandTrackerOffsetToBottom;
-                    CurrentSettings.RightHandTrackerOffsetToBodySide = d.RightHandTrackerOffsetToBodySide;
-                    CurrentSettings.RightHandTrackerOffsetToBottom = d.RightHandTrackerOffsetToBottom;
+                    Settings.Current.LeftHandTrackerOffsetToBodySide = d.LeftHandTrackerOffsetToBodySide;
+                    Settings.Current.LeftHandTrackerOffsetToBottom = d.LeftHandTrackerOffsetToBottom;
+                    Settings.Current.RightHandTrackerOffsetToBodySide = d.RightHandTrackerOffsetToBodySide;
+                    Settings.Current.RightHandTrackerOffsetToBottom = d.RightHandTrackerOffsetToBottom;
 
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetVirtualWebCamConfig))
                 {
                     await server.SendCommandAsync(new PipeCommands.SetVirtualWebCamConfig
                     {
-                        Enabled = CurrentSettings.WebCamEnabled,
-                        Resize = CurrentSettings.WebCamResize,
-                        Mirroring = CurrentSettings.WebCamMirroring,
-                        Buffering = CurrentSettings.WebCamBuffering,
+                        Enabled = Settings.Current.WebCamEnabled,
+                        Resize = Settings.Current.WebCamResize,
+                        Mirroring = Settings.Current.WebCamMirroring,
+                        Buffering = Settings.Current.WebCamBuffering,
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.SetVirtualWebCamConfig))
                 {
                     var d = (PipeCommands.SetVirtualWebCamConfig)e.Data;
-                    CurrentSettings.WebCamEnabled = d.Enabled;
-                    CurrentSettings.WebCamResize = d.Resize;
-                    CurrentSettings.WebCamMirroring = d.Mirroring;
-                    CurrentSettings.WebCamBuffering = d.Buffering;
+                    Settings.Current.WebCamEnabled = d.Enabled;
+                    Settings.Current.WebCamResize = d.Resize;
+                    Settings.Current.WebCamMirroring = d.Mirroring;
+                    Settings.Current.WebCamBuffering = d.Buffering;
                     UpdateWebCamConfig();
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetResolutions))
@@ -695,9 +573,9 @@ namespace VMC
                 else if (e.CommandType == typeof(PipeCommands.SetResolution))
                 {
                     var d = (PipeCommands.SetResolution)e.Data;
-                    CurrentSettings.ScreenWidth = d.Width;
-                    CurrentSettings.ScreenHeight = d.Height;
-                    CurrentSettings.ScreenRefreshRate = d.RefreshRate;
+                    Settings.Current.ScreenWidth = d.Width;
+                    Settings.Current.ScreenHeight = d.Height;
+                    Settings.Current.ScreenRefreshRate = d.RefreshRate;
                     Screen.SetResolution(d.Width, d.Height, false, d.RefreshRate);
                 }
                 else if (e.CommandType == typeof(PipeCommands.TakePhoto))
@@ -717,8 +595,8 @@ namespace VMC
                 }
                 else if (e.CommandType == typeof(PipeCommands.TrackerMovedRequest))
                 {
-                //イベントを登録(何度呼び出しても1回のみ)
-                RegisterEventCallBack();
+                    //イベントを登録(何度呼び出しても1回のみ)
+                    RegisterEventCallBack();
 
                     var d = (PipeCommands.TrackerMovedRequest)e.Data;
                     if (d.doSend)
@@ -739,10 +617,10 @@ namespace VMC
                 {
                     await server.SendCommandAsync(new PipeCommands.SetEyeTracking_TobiiOffsets
                     {
-                        OffsetHorizontal = CurrentSettings.EyeTracking_TobiiOffsetHorizontal,
-                        OffsetVertical = CurrentSettings.EyeTracking_TobiiOffsetVertical,
-                        ScaleHorizontal = CurrentSettings.EyeTracking_TobiiScaleHorizontal,
-                        ScaleVertical = CurrentSettings.EyeTracking_TobiiScaleVertical
+                        OffsetHorizontal = Settings.Current.EyeTracking_TobiiOffsetHorizontal,
+                        OffsetVertical = Settings.Current.EyeTracking_TobiiOffsetVertical,
+                        ScaleHorizontal = Settings.Current.EyeTracking_TobiiScaleHorizontal,
+                        ScaleVertical = Settings.Current.EyeTracking_TobiiScaleVertical
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.EyeTracking_TobiiCalibration))
@@ -758,10 +636,10 @@ namespace VMC
                 {
                     await server.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeOffsets
                     {
-                        OffsetHorizontal = CurrentSettings.EyeTracking_ViveProEyeOffsetHorizontal,
-                        OffsetVertical = CurrentSettings.EyeTracking_ViveProEyeOffsetVertical,
-                        ScaleHorizontal = CurrentSettings.EyeTracking_ViveProEyeScaleHorizontal,
-                        ScaleVertical = CurrentSettings.EyeTracking_ViveProEyeScaleVertical
+                        OffsetHorizontal = Settings.Current.EyeTracking_ViveProEyeOffsetHorizontal,
+                        OffsetVertical = Settings.Current.EyeTracking_ViveProEyeOffsetVertical,
+                        ScaleHorizontal = Settings.Current.EyeTracking_ViveProEyeScaleHorizontal,
+                        ScaleVertical = Settings.Current.EyeTracking_ViveProEyeScaleVertical
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements))
@@ -772,21 +650,21 @@ namespace VMC
                 else if (e.CommandType == typeof(PipeCommands.SetEyeTracking_ViveProEyeEnable))
                 {
                     var d = (PipeCommands.SetEyeTracking_ViveProEyeEnable)e.Data;
-                    CurrentSettings.EyeTracking_ViveProEyeEnable = d.enable;
+                    Settings.Current.EyeTracking_ViveProEyeEnable = d.enable;
                     SetEyeTracking_ViveProEyeEnable(d.enable);
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetEyeTracking_ViveProEyeUseEyelidMovements))
                 {
                     await server.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements
                     {
-                        Use = CurrentSettings.EyeTracking_ViveProEyeUseEyelidMovements,
+                        Use = Settings.Current.EyeTracking_ViveProEyeUseEyelidMovements,
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetEyeTracking_ViveProEyeEnable))
                 {
                     await server.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeEnable
                     {
-                        enable = CurrentSettings.EyeTracking_ViveProEyeEnable,
+                        enable = Settings.Current.EyeTracking_ViveProEyeEnable,
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.LoadCurrentSettings))
@@ -795,15 +673,15 @@ namespace VMC
                     {
                         isFirstTimeExecute = false;
                         CurrentWindowNum = SetWindowTitle();
-                    //起動時は初期設定ロード
-                    LoadSettings(null);
-                    //イベントを登録(何度呼び出しても1回のみ)
-                    RegisterEventCallBack();
+                        //起動時は初期設定ロード
+                        LoadSettings(null);
+                        //イベントを登録(何度呼び出しても1回のみ)
+                        RegisterEventCallBack();
                     }
                     else
                     {
-                    //現在の設定を再適用する
-                    ApplyCurrentSettings();
+                        //現在の設定を再適用する
+                        ApplySettings();
                     }
                 }
                 else if (e.CommandType == typeof(PipeCommands.ImportCameraPlus))
@@ -815,12 +693,12 @@ namespace VMC
                 {
                     await server.SendCommandAsync(new PipeCommands.ReturnExportCameraPlus
                     {
-                        x = CurrentSettings.FreeCameraTransform.localPosition.x,
-                        y = CurrentSettings.FreeCameraTransform.localPosition.y,
-                        z = CurrentSettings.FreeCameraTransform.localPosition.z,
-                        rx = CurrentSettings.FreeCameraTransform.localRotation.eulerAngles.x,
-                        ry = CurrentSettings.FreeCameraTransform.localRotation.eulerAngles.y,
-                        rz = CurrentSettings.FreeCameraTransform.localRotation.eulerAngles.z,
+                        x = Settings.Current.FreeCameraTransform.localPosition.x,
+                        y = Settings.Current.FreeCameraTransform.localPosition.y,
+                        z = Settings.Current.FreeCameraTransform.localPosition.z,
+                        rx = Settings.Current.FreeCameraTransform.localRotation.eulerAngles.x,
+                        ry = Settings.Current.FreeCameraTransform.localRotation.eulerAngles.y,
+                        rz = Settings.Current.FreeCameraTransform.localRotation.eulerAngles.z,
                         fov = ControlCamera.fieldOfView
                     }, e.RequestId);
                 }
@@ -833,7 +711,7 @@ namespace VMC
                 {
                     await server.SendCommandAsync(new PipeCommands.EnableExternalMotionSender
                     {
-                        enable = CurrentSettings.ExternalMotionSenderEnable
+                        enable = Settings.Current.ExternalMotionSenderEnable
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.ChangeExternalMotionSenderAddress))
@@ -846,16 +724,16 @@ namespace VMC
                 {
                     await server.SendCommandAsync(new PipeCommands.ChangeExternalMotionSenderAddress
                     {
-                        address = CurrentSettings.ExternalMotionSenderAddress,
-                        port = CurrentSettings.ExternalMotionSenderPort,
-                        PeriodStatus = CurrentSettings.ExternalMotionSenderPeriodStatus,
-                        PeriodRoot = CurrentSettings.ExternalMotionSenderPeriodRoot,
-                        PeriodBone = CurrentSettings.ExternalMotionSenderPeriodBone,
-                        PeriodBlendShape = CurrentSettings.ExternalMotionSenderPeriodBlendShape,
-                        PeriodCamera = CurrentSettings.ExternalMotionSenderPeriodCamera,
-                        PeriodDevices = CurrentSettings.ExternalMotionSenderPeriodDevices,
-                        OptionString = CurrentSettings.ExternalMotionSenderOptionString,
-                        ResponderEnable = CurrentSettings.ExternalMotionSenderResponderEnable
+                        address = Settings.Current.ExternalMotionSenderAddress,
+                        port = Settings.Current.ExternalMotionSenderPort,
+                        PeriodStatus = Settings.Current.ExternalMotionSenderPeriodStatus,
+                        PeriodRoot = Settings.Current.ExternalMotionSenderPeriodRoot,
+                        PeriodBone = Settings.Current.ExternalMotionSenderPeriodBone,
+                        PeriodBlendShape = Settings.Current.ExternalMotionSenderPeriodBlendShape,
+                        PeriodCamera = Settings.Current.ExternalMotionSenderPeriodCamera,
+                        PeriodDevices = Settings.Current.ExternalMotionSenderPeriodDevices,
+                        OptionString = Settings.Current.ExternalMotionSenderOptionString,
+                        ResponderEnable = Settings.Current.ExternalMotionSenderResponderEnable
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.EnableExternalMotionReceiver))
@@ -867,7 +745,7 @@ namespace VMC
                 {
                     await server.SendCommandAsync(new PipeCommands.EnableExternalMotionReceiver
                     {
-                        enable = CurrentSettings.ExternalMotionReceiverEnable
+                        enable = Settings.Current.ExternalMotionReceiverEnable
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.ChangeExternalMotionReceiverPort))
@@ -880,16 +758,16 @@ namespace VMC
                 {
                     await server.SendCommandAsync(new PipeCommands.ChangeExternalMotionReceiverPort
                     {
-                        port = CurrentSettings.ExternalMotionReceiverPort,
-                        RequesterEnable = CurrentSettings.ExternalMotionReceiverRequesterEnable
+                        port = Settings.Current.ExternalMotionReceiverPort,
+                        RequesterEnable = Settings.Current.ExternalMotionReceiverRequesterEnable
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetMidiCCBlendShape))
                 {
-                    var bs = CurrentSettings.MidiCCBlendShape;
+                    var bs = Settings.Current.MidiCCBlendShape;
                     await server.SendCommandAsync(new PipeCommands.SetMidiCCBlendShape
                     {
-                        BlendShapes = CurrentSettings.MidiCCBlendShape,
+                        BlendShapes = Settings.Current.MidiCCBlendShape,
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.SetMidiCCBlendShape))
@@ -901,7 +779,7 @@ namespace VMC
                 {
                     await server.SendCommandAsync(new PipeCommands.MidiEnable
                     {
-                        enable = CurrentSettings.MidiEnable,
+                        enable = Settings.Current.MidiEnable,
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.MidiEnable))
@@ -930,10 +808,10 @@ namespace VMC
                 {
                     await server.SendCommandAsync(new PipeCommands.EnableTrackingFilter
                     {
-                        globalEnable = CurrentSettings.TrackingFilterEnable,
-                        hmdEnable = CurrentSettings.TrackingFilterHmdEnable,
-                        controllerEnable = CurrentSettings.TrackingFilterControllerEnable,
-                        trackerEnable = CurrentSettings.TrackingFilterTrackerEnable,
+                        globalEnable = Settings.Current.TrackingFilterEnable,
+                        hmdEnable = Settings.Current.TrackingFilterHmdEnable,
+                        controllerEnable = Settings.Current.TrackingFilterControllerEnable,
+                        trackerEnable = Settings.Current.TrackingFilterTrackerEnable,
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.EnableModelModifier))
@@ -945,15 +823,15 @@ namespace VMC
                 {
                     await server.SendCommandAsync(new PipeCommands.EnableModelModifier
                     {
-                        fixKneeRotation = CurrentSettings.FixKneeRotation,
+                        fixKneeRotation = Settings.Current.FixKneeRotation,
                     }, e.RequestId);
                 }
-            //------------------------
-            else if (e.CommandType == typeof(PipeCommands.GetStatusString))
+                //------------------------
+                else if (e.CommandType == typeof(PipeCommands.GetStatusString))
                 {
                     string statusStringBuf = "";
-                //有効な場合だけ送る
-                if (externalMotionReceiver.isActiveAndEnabled)
+                    //有効な場合だけ送る
+                    if (externalMotionReceiver.isActiveAndEnabled)
                     {
                         statusStringBuf = externalMotionReceiver?.statusString;
                     }
@@ -976,14 +854,14 @@ namespace VMC
                 {
                     await server.SendCommandAsync(new PipeCommands.EnableHandleControllerAsTracker
                     {
-                        HandleControllerAsTracker = CurrentSettings.HandleControllerAsTracker
+                        HandleControllerAsTracker = Settings.Current.HandleControllerAsTracker
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetQualitySettings))
                 {
                     await server.SendCommandAsync(new PipeCommands.SetQualitySettings
                     {
-                        antiAliasing = CurrentSettings.AntiAliasing,
+                        antiAliasing = Settings.Current.AntiAliasing,
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.SetQualitySettings))
@@ -1020,7 +898,7 @@ namespace VMC
                         await server.SendCommandAsync(new PipeCommands.SetViveLipTrackingBlendShape
                         {
                             LipShapes = GetLipShapesStringListFunc(),
-                            LipShapesToBlendShapeMap = CurrentSettings.LipShapesToBlendShapeMap,
+                            LipShapesToBlendShapeMap = Settings.Current.LipShapesToBlendShapeMap,
                         }, e.RequestId);
                     }
                 }
@@ -1028,19 +906,19 @@ namespace VMC
                 {
                     await server.SendCommandAsync(new PipeCommands.SetViveLipTrackingEnable
                     {
-                        enable = CurrentSettings.LipTracking_ViveEnable,
+                        enable = Settings.Current.LipTracking_ViveEnable,
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.SetViveLipTrackingEnable))
                 {
                     var d = (PipeCommands.SetViveLipTrackingEnable)e.Data;
-                    CurrentSettings.LipTracking_ViveEnable = d.enable;
+                    Settings.Current.LipTracking_ViveEnable = d.enable;
                     SetLipTracking_ViveEnable(d.enable);
                 }
                 else if (e.CommandType == typeof(PipeCommands.SetViveLipTrackingBlendShape))
                 {
                     var d = (PipeCommands.SetViveLipTrackingBlendShape)e.Data;
-                    CurrentSettings.LipShapesToBlendShapeMap = d.LipShapesToBlendShapeMap;
+                    Settings.Current.LipShapesToBlendShapeMap = d.LipShapesToBlendShapeMap;
                     SetLipShapeToBlendShapeStringMapAction?.Invoke(d.LipShapesToBlendShapeMap);
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetAdvancedGraphicsOption))
@@ -1051,49 +929,49 @@ namespace VMC
                 {
                     var d = (PipeCommands.SetAdvancedGraphicsOption)e.Data;
 
-                    CurrentSettings.PPS_Enable = d.PPS_Enable;
+                    Settings.Current.PPS_Enable = d.PPS_Enable;
 
-                    CurrentSettings.PPS_Bloom_Enable = d.Bloom_Enable;
-                    CurrentSettings.PPS_Bloom_Intensity = d.Bloom_Intensity;
-                    CurrentSettings.PPS_Bloom_Threshold = d.Bloom_Threshold;
+                    Settings.Current.PPS_Bloom_Enable = d.Bloom_Enable;
+                    Settings.Current.PPS_Bloom_Intensity = d.Bloom_Intensity;
+                    Settings.Current.PPS_Bloom_Threshold = d.Bloom_Threshold;
 
-                    CurrentSettings.PPS_DoF_Enable = d.DoF_Enable;
-                    CurrentSettings.PPS_DoF_FocusDistance = d.DoF_FocusDistance;
-                    CurrentSettings.PPS_DoF_Aperture = d.DoF_Aperture;
-                    CurrentSettings.PPS_DoF_FocusLength = d.DoF_FocusLength;
-                    CurrentSettings.PPS_DoF_MaxBlurSize = d.DoF_MaxBlurSize;
+                    Settings.Current.PPS_DoF_Enable = d.DoF_Enable;
+                    Settings.Current.PPS_DoF_FocusDistance = d.DoF_FocusDistance;
+                    Settings.Current.PPS_DoF_Aperture = d.DoF_Aperture;
+                    Settings.Current.PPS_DoF_FocusLength = d.DoF_FocusLength;
+                    Settings.Current.PPS_DoF_MaxBlurSize = d.DoF_MaxBlurSize;
 
-                    CurrentSettings.PPS_CG_Enable = d.CG_Enable;
-                    CurrentSettings.PPS_CG_Temperature = d.CG_Temperature;
-                    CurrentSettings.PPS_CG_Saturation = d.CG_Saturation;
-                    CurrentSettings.PPS_CG_Contrast = d.CG_Contrast;
-                    CurrentSettings.PPS_CG_Gamma = d.CG_Gamma;
+                    Settings.Current.PPS_CG_Enable = d.CG_Enable;
+                    Settings.Current.PPS_CG_Temperature = d.CG_Temperature;
+                    Settings.Current.PPS_CG_Saturation = d.CG_Saturation;
+                    Settings.Current.PPS_CG_Contrast = d.CG_Contrast;
+                    Settings.Current.PPS_CG_Gamma = d.CG_Gamma;
 
-                    CurrentSettings.PPS_Vignette_Enable = d.Vignette_Enable;
-                    CurrentSettings.PPS_Vignette_Intensity = d.Vignette_Intensity;
-                    CurrentSettings.PPS_Vignette_Smoothness = d.Vignette_Smoothness;
-                    CurrentSettings.PPS_Vignette_Roundness = d.Vignette_Roundness;
+                    Settings.Current.PPS_Vignette_Enable = d.Vignette_Enable;
+                    Settings.Current.PPS_Vignette_Intensity = d.Vignette_Intensity;
+                    Settings.Current.PPS_Vignette_Smoothness = d.Vignette_Smoothness;
+                    Settings.Current.PPS_Vignette_Roundness = d.Vignette_Roundness;
 
-                    CurrentSettings.PPS_CA_Enable = d.CA_Enable;
-                    CurrentSettings.PPS_CA_Intensity = d.CA_Intensity;
-                    CurrentSettings.PPS_CA_FastMode = d.CA_FastMode;
+                    Settings.Current.PPS_CA_Enable = d.CA_Enable;
+                    Settings.Current.PPS_CA_Intensity = d.CA_Intensity;
+                    Settings.Current.PPS_CA_FastMode = d.CA_FastMode;
 
-                    CurrentSettings.PPS_Bloom_Color_a = d.Bloom_Color_a;
-                    CurrentSettings.PPS_Bloom_Color_r = d.Bloom_Color_r;
-                    CurrentSettings.PPS_Bloom_Color_g = d.Bloom_Color_g;
-                    CurrentSettings.PPS_Bloom_Color_b = d.Bloom_Color_b;
+                    Settings.Current.PPS_Bloom_Color_a = d.Bloom_Color_a;
+                    Settings.Current.PPS_Bloom_Color_r = d.Bloom_Color_r;
+                    Settings.Current.PPS_Bloom_Color_g = d.Bloom_Color_g;
+                    Settings.Current.PPS_Bloom_Color_b = d.Bloom_Color_b;
 
-                    CurrentSettings.PPS_CG_ColorFilter_a = d.CG_ColorFilter_a;
-                    CurrentSettings.PPS_CG_ColorFilter_r = d.CG_ColorFilter_r;
-                    CurrentSettings.PPS_CG_ColorFilter_g = d.CG_ColorFilter_g;
-                    CurrentSettings.PPS_CG_ColorFilter_b = d.CG_ColorFilter_b;
+                    Settings.Current.PPS_CG_ColorFilter_a = d.CG_ColorFilter_a;
+                    Settings.Current.PPS_CG_ColorFilter_r = d.CG_ColorFilter_r;
+                    Settings.Current.PPS_CG_ColorFilter_g = d.CG_ColorFilter_g;
+                    Settings.Current.PPS_CG_ColorFilter_b = d.CG_ColorFilter_b;
 
-                    CurrentSettings.PPS_Vignette_Color_a = d.Vignette_Color_a;
-                    CurrentSettings.PPS_Vignette_Color_r = d.Vignette_Color_r;
-                    CurrentSettings.PPS_Vignette_Color_g = d.Vignette_Color_g;
-                    CurrentSettings.PPS_Vignette_Color_b = d.Vignette_Color_b;
+                    Settings.Current.PPS_Vignette_Color_a = d.Vignette_Color_a;
+                    Settings.Current.PPS_Vignette_Color_r = d.Vignette_Color_r;
+                    Settings.Current.PPS_Vignette_Color_g = d.Vignette_Color_g;
+                    Settings.Current.PPS_Vignette_Color_b = d.Vignette_Color_b;
 
-                    CurrentSettings.TurnOffAmbientLight = d.TurnOffAmbientLight;
+                    Settings.Current.TurnOffAmbientLight = d.TurnOffAmbientLight;
 
                     SetAdvancedGraphicsOption();
                 }
@@ -1107,7 +985,7 @@ namespace VMC
                 {
                     await server.SendCommandAsync(new PipeCommands.ExternalReceiveBones
                     {
-                        ReceiveBonesEnable = CurrentSettings.ExternalBonesReceiverEnable
+                        ReceiveBonesEnable = Settings.Current.ExternalBonesReceiverEnable
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetModIsLoaded))
@@ -1173,8 +1051,8 @@ namespace VMC
             if (MainDirectionalLightTransform != null)
             {
                 MainDirectionalLightTransform.eulerAngles = new Vector3(x, y, MainDirectionalLightTransform.eulerAngles.z);
-                CurrentSettings.LightRotationX = x;
-                CurrentSettings.LightRotationY = y;
+                Settings.Current.LightRotationX = x;
+                Settings.Current.LightRotationY = y;
 
                 LightChangedAction?.Invoke();
             }
@@ -1184,8 +1062,8 @@ namespace VMC
         {
             if (MainDirectionalLight != null)
             {
-                CurrentSettings.LightColor = new Color(r, g, b, a);
-                MainDirectionalLight.color = CurrentSettings.LightColor;
+                Settings.Current.LightColor = new Color(r, g, b, a);
+                MainDirectionalLight.color = Settings.Current.LightColor;
 
                 LightChangedAction?.Invoke();
             }
@@ -1193,7 +1071,7 @@ namespace VMC
 
         private void SetQualitySettings(PipeCommands.SetQualitySettings setting)
         {
-            CurrentSettings.AntiAliasing = setting.antiAliasing;
+            Settings.Current.AntiAliasing = setting.antiAliasing;
             QualitySettings.antiAliasing = setting.antiAliasing;
         }
 
@@ -1203,8 +1081,8 @@ namespace VMC
             vmtClient.SetEnable(enable);
             vmtClient.SendRoomMatrixTemporary();
 
-            CurrentSettings.VirtualMotionTrackerNo = no;
-            CurrentSettings.VirtualMotionTrackerEnable = enable;
+            Settings.Current.VirtualMotionTrackerNo = no;
+            Settings.Current.VirtualMotionTrackerEnable = enable;
         }
 
         private async void LoadAdvancedGraphicsOption()
@@ -1212,55 +1090,55 @@ namespace VMC
             SetAdvancedGraphicsOption();
             await server.SendCommandAsync(new PipeCommands.SetAdvancedGraphicsOption
             {
-                PPS_Enable = CurrentSettings.PPS_Enable,
+                PPS_Enable = Settings.Current.PPS_Enable,
 
-                Bloom_Enable = CurrentSettings.PPS_Bloom_Enable,
-                Bloom_Intensity = CurrentSettings.PPS_Bloom_Intensity,
-                Bloom_Threshold = CurrentSettings.PPS_Bloom_Threshold,
+                Bloom_Enable = Settings.Current.PPS_Bloom_Enable,
+                Bloom_Intensity = Settings.Current.PPS_Bloom_Intensity,
+                Bloom_Threshold = Settings.Current.PPS_Bloom_Threshold,
 
-                DoF_Enable = CurrentSettings.PPS_DoF_Enable,
-                DoF_FocusDistance = CurrentSettings.PPS_DoF_FocusDistance,
-                DoF_Aperture = CurrentSettings.PPS_DoF_Aperture,
-                DoF_FocusLength = CurrentSettings.PPS_DoF_FocusLength,
-                DoF_MaxBlurSize = CurrentSettings.PPS_DoF_MaxBlurSize,
+                DoF_Enable = Settings.Current.PPS_DoF_Enable,
+                DoF_FocusDistance = Settings.Current.PPS_DoF_FocusDistance,
+                DoF_Aperture = Settings.Current.PPS_DoF_Aperture,
+                DoF_FocusLength = Settings.Current.PPS_DoF_FocusLength,
+                DoF_MaxBlurSize = Settings.Current.PPS_DoF_MaxBlurSize,
 
-                CG_Enable = CurrentSettings.PPS_CG_Enable,
-                CG_Temperature = CurrentSettings.PPS_CG_Temperature,
-                CG_Saturation = CurrentSettings.PPS_CG_Saturation,
-                CG_Contrast = CurrentSettings.PPS_CG_Contrast,
-                CG_Gamma = CurrentSettings.PPS_CG_Gamma,
+                CG_Enable = Settings.Current.PPS_CG_Enable,
+                CG_Temperature = Settings.Current.PPS_CG_Temperature,
+                CG_Saturation = Settings.Current.PPS_CG_Saturation,
+                CG_Contrast = Settings.Current.PPS_CG_Contrast,
+                CG_Gamma = Settings.Current.PPS_CG_Gamma,
 
-                Vignette_Enable = CurrentSettings.PPS_Vignette_Enable,
-                Vignette_Intensity = CurrentSettings.PPS_Vignette_Intensity,
-                Vignette_Smoothness = CurrentSettings.PPS_Vignette_Smoothness,
-                Vignette_Roundness = CurrentSettings.PPS_Vignette_Roundness,
+                Vignette_Enable = Settings.Current.PPS_Vignette_Enable,
+                Vignette_Intensity = Settings.Current.PPS_Vignette_Intensity,
+                Vignette_Smoothness = Settings.Current.PPS_Vignette_Smoothness,
+                Vignette_Roundness = Settings.Current.PPS_Vignette_Roundness,
 
-                CA_Enable = CurrentSettings.PPS_CA_Enable,
-                CA_Intensity = CurrentSettings.PPS_CA_Intensity,
-                CA_FastMode = CurrentSettings.PPS_CA_FastMode,
+                CA_Enable = Settings.Current.PPS_CA_Enable,
+                CA_Intensity = Settings.Current.PPS_CA_Intensity,
+                CA_FastMode = Settings.Current.PPS_CA_FastMode,
 
-                Bloom_Color_a = CurrentSettings.PPS_Bloom_Color_a,
-                Bloom_Color_r = CurrentSettings.PPS_Bloom_Color_r,
-                Bloom_Color_g = CurrentSettings.PPS_Bloom_Color_g,
-                Bloom_Color_b = CurrentSettings.PPS_Bloom_Color_b,
+                Bloom_Color_a = Settings.Current.PPS_Bloom_Color_a,
+                Bloom_Color_r = Settings.Current.PPS_Bloom_Color_r,
+                Bloom_Color_g = Settings.Current.PPS_Bloom_Color_g,
+                Bloom_Color_b = Settings.Current.PPS_Bloom_Color_b,
 
-                CG_ColorFilter_a = CurrentSettings.PPS_CG_ColorFilter_a,
-                CG_ColorFilter_r = CurrentSettings.PPS_CG_ColorFilter_r,
-                CG_ColorFilter_g = CurrentSettings.PPS_CG_ColorFilter_g,
-                CG_ColorFilter_b = CurrentSettings.PPS_CG_ColorFilter_b,
+                CG_ColorFilter_a = Settings.Current.PPS_CG_ColorFilter_a,
+                CG_ColorFilter_r = Settings.Current.PPS_CG_ColorFilter_r,
+                CG_ColorFilter_g = Settings.Current.PPS_CG_ColorFilter_g,
+                CG_ColorFilter_b = Settings.Current.PPS_CG_ColorFilter_b,
 
-                Vignette_Color_a = CurrentSettings.PPS_Vignette_Color_a,
-                Vignette_Color_r = CurrentSettings.PPS_Vignette_Color_r,
-                Vignette_Color_g = CurrentSettings.PPS_Vignette_Color_g,
-                Vignette_Color_b = CurrentSettings.PPS_Vignette_Color_b,
+                Vignette_Color_a = Settings.Current.PPS_Vignette_Color_a,
+                Vignette_Color_r = Settings.Current.PPS_Vignette_Color_r,
+                Vignette_Color_g = Settings.Current.PPS_Vignette_Color_g,
+                Vignette_Color_b = Settings.Current.PPS_Vignette_Color_b,
 
-                TurnOffAmbientLight = CurrentSettings.TurnOffAmbientLight
+                TurnOffAmbientLight = Settings.Current.TurnOffAmbientLight
             });
         }
 
         private void SetAdvancedGraphicsOption()
         {
-            postProcessingManager.Apply(CurrentSettings);
+            postProcessingManager.Apply(Settings.Current);
         }
 
         private bool isFirstTimeExecute = true;
@@ -1329,7 +1207,7 @@ namespace VMC
             if (ImportForCalibration == false)
             {
                 calibrationState = CalibrationState.Uncalibrated; //キャリブレーション状態を"未キャリブレーション"に設定
-                CurrentSettings.VRMPath = path;
+                Settings.Current.VRMPath = path;
                 var context = new VRMImporterContext();
 
                 var bytes = File.ReadAllBytes(path);
@@ -1424,8 +1302,8 @@ namespace VMC
 
             SaveDefaultCurrentModelTransforms();
 
-            //CurrentSettings.EnableNormalMapFix = EnableNormalMapFix;
-            //CurrentSettings.DeleteHairNormalMap = DeleteHairNormalMap;
+            //Settings.Current.EnableNormalMapFix = EnableNormalMapFix;
+            //Settings.Current.DeleteHairNormalMap = DeleteHairNormalMap;
             //if (EnableNormalMapFix)
             //{
             //    //VRoidモデルのNormalMapテカテカを修正する
@@ -1652,7 +1530,7 @@ namespace VMC
             //膝のボーンの曲がる方向で膝の向きが決まってしまうため、強制的に膝のボーンを少し前に曲げる
             var leftOffset = Vector3.zero;
             var rightOffset = Vector3.zero;
-            if (animator != null && CurrentSettings.FixKneeRotation)
+            if (animator != null && Settings.Current.FixKneeRotation)
             {
                 leftOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.LeftUpperLeg), animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg), animator.GetBoneTransform(HumanBodyBones.LeftFoot));
                 rightOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.RightUpperLeg), animator.GetBoneTransform(HumanBodyBones.RightLowerLeg), animator.GetBoneTransform(HumanBodyBones.RightFoot));
@@ -1725,16 +1603,16 @@ namespace VMC
         };
             return new PipeCommands.SetTrackerSerialNumbers
             {
-                Head = Tuple.Create(deviceDictionary[CurrentSettings.Head.Item1], CurrentSettings.Head.Item2),
-                LeftHand = Tuple.Create(deviceDictionary[CurrentSettings.LeftHand.Item1], CurrentSettings.LeftHand.Item2),
-                RightHand = Tuple.Create(deviceDictionary[CurrentSettings.RightHand.Item1], CurrentSettings.RightHand.Item2),
-                Pelvis = Tuple.Create(deviceDictionary[CurrentSettings.Pelvis.Item1], CurrentSettings.Pelvis.Item2),
-                LeftFoot = Tuple.Create(deviceDictionary[CurrentSettings.LeftFoot.Item1], CurrentSettings.LeftFoot.Item2),
-                RightFoot = Tuple.Create(deviceDictionary[CurrentSettings.RightFoot.Item1], CurrentSettings.RightFoot.Item2),
-                LeftElbow = Tuple.Create(deviceDictionary[CurrentSettings.LeftElbow.Item1], CurrentSettings.LeftElbow.Item2),
-                RightElbow = Tuple.Create(deviceDictionary[CurrentSettings.RightElbow.Item1], CurrentSettings.RightElbow.Item2),
-                LeftKnee = Tuple.Create(deviceDictionary[CurrentSettings.LeftKnee.Item1], CurrentSettings.LeftKnee.Item2),
-                RightKnee = Tuple.Create(deviceDictionary[CurrentSettings.RightKnee.Item1], CurrentSettings.RightKnee.Item2),
+                Head = Tuple.Create(deviceDictionary[Settings.Current.Head.Item1], Settings.Current.Head.Item2),
+                LeftHand = Tuple.Create(deviceDictionary[Settings.Current.LeftHand.Item1], Settings.Current.LeftHand.Item2),
+                RightHand = Tuple.Create(deviceDictionary[Settings.Current.RightHand.Item1], Settings.Current.RightHand.Item2),
+                Pelvis = Tuple.Create(deviceDictionary[Settings.Current.Pelvis.Item1], Settings.Current.Pelvis.Item2),
+                LeftFoot = Tuple.Create(deviceDictionary[Settings.Current.LeftFoot.Item1], Settings.Current.LeftFoot.Item2),
+                RightFoot = Tuple.Create(deviceDictionary[Settings.Current.RightFoot.Item1], Settings.Current.RightFoot.Item2),
+                LeftElbow = Tuple.Create(deviceDictionary[Settings.Current.LeftElbow.Item1], Settings.Current.LeftElbow.Item2),
+                RightElbow = Tuple.Create(deviceDictionary[Settings.Current.RightElbow.Item1], Settings.Current.RightElbow.Item2),
+                LeftKnee = Tuple.Create(deviceDictionary[Settings.Current.LeftKnee.Item1], Settings.Current.LeftKnee.Item2),
+                RightKnee = Tuple.Create(deviceDictionary[Settings.Current.RightKnee.Item1], Settings.Current.RightKnee.Item2),
             };
         }
 
@@ -1749,16 +1627,16 @@ namespace VMC
             {"割り当てしない", ETrackedDeviceClass.Invalid },
         };
 
-            CurrentSettings.Head = Tuple.Create(deviceDictionary[data.Head.Item1], data.Head.Item2);
-            CurrentSettings.LeftHand = Tuple.Create(deviceDictionary[data.LeftHand.Item1], data.LeftHand.Item2);
-            CurrentSettings.RightHand = Tuple.Create(deviceDictionary[data.RightHand.Item1], data.RightHand.Item2);
-            CurrentSettings.Pelvis = Tuple.Create(deviceDictionary[data.Pelvis.Item1], data.Pelvis.Item2);
-            CurrentSettings.LeftFoot = Tuple.Create(deviceDictionary[data.LeftFoot.Item1], data.LeftFoot.Item2);
-            CurrentSettings.RightFoot = Tuple.Create(deviceDictionary[data.RightFoot.Item1], data.RightFoot.Item2);
-            CurrentSettings.LeftElbow = Tuple.Create(deviceDictionary[data.LeftElbow.Item1], data.LeftElbow.Item2);
-            CurrentSettings.RightElbow = Tuple.Create(deviceDictionary[data.RightElbow.Item1], data.RightElbow.Item2);
-            CurrentSettings.LeftKnee = Tuple.Create(deviceDictionary[data.LeftKnee.Item1], data.LeftKnee.Item2);
-            CurrentSettings.RightKnee = Tuple.Create(deviceDictionary[data.RightKnee.Item1], data.RightKnee.Item2);
+            Settings.Current.Head = Tuple.Create(deviceDictionary[data.Head.Item1], data.Head.Item2);
+            Settings.Current.LeftHand = Tuple.Create(deviceDictionary[data.LeftHand.Item1], data.LeftHand.Item2);
+            Settings.Current.RightHand = Tuple.Create(deviceDictionary[data.RightHand.Item1], data.RightHand.Item2);
+            Settings.Current.Pelvis = Tuple.Create(deviceDictionary[data.Pelvis.Item1], data.Pelvis.Item2);
+            Settings.Current.LeftFoot = Tuple.Create(deviceDictionary[data.LeftFoot.Item1], data.LeftFoot.Item2);
+            Settings.Current.RightFoot = Tuple.Create(deviceDictionary[data.RightFoot.Item1], data.RightFoot.Item2);
+            Settings.Current.LeftElbow = Tuple.Create(deviceDictionary[data.LeftElbow.Item1], data.LeftElbow.Item2);
+            Settings.Current.RightElbow = Tuple.Create(deviceDictionary[data.RightElbow.Item1], data.RightElbow.Item2);
+            Settings.Current.LeftKnee = Tuple.Create(deviceDictionary[data.LeftKnee.Item1], data.LeftKnee.Item2);
+            Settings.Current.RightKnee = Tuple.Create(deviceDictionary[data.RightKnee.Item1], data.RightKnee.Item2);
             SetVRIKTargetTrackers();
         }
 
@@ -1804,7 +1682,7 @@ namespace VMC
             }
             else if (serial.Item1 == ETrackedDeviceClass.GenericTracker)
             {
-                foreach (var tracker in handler.Trackers.Where(d => d != handler.CameraControllerObject && d.name.Contains("LIV Virtual Camera") == false && !(CurrentSettings.VirtualMotionTrackerEnable && d.name.Contains($"VMT_{CurrentSettings.VirtualMotionTrackerNo}"))))
+                foreach (var tracker in handler.Trackers.Where(d => d != handler.CameraControllerObject && d.name.Contains("LIV Virtual Camera") == false && !(Settings.Current.VirtualMotionTrackerEnable && d.name.Contains($"VMT_{Settings.Current.VirtualMotionTrackerNo}"))))
                 {
                     if (tracker != null && tracker.transform.name == serial.Item2)
                     {
@@ -1815,16 +1693,16 @@ namespace VMC
 
                 var trackerIds = new List<string>();
 
-                if (CurrentSettings.Head.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.Head.Item2);
-                if (CurrentSettings.LeftHand.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.LeftHand.Item2);
-                if (CurrentSettings.RightHand.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.RightHand.Item2);
-                if (CurrentSettings.Pelvis.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.Pelvis.Item2);
-                if (CurrentSettings.LeftFoot.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.LeftFoot.Item2);
-                if (CurrentSettings.RightFoot.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.RightFoot.Item2);
-                if (CurrentSettings.LeftElbow.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.LeftElbow.Item2);
-                if (CurrentSettings.RightElbow.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.RightElbow.Item2);
-                if (CurrentSettings.LeftKnee.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.LeftKnee.Item2);
-                if (CurrentSettings.RightKnee.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(CurrentSettings.RightKnee.Item2);
+                if (Settings.Current.Head.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.Head.Item2);
+                if (Settings.Current.LeftHand.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.LeftHand.Item2);
+                if (Settings.Current.RightHand.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.RightHand.Item2);
+                if (Settings.Current.Pelvis.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.Pelvis.Item2);
+                if (Settings.Current.LeftFoot.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.LeftFoot.Item2);
+                if (Settings.Current.RightFoot.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.RightFoot.Item2);
+                if (Settings.Current.LeftElbow.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.LeftElbow.Item2);
+                if (Settings.Current.RightElbow.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.RightElbow.Item2);
+                if (Settings.Current.LeftKnee.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.LeftKnee.Item2);
+                if (Settings.Current.RightKnee.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.RightKnee.Item2);
 
                 //ここに来るときは腰か足のトラッカー自動認識になってるとき
                 //割り当てられていないトラッカーリスト
@@ -1859,10 +1737,10 @@ namespace VMC
         {
             if (vrik == null) { return; } //まだmodelがない
 
-            vrik.solver.spine.headTarget = GetTrackerTransformBySerialNumber(CurrentSettings.Head, TargetType.Head);
+            vrik.solver.spine.headTarget = GetTrackerTransformBySerialNumber(Settings.Current.Head, TargetType.Head);
             vrik.solver.spine.headClampWeight = 0.38f;
 
-            vrik.solver.spine.pelvisTarget = GetTrackerTransformBySerialNumber(CurrentSettings.Pelvis, TargetType.Pelvis, vrik.solver.spine.headTarget);
+            vrik.solver.spine.pelvisTarget = GetTrackerTransformBySerialNumber(Settings.Current.Pelvis, TargetType.Pelvis, vrik.solver.spine.headTarget);
             if (vrik.solver.spine.pelvisTarget != null)
             {
                 vrik.solver.spine.pelvisPositionWeight = 1f;
@@ -1880,7 +1758,7 @@ namespace VMC
                 vrik.solver.spine.maxRootAngle = 0f;
             }
 
-            vrik.solver.leftArm.target = GetTrackerTransformBySerialNumber(CurrentSettings.LeftHand, TargetType.LeftArm, vrik.solver.spine.headTarget);
+            vrik.solver.leftArm.target = GetTrackerTransformBySerialNumber(Settings.Current.LeftHand, TargetType.LeftArm, vrik.solver.spine.headTarget);
             if (vrik.solver.leftArm.target != null)
             {
                 vrik.solver.leftArm.positionWeight = 1f;
@@ -1892,7 +1770,7 @@ namespace VMC
                 vrik.solver.leftArm.rotationWeight = 0f;
             }
 
-            vrik.solver.rightArm.target = GetTrackerTransformBySerialNumber(CurrentSettings.RightHand, TargetType.RightArm, vrik.solver.spine.headTarget);
+            vrik.solver.rightArm.target = GetTrackerTransformBySerialNumber(Settings.Current.RightHand, TargetType.RightArm, vrik.solver.spine.headTarget);
             if (vrik.solver.rightArm.target != null)
             {
                 vrik.solver.rightArm.positionWeight = 1f;
@@ -1904,7 +1782,7 @@ namespace VMC
                 vrik.solver.rightArm.rotationWeight = 0f;
             }
 
-            vrik.solver.leftLeg.target = GetTrackerTransformBySerialNumber(CurrentSettings.LeftFoot, TargetType.LeftLeg, vrik.solver.spine.headTarget);
+            vrik.solver.leftLeg.target = GetTrackerTransformBySerialNumber(Settings.Current.LeftFoot, TargetType.LeftLeg, vrik.solver.spine.headTarget);
             if (vrik.solver.leftLeg.target != null)
             {
                 vrik.solver.leftLeg.positionWeight = 1f;
@@ -1916,7 +1794,7 @@ namespace VMC
                 vrik.solver.leftLeg.rotationWeight = 0f;
             }
 
-            vrik.solver.rightLeg.target = GetTrackerTransformBySerialNumber(CurrentSettings.RightFoot, TargetType.RightLeg, vrik.solver.spine.headTarget);
+            vrik.solver.rightLeg.target = GetTrackerTransformBySerialNumber(Settings.Current.RightFoot, TargetType.RightLeg, vrik.solver.spine.headTarget);
             if (vrik.solver.rightLeg.target != null)
             {
                 vrik.solver.rightLeg.positionWeight = 1f;
@@ -1950,16 +1828,16 @@ namespace VMC
             //rightRelaxer.ik = vrik;
             //rightRelaxer.twistSolvers = new TwistSolver[] { new TwistSolver { transform = rightLowerArm } };
 
-            Transform headTracker = GetTrackerTransformBySerialNumber(CurrentSettings.Head, TargetType.Head);
-            leftHandTracker = GetTrackerTransformBySerialNumber(CurrentSettings.LeftHand, TargetType.LeftArm, headTracker);
-            rightHandTracker = GetTrackerTransformBySerialNumber(CurrentSettings.RightHand, TargetType.RightArm, headTracker);
-            bodyTracker = GetTrackerTransformBySerialNumber(CurrentSettings.Pelvis, TargetType.Pelvis, headTracker);
-            leftFootTracker = GetTrackerTransformBySerialNumber(CurrentSettings.LeftFoot, TargetType.LeftLeg, headTracker);
-            rightFootTracker = GetTrackerTransformBySerialNumber(CurrentSettings.RightFoot, TargetType.RightLeg, headTracker);
-            leftElbowTracker = GetTrackerTransformBySerialNumber(CurrentSettings.LeftElbow, TargetType.LeftElbow, headTracker);
-            rightElbowTracker = GetTrackerTransformBySerialNumber(CurrentSettings.RightElbow, TargetType.RightElbow, headTracker);
-            leftKneeTracker = GetTrackerTransformBySerialNumber(CurrentSettings.LeftKnee, TargetType.LeftKnee, headTracker);
-            rightKneeTracker = GetTrackerTransformBySerialNumber(CurrentSettings.RightKnee, TargetType.RightKnee, headTracker);
+            Transform headTracker = GetTrackerTransformBySerialNumber(Settings.Current.Head, TargetType.Head);
+            leftHandTracker = GetTrackerTransformBySerialNumber(Settings.Current.LeftHand, TargetType.LeftArm, headTracker);
+            rightHandTracker = GetTrackerTransformBySerialNumber(Settings.Current.RightHand, TargetType.RightArm, headTracker);
+            bodyTracker = GetTrackerTransformBySerialNumber(Settings.Current.Pelvis, TargetType.Pelvis, headTracker);
+            leftFootTracker = GetTrackerTransformBySerialNumber(Settings.Current.LeftFoot, TargetType.LeftLeg, headTracker);
+            rightFootTracker = GetTrackerTransformBySerialNumber(Settings.Current.RightFoot, TargetType.RightLeg, headTracker);
+            leftElbowTracker = GetTrackerTransformBySerialNumber(Settings.Current.LeftElbow, TargetType.LeftElbow, headTracker);
+            rightElbowTracker = GetTrackerTransformBySerialNumber(Settings.Current.RightElbow, TargetType.RightElbow, headTracker);
+            leftKneeTracker = GetTrackerTransformBySerialNumber(Settings.Current.LeftKnee, TargetType.LeftKnee, headTracker);
+            rightKneeTracker = GetTrackerTransformBySerialNumber(Settings.Current.RightKnee, TargetType.RightKnee, headTracker);
 
             ClearChildren(headTracker, leftHandTracker, rightHandTracker, bodyTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
 
@@ -1975,21 +1853,21 @@ namespace VMC
             //yをプラス方向に動かすとトラッカーの上(LED方向)に進む
             //zをマイナス方向に動かすとトラッカーの底面に向かって進む
 
-            if (CurrentSettings.LeftHand.Item1 == ETrackedDeviceClass.GenericTracker)
+            if (Settings.Current.LeftHand.Item1 == ETrackedDeviceClass.GenericTracker)
             {
                 //角度補正(左手なら右のトラッカーに向けた)後
                 //xを＋方向は体の正面に向かって進む
                 //yを＋方向は体の上(天井方向)に向かって進む
                 //zを＋方向は体中心(左手なら右手の方向)に向かって進む
-                leftHandOffset = new Vector3(1.0f, CurrentSettings.LeftHandTrackerOffsetToBottom, CurrentSettings.LeftHandTrackerOffsetToBodySide); // Vector3 (IsEnable, ToTrackerBottom, ToBodySide)
+                leftHandOffset = new Vector3(1.0f, Settings.Current.LeftHandTrackerOffsetToBottom, Settings.Current.LeftHandTrackerOffsetToBodySide); // Vector3 (IsEnable, ToTrackerBottom, ToBodySide)
             }
-            if (CurrentSettings.RightHand.Item1 == ETrackedDeviceClass.GenericTracker)
+            if (Settings.Current.RightHand.Item1 == ETrackedDeviceClass.GenericTracker)
             {
                 //角度補正(左手なら右のトラッカーに向けた)後
                 //xを－方向は体の正面に向かって進む
                 //yを＋方向は体の上(天井方向)に向かって進む
                 //zを＋方向は体中心(左手なら右手の方向)に向かって進む
-                rightHandOffset = new Vector3(1.0f, CurrentSettings.RightHandTrackerOffsetToBottom, CurrentSettings.RightHandTrackerOffsetToBodySide); // Vector3 (IsEnable, ToTrackerBottom, ToBodySide)
+                rightHandOffset = new Vector3(1.0f, Settings.Current.RightHandTrackerOffsetToBottom, Settings.Current.RightHandTrackerOffsetToBodySide); // Vector3 (IsEnable, ToTrackerBottom, ToBodySide)
             }
             if (calibrateType == PipeCommands.CalibrateType.Default)
             {
@@ -2021,16 +1899,16 @@ namespace VMC
             vrik.solver.locomotion.rootSpeed = 40;
             vrik.solver.locomotion.stepSpeed = 2;
 
-            CurrentSettings.headTracker = StoreTransform.Create(headTracker);
-            CurrentSettings.bodyTracker = StoreTransform.Create(bodyTracker);
-            CurrentSettings.leftHandTracker = StoreTransform.Create(leftHandTracker);
-            CurrentSettings.rightHandTracker = StoreTransform.Create(rightHandTracker);
-            CurrentSettings.leftFootTracker = StoreTransform.Create(leftFootTracker);
-            CurrentSettings.rightFootTracker = StoreTransform.Create(rightFootTracker);
-            CurrentSettings.leftElbowTracker = StoreTransform.Create(leftElbowTracker);
-            CurrentSettings.rightElbowTracker = StoreTransform.Create(rightElbowTracker);
-            CurrentSettings.leftKneeTracker = StoreTransform.Create(leftKneeTracker);
-            CurrentSettings.rightKneeTracker = StoreTransform.Create(rightKneeTracker);
+            Settings.Current.headTracker = StoreTransform.Create(headTracker);
+            Settings.Current.bodyTracker = StoreTransform.Create(bodyTracker);
+            Settings.Current.leftHandTracker = StoreTransform.Create(leftHandTracker);
+            Settings.Current.rightHandTracker = StoreTransform.Create(rightHandTracker);
+            Settings.Current.leftFootTracker = StoreTransform.Create(leftFootTracker);
+            Settings.Current.rightFootTracker = StoreTransform.Create(rightFootTracker);
+            Settings.Current.leftElbowTracker = StoreTransform.Create(leftElbowTracker);
+            Settings.Current.rightElbowTracker = StoreTransform.Create(rightElbowTracker);
+            Settings.Current.leftKneeTracker = StoreTransform.Create(leftKneeTracker);
+            Settings.Current.rightKneeTracker = StoreTransform.Create(rightKneeTracker);
 
 
             var calibratedLeftHandTransform = leftHandTracker.GetChild(0);
@@ -2112,7 +1990,7 @@ namespace VMC
         private void SetLipSyncEnable(bool enable)
         {
             LipSync.EnableLipSync = enable;
-            CurrentSettings.LipSyncEnable = enable;
+            Settings.Current.LipSyncEnable = enable;
         }
 
         private string[] GetLipSyncDevices()
@@ -2123,7 +2001,7 @@ namespace VMC
         private void SetLipSyncDevice(string device)
         {
             LipSync.SetMicrophoneDevice(device);
-            CurrentSettings.LipSyncDevice = device;
+            Settings.Current.LipSyncDevice = device;
         }
 
         private void SetLipSyncGain(float gain)
@@ -2131,25 +2009,25 @@ namespace VMC
             if (gain < 1.0f) gain = 1.0f;
             if (gain > 256.0f) gain = 256.0f;
             LipSync.Gain = gain;
-            CurrentSettings.LipSyncGain = gain;
+            Settings.Current.LipSyncGain = gain;
         }
 
         private void SetLipSyncMaxWeightEnable(bool enable)
         {
             LipSync.MaxWeightEnable = enable;
-            CurrentSettings.LipSyncMaxWeightEnable = enable;
+            Settings.Current.LipSyncMaxWeightEnable = enable;
         }
 
         private void SetLipSyncWeightThreashold(float threashold)
         {
             LipSync.WeightThreashold = threashold;
-            CurrentSettings.LipSyncWeightThreashold = threashold;
+            Settings.Current.LipSyncWeightThreashold = threashold;
         }
 
         private void SetLipSyncMaxWeightEmphasis(bool enable)
         {
             LipSync.MaxWeightEmphasis = enable;
-            CurrentSettings.LipSyncMaxWeightEmphasis = enable;
+            Settings.Current.LipSyncMaxWeightEmphasis = enable;
         }
 
         #endregion
@@ -2159,15 +2037,15 @@ namespace VMC
         private void ChangeBackgroundColor(float r, float g, float b, bool isCustom)
         {
             BackgroundRenderer.material.color = new Color(r, g, b, 1.0f);
-            CurrentSettings.BackgroundColor = BackgroundRenderer.material.color;
-            if (isCustom) CurrentSettings.CustomBackgroundColor = BackgroundRenderer.material.color;
-            CurrentSettings.IsTransparent = false;
+            Settings.Current.BackgroundColor = BackgroundRenderer.material.color;
+            if (isCustom) Settings.Current.CustomBackgroundColor = BackgroundRenderer.material.color;
+            Settings.Current.IsTransparent = false;
             SetDwmTransparent(false);
         }
 
         private void SetBackgroundTransparent()
         {
-            CurrentSettings.IsTransparent = true;
+            Settings.Current.IsTransparent = true;
 #if !UNITY_EDITOR   // エディタ上では動きません。
         BackgroundRenderer.material.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
         SetDwmTransparent(true);
@@ -2179,7 +2057,7 @@ namespace VMC
         {
             if (lastWindowBorder == enable) return;
             lastWindowBorder = enable;
-            CurrentSettings.HideBorder = enable;
+            Settings.Current.HideBorder = enable;
 #if !UNITY_EDITOR   // エディタ上では動きません。
         var hwnd = GetUnityWindowHandle();
         //var hwnd = GetActiveWindow();
@@ -2199,7 +2077,7 @@ namespace VMC
         }
         void SetWindowTopMost(bool enable)
         {
-            CurrentSettings.IsTopMost = enable;
+            Settings.Current.IsTopMost = enable;
 #if !UNITY_EDITOR   // エディタ上では動きません。
         SetUnityWindowTopMost(enable);
 #endif
@@ -2207,7 +2085,7 @@ namespace VMC
 
         void SetWindowClickThrough(bool enable)
         {
-            CurrentSettings.WindowClickThrough = enable;
+            Settings.Current.WindowClickThrough = enable;
 #if !UNITY_EDITOR   // エディタ上では動きません。
         var hwnd = GetUnityWindowHandle();
         //var hwnd = GetActiveWindow();
@@ -2250,7 +2128,7 @@ namespace VMC
             {
                 SetCameraEnable(PositionFixedCamera);
             }
-            CurrentSettings.CameraType = type;
+            Settings.Current.CameraType = type;
         }
 
         private void SetCameraEnable(CameraMouseControl camera)
@@ -2260,13 +2138,13 @@ namespace VMC
                 var virtualCam = ControlCamera.GetComponent<VirtualCamera>();
                 if (virtualCam != null)
                 {
-                    virtualCam.enabled = CurrentSettings.WebCamEnabled;
+                    virtualCam.enabled = Settings.Current.WebCamEnabled;
                 }
                 camera.gameObject.SetActive(true);
                 if (CurrentCameraControl != null && CurrentCameraControl != camera) CurrentCameraControl.gameObject.SetActive(false);
                 camera.GetComponent<CameraMouseControl>().enabled = true;
                 CurrentCameraControl = camera;
-                SetCameraMirrorEnable(CurrentSettings.CameraMirrorEnable);
+                SetCameraMirrorEnable(Settings.Current.CameraMirrorEnable);
 
                 CameraChangedAction?.Invoke(ControlCamera);
             }
@@ -2328,12 +2206,12 @@ namespace VMC
         private void SetGridVisible(bool enable)
         {
             GridCanvas?.SetActive(enable);
-            CurrentSettings.ShowCameraGrid = enable;
+            Settings.Current.ShowCameraGrid = enable;
         }
 
         private void SetCameraMirror(bool enable)
         {
-            CurrentSettings.CameraMirrorEnable = enable;
+            Settings.Current.CameraMirrorEnable = enable;
             SetCameraMirrorEnable(enable);
         }
 
@@ -2351,17 +2229,17 @@ namespace VMC
             CurrentCameraControl.transform.localRotation = Quaternion.Euler(d.rx, d.ry, d.rz);
             ControlCamera.fieldOfView = d.fov;
             //コントローラーは動くのでカメラ位置の保存はできない
-            //if (CurrentSettings.FreeCameraTransform == null) CurrentSettings.FreeCameraTransform = new StoreTransform(currentCamera.transform);
-            //CurrentSettings.FreeCameraTransform.SetPosition(currentCamera.transform);
+            //if (Settings.Current.FreeCameraTransform == null) Settings.Current.FreeCameraTransform = new StoreTransform(currentCamera.transform);
+            //Settings.Current.FreeCameraTransform.SetPosition(currentCamera.transform);
         }
 
         private async void ImportCameraPlus(PipeCommands.ImportCameraPlus d)
         {
             ChangeCamera(CameraTypes.Free);
-            CurrentSettings.FreeCameraTransform.localPosition = new Vector3(d.x, d.y, d.z);
-            CurrentSettings.FreeCameraTransform.localRotation = Quaternion.Euler(d.rx, d.ry, d.rz);
+            Settings.Current.FreeCameraTransform.localPosition = new Vector3(d.x, d.y, d.z);
+            Settings.Current.FreeCameraTransform.localRotation = Quaternion.Euler(d.rx, d.ry, d.rz);
             ControlCamera.fieldOfView = d.fov;
-            CurrentSettings.FreeCameraTransform.ToLocalTransform(FreeCamera.transform);
+            Settings.Current.FreeCameraTransform.ToLocalTransform(FreeCamera.transform);
             var control = FreeCamera.GetComponent<CameraMouseControl>();
             control.CameraAngle = -FreeCamera.transform.rotation.eulerAngles;
             control.CameraDistance = Vector3.Distance(FreeCamera.transform.localPosition, Vector3.zero);
@@ -2371,7 +2249,7 @@ namespace VMC
 
         private void SetCameraFOV(float fov)
         {
-            CurrentSettings.CameraFOV = fov;
+            Settings.Current.CameraFOV = fov;
             FrontCamera.SetCameraFOV(fov);
             BackCamera.SetCameraFOV(fov);
             FreeCamera.SetCameraFOV(fov);
@@ -2381,7 +2259,7 @@ namespace VMC
 
         private void SetCameraSmooth(float speed)
         {
-            CurrentSettings.CameraSmooth = speed;
+            Settings.Current.CameraSmooth = speed;
             ControlCamera.GetComponent<CameraFollower>().Speed = speed;
         }
 
@@ -2391,32 +2269,32 @@ namespace VMC
         void SetAutoBlinkEnable(bool enable)
         {
             faceController.EnableBlink = enable;
-            CurrentSettings.AutoBlinkEnable = enable;
+            Settings.Current.AutoBlinkEnable = enable;
         }
         void SetBlinkTimeMin(float time)
         {
             faceController.BlinkTimeMin = time;
-            CurrentSettings.BlinkTimeMin = time;
+            Settings.Current.BlinkTimeMin = time;
         }
         void SetBlinkTimeMax(float time)
         {
             faceController.BlinkTimeMax = time;
-            CurrentSettings.BlinkTimeMax = time;
+            Settings.Current.BlinkTimeMax = time;
         }
         void SetCloseAnimationTime(float time)
         {
             faceController.CloseAnimationTime = time;
-            CurrentSettings.CloseAnimationTime = time;
+            Settings.Current.CloseAnimationTime = time;
         }
         void SetOpenAnimationTime(float time)
         {
             faceController.OpenAnimationTime = time;
-            CurrentSettings.OpenAnimationTime = time;
+            Settings.Current.OpenAnimationTime = time;
         }
         void SetClosingTime(float time)
         {
             faceController.ClosingTime = time;
-            CurrentSettings.ClosingTime = time;
+            Settings.Current.ClosingTime = time;
         }
 
         private Dictionary<string, BlendShapePreset> BlendShapeNameDictionary = new Dictionary<string, BlendShapePreset>
@@ -2453,313 +2331,9 @@ namespace VMC
 
         #region HandFaceControll
 
-        private bool doKeyConfig = false;
-        private bool doKeySend = false;
-
-        private async void ControllerAction_KeyDown(object sender, OVRKeyEventArgs e)
-        {
-            //win.KeyDownEvent{ value = win, new KeyEventArgs((EVRButtonId)e.ButtonId, e.Axis.x, e.Axis.y, e.IsLeft));
-
-            var config = new KeyConfig();
-            config.type = KeyTypes.Controller;
-            config.actionType = KeyActionTypes.Hand;
-            config.keyCode = -2;
-            config.keyName = e.Name;
-            config.isLeft = e.IsLeft;
-            bool isStick = e.Name.Contains("Stick");
-            config.keyIndex = e.IsAxis == false ? -1 : NearestPointIndex(e.IsLeft, e.Axis.x, e.Axis.y, isStick);
-            config.isTouch = e.IsTouch;
-            if (e.IsAxis)
-            {
-                if (config.keyIndex < 0) return;
-                if (e.IsLeft)
-                {
-                    if (isStick) lastStickLeftAxisPoint = config.keyIndex;
-                    else lastTouchpadLeftAxisPoint = config.keyIndex;
-                }
-                else
-                {
-                    if (isStick) lastStickRightAxisPoint = config.keyIndex;
-                    else lastTouchpadRightAxisPoint = config.keyIndex;
-                }
-            }
-            if (doKeyConfig || doKeySend) await server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
-            if (!doKeyConfig) CheckKey(config, true);
-        }
-
-        private async void ControllerAction_KeyUp(object sender, OVRKeyEventArgs e)
-        {
-            //win.KeyUpEvent{ value = win, new KeyEventArgs((EVRButtonId)e.ButtonId, e.Axis.x, e.Axis.y, e.IsLeft));
-            var config = new KeyConfig();
-            config.type = KeyTypes.Controller;
-            config.actionType = KeyActionTypes.Hand;
-            config.keyCode = -2;
-            config.keyName = e.Name;
-            config.isLeft = e.IsLeft;
-            bool isStick = e.Name.Contains("Stick");
-            config.keyIndex = e.IsAxis == false ? -1 : NearestPointIndex(e.IsLeft, e.Axis.x, e.Axis.y, isStick);
-            config.isTouch = e.IsTouch;
-            if (e.IsAxis && config.keyIndex != (isStick ? (e.IsLeft ? lastStickLeftAxisPoint : lastStickRightAxisPoint) : (e.IsLeft ? lastTouchpadLeftAxisPoint : lastTouchpadRightAxisPoint)))
-            {//タッチパッド離した瞬間違うポイントだった場合
-                var newindex = config.keyIndex;
-                config.keyIndex = (isStick ? (e.IsLeft ? lastStickLeftAxisPoint : lastStickRightAxisPoint) : (e.IsLeft ? lastTouchpadLeftAxisPoint : lastTouchpadRightAxisPoint));
-                //前のキーを離す
-                if (doKeyConfig) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
-                else CheckKey(config, false);
-                config.keyIndex = newindex;
-                if (config.keyIndex < 0) return;
-                //新しいキーを押す
-                if (doKeyConfig) await server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
-                else CheckKey(config, true);
-            }
-            if (doKeyConfig || doKeySend) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
-            if (!doKeyConfig) CheckKey(config, false);
-        }
-
-        private int lastTouchpadLeftAxisPoint = -1;
-        private int lastTouchpadRightAxisPoint = -1;
-        private int lastStickLeftAxisPoint = -1;
-        private int lastStickRightAxisPoint = -1;
-
-        private bool isSendingKey = false;
-        //タッチパッドやアナログスティックの変動
-        private async void ControllerAction_AxisChanged(object sender, OVRKeyEventArgs e)
-        {
-            if (e.IsAxis == false) return;
-            var keyName = e.Name;
-            if (keyName.Contains("Trigger")) return; //トリガーは現時点ではアナログ入力無効
-            if (keyName.Contains("Position")) keyName = keyName.Replace("Position", "Touch"); //ポジションはいったんタッチと同じにする
-            bool isStick = keyName.Contains("Stick");
-            var newindex = NearestPointIndex(e.IsLeft, e.Axis.x, e.Axis.y, isStick);
-            if ((isStick ? (e.IsLeft ? lastStickLeftAxisPoint : lastStickRightAxisPoint) : (e.IsLeft ? lastTouchpadLeftAxisPoint : lastTouchpadRightAxisPoint)) != newindex)
-            {//ドラッグで隣の領域に入った場合
-                var config = new KeyConfig();
-                config.type = KeyTypes.Controller;
-                config.actionType = KeyActionTypes.Hand;
-                config.keyCode = -2;
-                config.keyName = keyName;
-                config.isLeft = e.IsLeft;
-                config.keyIndex = (isStick ? (e.IsLeft ? lastStickLeftAxisPoint : lastStickRightAxisPoint) : (e.IsLeft ? lastTouchpadLeftAxisPoint : lastTouchpadRightAxisPoint));
-                config.isTouch = true;// e.IsTouch; //ポジションはいったんタッチと同じにする
-                                      //前のキーを離す
-                if (doKeyConfig || doKeySend) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
-                if (!doKeyConfig) CheckKey(config, false);
-                config.keyIndex = newindex;
-                //新しいキーを押す
-                if (doKeyConfig || doKeySend)
-                {
-                    if (isSendingKey == false)
-                    {
-                        isSendingKey = true;
-                        await server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
-                        isSendingKey = false;
-                    }
-                }
-                if (!doKeyConfig) CheckKey(config, true);
-                if (e.IsLeft)
-                {
-                    if (isStick) lastStickLeftAxisPoint = newindex;
-                    else lastTouchpadLeftAxisPoint = newindex;
-                }
-                else
-                {
-                    if (isStick) lastStickRightAxisPoint = newindex;
-                    else lastTouchpadRightAxisPoint = newindex;
-                }
-            }
-        }
 
 
-        private async void KeyboardAction_KeyDown(object sender, KeyboardEventArgs e)
-        {
-            var config = new KeyConfig();
-            config.type = KeyTypes.Keyboard;
-            config.actionType = KeyActionTypes.Face;
-            config.keyCode = e.KeyCode;
-            config.keyName = e.KeyName;
-            if (doKeyConfig || doKeySend) await server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
-            if (!doKeyConfig) CheckKey(config, true);
-        }
-
-        private /*async*/ void KeyboardAction_KeyUp(object sender, KeyboardEventArgs e)
-        {
-            var config = new KeyConfig();
-            config.type = KeyTypes.Keyboard;
-            config.actionType = KeyActionTypes.Face;
-            config.keyCode = e.KeyCode;
-            config.keyName = e.KeyName;
-            if (doKeyConfig || doKeySend) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
-            if (!doKeyConfig) CheckKey(config, false);
-        }
-
-        private int NearestPointIndex(bool isLeft, float x, float y, bool isStick)
-        {
-            //Debug.Log($"SearchNearestPoint:{x},{y},{isLeft}");
-            int index = 0;
-            var points = isStick ? (isLeft ? CurrentSettings.LeftThumbStickPoints : CurrentSettings.RightThumbStickPoints) : (isLeft ? CurrentSettings.LeftTouchPadPoints : CurrentSettings.RightTouchPadPoints);
-            if (points == null) return 0; //未設定時は一つ
-            var centerEnable = isLeft ? CurrentSettings.LeftCenterEnable : CurrentSettings.RightCenterEnable;
-            if (centerEnable || isStick) //センターキー有効時(タッチパッド) / スティックの場合はセンター無効にする
-            {
-                var point_distance = x * x + y * y;
-                var r = 2.0f / 5.0f; //半径
-                var r2 = r * r;
-                if (point_distance < r2) //円内
-                {
-                    if (isStick) return -1;
-                    index = points.Count + 1;
-                    return index;
-                }
-            }
-            double maxlength = double.MaxValue;
-            for (int i = 0; i < points.Count; i++)
-            {
-                var p = points[i];
-                double length = Math.Sqrt(Math.Pow(x - p.x, 2) + Math.Pow(y - p.y, 2));
-                if (maxlength > length)
-                {
-                    maxlength = length;
-                    index = i + 1;
-                }
-            }
-            return index;
-        }
-
-        private List<KeyConfig> CurrentKeyConfigs = new List<KeyConfig>();
-        private List<KeyAction> CurrentKeyUpActions = new List<KeyAction>();
-
-        private void CheckKey(KeyConfig config, bool isKeyDown)
-        {
-            if (CurrentSettings.KeyActions == null) return;
-            if (isKeyDown)
-            {
-                //CurrentKeyConfigs.Clear();
-                CurrentKeyConfigs.Add(config);
-                Debug.Log("押:" + config.ToString());
-                var doKeyActions = new List<KeyAction>();
-                foreach (var action in CurrentSettings.KeyActions?.OrderBy(d => d.KeyConfigs.Count()))
-                {//キーの少ない順に実行して、同時押しと被ったとき同時押しを後から実行して上書きさせる
-                 //if (action.KeyConfigs.Count == CurrentKeyConfigs.Count)
-                 //{ //別々の機能を同時に押す場合もあるのでキーの数は見てはいけない
-                    var enable = true;
-                    foreach (var key in action.KeyConfigs)
-                    {
-                        if (CurrentKeyConfigs.Where(d => d.IsEqualKeyCode(key) == true).Any() == false)
-                        {
-                            //キーが含まれてないとき
-                            enable = false;
-                        }
-                    }
-                    if (enable)
-                    {//現在押してるキーの中にすべてのキーが含まれていた
-                        if (action.IsKeyUp)
-                        {
-                            //キーを離す操作の時はキューに入れておく
-                            CurrentKeyUpActions.Add(action);
-                        }
-                        else
-                        {
-                            doKeyActions.Add(action);
-                        }
-                    }
-                    //}
-                }
-                if (doKeyActions.Any())
-                {
-                    var tmpActions = new List<KeyAction>(doKeyActions);
-                    foreach (var action in tmpActions)
-                    {
-                        foreach (var target in tmpActions.Where(d => d != action))
-                        {
-                            if (target.KeyConfigs.ContainsArray(action.KeyConfigs))
-                            {//更に複数押しのキー設定が有効な場合、少ないほうは無効(上書きされてしまうため)
-                                doKeyActions.Remove(action);
-                            }
-                        }
-                    }
-                    foreach (var action in doKeyActions)
-                    {//残った処理だけ実行
-                        DoKeyAction(action);
-                    }
-                }
-
-            }
-            else
-            {
-                CurrentKeyConfigs.RemoveAll(d => d.IsEqualKeyCode(config)); //たまに離し損ねるので、もし押しっぱなしなら削除
-                Debug.Log("離:" + config.ToString());
-                //キーを離すイベントのキューチェック
-                var tmpActions = new List<KeyAction>(CurrentKeyUpActions);
-                foreach (var action in tmpActions)
-                {//1度押されたキーなので、現在押されてないキーなら離れたことになる
-                    var enable = true;
-                    foreach (var key in action.KeyConfigs)
-                    {
-                        if (CurrentKeyConfigs.Where(d => d.IsEqualKeyCode(key) == true).Any() == true) //まだ押されてる
-                        {
-                            enable = false;
-                        }
-                    }
-                    if (enable)
-                    {
-                        //手の操作の場合、別の手の操作キーが押されたままだったらそちらを優先して、離す処理は飛ばす
-                        var skipKeyUp = false;
-
-                        var doKeyActions = new List<KeyAction>();
-                        //手の操作時は左手と右手は分けて処理しないと、右がおしっぱで左を離したときに戻らなくなる
-                        foreach (var downaction in CurrentSettings.KeyActions?.OrderBy(d => d.KeyConfigs.Count()).Where(d => d.FaceAction == action.FaceAction && d.HandAction == action.HandAction && d.Hand == action.Hand && d.FunctionAction == action.FunctionAction))
-                        {//キーの少ない順に実行して、同時押しと被ったとき同時押しを後から実行して上書きさせる
-                         //if (action.KeyConfigs.Count == CurrentKeyConfigs.Count)
-                         //{ //別々の機能を同時に押す場合もあるのでキーの数は見てはいけない
-                            var downenable = true;
-                            foreach (var key in downaction.KeyConfigs)
-                            {
-                                if (CurrentKeyConfigs.Where(d => d.IsEqualKeyCode(key) == true).Any() == false)
-                                {
-                                    //キーが含まれてないとき
-                                    downenable = false;
-                                }
-                            }
-                            if (downenable)
-                            {//現在押してるキーの中にすべてのキーが含まれていた
-                                if (downaction.IsKeyUp)
-                                {
-                                }
-                                else
-                                {
-                                    doKeyActions.Add(downaction);
-                                }
-                            }
-                            //}
-                        }
-                        if (doKeyActions.Any())
-                        {
-                            skipKeyUp = true; //優先処理があったので、KeyUpのActionは無効
-                            var tmpDownActions = new List<KeyAction>(doKeyActions);
-                            foreach (var downaction in tmpDownActions)
-                            {
-                                foreach (var target in tmpActions.Where(d => d != downaction))
-                                {
-                                    if (target.KeyConfigs.ContainsArray(downaction.KeyConfigs))
-                                    {//更に複数押しのキー設定が有効な場合、少ないほうは無効(上書きされてしまうため)
-                                        doKeyActions.Remove(downaction);
-                                    }
-                                }
-                            }
-                            foreach (var downaction in doKeyActions)
-                            {//残った処理だけ実行
-                                DoKeyAction(downaction);
-                            }
-                        }
-                        if (skipKeyUp == false) DoKeyAction(action);
-                        CurrentKeyUpActions.Remove(action);
-                    }
-                }
-            }
-        }
-
-
-        private void DoKeyAction(KeyAction action)
+        public void DoKeyAction(KeyAction action)
         {
             if (action.HandAction)
             {
@@ -2788,7 +2362,7 @@ namespace VMC
                         ChangeBackgroundColor(0.9375f, 0.9375f, 0.9375f, false);
                         break;
                     case Functions.ColorCustom:
-                        ChangeBackgroundColor(CurrentSettings.CustomBackgroundColor.r, CurrentSettings.CustomBackgroundColor.g, CurrentSettings.CustomBackgroundColor.b, true);
+                        ChangeBackgroundColor(Settings.Current.CustomBackgroundColor.r, Settings.Current.CustomBackgroundColor.g, Settings.Current.CustomBackgroundColor.b, true);
                         break;
                     case Functions.ColorTransparent:
                         SetBackgroundTransparent();
@@ -2817,36 +2391,36 @@ namespace VMC
 
         private void SetEyeTracking_TobiiOffsets(PipeCommands.SetEyeTracking_TobiiOffsets offsets)
         {
-            CurrentSettings.EyeTracking_TobiiOffsetHorizontal = offsets.OffsetHorizontal;
-            CurrentSettings.EyeTracking_TobiiOffsetVertical = offsets.OffsetVertical;
-            CurrentSettings.EyeTracking_TobiiScaleHorizontal = offsets.ScaleHorizontal;
-            CurrentSettings.EyeTracking_TobiiScaleVertical = offsets.ScaleVertical;
+            Settings.Current.EyeTracking_TobiiOffsetHorizontal = offsets.OffsetHorizontal;
+            Settings.Current.EyeTracking_TobiiOffsetVertical = offsets.OffsetVertical;
+            Settings.Current.EyeTracking_TobiiScaleHorizontal = offsets.ScaleHorizontal;
+            Settings.Current.EyeTracking_TobiiScaleVertical = offsets.ScaleVertical;
             SetEyeTracking_TobiiOffsetsAction?.Invoke(offsets);
         }
 
         public void SetEyeTracking_TobiiPosition(Transform position, float centerX, float centerY)
         {
-            CurrentSettings.EyeTracking_TobiiPosition = StoreTransform.Create(position);
-            CurrentSettings.EyeTracking_TobiiCenterX = centerX;
-            CurrentSettings.EyeTracking_TobiiCenterY = centerY;
+            Settings.Current.EyeTracking_TobiiPosition = StoreTransform.Create(position);
+            Settings.Current.EyeTracking_TobiiCenterX = centerX;
+            Settings.Current.EyeTracking_TobiiCenterY = centerY;
         }
 
         public Vector2 GetEyeTracking_TobiiLocalPosition(Transform saveto)
         {
-            if (CurrentSettings.EyeTracking_TobiiPosition != null) CurrentSettings.EyeTracking_TobiiPosition.ToLocalTransform(saveto);
-            return new Vector2(CurrentSettings.EyeTracking_TobiiCenterX, CurrentSettings.EyeTracking_TobiiCenterY);
+            if (Settings.Current.EyeTracking_TobiiPosition != null) Settings.Current.EyeTracking_TobiiPosition.ToLocalTransform(saveto);
+            return new Vector2(Settings.Current.EyeTracking_TobiiCenterX, Settings.Current.EyeTracking_TobiiCenterY);
         }
         private void SetEyeTracking_ViveProEyeOffsets(PipeCommands.SetEyeTracking_ViveProEyeOffsets offsets)
         {
-            CurrentSettings.EyeTracking_ViveProEyeOffsetHorizontal = offsets.OffsetHorizontal;
-            CurrentSettings.EyeTracking_ViveProEyeOffsetVertical = offsets.OffsetVertical;
-            CurrentSettings.EyeTracking_ViveProEyeScaleHorizontal = offsets.ScaleHorizontal;
-            CurrentSettings.EyeTracking_ViveProEyeScaleVertical = offsets.ScaleVertical;
+            Settings.Current.EyeTracking_ViveProEyeOffsetHorizontal = offsets.OffsetHorizontal;
+            Settings.Current.EyeTracking_ViveProEyeOffsetVertical = offsets.OffsetVertical;
+            Settings.Current.EyeTracking_ViveProEyeScaleHorizontal = offsets.ScaleHorizontal;
+            Settings.Current.EyeTracking_ViveProEyeScaleVertical = offsets.ScaleVertical;
             SetEyeTracking_ViveProEyeOffsetsAction?.Invoke(offsets);
         }
         private void SetEyeTracking_ViveProEyeUseEyelidMovements(PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements useEyelidMovements)
         {
-            CurrentSettings.EyeTracking_ViveProEyeUseEyelidMovements = useEyelidMovements.Use;
+            Settings.Current.EyeTracking_ViveProEyeUseEyelidMovements = useEyelidMovements.Use;
             SetEyeTracking_ViveProEyeUseEyelidMovementsAction?.Invoke(useEyelidMovements);
         }
 
@@ -2858,7 +2432,7 @@ namespace VMC
         private void SetExternalMotionSenderEnable(bool enable)
         {
             if (IsPreRelease == false) return;
-            CurrentSettings.ExternalMotionSenderEnable = enable;
+            Settings.Current.ExternalMotionSenderEnable = enable;
             ExternalMotionSenderObject.SetActive(enable);
             WaitOneFrameAction(() => ModelLoadedAction?.Invoke(CurrentModel));
             WaitOneFrameAction(() => CameraChangedAction?.Invoke(ControlCamera));
@@ -2866,7 +2440,7 @@ namespace VMC
 
         private void SetExternalMotionReceiverEnable(bool enable)
         {
-            CurrentSettings.ExternalMotionReceiverEnable = enable;
+            Settings.Current.ExternalMotionReceiverEnable = enable;
             externalMotionReceiver.SetObjectActive(enable);
             WaitOneFrameAction(() => ModelLoadedAction?.Invoke(CurrentModel));
             WaitOneFrameAction(() => CameraChangedAction?.Invoke(ControlCamera));
@@ -2874,22 +2448,22 @@ namespace VMC
 
         private void SetExternalBonesReceiverEnable(bool enable)
         {
-            CurrentSettings.ExternalBonesReceiverEnable = enable;
+            Settings.Current.ExternalBonesReceiverEnable = enable;
             externalMotionReceiver.receiveBonesFlag = enable;
         }
 
         private void ChangeExternalMotionSenderAddress(string address, int port, int pstatus, int proot, int pbone, int pblendshape, int pcamera, int pdevices, string optionstring, bool responderEnable)
         {
-            CurrentSettings.ExternalMotionSenderAddress = address;
-            CurrentSettings.ExternalMotionSenderPort = port;
-            CurrentSettings.ExternalMotionSenderPeriodStatus = pstatus;
-            CurrentSettings.ExternalMotionSenderPeriodRoot = proot;
-            CurrentSettings.ExternalMotionSenderPeriodBone = pbone;
-            CurrentSettings.ExternalMotionSenderPeriodBlendShape = pblendshape;
-            CurrentSettings.ExternalMotionSenderPeriodCamera = pcamera;
-            CurrentSettings.ExternalMotionSenderPeriodDevices = pdevices;
-            CurrentSettings.ExternalMotionSenderOptionString = optionstring;
-            CurrentSettings.ExternalMotionSenderResponderEnable = responderEnable;
+            Settings.Current.ExternalMotionSenderAddress = address;
+            Settings.Current.ExternalMotionSenderPort = port;
+            Settings.Current.ExternalMotionSenderPeriodStatus = pstatus;
+            Settings.Current.ExternalMotionSenderPeriodRoot = proot;
+            Settings.Current.ExternalMotionSenderPeriodBone = pbone;
+            Settings.Current.ExternalMotionSenderPeriodBlendShape = pblendshape;
+            Settings.Current.ExternalMotionSenderPeriodCamera = pcamera;
+            Settings.Current.ExternalMotionSenderPeriodDevices = pdevices;
+            Settings.Current.ExternalMotionSenderOptionString = optionstring;
+            Settings.Current.ExternalMotionSenderResponderEnable = responderEnable;
 
             externalMotionSender.periodStatus = pstatus;
             externalMotionSender.periodRoot = proot;
@@ -2904,18 +2478,18 @@ namespace VMC
 
         public void ChangeExternalMotionSenderAddress(string address, int port)
         {
-            CurrentSettings.ExternalMotionSenderAddress = address;
-            CurrentSettings.ExternalMotionSenderPort = port;
+            Settings.Current.ExternalMotionSenderAddress = address;
+            Settings.Current.ExternalMotionSenderPort = port;
 
             externalMotionSender.ChangeOSCAddress(address, port);
         }
 
         private void ChangeExternalMotionReceiverPort(int port, bool requesterEnable)
         {
-            CurrentSettings.ExternalMotionReceiverPort = port;
+            Settings.Current.ExternalMotionReceiverPort = port;
             externalMotionReceiver.ChangeOSCPort(port);
 
-            CurrentSettings.ExternalMotionReceiverRequesterEnable = requesterEnable;
+            Settings.Current.ExternalMotionReceiverRequesterEnable = requesterEnable;
             easyDeviceDiscoveryProtocolManager.requesterEnable = requesterEnable;
         }
 
@@ -2938,617 +2512,24 @@ namespace VMC
             DeviceInfo.hmdEnable = hmd;
             DeviceInfo.controllerEnable = controller;
             DeviceInfo.trackerEnable = tracker;
-            CurrentSettings.TrackingFilterEnable = global;
-            CurrentSettings.TrackingFilterHmdEnable = hmd;
-            CurrentSettings.TrackingFilterControllerEnable = controller;
-            CurrentSettings.TrackingFilterTrackerEnable = tracker;
+            Settings.Current.TrackingFilterEnable = global;
+            Settings.Current.TrackingFilterHmdEnable = hmd;
+            Settings.Current.TrackingFilterControllerEnable = controller;
+            Settings.Current.TrackingFilterTrackerEnable = tracker;
         }
 
         private void SetModelModifierEnable(bool fixKneeRotation)
         {
-            CurrentSettings.FixKneeRotation = fixKneeRotation;
+            Settings.Current.FixKneeRotation = fixKneeRotation;
         }
 
         private void SetHandleControllerAsTracker(bool handleCasT)
         {
-            CurrentSettings.HandleControllerAsTracker = handleCasT;
+            Settings.Current.HandleControllerAsTracker = handleCasT;
         }
 
         #region Setting
 
-        [Serializable]
-        public class StoreTransform
-        {
-            public Vector3 localPosition;
-            public Vector3 position;
-            public Quaternion localRotation;
-            public Quaternion rotation;
-            public Vector3 localScale;
-
-            public StoreTransform() { }
-            public StoreTransform(Transform orig) : this()
-            {
-                localPosition = orig.localPosition;
-                position = orig.position;
-                localRotation = orig.localRotation;
-                rotation = orig.rotation;
-                localScale = orig.localScale;
-            }
-
-            public static StoreTransform Create(Transform orig)
-            {
-                if (orig == null) return null;
-                return new StoreTransform(orig);
-            }
-
-            public void SetPosition(Transform orig)
-            {
-                localPosition = orig.position;
-                position = orig.position;
-            }
-
-            public void SetPosition(Vector3 orig)
-            {
-                localPosition = orig;
-                position = orig;
-            }
-
-            public void SetRotation(Transform orig)
-            {
-                localRotation = orig.localRotation;
-                rotation = orig.rotation;
-            }
-
-            public void SetPositionAndRotation(Transform orig)
-            {
-                SetPosition(orig);
-                SetRotation(orig);
-            }
-
-            public Transform ToLocalTransform(Transform saveto)
-            {
-                saveto.localPosition = localPosition;
-                saveto.localRotation = localRotation;
-                saveto.localScale = localScale;
-                return saveto;
-            }
-
-            public Transform ToWorldTransform(Transform saveto)
-            {
-                saveto.position = position;
-                saveto.rotation = rotation;
-                saveto.localScale = localScale;
-                return saveto;
-            }
-        }
-
-        [Serializable]
-        public class LookTargetSettings
-        {
-            public Vector3 Offset;
-            public float Distance;
-            public static LookTargetSettings Create(CameraMouseControl target)
-            {
-                return new LookTargetSettings { Offset = target.LookOffset, Distance = target.CameraDistance };
-            }
-            public void Set(CameraMouseControl target)
-            {
-                Offset = target.LookOffset; Distance = target.CameraDistance;
-            }
-            public void ApplyTo(CameraMouseControl target)
-            {
-                target.LookOffset = Offset; target.CameraDistance = Distance;
-            }
-            public void ApplyTo(Camera camera)
-            {
-                var target = camera.GetComponent<CameraMouseControl>();
-                if (target != null) { target.LookOffset = Offset; target.CameraDistance = Distance; }
-            }
-        }
-
-        [Serializable]
-        public class Settings
-        {
-            [OptionalField]
-            public string AAA_0 = null;
-            [OptionalField]
-            public string AAA_1 = null;
-            [OptionalField]
-            public string AAA_2 = null;
-            [OptionalField]
-            public string AAA_3 = null;
-            [OptionalField]
-            public string AAA_SavedVersion = null;
-            public string VRMPath = null;
-            public StoreTransform headTracker = null;
-            public StoreTransform bodyTracker = null;
-            public StoreTransform leftHandTracker = null;
-            public StoreTransform rightHandTracker = null;
-            public StoreTransform leftFootTracker = null;
-            public StoreTransform rightFootTracker = null;
-            [OptionalField]
-            public StoreTransform leftElbowTracker = null;
-            [OptionalField]
-            public StoreTransform rightElbowTracker = null;
-            [OptionalField]
-            public StoreTransform leftKneeTracker = null;
-            [OptionalField]
-            public StoreTransform rightKneeTracker = null;
-            public Color BackgroundColor;
-            public Color CustomBackgroundColor;
-            public bool IsTransparent;
-            public bool HideBorder;
-            public bool IsTopMost;
-            public StoreTransform FreeCameraTransform = null;
-            public LookTargetSettings FrontCameraLookTargetSettings = null;
-            public LookTargetSettings BackCameraLookTargetSettings = null;
-            [OptionalField]
-            public StoreTransform PositionFixedCameraTransform = null;
-            [OptionalField]
-            public CameraTypes? CameraType = null;
-            [OptionalField]
-            public bool ShowCameraGrid = false;
-            [OptionalField]
-            public bool CameraMirrorEnable = false;
-            [OptionalField]
-            public bool WindowClickThrough;
-            [OptionalField]
-            public bool LipSyncEnable;
-            [OptionalField]
-            public string LipSyncDevice;
-            [OptionalField]
-            public float LipSyncGain;
-            [OptionalField]
-            public bool LipSyncMaxWeightEnable;
-            [OptionalField]
-            public float LipSyncWeightThreashold;
-            [OptionalField]
-            public bool LipSyncMaxWeightEmphasis;
-            [OptionalField]
-            public bool AutoBlinkEnable = false;
-            [OptionalField]
-            public float BlinkTimeMin = 1.0f;
-            [OptionalField]
-            public float BlinkTimeMax = 10.0f;
-            [OptionalField]
-            public float CloseAnimationTime = 0.06f;
-            [OptionalField]
-            public float OpenAnimationTime = 0.03f;
-            [OptionalField]
-            public float ClosingTime = 0.1f;
-            [OptionalField]
-            public string DefaultFace = "通常(NEUTRAL)";
-
-            [OptionalField]
-            public bool IsOculus;
-            [OptionalField]
-            public bool LeftCenterEnable;
-            [OptionalField]
-            public bool RightCenterEnable;
-            [OptionalField]
-            public List<UPoint> LeftTouchPadPoints;
-            [OptionalField]
-            public List<UPoint> RightTouchPadPoints;
-            [OptionalField]
-            public List<UPoint> LeftThumbStickPoints;
-            [OptionalField]
-            public List<UPoint> RightThumbStickPoints;
-            [OptionalField]
-            public List<KeyAction> KeyActions = null;
-            [OptionalField]
-            public float LeftHandRotation = 0; //unused
-            [OptionalField]
-            public float RightHandRotation = 0; //unused
-            [OptionalField]
-            public float LeftHandPositionX;
-            [OptionalField]
-            public float LeftHandPositionY;
-            [OptionalField]
-            public float LeftHandPositionZ;
-            [OptionalField]
-            public float LeftHandRotationX;
-            [OptionalField]
-            public float LeftHandRotationY;
-            [OptionalField]
-            public float LeftHandRotationZ;
-            [OptionalField]
-            public float RightHandPositionX;
-            [OptionalField]
-            public float RightHandPositionY;
-            [OptionalField]
-            public float RightHandPositionZ;
-            [OptionalField]
-            public float RightHandRotationX;
-            [OptionalField]
-            public float RightHandRotationY;
-            [OptionalField]
-            public float RightHandRotationZ;
-            [OptionalField]
-            public int SwivelOffset;
-
-            [OptionalField]
-            public Tuple<ETrackedDeviceClass, string> Head = Tuple.Create(ETrackedDeviceClass.HMD, default(string));
-            [OptionalField]
-            public Tuple<ETrackedDeviceClass, string> LeftHand = Tuple.Create(ETrackedDeviceClass.Controller, default(string));
-            [OptionalField]
-            public Tuple<ETrackedDeviceClass, string> RightHand = Tuple.Create(ETrackedDeviceClass.Controller, default(string));
-            [OptionalField]
-            public Tuple<ETrackedDeviceClass, string> Pelvis = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
-            [OptionalField]
-            public Tuple<ETrackedDeviceClass, string> LeftFoot = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
-            [OptionalField]
-            public Tuple<ETrackedDeviceClass, string> RightFoot = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
-            [OptionalField]
-            public Tuple<ETrackedDeviceClass, string> LeftElbow = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
-            [OptionalField]
-            public Tuple<ETrackedDeviceClass, string> RightElbow = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
-            [OptionalField]
-            public Tuple<ETrackedDeviceClass, string> LeftKnee = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
-            [OptionalField]
-            public Tuple<ETrackedDeviceClass, string> RightKnee = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
-
-            [OptionalField]
-            public float LeftHandTrackerOffsetToBottom = 0.02f;
-            [OptionalField]
-            public float LeftHandTrackerOffsetToBodySide = 0.05f;
-            [OptionalField]
-            public float RightHandTrackerOffsetToBottom = 0.02f;
-            [OptionalField]
-            public float RightHandTrackerOffsetToBodySide = 0.05f;
-
-            [OptionalField]
-            public bool EnableNormalMapFix = true;
-            [OptionalField]
-            public bool DeleteHairNormalMap = true;
-
-            [OptionalField]
-            public bool WebCamEnabled = false;
-            [OptionalField]
-            public bool WebCamResize = false;
-            [OptionalField]
-            public bool WebCamMirroring = false;
-            [OptionalField]
-            public int WebCamBuffering = 0;
-
-            [OptionalField]
-            public float CameraFOV = 60.0f;
-            [OptionalField]
-            public float CameraSmooth = 0.0f;
-
-            [OptionalField]
-            public Color LightColor;
-            [OptionalField]
-            public float LightRotationX;
-            [OptionalField]
-            public float LightRotationY;
-
-            [OptionalField]
-            public int ScreenWidth = 0;
-            [OptionalField]
-            public int ScreenHeight = 0;
-            [OptionalField]
-            public int ScreenRefreshRate = 0;
-
-            //EyeTracking
-            [OptionalField]
-            public float EyeTracking_TobiiScaleHorizontal;
-            [OptionalField]
-            public float EyeTracking_TobiiScaleVertical;
-            [OptionalField]
-            public float EyeTracking_TobiiOffsetHorizontal;
-            [OptionalField]
-            public float EyeTracking_TobiiOffsetVertical;
-            [OptionalField]
-            public StoreTransform EyeTracking_TobiiPosition;
-            [OptionalField]
-            public float EyeTracking_TobiiCenterX;
-            [OptionalField]
-            public float EyeTracking_TobiiCenterY;
-            [OptionalField]
-            public float EyeTracking_ViveProEyeScaleHorizontal;
-            [OptionalField]
-            public float EyeTracking_ViveProEyeScaleVertical;
-            [OptionalField]
-            public float EyeTracking_ViveProEyeOffsetHorizontal;
-            [OptionalField]
-            public float EyeTracking_ViveProEyeOffsetVertical;
-            [OptionalField]
-            public bool EyeTracking_ViveProEyeUseEyelidMovements;
-            [OptionalField]
-            public bool EyeTracking_ViveProEyeEnable;
-
-            //ExternalMotionSender
-            [OptionalField]
-            public bool ExternalMotionSenderEnable;
-            [OptionalField]
-            public string ExternalMotionSenderAddress;
-            [OptionalField]
-            public int ExternalMotionSenderPort;
-            [OptionalField]
-            public int ExternalMotionSenderPeriodStatus;
-            [OptionalField]
-            public int ExternalMotionSenderPeriodRoot;
-            [OptionalField]
-            public int ExternalMotionSenderPeriodBone;
-            [OptionalField]
-            public int ExternalMotionSenderPeriodBlendShape;
-            [OptionalField]
-            public int ExternalMotionSenderPeriodCamera;
-            [OptionalField]
-            public int ExternalMotionSenderPeriodDevices;
-            [OptionalField]
-            public bool ExternalMotionSenderResponderEnable;
-            [OptionalField]
-            public bool ExternalMotionReceiverEnable;
-            [OptionalField]
-            public int ExternalMotionReceiverPort;
-            [OptionalField]
-            public bool ExternalMotionReceiverRequesterEnable;
-            [OptionalField]
-            public string ExternalMotionSenderOptionString;
-            [OptionalField]
-            public List<string> MidiCCBlendShape;
-            [OptionalField]
-            public bool MidiEnable;
-            [OptionalField]
-            public Dictionary<string, string> LipShapesToBlendShapeMap;
-            [OptionalField]
-            public bool LipTracking_ViveEnable;
-
-            [OptionalField]
-            public bool ExternalBonesReceiverEnable;
-
-            [OptionalField]
-            public bool EnableSkeletal;
-
-            [OptionalField]
-            public bool TrackingFilterEnable;
-            [OptionalField]
-            public bool TrackingFilterHmdEnable;
-            [OptionalField]
-            public bool TrackingFilterControllerEnable;
-            [OptionalField]
-            public bool TrackingFilterTrackerEnable;
-
-            [OptionalField]
-            public bool FixKneeRotation;
-
-            [OptionalField]
-            public bool HandleControllerAsTracker;
-
-            [OptionalField]
-            public int AntiAliasing;
-
-            [OptionalField]
-            public bool VirtualMotionTrackerEnable;
-            [OptionalField]
-            public int VirtualMotionTrackerNo;
-
-
-            [OptionalField]
-            public bool PPS_Enable;
-            [OptionalField]
-            public bool PPS_Bloom_Enable;
-            [OptionalField]
-            public float PPS_Bloom_Intensity;
-            [OptionalField]
-            public float PPS_Bloom_Threshold;
-
-            [OptionalField]
-            public bool PPS_DoF_Enable;
-            [OptionalField]
-            public float PPS_DoF_FocusDistance;
-            [OptionalField]
-            public float PPS_DoF_Aperture;
-            [OptionalField]
-            public float PPS_DoF_FocusLength;
-            [OptionalField]
-            public int PPS_DoF_MaxBlurSize;
-
-            [OptionalField]
-            public bool PPS_CG_Enable;
-            [OptionalField]
-            public float PPS_CG_Temperature;
-            [OptionalField]
-            public float PPS_CG_Saturation;
-            [OptionalField]
-            public float PPS_CG_Contrast;
-            [OptionalField]
-            public float PPS_CG_Gamma;
-
-            [OptionalField]
-            public bool PPS_Vignette_Enable;
-            [OptionalField]
-            public float PPS_Vignette_Intensity;
-            [OptionalField]
-            public float PPS_Vignette_Smoothness;
-            [OptionalField]
-            public float PPS_Vignette_Roundness;
-
-            [OptionalField]
-            public bool PPS_CA_Enable;
-            [OptionalField]
-            public float PPS_CA_Intensity;
-            [OptionalField]
-            public bool PPS_CA_FastMode;
-
-            [OptionalField]
-            public float PPS_Bloom_Color_a;
-            [OptionalField]
-            public float PPS_Bloom_Color_r;
-            [OptionalField]
-            public float PPS_Bloom_Color_g;
-            [OptionalField]
-            public float PPS_Bloom_Color_b;
-
-            [OptionalField]
-            public float PPS_CG_ColorFilter_a;
-            [OptionalField]
-            public float PPS_CG_ColorFilter_r;
-            [OptionalField]
-            public float PPS_CG_ColorFilter_g;
-            [OptionalField]
-            public float PPS_CG_ColorFilter_b;
-
-            [OptionalField]
-            public float PPS_Vignette_Color_a;
-            [OptionalField]
-            public float PPS_Vignette_Color_r;
-            [OptionalField]
-            public float PPS_Vignette_Color_g;
-            [OptionalField]
-            public float PPS_Vignette_Color_b;
-
-            [OptionalField]
-            public bool TurnOffAmbientLight;
-
-            //初期値
-            [OnDeserializing()]
-            internal void OnDeserializingMethod(StreamingContext context)
-            {
-                AAA_0 = "========================================";
-                AAA_1 = " Virtual Motion Capture Setting File";
-                AAA_2 = " See more : vmc.info";
-                AAA_3 = "========================================";
-
-                AAA_SavedVersion = null;
-
-                BlinkTimeMin = 1.0f;
-                BlinkTimeMax = 10.0f;
-                CloseAnimationTime = 0.06f;
-                OpenAnimationTime = 0.03f;
-                ClosingTime = 0.1f;
-                DefaultFace = "通常(NEUTRAL)";
-
-                Head = Tuple.Create(ETrackedDeviceClass.HMD, default(string));
-                LeftHand = Tuple.Create(ETrackedDeviceClass.Controller, default(string));
-                RightHand = Tuple.Create(ETrackedDeviceClass.Controller, default(string));
-                Pelvis = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
-                LeftFoot = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
-                RightFoot = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
-                LeftElbow = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
-                RightElbow = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
-                LeftKnee = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
-                RightKnee = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
-
-                LeftHandTrackerOffsetToBottom = 0.02f;
-                LeftHandTrackerOffsetToBodySide = 0.05f;
-                RightHandTrackerOffsetToBottom = 0.02f;
-                RightHandTrackerOffsetToBodySide = 0.05f;
-
-                PositionFixedCameraTransform = null;
-
-                EnableNormalMapFix = true;
-                DeleteHairNormalMap = true;
-
-                CameraMirrorEnable = false;
-
-                WebCamEnabled = false;
-                WebCamResize = false;
-                WebCamMirroring = false;
-                WebCamBuffering = 0;
-
-                CameraFOV = 60.0f;
-                CameraSmooth = 0f;
-
-                LightColor = Color.white;
-                LightRotationX = 130;
-                LightRotationY = 43;
-
-                ScreenWidth = 0;
-                ScreenHeight = 0;
-                ScreenRefreshRate = 0;
-
-                EyeTracking_TobiiScaleHorizontal = 0.5f;
-                EyeTracking_TobiiScaleVertical = 0.2f;
-                EyeTracking_ViveProEyeScaleHorizontal = 2.0f;
-                EyeTracking_ViveProEyeScaleVertical = 1.5f;
-                EyeTracking_ViveProEyeUseEyelidMovements = false;
-                EyeTracking_ViveProEyeEnable = false;
-
-                EnableSkeletal = true;
-
-                ExternalMotionSenderEnable = false;
-                ExternalMotionSenderAddress = "127.0.0.1";
-                ExternalMotionSenderPort = 39539;
-                ExternalMotionSenderPeriodStatus = 1;
-                ExternalMotionSenderPeriodRoot = 1;
-                ExternalMotionSenderPeriodBone = 1;
-                ExternalMotionSenderPeriodBlendShape = 1;
-                ExternalMotionSenderPeriodCamera = 1;
-                ExternalMotionSenderPeriodDevices = 1;
-                ExternalMotionSenderOptionString = "";
-                ExternalMotionSenderResponderEnable = false;
-
-                ExternalMotionReceiverEnable = false;
-                ExternalMotionReceiverPort = 39540;
-                ExternalMotionReceiverRequesterEnable = true;
-
-                MidiCCBlendShape = new List<string>(Enumerable.Repeat(default(string), MidiCCWrapper.KNOBS));
-                MidiEnable = false;
-
-                LipShapesToBlendShapeMap = new Dictionary<string, string>();
-                LipTracking_ViveEnable = false;
-
-                TrackingFilterEnable = true;
-                TrackingFilterHmdEnable = true;
-                TrackingFilterControllerEnable = true;
-                TrackingFilterTrackerEnable = true;
-
-                FixKneeRotation = true;
-
-                HandleControllerAsTracker = false;
-
-                AntiAliasing = 2;
-
-                VirtualMotionTrackerEnable = false;
-                VirtualMotionTrackerNo = 50;
-
-                PPS_Enable = false;
-                PPS_Bloom_Enable = false;
-                PPS_Bloom_Intensity = 2.7f;
-                PPS_Bloom_Threshold = 0.5f;
-
-                PPS_DoF_Enable = false;
-                PPS_DoF_FocusDistance = 1.65f;
-                PPS_DoF_Aperture = 16f;
-                PPS_DoF_FocusLength = 16.4f;
-                PPS_DoF_MaxBlurSize = 3;
-
-                PPS_CG_Enable = false;
-                PPS_CG_Temperature = 0f;
-                PPS_CG_Saturation = 0f;
-                PPS_CG_Contrast = 0f;
-                PPS_CG_Gamma = 0f;
-
-                PPS_Vignette_Enable = false;
-                PPS_Vignette_Intensity = 0.65f;
-                PPS_Vignette_Smoothness = 0.35f;
-                PPS_Vignette_Roundness = 1f;
-
-                PPS_CA_Enable = false;
-                PPS_CA_Intensity = 1f;
-                PPS_CA_FastMode = false;
-
-                PPS_Bloom_Color_a = 1f;
-                PPS_Bloom_Color_r = 1f;
-                PPS_Bloom_Color_g = 1f;
-                PPS_Bloom_Color_b = 1f;
-
-                PPS_CG_ColorFilter_a = 1f;
-                PPS_CG_ColorFilter_r = 1f;
-                PPS_CG_ColorFilter_g = 1f;
-                PPS_CG_ColorFilter_b = 1f;
-
-                PPS_Vignette_Color_a = 1f;
-                PPS_Vignette_Color_r = 0f;
-                PPS_Vignette_Color_g = 0f;
-                PPS_Vignette_Color_b = 0f;
-
-                TurnOffAmbientLight = false;
-                ExternalBonesReceiverEnable = false;
-            }
-        }
 
         [Serializable]
         public class CommonSettings
@@ -3563,7 +2544,6 @@ namespace VMC
             }
         }
 
-        public static Settings CurrentSettings = new Settings();
         public static CommonSettings CurrentCommonSettings = new CommonSettings();
 
         //共通設定の書き込み
@@ -3646,9 +2626,9 @@ namespace VMC
                 return;
             }
 
-            CurrentSettings.AAA_SavedVersion = baseVersionString;
+            Settings.Current.AAA_SavedVersion = baseVersionString;
 
-            File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(CurrentSettings)));
+            File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(Settings.Current)));
 
             //ファイルが正常に書き込めたので、現在共通設定に記録されているパスと違う場合、共通設定に書き込む
             if (CurrentCommonSettings.LoadSettingFilePathOnStart != path)
@@ -3687,7 +2667,7 @@ namespace VMC
             try
             {
                 path = Path.GetFullPath(path); //フルパスに変換
-                CurrentSettings = Json.Serializer.Deserialize<Settings>(File.ReadAllText(path)); //設定を読み込み
+                Settings.Current = Json.Serializer.Deserialize<Settings>(File.ReadAllText(path)); //設定を読み込み
                 float divide = 0;
                 //腰情報を読み込む
                 if (float.TryParse(File.ReadAllText(Application.dataPath + "/../PelvisTrackerOffsetDivide.txt"), out divide))
@@ -3707,10 +2687,10 @@ namespace VMC
             //スケールを元に戻す
             ResetTrackerScale();
             //設定を適用する
-            ApplyCurrentSettings();
+            ApplySettings();
 
             //有効なJSONが取得できたかチェック
-            if (CurrentSettings != null)
+            if (Settings.Current != null)
             {
                 lastLoadedConfigPath = path; //パスを記録
 
@@ -3730,7 +2710,7 @@ namespace VMC
         private void ResetTrackerScale()
         {
             //jsonが正しくデコードできていなければ無視する
-            if (CurrentSettings == null)
+            if (Settings.Current == null)
             {
                 return;
             }
@@ -3752,142 +2732,142 @@ namespace VMC
             footTrackerOffset.ResetTargetAndPosition();
         }
 
-        //CurrentSettingsを各種設定に適用
-        private async void ApplyCurrentSettings()
+        //Settings.Currentを各種設定に適用
+        private async void ApplySettings()
         {
             //VRMのパスが有効で、存在するなら読み込む
-            if (string.IsNullOrWhiteSpace(CurrentSettings.VRMPath) == false
-                && File.Exists(CurrentSettings.VRMPath))
+            if (string.IsNullOrWhiteSpace(Settings.Current.VRMPath) == false
+                && File.Exists(Settings.Current.VRMPath))
             {
-                await server.SendCommandAsync(new PipeCommands.LoadVRMPath { Path = CurrentSettings.VRMPath });
-                await ImportVRM(CurrentSettings.VRMPath, false, CurrentSettings.EnableNormalMapFix, CurrentSettings.DeleteHairNormalMap);
+                await server.SendCommandAsync(new PipeCommands.LoadVRMPath { Path = Settings.Current.VRMPath });
+                await ImportVRM(Settings.Current.VRMPath, false, Settings.Current.EnableNormalMapFix, Settings.Current.DeleteHairNormalMap);
 
                 //メタ情報をOSC送信する
-                VRMmetaLodedAction?.Invoke(LoadVRM(CurrentSettings.VRMPath));
+                VRMmetaLodedAction?.Invoke(LoadVRM(Settings.Current.VRMPath));
             }
 
             //SetResolutionは強制的にウインドウ枠を復活させるのでBorder設定の前にやっておく必要がある
-            if (Screen.resolutions.Any(d => d.width == CurrentSettings.ScreenWidth && d.height == CurrentSettings.ScreenHeight && d.refreshRate == CurrentSettings.ScreenRefreshRate))
+            if (Screen.resolutions.Any(d => d.width == Settings.Current.ScreenWidth && d.height == Settings.Current.ScreenHeight && d.refreshRate == Settings.Current.ScreenRefreshRate))
             {
-                UpdateActionQueue.Enqueue(() => Screen.SetResolution(CurrentSettings.ScreenWidth, CurrentSettings.ScreenHeight, false, CurrentSettings.ScreenRefreshRate));
+                UpdateActionQueue.Enqueue(() => Screen.SetResolution(Settings.Current.ScreenWidth, Settings.Current.ScreenHeight, false, Settings.Current.ScreenRefreshRate));
             }
 
-            if (CurrentSettings.BackgroundColor != null)
+            if (Settings.Current.BackgroundColor != null)
             {
-                UpdateActionQueue.Enqueue(() => ChangeBackgroundColor(CurrentSettings.BackgroundColor.r, CurrentSettings.BackgroundColor.g, CurrentSettings.BackgroundColor.b, false));
+                UpdateActionQueue.Enqueue(() => ChangeBackgroundColor(Settings.Current.BackgroundColor.r, Settings.Current.BackgroundColor.g, Settings.Current.BackgroundColor.b, false));
             }
 
-            if (CurrentSettings.CustomBackgroundColor != null)
+            if (Settings.Current.CustomBackgroundColor != null)
             {
-                await server.SendCommandAsync(new PipeCommands.LoadCustomBackgroundColor { r = CurrentSettings.CustomBackgroundColor.r, g = CurrentSettings.CustomBackgroundColor.g, b = CurrentSettings.CustomBackgroundColor.b });
+                await server.SendCommandAsync(new PipeCommands.LoadCustomBackgroundColor { r = Settings.Current.CustomBackgroundColor.r, g = Settings.Current.CustomBackgroundColor.g, b = Settings.Current.CustomBackgroundColor.b });
             }
 
-            if (CurrentSettings.IsTransparent)
+            if (Settings.Current.IsTransparent)
             {
                 UpdateActionQueue.Enqueue(() => SetBackgroundTransparent());
             }
 
-            UpdateActionQueue.Enqueue(() => SetWindowBorder(CurrentSettings.HideBorder));
-            await server.SendCommandAsync(new PipeCommands.LoadHideBorder { enable = CurrentSettings.HideBorder });
+            UpdateActionQueue.Enqueue(() => SetWindowBorder(Settings.Current.HideBorder));
+            await server.SendCommandAsync(new PipeCommands.LoadHideBorder { enable = Settings.Current.HideBorder });
 
-            UpdateActionQueue.Enqueue(() => SetWindowTopMost(CurrentSettings.IsTopMost));
-            await server.SendCommandAsync(new PipeCommands.LoadIsTopMost { enable = CurrentSettings.IsTopMost });
+            UpdateActionQueue.Enqueue(() => SetWindowTopMost(Settings.Current.IsTopMost));
+            await server.SendCommandAsync(new PipeCommands.LoadIsTopMost { enable = Settings.Current.IsTopMost });
 
-            SetCameraFOV(CurrentSettings.CameraFOV);
-            SetCameraSmooth(CurrentSettings.CameraSmooth);
+            SetCameraFOV(Settings.Current.CameraFOV);
+            SetCameraSmooth(Settings.Current.CameraSmooth);
             FreeCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
             FrontCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
             BackCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
             PositionFixedCamera.GetComponent<CameraMouseControl>()?.CheckUpdate();
 
 
-            if (CurrentSettings.FreeCameraTransform != null)
+            if (Settings.Current.FreeCameraTransform != null)
             {
-                CurrentSettings.FreeCameraTransform.ToLocalTransform(FreeCamera.transform);
+                Settings.Current.FreeCameraTransform.ToLocalTransform(FreeCamera.transform);
                 var control = FreeCamera.GetComponent<CameraMouseControl>();
                 control.CameraAngle = -FreeCamera.transform.rotation.eulerAngles;
                 control.CameraDistance = Vector3.Distance(FreeCamera.transform.position, Vector3.zero);
                 control.CameraTarget = FreeCamera.transform.position + FreeCamera.transform.rotation * Vector3.forward * control.CameraDistance;
             }
-            if (CurrentSettings.FrontCameraLookTargetSettings != null)
+            if (Settings.Current.FrontCameraLookTargetSettings != null)
             {
-                CurrentSettings.FrontCameraLookTargetSettings.ApplyTo(FrontCamera);
+                Settings.Current.FrontCameraLookTargetSettings.ApplyTo(FrontCamera);
             }
-            if (CurrentSettings.BackCameraLookTargetSettings != null)
+            if (Settings.Current.BackCameraLookTargetSettings != null)
             {
-                CurrentSettings.BackCameraLookTargetSettings.ApplyTo(BackCamera);
+                Settings.Current.BackCameraLookTargetSettings.ApplyTo(BackCamera);
             }
-            if (CurrentSettings.PositionFixedCameraTransform != null)
+            if (Settings.Current.PositionFixedCameraTransform != null)
             {
-                CurrentSettings.PositionFixedCameraTransform.ToLocalTransform(PositionFixedCamera.transform);
+                Settings.Current.PositionFixedCameraTransform.ToLocalTransform(PositionFixedCamera.transform);
                 var control = PositionFixedCamera.GetComponent<CameraMouseControl>();
                 control.CameraAngle = -PositionFixedCamera.transform.rotation.eulerAngles;
                 control.CameraDistance = Vector3.Distance(PositionFixedCamera.transform.position, Vector3.zero);
                 control.CameraTarget = PositionFixedCamera.transform.position + PositionFixedCamera.transform.rotation * Vector3.forward * control.CameraDistance;
                 control.UpdateRelativePosition();
             }
-            await server.SendCommandAsync(new PipeCommands.LoadCameraFOV { fov = CurrentSettings.CameraFOV });
-            await server.SendCommandAsync(new PipeCommands.LoadCameraSmooth { speed = CurrentSettings.CameraSmooth });
+            await server.SendCommandAsync(new PipeCommands.LoadCameraFOV { fov = Settings.Current.CameraFOV });
+            await server.SendCommandAsync(new PipeCommands.LoadCameraSmooth { speed = Settings.Current.CameraSmooth });
 
             UpdateWebCamConfig();
-            if (CurrentSettings.CameraType.HasValue)
+            if (Settings.Current.CameraType.HasValue)
             {
-                ChangeCamera(CurrentSettings.CameraType.Value);
+                ChangeCamera(Settings.Current.CameraType.Value);
             }
-            SetGridVisible(CurrentSettings.ShowCameraGrid);
-            await server.SendCommandAsync(new PipeCommands.LoadShowCameraGrid { enable = CurrentSettings.ShowCameraGrid });
-            SetCameraMirrorEnable(CurrentSettings.CameraMirrorEnable);
-            await server.SendCommandAsync(new PipeCommands.LoadCameraMirror { enable = CurrentSettings.CameraMirrorEnable });
-            SetWindowClickThrough(CurrentSettings.WindowClickThrough);
-            await server.SendCommandAsync(new PipeCommands.LoadSetWindowClickThrough { enable = CurrentSettings.WindowClickThrough });
-            SetLipSyncDevice(CurrentSettings.LipSyncDevice);
-            await server.SendCommandAsync(new PipeCommands.LoadLipSyncDevice { device = CurrentSettings.LipSyncDevice });
-            SetLipSyncGain(CurrentSettings.LipSyncGain);
-            await server.SendCommandAsync(new PipeCommands.LoadLipSyncGain { gain = CurrentSettings.LipSyncGain });
-            SetLipSyncMaxWeightEnable(CurrentSettings.LipSyncMaxWeightEnable);
-            await server.SendCommandAsync(new PipeCommands.LoadLipSyncMaxWeightEnable { enable = CurrentSettings.LipSyncMaxWeightEnable });
-            SetLipSyncWeightThreashold(CurrentSettings.LipSyncWeightThreashold);
-            await server.SendCommandAsync(new PipeCommands.LoadLipSyncWeightThreashold { threashold = CurrentSettings.LipSyncWeightThreashold });
-            SetLipSyncMaxWeightEmphasis(CurrentSettings.LipSyncMaxWeightEmphasis);
-            await server.SendCommandAsync(new PipeCommands.LoadLipSyncMaxWeightEmphasis { enable = CurrentSettings.LipSyncMaxWeightEmphasis });
+            SetGridVisible(Settings.Current.ShowCameraGrid);
+            await server.SendCommandAsync(new PipeCommands.LoadShowCameraGrid { enable = Settings.Current.ShowCameraGrid });
+            SetCameraMirrorEnable(Settings.Current.CameraMirrorEnable);
+            await server.SendCommandAsync(new PipeCommands.LoadCameraMirror { enable = Settings.Current.CameraMirrorEnable });
+            SetWindowClickThrough(Settings.Current.WindowClickThrough);
+            await server.SendCommandAsync(new PipeCommands.LoadSetWindowClickThrough { enable = Settings.Current.WindowClickThrough });
+            SetLipSyncDevice(Settings.Current.LipSyncDevice);
+            await server.SendCommandAsync(new PipeCommands.LoadLipSyncDevice { device = Settings.Current.LipSyncDevice });
+            SetLipSyncGain(Settings.Current.LipSyncGain);
+            await server.SendCommandAsync(new PipeCommands.LoadLipSyncGain { gain = Settings.Current.LipSyncGain });
+            SetLipSyncMaxWeightEnable(Settings.Current.LipSyncMaxWeightEnable);
+            await server.SendCommandAsync(new PipeCommands.LoadLipSyncMaxWeightEnable { enable = Settings.Current.LipSyncMaxWeightEnable });
+            SetLipSyncWeightThreashold(Settings.Current.LipSyncWeightThreashold);
+            await server.SendCommandAsync(new PipeCommands.LoadLipSyncWeightThreashold { threashold = Settings.Current.LipSyncWeightThreashold });
+            SetLipSyncMaxWeightEmphasis(Settings.Current.LipSyncMaxWeightEmphasis);
+            await server.SendCommandAsync(new PipeCommands.LoadLipSyncMaxWeightEmphasis { enable = Settings.Current.LipSyncMaxWeightEmphasis });
 
-            SetAutoBlinkEnable(CurrentSettings.AutoBlinkEnable);
-            await server.SendCommandAsync(new PipeCommands.LoadAutoBlinkEnable { enable = CurrentSettings.AutoBlinkEnable });
-            SetBlinkTimeMin(CurrentSettings.BlinkTimeMin);
-            await server.SendCommandAsync(new PipeCommands.LoadBlinkTimeMin { time = CurrentSettings.BlinkTimeMin });
-            SetBlinkTimeMax(CurrentSettings.BlinkTimeMax);
-            await server.SendCommandAsync(new PipeCommands.LoadBlinkTimeMax { time = CurrentSettings.BlinkTimeMax });
-            SetCloseAnimationTime(CurrentSettings.CloseAnimationTime);
-            await server.SendCommandAsync(new PipeCommands.LoadCloseAnimationTime { time = CurrentSettings.CloseAnimationTime });
-            SetOpenAnimationTime(CurrentSettings.OpenAnimationTime);
-            await server.SendCommandAsync(new PipeCommands.LoadOpenAnimationTime { time = CurrentSettings.OpenAnimationTime });
-            SetClosingTime(CurrentSettings.ClosingTime);
-            await server.SendCommandAsync(new PipeCommands.LoadClosingTime { time = CurrentSettings.ClosingTime });
-            SetDefaultFace(CurrentSettings.DefaultFace);
-            await server.SendCommandAsync(new PipeCommands.LoadDefaultFace { face = CurrentSettings.DefaultFace });
+            SetAutoBlinkEnable(Settings.Current.AutoBlinkEnable);
+            await server.SendCommandAsync(new PipeCommands.LoadAutoBlinkEnable { enable = Settings.Current.AutoBlinkEnable });
+            SetBlinkTimeMin(Settings.Current.BlinkTimeMin);
+            await server.SendCommandAsync(new PipeCommands.LoadBlinkTimeMin { time = Settings.Current.BlinkTimeMin });
+            SetBlinkTimeMax(Settings.Current.BlinkTimeMax);
+            await server.SendCommandAsync(new PipeCommands.LoadBlinkTimeMax { time = Settings.Current.BlinkTimeMax });
+            SetCloseAnimationTime(Settings.Current.CloseAnimationTime);
+            await server.SendCommandAsync(new PipeCommands.LoadCloseAnimationTime { time = Settings.Current.CloseAnimationTime });
+            SetOpenAnimationTime(Settings.Current.OpenAnimationTime);
+            await server.SendCommandAsync(new PipeCommands.LoadOpenAnimationTime { time = Settings.Current.OpenAnimationTime });
+            SetClosingTime(Settings.Current.ClosingTime);
+            await server.SendCommandAsync(new PipeCommands.LoadClosingTime { time = Settings.Current.ClosingTime });
+            SetDefaultFace(Settings.Current.DefaultFace);
+            await server.SendCommandAsync(new PipeCommands.LoadDefaultFace { face = Settings.Current.DefaultFace });
 
             await server.SendCommandAsync(new PipeCommands.LoadControllerTouchPadPoints
             {
-                IsOculus = CurrentSettings.IsOculus,
-                LeftPoints = CurrentSettings.LeftTouchPadPoints,
-                LeftCenterEnable = CurrentSettings.LeftCenterEnable,
-                RightPoints = CurrentSettings.RightTouchPadPoints,
-                RightCenterEnable = CurrentSettings.RightCenterEnable
+                IsOculus = Settings.Current.IsOculus,
+                LeftPoints = Settings.Current.LeftTouchPadPoints,
+                LeftCenterEnable = Settings.Current.LeftCenterEnable,
+                RightPoints = Settings.Current.RightTouchPadPoints,
+                RightCenterEnable = Settings.Current.RightCenterEnable
             });
             await server.SendCommandAsync(new PipeCommands.LoadControllerStickPoints
             {
-                LeftPoints = CurrentSettings.LeftThumbStickPoints,
-                RightPoints = CurrentSettings.RightThumbStickPoints,
+                LeftPoints = Settings.Current.LeftThumbStickPoints,
+                RightPoints = Settings.Current.RightThumbStickPoints,
             });
 
-            KeyAction.KeyActionsUpgrade(CurrentSettings.KeyActions);
+            KeyAction.KeyActionsUpgrade(Settings.Current.KeyActions);
 
-            if (string.IsNullOrWhiteSpace(CurrentSettings.AAA_SavedVersion))
+            if (string.IsNullOrWhiteSpace(Settings.Current.AAA_SavedVersion))
             {
                 //before 0.47 _SaveVersion is null.
 
                 //v0.48 BlendShapeKey case sensitive.
-                foreach (var keyAction in CurrentSettings.KeyActions)
+                foreach (var keyAction in Settings.Current.KeyActions)
                 {
                     if (keyAction.FaceNames != null && keyAction.FaceNames.Count > 0)
                     {
@@ -3896,82 +2876,82 @@ namespace VMC
                 }
             }
 
-            steamVR2Input.EnableSkeletal = CurrentSettings.EnableSkeletal;
+            SteamVR2Input.EnableSkeletal = Settings.Current.EnableSkeletal;
 
-            await server.SendCommandAsync(new PipeCommands.LoadSkeletalInputEnable { enable = CurrentSettings.EnableSkeletal });
+            await server.SendCommandAsync(new PipeCommands.LoadSkeletalInputEnable { enable = Settings.Current.EnableSkeletal });
 
-            await server.SendCommandAsync(new PipeCommands.LoadKeyActions { KeyActions = CurrentSettings.KeyActions });
+            await server.SendCommandAsync(new PipeCommands.LoadKeyActions { KeyActions = Settings.Current.KeyActions });
             await server.SendCommandAsync(new PipeCommands.SetHandFreeOffset
             {
-                LeftHandPositionX = (int)Mathf.Round(CurrentSettings.LeftHandPositionX * 1000),
-                LeftHandPositionY = (int)Mathf.Round(CurrentSettings.LeftHandPositionY * 1000),
-                LeftHandPositionZ = (int)Mathf.Round(CurrentSettings.LeftHandPositionZ * 1000),
-                LeftHandRotationX = (int)CurrentSettings.LeftHandRotationX,
-                LeftHandRotationY = (int)CurrentSettings.LeftHandRotationY,
-                LeftHandRotationZ = (int)CurrentSettings.LeftHandRotationZ,
-                RightHandPositionX = (int)Mathf.Round(CurrentSettings.RightHandPositionX * 1000),
-                RightHandPositionY = (int)Mathf.Round(CurrentSettings.RightHandPositionY * 1000),
-                RightHandPositionZ = (int)Mathf.Round(CurrentSettings.RightHandPositionZ * 1000),
-                RightHandRotationX = (int)CurrentSettings.RightHandRotationX,
-                RightHandRotationY = (int)CurrentSettings.RightHandRotationY,
-                RightHandRotationZ = (int)CurrentSettings.RightHandRotationZ,
-                SwivelOffset = CurrentSettings.SwivelOffset,
+                LeftHandPositionX = (int)Mathf.Round(Settings.Current.LeftHandPositionX * 1000),
+                LeftHandPositionY = (int)Mathf.Round(Settings.Current.LeftHandPositionY * 1000),
+                LeftHandPositionZ = (int)Mathf.Round(Settings.Current.LeftHandPositionZ * 1000),
+                LeftHandRotationX = (int)Settings.Current.LeftHandRotationX,
+                LeftHandRotationY = (int)Settings.Current.LeftHandRotationY,
+                LeftHandRotationZ = (int)Settings.Current.LeftHandRotationZ,
+                RightHandPositionX = (int)Mathf.Round(Settings.Current.RightHandPositionX * 1000),
+                RightHandPositionY = (int)Mathf.Round(Settings.Current.RightHandPositionY * 1000),
+                RightHandPositionZ = (int)Mathf.Round(Settings.Current.RightHandPositionZ * 1000),
+                RightHandRotationX = (int)Settings.Current.RightHandRotationX,
+                RightHandRotationY = (int)Settings.Current.RightHandRotationY,
+                RightHandRotationZ = (int)Settings.Current.RightHandRotationZ,
+                SwivelOffset = Settings.Current.SwivelOffset,
             });
             SetHandFreeOffset();
 
-            await server.SendCommandAsync(new PipeCommands.LoadLipSyncEnable { enable = CurrentSettings.LipSyncEnable });
-            SetLipSyncEnable(CurrentSettings.LipSyncEnable);
+            await server.SendCommandAsync(new PipeCommands.LoadLipSyncEnable { enable = Settings.Current.LipSyncEnable });
+            SetLipSyncEnable(Settings.Current.LipSyncEnable);
 
-            await server.SendCommandAsync(new PipeCommands.SetLightAngle { X = CurrentSettings.LightRotationX, Y = CurrentSettings.LightRotationY });
-            SetLightAngle(CurrentSettings.LightRotationX, CurrentSettings.LightRotationY);
-            await server.SendCommandAsync(new PipeCommands.ChangeLightColor { a = CurrentSettings.LightColor.a, r = CurrentSettings.LightColor.r, g = CurrentSettings.LightColor.g, b = CurrentSettings.LightColor.b });
-            ChangeLightColor(CurrentSettings.LightColor.a, CurrentSettings.LightColor.r, CurrentSettings.LightColor.g, CurrentSettings.LightColor.b);
+            await server.SendCommandAsync(new PipeCommands.SetLightAngle { X = Settings.Current.LightRotationX, Y = Settings.Current.LightRotationY });
+            SetLightAngle(Settings.Current.LightRotationX, Settings.Current.LightRotationY);
+            await server.SendCommandAsync(new PipeCommands.ChangeLightColor { a = Settings.Current.LightColor.a, r = Settings.Current.LightColor.r, g = Settings.Current.LightColor.g, b = Settings.Current.LightColor.b });
+            ChangeLightColor(Settings.Current.LightColor.a, Settings.Current.LightColor.r, Settings.Current.LightColor.g, Settings.Current.LightColor.b);
 
-            SetExternalMotionSenderEnable(CurrentSettings.ExternalMotionSenderEnable);
-            ChangeExternalMotionSenderAddress(CurrentSettings.ExternalMotionSenderAddress, CurrentSettings.ExternalMotionSenderPort, CurrentSettings.ExternalMotionSenderPeriodStatus, CurrentSettings.ExternalMotionSenderPeriodRoot, CurrentSettings.ExternalMotionSenderPeriodBone, CurrentSettings.ExternalMotionSenderPeriodBlendShape, CurrentSettings.ExternalMotionSenderPeriodCamera, CurrentSettings.ExternalMotionSenderPeriodDevices, CurrentSettings.ExternalMotionSenderOptionString, CurrentSettings.ExternalMotionSenderResponderEnable);
+            SetExternalMotionSenderEnable(Settings.Current.ExternalMotionSenderEnable);
+            ChangeExternalMotionSenderAddress(Settings.Current.ExternalMotionSenderAddress, Settings.Current.ExternalMotionSenderPort, Settings.Current.ExternalMotionSenderPeriodStatus, Settings.Current.ExternalMotionSenderPeriodRoot, Settings.Current.ExternalMotionSenderPeriodBone, Settings.Current.ExternalMotionSenderPeriodBlendShape, Settings.Current.ExternalMotionSenderPeriodCamera, Settings.Current.ExternalMotionSenderPeriodDevices, Settings.Current.ExternalMotionSenderOptionString, Settings.Current.ExternalMotionSenderResponderEnable);
 
-            ChangeExternalMotionReceiverPort(CurrentSettings.ExternalMotionReceiverPort, CurrentSettings.ExternalMotionReceiverRequesterEnable);
-            SetExternalMotionReceiverEnable(CurrentSettings.ExternalMotionReceiverEnable);
+            ChangeExternalMotionReceiverPort(Settings.Current.ExternalMotionReceiverPort, Settings.Current.ExternalMotionReceiverRequesterEnable);
+            SetExternalMotionReceiverEnable(Settings.Current.ExternalMotionReceiverEnable);
 
-            SetMidiCCBlendShape(CurrentSettings.MidiCCBlendShape);
-            SetMidiEnable(CurrentSettings.MidiEnable);
+            SetMidiCCBlendShape(Settings.Current.MidiCCBlendShape);
+            SetMidiEnable(Settings.Current.MidiEnable);
 
             SetEyeTracking_TobiiOffsetsAction?.Invoke(new PipeCommands.SetEyeTracking_TobiiOffsets
             {
-                OffsetHorizontal = CurrentSettings.EyeTracking_TobiiOffsetHorizontal,
-                OffsetVertical = CurrentSettings.EyeTracking_TobiiOffsetVertical,
-                ScaleHorizontal = CurrentSettings.EyeTracking_TobiiScaleHorizontal,
-                ScaleVertical = CurrentSettings.EyeTracking_TobiiScaleVertical
+                OffsetHorizontal = Settings.Current.EyeTracking_TobiiOffsetHorizontal,
+                OffsetVertical = Settings.Current.EyeTracking_TobiiOffsetVertical,
+                ScaleHorizontal = Settings.Current.EyeTracking_TobiiScaleHorizontal,
+                ScaleVertical = Settings.Current.EyeTracking_TobiiScaleVertical
             });
 
             SetEyeTracking_ViveProEyeOffsetsAction?.Invoke(new PipeCommands.SetEyeTracking_ViveProEyeOffsets
             {
-                OffsetHorizontal = CurrentSettings.EyeTracking_ViveProEyeOffsetHorizontal,
-                OffsetVertical = CurrentSettings.EyeTracking_ViveProEyeOffsetVertical,
-                ScaleHorizontal = CurrentSettings.EyeTracking_ViveProEyeScaleHorizontal,
-                ScaleVertical = CurrentSettings.EyeTracking_ViveProEyeScaleVertical
+                OffsetHorizontal = Settings.Current.EyeTracking_ViveProEyeOffsetHorizontal,
+                OffsetVertical = Settings.Current.EyeTracking_ViveProEyeOffsetVertical,
+                ScaleHorizontal = Settings.Current.EyeTracking_ViveProEyeScaleHorizontal,
+                ScaleVertical = Settings.Current.EyeTracking_ViveProEyeScaleVertical
             });
 
             SetEyeTracking_ViveProEyeUseEyelidMovementsAction?.Invoke(new PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements
             {
-                Use = CurrentSettings.EyeTracking_ViveProEyeUseEyelidMovements
+                Use = Settings.Current.EyeTracking_ViveProEyeUseEyelidMovements
             });
-            SetEyeTracking_ViveProEyeEnable(CurrentSettings.EyeTracking_ViveProEyeEnable);
+            SetEyeTracking_ViveProEyeEnable(Settings.Current.EyeTracking_ViveProEyeEnable);
 
-            SetTrackingFilterEnable(CurrentSettings.TrackingFilterEnable, CurrentSettings.TrackingFilterHmdEnable, CurrentSettings.TrackingFilterControllerEnable, CurrentSettings.TrackingFilterTrackerEnable);
+            SetTrackingFilterEnable(Settings.Current.TrackingFilterEnable, Settings.Current.TrackingFilterHmdEnable, Settings.Current.TrackingFilterControllerEnable, Settings.Current.TrackingFilterTrackerEnable);
 
-            SetModelModifierEnable(CurrentSettings.FixKneeRotation);
-            SetHandleControllerAsTracker(CurrentSettings.HandleControllerAsTracker);
+            SetModelModifierEnable(Settings.Current.FixKneeRotation);
+            SetHandleControllerAsTracker(Settings.Current.HandleControllerAsTracker);
             SetQualitySettings(new PipeCommands.SetQualitySettings
             {
-                antiAliasing = CurrentSettings.AntiAliasing,
+                antiAliasing = Settings.Current.AntiAliasing,
             });
-            SetVMT(CurrentSettings.VirtualMotionTrackerEnable, CurrentSettings.VirtualMotionTrackerNo);
+            SetVMT(Settings.Current.VirtualMotionTrackerEnable, Settings.Current.VirtualMotionTrackerNo);
 
-            SetLipShapeToBlendShapeStringMapAction?.Invoke(CurrentSettings.LipShapesToBlendShapeMap);
-            SetLipTracking_ViveEnable(CurrentSettings.LipTracking_ViveEnable);
+            SetLipShapeToBlendShapeStringMapAction?.Invoke(Settings.Current.LipShapesToBlendShapeMap);
+            SetLipTracking_ViveEnable(Settings.Current.LipTracking_ViveEnable);
 
-            SetExternalBonesReceiverEnable(CurrentSettings.ExternalBonesReceiverEnable);
+            SetExternalBonesReceiverEnable(Settings.Current.ExternalBonesReceiverEnable);
 
             LoadAdvancedGraphicsOption();
 
@@ -3996,22 +2976,22 @@ namespace VMC
 
         private void SetMidiCCBlendShape(List<string> blendshapes)
         {
-            CurrentSettings.MidiCCBlendShape = blendshapes;
+            Settings.Current.MidiCCBlendShape = blendshapes;
             midiCCBlendShape.KnobToBlendShape = blendshapes.ToArray();
         }
 
         private void SetMidiEnable(bool enable)
         {
-            CurrentSettings.MidiEnable = enable;
-            midiCCWrapper.gameObject.SetActive(enable);
+            Settings.Current.MidiEnable = enable;
+            InputManager.Current.midiCCWrapper.gameObject.SetActive(enable);
         }
 
         private void UpdateWebCamConfig()
         {
             SetCameraEnable(CurrentCameraControl);
-            VirtualCamera.Buffering_Global = CurrentSettings.WebCamBuffering;
-            VirtualCamera.MirrorMode_Global = CurrentSettings.WebCamMirroring ? VirtualCamera.EMirrorMode.MirrorHorizontally : VirtualCamera.EMirrorMode.Disabled;
-            VirtualCamera.ResizeMode_Global = CurrentSettings.WebCamResize ? VirtualCamera.EResizeMode.LinearResize : VirtualCamera.EResizeMode.Disabled;
+            VirtualCamera.Buffering_Global = Settings.Current.WebCamBuffering;
+            VirtualCamera.MirrorMode_Global = Settings.Current.WebCamMirroring ? VirtualCamera.EMirrorMode.MirrorHorizontally : VirtualCamera.EMirrorMode.Disabled;
+            VirtualCamera.ResizeMode_Global = Settings.Current.WebCamResize ? VirtualCamera.EResizeMode.LinearResize : VirtualCamera.EResizeMode.Disabled;
         }
 
         private void SetHandFreeOffset()
@@ -4025,36 +3005,29 @@ namespace VMC
             // Beat Saber compatible
 
             leftHandFreeOffsetRotation.localRotation = Quaternion.Euler(
-                CurrentSettings.LeftHandRotationX,
-                -CurrentSettings.LeftHandRotationY,
-                CurrentSettings.LeftHandRotationZ
+                Settings.Current.LeftHandRotationX,
+                -Settings.Current.LeftHandRotationY,
+                Settings.Current.LeftHandRotationZ
             );
             leftHandFreeOffsetPosition.localPosition = new Vector3(
-                -CurrentSettings.LeftHandPositionX,
-                CurrentSettings.LeftHandPositionY,
-                CurrentSettings.LeftHandPositionZ
+                -Settings.Current.LeftHandPositionX,
+                Settings.Current.LeftHandPositionY,
+                Settings.Current.LeftHandPositionZ
             );
 
             rightHandFreeOffsetRotation.localRotation = Quaternion.Euler(
-                CurrentSettings.RightHandRotationX,
-                CurrentSettings.RightHandRotationY,
-                CurrentSettings.RightHandRotationZ
+                Settings.Current.RightHandRotationX,
+                Settings.Current.RightHandRotationY,
+                Settings.Current.RightHandRotationZ
             );
             rightHandFreeOffsetPosition.localPosition = new Vector3(
-                CurrentSettings.RightHandPositionX,
-                CurrentSettings.RightHandPositionY,
-                CurrentSettings.RightHandPositionZ
+                Settings.Current.RightHandPositionX,
+                Settings.Current.RightHandPositionY,
+                Settings.Current.RightHandPositionZ
             );
 
-            vrik.solver.leftArm.swivelOffset = CurrentSettings.SwivelOffset;
-            vrik.solver.rightArm.swivelOffset = -CurrentSettings.SwivelOffset;
-        }
-
-        private void Awake()
-        {
-            baseVersionString = VersionString.Split('f').First();
-            defaultWindowStyle = GetWindowLong(GetUnityWindowHandle(), GWL_STYLE);
-            defaultExWindowStyle = GetWindowLong(GetUnityWindowHandle(), GWL_EXSTYLE);
+            vrik.solver.leftArm.swivelOffset = Settings.Current.SwivelOffset;
+            vrik.solver.rightArm.swivelOffset = -Settings.Current.SwivelOffset;
         }
 
         private ConcurrentQueue<Action> UpdateActionQueue = new ConcurrentQueue<Action>();

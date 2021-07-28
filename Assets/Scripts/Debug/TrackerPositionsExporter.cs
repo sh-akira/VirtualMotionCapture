@@ -52,7 +52,7 @@ namespace VMC
 
             var alldata = new AllTrackerPositions
             {
-                RootTransform = new ControlWPFWindow.StoreTransform(vrik.references.root),
+                RootTransform = new StoreTransform(vrik.references.root),
                 Trackers = Trackers,
                 VrikSolverData = new VRIKSolverData(vrik.solver),
             };

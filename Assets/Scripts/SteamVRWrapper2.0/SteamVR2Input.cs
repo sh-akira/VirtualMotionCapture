@@ -28,7 +28,7 @@ namespace VMC
         public EVRSkeletalTransformSpace skeletalTransformSpace;
         public HandTracking_Skeletal handTracking_Skeletal;
 
-        public bool EnableSkeletal = true;
+        public static bool EnableSkeletal = true;
 
         private VRActiveActionSet_t[] rawActiveActionSetArray;
         private List<VRActionSet> ActionSetList = new List<VRActionSet>();

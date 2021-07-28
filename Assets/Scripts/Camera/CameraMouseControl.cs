@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityMemoryMappedFile;
-using static VMC.ControlWPFWindow;
 
 
 namespace VMC
@@ -159,14 +158,14 @@ namespace VMC
                 {
                     SaveLookTarget();
                 }
-                if (CurrentSettings.CameraType == CameraTypes.Free)
+                if (Settings.Current.CameraType == CameraTypes.Free)
                 {
-                    CurrentSettings.FreeCameraTransform.SetPosition(currentNoScaledPosition);
-                    CurrentSettings.FreeCameraTransform.SetRotation(transform);
+                    Settings.Current.FreeCameraTransform.SetPosition(currentNoScaledPosition);
+                    Settings.Current.FreeCameraTransform.SetRotation(transform);
                 }
-                else if (CurrentSettings.CameraType == CameraTypes.PositionFixed)
+                else if (Settings.Current.CameraType == CameraTypes.PositionFixed)
                 {
-                    CurrentSettings.PositionFixedCameraTransform.SetPositionAndRotation(transform);
+                    Settings.Current.PositionFixedCameraTransform.SetPositionAndRotation(transform);
                 }
             }
         }
@@ -190,7 +189,7 @@ namespace VMC
                 var lookAt = LookTarget.position + LookOffset;
 
                 // カメラとプレイヤーとの間の距離を調整
-                setPosition = lookAt - (LookTarget.transform.forward) * (CurrentSettings.CameraType == CameraTypes.Front ? -CameraDistance : CameraDistance);
+                setPosition = lookAt - (LookTarget.transform.forward) * (Settings.Current.CameraType == CameraTypes.Front ? -CameraDistance : CameraDistance);
 
                 transform.position = setPosition;
                 // 注視点の設定
@@ -216,26 +215,26 @@ namespace VMC
 
         private void SaveLookTarget()
         {
-            if (CurrentSettings.CameraType == CameraTypes.Front)
+            if (Settings.Current.CameraType == CameraTypes.Front)
             {
-                if (CurrentSettings.FrontCameraLookTargetSettings == null)
+                if (Settings.Current.FrontCameraLookTargetSettings == null)
                 {
-                    CurrentSettings.FrontCameraLookTargetSettings = LookTargetSettings.Create(this);
+                    Settings.Current.FrontCameraLookTargetSettings = LookTargetSettings.Create(this);
                 }
                 else
                 {
-                    CurrentSettings.FrontCameraLookTargetSettings.Set(this);
+                    Settings.Current.FrontCameraLookTargetSettings.Set(this);
                 }
             }
-            else if (CurrentSettings.CameraType == CameraTypes.Back)
+            else if (Settings.Current.CameraType == CameraTypes.Back)
             {
-                if (CurrentSettings.BackCameraLookTargetSettings == null)
+                if (Settings.Current.BackCameraLookTargetSettings == null)
                 {
-                    CurrentSettings.BackCameraLookTargetSettings = LookTargetSettings.Create(this);
+                    Settings.Current.BackCameraLookTargetSettings = LookTargetSettings.Create(this);
                 }
                 else
                 {
-                    CurrentSettings.BackCameraLookTargetSettings.Set(this);
+                    Settings.Current.BackCameraLookTargetSettings.Set(this);
                 }
             }
         }

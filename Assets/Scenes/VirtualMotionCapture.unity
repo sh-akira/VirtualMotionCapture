@@ -472,7 +472,6 @@ MonoBehaviour:
   rangeOfMotion: 0
   skeletalTransformSpace: 0
   handTracking_Skeletal: {fileID: 483683249}
-  EnableSkeletal: 1
   handSwap: 0
 --- !u!4 &130023281
 Transform:
@@ -6735,6 +6734,7 @@ Transform:
   - {fileID: 795349837}
   - {fileID: 1549762412}
   - {fileID: 755659413}
+  - {fileID: 1218489916}
   m_Father: {fileID: 0}
   m_RootOrder: 30
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7048,6 +7048,52 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1211879436}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1218489915
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1218489916}
+  - component: {fileID: 1218489917}
+  m_Layer: 0
+  m_Name: InputManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1218489916
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218489915}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1177174446}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1218489917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218489915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 114f8a5e4c8df6844a866ba5efc32a1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controlWPFWindow: {fileID: 1407685704}
+  steamVR2Input: {fileID: 130023280}
+  midiCCWrapper: {fileID: 1604201751}
 --- !u!1 &1250819983
 GameObject:
   m_ObjectHideFlags: 0
@@ -7260,7 +7306,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1300838139}
   - component: {fileID: 1300838138}
-  - component: {fileID: 1300838137}
   m_Layer: 0
   m_Name: RealTrackerRoot
   m_TagString: Untagged
@@ -7268,18 +7313,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!114 &1300838137
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1300838136}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5500d6dda05af245bb16fa7f669b705, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1300838138
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8451,7 +8484,6 @@ MonoBehaviour:
   LipSync: {fileID: 144144637}
   faceController: {fileID: 69806225}
   handController: {fileID: 69806227}
-  steamVR2Input: {fileID: 130023280}
   wristRotationFix: {fileID: 1793473874}
   HandTrackerRoot: {fileID: 1128534204}
   HeadTrackerRoot: {fileID: 421670469}
@@ -8468,7 +8500,6 @@ MonoBehaviour:
   SRanipal_Eye_FrameworkComponent: {fileID: 0}
   LipTracking_ViveComponent: {fileID: 0}
   SRanipal_Lip_FrameworkComponent: {fileID: 0}
-  midiCCWrapper: {fileID: 1604201751}
   midiCCBlendShape: {fileID: 1440382163}
   calibrationState: 0
   lastCalibrateType: 0

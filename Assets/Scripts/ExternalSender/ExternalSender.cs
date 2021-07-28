@@ -307,16 +307,16 @@ namespace VMC
 
                 //【イベント送信】現在の設定
                 infoBundle.Add(new uOSC.Message("/VMC/Ext/Setting/Color",
-                    ControlWPFWindow.CurrentSettings.BackgroundColor.r,
-                    ControlWPFWindow.CurrentSettings.BackgroundColor.g,
-                    ControlWPFWindow.CurrentSettings.BackgroundColor.b,
-                    ControlWPFWindow.CurrentSettings.BackgroundColor.a
+                    Settings.Current.BackgroundColor.r,
+                    Settings.Current.BackgroundColor.g,
+                    Settings.Current.BackgroundColor.b,
+                    Settings.Current.BackgroundColor.a
                 ));
                 infoBundle.Add(new uOSC.Message("/VMC/Ext/Setting/Win",
-                    ControlWPFWindow.CurrentSettings.IsTopMost ? 1 : 0,
-                    ControlWPFWindow.CurrentSettings.IsTransparent ? 1 : 0,
-                    ControlWPFWindow.CurrentSettings.WindowClickThrough ? 1 : 0,
-                    ControlWPFWindow.CurrentSettings.HideBorder ? 1 : 0
+                    Settings.Current.IsTopMost ? 1 : 0,
+                    Settings.Current.IsTransparent ? 1 : 0,
+                    Settings.Current.WindowClickThrough ? 1 : 0,
+                    Settings.Current.HideBorder ? 1 : 0
                 ));
 
                 //送信

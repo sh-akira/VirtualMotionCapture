@@ -223,7 +223,7 @@ namespace VMC
                     float fov = (float)message.values[8];
 
                     //FreeCameraじゃなかったらFreeCameraにする
-                    if (ControlWPFWindow.CurrentSettings.CameraType != UnityMemoryMappedFile.CameraTypes.Free)
+                    if (Settings.Current.CameraType != UnityMemoryMappedFile.CameraTypes.Free)
                     {
                         window.ChangeCamera(UnityMemoryMappedFile.CameraTypes.Free);
                     }
@@ -313,9 +313,9 @@ namespace VMC
                 //キャリブレーション準備 V2.5
                 else if (message.address == "/VMC/Ext/Set/Calib/Ready")
                 {
-                    if (File.Exists(ControlWPFWindow.CurrentSettings.VRMPath))
+                    if (File.Exists(Settings.Current.VRMPath))
                     {
-                        window.ImportVRM(ControlWPFWindow.CurrentSettings.VRMPath, true, true, true);
+                        window.ImportVRM(Settings.Current.VRMPath, true, true, true);
                     }
                 }
                 //キャリブレーション実行 V2.5
