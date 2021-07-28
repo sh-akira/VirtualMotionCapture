@@ -377,6 +377,7 @@
     <system:String x:Key="FaceControlKeyAddWindow_AddFacial">添加表情</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_Add">添加</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_DisableBlinking">取消自动眨眼</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_DisableBlendShapeReception">Disable BlendShape Reception</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_LipSyncSuppression">抑制嘴型影响</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_LipSyncMaxLevel">设置上限（0是不使用）</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_Register">注册</system:String>

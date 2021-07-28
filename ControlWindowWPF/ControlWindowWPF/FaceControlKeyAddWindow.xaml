@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
         mc:Ignorable="d"
-        Title="{DynamicResource FaceControlKeyAddWindowTitle}" Height="350" Width="800" Loaded="Window_Loaded" Closing="Window_Closing" Icon="Resources/VirtualMotionCapture_dark.ico">
+        Title="{DynamicResource FaceControlKeyAddWindowTitle}" Height="374" Width="800" Loaded="Window_Loaded" Closing="Window_Closing" Icon="Resources/VirtualMotionCapture_dark.ico">
     <DockPanel>
         <GroupBox Header="{DynamicResource FaceControlKeyAddWindow_UseKey}" DockPanel.Dock="Top">
             <DockPanel>
@@ -22,6 +22,7 @@
                 </StackPanel>
             </GroupBox>
             <CheckBox HorizontalAlignment="Right" DockPanel.Dock="Top" Content="{DynamicResource FaceControlKeyAddWindow_DisableBlinking}" Name="AutoBlinkCheckBox"/>
+            <CheckBox HorizontalAlignment="Right" DockPanel.Dock="Top" Content="{DynamicResource FaceControlKeyAddWindow_DisableBlendShapeReception}"  Name="DisableBlendShapeCheckBox"/>
             <GroupBox Header="{DynamicResource FaceControlKeyAddWindow_LipSyncSuppression}" DockPanel.Dock="Top">
                 <StackPanel Orientation="Vertical">
                     <DockPanel Margin="0,5,0,0">

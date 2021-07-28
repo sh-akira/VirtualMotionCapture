@@ -1241,6 +1241,7 @@ namespace UnityMemoryMappedFile
         public Functions Function { get; set; }
         public bool StopBlink { get; set; }
         public bool SoftChange { get; set; }
+        public bool DisableBlendShapeReception { get; set; }
 
         public float HandChangeTime { get; set; } = 0.1f;
         public float LipSyncMaxLevel { get; set; } = 1.0f;

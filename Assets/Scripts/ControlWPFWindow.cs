@@ -2766,6 +2766,7 @@ public class ControlWPFWindow : MonoBehaviour
         }
         else if (action.FaceAction)
         {
+            externalMotionReceiver.DisableBlendShapeReception = action.DisableBlendShapeReception;
             LipSync.MaxLevel = action.LipSyncMaxLevel;
             faceController.SetFace(action.FaceNames, action.FaceStrength, action.StopBlink);
         }

@@ -378,6 +378,7 @@
     <system:String x:Key="FaceControlKeyAddWindow_AddFacial">표정추가</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_Add">추가</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_DisableBlinking">자동깜빡임을 무효로 함</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_DisableBlendShapeReception">Disable BlendShape Reception</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_LipSyncSuppression">립싱크억제(입이너무크게열리는걸방지)</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_LipSyncMaxLevel">최대치설정(0으로무효)</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_Register">등록</system:String>

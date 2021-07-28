@@ -377,6 +377,7 @@
     <system:String x:Key="FaceControlKeyAddWindow_AddFacial">Add expression</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_Add">Add</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_DisableBlinking">Disable Auto blinking</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_DisableBlendShapeReception">Disable BlendShape Reception</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_LipSyncSuppression">LipSync suppression</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_LipSyncMaxLevel">Set the max value (0 is disable)</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_Register">Register</system:String>

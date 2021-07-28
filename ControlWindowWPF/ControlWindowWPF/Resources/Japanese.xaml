@@ -378,6 +378,7 @@
     <system:String x:Key="FaceControlKeyAddWindow_AddFacial">表情追加</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_Add">追加</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_DisableBlinking">自動まばたきを無効にする</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_DisableBlendShapeReception">BlendShape受信を無効にする</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_LipSyncSuppression">リップシンク抑制(口の開きすぎを防ぐ)</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_LipSyncMaxLevel">最大値を設定(0で無効)</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_Register">登録</system:String>
