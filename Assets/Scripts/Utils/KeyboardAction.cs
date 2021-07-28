@@ -5,72 +5,74 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-public class KeyboardEventArgs : EventArgs
+namespace VMC
 {
-    public int KeyCode { get; }
-    public string KeyName { get; }
-
-    public KeyboardEventArgs(int keyCode) : base()
+    public class KeyboardEventArgs : EventArgs
     {
-        KeyCode = keyCode; KeyName = KeyboardAction.KeyCodeString[keyCode];
-    }
-}
+        public int KeyCode { get; }
+        public string KeyName { get; }
 
-public static class KeyboardAction
-{
-    public static EventHandler<KeyboardEventArgs> KeyDownEvent;
-    public static EventHandler<KeyboardEventArgs> KeyUpEvent;
-
-    [DllImport("user32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool GetKeyboardState(byte[] lpKeyState);
-    [DllImport("User32.dll")]
-    private static extern short GetAsyncKeyState(System.Int32 vKey);
-
-
-    private static bool IsInitialized = false;
-
-    private static bool[] LastKeys = new bool[256];
-
-    public static void Update()
-    {
-        int i;
-        var keys = new bool[256];
-        var states = new byte[256];
-        //if (GetKeyboardState(states))
-        //{
-        //    for (i = 0; i < 256; i++)
-        //    {
-        //        keys[i] = ((states[i] & 0x80) == 0x80) & KeyMask[i];
-        //    }
-        //}
-        for (i = 0; i < 256; i++)
+        public KeyboardEventArgs(int keyCode) : base()
         {
-            if (KeyMask[i])
-            {
-                keys[i] = (GetAsyncKeyState(i) & 0x8000) != 0;
-            }
+            KeyCode = keyCode; KeyName = KeyboardAction.KeyCodeString[keyCode];
         }
-        if (IsInitialized)
+    }
+
+    public static class KeyboardAction
+    {
+        public static EventHandler<KeyboardEventArgs> KeyDownEvent;
+        public static EventHandler<KeyboardEventArgs> KeyUpEvent;
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool GetKeyboardState(byte[] lpKeyState);
+        [DllImport("User32.dll")]
+        private static extern short GetAsyncKeyState(System.Int32 vKey);
+
+
+        private static bool IsInitialized = false;
+
+        private static bool[] LastKeys = new bool[256];
+
+        public static void Update()
         {
+            int i;
+            var keys = new bool[256];
+            var states = new byte[256];
+            //if (GetKeyboardState(states))
+            //{
+            //    for (i = 0; i < 256; i++)
+            //    {
+            //        keys[i] = ((states[i] & 0x80) == 0x80) & KeyMask[i];
+            //    }
+            //}
             for (i = 0; i < 256; i++)
             {
-                if (keys[i] != LastKeys[i])
+                if (KeyMask[i])
                 {
-                    if (keys[i]) KeyDownEvent(keys, new KeyboardEventArgs(i));
-                    else KeyUpEvent(keys, new KeyboardEventArgs(i));
+                    keys[i] = (GetAsyncKeyState(i) & 0x8000) != 0;
                 }
             }
+            if (IsInitialized)
+            {
+                for (i = 0; i < 256; i++)
+                {
+                    if (keys[i] != LastKeys[i])
+                    {
+                        if (keys[i]) KeyDownEvent(keys, new KeyboardEventArgs(i));
+                        else KeyUpEvent(keys, new KeyboardEventArgs(i));
+                    }
+                }
+            }
+            else
+            {
+                IsInitialized = true;
+            }
+            LastKeys = keys;
         }
-        else
-        {
-            IsInitialized = true;
-        }
-        LastKeys = keys;
-    }
 
 
-    public static string[] KeyCodeString = new string[] {
+        public static string[] KeyCodeString = new string[] {
         "",
         "左クリック",
         "右クリック",
@@ -329,8 +331,8 @@ public static class KeyboardAction
         ""
     };
 
-    private static bool[] KeyMask = new bool[]
-    {
+        private static bool[] KeyMask = new bool[]
+        {
         false, // "",
         false, // "左クリック",
         false, // "右クリック",
@@ -587,5 +589,6 @@ public static class KeyboardAction
         false, // "PA1",
         false, // "Clear"
         false, // ""
-    };
+        };
+    }
 }

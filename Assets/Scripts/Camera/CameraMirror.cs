@@ -4,34 +4,37 @@ using UniGLTF;
 using UnityEngine;
 using VRM;
 
-public class CameraMirror : MonoBehaviour
+namespace VMC
 {
-    private Camera cam;
-
-    public bool MirrorEnable = false;
-
-    void Start()
+    public class CameraMirror : MonoBehaviour
     {
-        cam = GetComponent<Camera>();
-    }
+        private Camera cam;
 
-    void OnPreCull()
-    {
-        if (cam != null)
+        public bool MirrorEnable = false;
+
+        void Start()
         {
-            cam.ResetWorldToCameraMatrix();
-            cam.ResetProjectionMatrix();
-            cam.projectionMatrix = cam.projectionMatrix * Matrix4x4.Scale(new Vector3(MirrorEnable ? -1 : 1, 1, 1));
+            cam = GetComponent<Camera>();
         }
-    }
 
-    void OnPreRender()
-    {
-        GL.invertCulling = MirrorEnable;
-    }
+        void OnPreCull()
+        {
+            if (cam != null)
+            {
+                cam.ResetWorldToCameraMatrix();
+                cam.ResetProjectionMatrix();
+                cam.projectionMatrix = cam.projectionMatrix * Matrix4x4.Scale(new Vector3(MirrorEnable ? -1 : 1, 1, 1));
+            }
+        }
 
-    void OnPostRender()
-    {
-        GL.invertCulling = false;
+        void OnPreRender()
+        {
+            GL.invertCulling = MirrorEnable;
+        }
+
+        void OnPostRender()
+        {
+            GL.invertCulling = false;
+        }
     }
 }

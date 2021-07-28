@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Valve.VR;
+using VMC;
 
 namespace sh_akira.OVRTracking
 {
@@ -163,7 +164,8 @@ namespace sh_akira.OVRTracking
                     if (Controllers.Contains(ControllersObject[i]) == false) Controllers.Add(ControllersObject[i]);
                 }
             }
-            else {
+            else
+            {
                 Controllers.Clear(); //残ってしまったものを削除
             }
 
@@ -190,7 +192,8 @@ namespace sh_akira.OVRTracking
                     if (Trackers.Contains(TrackersObject[i]) == false) Trackers.Add(TrackersObject[i]);
                 }
             }
-            else {
+            else
+            {
                 Trackers.Clear(); //残ってしまったものを削除
             }
 
@@ -208,7 +211,8 @@ namespace sh_akira.OVRTracking
                     if (BaseStations.Contains(BaseStationsObject[i]) == false) BaseStations.Add(BaseStationsObject[i]);
                 }
             }
-            else {
+            else
+            {
                 BaseStations.Clear(); //残ってしまったものを削除
             }
         }

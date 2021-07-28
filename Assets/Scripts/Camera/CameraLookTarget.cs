@@ -4,24 +4,27 @@ using UniGLTF;
 using UnityEngine;
 using VRM;
 
-public class CameraLookTarget : MonoBehaviour
+namespace VMC
 {
-
-    public Transform Target;
-    public Vector3 Offset = new Vector3(0, 0.05f, 0);
-    public float Distance = 0.7f;
-
-    void Update()
+    public class CameraLookTarget : MonoBehaviour
     {
-        if (Target != null)
+
+        public Transform Target;
+        public Vector3 Offset = new Vector3(0, 0.05f, 0);
+        public float Distance = 0.7f;
+
+        void Update()
         {
-            var lookAt = Target.position + Offset;
+            if (Target != null)
+            {
+                var lookAt = Target.position + Offset;
 
-            // カメラとプレイヤーとの間の距離を調整
-            transform.position = lookAt - (Target.transform.forward) * (-Distance);
+                // カメラとプレイヤーとの間の距離を調整
+                transform.position = lookAt - (Target.transform.forward) * (-Distance);
 
-            // 注視点の設定
-            transform.LookAt(lookAt);
+                // 注視点の設定
+                transform.LookAt(lookAt);
+            }
         }
     }
 }

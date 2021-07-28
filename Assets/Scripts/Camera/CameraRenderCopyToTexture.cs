@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraRenderCopyToTexture : MonoBehaviour
+namespace VMC
 {
-    [SerializeField]
-    private RenderTexture targetTexture = null;
-
-    void OnPostRender()
+    public class CameraRenderCopyToTexture : MonoBehaviour
     {
-        if (targetTexture != null)
-            Graphics.Blit(null, targetTexture);
+        [SerializeField]
+        private RenderTexture targetTexture = null;
+
+        void OnPostRender()
+        {
+            if (targetTexture != null)
+                Graphics.Blit(null, targetTexture);
+        }
     }
 }

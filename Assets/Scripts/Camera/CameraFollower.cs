@@ -2,23 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraFollower : MonoBehaviour
+namespace VMC
 {
-    public float Speed = 0f;
-
-    void Update()
+    public class CameraFollower : MonoBehaviour
     {
-        if (CameraMouseControl.Current != null)
+        public float Speed = 0f;
+
+        void Update()
         {
-            if (Speed == 0)
+            if (CameraMouseControl.Current != null)
             {
-                transform.position = CameraMouseControl.Current.transform.position;
-                transform.rotation = CameraMouseControl.Current.transform.rotation;
-            } else
-            {
-                transform.position = Vector3.Slerp(transform.position, CameraMouseControl.Current.transform.position, Time.deltaTime * (21 - Speed));
-                transform.rotation = Quaternion.Slerp(transform.rotation, CameraMouseControl.Current.transform.rotation, Time.deltaTime * (21 - Speed));
+                if (Speed == 0)
+                {
+                    transform.position = CameraMouseControl.Current.transform.position;
+                    transform.rotation = CameraMouseControl.Current.transform.rotation;
+                }
+                else
+                {
+                    transform.position = Vector3.Slerp(transform.position, CameraMouseControl.Current.transform.position, Time.deltaTime * (21 - Speed));
+                    transform.rotation = Quaternion.Slerp(transform.rotation, CameraMouseControl.Current.transform.rotation, Time.deltaTime * (21 - Speed));
+                }
             }
-        }   
+        }
     }
 }

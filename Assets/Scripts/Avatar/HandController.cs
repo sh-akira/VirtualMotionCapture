@@ -2,36 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HandController : MonoBehaviour
+namespace VMC
 {
-
-    private AnimationController leftAnimationController;
-    private AnimationController rightAnimationController;
-    private bool doLeftAnimation = false;
-    private bool doRightAnimation = false;
-
-    //指のデフォルト角度取得
-    public void SetDefaultAngle(Animator animator)
+    public class HandController : MonoBehaviour
     {
-        FingerTransforms.Clear();
-        FingerDefaultVectors.Clear();
-        foreach (var bone in FingerBones)
+
+        private AnimationController leftAnimationController;
+        private AnimationController rightAnimationController;
+        private bool doLeftAnimation = false;
+        private bool doRightAnimation = false;
+
+        //指のデフォルト角度取得
+        public void SetDefaultAngle(Animator animator)
         {
-            var transform = animator.GetBoneTransform(bone);
-            FingerTransforms.Add(transform);
-            if (transform == null)
+            FingerTransforms.Clear();
+            FingerDefaultVectors.Clear();
+            foreach (var bone in FingerBones)
             {
-                FingerDefaultVectors.Add(Vector3.zero);
-            }
-            else
-            {
-                FingerDefaultVectors.Add(new Vector3(transform.rotation.x, transform.rotation.y, transform.rotation.z));
+                var transform = animator.GetBoneTransform(bone);
+                FingerTransforms.Add(transform);
+                if (transform == null)
+                {
+                    FingerDefaultVectors.Add(Vector3.zero);
+                }
+                else
+                {
+                    FingerDefaultVectors.Add(new Vector3(transform.rotation.x, transform.rotation.y, transform.rotation.z));
+                }
             }
         }
-    }
 
 
-    private List<HumanBodyBones> FingerBones = new List<HumanBodyBones>
+        private List<HumanBodyBones> FingerBones = new List<HumanBodyBones>
     {
         HumanBodyBones.LeftLittleDistal,
         HumanBodyBones.LeftLittleIntermediate,
@@ -65,203 +67,204 @@ public class HandController : MonoBehaviour
         HumanBodyBones.RightThumbProximal,
     };
 
-    private List<Transform> FingerTransforms = new List<Transform>();
-    private List<Vector3> FingerDefaultVectors = new List<Vector3>();
+        private List<Transform> FingerTransforms = new List<Transform>();
+        private List<Vector3> FingerDefaultVectors = new List<Vector3>();
 
-    public void SetHandAngle(bool LeftEnable, bool RightEnable, List<int> angles, float animationTime)
-    {
-        if (leftAnimationController == null) leftAnimationController = new AnimationController();
-        if (rightAnimationController == null) rightAnimationController = new AnimationController();
-
-        var startEulers = GetHandEulerAngles();
-        if (startEulers == null) return;
-        var endEulers = CalcHandEulerAngles(angles);
-
-        if (LeftEnable)
+        public void SetHandAngle(bool LeftEnable, bool RightEnable, List<int> angles, float animationTime)
         {
-            leftAnimationController.StopAnimations();
-            leftAnimationController.ClearAnimations();
+            if (leftAnimationController == null) leftAnimationController = new AnimationController();
+            if (rightAnimationController == null) rightAnimationController = new AnimationController();
 
-            leftAnimationController.AddAnimation(animationTime, 0.0f, 1.0f, v => SetHandEulerAngles(true, false, eulersLerp(startEulers, endEulers, v)));
+            var startEulers = GetHandEulerAngles();
+            if (startEulers == null) return;
+            var endEulers = CalcHandEulerAngles(angles);
 
-            doLeftAnimation = true;
+            if (LeftEnable)
+            {
+                leftAnimationController.StopAnimations();
+                leftAnimationController.ClearAnimations();
+
+                leftAnimationController.AddAnimation(animationTime, 0.0f, 1.0f, v => SetHandEulerAngles(true, false, eulersLerp(startEulers, endEulers, v)));
+
+                doLeftAnimation = true;
+            }
+            if (RightEnable)
+            {
+                rightAnimationController.StopAnimations();
+                rightAnimationController.ClearAnimations();
+
+                rightAnimationController.AddAnimation(animationTime, 0.0f, 1.0f, v => SetHandEulerAngles(false, true, eulersLerp(startEulers, endEulers, v)));
+
+                doRightAnimation = true;
+            }
         }
-        if (RightEnable)
+
+        /*
+        private List<Vector3> eulersLerp(List<Vector3> startEulers, List<Vector3> endEulers, float t)
         {
-            rightAnimationController.StopAnimations();
-            rightAnimationController.ClearAnimations();
-
-            rightAnimationController.AddAnimation(animationTime, 0.0f, 1.0f, v => SetHandEulerAngles(false, true, eulersLerp(startEulers, endEulers, v)));
-
-            doRightAnimation = true;
+            var eulers = new List<Vector3>();
+            for (int i = 0; i < startEulers.Count; i++)
+            {
+                eulers.Add(Vector3.Lerp(startEulers[i], endEulers[i], t));
+            }
+            return eulers;
         }
-    }
-
-    /*
-    private List<Vector3> eulersLerp(List<Vector3> startEulers, List<Vector3> endEulers, float t)
-    {
-        var eulers = new List<Vector3>();
-        for (int i = 0; i < startEulers.Count; i++)
+        */
+        private List<Vector3> eulersLerp(List<Vector3> startEulers, List<Vector3> endEulers, float t)
         {
-            eulers.Add(Vector3.Lerp(startEulers[i], endEulers[i], t));
+            var eulers = new List<Vector3>();
+            for (int i = 0; i < startEulers.Count; i++)
+            {
+                var calcStart = new Vector3(startEulers[i].x > 180 ? startEulers[i].x - 360 : startEulers[i].x, startEulers[i].y > 180 ? startEulers[i].y - 360 : startEulers[i].y, startEulers[i].z > 180 ? startEulers[i].z - 360 : startEulers[i].z);
+                var calcEnd = new Vector3(endEulers[i].x > 180 ? endEulers[i].x - 360 : endEulers[i].x, endEulers[i].y > 180 ? endEulers[i].y - 360 : endEulers[i].y, endEulers[i].z > 180 ? endEulers[i].z - 360 : endEulers[i].z);
+                eulers.Add(Vector3.Lerp(calcStart, calcEnd, t));
+            }
+            return eulers;
         }
-        return eulers;
-    }
-    */
-    private List<Vector3> eulersLerp(List<Vector3> startEulers, List<Vector3> endEulers, float t)
-    {
-        var eulers = new List<Vector3>();
-        for (int i = 0; i < startEulers.Count; i++)
+
+
+        public void SetHandEulerAngles(bool LeftEnable, bool RightEnable, List<Vector3> Eulers)
         {
-            var calcStart = new Vector3(startEulers[i].x > 180 ? startEulers[i].x - 360 : startEulers[i].x, startEulers[i].y > 180 ? startEulers[i].y - 360 : startEulers[i].y, startEulers[i].z > 180 ? startEulers[i].z - 360 : startEulers[i].z);
-            var calcEnd = new Vector3(endEulers[i].x > 180 ? endEulers[i].x - 360 : endEulers[i].x, endEulers[i].y > 180 ? endEulers[i].y - 360 : endEulers[i].y, endEulers[i].z > 180 ? endEulers[i].z - 360 : endEulers[i].z);
-            eulers.Add(Vector3.Lerp(calcStart, calcEnd, t));
+            if (FingerTransforms.Count == 0) return;
+            var handBonesCount = FingerBones.Count / 2;
+            if (LeftEnable)
+            {
+                for (int i = 0; i < handBonesCount; i++)
+                {
+                    if (FingerTransforms[i] != null) FingerTransforms[i].localRotation = Quaternion.Euler(Eulers[i]);
+                }
+            }
+            if (RightEnable)
+            {
+                for (int i = 0; i < handBonesCount; i++)
+                {
+                    if (FingerTransforms[i + handBonesCount] != null) FingerTransforms[i + handBonesCount].localRotation = Quaternion.Euler(Eulers[i + handBonesCount]);
+                }
+            }
         }
-        return eulers;
-    }
 
-
-    public void SetHandEulerAngles(bool LeftEnable, bool RightEnable, List<Vector3> Eulers)
-    {
-        if (FingerTransforms.Count == 0) return;
-        var handBonesCount = FingerBones.Count / 2;
-        if (LeftEnable)
+        public List<Vector3> GetHandEulerAngles()
         {
+            var handBonesCount = FingerBones.Count;
+            if (FingerTransforms.Count != handBonesCount) return null;
+            var eulers = new List<Vector3>();
             for (int i = 0; i < handBonesCount; i++)
             {
-                if (FingerTransforms[i] != null) FingerTransforms[i].localRotation = Quaternion.Euler(Eulers[i]);
+                if (FingerTransforms[i] != null)
+                {
+                    eulers.Add(FingerTransforms[i].localRotation.eulerAngles);
+                }
+                else
+                {
+                    eulers.Add(Vector3.zero);
+                }
             }
+            return eulers;
         }
-        if (RightEnable)
+
+        public List<Vector3> CalcHandEulerAngles(List<int> angles)
         {
-            for (int i = 0; i < handBonesCount; i++)
+            if (FingerDefaultVectors == null || FingerDefaultVectors.Count == 0) return null;
+            var handBonesCount = FingerBones.Count / 2;
+            var eulers = new Vector3[FingerBones.Count];
+            for (int i = 0; i < handBonesCount; i += 3)
             {
-                if (FingerTransforms[i + handBonesCount] != null) FingerTransforms[i + handBonesCount].localRotation = Quaternion.Euler(Eulers[i + handBonesCount]);
-            }
-        }
-    }
+                if (i >= 12)
+                { //親指
+                    var vector = FingerDefaultVectors[i + 2]; //第三関節
+                    var angle = (-angles[(i / 3) * 4 + 2]) / 90.0f; //-90が1.0 -45は0.5 -180は2.0
+                    var sideangle = angles[(i / 3) * 4 + 3];
+                    var ax = angle * 0.0f;
+                    var ay = angle * 0.0f + sideangle;
+                    var az = (float)angles[(i / 3) * 4 + 2];
+                    eulers[i + 2] = new Vector3(vector.x + ax, vector.y - ay, vector.z - az);
 
-    public List<Vector3> GetHandEulerAngles()
-    {
-        var handBonesCount = FingerBones.Count;
-        if (FingerTransforms.Count != handBonesCount) return null;
-        var eulers = new List<Vector3>();
-        for (int i = 0; i < handBonesCount; i++)
-        {
-            if (FingerTransforms[i] != null)
+                    vector = FingerDefaultVectors[i + 1]; //第二関節
+                    angle = (-angles[(i / 3) * 4 + 1]) / 90.0f;
+                    ax = angle * 38f;
+                    ay = angle * 38f;
+                    az = angle * -15f;
+                    eulers[i + 1] = new Vector3(vector.x + ax, vector.y - ay, vector.z - az);
+
+                    vector = FingerDefaultVectors[i]; //第一関節
+                    angle = (-angles[(i / 3) * 4]) / 90.0f;
+                    ax = angle * 34f;
+                    ay = angle * 56f;
+                    az = angle * -7f;
+                    eulers[i] = new Vector3(vector.x + ax, vector.y - ay, vector.z - az);
+                }
+                else
+                {
+                    var vector = FingerDefaultVectors[i + 2]; //第三関節
+                    var angle = angles[(i / 3) * 4 + 2];
+                    var sideangle = angles[(i / 3) * 4 + 3];
+                    eulers[i + 2] = new Vector3(vector.x, vector.y - sideangle, vector.z - angle);
+
+                    vector = FingerDefaultVectors[i + 1]; //第二関節
+                    angle = angles[(i / 3) * 4 + 1];
+                    eulers[i + 1] = new Vector3(vector.x, vector.y/* - sideangle*/, vector.z - angle);
+
+                    vector = FingerDefaultVectors[i]; //第一関節
+                    angle = angles[(i / 3) * 4];
+                    eulers[i] = new Vector3(vector.x, vector.y/* - sideangle*/, vector.z - angle);
+                }
+            }
+            for (int i = 0; i < handBonesCount; i += 3)
             {
-                eulers.Add(FingerTransforms[i].localRotation.eulerAngles);
+                if (i >= 12)
+                { //親指
+                    var vector = FingerDefaultVectors[i + 2]; //第三関節
+                    var angle = (-angles[(i / 3) * 4 + 2]) / 90.0f; //-90が1.0 -45は0.5 -180は2.0
+                    var sideangle = angles[(i / 3) * 4 + 3];
+                    var ax = angle * 0.0f;
+                    var ay = angle * 0.0f + sideangle;
+                    var az = (float)angles[(i / 3) * 4 + 2];
+                    eulers[i + handBonesCount + 2] = new Vector3(vector.x + ax, vector.y + ay, vector.z + az);
+
+                    vector = FingerDefaultVectors[i + 1]; //第二関節
+                    angle = (-angles[(i / 3) * 4 + 1]) / 90.0f;
+                    ax = angle * 38f;
+                    ay = angle * 38f;
+                    az = angle * -15f;
+                    eulers[i + handBonesCount + 1] = new Vector3(vector.x + ax, vector.y + ay, vector.z + az);
+
+                    vector = FingerDefaultVectors[i]; //第一関節
+                    angle = (-angles[(i / 3) * 4]) / 90.0f;
+                    ax = angle * 34f;
+                    ay = angle * 56f;
+                    az = angle * -7f;
+                    eulers[i + handBonesCount] = new Vector3(vector.x + ax, vector.y + ay, vector.z + az);
+                }
+                else
+                {
+                    var vector = FingerDefaultVectors[i + 2]; //第三関節
+                    var angle = angles[(i / 3) * 4 + 2];
+                    var sideangle = angles[(i / 3) * 4 + 3];
+                    eulers[i + handBonesCount + 2] = new Vector3(vector.x, vector.y + sideangle, vector.z + angle);
+
+                    vector = FingerDefaultVectors[i + 1]; //第二関節
+                    angle = angles[(i / 3) * 4 + 1];
+                    eulers[i + handBonesCount + 1] = new Vector3(vector.x, vector.y/* + sideangle*/, vector.z + angle);
+
+                    vector = FingerDefaultVectors[i]; //第一関節
+                    angle = angles[(i / 3) * 4];
+                    eulers[i + handBonesCount] = new Vector3(vector.x, vector.y/* + sideangle*/, vector.z + angle);
+                }
             }
-            else
+            return new List<Vector3>(eulers);
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            if (doLeftAnimation && leftAnimationController?.Next() == false)
             {
-                eulers.Add(Vector3.zero);
+                doLeftAnimation = false;
             }
-        }
-        return eulers;
-    }
-
-    public List<Vector3> CalcHandEulerAngles(List<int> angles)
-    {
-        if (FingerDefaultVectors == null || FingerDefaultVectors.Count == 0) return null;
-        var handBonesCount = FingerBones.Count / 2;
-        var eulers = new Vector3[FingerBones.Count];
-        for (int i = 0; i < handBonesCount; i += 3)
-        {
-            if (i >= 12)
-            { //親指
-                var vector = FingerDefaultVectors[i + 2]; //第三関節
-                var angle = (-angles[(i / 3) * 4 + 2]) / 90.0f; //-90が1.0 -45は0.5 -180は2.0
-                var sideangle = angles[(i / 3) * 4 + 3];
-                var ax = angle * 0.0f;
-                var ay = angle * 0.0f + sideangle;
-                var az = (float)angles[(i / 3) * 4 + 2];
-                eulers[i + 2] = new Vector3(vector.x + ax, vector.y - ay, vector.z - az);
-
-                vector = FingerDefaultVectors[i + 1]; //第二関節
-                angle = (-angles[(i / 3) * 4 + 1]) / 90.0f;
-                ax = angle * 38f;
-                ay = angle * 38f;
-                az = angle * -15f;
-                eulers[i + 1] = new Vector3(vector.x + ax, vector.y - ay, vector.z - az);
-
-                vector = FingerDefaultVectors[i]; //第一関節
-                angle = (-angles[(i / 3) * 4]) / 90.0f;
-                ax = angle * 34f;
-                ay = angle * 56f;
-                az = angle * -7f;
-                eulers[i] = new Vector3(vector.x + ax, vector.y - ay, vector.z - az);
-            }
-            else
+            if (doRightAnimation && rightAnimationController?.Next() == false)
             {
-                var vector = FingerDefaultVectors[i + 2]; //第三関節
-                var angle = angles[(i / 3) * 4 + 2];
-                var sideangle = angles[(i / 3) * 4 + 3];
-                eulers[i + 2] = new Vector3(vector.x, vector.y - sideangle, vector.z - angle);
-
-                vector = FingerDefaultVectors[i + 1]; //第二関節
-                angle = angles[(i / 3) * 4 + 1];
-                eulers[i + 1] = new Vector3(vector.x, vector.y/* - sideangle*/, vector.z - angle);
-
-                vector = FingerDefaultVectors[i]; //第一関節
-                angle = angles[(i / 3) * 4];
-                eulers[i] = new Vector3(vector.x, vector.y/* - sideangle*/, vector.z - angle);
+                doRightAnimation = false;
             }
-        }
-        for (int i = 0; i < handBonesCount; i += 3)
-        {
-            if (i >= 12)
-            { //親指
-                var vector = FingerDefaultVectors[i + 2]; //第三関節
-                var angle = (-angles[(i / 3) * 4 + 2]) / 90.0f; //-90が1.0 -45は0.5 -180は2.0
-                var sideangle = angles[(i / 3) * 4 + 3];
-                var ax = angle * 0.0f;
-                var ay = angle * 0.0f + sideangle;
-                var az = (float)angles[(i / 3) * 4 + 2];
-                eulers[i + handBonesCount + 2] = new Vector3(vector.x + ax, vector.y + ay, vector.z + az);
-
-                vector = FingerDefaultVectors[i + 1]; //第二関節
-                angle = (-angles[(i / 3) * 4 + 1]) / 90.0f;
-                ax = angle * 38f;
-                ay = angle * 38f;
-                az = angle * -15f;
-                eulers[i + handBonesCount + 1] = new Vector3(vector.x + ax, vector.y + ay, vector.z + az);
-
-                vector = FingerDefaultVectors[i]; //第一関節
-                angle = (-angles[(i / 3) * 4]) / 90.0f;
-                ax = angle * 34f;
-                ay = angle * 56f;
-                az = angle * -7f;
-                eulers[i + handBonesCount] = new Vector3(vector.x + ax, vector.y + ay, vector.z + az);
-            }
-            else
-            {
-                var vector = FingerDefaultVectors[i + 2]; //第三関節
-                var angle = angles[(i / 3) * 4 + 2];
-                var sideangle = angles[(i / 3) * 4 + 3];
-                eulers[i + handBonesCount + 2] = new Vector3(vector.x, vector.y + sideangle, vector.z + angle);
-
-                vector = FingerDefaultVectors[i + 1]; //第二関節
-                angle = angles[(i / 3) * 4 + 1];
-                eulers[i + handBonesCount + 1] = new Vector3(vector.x, vector.y/* + sideangle*/, vector.z + angle);
-
-                vector = FingerDefaultVectors[i]; //第一関節
-                angle = angles[(i / 3) * 4];
-                eulers[i + handBonesCount] = new Vector3(vector.x, vector.y/* + sideangle*/, vector.z + angle);
-            }
-        }
-        return new List<Vector3>(eulers);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (doLeftAnimation && leftAnimationController?.Next() == false)
-        {
-            doLeftAnimation = false;
-        }
-        if (doRightAnimation && rightAnimationController?.Next() == false)
-        {
-            doRightAnimation = false;
         }
     }
 }
