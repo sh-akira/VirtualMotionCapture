@@ -1,9 +1,6 @@
 ﻿//gpsnmeajp
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using EasyDeviceDiscoveryProtocolClient;
+using UnityEngine;
 
 namespace VMC
 {

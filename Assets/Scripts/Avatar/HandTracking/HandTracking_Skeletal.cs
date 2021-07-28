@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
-using System.Text;
 using UnityEngine;
 using Valve.VR;
 

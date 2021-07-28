@@ -1,5 +1,5 @@
-﻿using System;
-using RootMotion.FinalIK;
+﻿using RootMotion.FinalIK;
+using System;
 
 namespace VMC
 {

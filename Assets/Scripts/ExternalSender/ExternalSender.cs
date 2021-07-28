@@ -1,16 +1,12 @@
 ﻿//gpsnmeajp
-using System;
-using System.IO;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using RootMotion.FinalIK;
-using VRM;
-using System.Reflection;
-
 using sh_akira;
 using sh_akira.OVRTracking;
+using System;
+using System.Reflection;
+using UnityEngine;
 using UnityMemoryMappedFile;
+using VRM;
 
 namespace VMC
 {
@@ -88,7 +84,7 @@ namespace VMC
                 this.remoteName = null;
                 this.remoteJson = null;
                 SendPerLowRate(); //即時送信
-        };
+            };
             window.VRMRemoteLoadedAction += (string path) =>
             {
                 this.vrmdata = null;
@@ -105,24 +101,24 @@ namespace VMC
                     remoteJson = Json.Serializer.Serialize(new VRoidHubRemote { characterModelId = characterModelId });
                 }
                 SendPerLowRate(); //即時送信
-        };
+            };
 
             window.LightChangedAction += () =>
             {
                 SendPerLowRate(); //即時送信
-        };
+            };
 
             window.LoadedConfigPathChangedAction += () =>
             {
                 SendPerLowRate(); //即時送信
-        };
+            };
 
             steamVR2Input.KeyDownEvent += (object sender, OVRKeyEventArgs e) =>
             {
                 if (this.isActiveAndEnabled)
                 {
-                //Debug.Log("Ext: ConDown");
-                try
+                    //Debug.Log("Ext: ConDown");
+                    try
                     {
                         uClient?.Send("/VMC/Ext/Con", 1, e.Name, e.IsLeft ? 1 : 0, e.IsTouch ? 1 : 0, e.IsAxis ? 1 : 0, e.Axis.x, e.Axis.y, e.Axis.z);
                     }
@@ -137,8 +133,8 @@ namespace VMC
             {
                 if (this.isActiveAndEnabled)
                 {
-                //Debug.Log("Ext: ConUp");
-                try
+                    //Debug.Log("Ext: ConUp");
+                    try
                     {
                         uClient?.Send("/VMC/Ext/Con", 0, e.Name, e.IsLeft ? 1 : 0, e.IsTouch ? 1 : 0, e.IsAxis ? 1 : 0, e.Axis.x, e.Axis.y, e.Axis.z);
                     }
@@ -153,8 +149,8 @@ namespace VMC
             {
                 if (this.isActiveAndEnabled)
                 {
-                //Debug.Log("Ext: ConAxis");
-                try
+                    //Debug.Log("Ext: ConAxis");
+                    try
                     {
                         if (e.IsAxis)
                         {
@@ -172,8 +168,8 @@ namespace VMC
             {
                 if (this.isActiveAndEnabled)
                 {
-                //Debug.Log("Ext: KeyDown");
-                try
+                    //Debug.Log("Ext: KeyDown");
+                    try
                     {
                         uClient?.Send("/VMC/Ext/Key", 1, e.KeyName, e.KeyCode);
                     }
@@ -187,8 +183,8 @@ namespace VMC
             {
                 if (this.isActiveAndEnabled)
                 {
-                //Debug.Log("Ext: KeyUp");
-                try
+                    //Debug.Log("Ext: KeyUp");
+                    try
                     {
                         uClient?.Send("/VMC/Ext/Key", 0, e.KeyName, e.KeyCode);
                     }
@@ -203,8 +199,8 @@ namespace VMC
             {
                 if (this.isActiveAndEnabled)
                 {
-                //Debug.Log("Ext: KeyDown");
-                try
+                    //Debug.Log("Ext: KeyDown");
+                    try
                     {
                         uClient?.Send("/VMC/Ext/Midi/Note", 1, (int)channel, note, velocity);
                     }
@@ -218,8 +214,8 @@ namespace VMC
             {
                 if (this.isActiveAndEnabled)
                 {
-                //Debug.Log("Ext: KeyDown");
-                try
+                    //Debug.Log("Ext: KeyDown");
+                    try
                     {
                         uClient?.Send("/VMC/Ext/Midi/Note", 0, (int)channel, note, (float)0f);
                     }
@@ -233,8 +229,8 @@ namespace VMC
             {
                 if (this.isActiveAndEnabled)
                 {
-                //Debug.Log("Ext: KeyDown");
-                try
+                    //Debug.Log("Ext: KeyDown");
+                    try
                     {
                         uClient?.Send("/VMC/Ext/Midi/CC/Val", knobNo, value);
                     }
@@ -248,8 +244,8 @@ namespace VMC
             {
                 if (this.isActiveAndEnabled)
                 {
-                //Debug.Log("Ext: KeyDown");
-                try
+                    //Debug.Log("Ext: KeyDown");
+                    try
                     {
                         uClient?.Send("/VMC/Ext/Midi/CC/Bit", knobNo, (int)(value ? 1 : 0));
                     }

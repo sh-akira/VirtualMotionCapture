@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UniGLTF;
-using UnityEngine;
-using VRM;
+﻿using UnityEngine;
 
 namespace VMC
 {
