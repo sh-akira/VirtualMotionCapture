@@ -6,7 +6,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using UnityMemoryMappedFile;
+using sh_akira;
 
 namespace VirtualMotionCaptureControlPanel
 {
@@ -550,25 +550,24 @@ namespace VirtualMotionCaptureControlPanel
             win.Owner = this;
             win.ShowDialog();
         }
-
         [DataContract]
         private class CameraPlusConfig
         {
             [DataMember]
             public float FieldOfView { get; set; }
             [DataMember]
-            public TransformElements ThirdPersonPos = new TransformElements();
-            [DataMember]
-            public TransformElements ThirdPersonRot = new TransformElements();
+            public TransformElements ThirdPersonPos { get; set; }
+            [DataMember] 
+            public TransformElements ThirdPersonRot { get; set; }
         }
         [DataContract]
         private class TransformElements
         {
-            [DataMember]
+            [DataMember] 
             public float x { get; set; }
-            [DataMember]
+            [DataMember] 
             public float y { get; set; }
-            [DataMember]
+            [DataMember] 
             public float z { get; set; }
         }
         private async void CameraPlus_ImportButton_Click(object sender, RoutedEventArgs e)
@@ -582,14 +581,10 @@ namespace VirtualMotionCaptureControlPanel
             if (ofd.ShowDialog() == true)
             {
                 var configs = new Dictionary<string, string>();
-                if (ofd.FileName.ToLower().Contains(".json"))
+                if (System.IO.Path.GetExtension(ofd.FileName) == ".json")
                 {
-                    var c = new CameraPlusConfig();
-                    using (var ms = new FileStream(ofd.FileName, FileMode.Open))
-                    {
-                        var serializer = new DataContractJsonSerializer(typeof(CameraPlusConfig));
-                        c = (CameraPlusConfig)serializer.ReadObject(ms);
-                    }
+                    var json = File.ReadAllText(ofd.FileName);
+                    var c = Json.Serializer.Deserialize<CameraPlusConfig>(json);
                     await Globals.Client?.SendCommandAsync(new PipeCommands.ImportCameraPlus { x = c.ThirdPersonPos.x, y = c.ThirdPersonPos.y, z = c.ThirdPersonPos.z, rx = c.ThirdPersonRot.x, ry = c.ThirdPersonRot.y, rz = c.ThirdPersonRot.z, fov = c.FieldOfView });
                 }
                 else
