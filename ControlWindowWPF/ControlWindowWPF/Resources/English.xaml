@@ -232,6 +232,7 @@
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig">Export externalcamera.cfg</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">Export externalcamera.cfg to synthesize model into VR game</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSender">VMCProtocol Motion sender</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSender_Free">VMCProtocol Motion sender / VMC Mod</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">Enable OSC motion sender</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">Interval(once every specified frame)</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiver">VMCProtocol Motion receiver</system:String>
@@ -251,7 +252,7 @@
    	<system:String x:Key="SettingWindow_HandleControllerAsTracker">Handle Controller as Tracker</system:String>
    	<system:String x:Key="SettingWindow_QualitySettings">Quality Settings</system:String>
    	<system:String x:Key="SettingWindow_AntiAliasing">AntiAliasing</system:String>
-    <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">Sending motion is only available for pixivFANBOX and Patreon versions.</system:String>
+    <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">Sending motion / VMC Mod is only available for pixivFANBOX and Patreon versions.</system:String>
    	<system:String x:Key="SettingWindow_VirtualMotionTracker">Virtual Motion Tracker (VMT)</system:String>
 	<system:String x:Key="SettingWindow_VirtualMotionTrackerEnable">Enable</system:String>
 	<system:String x:Key="SettingWindow_VirtualMotionTrackerInstallSuccess">Success! Restart SteamVR and VirtualMotionCapture. Press OK and wait auto restart.</system:String>

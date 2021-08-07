@@ -232,6 +232,7 @@
     <system:String x:Key="SettingWindow_ExportVMTExternalCameraConfig">>输出externalcamera.cfg到LIV</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">输出externalcamera.cfg以校准VR游戏的相机</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSender">发送外部动作(VMCProtocol)</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSender_Free">发送外部动作(VMCProtocol) / VMC Mod</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">成功用OSC运动发送</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">传输间隔（每隔指定的帧一次）</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiver">接受外部动作(VMCProtocol)</system:String>
@@ -251,7 +252,7 @@
    	<system:String x:Key="SettingWindow_HandleControllerAsTracker">控制器当做追踪器</system:String>
    	<system:String x:Key="SettingWindow_QualitySettings">画质设置</system:String>
    	<system:String x:Key="SettingWindow_AntiAliasing">抗锯齿</system:String>
-    <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">发送动作功能仅在pixivFANBOX以及Patreon版本下可使用。</system:String>
+    <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">VMC Mod/发送动作功能仅在pixivFANBOX以及Patreon版本下可使用。</system:String>
    	<system:String x:Key="SettingWindow_VirtualMotionTracker">虚拟追踪器(VMT)</system:String>
 	<system:String x:Key="SettingWindow_VirtualMotionTrackerEnable">开启</system:String>
 	<system:String x:Key="SettingWindow_VirtualMotionTrackerInstallSuccess">安装成功！重启SteamVR和VirtualMotionCapture。点击OK并等待重启。</system:String>

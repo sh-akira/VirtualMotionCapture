@@ -20,19 +20,15 @@ namespace VMCMod
         private void Awake()
         {
             ModsPath = Application.dataPath + "/../Mods/";
+        }
+
+        public void ImportMods()
+        {
             if (Directory.Exists(ModsPath) == false)
             {
                 Directory.CreateDirectory(ModsPath);
             }
-        }
 
-        private void Start()
-        {
-            ImportMods();
-        }
-
-        private void ImportMods()
-        {
             Debug.Log("Start Loading Mods");
             var attributeTypesList = new Dictionary<List<Type>, string>();
             foreach (var dllFile in Directory.GetFiles(ModsPath, "*.dll", SearchOption.AllDirectories))

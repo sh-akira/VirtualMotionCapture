@@ -232,7 +232,8 @@
     <system:String x:Key="SettingWindow_ExportVMTExternalCameraConfig">LIV向けexternalcamera.cfgの書き出し</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig">externalcamera.cfgの書き出し</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">VRゲームにモデルを合成するためのexternalcamera.cfgを出力します</system:String>
-	<system:String x:Key="SettingWindow_ExternalMotionSender">モーション送信(VMCProtocol)</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSender">モーション送信(VMCProtocol)</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSender_Free">モーション送信(VMCProtocol) / VMC Mod</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">OSCでモーション送信を有効にする</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">送信間隔(指定フレームに1回)</system:String>
 	<system:String x:Key="SettingWindow_ExternalMotionReceiver">モーション受信(VMCProtocol)</system:String>
@@ -252,7 +253,7 @@
     <system:String x:Key="SettingWindow_HandleControllerAsTracker">コントローラをトラッカーとして扱う(特殊持ち対応)</system:String>
 	<system:String x:Key="SettingWindow_QualitySettings">描画品質</system:String>
 	<system:String x:Key="SettingWindow_AntiAliasing">アンチエイリアス</system:String>
-    <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">モーション送信機能はpixivFANBOX,Patreon先行配信版限定機能です</system:String>
+    <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">モーション送信機能 / VMC ModはpixivFANBOX,Patreon先行配信版限定機能です</system:String>
 	<system:String x:Key="SettingWindow_VirtualMotionTracker">Virtual Motion Tracker (VMT)</system:String>
     <system:String x:Key="SettingWindow_VirtualMotionTrackerEnable">有効</system:String>
     <system:String x:Key="SettingWindow_VirtualMotionTrackerInstallSuccess">成功しました。SteamVRとバーチャルモーションキャプチャーが自動で再起動されますので、OKを押してしばらくお待ちください。</system:String>

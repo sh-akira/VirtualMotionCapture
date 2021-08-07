@@ -46,6 +46,7 @@ namespace VirtualMotionCaptureControlPanel
             LanguageComboBox.SelectedItem = languageitem;
 #if FREE
             (FanboxExternalMotionSenderGroupBox.Parent as StackPanel).Children.Remove(FanboxExternalMotionSenderGroupBox);
+            (VMCModGroupBox.Parent as StackPanel).Children.Remove(VMCModGroupBox);
 #elif FANBOX
             (FreeExternalMotionSenderGroupBox.Parent as StackPanel).Children.Remove(FreeExternalMotionSenderGroupBox);
 #endif

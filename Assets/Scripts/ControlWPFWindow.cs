@@ -357,6 +357,10 @@ public class ControlWPFWindow : MonoBehaviour
                 var d = (PipeCommands.SetIsBeta)e.Data;
                 IsBeta = d.IsBeta;
                 IsPreRelease = d.IsPreRelease;
+                if (IsPreRelease)
+                {
+                    modManager.ImportMods();
+                }
             }
             else if (e.CommandType == typeof(PipeCommands.LoadVRM))
             {
