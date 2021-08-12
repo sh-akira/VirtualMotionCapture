@@ -236,29 +236,29 @@
     <system:String x:Key="SettingWindow_ExternalMotionSender_Free">외부로 모션을 송신(VMCProtocol) / VMC Mod</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">OSC로 모션송신을 활성화합니다</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">전송 간격 (지정 프레임에 1 회)</system:String>
-	<system:String x:Key="SettingWindow_ExternalMotionReceiver">외부에서 모션 수신(VMCProtocol)</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionReceiver">외부에서 모션 수신(VMCProtocol)</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">OSC에서 모션의 수신을 활성화합니다</system:String>
-	<system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape</system:String>
+    <system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape</system:String>
     <system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">Knob to BlendShape setting</system:String>
     <system:String x:Key="SettingWindow_MidiEnable">Enable MIDI Device</system:String>
     <system:String x:Key="SettingWindow_PreventLosingTracking">Prevent losing tracking</system:String>
-	<system:String x:Key="SettingWindow_TrackingFilterEnable">Enable</system:String>
-	<system:String x:Key="SettingWindow_TrackingFilterHmdEnable">HMD</system:String>
-	<system:String x:Key="SettingWindow_TrackingFilterControllerEnable">Controller</system:String>
-	<system:String x:Key="SettingWindow_TrackingFilterTrackerEnable">Tracker</system:String>
-	<system:String x:Key="SettingWindow_ModelModifier">Model modifier</system:String>
-	<system:String x:Key="SettingWindow_FixKneeRotation">Fix Knee rotation</system:String>
+    <system:String x:Key="SettingWindow_TrackingFilterEnable">Enable</system:String>
+    <system:String x:Key="SettingWindow_TrackingFilterHmdEnable">HMD</system:String>
+    <system:String x:Key="SettingWindow_TrackingFilterControllerEnable">Controller</system:String>
+    <system:String x:Key="SettingWindow_TrackingFilterTrackerEnable">Tracker</system:String>
+    <system:String x:Key="SettingWindow_ModelModifier">Model modifier</system:String>
+    <system:String x:Key="SettingWindow_FixKneeRotation">Fix Knee rotation</system:String>
     <system:String x:Key="SettingWindow_TrackingOption">Tracking Option</system:String>
     <system:String x:Key="SettingWindow_PauseTracking">Pause Tracking</system:String>
     <system:String x:Key="SettingWindow_HandleControllerAsTracker">Handle Controller as Tracker</system:String>
-	<system:String x:Key="SettingWindow_QualitySettings">Quality Settings</system:String>
+    <system:String x:Key="SettingWindow_QualitySettings">Quality Settings</system:String>
     <system:String x:Key="SettingWindow_AntiAliasing">AntiAliasing</system:String>
     <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">Sending motion / VMC Mod is only available for pixivFANBOX and Patreon versions.</system:String>
-	<system:String x:Key="SettingWindow_VirtualMotionTracker">Virtual Motion Tracker (VMT)</system:String>
+    <system:String x:Key="SettingWindow_VirtualMotionTracker">Virtual Motion Tracker (VMT)</system:String>
     <system:String x:Key="SettingWindow_VirtualMotionTrackerEnable">Enable</system:String>
     <system:String x:Key="SettingWindow_VirtualMotionTrackerInstallSuccess">Success! Restart SteamVR and VirtualMotionCapture. Press OK and wait auto restart.</system:String>
-	<system:String x:Key="SettingWindow_VMTContinue">Continue VMT setup? Game will be interrupted, and VR system will restart.</system:String>
-	<system:String x:Key="SettingWindow_ExternalMotionSenderResponderEnable">Allow device detection response</system:String>
+    <system:String x:Key="SettingWindow_VMTContinue">Continue VMT setup? Game will be interrupted, and VR system will restart.</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSenderResponderEnable">Allow device detection response</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiverRequesterEnable">Auto device detection</system:String>
     <system:String x:Key="SettingWindow_ReceiveBonesEnable">손 본받는</system:String>
     <system:String x:Key="SettingWindow_VMCMod">VMC Mod (No warranty/no support)</system:String>
@@ -408,12 +408,12 @@
     <system:String x:Key="Functions_FrontCamera">앞면카메라</system:String>
     <system:String x:Key="Functions_BackCamera">뒷면카메라</system:String>
     <system:String x:Key="Functions_FreeCamera">자유시점카메라</system:String>
-	<system:String x:Key="Functions_PositionFixedCamera">좌표고정카메라</system:String>
-	<system:String x:Key="Functions_PauseTracking">Pause Tracking</system:String>
-	<system:String x:Key="Functions_ShowCalibrationWindow">Show Calibration Window</system:String>
-	<system:String x:Key="Functions_ShowPhotoWindow">Show Photo Window</system:String>
-	
-	<!-- PhotoWindow -->
+    <system:String x:Key="Functions_PositionFixedCamera">좌표고정카메라</system:String>
+    <system:String x:Key="Functions_PauseTracking">Pause Tracking</system:String>
+    <system:String x:Key="Functions_ShowCalibrationWindow">Show Calibration Window</system:String>
+    <system:String x:Key="Functions_ShowPhotoWindow">Show Photo Window</system:String>
+    
+    <!-- PhotoWindow -->
     <system:String x:Key="PhotoWindowTitle">사진촬영</system:String>
 
     <system:String x:Key="PhotoWindow_Photo">사진촬영</system:String>
