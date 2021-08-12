@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
@@ -408,9 +408,12 @@
     <system:String x:Key="Functions_FrontCamera">앞면카메라</system:String>
     <system:String x:Key="Functions_BackCamera">뒷면카메라</system:String>
     <system:String x:Key="Functions_FreeCamera">자유시점카메라</system:String>
-    <system:String x:Key="Functions_PositionFixedCamera">좌표고정카메라</system:String>
-
-    <!-- PhotoWindow -->
+	<system:String x:Key="Functions_PositionFixedCamera">좌표고정카메라</system:String>
+	<system:String x:Key="Functions_PauseTracking">Pause Tracking</system:String>
+	<system:String x:Key="Functions_ShowCalibrationWindow">Show Calibration Window</system:String>
+	<system:String x:Key="Functions_ShowPhotoWindow">Show Photo Window</system:String>
+	
+	<!-- PhotoWindow -->
     <system:String x:Key="PhotoWindowTitle">사진촬영</system:String>
 
     <system:String x:Key="PhotoWindow_Photo">사진촬영</system:String>
