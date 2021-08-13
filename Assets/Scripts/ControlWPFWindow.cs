@@ -2808,6 +2808,15 @@ public class ControlWPFWindow : MonoBehaviour
                 case Functions.PositionFixedCamera:
                     ChangeCamera(CameraTypes.PositionFixed);
                     break;
+                case Functions.PauseTracking:
+                    DeviceInfo.pauseTracking = !DeviceInfo.pauseTracking;
+                    break;
+                case Functions.ShowCalibrationWindow:
+                    server?.SendCommandAsync(new PipeCommands.ShowCalibrationWindow { });
+                    break;
+                case Functions.ShowPhotoWindow:
+                    server?.SendCommandAsync(new PipeCommands.ShowPhotoWindow { });
+                    break;
             }
         }
     }
