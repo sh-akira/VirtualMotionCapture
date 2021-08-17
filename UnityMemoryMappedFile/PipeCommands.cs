@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -610,6 +610,9 @@ namespace UnityMemoryMappedFile
         {
             public string InstanceId { get; set; }
         }
+        public class ShowCalibrationWindow { }
+        public class ShowPhotoWindow { }
+
     }
 
     public class ModItem
@@ -1315,6 +1318,9 @@ namespace UnityMemoryMappedFile
         BackCamera = 7,
         FreeCamera = 8,
         PositionFixedCamera = 9,
+        PauseTracking = 10,
+        ShowCalibrationWindow = 11,
+        ShowPhotoWindow = 12,
     }
 
     public enum Hands

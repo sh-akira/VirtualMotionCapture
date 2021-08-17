@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -399,6 +399,14 @@ namespace VirtualMotionCaptureControlPanel
                     UnityLogStatusTextBlock.Text = "["+d.type.ToString()+"] "+d.condition;
                     lastLog = d;
                 }
+                else if (e.CommandType == typeof(PipeCommands.ShowCalibrationWindow))
+                {
+                    CalibrationButton_Click(null, null);
+                }
+                else if (e.CommandType == typeof(PipeCommands.ShowPhotoWindow))
+                {
+                    PhotoButton_Click(null, null);
+                }
             }));
         }
 
@@ -458,16 +466,24 @@ namespace VirtualMotionCaptureControlPanel
             win.ShowDialog();
         }
 
+        private bool existCalibrationWindow = false;
         private void CalibrationButton_Click(object sender, RoutedEventArgs e)
         {
+            if (existCalibrationWindow) {
+                return;
+            }
+
+            existCalibrationWindow = true;
             if (string.IsNullOrWhiteSpace(Globals.CurrentVRMFilePath))
             {
                 MessageBox.Show(LanguageSelector.Get("MainWindow_ErrorCalibration"), LanguageSelector.Get("Error"));
+                existCalibrationWindow = false;
                 return;
             }
             var win = new CalibrationWindow();
             win.Owner = this;
             win.ShowDialog();
+            existCalibrationWindow = false;
         }
 
         private void ShortcutKeyButton_Click(object sender, RoutedEventArgs e)
@@ -615,14 +631,21 @@ namespace VirtualMotionCaptureControlPanel
             await SliderValueChanged(CameraSmoothSlider, CameraSmoothTextBlock, 1.0f, new PipeCommands.SetCameraSmooth(), IsSliderSetting);
         }
 
+        private bool existPhotoWindow = false;
         private void PhotoButton_Click(object sender, RoutedEventArgs e)
         {
+            if (existPhotoWindow) {
+                return;
+            }
+
+            existPhotoWindow = true;
             var win = new PhotoWindow();
             win.Owner = this;
             if (win.ShowDialog() == true)
             {
 
             }
+            existPhotoWindow = false;
         }
 
 #endregion

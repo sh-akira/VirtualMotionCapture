@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -33,6 +33,9 @@ namespace VirtualMotionCaptureControlPanel
             LanguageSelector.Get("Functions_BackCamera"),
             LanguageSelector.Get("Functions_FreeCamera"),
             LanguageSelector.Get("Functions_PositionFixedCamera"),
+            LanguageSelector.Get("Functions_PauseTracking"),
+            LanguageSelector.Get("Functions_ShowCalibrationWindow"),
+            LanguageSelector.Get("Functions_ShowPhotoWindow"),
         };
         public FunctionKeyAddWindow()
         {
