@@ -247,10 +247,12 @@ public class ExternalReceiverForVMC : MonoBehaviour
             //ブレンドシェープ適用
             else if (message.address == "/VMC/Ext/Blend/Apply")
             {
-                if (DisableBlendShapeReception == false)
+                if (DisableBlendShapeReception == true)
                 {
-                    faceController.MixPresets(nameof(ExternalReceiverForVMC), blendShapeBuffer.Keys.ToArray(), blendShapeBuffer.Values.ToArray());
+                    blendShapeBuffer.Clear();
                 }
+                
+                faceController.MixPresets(nameof(ExternalReceiverForVMC), blendShapeBuffer.Keys.ToArray(), blendShapeBuffer.Values.ToArray());
                 blendShapeBuffer.Clear();
 
             }//外部アイトラ V2.3
