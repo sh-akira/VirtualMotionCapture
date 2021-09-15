@@ -1857,7 +1857,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &282840814
 Transform:
   m_ObjectHideFlags: 0
@@ -1945,6 +1945,57 @@ MonoBehaviour:
   WPFRightHand: 
   HandSwap: 0
   steamVR2Input: {fileID: 130023280}
+--- !u!1 &286205153
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 286205154}
+  - component: {fileID: 286205155}
+  m_Layer: 0
+  m_Name: CameraManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &286205154
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 286205153}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1177174446}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &286205155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 286205153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5afd2ad0c8d6d1049b249a187f46e271, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controlWPFWindow: {fileID: 1407685704}
+  LeftHandCamera: {fileID: 137141882}
+  RightHandCamera: {fileID: 241859925}
+  FreeCamera: {fileID: 282840816}
+  FrontCamera: {fileID: 1404284884}
+  BackCamera: {fileID: 462948917}
+  PositionFixedCamera: {fileID: 680324446}
+  ControlCamera: {fileID: 1420234149}
 --- !u!1 &302272467
 GameObject:
   m_ObjectHideFlags: 0
@@ -6735,6 +6786,7 @@ Transform:
   - {fileID: 1549762412}
   - {fileID: 755659413}
   - {fileID: 1218489916}
+  - {fileID: 286205154}
   m_Father: {fileID: 0}
   m_RootOrder: 30
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -8473,12 +8525,6 @@ MonoBehaviour:
   LeftWristTransform: {fileID: 0}
   RightWristTransform: {fileID: 0}
   CalibrationCamera: {fileID: 1312323656}
-  LeftHandCamera: {fileID: 137141882}
-  RightHandCamera: {fileID: 241859925}
-  FreeCamera: {fileID: 282840816}
-  FrontCamera: {fileID: 1404284884}
-  BackCamera: {fileID: 462948917}
-  PositionFixedCamera: {fileID: 680324446}
   BackgroundRenderer: {fileID: 892957809}
   GridCanvas: {fileID: 814726118}
   LipSync: {fileID: 144144637}
@@ -8491,8 +8537,6 @@ MonoBehaviour:
   RealTrackerRoot: {fileID: 1300838139}
   ExternalMotionSenderObject: {fileID: 1155637108}
   ExternalMotionReceiverObject: {fileID: 389263777}
-  ControlCamera: {fileID: 1420234149}
-  CurrentCameraControl: {fileID: 282840816}
   CriticalErrorCount: 0
   vmtClient: {fileID: 1995326176}
   postProcessingManager: {fileID: 795349838}

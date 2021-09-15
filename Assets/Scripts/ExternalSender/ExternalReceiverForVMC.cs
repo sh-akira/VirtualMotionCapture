@@ -91,7 +91,7 @@ namespace VMC
                     }
                 }
             };
-            window.CameraChangedAction += (Camera currentCamera) =>
+            VMCMod.VMCEvents.OnCameraChanged += (Camera currentCamera) =>
             {
                 this.currentCamera = currentCamera;
             };
@@ -225,16 +225,16 @@ namespace VMC
                     //FreeCameraじゃなかったらFreeCameraにする
                     if (Settings.Current.CameraType != UnityMemoryMappedFile.CameraTypes.Free)
                     {
-                        window.ChangeCamera(UnityMemoryMappedFile.CameraTypes.Free);
+                        CameraManager.Current.ChangeCamera(UnityMemoryMappedFile.CameraTypes.Free);
                     }
 
                     //カメラ制御を切る
-                    window.FreeCamera.GetComponent<CameraMouseControl>().enabled = false;
+                    CameraManager.Current.FreeCamera.GetComponent<CameraMouseControl>().enabled = false;
 
                     //座標とFOVを適用
-                    window.FreeCamera.transform.localPosition = pos;
-                    window.FreeCamera.transform.localRotation = rot;
-                    window.ControlCamera.fieldOfView = fov;
+                    CameraManager.Current.FreeCamera.transform.localPosition = pos;
+                    CameraManager.Current.FreeCamera.transform.localRotation = rot;
+                    CameraManager.Current.ControlCamera.fieldOfView = fov;
                 } //ブレンドシェープ同期
                 else if (message.address == "/VMC/Ext/Blend/Val"
                     && (message.values[0] is string)

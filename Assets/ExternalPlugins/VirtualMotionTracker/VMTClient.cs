@@ -71,7 +71,7 @@ namespace VMC
                 return;
             }
 
-            Transform target = window.ControlCamera.transform;
+            Transform target = CameraManager.Current.ControlCamera.transform;
             bool enable = true;
             if (target != null)
             {
