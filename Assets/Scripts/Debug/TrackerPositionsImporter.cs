@@ -19,7 +19,7 @@ namespace VMC
         {
             window = GameObject.Find("ControlWPFWindow").GetComponent<ControlWPFWindow>();
 
-            window.ModelLoadedAction += (GameObject CurrentModel) =>
+            VMCEvents.OnModelLoaded += (GameObject CurrentModel) =>
             {
                 if (CurrentModel != null)
                 {

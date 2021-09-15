@@ -79,13 +79,9 @@ namespace VMC
 
         private System.Threading.SynchronizationContext context = null;
 
-        public Action<GameObject> ModelLoadedAction = null;
-        public Action<GameObject> ModelUnloadingAction = null;
         public Action<GameObject> AdditionalSettingAction = null;
         public Action<VRMData> VRMmetaLodedAction = null;
         public Action<string> VRMRemoteLoadedAction = null;
-        public Action LightChangedAction = null;
-        public Action LoadedConfigPathChangedAction = null;
 
         public Action<GameObject> EyeTracking_TobiiCalibrationAction = null;
         public Action<PipeCommands.SetEyeTracking_TobiiOffsets> SetEyeTracking_TobiiOffsetsAction = null;
@@ -152,8 +148,6 @@ namespace VMC
 
             externalMotionSender = ExternalMotionSenderObject.GetComponent<ExternalSender>();
             externalMotionReceiver = ExternalMotionReceiverObject.GetComponent<ExternalReceiverForVMC>();
-
-            ModelLoadedAction += gameObject => VMCEvents.OnModelLoaded?.Invoke(gameObject);
         }
 
         private int SetWindowTitle()
@@ -948,7 +942,7 @@ namespace VMC
                 Settings.Current.LightRotationX = x;
                 Settings.Current.LightRotationY = y;
 
-                LightChangedAction?.Invoke();
+                VMCEvents.OnLightChanged?.Invoke();
             }
         }
 
@@ -959,7 +953,7 @@ namespace VMC
                 Settings.Current.LightColor = new Color(r, g, b, a);
                 MainDirectionalLight.color = Settings.Current.LightColor;
 
-                LightChangedAction?.Invoke();
+                VMCEvents.OnLightChanged?.Invoke();
             }
         }
 
@@ -1173,7 +1167,7 @@ namespace VMC
         {
             if (CurrentModel != null)
             {
-                ModelUnloadingAction?.Invoke(CurrentModel);
+                VMCEvents.OnModelUnloading?.Invoke(CurrentModel);
                 CurrentModel.transform.SetParent(null);
                 CurrentModel.SetActive(false);
                 Destroy(CurrentModel);
@@ -1226,7 +1220,7 @@ namespace VMC
             }
             //SetTrackersToVRIK();
 
-            ModelLoadedAction?.Invoke(CurrentModel);
+            VMCEvents.OnModelLoaded?.Invoke(CurrentModel);
         }
         /*
         private Vector3 DefaultModelPosition;
@@ -2165,7 +2159,7 @@ namespace VMC
             if (IsPreRelease == false) return;
             Settings.Current.ExternalMotionSenderEnable = enable;
             ExternalMotionSenderObject.SetActive(enable);
-            WaitOneFrameAction(() => ModelLoadedAction?.Invoke(CurrentModel));
+            WaitOneFrameAction(() => VMCEvents.OnModelLoaded?.Invoke(CurrentModel));
             WaitOneFrameAction(() => VMCEvents.OnCameraChanged?.Invoke(CameraManager.Current.ControlCamera));
         }
 
@@ -2173,7 +2167,7 @@ namespace VMC
         {
             Settings.Current.ExternalMotionReceiverEnable = enable;
             externalMotionReceiver.SetObjectActive(enable);
-            WaitOneFrameAction(() => ModelLoadedAction?.Invoke(CurrentModel));
+            WaitOneFrameAction(() => VMCEvents.OnModelLoaded?.Invoke(CurrentModel));
             WaitOneFrameAction(() => VMCEvents.OnCameraChanged?.Invoke(CameraManager.Current.ControlCamera));
         }
 
@@ -2435,7 +2429,7 @@ namespace VMC
             }
 
             //設定の変更を通知
-            LoadedConfigPathChangedAction?.Invoke();
+            VMCEvents.OnLoadedConfigPathChanged?.Invoke(path);
         }
 
         private void ResetTrackerScale()

@@ -77,7 +77,7 @@ namespace VMC
 
             window = GameObject.Find("ControlWPFWindow").GetComponent<ControlWPFWindow>();
             faceController = GameObject.Find("AnimationController").GetComponent<FaceController>();
-            window.ModelLoadedAction += (GameObject CurrentModel) =>
+            VMCEvents.OnModelLoaded += (GameObject CurrentModel) =>
             {
                 if (CurrentModel != null)
                 {

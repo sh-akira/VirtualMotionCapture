@@ -29,7 +29,7 @@ namespace VMC
         // Use this for initialization
         void Start()
         {
-            controlWPFWindow.ModelLoadedAction += ModelLoaded;
+            VMCEvents.OnModelLoaded += ModelLoaded;
             controlWPFWindow.SetEyeTracking_TobiiOffsetsAction += SetEyeTracking_TobiiOffsets;
             controlWPFWindow.EyeTracking_TobiiCalibrationAction += EyeTracking_TobiiCalibration;
         }

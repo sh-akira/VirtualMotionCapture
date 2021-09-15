@@ -62,7 +62,7 @@ namespace VMC
 
             trackerHandler = handTrackerRoot.GetComponent<TrackerHandler>();
 
-            window.ModelLoadedAction += (GameObject CurrentModel) =>
+            VMCEvents.OnModelLoaded += (GameObject CurrentModel) =>
             {
                 if (CurrentModel != null)
                 {
@@ -103,12 +103,12 @@ namespace VMC
                 SendPerLowRate(); //即時送信
             };
 
-            window.LightChangedAction += () =>
+            VMCEvents.OnLightChanged += () =>
             {
                 SendPerLowRate(); //即時送信
             };
 
-            window.LoadedConfigPathChangedAction += () =>
+            VMCEvents.OnLoadedConfigPathChanged += path =>
             {
                 SendPerLowRate(); //即時送信
             };

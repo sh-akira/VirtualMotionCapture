@@ -34,8 +34,8 @@ namespace VMC
         private void Awake()
         {
             current = this;
-            controlWPFWindow.ModelLoadedAction += ModelLoaded;
-            controlWPFWindow.ModelUnloadingAction += ModelUnloading;
+            VMCEvents.OnModelLoaded += ModelLoaded;
+            VMCEvents.OnModelUnloading += ModelUnloading;
             controlWPFWindow.AdditionalSettingAction += ApplySettings;
         }
 

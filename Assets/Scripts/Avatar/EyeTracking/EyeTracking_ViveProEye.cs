@@ -34,7 +34,7 @@ namespace VMC
         // Use this for initialization
         void Awake()
         {
-            controlWPFWindow.ModelLoadedAction += ModelLoaded;
+            VMCEvents.OnModelLoaded += ModelLoaded;
             controlWPFWindow.SetEyeTracking_ViveProEyeOffsetsAction += SetEyeTracking_ViveProEyeOffsets;
             controlWPFWindow.SetEyeTracking_ViveProEyeUseEyelidMovementsAction += SetEyeTracking_ViveProEyeUseEyelidMovements;
             controlWPFWindow.EyeTracking_ViveProEyeComponent = this;
