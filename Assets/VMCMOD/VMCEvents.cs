@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace VMCMod
+namespace VMC
 {
     public class VMCEvents
     {

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using VMC;
 using VMCMod;
 
 [VMCPlugin(

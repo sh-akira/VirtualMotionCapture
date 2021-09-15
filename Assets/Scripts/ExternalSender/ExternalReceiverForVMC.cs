@@ -91,7 +91,7 @@ namespace VMC
                     }
                 }
             };
-            VMCMod.VMCEvents.OnCameraChanged += (Camera currentCamera) =>
+            VMCEvents.OnCameraChanged += (Camera currentCamera) =>
             {
                 this.currentCamera = currentCamera;
             };
