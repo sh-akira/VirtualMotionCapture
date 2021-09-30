@@ -774,7 +774,7 @@
                 "type":0
             }
         ],
-        "LipSyncMaxLevel":1,
+        "LipSyncMaxLevel":0.25,
         "Name":"笑顔",
         "OnlyPress":false,
         "SoftChange":false,
@@ -815,7 +815,7 @@
                 "type":0
             }
         ],
-        "LipSyncMaxLevel":1,
+        "LipSyncMaxLevel":0.25,
         "Name":"怒り",
         "OnlyPress":false,
         "SoftChange":false,
@@ -856,8 +856,8 @@
                 "type":0
             }
         ],
-        "LipSyncMaxLevel":1,
-        "Name":"怖い",
+        "LipSyncMaxLevel":0.25,
+        "Name":"悲しみ",
         "OnlyPress":false,
         "SoftChange":false,
         "StopBlink":false
@@ -897,7 +897,7 @@
                 "type":0
             }
         ],
-        "LipSyncMaxLevel":1,
+        "LipSyncMaxLevel":0.25,
         "Name":"楽しい",
         "OnlyPress":false,
         "SoftChange":false,
@@ -905,7 +905,7 @@
     },{
         "FaceAction":true,
         "FaceNames":[
-            "><"
+            "SURPRISED"
         ],
         "FaceStrength":[
             1
@@ -938,8 +938,8 @@
                 "type":0
             }
         ],
-        "LipSyncMaxLevel":1,
-        "Name":"＞＜",
+        "LipSyncMaxLevel":0.25,
+        "Name":"驚き",
         "OnlyPress":false,
         "SoftChange":false,
         "StopBlink":true
@@ -1020,7 +1020,7 @@
                 "type":0
             }
         ],
-        "LipSyncMaxLevel":1,
+        "LipSyncMaxLevel":0.25,
         "Name":"笑顔",
         "OnlyPress":false,
         "SoftChange":false,
@@ -1061,7 +1061,7 @@
                 "type":0
             }
         ],
-        "LipSyncMaxLevel":1,
+        "LipSyncMaxLevel":0.25,
         "Name":"怒り",
         "OnlyPress":false,
         "SoftChange":false,
@@ -1102,8 +1102,8 @@
                 "type":0
             }
         ],
-        "LipSyncMaxLevel":1,
-        "Name":"怖い",
+        "LipSyncMaxLevel":0.25,
+        "Name":"悲しみ",
         "OnlyPress":false,
         "SoftChange":false,
         "StopBlink":false
@@ -1143,7 +1143,7 @@
                 "type":0
             }
         ],
-        "LipSyncMaxLevel":1,
+        "LipSyncMaxLevel":0.25,
         "Name":"楽しい",
         "OnlyPress":false,
         "SoftChange":false,
@@ -1151,7 +1151,7 @@
     },{
         "FaceAction":true,
         "FaceNames":[
-            "><"
+            "SURPRISED"
         ],
         "FaceStrength":[
             1
@@ -1184,8 +1184,8 @@
                 "type":0
             }
         ],
-        "LipSyncMaxLevel":1,
-        "Name":"＞＜",
+        "LipSyncMaxLevel":0.25,
+        "Name":"驚き",
         "OnlyPress":false,
         "SoftChange":false,
         "StopBlink":true
