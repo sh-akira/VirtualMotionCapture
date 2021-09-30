@@ -3,8 +3,8 @@
     "AAA_1":" Virtual Motion Capture Setting File",
     "AAA_2":" See more : vmc.info",
     "AAA_3":"========================================",
-    "AAA_SavedVersion":"v0.48",
-    "AntiAliasing":2,
+    "AAA_SavedVersion":"v0.50",
+    "AntiAliasing":4,
     "AutoBlinkEnable":true,
     "BackCameraLookTargetSettings":null,
     "BackgroundColor":{
@@ -31,6 +31,7 @@
     "DeleteHairNormalMap":true,
     "EnableNormalMapFix":true,
     "EnableSkeletal":true,
+    "ExternalBonesReceiverEnable":false,
     "ExternalMotionReceiverEnable":false,
     "ExternalMotionReceiverPort":39540,
     "ExternalMotionReceiverRequesterEnable":true,
@@ -52,6 +53,7 @@
     "EyeTracking_TobiiPosition":null,
     "EyeTracking_TobiiScaleHorizontal":0.5,
     "EyeTracking_TobiiScaleVertical":0.2,
+    "EyeTracking_ViveProEyeEnable":false,
     "EyeTracking_ViveProEyeOffsetHorizontal":0,
     "EyeTracking_ViveProEyeOffsetVertical":0,
     "EyeTracking_ViveProEyeScaleHorizontal":2,
@@ -116,6 +118,7 @@
     "IsTransparent":false,
     "KeyActions":[
         {
+            "DisableBlendShapeReception":false,
             "FaceAction":false,
             "FaceNames":null,
             "FaceStrength":null,
@@ -144,717 +147,7 @@
             "SoftChange":false,
             "StopBlink":false
         },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":6,
-            "FunctionAction":true,
-            "Hand":0,
-            "HandAction":false,
-            "HandAngles":null,
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":0,
-                    "isLeft":false,
-                    "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":162,
-                    "keyIndex":0,
-                    "keyName":"左Ctrl",
-                    "type":1
-                },{
-                    "actionType":0,
-                    "isLeft":false,
-                    "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":49,
-                    "keyIndex":0,
-                    "keyName":"1",
-                    "type":1
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"フロントカメラ",
-            "OnlyPress":true,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":7,
-            "FunctionAction":true,
-            "Hand":0,
-            "HandAction":false,
-            "HandAngles":null,
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":0,
-                    "isLeft":false,
-                    "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":162,
-                    "keyIndex":0,
-                    "keyName":"左Ctrl",
-                    "type":1
-                },{
-                    "actionType":0,
-                    "isLeft":false,
-                    "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":50,
-                    "keyIndex":0,
-                    "keyName":"2",
-                    "type":1
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"バックカメラ",
-            "OnlyPress":true,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":8,
-            "FunctionAction":true,
-            "Hand":0,
-            "HandAction":false,
-            "HandAngles":null,
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":0,
-                    "isLeft":false,
-                    "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":162,
-                    "keyIndex":0,
-                    "keyName":"左Ctrl",
-                    "type":1
-                },{
-                    "actionType":0,
-                    "isLeft":false,
-                    "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":51,
-                    "keyIndex":0,
-                    "keyName":"3",
-                    "type":1
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"フリーカメラ",
-            "OnlyPress":true,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":0,
-            "HandAction":true,
-            "HandAngles":[
-                -82,-90,-90,3,-42,-90,-90,3,-7,-7,-8,10,-7,-7,0,-8,-90,-90,12,34
-            ],
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":true,
-                    "isOculus":false,
-                    "isTouch":true,
-                    "keyCode":-2,
-                    "keyIndex":1,
-                    "keyName":"TouchTrackpad",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"チョキ",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":0,
-            "HandAction":true,
-            "HandAngles":[
-                0,-1,-1,3,-42,-90,-90,3,-30,-97,-74,0,0,-7,0,-8,-39,-59,8,25
-            ],
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":true,
-                    "isOculus":false,
-                    "isTouch":true,
-                    "keyCode":-2,
-                    "keyIndex":2,
-                    "keyName":"TouchTrackpad",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"ロックンロール",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":0,
-            "HandAction":true,
-            "HandAngles":[
-                -90,-90,-90,0,-90,-90,-90,0,-74,-89,-75,0,-2,-2,-2,0,55,33,-9,4
-            ],
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":true,
-                    "isOculus":false,
-                    "isTouch":true,
-                    "keyCode":-2,
-                    "keyIndex":3,
-                    "keyName":"TouchTrackpad",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"銃",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":0,
-            "HandAction":true,
-            "HandAngles":[
-                -90,-90,-90,0,-90,-90,-90,0,-90,-90,-90,0,-90,-90,-90,0,55,33,-9,4
-            ],
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":true,
-                    "isOculus":false,
-                    "isTouch":true,
-                    "keyCode":-2,
-                    "keyIndex":4,
-                    "keyName":"TouchTrackpad",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"サムズアップ",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":0,
-            "HandAction":true,
-            "HandAngles":[
-                -82,-90,-90,3,-42,-90,-90,3,-25,-92,-90,10,-7,-7,0,-8,-90,-90,12,34
-            ],
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":true,
-                    "isOculus":false,
-                    "isTouch":true,
-                    "keyCode":-2,
-                    "keyIndex":5,
-                    "keyName":"TouchTrackpad",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"指差し",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":0,
-            "HandAction":true,
-            "HandAngles":[
-                -90,-90,-90,0,-90,-90,-90,0,-90,-90,-90,0,-90,-90,-90,0,-90,-90,2,10
-            ],
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":true,
-                    "isOculus":false,
-                    "isTouch":true,
-                    "keyCode":-2,
-                    "keyIndex":6,
-                    "keyName":"TouchTrackpad",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"グー",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":1,
-            "HandAction":true,
-            "HandAngles":[
-                -82,-90,-90,3,-42,-90,-90,3,-7,-7,-8,10,-7,-7,0,-8,-90,-90,12,34
-            ],
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":false,
-                    "isOculus":false,
-                    "isTouch":true,
-                    "keyCode":-2,
-                    "keyIndex":1,
-                    "keyName":"TouchTrackpad",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"チョキ",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":1,
-            "HandAction":true,
-            "HandAngles":[
-                0,-1,-1,3,-42,-90,-90,3,-30,-97,-74,0,0,-7,0,-8,-39,-59,8,25
-            ],
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":false,
-                    "isOculus":false,
-                    "isTouch":true,
-                    "keyCode":-2,
-                    "keyIndex":2,
-                    "keyName":"TouchTrackpad",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"ロックンロール",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":1,
-            "HandAction":true,
-            "HandAngles":[
-                -90,-90,-90,0,-90,-90,-90,0,-74,-89,-75,0,-2,-2,-2,0,55,33,-9,4
-            ],
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":false,
-                    "isOculus":false,
-                    "isTouch":true,
-                    "keyCode":-2,
-                    "keyIndex":3,
-                    "keyName":"TouchTrackpad",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"銃",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":1,
-            "HandAction":true,
-            "HandAngles":[
-                -90,-90,-90,0,-90,-90,-90,0,-90,-90,-90,0,-90,-90,-90,0,55,33,-9,4
-            ],
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":false,
-                    "isOculus":false,
-                    "isTouch":true,
-                    "keyCode":-2,
-                    "keyIndex":4,
-                    "keyName":"TouchTrackpad",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"サムズアップ",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":1,
-            "HandAction":true,
-            "HandAngles":[
-                -82,-90,-90,3,-42,-90,-90,3,-25,-92,-90,10,-7,-7,0,-8,-90,-90,12,34
-            ],
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":false,
-                    "isOculus":false,
-                    "isTouch":true,
-                    "keyCode":-2,
-                    "keyIndex":5,
-                    "keyName":"TouchTrackpad",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"指差し",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":1,
-            "HandAction":true,
-            "HandAngles":[
-                -90,-90,-90,0,-90,-90,-90,0,-90,-90,-90,0,-90,-90,-90,0,-90,-90,2,10
-            ],
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":false,
-                    "isOculus":false,
-                    "isTouch":true,
-                    "keyCode":-2,
-                    "keyIndex":6,
-                    "keyName":"TouchTrackpad",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"グー",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":0,
-            "HandAction":true,
-            "HandAngles":[
-                -44,-69,-31,0,-34,-76,-31,0,-37,-73,-33,0,-36,-58,-36,5,-77,-47,-15,19
-            ],
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":true,
-                    "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":-2,
-                    "keyIndex":-1,
-                    "keyName":"ClickTrigger",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"持つ",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":0,
-            "HandAction":true,
-            "HandAngles":[
-                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-            ],
-            "HandChangeTime":0.1,
-            "IsKeyUp":true,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":true,
-                    "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":-2,
-                    "keyIndex":-1,
-                    "keyName":"ClickTrigger",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"デフォルト",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":1,
-            "HandAction":true,
-            "HandAngles":[
-                -44,-69,-31,0,-34,-76,-31,0,-37,-73,-33,0,-36,-58,-36,5,-77,-47,-15,19
-            ],
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":false,
-                    "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":-2,
-                    "keyIndex":-1,
-                    "keyName":"ClickTrigger",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"持つ",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":1,
-            "HandAction":true,
-            "HandAngles":[
-                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-            ],
-            "HandChangeTime":0.1,
-            "IsKeyUp":true,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":false,
-                    "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":-2,
-                    "keyIndex":-1,
-                    "keyName":"ClickTrigger",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"デフォルト",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":0,
-            "HandAction":true,
-            "HandAngles":[
-                3,0,4,10,0,4,2,7,0,5,1,2,-2,-1,0,-6,10,10,10,10
-            ],
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":true,
-                    "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":-2,
-                    "keyIndex":-1,
-                    "keyName":"ClickGrip",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"パー",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":1,
-            "HandAction":true,
-            "HandAngles":[
-                3,0,4,10,0,4,2,7,0,5,1,2,-2,-1,0,-6,10,10,10,10
-            ],
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":false,
-                    "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":-2,
-                    "keyIndex":-1,
-                    "keyName":"ClickGrip",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"パー",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":0,
-            "HandAction":true,
-            "HandAngles":[
-                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-            ],
-            "HandChangeTime":0.1,
-            "IsKeyUp":true,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":true,
-                    "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":-2,
-                    "keyIndex":-1,
-                    "keyName":"ClickGrip",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"デフォルト",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
-            "FaceAction":false,
-            "FaceNames":null,
-            "FaceStrength":null,
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":1,
-            "HandAction":true,
-            "HandAngles":[
-                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-            ],
-            "HandChangeTime":0.1,
-            "IsKeyUp":true,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":false,
-                    "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":-2,
-                    "keyIndex":-1,
-                    "keyName":"ClickGrip",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"デフォルト",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":false
-        },{
+            "DisableBlendShapeReception":false,
             "FaceAction":true,
             "FaceNames":[
                 "Joy"
@@ -874,19 +167,10 @@
                     "actionType":1,
                     "isLeft":true,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":-2,
-                    "keyIndex":-1,
-                    "keyName":"ClickGrip",
-                    "type":0
-                },{
-                    "actionType":1,
-                    "isLeft":true,
-                    "isOculus":false,
                     "isTouch":true,
                     "keyCode":-2,
                     "keyIndex":1,
-                    "keyName":"TouchTrackpad",
+                    "keyName":"TouchThumbStick",
                     "type":0
                 }
             ],
@@ -896,6 +180,7 @@
             "SoftChange":false,
             "StopBlink":true
         },{
+            "DisableBlendShapeReception":false,
             "FaceAction":true,
             "FaceNames":[
                 "Angry"
@@ -915,19 +200,10 @@
                     "actionType":1,
                     "isLeft":true,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":-2,
-                    "keyIndex":-1,
-                    "keyName":"ClickGrip",
-                    "type":0
-                },{
-                    "actionType":1,
-                    "isLeft":true,
-                    "isOculus":false,
                     "isTouch":true,
                     "keyCode":-2,
                     "keyIndex":2,
-                    "keyName":"TouchTrackpad",
+                    "keyName":"TouchThumbStick",
                     "type":0
                 }
             ],
@@ -937,6 +213,7 @@
             "SoftChange":false,
             "StopBlink":false
         },{
+            "DisableBlendShapeReception":false,
             "FaceAction":true,
             "FaceNames":[
                 "Sorrow"
@@ -956,28 +233,20 @@
                     "actionType":1,
                     "isLeft":true,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":-2,
-                    "keyIndex":-1,
-                    "keyName":"ClickGrip",
-                    "type":0
-                },{
-                    "actionType":1,
-                    "isLeft":true,
-                    "isOculus":false,
                     "isTouch":true,
                     "keyCode":-2,
                     "keyIndex":3,
-                    "keyName":"TouchTrackpad",
+                    "keyName":"TouchThumbStick",
                     "type":0
                 }
             ],
             "LipSyncMaxLevel":1,
-            "Name":"怖い",
+            "Name":"悲しみ",
             "OnlyPress":false,
             "SoftChange":false,
             "StopBlink":false
         },{
+            "DisableBlendShapeReception":false,
             "FaceAction":true,
             "FaceNames":[
                 "Fun"
@@ -997,19 +266,10 @@
                     "actionType":1,
                     "isLeft":true,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":-2,
-                    "keyIndex":-1,
-                    "keyName":"ClickGrip",
-                    "type":0
-                },{
-                    "actionType":1,
-                    "isLeft":true,
-                    "isOculus":false,
                     "isTouch":true,
                     "keyCode":-2,
                     "keyIndex":4,
-                    "keyName":"TouchTrackpad",
+                    "keyName":"TouchThumbStick",
                     "type":0
                 }
             ],
@@ -1019,88 +279,7 @@
             "SoftChange":false,
             "StopBlink":true
         },{
-            "FaceAction":true,
-            "FaceNames":[
-                "><"
-            ],
-            "FaceStrength":[
-                1
-            ],
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":0,
-            "HandAction":false,
-            "HandAngles":null,
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":true,
-                    "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":-2,
-                    "keyIndex":-1,
-                    "keyName":"ClickGrip",
-                    "type":0
-                },{
-                    "actionType":1,
-                    "isLeft":true,
-                    "isOculus":false,
-                    "isTouch":true,
-                    "keyCode":-2,
-                    "keyIndex":5,
-                    "keyName":"TouchTrackpad",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"＞＜",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":true
-        },{
-            "FaceAction":true,
-            "FaceNames":[
-                "Blink_L"
-            ],
-            "FaceStrength":[
-                1
-            ],
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":0,
-            "HandAction":false,
-            "HandAngles":null,
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":true,
-                    "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":-2,
-                    "keyIndex":-1,
-                    "keyName":"ClickGrip",
-                    "type":0
-                },{
-                    "actionType":1,
-                    "isLeft":true,
-                    "isOculus":false,
-                    "isTouch":true,
-                    "keyCode":-2,
-                    "keyIndex":6,
-                    "keyName":"TouchTrackpad",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"ウインク(左)",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":true
-        },{
+            "DisableBlendShapeReception":false,
             "FaceAction":true,
             "FaceNames":[
                 "Joy"
@@ -1120,19 +299,10 @@
                     "actionType":1,
                     "isLeft":false,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":-2,
-                    "keyIndex":-1,
-                    "keyName":"ClickGrip",
-                    "type":0
-                },{
-                    "actionType":1,
-                    "isLeft":false,
-                    "isOculus":false,
                     "isTouch":true,
                     "keyCode":-2,
                     "keyIndex":1,
-                    "keyName":"TouchTrackpad",
+                    "keyName":"TouchThumbStick",
                     "type":0
                 }
             ],
@@ -1142,6 +312,7 @@
             "SoftChange":false,
             "StopBlink":true
         },{
+            "DisableBlendShapeReception":false,
             "FaceAction":true,
             "FaceNames":[
                 "Angry"
@@ -1161,19 +332,10 @@
                     "actionType":1,
                     "isLeft":false,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":-2,
-                    "keyIndex":-1,
-                    "keyName":"ClickGrip",
-                    "type":0
-                },{
-                    "actionType":1,
-                    "isLeft":false,
-                    "isOculus":false,
                     "isTouch":true,
                     "keyCode":-2,
                     "keyIndex":2,
-                    "keyName":"TouchTrackpad",
+                    "keyName":"TouchThumbStick",
                     "type":0
                 }
             ],
@@ -1183,6 +345,7 @@
             "SoftChange":false,
             "StopBlink":false
         },{
+            "DisableBlendShapeReception":false,
             "FaceAction":true,
             "FaceNames":[
                 "Sorrow"
@@ -1202,28 +365,20 @@
                     "actionType":1,
                     "isLeft":false,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":-2,
-                    "keyIndex":-1,
-                    "keyName":"ClickGrip",
-                    "type":0
-                },{
-                    "actionType":1,
-                    "isLeft":false,
-                    "isOculus":false,
                     "isTouch":true,
                     "keyCode":-2,
                     "keyIndex":3,
-                    "keyName":"TouchTrackpad",
+                    "keyName":"TouchThumbStick",
                     "type":0
                 }
             ],
             "LipSyncMaxLevel":1,
-            "Name":"怖い",
+            "Name":"悲しみ",
             "OnlyPress":false,
             "SoftChange":false,
             "StopBlink":false
         },{
+            "DisableBlendShapeReception":false,
             "FaceAction":true,
             "FaceNames":[
                 "Fun"
@@ -1243,19 +398,10 @@
                     "actionType":1,
                     "isLeft":false,
                     "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":-2,
-                    "keyIndex":-1,
-                    "keyName":"ClickGrip",
-                    "type":0
-                },{
-                    "actionType":1,
-                    "isLeft":false,
-                    "isOculus":false,
                     "isTouch":true,
                     "keyCode":-2,
                     "keyIndex":4,
-                    "keyName":"TouchTrackpad",
+                    "keyName":"TouchThumbStick",
                     "type":0
                 }
             ],
@@ -1265,88 +411,7 @@
             "SoftChange":false,
             "StopBlink":true
         },{
-            "FaceAction":true,
-            "FaceNames":[
-                "><"
-            ],
-            "FaceStrength":[
-                1
-            ],
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":0,
-            "HandAction":false,
-            "HandAngles":null,
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":false,
-                    "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":-2,
-                    "keyIndex":-1,
-                    "keyName":"ClickGrip",
-                    "type":0
-                },{
-                    "actionType":1,
-                    "isLeft":false,
-                    "isOculus":false,
-                    "isTouch":true,
-                    "keyCode":-2,
-                    "keyIndex":5,
-                    "keyName":"TouchTrackpad",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"＞＜",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":true
-        },{
-            "FaceAction":true,
-            "FaceNames":[
-                "Blink_R"
-            ],
-            "FaceStrength":[
-                1
-            ],
-            "Function":0,
-            "FunctionAction":false,
-            "Hand":0,
-            "HandAction":false,
-            "HandAngles":null,
-            "HandChangeTime":0.1,
-            "IsKeyUp":false,
-            "KeyConfigs":[
-                {
-                    "actionType":1,
-                    "isLeft":false,
-                    "isOculus":false,
-                    "isTouch":false,
-                    "keyCode":-2,
-                    "keyIndex":-1,
-                    "keyName":"ClickGrip",
-                    "type":0
-                },{
-                    "actionType":1,
-                    "isLeft":false,
-                    "isOculus":false,
-                    "isTouch":true,
-                    "keyCode":-2,
-                    "keyIndex":6,
-                    "keyName":"TouchTrackpad",
-                    "type":0
-                }
-            ],
-            "LipSyncMaxLevel":1,
-            "Name":"ウインク(右)",
-            "OnlyPress":false,
-            "SoftChange":false,
-            "StopBlink":true
-        },{
+            "DisableBlendShapeReception":false,
             "FaceAction":true,
             "FaceNames":[
                 "Neutral"
@@ -1369,7 +434,7 @@
                     "isTouch":false,
                     "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":"ClickGrip",
+                    "keyName":"TouchThumbStick",
                     "type":0
                 }
             ],
@@ -1379,6 +444,7 @@
             "SoftChange":false,
             "StopBlink":false
         },{
+            "DisableBlendShapeReception":false,
             "FaceAction":true,
             "FaceNames":[
                 "Neutral"
@@ -1401,7 +467,73 @@
                     "isTouch":false,
                     "keyCode":-2,
                     "keyIndex":-1,
-                    "keyName":"ClickGrip",
+                    "keyName":"TouchThumbStick",
+                    "type":0
+                }
+            ],
+            "LipSyncMaxLevel":1,
+            "Name":"デフォルト",
+            "OnlyPress":false,
+            "SoftChange":false,
+            "StopBlink":false
+        },{
+            "DisableBlendShapeReception":false,
+            "FaceAction":true,
+            "FaceNames":[
+                "Neutral"
+            ],
+            "FaceStrength":[
+                1
+            ],
+            "Function":0,
+            "FunctionAction":false,
+            "Hand":0,
+            "HandAction":false,
+            "HandAngles":null,
+            "HandChangeTime":0.1,
+            "IsKeyUp":false,
+            "KeyConfigs":[
+                {
+                    "actionType":1,
+                    "isLeft":true,
+                    "isOculus":false,
+                    "isTouch":false,
+                    "keyCode":-2,
+                    "keyIndex":-1,
+                    "keyName":"ClickYbutton",
+                    "type":0
+                }
+            ],
+            "LipSyncMaxLevel":1,
+            "Name":"デフォルト",
+            "OnlyPress":false,
+            "SoftChange":false,
+            "StopBlink":false
+        },{
+            "DisableBlendShapeReception":false,
+            "FaceAction":true,
+            "FaceNames":[
+                "Neutral"
+            ],
+            "FaceStrength":[
+                1
+            ],
+            "Function":0,
+            "FunctionAction":false,
+            "Hand":0,
+            "HandAction":false,
+            "HandAngles":null,
+            "HandChangeTime":0.1,
+            "IsKeyUp":false,
+            "KeyConfigs":[
+                {
+                    "actionType":1,
+                    "isLeft":false,
+                    "isOculus":false,
+                    "isTouch":false,
+                    "keyCode":-2,
+                    "keyIndex":-1,
+                    "keyName":"ClickBbutton",
                     "type":0
                 }
             ],
@@ -1412,7 +544,7 @@
             "StopBlink":false
         }
     ],
-    "LeftCenterEnable":true,
+    "LeftCenterEnable":false,
     "LeftElbow":{
         "m_Item1":0,
         "m_Item2":null
@@ -1425,28 +557,36 @@
         "m_Item1":2,
         "m_Item2":null
     },
+    "LeftHandPositionX":0,
+    "LeftHandPositionY":0,
+    "LeftHandPositionZ":0,
     "LeftHandRotation":0,
+    "LeftHandRotationX":0,
+    "LeftHandRotationY":0,
+    "LeftHandRotationZ":0,
     "LeftHandTrackerOffsetToBodySide":0.05,
     "LeftHandTrackerOffsetToBottom":0.02,
     "LeftKnee":{
         "m_Item1":0,
         "m_Item2":null
     },
-    "LeftThumbStickPoints":null,
+    "LeftThumbStickPoints":[
+        {
+            "x":-0.8,
+            "y":4.89842561E-17
+        },{
+            "x":-9.796851E-17,
+            "y":-0.8
+        },{
+            "x":0.8,
+            "y":-1.46952765E-16
+        },{
+            "x":1.95937025E-16,
+            "y":0.8
+        }
+    ],
     "LeftTouchPadPoints":[
         {
-            "x":-0.760845244,
-            "y":0.2472136
-        },{
-            "x":-0.4702282,
-            "y":-0.647213638
-        },{
-            "x":0.4702282,
-            "y":-0.647213638
-        },{
-            "x":0.760845244,
-            "y":0.2472136
-        },{
             "x":1.95937025E-16,
             "y":0.8
         }
@@ -1468,9 +608,11 @@
     "LipSyncMaxWeightEmphasis":true,
     "LipSyncMaxWeightEnable":true,
     "LipSyncWeightThreashold":0.03,
+    "LipTracking_ViveEnable":false,
     "MidiCCBlendShape":[
         null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null
     ],
+    "MidiEnable":false,
     "OpenAnimationTime":0.03,
     "PPS_Bloom_Color_a":1,
     "PPS_Bloom_Color_b":1,
@@ -1548,7 +690,7 @@
             "z":-0.140760764
         }
     },
-    "RightCenterEnable":true,
+    "RightCenterEnable":false,
     "RightElbow":{
         "m_Item1":0,
         "m_Item2":null
@@ -1561,36 +703,45 @@
         "m_Item1":2,
         "m_Item2":null
     },
+    "RightHandPositionX":0,
+    "RightHandPositionY":0,
+    "RightHandPositionZ":0,
     "RightHandRotation":0,
+    "RightHandRotationX":0,
+    "RightHandRotationY":0,
+    "RightHandRotationZ":0,
     "RightHandTrackerOffsetToBodySide":0.05,
     "RightHandTrackerOffsetToBottom":0.02,
     "RightKnee":{
         "m_Item1":0,
         "m_Item2":null
     },
-    "RightThumbStickPoints":null,
-    "RightTouchPadPoints":[
+    "RightThumbStickPoints":[
         {
-            "x":0.760845244,
-            "y":0.2472136
+            "x":0.8,
+            "y":4.89842561E-17
         },{
-            "x":0.4702282,
-            "y":-0.647213638
+            "x":9.796851E-17,
+            "y":-0.8
         },{
-            "x":-0.4702282,
-            "y":-0.647213638
-        },{
-            "x":-0.760845244,
-            "y":0.2472136
+            "x":-0.8,
+            "y":-1.46952765E-16
         },{
             "x":-1.95937025E-16,
             "y":0.8
         }
     ],
-    "ScreenHeight":0,
-    "ScreenRefreshRate":0,
-    "ScreenWidth":0,
+    "RightTouchPadPoints":[
+        {
+            "x":-1.95937025E-16,
+            "y":0.8
+        }
+    ],
+    "ScreenHeight":720,
+    "ScreenRefreshRate":60,
+    "ScreenWidth":1280,
     "ShowCameraGrid":false,
+    "SwivelOffset":0,
     "TrackingFilterControllerEnable":true,
     "TrackingFilterEnable":true,
     "TrackingFilterHmdEnable":true,
