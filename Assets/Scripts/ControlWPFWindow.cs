@@ -438,7 +438,7 @@ public class ControlWPFWindow : MonoBehaviour
             else if (e.CommandType == typeof(PipeCommands.SetWindowBorder))
             {
                 var d = (PipeCommands.SetWindowBorder)e.Data;
-                SetWindowBorder(d.enable);
+                HideWindowBorder(d.enable);
             }
             else if (e.CommandType == typeof(PipeCommands.SetWindowTopMost))
             {
@@ -2177,11 +2177,11 @@ public class ControlWPFWindow : MonoBehaviour
 #endif
     }
 
-    private bool lastWindowBorder = true;
-    void SetWindowBorder(bool enable)
+    private bool lastHideWindowBorder = false;
+    void HideWindowBorder(bool enable)
     {
-        if (lastWindowBorder == enable) return;
-        lastWindowBorder = enable;
+        if (lastHideWindowBorder == enable) return;
+        lastHideWindowBorder = enable;
         CurrentSettings.HideBorder = enable;
 #if !UNITY_EDITOR   // エディタ上では動きません。
         var hwnd = GetUnityWindowHandle();
@@ -3799,7 +3799,7 @@ public class ControlWPFWindow : MonoBehaviour
             UpdateActionQueue.Enqueue(() => SetBackgroundTransparent());
         }
 
-        UpdateActionQueue.Enqueue(() => SetWindowBorder(CurrentSettings.HideBorder));
+        UpdateActionQueue.Enqueue(() => HideWindowBorder(CurrentSettings.HideBorder));
         await server.SendCommandAsync(new PipeCommands.LoadHideBorder { enable = CurrentSettings.HideBorder });
 
         UpdateActionQueue.Enqueue(() => SetWindowTopMost(CurrentSettings.IsTopMost));
