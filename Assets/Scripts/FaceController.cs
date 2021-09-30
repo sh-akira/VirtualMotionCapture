@@ -214,7 +214,17 @@ public class FaceController : MonoBehaviour
     {
         if (proxy != null)
         {
-            SetFace(keys.Select(d => BlendShapeKeyString[d]).ToList(), strength, stopBlink);
+            if (keys.Any(d => BlendShapeKeyString.ContainsKey(d) == false))
+            {
+                var convertKeys = keys.Select(d => GetCaseSensitiveKeyName(d))
+                                      .Where(d => BlendShapeKeyString.ContainsKey(d))
+                                      .Select(d => BlendShapeKeyString[d]).ToList();
+                SetFace(convertKeys, strength, stopBlink);
+            }
+            else
+            {
+                SetFace(keys.Select(d => BlendShapeKeyString[d]).ToList(), strength, stopBlink);
+            }
         }
     }
 
@@ -255,7 +265,17 @@ public class FaceController : MonoBehaviour
 
     public void MixPresets(string presetName, string[] keys, float[] values)
     {
-        MixPresets(presetName, keys.Select(d => BlendShapeKeyString[d]).ToArray(), values);
+        if (keys.Any(d => BlendShapeKeyString.ContainsKey(d) == false))
+        {
+            var convertKeys = keys.Select(d => GetCaseSensitiveKeyName(d))
+                                  .Where(d => BlendShapeKeyString.ContainsKey(d))
+                                  .Select(d => BlendShapeKeyString[d]).ToArray();
+            MixPresets(presetName, convertKeys, values);
+        }
+        else
+        {
+            MixPresets(presetName, keys.Select(d => BlendShapeKeyString[d]).ToArray(), values);
+        }
     }
 
     public void MixPresets(string presetName, BlendShapeKey[] presets, float[] values)
