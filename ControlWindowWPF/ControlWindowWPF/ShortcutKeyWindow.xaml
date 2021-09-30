@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
         mc:Ignorable="d"
-        Title="{DynamicResource ShortcutKeyWindowTitle}" SizeToContent="Height" Width="800" Icon="Resources/VirtualMotionCapture_dark.ico">
+        Title="{DynamicResource ShortcutKeyWindowTitle}" Height="790" Width="800" Icon="Resources/VirtualMotionCapture_dark.ico">
     <DockPanel>
         <StackPanel Orientation="Vertical" DockPanel.Dock="Right">
             <GroupBox Header="{DynamicResource ShortcutKeyWindow_TouchPadStickInfo}">
