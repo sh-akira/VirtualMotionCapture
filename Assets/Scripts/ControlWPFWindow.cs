@@ -1210,11 +1210,12 @@ namespace VMC
 
             if (animator != null)
             {
+                wristRotationFix.SetVRIK(vrik);
+
                 animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).eulerAngles = new Vector3(LeftLowerArmAngle, 0, 0);
                 animator.GetBoneTransform(HumanBodyBones.RightLowerArm).eulerAngles = new Vector3(RightLowerArmAngle, 0, 0);
                 animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).eulerAngles = new Vector3(LeftUpperArmAngle, 0, 0);
                 animator.GetBoneTransform(HumanBodyBones.RightUpperArm).eulerAngles = new Vector3(RightUpperArmAngle, 0, 0);
-                wristRotationFix.SetVRIK(vrik);
 
                 handController.SetDefaultAngle(animator);
             }
@@ -1753,8 +1754,18 @@ namespace VMC
         {
             lastCalibrateType = calibrateType;//最後に実施したキャリブレーションタイプとして記録
 
+            animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(0, 0, 0);
+            animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(0, 0, 0);
+            animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(0, 0, 0);
+            animator.GetBoneTransform(HumanBodyBones.RightUpperArm).localEulerAngles = new Vector3(0, 0, 0);
+            animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(0, 0, 0);
+            animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(0, 0, 0);
+
             SetVRIK(CurrentModel);
             wristRotationFix.SetVRIK(vrik);
+
+            animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(LeftHandAngle, 0, 0);
+            animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(RightHandAngle, 0, 0);
 
             //var leftLowerArm = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm);
             //var leftRelaxer = leftLowerArm.gameObject.AddComponent<TwistRelaxer>();
