@@ -11412,7 +11412,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ik: {fileID: 0}
   ElbowFixWeight: 0.5
-  UpperArmFixWeight: 0.2
+  UpperArmFixWeight: 0.4
 --- !u!4 &1793473875
 Transform:
   m_ObjectHideFlags: 0
