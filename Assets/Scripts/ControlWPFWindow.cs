@@ -1615,6 +1615,30 @@ public class ControlWPFWindow : MonoBehaviour
 
     #region Calibration
 
+    public void FixLegDirection(GameObject targetHumanoidModel)
+    {
+        var avatarForward = targetHumanoidModel.transform.forward;
+        var animator = targetHumanoidModel.GetComponent<Animator>();
+
+        var leftUpperLeg = animator.GetBoneTransform(HumanBodyBones.LeftUpperLeg);
+        var leftLowerLeg = animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg);
+        var leftFoot = animator.GetBoneTransform(HumanBodyBones.LeftFoot);
+        var leftFootDefaultRotation = leftFoot.rotation;
+        var leftFootTargetPosition = new Vector3(leftFoot.position.x, leftFoot.position.y, leftFoot.position.z);
+        LookAtBones(leftFootTargetPosition + avatarForward * 0.05f, leftUpperLeg, leftLowerLeg);
+        LookAtBones(leftFootTargetPosition, leftLowerLeg, leftFoot);
+        leftFoot.rotation = leftFootDefaultRotation;
+
+        //var rightUpperLeg = animator.GetBoneTransform(HumanBodyBones.RightUpperLeg);
+        //var rightLowerLeg = animator.GetBoneTransform(HumanBodyBones.RightLowerLeg);
+        //var rightFoot = animator.GetBoneTransform(HumanBodyBones.RightFoot);
+        //var rightFootDefaultRotation = rightFoot.rotation;
+        //var rightFootTargetPosition = new Vector3(rightFoot.position.x, rightFoot.position.y, rightFoot.position.z);
+        //LookAtBones(rightFootTargetPosition + avatarForward * 0.01f, rightUpperLeg, rightLowerLeg);
+        //LookAtBones(rightFootTargetPosition, rightLowerLeg, rightFoot);
+        //rightFoot.rotation = rightFootDefaultRotation;
+    }
+
     public void FixArmDirection(GameObject targetHumanoidModel)
     {
         var avatarForward = targetHumanoidModel.transform.forward;
@@ -1650,6 +1674,7 @@ public class ControlWPFWindow : MonoBehaviour
             bones[i].rotation = Quaternion.FromToRotation((bones[i].position - bones[i + 1].position).normalized, (bones[i].position - lookTargetPosition).normalized) * bones[i].rotation;
         }
     }
+
     private Vector3 fixKneeBone(Transform UpperLeg, Transform Knee, Transform Ankle)
     {
         var a = UpperLeg.position;
@@ -1693,9 +1718,10 @@ public class ControlWPFWindow : MonoBehaviour
         var rightOffset = Vector3.zero;
         if (animator != null && CurrentSettings.FixKneeRotation)
         {
-            leftOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.LeftUpperLeg), animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg), animator.GetBoneTransform(HumanBodyBones.LeftFoot));
-            rightOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.RightUpperLeg), animator.GetBoneTransform(HumanBodyBones.RightLowerLeg), animator.GetBoneTransform(HumanBodyBones.RightFoot));
-            fixPelvisBone(animator.GetBoneTransform(HumanBodyBones.Spine), animator.GetBoneTransform(HumanBodyBones.Hips));
+            //leftOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.LeftUpperLeg), animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg), animator.GetBoneTransform(HumanBodyBones.LeftFoot));
+            //rightOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.RightUpperLeg), animator.GetBoneTransform(HumanBodyBones.RightLowerLeg), animator.GetBoneTransform(HumanBodyBones.RightFoot));
+            //fixPelvisBone(animator.GetBoneTransform(HumanBodyBones.Spine), animator.GetBoneTransform(HumanBodyBones.Hips));
+            FixLegDirection(model);
         }
 
         if (animator != null && CurrentSettings.FixElbowRotation)
