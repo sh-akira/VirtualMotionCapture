@@ -368,6 +368,9 @@ namespace VMC
         public bool FixKneeRotation;
 
         [OptionalField]
+        public bool FixElbowRotation;
+
+        [OptionalField]
         public bool HandleControllerAsTracker;
 
         [OptionalField]
@@ -550,6 +553,7 @@ namespace VMC
             TrackingFilterTrackerEnable = true;
 
             FixKneeRotation = true;
+            FixElbowRotation = true;
 
             HandleControllerAsTracker = false;
 

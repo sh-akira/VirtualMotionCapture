@@ -705,7 +705,7 @@ namespace VMC
                 else if (e.CommandType == typeof(PipeCommands.EnableModelModifier))
                 {
                     var d = (PipeCommands.EnableModelModifier)e.Data;
-                    SetModelModifierEnable(d.fixKneeRotation);
+                    SetModelModifierEnable(d.fixKneeRotation, d.fixElbowRotation);
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetEnableModelModifier))
                 {
@@ -1352,6 +1352,41 @@ namespace VMC
 
         #region Calibration
 
+        public void FixArmDirection(GameObject targetHumanoidModel)
+        {
+            var avatarForward = targetHumanoidModel.transform.forward;
+            var animator = targetHumanoidModel.GetComponent<Animator>();
+
+            var leftShoulder = animator.GetBoneTransform(HumanBodyBones.LeftShoulder);
+            var leftUpperArm = animator.GetBoneTransform(HumanBodyBones.LeftUpperArm);
+            var leftLowerArm = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm);
+            var leftHand = animator.GetBoneTransform(HumanBodyBones.LeftHand);
+            var leftHandDefaultRotation = leftHand.rotation;
+            var leftHandTargetPosition = new Vector3(leftHand.position.x, leftHand.position.y, leftHand.position.z);
+            LookAtBones(leftHandTargetPosition + avatarForward * 0.01f, leftShoulder, leftUpperArm);
+            LookAtBones(leftHandTargetPosition - avatarForward * 0.01f, leftUpperArm, leftLowerArm);
+            LookAtBones(leftHandTargetPosition, leftLowerArm, leftHand);
+            leftHand.rotation = leftHandDefaultRotation;
+
+            var rightShoulder = animator.GetBoneTransform(HumanBodyBones.RightShoulder);
+            var rightUpperArm = animator.GetBoneTransform(HumanBodyBones.RightUpperArm);
+            var rightLowerArm = animator.GetBoneTransform(HumanBodyBones.RightLowerArm);
+            var rightHand = animator.GetBoneTransform(HumanBodyBones.RightHand);
+            var rightHandDefaultRotation = rightHand.rotation;
+            var rightHandTargetPosition = new Vector3(rightHand.position.x, rightHand.position.y, rightHand.position.z);
+            LookAtBones(rightHandTargetPosition + avatarForward * 0.01f, rightShoulder, rightUpperArm);
+            LookAtBones(rightHandTargetPosition - avatarForward * 0.01f, rightUpperArm, rightLowerArm);
+            LookAtBones(rightHandTargetPosition, rightLowerArm, rightHand);
+            rightHand.rotation = rightHandDefaultRotation;
+        }
+
+        private void LookAtBones(Vector3 lookTargetPosition, params Transform[] bones)
+        {
+            for (int i = 0; i < bones.Length - 1; i++)
+            {
+                bones[i].rotation = Quaternion.FromToRotation((bones[i].position - bones[i + 1].position).normalized, (bones[i].position - lookTargetPosition).normalized) * bones[i].rotation;
+            }
+        }
         private Vector3 fixKneeBone(Transform UpperLeg, Transform Knee, Transform Ankle)
         {
             var a = UpperLeg.position;
@@ -1398,6 +1433,11 @@ namespace VMC
                 leftOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.LeftUpperLeg), animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg), animator.GetBoneTransform(HumanBodyBones.LeftFoot));
                 rightOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.RightUpperLeg), animator.GetBoneTransform(HumanBodyBones.RightLowerLeg), animator.GetBoneTransform(HumanBodyBones.RightFoot));
                 fixPelvisBone(animator.GetBoneTransform(HumanBodyBones.Spine), animator.GetBoneTransform(HumanBodyBones.Hips));
+            }
+
+            if (animator != null && Settings.Current.FixElbowRotation)
+            {
+                FixArmDirection(model);
             }
 
             vrik = model.AddComponent<RootMotion.FinalIK.VRIK>();
@@ -2243,9 +2283,10 @@ namespace VMC
             Settings.Current.TrackingFilterTrackerEnable = tracker;
         }
 
-        private void SetModelModifierEnable(bool fixKneeRotation)
+        private void SetModelModifierEnable(bool fixKneeRotation, bool fixElbowRotation)
         {
             Settings.Current.FixKneeRotation = fixKneeRotation;
+            Settings.Current.FixElbowRotation = fixElbowRotation;
         }
 
         private void SetHandleControllerAsTracker(bool handleCasT)
@@ -2626,7 +2667,7 @@ namespace VMC
 
             SetTrackingFilterEnable(Settings.Current.TrackingFilterEnable, Settings.Current.TrackingFilterHmdEnable, Settings.Current.TrackingFilterControllerEnable, Settings.Current.TrackingFilterTrackerEnable);
 
-            SetModelModifierEnable(Settings.Current.FixKneeRotation);
+            SetModelModifierEnable(Settings.Current.FixKneeRotation, Settings.Current.FixElbowRotation);
             SetHandleControllerAsTracker(Settings.Current.HandleControllerAsTracker);
             SetQualitySettings(new PipeCommands.SetQualitySettings
             {

@@ -472,6 +472,7 @@ namespace UnityMemoryMappedFile
         public class EnableModelModifier
         {
             public bool fixKneeRotation { get; set; }
+            public bool fixElbowRotation { get; set; }
         }
         public class GetVirtualMotionTracker { }
         public class SetVirtualMotionTracker
