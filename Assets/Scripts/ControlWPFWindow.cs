@@ -1467,6 +1467,14 @@ namespace VMC
             }
 
             vrik = model.AddComponent<RootMotion.FinalIK.VRIK>();
+            vrik.AutoDetectReferences();
+
+            //親指の方向の検出に失敗すると腕の回転もおかしくなる
+            vrik.solver.leftArm.palmToThumbAxis = new Vector3(0, 0, 1);
+            vrik.solver.rightArm.palmToThumbAxis = new Vector3(0, 0, 1);
+
+            vrik.solver.FixTransforms();
+
             vrik.solver.IKPositionWeight = 0f;
             vrik.solver.leftArm.stretchCurve = new AnimationCurve();
             vrik.solver.rightArm.stretchCurve = new AnimationCurve();
