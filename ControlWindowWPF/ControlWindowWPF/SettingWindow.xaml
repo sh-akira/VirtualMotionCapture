@@ -224,7 +224,8 @@
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_ModelModifier}">
                     <StackPanel Orientation="Vertical">
-                        <CheckBox Content="{DynamicResource SettingWindow_FixKneeRotation}" Name="FixKneeRotationCheckBox" Checked="FixKneeRotationCheckBox_Changed" Unchecked="FixKneeRotationCheckBox_Changed"/>
+                        <CheckBox Content="{DynamicResource SettingWindow_FixKneeRotation}" Name="FixKneeRotationCheckBox" Checked="ModelModifierCheckBox_Changed" Unchecked="ModelModifierCheckBox_Changed"/>
+                        <CheckBox Content="{DynamicResource SettingWindow_FixElbowRotation}" Name="FixElbowRotationCheckBox" Checked="ModelModifierCheckBox_Changed" Unchecked="ModelModifierCheckBox_Changed"/>
                     </StackPanel>
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_TrackingOption}">

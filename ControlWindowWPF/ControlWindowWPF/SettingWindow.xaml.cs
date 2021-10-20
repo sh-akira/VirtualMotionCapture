@@ -343,6 +343,7 @@ namespace VirtualMotionCaptureControlPanel
                 {
                     isSetting = true;
                     FixKneeRotationCheckBox.IsChecked = data.fixKneeRotation;
+                    FixElbowRotationCheckBox.IsChecked = data.fixElbowRotation;
                     isSetting = false;
                 });
             });
@@ -764,12 +765,13 @@ namespace VirtualMotionCaptureControlPanel
             });
         }
 
-        private async void FixKneeRotationCheckBox_Changed(object sender, RoutedEventArgs e)
+        private async void ModelModifierCheckBox_Changed(object sender, RoutedEventArgs e)
         {
             if (isSetting) return;
             await Globals.Client?.SendCommandAsync(new PipeCommands.EnableModelModifier
             {
                 fixKneeRotation = FixKneeRotationCheckBox.IsChecked.Value,
+                fixElbowRotation = FixElbowRotationCheckBox.IsChecked.Value,
             });
         }
 

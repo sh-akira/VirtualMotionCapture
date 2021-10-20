@@ -247,6 +247,7 @@
     <system:String x:Key="SettingWindow_TrackingFilterTrackerEnable">追踪器</system:String>
     <system:String x:Key="SettingWindow_ModelModifier">Model modifier</system:String>
     <system:String x:Key="SettingWindow_FixKneeRotation">修正膝盖角度</system:String>
+    <system:String x:Key="SettingWindow_FixElbowRotation">修正肘部角度</system:String>
     <system:String x:Key="SettingWindow_TrackingOption">捕捉设置</system:String>
     <system:String x:Key="SettingWindow_PauseTracking">暂停捕捉</system:String>
     <system:String x:Key="SettingWindow_HandleControllerAsTracker">控制器当做追踪器</system:String>

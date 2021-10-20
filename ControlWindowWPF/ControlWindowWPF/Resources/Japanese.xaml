@@ -248,6 +248,7 @@
     <system:String x:Key="SettingWindow_TrackingFilterTrackerEnable">トラッカー</system:String>
     <system:String x:Key="SettingWindow_ModelModifier">モデル調整</system:String>
     <system:String x:Key="SettingWindow_FixKneeRotation">膝の回転の修正を試みる</system:String>
+    <system:String x:Key="SettingWindow_FixElbowRotation">肘の回転の修正を試みる</system:String>
     <system:String x:Key="SettingWindow_TrackingOption">トラッキングオプション</system:String>
     <system:String x:Key="SettingWindow_PauseTracking">トラッキングを一時停止する</system:String>
     <system:String x:Key="SettingWindow_HandleControllerAsTracker">コントローラをトラッカーとして扱う(特殊持ち対応)</system:String>
