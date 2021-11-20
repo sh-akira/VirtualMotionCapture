@@ -328,7 +328,7 @@ namespace VMC
                 else if (e.CommandType == typeof(PipeCommands.SetWindowBorder))
                 {
                     var d = (PipeCommands.SetWindowBorder)e.Data;
-                    SetWindowBorder(d.enable);
+                    HideWindowBorder(d.enable);
                 }
                 else if (e.CommandType == typeof(PipeCommands.SetWindowTopMost))
                 {
@@ -1914,11 +1914,11 @@ namespace VMC
 #endif
         }
 
-        private bool lastWindowBorder = true;
-        void SetWindowBorder(bool enable)
+        private bool lastHideWindowBorder = false;
+        void HideWindowBorder(bool enable)
         {
-            if (lastWindowBorder == enable) return;
-            lastWindowBorder = enable;
+            if (lastHideWindowBorder == enable) return;
+            lastHideWindowBorder = enable;
             Settings.Current.HideBorder = enable;
 #if !UNITY_EDITOR   // エディタ上では動きません。
         var hwnd = GetUnityWindowHandle();
@@ -2492,7 +2492,7 @@ namespace VMC
                 UpdateActionQueue.Enqueue(() => SetBackgroundTransparent());
             }
 
-            UpdateActionQueue.Enqueue(() => SetWindowBorder(Settings.Current.HideBorder));
+            UpdateActionQueue.Enqueue(() => HideWindowBorder(Settings.Current.HideBorder));
             await server.SendCommandAsync(new PipeCommands.LoadHideBorder { enable = Settings.Current.HideBorder });
 
             UpdateActionQueue.Enqueue(() => SetWindowTopMost(Settings.Current.IsTopMost));
