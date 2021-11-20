@@ -825,8 +825,17 @@ namespace VirtualMotionCaptureControlPanel
             if (lastLog != null)
             {
                 string trace = "[" + lastLog.type.ToString() + "] " + lastLog.condition + "\n" + lastLog.stackTrace;
-                Clipboard.SetText(trace);
-                MessageBox.Show("Trace log has copied.", "Trace log", MessageBoxButton.OK, MessageBoxImage.Information);
+                try
+                {
+                    Clipboard.Clear();
+                }
+                catch (System.Runtime.InteropServices.COMException) { }
+                try
+                {
+                    Clipboard.SetDataObject(trace, true);
+                }
+                catch (System.Runtime.InteropServices.COMException) { }
+            MessageBox.Show("Trace log has copied.", "Trace log", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
