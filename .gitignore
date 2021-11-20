@@ -12,6 +12,7 @@ Assets/ExternalPlugins/MeshUtility*
 Assets/ExternalPlugins/StreamingAssets*
 Assets/ExternalPlugins/OVRLipSync*
 Assets/ExternalPlugins/Oculus*
+Assets/ExternalPlugins/DVRSDK*
 ControlWindowSeparateThreadBackup*
 Assembly*.csproj
 OVR*.sln
@@ -55,7 +56,7 @@ UniJSON*csproj
 UniUnlit*csproj
 UniVRM*csproj
 VRM*csproj
-Assets/DVRSDK*
+VMCMOD*csproj
 Assets/Resources*
 Assets/Scripts/DMMVRConnectConnector*
 ControlWindowWPF/ControlWindowWPF/DMMVRConnectWindow*

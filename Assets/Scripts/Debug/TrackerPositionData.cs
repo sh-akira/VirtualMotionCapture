@@ -1,34 +1,34 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static ControlWPFWindow;
 
-[Serializable]
-public class TrackerPositionData
+namespace VMC
 {
-    public string Name;
-    public StoreTransform ParentTransform;
-    public StoreTransform TrackerTransform;
-    public StoreTransform OffsetTransform;
-    public StoreTransform ChildOffsetTransform;
+    [Serializable]
+    public class TrackerPositionData
+    {
+        public string Name;
+        public StoreTransform ParentTransform;
+        public StoreTransform TrackerTransform;
+        public StoreTransform OffsetTransform;
+        public StoreTransform ChildOffsetTransform;
 
 
-    public TrackerPositionData SetOffsetAuto(string Name, Transform offsetObject)
-    {
-        this.Name = Name;
-        return SetOffsetAuto(offsetObject);
-    }
-    public TrackerPositionData SetOffsetAuto(Transform offsetObject)
-    {
-        if (offsetObject.parent.parent.parent != null)
+        public TrackerPositionData SetOffsetAuto(string Name, Transform offsetObject)
         {
-            ChildOffsetTransform = new StoreTransform(offsetObject);
-            offsetObject = offsetObject.parent;
+            this.Name = Name;
+            return SetOffsetAuto(offsetObject);
         }
-        OffsetTransform = new StoreTransform(offsetObject);
-        TrackerTransform = new StoreTransform(offsetObject.parent);
-        ParentTransform = new StoreTransform(offsetObject.parent.parent);
-        return this;
+        public TrackerPositionData SetOffsetAuto(Transform offsetObject)
+        {
+            if (offsetObject.parent.parent.parent != null)
+            {
+                ChildOffsetTransform = new StoreTransform(offsetObject);
+                offsetObject = offsetObject.parent;
+            }
+            OffsetTransform = new StoreTransform(offsetObject);
+            TrackerTransform = new StoreTransform(offsetObject.parent);
+            ParentTransform = new StoreTransform(offsetObject.parent.parent);
+            return this;
+        }
     }
 }

@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-public static class IEnumerableExtensions
+namespace VMC
 {
-    public static bool ContainsArray<T>(this IEnumerable<T> source, IEnumerable<T> target)
+    public static class IEnumerableExtensions
     {
-        foreach (var d in target)
+        public static bool ContainsArray<T>(this IEnumerable<T> source, IEnumerable<T> target)
         {
-            if (source.Contains(d) == false) return false;
+            foreach (var d in target)
+            {
+                if (source.Contains(d) == false) return false;
+            }
+            return true;
         }
-        return true;
     }
 }
