@@ -1039,7 +1039,7 @@ namespace VMC
 
         public VRMData LoadVRM(string path)
         {
-            if (string.IsNullOrEmpty(path))
+            if (string.IsNullOrEmpty(path) || File.Exists(path) == false)
             {
                 return null;
             }
