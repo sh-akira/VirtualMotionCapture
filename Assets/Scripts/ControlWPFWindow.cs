@@ -247,6 +247,10 @@ namespace VMC
                     var d = (PipeCommands.SetIsBeta)e.Data;
                     IsBeta = d.IsBeta;
                     IsPreRelease = d.IsPreRelease;
+
+                    //エラー情報をWPFに飛ばす
+                    Application.logMessageReceived += LogMessageHandler;
+
                     if (IsPreRelease)
                     {
                         modManager.ImportMods();
@@ -2430,9 +2434,6 @@ namespace VMC
                 IsRegisteredEventCallBack = true;
                 TrackerTransformExtensions.TrackerMovedEvent += TransformExtensions_TrackerMovedEvent;
                 ExternalReceiverForVMC.StatusStringUpdated += StatusStringUpdatedEvent;
-
-                //エラー情報をWPFに飛ばす
-                Application.logMessageReceived += LogMessageHandler;
             }
         }
 
