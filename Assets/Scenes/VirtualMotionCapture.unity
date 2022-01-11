@@ -2430,12 +2430,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 389263777}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.8369074, y: -2.2320776, z: 2.8674278}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 27
+  m_Father: {fileID: 1210221202}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &397407401
 GameObject:
@@ -6305,7 +6305,7 @@ MonoBehaviour:
   - {fileID: 1255601378}
   - {fileID: 1653217471}
   DisableBaseStationRotation: 1
-  externalReceiver: {fileID: 389263779}
+  controlWPFWindow: {fileID: 1407685704}
 --- !u!4 &1128534204
 Transform:
   m_ObjectHideFlags: 0
@@ -7007,6 +7007,38 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1207424084}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1210221201
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1210221202}
+  m_Layer: 0
+  m_Name: ExternalReceivers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1210221202
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1210221201}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 389263780}
+  - {fileID: 1571681380}
+  m_Father: {fileID: 0}
+  m_RootOrder: 27
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1211879436
 GameObject:
   m_ObjectHideFlags: 0
@@ -7419,7 +7451,7 @@ MonoBehaviour:
   - {fileID: 151828371}
   - {fileID: 378345255}
   DisableBaseStationRotation: 0
-  externalReceiver: {fileID: 0}
+  controlWPFWindow: {fileID: 0}
 --- !u!4 &1300838139
 Transform:
   m_ObjectHideFlags: 0
@@ -8536,7 +8568,8 @@ MonoBehaviour:
   PelvisTrackerRoot: {fileID: 836257372}
   RealTrackerRoot: {fileID: 1300838139}
   ExternalMotionSenderObject: {fileID: 1155637108}
-  ExternalMotionReceiverObject: {fileID: 389263777}
+  ExternalMotionReceiverObject: {fileID: 1210221201}
+  externalMotionReceivers: []
   CriticalErrorCount: 0
   vmtClient: {fileID: 1995326176}
   postProcessingManager: {fileID: 795349838}
@@ -10107,6 +10140,71 @@ Transform:
   m_Father: {fileID: 1300838139}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1571681379
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1571681380}
+  - component: {fileID: 1571681382}
+  - component: {fileID: 1571681381}
+  m_Layer: 0
+  m_Name: ExternalReceiver2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1571681380
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1571681379}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1210221202}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1571681381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1571681379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed41645692348410d84991648165334c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  port: 39540
+--- !u!114 &1571681382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1571681379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5466e992f0e09e5489c93a853bf3b628, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  externalSender: {fileID: 1155637110}
+  MIDICCWrapper: {fileID: 1604201751}
+  receivePort: 39541
+  statusString: 
+  eddp: {fileID: 1549762413}
+  receiveBonesFlag: 0
+  packets: 0
+  BonePositionSynchronize: 1
 --- !u!1 &1596440252
 GameObject:
   m_ObjectHideFlags: 0

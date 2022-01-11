@@ -292,7 +292,7 @@ namespace VirtualMotionCaptureControlPanel
                     ExternalMotionSenderResponderEnableCheckBox.IsChecked = data.ResponderEnable;
                 });
             });
-            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEnableExternalMotionReceiver { }, d =>
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEnableExternalMotionReceiver { index = 0 }, d =>
             {
                 var data = (PipeCommands.EnableExternalMotionReceiver)d;
                 Dispatcher.Invoke(() =>
@@ -302,13 +302,24 @@ namespace VirtualMotionCaptureControlPanel
                     isSetting = false;
                 });
             });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEnableExternalMotionReceiver { index = 1 }, d =>
+            {
+                var data = (PipeCommands.EnableExternalMotionReceiver)d;
+                Dispatcher.Invoke(() =>
+                {
+                    isSetting = true;
+                    ExternalMotionReceiverEnableCheckBox2.IsChecked = data.enable;
+                    isSetting = false;
+                });
+            });
             await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetExternalMotionReceiverPort { }, d =>
             {
                 var data = (PipeCommands.ChangeExternalMotionReceiverPort)d;
                 Dispatcher.Invoke(() =>
                 {
                     isSetting = true;
-                    ExternalMotionReceiverPortTextBox.Text = data.port.ToString();
+                    ExternalMotionReceiverPortTextBox.Text = data.ports[0].ToString();
+                    ExternalMotionReceiverPortTextBox2.Text = data.ports[1].ToString();
                     ExternalMotionReceiverRequesterEnableCheckBox.IsChecked = data.RequesterEnable;
                     isSetting = false;
                 });
@@ -705,22 +716,29 @@ namespace VirtualMotionCaptureControlPanel
         private async void ExternalMotionReceiverCheckBox_Changed(object sender, RoutedEventArgs e)
         {
             if (isSetting) return;
+            var CheckBoxes = new CheckBox[] { ExternalMotionReceiverEnableCheckBox, ExternalMotionReceiverEnableCheckBox2 };
             await Globals.Client?.SendCommandAsync(new PipeCommands.EnableExternalMotionReceiver
             {
-                enable = ExternalMotionReceiverEnableCheckBox.IsChecked.Value
+                enable = (sender as CheckBox).IsChecked.Value,
+                index = Array.IndexOf(CheckBoxes, sender)
             });
         }
 
         private async void OSCReceiverApplyButton_Click(object sender, RoutedEventArgs e)
         {
             var port = TextBoxTryParse(ExternalMotionReceiverPortTextBox);
-            if (port.HasValue)
+            var port2 = TextBoxTryParse(ExternalMotionReceiverPortTextBox2);
+            if (port.HasValue && port2.HasValue)
             {
                 await Globals.Client?.SendCommandAsync(new PipeCommands.ChangeExternalMotionReceiverPort
                 {
-                    port = port.Value,
+                    ports = new int[] { port.Value, port2.Value },
                     RequesterEnable = ExternalMotionReceiverRequesterEnableCheckBox.IsChecked.Value
                 });
+            }
+            else
+            {
+                MessageBox.Show("Error: Port", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         private async void ReceiveBonesEnableCheckBox_Changed(object sender, RoutedEventArgs e)

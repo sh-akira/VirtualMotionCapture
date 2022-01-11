@@ -184,25 +184,44 @@
 						</WrapPanel>
                     </GroupBox.Header>
                     <DockPanel>
-                        <Button Content="{DynamicResource SettingWindow_ResolutionApply}" Name="OSCReceiverApplyButton" Click="OSCReceiverApplyButton_Click" DockPanel.Dock="Right" Padding="10,5"/>
-                        <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionReceiverEnable}" Name="ExternalMotionReceiverEnableCheckBox" Checked="ExternalMotionReceiverCheckBox_Changed" Unchecked="ExternalMotionReceiverCheckBox_Changed" DockPanel.Dock="Top"/>
-                        <Grid DockPanel.Dock="Top">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text=" Port:" Grid.Column="0" Grid.Row="0"/>
-                            <TextBox Text="39540" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Name="ExternalMotionReceiverPortTextBox"/>
-                            <TextBlock Text="Status: " Grid.Column="0" Grid.Row="1"/>
-                            <TextBox Text="" Grid.Column="1" Grid.Row="1" IsReadOnly="True" IsEnabled="False" VerticalAlignment="Center" Name="StatusStringTextbox"/>
-                        </Grid>
-                        <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionReceiverRequesterEnable}" Name="ExternalMotionReceiverRequesterEnableCheckBox" DockPanel.Dock="Top"/>
-                        <CheckBox Content="{DynamicResource SettingWindow_ReceiveBonesEnable}" Name="ReceiveBonesEnableCheckBox" Checked="ReceiveBonesEnableCheckBox_Changed" Unchecked="ReceiveBonesEnableCheckBox_Changed" DockPanel.Dock="Top"/>
-                    </DockPanel>
+                        <CheckBox Content="{DynamicResource SettingWindow_ReceiveBonesEnable}" Name="ReceiveBonesEnableCheckBox" Checked="ReceiveBonesEnableCheckBox_Changed" Unchecked="ReceiveBonesEnableCheckBox_Changed" DockPanel.Dock="Bottom"/>
+                        <GroupBox>
+                            <DockPanel>
+                                <Button Content="{DynamicResource SettingWindow_ResolutionApply}" Name="OSCReceiverApplyButton" Click="OSCReceiverApplyButton_Click" DockPanel.Dock="Right" Padding="10,5"/>
+                                <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionReceiverEnable}" Name="ExternalMotionReceiverEnableCheckBox" Checked="ExternalMotionReceiverCheckBox_Changed" Unchecked="ExternalMotionReceiverCheckBox_Changed" DockPanel.Dock="Top"/>
+                                <Grid DockPanel.Dock="Top">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text=" Port:" Grid.Column="0" Grid.Row="0"/>
+                                    <TextBox Text="39540" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Name="ExternalMotionReceiverPortTextBox"/>
+                                    <TextBlock Text="Status: " Grid.Column="0" Grid.Row="1"/>
+                                    <TextBox Text="" Grid.Column="1" Grid.Row="1" IsReadOnly="True" IsEnabled="False" VerticalAlignment="Center" Name="StatusStringTextbox"/>
+                                </Grid>
+                                <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionReceiverRequesterEnable}" Name="ExternalMotionReceiverRequesterEnableCheckBox" DockPanel.Dock="Top" Margin="40,0,0,0"/>
+                                <DockPanel DockPanel.Dock="Top">
+                                    <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionReceiverEnable}" Name="ExternalMotionReceiverEnableCheckBox2" Checked="ExternalMotionReceiverCheckBox_Changed" Unchecked="ExternalMotionReceiverCheckBox_Changed" DockPanel.Dock="Left"/>
+                                    <TextBlock Text="(2)"/>
+                                </DockPanel>
+                                <Grid DockPanel.Dock="Top">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text=" Port:" Grid.Column="0" Grid.Row="0"/>
+                                    <TextBox Text="39541" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Name="ExternalMotionReceiverPortTextBox2"/>
+                                </Grid>
+                            </DockPanel>
+                        </GroupBox>
+                      </DockPanel>
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_MIDI_CC_BlendShape}">
                     <StackPanel Orientation="Vertical">
