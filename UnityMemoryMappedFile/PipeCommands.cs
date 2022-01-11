@@ -161,6 +161,7 @@ namespace UnityMemoryMappedFile
         public class SetCameraMirror { public bool enable { get; set; } }
         public class SetCameraFOV : SetFloatValueBase { }
         public class SetCameraSmooth : SetFloatValueBase { }
+        public class ResetCamera { }
 
         public class KeyDown
         {
@@ -419,15 +420,19 @@ namespace UnityMemoryMappedFile
             public bool ResponderEnable { get; set; } 
         }
 
-        public class GetEnableExternalMotionReceiver { }
+        public class GetEnableExternalMotionReceiver
+        {
+            public int index { get; set; }
+        }
         public class EnableExternalMotionReceiver
         {
             public bool enable { get; set; }
+            public int index { get; set; }
         }
         public class GetExternalMotionReceiverPort { }
         public class ChangeExternalMotionReceiverPort
         {
-            public int port { get; set; }
+            public int[] ports { get; set; }
             public bool RequesterEnable { get; set; }
         }
         public class GetExternalReceiveBones { }

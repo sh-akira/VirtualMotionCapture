@@ -55,7 +55,7 @@ namespace VMC
         private ExternalSender externalMotionSender;
 
         public GameObject ExternalMotionReceiverObject;
-        private ExternalReceiverForVMC externalMotionReceiver;
+        public ExternalReceiverForVMC[] externalMotionReceivers;
 
         public MemoryMappedFileServer server;
         private string pipeName = Guid.NewGuid().ToString();
@@ -139,15 +139,15 @@ namespace VMC
             server = new MemoryMappedFileServer();
             server.ReceivedEvent += Server_Received;
             server.Start(pipeName);
+
+            externalMotionSender = ExternalMotionSenderObject.GetComponent<ExternalSender>();
+            externalMotionReceivers = ExternalMotionReceiverObject.GetComponentsInChildren<ExternalReceiverForVMC>(true);
         }
 
         void Start()
         {
             Settings.Current.BackgroundColor = BackgroundRenderer.material.color;
             Settings.Current.CustomBackgroundColor = BackgroundRenderer.material.color;
-
-            externalMotionSender = ExternalMotionSenderObject.GetComponent<ExternalSender>();
-            externalMotionReceiver = ExternalMotionReceiverObject.GetComponent<ExternalReceiverForVMC>();
         }
 
         private int SetWindowTitle()
@@ -631,26 +631,28 @@ namespace VMC
                 else if (e.CommandType == typeof(PipeCommands.EnableExternalMotionReceiver))
                 {
                     var d = (PipeCommands.EnableExternalMotionReceiver)e.Data;
-                    SetExternalMotionReceiverEnable(d.enable);
+                    SetExternalMotionReceiverEnable(d.enable, d.index);
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetEnableExternalMotionReceiver))
                 {
+                    var d = (PipeCommands.GetEnableExternalMotionReceiver)e.Data;
                     await server.SendCommandAsync(new PipeCommands.EnableExternalMotionReceiver
                     {
-                        enable = Settings.Current.ExternalMotionReceiverEnable
+                        enable = Settings.Current.ExternalMotionReceiverEnableList[d.index],
+                        index = d.index
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.ChangeExternalMotionReceiverPort))
                 {
                     var d = (PipeCommands.ChangeExternalMotionReceiverPort)e.Data;
-                    ChangeExternalMotionReceiverPort(d.port, d.RequesterEnable);
+                    ChangeExternalMotionReceiverPort(d.ports, d.RequesterEnable);
 
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetExternalMotionReceiverPort))
                 {
                     await server.SendCommandAsync(new PipeCommands.ChangeExternalMotionReceiverPort
                     {
-                        port = Settings.Current.ExternalMotionReceiverPort,
+                        ports = Settings.Current.ExternalMotionReceiverPortList.ToArray(),
                         RequesterEnable = Settings.Current.ExternalMotionReceiverRequesterEnable
                     }, e.RequestId);
                 }
@@ -723,9 +725,9 @@ namespace VMC
                 {
                     string statusStringBuf = "";
                     //有効な場合だけ送る
-                    if (externalMotionReceiver.isActiveAndEnabled)
+                    if (externalMotionReceivers[0].isActiveAndEnabled)
                     {
-                        statusStringBuf = externalMotionReceiver?.statusString;
+                        statusStringBuf = externalMotionReceivers?[0]?.statusString;
                     }
                     await server.SendCommandAsync(new PipeCommands.SetStatusString
                     {
@@ -2146,7 +2148,10 @@ namespace VMC
             }
             else if (action.FaceAction)
             {
-                externalMotionReceiver.DisableBlendShapeReception = action.DisableBlendShapeReception;
+                foreach (var externalMotionReceiver in externalMotionReceivers)
+                {
+                    externalMotionReceiver.DisableBlendShapeReception = action.DisableBlendShapeReception;
+                }
                 LipSync.MaxLevel = action.LipSyncMaxLevel;
                 faceController.SetFace(action.FaceNames, action.FaceStrength, action.StopBlink);
             }
@@ -2255,10 +2260,10 @@ namespace VMC
             }
         }
 
-        private void SetExternalMotionReceiverEnable(bool enable)
+        private void SetExternalMotionReceiverEnable(bool enable, int index)
         {
-            Settings.Current.ExternalMotionReceiverEnable = enable;
-            externalMotionReceiver.SetObjectActive(enable);
+            Settings.Current.ExternalMotionReceiverEnableList[index] = enable;
+            externalMotionReceivers[index].SetObjectActive(enable);
             if (CurrentModel != null)
             {
                 WaitOneFrameAction(() => VMCEvents.OnModelLoaded?.Invoke(CurrentModel));
@@ -2269,7 +2274,10 @@ namespace VMC
         private void SetExternalBonesReceiverEnable(bool enable)
         {
             Settings.Current.ExternalBonesReceiverEnable = enable;
-            externalMotionReceiver.receiveBonesFlag = enable;
+            foreach (var externalMotionReceiver in externalMotionReceivers)
+            {
+                externalMotionReceiver.receiveBonesFlag = enable;
+            }
         }
 
         private void ChangeExternalMotionSenderAddress(string address, int port, int pstatus, int proot, int pbone, int pblendshape, int pcamera, int pdevices, string optionstring, bool responderEnable)
@@ -2304,10 +2312,13 @@ namespace VMC
             externalMotionSender.ChangeOSCAddress(address, port);
         }
 
-        private void ChangeExternalMotionReceiverPort(int port, bool requesterEnable)
+        private void ChangeExternalMotionReceiverPort(int[] ports, bool requesterEnable)
         {
-            Settings.Current.ExternalMotionReceiverPort = port;
-            externalMotionReceiver.ChangeOSCPort(port);
+            Settings.Current.ExternalMotionReceiverPortList = ports.ToList();
+            for (int index = 0; index < externalMotionReceivers.Length; index++)
+            {
+                externalMotionReceivers[index].ChangeOSCPort(ports[index]);
+            }
 
             Settings.Current.ExternalMotionReceiverRequesterEnable = requesterEnable;
             easyDeviceDiscoveryProtocolManager.requesterEnable = requesterEnable;
@@ -2689,8 +2700,13 @@ namespace VMC
             SetExternalMotionSenderEnable(Settings.Current.ExternalMotionSenderEnable);
             ChangeExternalMotionSenderAddress(Settings.Current.ExternalMotionSenderAddress, Settings.Current.ExternalMotionSenderPort, Settings.Current.ExternalMotionSenderPeriodStatus, Settings.Current.ExternalMotionSenderPeriodRoot, Settings.Current.ExternalMotionSenderPeriodBone, Settings.Current.ExternalMotionSenderPeriodBlendShape, Settings.Current.ExternalMotionSenderPeriodCamera, Settings.Current.ExternalMotionSenderPeriodDevices, Settings.Current.ExternalMotionSenderOptionString, Settings.Current.ExternalMotionSenderResponderEnable);
 
-            ChangeExternalMotionReceiverPort(Settings.Current.ExternalMotionReceiverPort, Settings.Current.ExternalMotionReceiverRequesterEnable);
-            SetExternalMotionReceiverEnable(Settings.Current.ExternalMotionReceiverEnable);
+            if (Settings.Current.ExternalMotionReceiverPortList == null) Settings.Current.ExternalMotionReceiverPortList = new List<int>() { Settings.Current.ExternalMotionReceiverPort, Settings.Current.ExternalMotionReceiverPort + 1 };
+            ChangeExternalMotionReceiverPort(Settings.Current.ExternalMotionReceiverPortList.ToArray(), Settings.Current.ExternalMotionReceiverRequesterEnable);
+            if (Settings.Current.ExternalMotionReceiverEnableList == null) Settings.Current.ExternalMotionReceiverEnableList = new List<bool>() { Settings.Current.ExternalMotionReceiverEnable, false };
+            for (int index = 0; index < Settings.Current.ExternalMotionReceiverEnableList.Count; index++)
+            {
+                SetExternalMotionReceiverEnable(Settings.Current.ExternalMotionReceiverEnableList[index], index);
+            }
 
             SetMidiCCBlendShape(Settings.Current.MidiCCBlendShape);
             SetMidiEnable(Settings.Current.MidiEnable);

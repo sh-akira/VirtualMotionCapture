@@ -36,7 +36,8 @@ namespace sh_akira.OVRTracking
         public List<GameObject> BaseStationsObject = new List<GameObject>();
         public bool DisableBaseStationRotation = true;
 
-        public ExternalReceiverForVMC externalReceiver;
+        public ControlWPFWindow controlWPFWindow;
+        private ExternalReceiverForVMC[] externalReceivers => controlWPFWindow.externalMotionReceivers;
 
         // Use this for initialization
         void Start()
@@ -144,11 +145,14 @@ namespace sh_akira.OVRTracking
             var controllerPositions = positions[ETrackedDeviceClass.Controller];
 
             //add from ExternalReceiverForVMC
-            if (externalReceiver != null)
+            if (externalReceivers != null)
             {
-                foreach (var c in externalReceiver.virtualControllerFiltered)
+                foreach (var externalReceiver in externalReceivers)
                 {
-                    controllerPositions.Add(new DeviceInfo(c.Value, c.Key));
+                    foreach (var c in externalReceiver.virtualControllerFiltered)
+                    {
+                        controllerPositions.Add(new DeviceInfo(c.Value, c.Key));
+                    }
                 }
             }
 
@@ -172,11 +176,14 @@ namespace sh_akira.OVRTracking
             var trackerPositions = positions[ETrackedDeviceClass.GenericTracker];
 
             //add from ExternalReceiverForVMC
-            if (externalReceiver != null)
+            if (externalReceivers != null)
             {
-                foreach (var t in externalReceiver.virtualTrackerFiltered)
+                foreach (var externalReceiver in externalReceivers)
                 {
-                    trackerPositions.Add(new DeviceInfo(t.Value, t.Key));
+                    foreach (var t in externalReceiver.virtualTrackerFiltered)
+                    {
+                        trackerPositions.Add(new DeviceInfo(t.Value, t.Key));
+                    }
                 }
             }
 
