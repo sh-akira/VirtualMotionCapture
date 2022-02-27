@@ -494,7 +494,7 @@ Ver 0.02
 　・VRM ([UniVRM-0.62.0_0b7f.unitypackage](https://github.com/vrm-c/UniVRM/releases))  
 　・MeshUtility (UniVRM)  
 　・VRMShaders (UniVRM)  
-　・Oculus ([Oculus Lipsync Unity 1.30.0](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/1.30.0/))  
+　・Oculus ([Oculus Lipsync Unity Integration v29](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/29.0.0/))  
 　・uOSC([uOSC-v0.0.2.unitypackage](https://github.com/hecomi/uOSC/releases/tag/v0.0.2))  
 　・MidiJack([MidiJack.unitypackage](https://github.com/keijiro/MidiJack))  
 　・EasyDeviceDiscoveryProtocolForUnity([EasyDeviceDiscoveryProtocolForUnity_v002.unitypackage](https://github.com/gpsnmeajp/EasyDeviceDiscoveryProtocolForUnity/releases/tag/v0.02))  
