@@ -1,6 +1,10 @@
 {
   "actions": [
     {
+      "name": "/actions/default/in/Pose",
+      "type": "pose"
+    },
+    {
       "name": "/actions/default/in/SkeletonLeftHand",
       "type": "skeleton",
       "skeleton": "/skeleton/hand/left"
@@ -127,8 +131,20 @@
       "binding_url": "bindings_holographic_controller.json"
     },
     {
+      "controller_type": "vive_cosmos_controller",
+      "binding_url": "bindings_vive_cosmos_controller.json"
+    },
+    {
+      "controller_type": "vive_cosmos",
+      "binding_url": "binding_vive_cosmos.json"
+    },
+    {
       "controller_type": "vive",
       "binding_url": "binding_vive.json"
+    },
+    {
+      "controller_type": "indexhmd",
+      "binding_url": "binding_index_hmd.json"
     },
     {
       "controller_type": "vive_pro",
@@ -145,13 +161,67 @@
     {
       "controller_type": "vive_tracker_camera",
       "binding_url": "binding_vive_tracker_camera.json"
+    },
+    {
+      "controller_type": "vive_tracker_chest",
+      "binding_url": "binding_vive_tracker_chest.json"
+    },
+    {
+      "controller_type": "vive_tracker_head",
+      "binding_url": "binding_vive_tracker_head.json"
+    },
+    {
+      "controller_type": "vive_tracker_left_elbow",
+      "binding_url": "binding_vive_tracker_left_elbow.json"
+    },
+    {
+      "controller_type": "vive_tracker_left_foot",
+      "binding_url": "binding_vive_tracker_left_foot.json"
+    },
+    {
+      "controller_type": "vive_tracker_left_hand",
+      "binding_url": "binding_vive_tracker_left_hand.json"
+    },
+    {
+      "controller_type": "vive_tracker_left_knee",
+      "binding_url": "binding_vive_tracker_left_knee.json"
+    },
+    {
+      "controller_type": "vive_tracker_left_shoulder",
+      "binding_url": "binding_vive_tracker_left_shoulder.json"
+    },
+    {
+      "controller_type": "vive_tracker_right_elbow",
+      "binding_url": "binding_vive_tracker_right_elbow.json"
+    },
+    {
+      "controller_type": "vive_tracker_right_foot",
+      "binding_url": "binding_vive_tracker_right_foot.json"
+    },
+    {
+      "controller_type": "vive_tracker_right_hand",
+      "binding_url": "binding_vive_tracker_right_hand.json"
+    },
+    {
+      "controller_type": "vive_tracker_right_knee",
+      "binding_url": "binding_vive_tracker_right_knee.json"
+    },
+    {
+      "controller_type": "vive_tracker_right_shoulder",
+      "binding_url": "binding_vive_tracker_right_shoulder.json"
+    },
+    {
+      "controller_type": "vive_tracker_waist",
+      "binding_url": "binding_vive_tracker_waist.json"
     }
   ],
   "localization": [
     {
       "language_tag": "en_US",
+      "/actions/default/in/Pose": "Pose",
       "/actions/default/in/SkeletonLeftHand": "Skeleton (Left)",
-      "/actions/default/in/SkeletonRightHand": "Skeleton (Right)"
+      "/actions/default/in/SkeletonRightHand": "Skeleton (Right)",
+      "/actions/default/out/Haptic": "Haptic"
     }
   ]
 }

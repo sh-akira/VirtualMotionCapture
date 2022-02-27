@@ -1,0 +1,18 @@
+{
+   "alias_info" : {},
+   "bindings" : {
+      "/actions/default" : {
+         "poses" : [
+            {
+               "output" : "/actions/default/in/pose",
+               "path" : "/user/knee/right/pose/raw"
+            }
+         ]
+      }
+   },
+   "controller_type" : "vive_tracker_right_knee",
+   "description" : "",
+   "name" : "RightKnee",
+   "options" : {},
+   "simulated_actions" : []
+}
