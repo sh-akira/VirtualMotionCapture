@@ -5,9 +5,9 @@ using VRM;
 
 namespace VMC
 {
+    // OVRLipSync.csより後に起動しないとContextが取得できないのでExecutionOrderに気を付ける
     [RequireComponent(typeof(AudioSource))]
-    //OVRLipSync.csより後に起動しないとContextが取得できないのでExecutionOrderに気を付ける
-
+    [RequireComponent(typeof(OVRLipSync))]
     public class DynamicOVRLipSync : OVRLipSyncContextBase
     {
         private const bool EnableLowLatency = true;
@@ -17,7 +17,7 @@ namespace VMC
         private float[] processBuffer = new float[1024];
         private float[] microphoneBuffer = new float[lengthSeconds * micFrequency];
 
-        public FaceController faceController;
+        private FaceController faceController;
 
         // smoothing amount
         public int SmoothAmount = 100;
@@ -51,9 +51,15 @@ namespace VMC
             micSelected = true;
         }
 
-        public void ImportVRMmodel(GameObject vrmmodel)
+        public void ImportVRMmodel(GameObject model)
         {
-            VRMmodel = vrmmodel;
+            VRMmodel = model;
+            faceController = model.GetComponent<FaceController>();
+            if (faceController == null)
+            {
+                faceController = model.AddComponent<FaceController>();
+                faceController.ImportVRMmodel(model);
+            }
         }
 
         // Use this for initialization
@@ -61,12 +67,12 @@ namespace VMC
         {
             Smoothing = SmoothAmount;
 
-            audioSource.loop = true;    // Set the AudioClip to loop
+            audioSource.loop = true; // Set the AudioClip to loop
             audioSource.mute = false;
 
             if (Microphone.devices.Length != 0 && string.IsNullOrWhiteSpace(selectedDevice))
             {
-                selectedDevice = Microphone.devices.Last().ToString();
+                selectedDevice = Microphone.devices.First().ToString();
                 micSelected = true;
                 GetMicCaps();
             }
@@ -89,11 +95,11 @@ namespace VMC
                         OVRLipSync.Frame frame = GetCurrentPhonemeFrame();
                         if (frame != null)
                         {
-                            //あ OVRLipSync.Viseme.aa; BlendShapePreset.A;
-                            //い OVRLipSync.Viseme.ih; BlendShapePreset.I;
-                            //う OVRLipSync.Viseme.ou; BlendShapePreset.U;
-                            //え OVRLipSync.Viseme.E;  BlendShapePreset.E;
-                            //お OVRLipSync.Viseme.oh; BlendShapePreset.O;
+                            // あ OVRLipSync.Viseme.aa; BlendShapePreset.A;
+                            // い OVRLipSync.Viseme.ih; BlendShapePreset.I;
+                            // う OVRLipSync.Viseme.ou; BlendShapePreset.U;
+                            // え OVRLipSync.Viseme.E;  BlendShapePreset.E;
+                            // お OVRLipSync.Viseme.oh; BlendShapePreset.O;
                             var presets = new BlendShapePreset[] {
                             BlendShapePreset.A,
                             BlendShapePreset.I,
@@ -173,7 +179,7 @@ namespace VMC
                                 Array.Copy(microphoneBuffer, head, processBuffer, 0, processBuffer.Length);
                             }
 
-                            OVRLipSync.ProcessFrame(Context, processBuffer, Frame, OVRLipSync.AudioDataType.F32_Mono);
+                            OVRLipSync.ProcessFrame(Context, processBuffer, Frame, false);
 
                             head += processBuffer.Length;
                             if (head > microphoneBuffer.Length)
@@ -227,7 +233,6 @@ namespace VMC
                         OVRLipSync.ProcessFrame(Context, data,/* flags,*/ frame);
                     }
                 }
-
             }
             // Turn off output (so that we don't get feedback from mics too close to speakers)
             if (AudioMute == true)
@@ -242,7 +247,7 @@ namespace VMC
         {
             if (micSelected == false) return;
 
-            //Gets the frequency of the device
+            // Gets the frequency of the device
             Microphone.GetDeviceCaps(selectedDevice, out minFreq, out maxFreq);
 
             if (minFreq == 0 && maxFreq == 0)
@@ -251,14 +256,13 @@ namespace VMC
                 minFreq = 44100;
                 maxFreq = 44100;
             }
-
         }
 
         public void StartMicrophone()
         {
             if (micSelected == false) return;
 
-            //Starts recording
+            // Starts recording
             audioSource.clip = Microphone.Start(selectedDevice, true, 1, micFrequency);
 
             // Wait until the recording has started
@@ -278,7 +282,6 @@ namespace VMC
 
             Microphone.End(selectedDevice);
         }
-
 
         void OnDisable()
         {

@@ -57,6 +57,8 @@ UniUnlit*csproj
 UniVRM*csproj
 VRM*csproj
 VMCMOD*csproj
+Oculus*csproj
+DVRSDK*csproj
 Assets/Resources*
 Assets/Scripts/DMMVRConnectConnector*
 ControlWindowWPF/ControlWindowWPF/DMMVRConnectWindow*
