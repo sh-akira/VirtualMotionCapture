@@ -1,6 +1,5 @@
 ﻿using RootMotion.FinalIK;
 using sh_akira;
-using sh_akira.OVRTracking;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;

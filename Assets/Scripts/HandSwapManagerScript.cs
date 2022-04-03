@@ -1,5 +1,4 @@
 ﻿//gpsnmeajp
-using sh_akira.OVRTracking;
 using UnityEngine;
 
 namespace VMC
@@ -51,7 +50,7 @@ namespace VMC
                 }
             }
 
-            OpenVRWrapper.Instance.GetControllerSerial(out OpenVRLeftHand, out OpenVRRightHand);
+            OpenVRTrackerManager.Instance.GetControllerSerial(out OpenVRLeftHand, out OpenVRRightHand);
 
             if (OpenVRLeftHand != null && OpenVRRightHand != null && OpenVRLeftHand == WPFRightHand && OpenVRRightHand == WPFLeftHand)
             {
