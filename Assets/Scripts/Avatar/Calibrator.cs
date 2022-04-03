@@ -212,7 +212,7 @@ namespace VMC
             //leg.bendGoal = null;
             //leg.bendGoalWeight = 0f;
         }
-        public static IEnumerator CalibrateScaled(Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
+        public static IEnumerator CalibrateScaled(Transform handTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
         {
             if (!ik.solver.initiated)
             {
@@ -231,10 +231,8 @@ namespace VMC
 
             //トラッカーのルートスケールを初期値に戻す
             handTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-            headTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             footTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             handTrackerRoot.position = Vector3.zero;
-            headTrackerRoot.position = Vector3.zero;
             footTrackerRoot.position = Vector3.zero;
 
             //腰トラ下げ用空Object
@@ -242,7 +240,7 @@ namespace VMC
             pelvisOffsetAdjuster.parent = footTrackerRoot;
 
             //それぞれのトラッカーを正しいルートに移動
-            if (HMDTransform != null) HMDTransform.parent = headTrackerRoot;
+            if (HMDTransform != null) HMDTransform.parent = handTrackerRoot;
             if (LeftHandTransform != null) LeftHandTransform.parent = handTrackerRoot;
             if (RightHandTransform != null) RightHandTransform.parent = handTrackerRoot;
             if (PelvisTransform != null) PelvisTransform.parent = pelvisOffsetAdjuster;
@@ -359,12 +357,6 @@ namespace VMC
             //hmdForwardAngle = HMDTransform.rotation * settings.headTrackerForward;
             //hmdForwardAngle.y = 0f;
             ik.references.root.rotation = Quaternion.LookRotation(hmdForwardAngle);
-
-            // 頭のトラッカー全体のスケールを頭の位置に合わせる
-            var modelHeadHeight = ik.references.head.position.y;
-            var realHeadHeight = HMDTransform.position.y;
-            var headHscale = modelHeadHeight / realHeadHeight;
-            headTrackerRoot.localScale = new Vector3(wscale, hscale, wscale);
 
             // 腰のトラッカー全体のスケールを腰の位置に合わせる
             if (PelvisTransform != null)
@@ -605,7 +597,7 @@ namespace VMC
             ik.solver.locomotion.weight = PelvisTransform == null && LeftFootTransform == null && RightFootTransform == null ? 1f : 0f;
         }
 
-        public static IEnumerator CalibrateFixedHand(Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
+        public static IEnumerator CalibrateFixedHand(Transform handTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
         {
             if (!ik.solver.initiated)
             {
@@ -624,10 +616,8 @@ namespace VMC
 
             //トラッカーのルートスケールを初期値に戻す
             handTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-            headTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             footTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             handTrackerRoot.position = Vector3.zero;
-            headTrackerRoot.position = Vector3.zero;
             footTrackerRoot.position = Vector3.zero;
 
             //腰トラ下げ用空Object
@@ -639,7 +629,7 @@ namespace VMC
             handSwapManagerScript.WPFRightHandTransform = RightHandTransform; //右手登録
 
             //それぞれのトラッカーを正しいルートに移動
-            if (HMDTransform != null) HMDTransform.parent = headTrackerRoot;
+            if (HMDTransform != null) HMDTransform.parent = handTrackerRoot;
             if (LeftHandTransform != null) LeftHandTransform.parent = handTrackerRoot;
             if (RightHandTransform != null) RightHandTransform.parent = handTrackerRoot;
             if (PelvisTransform != null) PelvisTransform.parent = pelvisOffsetAdjuster;
@@ -741,9 +731,6 @@ namespace VMC
             //hmdForwardAngle.y = 0f;
             ik.references.root.rotation = Quaternion.LookRotation(hmdForwardAngle);
 
-            // 頭のトラッカー全体のスケール
-            headTrackerRoot.localScale = new Vector3(wscale, wscale, wscale);
-
             // 腰のトラッカー全体のスケール
             footTrackerRoot.localScale = new Vector3(wscale, wscale, wscale);
 
@@ -754,7 +741,6 @@ namespace VMC
             var realHandHeight = (LeftHandTransform.position.y + RightHandTransform.position.y) / 2f;
             var hoffset = new Vector3(0, modelHandHeight - realHandHeight, 0);
             handTrackerRoot.position = hoffset;
-            headTrackerRoot.position = hoffset;
             footTrackerRoot.position = hoffset;
 
 
@@ -998,7 +984,7 @@ namespace VMC
             ik.solver.locomotion.weight = PelvisTransform == null && LeftFootTransform == null && RightFootTransform == null ? 1f : 0f;
         }
 
-        public static IEnumerator CalibrateFixedHandWithGround(Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
+        public static IEnumerator CalibrateFixedHandWithGround(Transform handTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
         {
             if (!ik.solver.initiated)
             {
@@ -1017,10 +1003,8 @@ namespace VMC
 
             //トラッカーのルートスケールを初期値に戻す
             handTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-            headTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             footTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             handTrackerRoot.position = Vector3.zero;
-            headTrackerRoot.position = Vector3.zero;
             footTrackerRoot.position = Vector3.zero;
 
             //腰トラ下げ用空Object
@@ -1032,7 +1016,7 @@ namespace VMC
             handSwapManagerScript.WPFRightHandTransform = RightHandTransform; //右手登録
 
             //それぞれのトラッカーを正しいルートに移動
-            if (HMDTransform != null) HMDTransform.parent = headTrackerRoot;
+            if (HMDTransform != null) HMDTransform.parent = handTrackerRoot;
             if (LeftHandTransform != null) LeftHandTransform.parent = handTrackerRoot;
             if (RightHandTransform != null) RightHandTransform.parent = handTrackerRoot;
             if (PelvisTransform != null) PelvisTransform.parent = pelvisOffsetAdjuster;
@@ -1134,9 +1118,6 @@ namespace VMC
             //hmdForwardAngle.y = 0f;
             ik.references.root.rotation = Quaternion.LookRotation(hmdForwardAngle);
 
-            // 頭のトラッカー全体のスケール
-            headTrackerRoot.localScale = new Vector3(wscale, wscale, wscale);
-
             // 腰のトラッカー全体のスケール
             footTrackerRoot.localScale = new Vector3(wscale, wscale, wscale);
 
@@ -1147,7 +1128,6 @@ namespace VMC
             var realHandHeight = (LeftHandTransform.position.y + RightHandTransform.position.y) / 2f;
             var hoffset = new Vector3(0, modelHandHeight - realHandHeight, 0);
             handTrackerRoot.position = hoffset;
-            headTrackerRoot.position = hoffset;
             footTrackerRoot.position = hoffset;
 
 
@@ -1372,7 +1352,6 @@ namespace VMC
             if (hoffset.y > 0)
             {
                 handTrackerRoot.position = Vector3.zero;
-                headTrackerRoot.position = Vector3.zero;
             }
 
             if (PelvisTransform != null)

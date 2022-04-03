@@ -47,7 +47,6 @@ namespace VMC
         public WristRotationFix wristRotationFix;
 
         public Transform HandTrackerRoot;
-        public Transform HeadTrackerRoot;
         public Transform PelvisTrackerRoot;
         public Transform RealTrackerRoot;
 
@@ -1825,15 +1824,15 @@ namespace VMC
             }
             if (calibrateType == PipeCommands.CalibrateType.Default)
             {
-                yield return Calibrator.CalibrateScaled(HandTrackerRoot, HeadTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
+                yield return Calibrator.CalibrateScaled(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
             }
             else if (calibrateType == PipeCommands.CalibrateType.FixedHand)
             {
-                yield return Calibrator.CalibrateFixedHand(HandTrackerRoot, HeadTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
+                yield return Calibrator.CalibrateFixedHand(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
             }
             else if (calibrateType == PipeCommands.CalibrateType.FixedHandWithGround)
             {
-                yield return Calibrator.CalibrateFixedHandWithGround(HandTrackerRoot, HeadTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
+                yield return Calibrator.CalibrateFixedHandWithGround(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
             }
 
             vrik.solver.IKPositionWeight = 1.0f;
@@ -2546,18 +2545,14 @@ namespace VMC
 
             //トラッカーのルートスケールを初期値に戻す
             HandTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-            HeadTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             PelvisTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             HandTrackerRoot.position = Vector3.zero;
-            HeadTrackerRoot.position = Vector3.zero;
             PelvisTrackerRoot.position = Vector3.zero;
 
             //スケール変更時の位置オフセット設定
             var handTrackerOffset = HandTrackerRoot.GetComponent<ScalePositionOffset>();
-            var headTrackerOffset = HeadTrackerRoot.GetComponent<ScalePositionOffset>();
             var footTrackerOffset = PelvisTrackerRoot.GetComponent<ScalePositionOffset>();
             handTrackerOffset.ResetTargetAndPosition();
-            headTrackerOffset.ResetTargetAndPosition();
             footTrackerOffset.ResetTargetAndPosition();
         }
 
