@@ -1822,6 +1822,9 @@ namespace VMC
                 //zを＋方向は体中心(左手なら右手の方向)に向かって進む
                 rightHandOffset = new Vector3(1.0f, Settings.Current.RightHandTrackerOffsetToBottom, Settings.Current.RightHandTrackerOffsetToBodySide); // Vector3 (IsEnable, ToTrackerBottom, ToBodySide)
             }
+
+            handler.ClearTrackingWatcher();
+
             if (calibrateType == PipeCommands.CalibrateType.Default)
             {
                 yield return Calibrator.CalibrateScaled(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);

@@ -226,9 +226,6 @@ namespace VMC
                 yield break;
             }
 
-            //TrackingWatcherを初期化する
-            GameObject.Find("HandTrackerRoot").GetComponent<sh_akira.OVRTracking.TrackerHandler>().ClearTrackingWatcher();
-
             //トラッカーのルートスケールを初期値に戻す
             handTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             footTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
@@ -610,9 +607,6 @@ namespace VMC
                 Debug.LogError("Can not calibrate VRIK without the head tracker.");
                 yield break;
             }
-
-            //TrackingWatcherを初期化する
-            GameObject.Find("HandTrackerRoot").GetComponent<sh_akira.OVRTracking.TrackerHandler>().ClearTrackingWatcher();
 
             //トラッカーのルートスケールを初期値に戻す
             handTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
@@ -997,9 +991,6 @@ namespace VMC
                 Debug.LogError("Can not calibrate VRIK without the head tracker.");
                 yield break;
             }
-
-            //TrackingWatcherを初期化する
-            GameObject.Find("HandTrackerRoot").GetComponent<sh_akira.OVRTracking.TrackerHandler>().ClearTrackingWatcher();
 
             //トラッカーのルートスケールを初期値に戻す
             handTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
