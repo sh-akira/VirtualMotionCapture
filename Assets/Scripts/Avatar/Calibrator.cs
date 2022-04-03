@@ -212,7 +212,7 @@ namespace VMC
             //leg.bendGoal = null;
             //leg.bendGoalWeight = 0f;
         }
-        public static IEnumerator CalibrateScaled(Transform realTrackerRoot, Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
+        public static IEnumerator CalibrateScaled(Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
         {
             if (!ik.solver.initiated)
             {
@@ -236,16 +236,6 @@ namespace VMC
             handTrackerRoot.position = Vector3.zero;
             headTrackerRoot.position = Vector3.zero;
             footTrackerRoot.position = Vector3.zero;
-            //スケール変更時の位置オフセット設定
-            //var handTrackerOffset = handTrackerRoot.GetComponent<ScalePositionOffset>();
-            //var headTrackerOffset = headTrackerRoot.GetComponent<ScalePositionOffset>();
-            //var footTrackerOffset = footTrackerRoot.GetComponent<ScalePositionOffset>();
-            //handTrackerOffset.ResetTargetAndPosition();
-            //headTrackerOffset.ResetTargetAndPosition();
-            //footTrackerOffset.ResetTargetAndPosition();
-            //handTrackerOffset.SetTargets(realTrackerRoot.Find(LeftHandTransform.name), realTrackerRoot.Find(RightHandTransform.name), LeftHandTransform, RightHandTransform);
-            //headTrackerOffset.SetDirectPosition(handTrackerOffset);
-            //footTrackerOffset.SetDirectPosition(handTrackerOffset);
 
             //腰トラ下げ用空Object
             var pelvisOffsetAdjuster = new GameObject("PelvisOffsetAdjuster").transform;
@@ -615,7 +605,7 @@ namespace VMC
             ik.solver.locomotion.weight = PelvisTransform == null && LeftFootTransform == null && RightFootTransform == null ? 1f : 0f;
         }
 
-        public static IEnumerator CalibrateFixedHand(Transform realTrackerRoot, Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
+        public static IEnumerator CalibrateFixedHand(Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
         {
             if (!ik.solver.initiated)
             {
@@ -639,16 +629,6 @@ namespace VMC
             handTrackerRoot.position = Vector3.zero;
             headTrackerRoot.position = Vector3.zero;
             footTrackerRoot.position = Vector3.zero;
-            //スケール変更時の位置オフセット設定
-            //var handTrackerOffset = handTrackerRoot.GetComponent<ScalePositionOffset>();
-            //var headTrackerOffset = headTrackerRoot.GetComponent<ScalePositionOffset>();
-            //var footTrackerOffset = footTrackerRoot.GetComponent<ScalePositionOffset>();
-            //handTrackerOffset.ResetTargetAndPosition();
-            //headTrackerOffset.ResetTargetAndPosition();
-            //footTrackerOffset.ResetTargetAndPosition();
-            //handTrackerOffset.SetTargets(realTrackerRoot.Find(LeftHandTransform.name), realTrackerRoot.Find(RightHandTransform.name), LeftHandTransform, RightHandTransform);
-            //headTrackerOffset.SetDirectPosition(handTrackerOffset);
-            //footTrackerOffset.SetDirectPosition(handTrackerOffset);
 
             //腰トラ下げ用空Object
             var pelvisOffsetAdjuster = new GameObject("PelvisOffsetAdjuster").transform;
@@ -1018,7 +998,7 @@ namespace VMC
             ik.solver.locomotion.weight = PelvisTransform == null && LeftFootTransform == null && RightFootTransform == null ? 1f : 0f;
         }
 
-        public static IEnumerator CalibrateFixedHandWithGround(Transform realTrackerRoot, Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
+        public static IEnumerator CalibrateFixedHandWithGround(Transform handTrackerRoot, Transform headTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, Transform HMDTransform, Transform PelvisTransform = null, Transform LeftHandTransform = null, Transform RightHandTransform = null, Transform LeftFootTransform = null, Transform RightFootTransform = null, Transform LeftElbowTransform = null, Transform RightElbowTransform = null, Transform LeftKneeTransform = null, Transform RightKneeTransform = null)
         {
             if (!ik.solver.initiated)
             {
@@ -1042,16 +1022,6 @@ namespace VMC
             handTrackerRoot.position = Vector3.zero;
             headTrackerRoot.position = Vector3.zero;
             footTrackerRoot.position = Vector3.zero;
-            //スケール変更時の位置オフセット設定
-            //var handTrackerOffset = handTrackerRoot.GetComponent<ScalePositionOffset>();
-            //var headTrackerOffset = headTrackerRoot.GetComponent<ScalePositionOffset>();
-            //var footTrackerOffset = footTrackerRoot.GetComponent<ScalePositionOffset>();
-            //handTrackerOffset.ResetTargetAndPosition();
-            //headTrackerOffset.ResetTargetAndPosition();
-            //footTrackerOffset.ResetTargetAndPosition();
-            //handTrackerOffset.SetTargets(realTrackerRoot.Find(LeftHandTransform.name), realTrackerRoot.Find(RightHandTransform.name), LeftHandTransform, RightHandTransform);
-            //headTrackerOffset.SetDirectPosition(handTrackerOffset);
-            //footTrackerOffset.SetDirectPosition(handTrackerOffset);
 
             //腰トラ下げ用空Object
             var pelvisOffsetAdjuster = new GameObject("PelvisOffsetAdjuster").transform;
