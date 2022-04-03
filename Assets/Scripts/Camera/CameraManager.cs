@@ -87,7 +87,7 @@ namespace VMC
                 else if (e.CommandType == typeof(PipeCommands.GetExternalCameraConfig))
                 {
                     var d = (PipeCommands.GetExternalCameraConfig)e.Data;
-                    var tracker = controlWPFWindow.handler.GetTrackerTransformByName(d.ControllerName);
+                    var tracker = TrackingPointManager.Instance.GetTransform(d.ControllerName);
                     //InverseTransformPoint  Thanks: えむにわ(@m2wasabi)
                     var rposition = tracker.InverseTransformPoint(ControlCamera.transform.position);
                     var rrotation = (Quaternion.Inverse(tracker.rotation) * ControlCamera.transform.rotation).eulerAngles;

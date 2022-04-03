@@ -214,41 +214,10 @@ namespace sh_akira.OVRTracking
     {
         private static Dictionary<string, Vector3> lastPositions = new Dictionary<string, Vector3>();
 
-        public static event EventHandler<string> TrackerMovedEvent;
-
-        private static void CheckPosition(DeviceInfo device)
-        {
-            if (lastPositions.ContainsKey(device.serialNumber) == false)
-            {
-                lastPositions.Add(device.serialNumber, device.transform.pos);
-            }
-            else
-            {
-                if (Vector3.Distance(lastPositions[device.serialNumber], device.transform.pos) > 0.1f)
-                {
-                    TrackerMovedEvent?.Invoke(null, device.serialNumber);
-                    lastPositions[device.serialNumber] = device.transform.pos;
-                }
-            }
-        }
-
-        public static void SetPositionAndRotation(this Transform t, DeviceInfo mat)
-        {
-            if (mat != null)
-            {
-                CheckPosition(mat);
-
-                t.SetPositionAndRotation(mat.transform.pos, mat.transform.rot);
-                t.name = mat.serialNumber;
-            }
-        }
-
         public static void SetPositionAndRotationLocal(this Transform t, DeviceInfo mat)
         {
             if (mat != null)
             {
-                CheckPosition(mat);
-
                 t.localPosition = mat.transform.pos;
                 t.localRotation = mat.transform.rot;
                 t.name = mat.serialNumber;

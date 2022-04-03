@@ -29,7 +29,6 @@ namespace VMC
         public string VersionString;
         private string baseVersionString;
 
-        public TrackerHandler handler = null;
         public Transform LeftWristTransform = null;
         public Transform RightWristTransform = null;
 
@@ -1516,18 +1515,24 @@ namespace VMC
         private List<Tuple<string, string>> GetTrackerSerialNumbers()
         {
             var list = new List<Tuple<string, string>>();
-            if (handler.HMDObject != null)
+            foreach (var trackingPoint in TrackingPointManager.Instance.GetTrackingPoints())
             {
-                list.Add(Tuple.Create("HMD", handler.HMDObject.transform.name));
-            }
-            //if (handler.CameraControllerType == ETrackedDeviceClass.HMD) list.Add(Tuple.Create("HMD", handler.CameraControllerObject.transform.name));
-            foreach (var controller in handler.Controllers)
-            {
-                list.Add(Tuple.Create("コントローラー", controller.transform.name));
-            }
-            foreach (var tracker in handler.Trackers)
-            {
-                list.Add(Tuple.Create("トラッカー", tracker.transform.name));
+                if (trackingPoint.DeviceClass == ETrackedDeviceClass.HMD)
+                {
+                    list.Add(Tuple.Create("HMD", trackingPoint.Name));
+                }
+                else if (trackingPoint.DeviceClass == ETrackedDeviceClass.Controller)
+                {
+                    list.Add(Tuple.Create("コントローラー", trackingPoint.Name));
+                }
+                else if (trackingPoint.DeviceClass == ETrackedDeviceClass.GenericTracker)
+                {
+                    list.Add(Tuple.Create("トラッカー", trackingPoint.Name));
+                }
+                else
+                {
+                    list.Add(Tuple.Create("Unknown", trackingPoint.Name));
+                }
             }
             return list;
         }
@@ -1588,32 +1593,37 @@ namespace VMC
 
         private Transform GetTrackerTransformBySerialNumber(Tuple<ETrackedDeviceClass, string> serial, TargetType setTo, Transform headTracker = null)
         {
-            if (serial.Item1 == ETrackedDeviceClass.HMD && handler.HMDObject != null)
+            var manager = TrackingPointManager.Instance;
+            if (serial.Item1 == ETrackedDeviceClass.HMD)
             {
-                if (handler.HMDObject.transform.name == serial.Item2 || string.IsNullOrEmpty(serial.Item2))
+                if (string.IsNullOrEmpty(serial.Item2)) 
                 {
-                    return handler.HMDObject.transform;
+                    return manager.GetTrackingPoints(ETrackedDeviceClass.HMD).FirstOrDefault()?.TargetTransform;
+                }
+                else if (manager.TryGetTrackingPoint(serial.Item2, out var hmdTrackingPoint))
+                {
+                    return hmdTrackingPoint.TargetTransform;
                 }
             }
             else if (serial.Item1 == ETrackedDeviceClass.Controller)
             {
-                var controllers = handler.Controllers.Where(d => d.name.Contains("LIV Virtual Camera") == false);
+                var controllers = manager.GetTrackingPoints(ETrackedDeviceClass.Controller).Where(d => d.Name.Contains("LIV Virtual Camera") == false);
                 Transform ret = null;
                 foreach (var controller in controllers)
                 {
-                    if (controller != null && controller.transform.name == serial.Item2)
+                    if (controller != null && controller.Name == serial.Item2)
                     {
                         if (setTo == TargetType.LeftArm || setTo == TargetType.RightArm)
                         {
-                            ret = controller.transform;
+                            ret = controller.TargetTransform;
                             break;
                         }
-                        return controller.transform;
+                        return controller.TargetTransform;
                     }
                 }
                 if (ret == null)
                 {
-                    var controllerTransforms = controllers.Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.transform.position - headTracker.position), transform = d.transform })
+                    var controllerTransforms = controllers.Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.TargetTransform.position - headTracker.position), transform = d.TargetTransform })
                                                            .OrderBy(d => d.pos.x)
                                                            .Select(d => d.transform);
                     if (setTo == TargetType.LeftArm) ret = controllerTransforms.ElementAtOrDefault(0);
@@ -1623,11 +1633,11 @@ namespace VMC
             }
             else if (serial.Item1 == ETrackedDeviceClass.GenericTracker)
             {
-                foreach (var tracker in handler.Trackers.Where(d => d.name.Contains("LIV Virtual Camera") == false && !(Settings.Current.VirtualMotionTrackerEnable && d.name.Contains($"VMT_{Settings.Current.VirtualMotionTrackerNo}"))))
+                foreach (var tracker in manager.GetTrackingPoints(ETrackedDeviceClass.GenericTracker).Where(d => d.Name.Contains("LIV Virtual Camera") == false && !(Settings.Current.VirtualMotionTrackerEnable && d.Name.Contains($"VMT_{Settings.Current.VirtualMotionTrackerNo}"))))
                 {
-                    if (tracker != null && tracker.transform.name == serial.Item2)
+                    if (tracker != null && tracker.Name == serial.Item2)
                     {
-                        return tracker.transform;
+                        return tracker.TargetTransform;
                     }
                 }
                 if (string.IsNullOrEmpty(serial.Item2) == false) return null; //Serialあるのに見つからなかったらnull
@@ -1647,7 +1657,7 @@ namespace VMC
 
                 //ここに来るときは腰か足のトラッカー自動認識になってるとき
                 //割り当てられていないトラッカーリスト
-                var autoTrackers = handler.Trackers.Where(d => trackerIds.Contains(d.transform.name) == false).Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.transform.position - headTracker.position), transform = d.transform });
+                var autoTrackers = manager.GetTrackingPoints(ETrackedDeviceClass.GenericTracker).Where(d => trackerIds.Contains(d.Name) == false).Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.TargetTransform.position - headTracker.position), transform = d.TargetTransform });
                 if (autoTrackers.Any())
                 {
                     var count = autoTrackers.Count();
@@ -1821,7 +1831,7 @@ namespace VMC
                 rightHandOffset = new Vector3(1.0f, Settings.Current.RightHandTrackerOffsetToBottom, Settings.Current.RightHandTrackerOffsetToBodySide); // Vector3 (IsEnable, ToTrackerBottom, ToBodySide)
             }
 
-            handler.ClearTrackingWatcher();
+            TrackingPointManager.Instance.ClearTrackingWatcher();
 
             if (calibrateType == PipeCommands.CalibrateType.Default)
             {
@@ -2443,7 +2453,7 @@ namespace VMC
             if (IsRegisteredEventCallBack == false)
             {
                 IsRegisteredEventCallBack = true;
-                TrackerTransformExtensions.TrackerMovedEvent += TransformExtensions_TrackerMovedEvent;
+                TrackingPointManager.Instance.TrackerMovedEvent += TransformExtensions_TrackerMovedEvent;
                 ExternalReceiverForVMC.StatusStringUpdated += StatusStringUpdatedEvent;
             }
         }
