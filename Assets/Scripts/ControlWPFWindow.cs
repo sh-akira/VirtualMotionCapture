@@ -1525,12 +1525,10 @@ namespace VMC
             {
                 list.Add(Tuple.Create("コントローラー", controller.transform.name));
             }
-            if (handler.CameraControllerType == ETrackedDeviceClass.Controller) list.Add(Tuple.Create("コントローラー", handler.CameraControllerObject.transform.name));
             foreach (var tracker in handler.Trackers)
             {
                 list.Add(Tuple.Create("トラッカー", tracker.transform.name));
             }
-            if (handler.CameraControllerType == ETrackedDeviceClass.GenericTracker) list.Add(Tuple.Create("トラッカー", handler.CameraControllerObject.transform.name));
             return list;
         }
 
@@ -1599,7 +1597,7 @@ namespace VMC
             }
             else if (serial.Item1 == ETrackedDeviceClass.Controller)
             {
-                var controllers = handler.Controllers.Where(d => d != handler.CameraControllerObject && d.name.Contains("LIV Virtual Camera") == false);
+                var controllers = handler.Controllers.Where(d => d.name.Contains("LIV Virtual Camera") == false);
                 Transform ret = null;
                 foreach (var controller in controllers)
                 {
@@ -1625,7 +1623,7 @@ namespace VMC
             }
             else if (serial.Item1 == ETrackedDeviceClass.GenericTracker)
             {
-                foreach (var tracker in handler.Trackers.Where(d => d != handler.CameraControllerObject && d.name.Contains("LIV Virtual Camera") == false && !(Settings.Current.VirtualMotionTrackerEnable && d.name.Contains($"VMT_{Settings.Current.VirtualMotionTrackerNo}"))))
+                foreach (var tracker in handler.Trackers.Where(d => d.name.Contains("LIV Virtual Camera") == false && !(Settings.Current.VirtualMotionTrackerEnable && d.name.Contains($"VMT_{Settings.Current.VirtualMotionTrackerNo}"))))
                 {
                     if (tracker != null && tracker.transform.name == serial.Item2)
                     {

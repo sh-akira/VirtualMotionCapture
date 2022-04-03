@@ -18,11 +18,6 @@ namespace sh_akira.OVRTracking
         [System.NonSerialized]
         public List<TrackingWatcher> ControllersObjectTrackingWatcher = null;
 
-        public GameObject CameraControllerObject;
-        [System.NonSerialized]
-        public ETrackedDeviceClass CameraControllerType = ETrackedDeviceClass.Invalid;
-        [System.NonSerialized]
-        public string CameraControllerName = null;
 
         [System.NonSerialized]
         public List<GameObject> Trackers = new List<GameObject>();
@@ -90,7 +85,6 @@ namespace sh_akira.OVRTracking
 
         public Transform GetTrackerTransformByName(string name)
         {
-            if (CameraControllerObject.name == name) return CameraControllerObject.transform;
             if (HMDObject.name == name) return HMDObject.transform;
             var controller = Controllers.FirstOrDefault(d => d.name == name);
             if (controller != null) return controller.transform;
@@ -118,20 +112,6 @@ namespace sh_akira.OVRTracking
                 positions.Add(ETrackedDeviceClass.Controller, new List<DeviceInfo>());
                 positions.Add(ETrackedDeviceClass.GenericTracker, new List<DeviceInfo>());
                 positions.Add(ETrackedDeviceClass.TrackingReference, new List<DeviceInfo>());
-            }
-            //externalcamera.cfg用のコントローラー設定
-            if (CameraControllerName != null && positions.SelectMany(d => d.Value).Any(d => d.serialNumber == CameraControllerName))
-            {
-                var cameracontroller = positions.SelectMany(d => d.Value).Where(d => d.serialNumber == CameraControllerName).First();
-                CameraControllerObject.transform.SetPositionAndRotationLocal(cameracontroller);
-                foreach (var l in positions)
-                {
-                    if (l.Value.Contains(cameracontroller))
-                    {
-                        CameraControllerType = l.Key;
-                        l.Value.Remove(cameracontroller);
-                    }
-                }
             }
 
             var hmdPositions = positions[ETrackedDeviceClass.HMD];
