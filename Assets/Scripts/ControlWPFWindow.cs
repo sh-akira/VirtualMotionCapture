@@ -1366,18 +1366,18 @@ namespace VMC
             var leftFoot = animator.GetBoneTransform(HumanBodyBones.LeftFoot);
             var leftFootDefaultRotation = leftFoot.rotation;
             var leftFootTargetPosition = new Vector3(leftFoot.position.x, leftFoot.position.y, leftFoot.position.z);
-            LookAtBones(leftFootTargetPosition + avatarForward * 0.05f, leftUpperLeg, leftLowerLeg);
+            LookAtBones(leftFootTargetPosition + avatarForward * 0.03f, leftUpperLeg, leftLowerLeg);
             LookAtBones(leftFootTargetPosition, leftLowerLeg, leftFoot);
             leftFoot.rotation = leftFootDefaultRotation;
 
-            //var rightUpperLeg = animator.GetBoneTransform(HumanBodyBones.RightUpperLeg);
-            //var rightLowerLeg = animator.GetBoneTransform(HumanBodyBones.RightLowerLeg);
-            //var rightFoot = animator.GetBoneTransform(HumanBodyBones.RightFoot);
-            //var rightFootDefaultRotation = rightFoot.rotation;
-            //var rightFootTargetPosition = new Vector3(rightFoot.position.x, rightFoot.position.y, rightFoot.position.z);
-            //LookAtBones(rightFootTargetPosition + avatarForward * 0.01f, rightUpperLeg, rightLowerLeg);
-            //LookAtBones(rightFootTargetPosition, rightLowerLeg, rightFoot);
-            //rightFoot.rotation = rightFootDefaultRotation;
+            var rightUpperLeg = animator.GetBoneTransform(HumanBodyBones.RightUpperLeg);
+            var rightLowerLeg = animator.GetBoneTransform(HumanBodyBones.RightLowerLeg);
+            var rightFoot = animator.GetBoneTransform(HumanBodyBones.RightFoot);
+            var rightFootDefaultRotation = rightFoot.rotation;
+            var rightFootTargetPosition = new Vector3(rightFoot.position.x, rightFoot.position.y, rightFoot.position.z);
+            LookAtBones(rightFootTargetPosition + avatarForward * 0.03f, rightUpperLeg, rightLowerLeg);
+            LookAtBones(rightFootTargetPosition, rightLowerLeg, rightFoot);
+            rightFoot.rotation = rightFootDefaultRotation;
         }
 
         public void FixArmDirection(GameObject targetHumanoidModel)
