@@ -108,6 +108,25 @@ namespace VMC
                 trackingPoint.TrackingWatcher?.Clear();
             }
         }
+
+        public void SetTrackingPointPositionVisible(bool visible)
+        {
+            foreach (var trackingPoint in GetTrackingPoints())
+            {
+                if (trackingPoint.PositionSphere != null)
+                {
+                    Destroy(trackingPoint.PositionSphere);
+                }
+
+                if (visible)
+                {
+                    trackingPoint.PositionSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    trackingPoint.PositionSphere.transform.SetParent(trackingPoint.TargetTransform, false);
+                    trackingPoint.PositionSphere.transform.localPosition = Vector3.zero;
+                    trackingPoint.PositionSphere.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+                }
+            }
+        }
     }
 
 
@@ -117,6 +136,7 @@ namespace VMC
         public Transform TargetTransform { get; set; }
         public ETrackedDeviceClass DeviceClass { get; set; }
         public TrackingWatcher TrackingWatcher { get; set; }
+        public GameObject PositionSphere { get; set; }
 
         private Vector3 lastMovedPosition;
 

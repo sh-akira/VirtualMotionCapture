@@ -46,7 +46,6 @@ namespace VMC
 
         public Transform HandTrackerRoot;
         public Transform PelvisTrackerRoot;
-        public Transform RealTrackerRoot;
 
         public GameObject ExternalMotionSenderObject;
         private ExternalSender externalMotionSender;
@@ -1150,12 +1149,14 @@ namespace VMC
 
                     handController.SetDefaultAngle(animator);
 
+                    //トラッカーのスケールリセット
+                    HandTrackerRoot.localPosition = Vector3.zero;
+                    HandTrackerRoot.localScale = Vector3.one;
+                    PelvisTrackerRoot.localPosition = Vector3.zero;
+                    PelvisTrackerRoot.localScale = Vector3.one;
+
                     //トラッカー位置の表示
-                    RealTrackerRoot.gameObject.SetActive(true);
-                    foreach (Transform t in RealTrackerRoot)
-                    {
-                        t.localPosition = new Vector3(0, -100f, 0);
-                    }
+                    TrackingPointManager.Instance.SetTrackingPointPositionVisible(true);
 
                     if (CalibrationCamera != null)
                     {
@@ -1924,7 +1925,7 @@ namespace VMC
         public void EndCalibrate()
         {
             //トラッカー位置の非表示
-            RealTrackerRoot.gameObject.SetActive(false);
+            TrackingPointManager.Instance.SetTrackingPointPositionVisible(false);
 
             if (CalibrationCamera != null)
             {
