@@ -87,7 +87,7 @@ namespace VMC
                 else if (e.CommandType == typeof(PipeCommands.GetExternalCameraConfig))
                 {
                     var d = (PipeCommands.GetExternalCameraConfig)e.Data;
-                    var tracker = controlWPFWindow.handler.GetTrackerTransformByName(d.ControllerName);
+                    var tracker = TrackingPointManager.Instance.GetTransform(d.ControllerName);
                     //InverseTransformPoint  Thanks: えむにわ(@m2wasabi)
                     var rposition = tracker.InverseTransformPoint(ControlCamera.transform.position);
                     var rrotation = (Quaternion.Inverse(tracker.rotation) * ControlCamera.transform.rotation).eulerAngles;
@@ -298,10 +298,9 @@ namespace VMC
             ChangeCamera(CameraTypes.Free);
             FreeCamera.GetComponent<CameraMouseControl>().enabled = false;
             //externalcamera.cfgは3つ目のコントローラー基準のポジション
-            controlWPFWindow.handler.CameraControllerName = d.ControllerName;
             yield return null;
             //指定のコントローラーの子にして座標指定
-            CurrentCameraControl.transform.SetParent(controlWPFWindow.handler.CameraControllerObject.transform);
+            CurrentCameraControl.transform.SetParent(TrackingPointManager.Instance.GetTransform(d.ControllerName));
             CurrentCameraControl.transform.localPosition = new Vector3(d.x, d.y, d.z);
             CurrentCameraControl.transform.localRotation = Quaternion.Euler(d.rx, d.ry, d.rz);
             ControlCamera.fieldOfView = d.fov;

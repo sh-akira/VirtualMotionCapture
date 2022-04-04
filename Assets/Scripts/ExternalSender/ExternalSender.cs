@@ -1,7 +1,6 @@
 ﻿//gpsnmeajp
 using RootMotion.FinalIK;
 using sh_akira;
-using sh_akira.OVRTracking;
 using System;
 using System.Reflection;
 using UnityEngine;
@@ -52,15 +51,12 @@ namespace VMC
         const int PACKET_DIV_BONE = 12;
 
         GameObject handTrackerRoot;
-        TrackerHandler trackerHandler;
 
         void Start()
         {
             uClient = GetComponent<uOSC.uOscClient>();
             window = GameObject.Find("ControlWPFWindow").GetComponent<ControlWPFWindow>();
             handTrackerRoot = GameObject.Find("HandTrackerRoot");
-
-            trackerHandler = handTrackerRoot.GetComponent<TrackerHandler>();
 
             VMCEvents.OnModelLoaded += (GameObject CurrentModel) =>
             {
@@ -463,37 +459,39 @@ namespace VMC
             if (frameOfDevices > periodDevices && periodDevices != 0)
             {
                 frameOfDevices = 1;
-
-                rootBundle.Add(new uOSC.Message("/VMC/Ext/Hmd/Pos",
-                        trackerHandler.HMDObject.name,
-                        trackerHandler.HMDObject.transform.position.x, trackerHandler.HMDObject.transform.position.y, trackerHandler.HMDObject.transform.position.z,
-                        trackerHandler.HMDObject.transform.rotation.x, trackerHandler.HMDObject.transform.rotation.y, trackerHandler.HMDObject.transform.rotation.z, trackerHandler.HMDObject.transform.rotation.w));
-                rootBundle.Add(new uOSC.Message("/VMC/Ext/Hmd/Pos/Local",
-                        trackerHandler.HMDObject.name,
-                        trackerHandler.HMDObject.transform.localPosition.x, trackerHandler.HMDObject.transform.localPosition.y, trackerHandler.HMDObject.transform.localPosition.z,
-                        trackerHandler.HMDObject.transform.localRotation.x, trackerHandler.HMDObject.transform.localRotation.y, trackerHandler.HMDObject.transform.localRotation.z, trackerHandler.HMDObject.transform.localRotation.w));
-
-                foreach (var c in trackerHandler.Controllers)
+                var hmdTrackingPoint = TrackingPointManager.Instance.GetHmdTrackingPoint();
+                if (hmdTrackingPoint != null)
+                {
+                    rootBundle.Add(new uOSC.Message("/VMC/Ext/Hmd/Pos",
+                            hmdTrackingPoint.Name,
+                            hmdTrackingPoint.TargetTransform.position.x, hmdTrackingPoint.TargetTransform.position.y, hmdTrackingPoint.TargetTransform.position.z,
+                            hmdTrackingPoint.TargetTransform.rotation.x, hmdTrackingPoint.TargetTransform.rotation.y, hmdTrackingPoint.TargetTransform.rotation.z, hmdTrackingPoint.TargetTransform.rotation.w));
+                    rootBundle.Add(new uOSC.Message("/VMC/Ext/Hmd/Pos/Local",
+                            hmdTrackingPoint.Name,
+                            hmdTrackingPoint.TargetTransform.localPosition.x, hmdTrackingPoint.TargetTransform.localPosition.y, hmdTrackingPoint.TargetTransform.localPosition.z,
+                            hmdTrackingPoint.TargetTransform.localRotation.x, hmdTrackingPoint.TargetTransform.localRotation.y, hmdTrackingPoint.TargetTransform.localRotation.z, hmdTrackingPoint.TargetTransform.localRotation.w));
+                }
+                foreach (var c in TrackingPointManager.Instance.GetControllerTrackingPoints())
                 {
                     rootBundle.Add(new uOSC.Message("/VMC/Ext/Con/Pos",
-                            c.name,
-                            c.transform.position.x, c.transform.position.y, c.transform.position.z,
-                            c.transform.rotation.x, c.transform.rotation.y, c.transform.rotation.z, c.transform.rotation.w));
+                            c.Name,
+                            c.TargetTransform.position.x, c.TargetTransform.position.y, c.TargetTransform.position.z,
+                            c.TargetTransform.rotation.x, c.TargetTransform.rotation.y, c.TargetTransform.rotation.z, c.TargetTransform.rotation.w));
                     rootBundle.Add(new uOSC.Message("/VMC/Ext/Con/Pos/Local",
-                            c.name,
-                            c.transform.localPosition.x, c.transform.localPosition.y, c.transform.localPosition.z,
-                            c.transform.localRotation.x, c.transform.localRotation.y, c.transform.localRotation.z, c.transform.localRotation.w));
+                            c.Name,
+                            c.TargetTransform.localPosition.x, c.TargetTransform.localPosition.y, c.TargetTransform.localPosition.z,
+                            c.TargetTransform.localRotation.x, c.TargetTransform.localRotation.y, c.TargetTransform.localRotation.z, c.TargetTransform.localRotation.w));
                 }
-                foreach (var c in trackerHandler.Trackers)
+                foreach (var c in TrackingPointManager.Instance.GetTrackerTrackingPoints())
                 {
                     rootBundle.Add(new uOSC.Message("/VMC/Ext/Tra/Pos",
-                            c.name,
-                            c.transform.position.x, c.transform.position.y, c.transform.position.z,
-                            c.transform.rotation.x, c.transform.rotation.y, c.transform.rotation.z, c.transform.rotation.w));
+                            c.Name,
+                            c.TargetTransform.position.x, c.TargetTransform.position.y, c.TargetTransform.position.z,
+                            c.TargetTransform.rotation.x, c.TargetTransform.rotation.y, c.TargetTransform.rotation.z, c.TargetTransform.rotation.w));
                     rootBundle.Add(new uOSC.Message("/VMC/Ext/Tra/Pos/Local",
-                            c.name,
-                            c.transform.localPosition.x, c.transform.localPosition.y, c.transform.localPosition.z,
-                            c.transform.localRotation.x, c.transform.localRotation.y, c.transform.localRotation.z, c.transform.localRotation.w));
+                            c.Name,
+                            c.TargetTransform.localPosition.x, c.TargetTransform.localPosition.y, c.TargetTransform.localPosition.z,
+                            c.TargetTransform.localRotation.x, c.TargetTransform.localRotation.y, c.TargetTransform.localRotation.z, c.TargetTransform.localRotation.w));
                 }
             }
             frameOfDevices++;

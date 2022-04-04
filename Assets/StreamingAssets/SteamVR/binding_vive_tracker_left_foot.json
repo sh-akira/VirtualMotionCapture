@@ -1,0 +1,18 @@
+{
+   "alias_info" : {},
+   "bindings" : {
+      "/actions/default" : {
+         "poses" : [
+            {
+               "output" : "/actions/default/in/pose",
+               "path" : "/user/foot/left/pose/raw"
+            }
+         ]
+      }
+   },
+   "controller_type" : "vive_tracker_left_foot",
+   "description" : "",
+   "name" : "LeftFoot",
+   "options" : {},
+   "simulated_actions" : []
+}

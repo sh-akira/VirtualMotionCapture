@@ -85,6 +85,7 @@ namespace VMC
 
         private Dictionary<BlendShapeKey, float> CurrentShapeKeys;
         private Dictionary<string, Dictionary<BlendShapeKey, float>> AccumulateShapeKeys = new Dictionary<string, Dictionary<BlendShapeKey, float>>();
+        private Dictionary<string, Dictionary<BlendShapeKey, float>> OverwriteShapeKeys = new Dictionary<string, Dictionary<BlendShapeKey, float>>();
         private BlendShapeKey NeutralKey = BlendShapeKey.CreateFromPreset(BlendShapePreset.Neutral);
 
         private Dictionary<string, BlendShapeKey> BlendShapeKeyString = new Dictionary<string, BlendShapeKey>();
@@ -298,6 +299,25 @@ namespace VMC
             }
         }
 
+        public void OverwritePresets(string presetName, BlendShapeKey[] presets, float[] values)
+        {
+            if (proxy == null) return;
+            if (CurrentShapeKeys == null) return;
+
+            if (OverwriteShapeKeys.ContainsKey(presetName) == false)
+            {
+                OverwriteShapeKeys.Add(presetName, new Dictionary<BlendShapeKey, float>());
+            }
+            var presetDictionary = OverwriteShapeKeys[presetName];
+            presetDictionary.Clear();
+            //上書きしたい表情を追加する
+            for (int i = 0; i < presets.Length; i++)
+            {
+                var presetKey = presets[i];
+                presetDictionary.Add(presetKey, values[i]);
+            }
+        }
+
         private void AccumulateBlendShapes()
         {
             if (proxy == null) return;
@@ -319,6 +339,20 @@ namespace VMC
                     {
                         var value = accumulatedValues[preset.Key];
                         value += preset.Value;
+                        if (value > 1.0f) value = 1.0f;
+                        accumulatedValues[preset.Key] = value;
+                    }
+                }
+            }
+
+            //上書き表情を合成する(最大値は超えないようにする)
+            foreach (var presets in OverwriteShapeKeys)
+            {
+                foreach (var preset in presets.Value)
+                {
+                    if (accumulatedValues.ContainsKey(preset.Key)) // waidayo等から別のモデルのBlendShapeが送られてくる場合があるので存在チェックする
+                    {
+                        var value = preset.Value;
                         if (value > 1.0f) value = 1.0f;
                         accumulatedValues[preset.Key] = value;
                     }

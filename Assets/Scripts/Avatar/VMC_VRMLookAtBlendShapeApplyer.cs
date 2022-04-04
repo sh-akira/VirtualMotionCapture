@@ -75,7 +75,7 @@ namespace VMC
                 blendShapeValues[3] = 0;
                 blendShapeValues[2] = Mathf.Clamp(VerticalUp.Map(pitch), 0, 1.0f);
             }
-            faceController.MixPresets(nameof(VMC_VRMLookAtBlendShapeApplyer), presets, blendShapeValues);
+            faceController.OverwritePresets(nameof(VMC_VRMLookAtBlendShapeApplyer), presets, blendShapeValues);
 #pragma warning restore 0618
         }
     }

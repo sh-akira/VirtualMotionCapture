@@ -1,6 +1,5 @@
 ﻿using RootMotion.FinalIK;
 using sh_akira;
-using sh_akira.OVRTracking;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -29,7 +28,6 @@ namespace VMC
         public string VersionString;
         private string baseVersionString;
 
-        public TrackerHandler handler = null;
         public Transform LeftWristTransform = null;
         public Transform RightWristTransform = null;
 
@@ -47,9 +45,7 @@ namespace VMC
         public WristRotationFix wristRotationFix;
 
         public Transform HandTrackerRoot;
-        public Transform HeadTrackerRoot;
         public Transform PelvisTrackerRoot;
-        public Transform RealTrackerRoot;
 
         public GameObject ExternalMotionSenderObject;
         private ExternalSender externalMotionSender;
@@ -1153,12 +1149,14 @@ namespace VMC
 
                     handController.SetDefaultAngle(animator);
 
+                    //トラッカーのスケールリセット
+                    HandTrackerRoot.localPosition = Vector3.zero;
+                    HandTrackerRoot.localScale = Vector3.one;
+                    PelvisTrackerRoot.localPosition = Vector3.zero;
+                    PelvisTrackerRoot.localScale = Vector3.one;
+
                     //トラッカー位置の表示
-                    RealTrackerRoot.gameObject.SetActive(true);
-                    foreach (Transform t in RealTrackerRoot)
-                    {
-                        t.localPosition = new Vector3(0, -100f, 0);
-                    }
+                    TrackingPointManager.Instance.SetTrackingPointPositionVisible(true);
 
                     if (CalibrationCamera != null)
                     {
@@ -1369,18 +1367,18 @@ namespace VMC
             var leftFoot = animator.GetBoneTransform(HumanBodyBones.LeftFoot);
             var leftFootDefaultRotation = leftFoot.rotation;
             var leftFootTargetPosition = new Vector3(leftFoot.position.x, leftFoot.position.y, leftFoot.position.z);
-            LookAtBones(leftFootTargetPosition + avatarForward * 0.05f, leftUpperLeg, leftLowerLeg);
+            LookAtBones(leftFootTargetPosition + avatarForward * 0.03f, leftUpperLeg, leftLowerLeg);
             LookAtBones(leftFootTargetPosition, leftLowerLeg, leftFoot);
             leftFoot.rotation = leftFootDefaultRotation;
 
-            //var rightUpperLeg = animator.GetBoneTransform(HumanBodyBones.RightUpperLeg);
-            //var rightLowerLeg = animator.GetBoneTransform(HumanBodyBones.RightLowerLeg);
-            //var rightFoot = animator.GetBoneTransform(HumanBodyBones.RightFoot);
-            //var rightFootDefaultRotation = rightFoot.rotation;
-            //var rightFootTargetPosition = new Vector3(rightFoot.position.x, rightFoot.position.y, rightFoot.position.z);
-            //LookAtBones(rightFootTargetPosition + avatarForward * 0.01f, rightUpperLeg, rightLowerLeg);
-            //LookAtBones(rightFootTargetPosition, rightLowerLeg, rightFoot);
-            //rightFoot.rotation = rightFootDefaultRotation;
+            var rightUpperLeg = animator.GetBoneTransform(HumanBodyBones.RightUpperLeg);
+            var rightLowerLeg = animator.GetBoneTransform(HumanBodyBones.RightLowerLeg);
+            var rightFoot = animator.GetBoneTransform(HumanBodyBones.RightFoot);
+            var rightFootDefaultRotation = rightFoot.rotation;
+            var rightFootTargetPosition = new Vector3(rightFoot.position.x, rightFoot.position.y, rightFoot.position.z);
+            LookAtBones(rightFootTargetPosition + avatarForward * 0.03f, rightUpperLeg, rightLowerLeg);
+            LookAtBones(rightFootTargetPosition, rightLowerLeg, rightFoot);
+            rightFoot.rotation = rightFootDefaultRotation;
         }
 
         public void FixArmDirection(GameObject targetHumanoidModel)
@@ -1517,21 +1515,25 @@ namespace VMC
         private List<Tuple<string, string>> GetTrackerSerialNumbers()
         {
             var list = new List<Tuple<string, string>>();
-            if (handler.HMDObject != null)
+            foreach (var trackingPoint in TrackingPointManager.Instance.GetTrackingPoints())
             {
-                list.Add(Tuple.Create("HMD", handler.HMDObject.transform.name));
+                if (trackingPoint.DeviceClass == ETrackedDeviceClass.HMD)
+                {
+                    list.Add(Tuple.Create("HMD", trackingPoint.Name));
+                }
+                else if (trackingPoint.DeviceClass == ETrackedDeviceClass.Controller)
+                {
+                    list.Add(Tuple.Create("コントローラー", trackingPoint.Name));
+                }
+                else if (trackingPoint.DeviceClass == ETrackedDeviceClass.GenericTracker)
+                {
+                    list.Add(Tuple.Create("トラッカー", trackingPoint.Name));
+                }
+                else
+                {
+                    list.Add(Tuple.Create("Unknown", trackingPoint.Name));
+                }
             }
-            //if (handler.CameraControllerType == ETrackedDeviceClass.HMD) list.Add(Tuple.Create("HMD", handler.CameraControllerObject.transform.name));
-            foreach (var controller in handler.Controllers)
-            {
-                list.Add(Tuple.Create("コントローラー", controller.transform.name));
-            }
-            if (handler.CameraControllerType == ETrackedDeviceClass.Controller) list.Add(Tuple.Create("コントローラー", handler.CameraControllerObject.transform.name));
-            foreach (var tracker in handler.Trackers)
-            {
-                list.Add(Tuple.Create("トラッカー", tracker.transform.name));
-            }
-            if (handler.CameraControllerType == ETrackedDeviceClass.GenericTracker) list.Add(Tuple.Create("トラッカー", handler.CameraControllerObject.transform.name));
             return list;
         }
 
@@ -1591,32 +1593,37 @@ namespace VMC
 
         private Transform GetTrackerTransformBySerialNumber(Tuple<ETrackedDeviceClass, string> serial, TargetType setTo, Transform headTracker = null)
         {
-            if (serial.Item1 == ETrackedDeviceClass.HMD && handler.HMDObject != null)
+            var manager = TrackingPointManager.Instance;
+            if (serial.Item1 == ETrackedDeviceClass.HMD)
             {
-                if (handler.HMDObject.transform.name == serial.Item2 || string.IsNullOrEmpty(serial.Item2))
+                if (string.IsNullOrEmpty(serial.Item2)) 
                 {
-                    return handler.HMDObject.transform;
+                    return manager.GetTrackingPoints(ETrackedDeviceClass.HMD).FirstOrDefault()?.TargetTransform;
+                }
+                else if (manager.TryGetTrackingPoint(serial.Item2, out var hmdTrackingPoint))
+                {
+                    return hmdTrackingPoint.TargetTransform;
                 }
             }
             else if (serial.Item1 == ETrackedDeviceClass.Controller)
             {
-                var controllers = handler.Controllers.Where(d => d != handler.CameraControllerObject && d.name.Contains("LIV Virtual Camera") == false);
+                var controllers = manager.GetTrackingPoints(ETrackedDeviceClass.Controller).Where(d => d.Name.Contains("LIV Virtual Camera") == false);
                 Transform ret = null;
                 foreach (var controller in controllers)
                 {
-                    if (controller != null && controller.transform.name == serial.Item2)
+                    if (controller != null && controller.Name == serial.Item2)
                     {
                         if (setTo == TargetType.LeftArm || setTo == TargetType.RightArm)
                         {
-                            ret = controller.transform;
+                            ret = controller.TargetTransform;
                             break;
                         }
-                        return controller.transform;
+                        return controller.TargetTransform;
                     }
                 }
                 if (ret == null)
                 {
-                    var controllerTransforms = controllers.Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.transform.position - headTracker.position), transform = d.transform })
+                    var controllerTransforms = controllers.Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.TargetTransform.position - headTracker.position), transform = d.TargetTransform })
                                                            .OrderBy(d => d.pos.x)
                                                            .Select(d => d.transform);
                     if (setTo == TargetType.LeftArm) ret = controllerTransforms.ElementAtOrDefault(0);
@@ -1626,11 +1633,11 @@ namespace VMC
             }
             else if (serial.Item1 == ETrackedDeviceClass.GenericTracker)
             {
-                foreach (var tracker in handler.Trackers.Where(d => d != handler.CameraControllerObject && d.name.Contains("LIV Virtual Camera") == false && !(Settings.Current.VirtualMotionTrackerEnable && d.name.Contains($"VMT_{Settings.Current.VirtualMotionTrackerNo}"))))
+                foreach (var tracker in manager.GetTrackingPoints(ETrackedDeviceClass.GenericTracker).Where(d => d.Name.Contains("LIV Virtual Camera") == false && !(Settings.Current.VirtualMotionTrackerEnable && d.Name.Contains($"VMT_{Settings.Current.VirtualMotionTrackerNo}"))))
                 {
-                    if (tracker != null && tracker.transform.name == serial.Item2)
+                    if (tracker != null && tracker.Name == serial.Item2)
                     {
-                        return tracker.transform;
+                        return tracker.TargetTransform;
                     }
                 }
                 if (string.IsNullOrEmpty(serial.Item2) == false) return null; //Serialあるのに見つからなかったらnull
@@ -1650,7 +1657,7 @@ namespace VMC
 
                 //ここに来るときは腰か足のトラッカー自動認識になってるとき
                 //割り当てられていないトラッカーリスト
-                var autoTrackers = handler.Trackers.Where(d => trackerIds.Contains(d.transform.name) == false).Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.transform.position - headTracker.position), transform = d.transform });
+                var autoTrackers = manager.GetTrackingPoints(ETrackedDeviceClass.GenericTracker).Where(d => trackerIds.Contains(d.Name) == false).Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.TargetTransform.position - headTracker.position), transform = d.TargetTransform });
                 if (autoTrackers.Any())
                 {
                     var count = autoTrackers.Count();
@@ -1823,17 +1830,20 @@ namespace VMC
                 //zを＋方向は体中心(左手なら右手の方向)に向かって進む
                 rightHandOffset = new Vector3(1.0f, Settings.Current.RightHandTrackerOffsetToBottom, Settings.Current.RightHandTrackerOffsetToBodySide); // Vector3 (IsEnable, ToTrackerBottom, ToBodySide)
             }
+
+            TrackingPointManager.Instance.ClearTrackingWatcher();
+
             if (calibrateType == PipeCommands.CalibrateType.Default)
             {
-                yield return Calibrator.CalibrateScaled(RealTrackerRoot, HandTrackerRoot, HeadTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
+                yield return Calibrator.CalibrateScaled(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
             }
             else if (calibrateType == PipeCommands.CalibrateType.FixedHand)
             {
-                yield return Calibrator.CalibrateFixedHand(RealTrackerRoot, HandTrackerRoot, HeadTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
+                yield return Calibrator.CalibrateFixedHand(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
             }
             else if (calibrateType == PipeCommands.CalibrateType.FixedHandWithGround)
             {
-                yield return Calibrator.CalibrateFixedHandWithGround(RealTrackerRoot, HandTrackerRoot, HeadTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
+                yield return Calibrator.CalibrateFixedHandWithGround(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
             }
 
             vrik.solver.IKPositionWeight = 1.0f;
@@ -1915,7 +1925,7 @@ namespace VMC
         public void EndCalibrate()
         {
             //トラッカー位置の非表示
-            RealTrackerRoot.gameObject.SetActive(false);
+            TrackingPointManager.Instance.SetTrackingPointPositionVisible(false);
 
             if (CalibrationCamera != null)
             {
@@ -2443,7 +2453,7 @@ namespace VMC
             if (IsRegisteredEventCallBack == false)
             {
                 IsRegisteredEventCallBack = true;
-                TrackerTransformExtensions.TrackerMovedEvent += TransformExtensions_TrackerMovedEvent;
+                TrackingPointManager.Instance.TrackerMovedEvent += TransformExtensions_TrackerMovedEvent;
                 ExternalReceiverForVMC.StatusStringUpdated += StatusStringUpdatedEvent;
             }
         }
@@ -2546,18 +2556,14 @@ namespace VMC
 
             //トラッカーのルートスケールを初期値に戻す
             HandTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-            HeadTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             PelvisTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             HandTrackerRoot.position = Vector3.zero;
-            HeadTrackerRoot.position = Vector3.zero;
             PelvisTrackerRoot.position = Vector3.zero;
 
             //スケール変更時の位置オフセット設定
             var handTrackerOffset = HandTrackerRoot.GetComponent<ScalePositionOffset>();
-            var headTrackerOffset = HeadTrackerRoot.GetComponent<ScalePositionOffset>();
             var footTrackerOffset = PelvisTrackerRoot.GetComponent<ScalePositionOffset>();
             handTrackerOffset.ResetTargetAndPosition();
-            headTrackerOffset.ResetTargetAndPosition();
             footTrackerOffset.ResetTargetAndPosition();
         }
 
