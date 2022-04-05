@@ -456,7 +456,7 @@ MonoBehaviour:
   audioSource: {fileID: 144144639}
   provider: 0
   enableAcceleration: 1
-  faceController: {fileID: 0}
+  faceController: {fileID: 69806225}
   SmoothAmount: 100
   EnableLipSync: 0
   MaxLevel: 1
@@ -2439,7 +2439,6 @@ MonoBehaviour:
   wristRotationFix: {fileID: 1793473874}
   HandTrackerRoot: {fileID: 1128534204}
   PelvisTrackerRoot: {fileID: 836257372}
-  RealTrackerRoot: {fileID: 0}
   ExternalMotionSenderObject: {fileID: 1155637108}
   ExternalMotionReceiverObject: {fileID: 1210221201}
   externalMotionReceivers: []
