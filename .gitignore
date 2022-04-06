@@ -3,6 +3,7 @@
 [Oo]bj/
 [Bb]uild/
 [Bb]uilds/
+Logs/
 Assets/AssetStoreTools*
 Assets/ExternalPlugins/RootMotion*
 Assets/ExternalPlugins/SteamVR*
@@ -92,3 +93,4 @@ sysinfo.txt
 *.unitypackage
 common.json
 Assets/_TerrainAutoUpgrade/
+.vsconfig
