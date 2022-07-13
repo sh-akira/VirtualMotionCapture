@@ -102,6 +102,9 @@ namespace VMC
                 vrmLookAtHead.LookWorldPosition();
                 vrmLookAtHead.Target = null;
             };
+
+            this.gameObject.SetActive(false);
+            server.enabled = true;
         }
 
         private object LockObject = new object();

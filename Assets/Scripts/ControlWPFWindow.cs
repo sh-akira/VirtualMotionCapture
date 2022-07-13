@@ -2263,22 +2263,12 @@ namespace VMC
             if (IsPreRelease == false) return;
             Settings.Current.ExternalMotionSenderEnable = enable;
             ExternalMotionSenderObject.SetActive(enable);
-            if (CurrentModel != null)
-            {
-                WaitOneFrameAction(() => VMCEvents.OnModelLoaded?.Invoke(CurrentModel));
-                WaitOneFrameAction(() => VMCEvents.OnCameraChanged?.Invoke(CameraManager.Current.ControlCamera));
-            }
         }
 
         private void SetExternalMotionReceiverEnable(bool enable, int index)
         {
             Settings.Current.ExternalMotionReceiverEnableList[index] = enable;
             externalMotionReceivers[index].SetObjectActive(enable);
-            if (CurrentModel != null)
-            {
-                WaitOneFrameAction(() => VMCEvents.OnModelLoaded?.Invoke(CurrentModel));
-                WaitOneFrameAction(() => VMCEvents.OnCameraChanged?.Invoke(CameraManager.Current.ControlCamera));
-            }
         }
 
         private void SetExternalBonesReceiverEnable(bool enable)
