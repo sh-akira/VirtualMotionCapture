@@ -51,6 +51,27 @@
                     <Style TargetType="Slider">
                         <Setter Property="Margin" Value="5,3,5,0"/>
                     </Style>
+                    <Style TargetType="GroupBox">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="GroupBox">
+                                    <Grid Margin="4,2,4,2">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <Border Grid.Row="0" BorderThickness="1" CornerRadius="5,0,0,0" Background="#AED4FF" BorderBrush="#AED4FF" TextElement.FontWeight="Bold">
+                                            <ContentPresenter Margin="4,0,4,0" ContentSource="Header" RecognizesAccessKey="True" VerticalAlignment="Center"/>
+                                        </Border>
+
+                                        <Border Grid.Row="1" BorderThickness="1,0,1,1" CornerRadius="0,0,5,0" BorderBrush="#AED4FF">
+                                            <ContentPresenter Margin="4,1,4,1" />
+                                        </Border>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
