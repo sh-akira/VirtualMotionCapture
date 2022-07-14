@@ -217,7 +217,7 @@
     <system:String x:Key="SettingWindow_WebCamMirror">镜像（水平镜像）</system:String>
     <system:String x:Key="SettingWindow_WebCamBuffering">缓冲（减缓电脑压力/会有延迟）：</system:String>
     <system:String x:Key="SettingWindow_ResolutionSetting">分辨率（请与虚拟摄像头设置的一致）</system:String>
-    <system:String x:Key="SettingWindow_ResolutionApply">应用</system:String>
+    <system:String x:Key="SettingWindow_Apply">应用</system:String>
     <system:String x:Key="SettingWindow_FailedFolderCreate">创建文件夹失败。请手动创建C:\VMC_Camera文件夹。</system:String>
     <system:String x:Key="SettingWindow_VMTFailedFolderCreate">创建文件夹失败。</system:String>
     <system:String x:Key="SettingWindow_FailedFileCopy">复制文件失败。请手动复制VMC_CameraFilter32bit.dll以及64bit.dll到C:\VMC_Camera文件夹下。</system:String>

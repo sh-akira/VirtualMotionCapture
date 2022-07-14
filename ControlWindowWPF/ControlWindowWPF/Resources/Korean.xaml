@@ -218,7 +218,7 @@
     <system:String x:Key="SettingWindow_WebCamMirror">미러출력(좌우로 반전합니다)</system:String>
     <system:String x:Key="SettingWindow_WebCamBuffering">버퍼링수(렉이줄어듬/지연됨)：</system:String>
     <system:String x:Key="SettingWindow_ResolutionSetting">해상도설정(웹캠사용처와 같은 해상도로 지정)</system:String>
-    <system:String x:Key="SettingWindow_ResolutionApply">적용</system:String>
+    <system:String x:Key="SettingWindow_Apply">적용</system:String>
     <system:String x:Key="SettingWindow_FailedFolderCreate">폴더 생성에 실패했습니다. C:\VMC_Camera폴더를 직접 생성해주세요.</system:String>
     <system:String x:Key="SettingWindow_VMTFailedFolderCreate">폴더 생성에 실패했습니다.</system:String>
     <system:String x:Key="SettingWindow_FailedFileCopy">파일 복사에 실패했습니다. C:\VMC_Camera폴더에VMC_CameraFilter32bit.dll와64bit.dll을 직접 붙여넣어주세요.</system:String>

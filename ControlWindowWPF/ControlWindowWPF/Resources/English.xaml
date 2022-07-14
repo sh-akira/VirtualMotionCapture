@@ -217,7 +217,7 @@
     <system:String x:Key="SettingWindow_WebCamMirror">Mirror(Flip Horizontal)</system:String>
     <system:String x:Key="SettingWindow_WebCamBuffering">Buffering count(light/delay)：</system:String>
     <system:String x:Key="SettingWindow_ResolutionSetting">Resolution(Set same resolution as webcam setting)</system:String>
-    <system:String x:Key="SettingWindow_ResolutionApply">Apply</system:String>
+    <system:String x:Key="SettingWindow_Apply">Apply</system:String>
     <system:String x:Key="SettingWindow_FailedFolderCreate">Failed to create the folder. Please create C:\VMC_Camera folder manually.</system:String>
     <system:String x:Key="SettingWindow_VMTFailedFolderCreate">Failed to create the folder.</system:String>
     <system:String x:Key="SettingWindow_FailedFileCopy">Failed to copy files. Please manually copy VMC_CameraFilter32bit.dll and 64bit.dll to C:\VMC_Camera folder.</system:String>

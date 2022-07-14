@@ -218,7 +218,7 @@
     <system:String x:Key="SettingWindow_WebCamMirror">ミラー出力(左右反転します)</system:String>
     <system:String x:Key="SettingWindow_WebCamBuffering">バッファリング数(軽くなる/遅延する)：</system:String>
     <system:String x:Key="SettingWindow_ResolutionSetting">解像度設定(Webカメラの使用側と同じ解像度を指定)</system:String>
-    <system:String x:Key="SettingWindow_ResolutionApply">適用</system:String>
+    <system:String x:Key="SettingWindow_Apply">適用</system:String>
     <system:String x:Key="SettingWindow_FailedFolderCreate">フォルダの作成に失敗しました。C:\VMC_Cameraフォルダを手動で作成してください</system:String>
     <system:String x:Key="SettingWindow_VMTFailedFolderCreate">フォルダの作成に失敗しました。</system:String>
     <system:String x:Key="SettingWindow_FailedFileCopy">ファイルのコピーに失敗しました。C:\VMC_CameraフォルダにVMC_CameraFilter32bit.dllと64bit.dllを手動でコピーしてください</system:String>
