@@ -408,6 +408,7 @@ namespace VMC
             }
             else if (LeftFootTransform != null && RightFootTransform != null)
             {
+                ik.solver.plantFeet = false;
                 ik.solver.spine.maxRootAngle = 0f;
             }
 
@@ -780,6 +781,7 @@ namespace VMC
             }
             else if (LeftFootTransform != null && RightFootTransform != null)
             {
+                ik.solver.plantFeet = false;
                 ik.solver.spine.maxRootAngle = 0f;
             }
 
@@ -1164,6 +1166,7 @@ namespace VMC
             }
             else if (LeftFootTransform != null && RightFootTransform != null)
             {
+                ik.solver.plantFeet = false;
                 ik.solver.spine.maxRootAngle = 0f;
             }
 
