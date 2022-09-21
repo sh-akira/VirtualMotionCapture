@@ -509,9 +509,10 @@ namespace VMC
             internalActive = enable;
             if (enable)
             {
+                var uServer = GetComponent<uOSC.uOscServer>();
+                if (uServer.enabled == true) uServer.enabled = false;
                 if (isPortFree(receivePort))
                 {
-                    var uServer = GetComponent<uOSC.uOscServer>();
                     uServer.enabled = true;
                     gameObject.SetActive(enable);
                 }
