@@ -25,9 +25,15 @@
                         <Setter Property="Background" Value="Transparent"/>
                     </Style>
                 </StackPanel.Resources>
-                <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateDefaultRadioButton}" Name="CalibrateDefaultRadioButton" IsChecked="True" Padding="5"/>
-                <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateFixedHandRadioButton}" Name="CalibrateFixedHandRadioButton" Padding="5"/>
-                <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton}" Name="CalibrateFixedHandWithGroundRadioButton" Padding="5"/>
+                <GroupBox Header="標準モード(新しいキャリブレーション)" FontSize="14">
+                    <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateDefaultRadioButton}" Name="CalibrateDefaultRadioButton" IsChecked="True" Padding="5"/>
+                </GroupBox>
+                <GroupBox Header="互換モード(古いキャリブレーション)" FontSize="14">
+                    <StackPanel>
+                        <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateFixedHandRadioButton}" Name="CalibrateFixedHandRadioButton" Padding="5"/>
+                        <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton}" Name="CalibrateFixedHandWithGroundRadioButton" Padding="5"/>
+                    </StackPanel>
+                </GroupBox>
             </StackPanel>
             <Grid>
                 <Button Content="{DynamicResource CalibrationWindow_CalibrationButton}" Name="CalibrationButton" Click="CalibrationButton_Click" HorizontalAlignment="Center" Margin="0,20,0,0" Padding="20,5,20,5" FontSize="16" ToolTip="{DynamicResource CalibrationWindow_CalibrationButton_ToolTip}"/>
