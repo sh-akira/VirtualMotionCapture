@@ -1678,10 +1678,10 @@ namespace VMC
         {
             if (vrik == null) { return; } //まだmodelがない
 
-            vrik.solver.spine.headTarget = GetTrackerTransformBySerialNumber(Settings.Current.Head, TargetType.Head).TargetTransform;
+            vrik.solver.spine.headTarget = GetTrackerTransformBySerialNumber(Settings.Current.Head, TargetType.Head)?.TargetTransform;
             vrik.solver.spine.headClampWeight = 0.38f;
 
-            vrik.solver.spine.pelvisTarget = GetTrackerTransformBySerialNumber(Settings.Current.Pelvis, TargetType.Pelvis, vrik.solver.spine.headTarget).TargetTransform;
+            vrik.solver.spine.pelvisTarget = GetTrackerTransformBySerialNumber(Settings.Current.Pelvis, TargetType.Pelvis, vrik.solver.spine.headTarget)?.TargetTransform;
             if (vrik.solver.spine.pelvisTarget != null)
             {
                 vrik.solver.spine.pelvisPositionWeight = 1f;
@@ -1699,7 +1699,7 @@ namespace VMC
                 vrik.solver.spine.maxRootAngle = 0f;
             }
 
-            vrik.solver.leftArm.target = GetTrackerTransformBySerialNumber(Settings.Current.LeftHand, TargetType.LeftArm, vrik.solver.spine.headTarget).TargetTransform;
+            vrik.solver.leftArm.target = GetTrackerTransformBySerialNumber(Settings.Current.LeftHand, TargetType.LeftArm, vrik.solver.spine.headTarget)?.TargetTransform;
             if (vrik.solver.leftArm.target != null)
             {
                 vrik.solver.leftArm.positionWeight = 1f;
@@ -1711,7 +1711,7 @@ namespace VMC
                 vrik.solver.leftArm.rotationWeight = 0f;
             }
 
-            vrik.solver.rightArm.target = GetTrackerTransformBySerialNumber(Settings.Current.RightHand, TargetType.RightArm, vrik.solver.spine.headTarget).TargetTransform;
+            vrik.solver.rightArm.target = GetTrackerTransformBySerialNumber(Settings.Current.RightHand, TargetType.RightArm, vrik.solver.spine.headTarget)?.TargetTransform;
             if (vrik.solver.rightArm.target != null)
             {
                 vrik.solver.rightArm.positionWeight = 1f;
@@ -1723,7 +1723,7 @@ namespace VMC
                 vrik.solver.rightArm.rotationWeight = 0f;
             }
 
-            vrik.solver.leftLeg.target = GetTrackerTransformBySerialNumber(Settings.Current.LeftFoot, TargetType.LeftLeg, vrik.solver.spine.headTarget).TargetTransform;
+            vrik.solver.leftLeg.target = GetTrackerTransformBySerialNumber(Settings.Current.LeftFoot, TargetType.LeftLeg, vrik.solver.spine.headTarget)?.TargetTransform;
             if (vrik.solver.leftLeg.target != null)
             {
                 vrik.solver.leftLeg.positionWeight = 1f;
@@ -1735,7 +1735,7 @@ namespace VMC
                 vrik.solver.leftLeg.rotationWeight = 0f;
             }
 
-            vrik.solver.rightLeg.target = GetTrackerTransformBySerialNumber(Settings.Current.RightFoot, TargetType.RightLeg, vrik.solver.spine.headTarget).TargetTransform;
+            vrik.solver.rightLeg.target = GetTrackerTransformBySerialNumber(Settings.Current.RightFoot, TargetType.RightLeg, vrik.solver.spine.headTarget)?.TargetTransform;
             if (vrik.solver.rightLeg.target != null)
             {
                 vrik.solver.rightLeg.positionWeight = 1f;
@@ -1825,7 +1825,7 @@ namespace VMC
 
             if (calibrateType == PipeCommands.CalibrateType.Default)
             {
-                yield return Calibrator.CalibrateScaled(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
+                yield return FinalIKCalibrator.Calibrate(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
             }
             else if (calibrateType == PipeCommands.CalibrateType.FixedHand)
             {
