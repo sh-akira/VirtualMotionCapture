@@ -1502,16 +1502,6 @@ namespace VMC
             //}
         }
 
-        Transform bodyTracker = null;
-        Transform leftFootTracker = null;
-        Transform rightFootTracker = null;
-        Transform leftHandTracker = null;
-        Transform rightHandTracker = null;
-        Transform leftElbowTracker = null;
-        Transform rightElbowTracker = null;
-        Transform leftKneeTracker = null;
-        Transform rightKneeTracker = null;
-
         private List<Tuple<string, string>> GetTrackerSerialNumbers()
         {
             var list = new List<Tuple<string, string>>();
@@ -1591,43 +1581,43 @@ namespace VMC
             Head, Pelvis, LeftArm, RightArm, LeftLeg, RightLeg, LeftElbow, RightElbow, LeftKnee, RightKnee
         }
 
-        private Transform GetTrackerTransformBySerialNumber(Tuple<ETrackedDeviceClass, string> serial, TargetType setTo, Transform headTracker = null)
+        private TrackingPoint GetTrackerTransformBySerialNumber(Tuple<ETrackedDeviceClass, string> serial, TargetType setTo, Transform headTracker = null)
         {
             var manager = TrackingPointManager.Instance;
             if (serial.Item1 == ETrackedDeviceClass.HMD)
             {
                 if (string.IsNullOrEmpty(serial.Item2)) 
                 {
-                    return manager.GetTrackingPoints(ETrackedDeviceClass.HMD).FirstOrDefault()?.TargetTransform;
+                    return manager.GetTrackingPoints(ETrackedDeviceClass.HMD).FirstOrDefault();
                 }
                 else if (manager.TryGetTrackingPoint(serial.Item2, out var hmdTrackingPoint))
                 {
-                    return hmdTrackingPoint.TargetTransform;
+                    return hmdTrackingPoint;
                 }
             }
             else if (serial.Item1 == ETrackedDeviceClass.Controller)
             {
                 var controllers = manager.GetTrackingPoints(ETrackedDeviceClass.Controller).Where(d => d.Name.Contains("LIV Virtual Camera") == false);
-                Transform ret = null;
+                TrackingPoint ret = null;
                 foreach (var controller in controllers)
                 {
                     if (controller != null && controller.Name == serial.Item2)
                     {
                         if (setTo == TargetType.LeftArm || setTo == TargetType.RightArm)
                         {
-                            ret = controller.TargetTransform;
+                            ret = controller;
                             break;
                         }
-                        return controller.TargetTransform;
+                        return controller;
                     }
                 }
                 if (ret == null)
                 {
-                    var controllerTransforms = controllers.Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.TargetTransform.position - headTracker.position), transform = d.TargetTransform })
+                    var controllerTrackingPoints = controllers.Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.TargetTransform.position - headTracker.position), trackingPoint = d })
                                                            .OrderBy(d => d.pos.x)
-                                                           .Select(d => d.transform);
-                    if (setTo == TargetType.LeftArm) ret = controllerTransforms.ElementAtOrDefault(0);
-                    if (setTo == TargetType.RightArm) ret = controllerTransforms.ElementAtOrDefault(1);
+                                                           .Select(d => d.trackingPoint);
+                    if (setTo == TargetType.LeftArm) ret = controllerTrackingPoints.ElementAtOrDefault(0);
+                    if (setTo == TargetType.RightArm) ret = controllerTrackingPoints.ElementAtOrDefault(1);
                 }
                 return ret;
             }
@@ -1637,7 +1627,7 @@ namespace VMC
                 {
                     if (tracker != null && tracker.Name == serial.Item2)
                     {
-                        return tracker.TargetTransform;
+                        return tracker;
                     }
                 }
                 if (string.IsNullOrEmpty(serial.Item2) == false) return null; //Serialあるのに見つからなかったらnull
@@ -1657,7 +1647,7 @@ namespace VMC
 
                 //ここに来るときは腰か足のトラッカー自動認識になってるとき
                 //割り当てられていないトラッカーリスト
-                var autoTrackers = manager.GetTrackingPoints(ETrackedDeviceClass.GenericTracker).Where(d => trackerIds.Contains(d.Name) == false).Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.TargetTransform.position - headTracker.position), transform = d.TargetTransform });
+                var autoTrackers = manager.GetTrackingPoints(ETrackedDeviceClass.GenericTracker).Where(d => trackerIds.Contains(d.Name) == false).Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.TargetTransform.position - headTracker.position), trackingPoint = d });
                 if (autoTrackers.Any())
                 {
                     var count = autoTrackers.Count();
@@ -1665,18 +1655,18 @@ namespace VMC
                     {
                         if (setTo == TargetType.Pelvis)
                         { //腰は一番高い位置にあるトラッカー
-                            return autoTrackers.OrderByDescending(d => d.pos.y).Select(d => d.transform).First();
+                            return autoTrackers.OrderByDescending(d => d.pos.y).Select(d => d.trackingPoint).First();
                         }
                     }
                     if (count >= 2)
                     {
                         if (setTo == TargetType.LeftLeg)
                         {
-                            return autoTrackers.OrderBy(d => d.pos.y).Take(2).OrderBy(d => d.pos.x).Select(d => d.transform).First();
+                            return autoTrackers.OrderBy(d => d.pos.y).Take(2).OrderBy(d => d.pos.x).Select(d => d.trackingPoint).First();
                         }
                         else if (setTo == TargetType.RightLeg)
                         {
-                            return autoTrackers.OrderBy(d => d.pos.y).Take(2).OrderByDescending(d => d.pos.x).Select(d => d.transform).First();
+                            return autoTrackers.OrderBy(d => d.pos.y).Take(2).OrderByDescending(d => d.pos.x).Select(d => d.trackingPoint).First();
                         }
                     }
                 }
@@ -1688,10 +1678,10 @@ namespace VMC
         {
             if (vrik == null) { return; } //まだmodelがない
 
-            vrik.solver.spine.headTarget = GetTrackerTransformBySerialNumber(Settings.Current.Head, TargetType.Head);
+            vrik.solver.spine.headTarget = GetTrackerTransformBySerialNumber(Settings.Current.Head, TargetType.Head).TargetTransform;
             vrik.solver.spine.headClampWeight = 0.38f;
 
-            vrik.solver.spine.pelvisTarget = GetTrackerTransformBySerialNumber(Settings.Current.Pelvis, TargetType.Pelvis, vrik.solver.spine.headTarget);
+            vrik.solver.spine.pelvisTarget = GetTrackerTransformBySerialNumber(Settings.Current.Pelvis, TargetType.Pelvis, vrik.solver.spine.headTarget).TargetTransform;
             if (vrik.solver.spine.pelvisTarget != null)
             {
                 vrik.solver.spine.pelvisPositionWeight = 1f;
@@ -1709,7 +1699,7 @@ namespace VMC
                 vrik.solver.spine.maxRootAngle = 0f;
             }
 
-            vrik.solver.leftArm.target = GetTrackerTransformBySerialNumber(Settings.Current.LeftHand, TargetType.LeftArm, vrik.solver.spine.headTarget);
+            vrik.solver.leftArm.target = GetTrackerTransformBySerialNumber(Settings.Current.LeftHand, TargetType.LeftArm, vrik.solver.spine.headTarget).TargetTransform;
             if (vrik.solver.leftArm.target != null)
             {
                 vrik.solver.leftArm.positionWeight = 1f;
@@ -1721,7 +1711,7 @@ namespace VMC
                 vrik.solver.leftArm.rotationWeight = 0f;
             }
 
-            vrik.solver.rightArm.target = GetTrackerTransformBySerialNumber(Settings.Current.RightHand, TargetType.RightArm, vrik.solver.spine.headTarget);
+            vrik.solver.rightArm.target = GetTrackerTransformBySerialNumber(Settings.Current.RightHand, TargetType.RightArm, vrik.solver.spine.headTarget).TargetTransform;
             if (vrik.solver.rightArm.target != null)
             {
                 vrik.solver.rightArm.positionWeight = 1f;
@@ -1733,7 +1723,7 @@ namespace VMC
                 vrik.solver.rightArm.rotationWeight = 0f;
             }
 
-            vrik.solver.leftLeg.target = GetTrackerTransformBySerialNumber(Settings.Current.LeftFoot, TargetType.LeftLeg, vrik.solver.spine.headTarget);
+            vrik.solver.leftLeg.target = GetTrackerTransformBySerialNumber(Settings.Current.LeftFoot, TargetType.LeftLeg, vrik.solver.spine.headTarget).TargetTransform;
             if (vrik.solver.leftLeg.target != null)
             {
                 vrik.solver.leftLeg.positionWeight = 1f;
@@ -1745,7 +1735,7 @@ namespace VMC
                 vrik.solver.leftLeg.rotationWeight = 0f;
             }
 
-            vrik.solver.rightLeg.target = GetTrackerTransformBySerialNumber(Settings.Current.RightFoot, TargetType.RightLeg, vrik.solver.spine.headTarget);
+            vrik.solver.rightLeg.target = GetTrackerTransformBySerialNumber(Settings.Current.RightFoot, TargetType.RightLeg, vrik.solver.spine.headTarget).TargetTransform;
             if (vrik.solver.rightLeg.target != null)
             {
                 vrik.solver.rightLeg.positionWeight = 1f;
@@ -1771,14 +1761,14 @@ namespace VMC
             animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(0, 0, 0);
             animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(0, 0, 0);
             animator.GetBoneTransform(HumanBodyBones.RightUpperArm).localEulerAngles = new Vector3(0, 0, 0);
-            animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(0, 0, 0);
+            var lefthand = animator.GetBoneTransform(HumanBodyBones.LeftHand); lefthand.localEulerAngles = new Vector3(0, 0, 0);
             animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(0, 0, 0);
 
             SetVRIK(CurrentModel);
             wristRotationFix.SetVRIK(vrik);
 
-            animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(LeftHandAngle, 0, 0);
-            animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(RightHandAngle, 0, 0);
+            //animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(LeftHandAngle, 0, 0);
+            //animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(RightHandAngle, 0, 0);
 
             //var leftLowerArm = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm);
             //var leftRelaxer = leftLowerArm.gameObject.AddComponent<TwistRelaxer>();
@@ -1789,16 +1779,16 @@ namespace VMC
             //rightRelaxer.ik = vrik;
             //rightRelaxer.twistSolvers = new TwistSolver[] { new TwistSolver { transform = rightLowerArm } };
 
-            Transform headTracker = GetTrackerTransformBySerialNumber(Settings.Current.Head, TargetType.Head);
-            leftHandTracker = GetTrackerTransformBySerialNumber(Settings.Current.LeftHand, TargetType.LeftArm, headTracker);
-            rightHandTracker = GetTrackerTransformBySerialNumber(Settings.Current.RightHand, TargetType.RightArm, headTracker);
-            bodyTracker = GetTrackerTransformBySerialNumber(Settings.Current.Pelvis, TargetType.Pelvis, headTracker);
-            leftFootTracker = GetTrackerTransformBySerialNumber(Settings.Current.LeftFoot, TargetType.LeftLeg, headTracker);
-            rightFootTracker = GetTrackerTransformBySerialNumber(Settings.Current.RightFoot, TargetType.RightLeg, headTracker);
-            leftElbowTracker = GetTrackerTransformBySerialNumber(Settings.Current.LeftElbow, TargetType.LeftElbow, headTracker);
-            rightElbowTracker = GetTrackerTransformBySerialNumber(Settings.Current.RightElbow, TargetType.RightElbow, headTracker);
-            leftKneeTracker = GetTrackerTransformBySerialNumber(Settings.Current.LeftKnee, TargetType.LeftKnee, headTracker);
-            rightKneeTracker = GetTrackerTransformBySerialNumber(Settings.Current.RightKnee, TargetType.RightKnee, headTracker);
+            var headTracker = GetTrackerTransformBySerialNumber(Settings.Current.Head, TargetType.Head);
+            var leftHandTracker = GetTrackerTransformBySerialNumber(Settings.Current.LeftHand, TargetType.LeftArm, headTracker?.TargetTransform);
+            var rightHandTracker = GetTrackerTransformBySerialNumber(Settings.Current.RightHand, TargetType.RightArm, headTracker?.TargetTransform);
+            var bodyTracker = GetTrackerTransformBySerialNumber(Settings.Current.Pelvis, TargetType.Pelvis, headTracker?.TargetTransform);
+            var leftFootTracker = GetTrackerTransformBySerialNumber(Settings.Current.LeftFoot, TargetType.LeftLeg, headTracker?.TargetTransform);
+            var rightFootTracker = GetTrackerTransformBySerialNumber(Settings.Current.RightFoot, TargetType.RightLeg, headTracker?.TargetTransform);
+            var leftElbowTracker = GetTrackerTransformBySerialNumber(Settings.Current.LeftElbow, TargetType.LeftElbow, headTracker?.TargetTransform);
+            var rightElbowTracker = GetTrackerTransformBySerialNumber(Settings.Current.RightElbow, TargetType.RightElbow, headTracker?.TargetTransform);
+            var leftKneeTracker = GetTrackerTransformBySerialNumber(Settings.Current.LeftKnee, TargetType.LeftKnee, headTracker?.TargetTransform);
+            var rightKneeTracker = GetTrackerTransformBySerialNumber(Settings.Current.RightKnee, TargetType.RightKnee, headTracker?.TargetTransform);
 
             ClearChildren(headTracker, leftHandTracker, rightHandTracker, bodyTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
 
@@ -1863,25 +1853,25 @@ namespace VMC
             vrik.solver.locomotion.rootSpeed = 40;
             vrik.solver.locomotion.stepSpeed = 2;
 
-            Settings.Current.headTracker = StoreTransform.Create(headTracker);
-            Settings.Current.bodyTracker = StoreTransform.Create(bodyTracker);
-            Settings.Current.leftHandTracker = StoreTransform.Create(leftHandTracker);
-            Settings.Current.rightHandTracker = StoreTransform.Create(rightHandTracker);
-            Settings.Current.leftFootTracker = StoreTransform.Create(leftFootTracker);
-            Settings.Current.rightFootTracker = StoreTransform.Create(rightFootTracker);
-            Settings.Current.leftElbowTracker = StoreTransform.Create(leftElbowTracker);
-            Settings.Current.rightElbowTracker = StoreTransform.Create(rightElbowTracker);
-            Settings.Current.leftKneeTracker = StoreTransform.Create(leftKneeTracker);
-            Settings.Current.rightKneeTracker = StoreTransform.Create(rightKneeTracker);
+            Settings.Current.headTracker = StoreTransform.Create(headTracker?.TargetTransform);
+            Settings.Current.bodyTracker = StoreTransform.Create(bodyTracker?.TargetTransform);
+            Settings.Current.leftHandTracker = StoreTransform.Create(leftHandTracker?.TargetTransform);
+            Settings.Current.rightHandTracker = StoreTransform.Create(rightHandTracker?.TargetTransform);
+            Settings.Current.leftFootTracker = StoreTransform.Create(leftFootTracker?.TargetTransform);
+            Settings.Current.rightFootTracker = StoreTransform.Create(rightFootTracker?.TargetTransform);
+            Settings.Current.leftElbowTracker = StoreTransform.Create(leftElbowTracker?.TargetTransform);
+            Settings.Current.rightElbowTracker = StoreTransform.Create(rightElbowTracker?.TargetTransform);
+            Settings.Current.leftKneeTracker = StoreTransform.Create(leftKneeTracker?.TargetTransform);
+            Settings.Current.rightKneeTracker = StoreTransform.Create(rightKneeTracker?.TargetTransform);
 
 
-            var calibratedLeftHandTransform = leftHandTracker.GetChild(0);
-            var calibratedRightHandTransform = rightHandTracker.GetChild(0);
+            var calibratedLeftHandTransform = leftHandTracker.TargetTransform?.GetChild(0);
+            var calibratedRightHandTransform = rightHandTracker.TargetTransform?.GetChild(0);
 
             leftHandFreeOffsetRotation = new GameObject(nameof(leftHandFreeOffsetRotation)).transform;
             rightHandFreeOffsetRotation = new GameObject(nameof(rightHandFreeOffsetRotation)).transform;
-            leftHandFreeOffsetRotation.SetParent(leftHandTracker);
-            rightHandFreeOffsetRotation.SetParent(rightHandTracker);
+            leftHandFreeOffsetRotation.SetParent(leftHandTracker?.TargetTransform);
+            rightHandFreeOffsetRotation.SetParent(rightHandTracker?.TargetTransform);
             leftHandFreeOffsetRotation.localPosition = Vector3.zero;
             leftHandFreeOffsetRotation.localRotation = Quaternion.identity;
             leftHandFreeOffsetRotation.localScale = Vector3.one;
@@ -1907,6 +1897,8 @@ namespace VMC
 
             calibrationState = CalibrationState.Calibrating; //キャリブレーション状態を"キャリブレーション中"に設定(ここまで来なければ失敗している)
         }
+
+        private void ClearChildren(params TrackingPoint[] Parents) => ClearChildren(Parents.Select(d => d?.TargetTransform).ToArray());
 
         private void ClearChildren(params Transform[] Parents)
         {
