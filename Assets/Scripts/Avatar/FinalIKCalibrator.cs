@@ -167,10 +167,10 @@ namespace VMC
             modelcenterposition = new Vector3(modelcenterposition.x, vrik.references.root.position.y, modelcenterposition.z);
             var modelcenterdistance = Vector3.Distance(vrik.references.root.position, modelcenterposition);
 
-            //両手のxをマイナス方向が正面なので体を回転させる
-            Vector3 hmdForwardAngle = leftHandTargetTransform.rotation * new Vector3(-1, 0, 0);
-            hmdForwardAngle.y = 0f;
+            //両手間のベクトルと上方向の外積が体の正面なので体を回転させる
+            Vector3 hmdForwardAngle = Vector3.Cross(Vector3.up, leftHandTargetTransform.position - rightHandTargetTransform.position);
             currentModel.rotation = Quaternion.LookRotation(hmdForwardAngle);
+
 
             // モデルのポジションを手と手の中心位置に移動
             var centerposition = Vector3.Lerp(leftHandTargetTransform.position, rightHandTargetTransform.position, 0.5f);
