@@ -290,7 +290,7 @@ namespace VMC
                 if (pelvisTargetTransform != null)
                 {
                     //足も腰もある時は頭のPositionを弱くして背骨を曲がりにくくする
-                    vrik.solver.spine.positionWeight = 0.4f;
+                    vrik.solver.spine.positionWeight = 1.0f;
                 }
             }
             else
