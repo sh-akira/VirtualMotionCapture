@@ -363,6 +363,13 @@ namespace VMC
                 var vrikRootController = vrik.references.root.gameObject.AddComponent<VRIKRootController>();
             }
 
+            if (pelvisTargetTransform != null)
+            {
+                var pelvisWeightAdjuster = vrik.references.root.gameObject.GetComponent<PelvisWeightAdjuster>();
+                if (pelvisWeightAdjuster == null) pelvisWeightAdjuster = vrik.references.root.gameObject.AddComponent<PelvisWeightAdjuster>();
+                pelvisWeightAdjuster.vrik = vrik;
+            }
+
             //wristRotationFix = currentModel.AddComponent<WristRotationFix>();
             //wristRotationFix.SetVRIK(vrik);
 
