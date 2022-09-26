@@ -190,7 +190,14 @@ namespace VMC
             //アバターの腰のXZ位置をリアルの腰の位置に合わせる
             currentModel.position = new Vector3(scaledPelvisPosition.x, currentModel.position.y, scaledPelvisPosition.z) + currentModel.forward * modelpelviscenterdistance;
 
-            var scaledPelvisPosition = new Vector3(centerposition.x, realPelvisHeight * wscale, centerposition.z) + currentModel.forward * (realHeight * 0.04f * wscale);
+            //HipボーンはChestボーンとUpperLegに繋がっているので、その場で回転させるとChestを下に引っ張り、UpperLegを上に引っ張ることになるので、UpperLegを中心に回転するようにオフセット設定してかかとが浮かないようにする
+            var UpperLegOffsetY = vrik.references.pelvis.position.y - (vrik.references.leftThigh.position.y + vrik.references.rightThigh.position.y) / 2;
+            var UpperLegOffsetZ = vrik.references.pelvis.position.z - (vrik.references.leftThigh.position.z + vrik.references.rightThigh.position.z) / 2;
+            Debug.Log($"UpperLegOffsetY:{UpperLegOffsetY} UpperLegOffsetZ:{UpperLegOffsetZ}");
+
+            scaledPelvisPosition += currentModel.forward * UpperLegOffsetZ + currentModel.up * UpperLegOffsetY;
+
+
 
             Debug.Log($"wscale:{wscale}");
             Debug.Log($"scaledPelvisHeight:{scaledPelvisPosition.y}");
