@@ -163,18 +163,18 @@ namespace VMC
 
 
             //モデルの体の中心を取っておく
-            var modelcenterposition = Vector3.Lerp(vrik.references.leftHand.position, vrik.references.rightHand.position, 0.5f);
-            modelcenterposition = new Vector3(modelcenterposition.x, vrik.references.root.position.y, modelcenterposition.z);
-            var modelcenterdistance = Vector3.Distance(vrik.references.root.position, modelcenterposition);
+            var handcenterposition = Vector3.Lerp(vrik.references.leftHand.position, vrik.references.rightHand.position, 0.5f);
+            handcenterposition = new Vector3(handcenterposition.x, vrik.references.root.position.y, handcenterposition.z);
+            var pelviscenterposition = new Vector3(vrik.references.pelvis.position.x, vrik.references.root.position.y, vrik.references.pelvis.position.z);
+            var modelpelviscenterdistance = Vector3.Distance(pelviscenterposition, vrik.references.root.position) * ((pelviscenterposition.z - vrik.references.root.position.z >= 0) ? 1 : -1);
 
             //両手間のベクトルと上方向の外積が体の正面なので体を回転させる
             Vector3 hmdForwardAngle = Vector3.Cross(Vector3.up, leftHandTargetTransform.position - rightHandTargetTransform.position);
             currentModel.rotation = Quaternion.LookRotation(hmdForwardAngle);
 
 
-            // モデルのポジションを手と手の中心位置に移動
+            // リアル手と手の中心位置
             var centerposition = Vector3.Lerp(leftHandTargetTransform.position, rightHandTargetTransform.position, 0.5f);
-            currentModel.position = new Vector3(centerposition.x, currentModel.position.y, centerposition.z) + currentModel.forward * modelcenterdistance;
 
             //身長から腰の位置を算出する
             // B12 臍高 965.7
@@ -186,6 +186,9 @@ namespace VMC
 
             Debug.Log($"realPelvisHeight:{realPelvisHeight}");
 
+            var scaledPelvisPosition = new Vector3(centerposition.x, realPelvisHeight * wscale, centerposition.z) + currentModel.forward * (realHeight * 0.02f * wscale);
+            //アバターの腰のXZ位置をリアルの腰の位置に合わせる
+            currentModel.position = new Vector3(scaledPelvisPosition.x, currentModel.position.y, scaledPelvisPosition.z) + currentModel.forward * modelpelviscenterdistance;
 
             var scaledPelvisPosition = new Vector3(centerposition.x, realPelvisHeight * wscale, centerposition.z) + currentModel.forward * (realHeight * 0.04f * wscale);
 
