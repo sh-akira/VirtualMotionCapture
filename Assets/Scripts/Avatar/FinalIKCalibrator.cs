@@ -182,7 +182,7 @@ namespace VMC
             // ratio = B13 / B1 = 0.58361032211276968634797848552608
             //腰補正値 0.03303499793413632250187205544126 * B1
             var realPelvisHeight = realHeight * 0.58361f;
-            var realPelvisPosition = new Vector3(centerposition.x, realPelvisHeight, centerposition.z) + currentModel.forward * (realHeight * 0.03f);
+            var realPelvisPosition = new Vector3(centerposition.x, realPelvisHeight, centerposition.z) + currentModel.forward * (realHeight * 0.02f);
 
             Debug.Log($"realPelvisHeight:{realPelvisHeight}");
 
