@@ -211,8 +211,8 @@ namespace VMC
 
 
             // Head
-            //頭の位置は1cm前後上に上げて後ろに下げる
-            var headOffsetPosition = new Vector3(vrik.references.head.position.x, vrik.references.head.position.y + (realHeight * 0.01f * wscale), vrik.references.head.position.z - (realHeight * 0.01f * wscale));
+            //頭の位置は1cm前後後ろに下げる
+            var headOffsetPosition = new Vector3(vrik.references.head.position.x, vrik.references.head.position.y, vrik.references.head.position.z - (realHeight * 0.01f * wscale));
             var headOffset = CreateTransform("HeadIKTarget", true, headTarget.TargetTransform, headOffsetPosition, vrik.references.head.rotation);
             vrik.solver.spine.headTarget = headOffset;
             vrik.solver.spine.positionWeight = 1f;
