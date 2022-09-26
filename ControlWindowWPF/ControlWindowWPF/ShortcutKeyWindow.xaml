@@ -104,9 +104,6 @@
                 <Button Content="{DynamicResource ShortcutKeyWindow_AddFacingExpression}" Name="FaceAddButton" Click="FaceAddButton_Click" ToolTip="{DynamicResource ShortcutKeyWindow_AddFacingExpression_ToolTip}"/>
                 <Button Content="{DynamicResource ShortcutKeyWindow_AddFunction}" Name="FunctionAddButton" Click="FunctionAddButton_Click" ToolTip="{DynamicResource ShortcutKeyWindow_AddFunction_ToolTip}"/>
             </UniformGrid>
-            <GroupBox Header="{DynamicResource ShortcutKeyWindow_SelectPreset}">
-                <ComboBox VerticalAlignment="Center" Name="PresetComboBox" SelectionChanged="PresetComboBox_SelectionChanged" ToolTip="{DynamicResource ShortcutKeyWindow_SelectPreset_ToolTip}"/>
-            </GroupBox>
             <GroupBox Header="{DynamicResource ShortcutKeyWindow_CustomName}">
                 <DockPanel>
                     <Button Content="{DynamicResource ShortcutKeyWindow_SavePreset}" DockPanel.Dock="Right" Height="20" Width="50" Name="CustomSaveButton" Click="CustomSaveButton_Click" ToolTip="{DynamicResource ShortcutKeyWindow_SavePreset_ToolTip}"/>
@@ -118,6 +115,9 @@
             <Button Content="{DynamicResource ShortcutKeyWindow_Edit}" Width="100" Name="EditButton" Click="EditButton_Click" ToolTip="{DynamicResource ShortcutKeyWindow_Edit_ToolTip}"/>
             <Button Content="{DynamicResource ShortcutKeyWindow_Remove}" Width="100" Name="RemoveButton" Click="RemoveButton_Click" ToolTip="{DynamicResource ShortcutKeyWindow_Remove_ToolTip}"/>
         </StackPanel>
+        <GroupBox Header="{DynamicResource ShortcutKeyWindow_SelectPreset}" DockPanel.Dock="Top">
+            <ComboBox VerticalAlignment="Center" Name="PresetComboBox" SelectionChanged="PresetComboBox_SelectionChanged" ToolTip="{DynamicResource ShortcutKeyWindow_SelectPreset_ToolTip}"/>
+        </GroupBox>
         <DataGrid CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" SelectionMode="Single" Name="KeysDataGrid" AutoGenerateColumns="False" ToolTip="{DynamicResource ShortcutKeyWindow_ShortcutKeyList_ToolTip}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="{DynamicResource ShortcutKeyWindow_Type}" Binding="{Binding TypeStr}" MinWidth="40"/>
