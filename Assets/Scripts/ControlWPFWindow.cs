@@ -714,6 +714,7 @@ namespace VMC
                     await server.SendCommandAsync(new PipeCommands.EnableModelModifier
                     {
                         fixKneeRotation = Settings.Current.FixKneeRotation,
+                        fixElbowRotation = Settings.Current.FixElbowRotation,
                     }, e.RequestId);
                 }
                 //------------------------
