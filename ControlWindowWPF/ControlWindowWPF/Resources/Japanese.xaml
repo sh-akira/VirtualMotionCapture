@@ -487,11 +487,5 @@
 
     <system:String x:Key="VRoidHubWindow_SelectModelMessage">読み込むモデルを選択してください</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionConfirm">このモデルは使用時のライセンス表示が必須です。動画や配信で使用する際必ず明記する必要があります。使用しますか？</system:String>
-
-    <!-- DMMVRConnectWindow -->
-    <system:String x:Key="DMMVRConnectWindowTitle">DMM VR Connectからモデル読み込み</system:String>
-    <system:String x:Key="DMMVRConnectCreateAccount">アカウント作成</system:String>
-    <system:String x:Key="DMMVRConnectOpenBrowserDescription1">自動でブラウザが開くのでログインを完了してください</system:String>
-    <system:String x:Key="DMMVRConnectOpenBrowserDescription2">開かない場合は次のURLを開いてコードを入力してください</system:String>
     
 </ResourceDictionary>

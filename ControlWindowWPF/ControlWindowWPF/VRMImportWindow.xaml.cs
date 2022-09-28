@@ -28,10 +28,6 @@ namespace VirtualMotionCaptureControlPanel
             {
                 ShowVRoidHubButton.Visibility = Visibility.Collapsed;
             }
-            if (DMMVRConnectWindow.IncludeDMMVRConnectWindow == false)
-            {
-                ShowDMMVRConnectButton.Visibility = Visibility.Collapsed;
-            }
         }
 
         private VRMData CurrentMeta = null;
@@ -105,16 +101,6 @@ namespace VirtualMotionCaptureControlPanel
         private void ShowVRoidHubButton_Click(object sender, RoutedEventArgs e)
         {
             var win = new VRoidHubWindow();
-            win.Owner = this;
-            if (win.ShowDialog() == true)
-            {
-                this.Close();
-            }
-        }
-
-        private void ShowDMMVRConnectButton_Click(object sender, RoutedEventArgs e)
-        {
-            var win = new DMMVRConnectWindow();
             win.Owner = this;
             if (win.ShowDialog() == true)
             {

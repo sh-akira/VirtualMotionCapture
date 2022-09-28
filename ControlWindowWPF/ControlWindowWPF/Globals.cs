@@ -37,8 +37,6 @@ namespace VirtualMotionCaptureControlPanel
         public static FreeOffsetItem FreeOffset = new FreeOffsetItem();
 
         public static List<KeyAction> KeyActions = new List<KeyAction>();
-
-        public static bool IsDMMVRConnectLoaded = false;
         
         public static string GetCurrentAppDir()
         {

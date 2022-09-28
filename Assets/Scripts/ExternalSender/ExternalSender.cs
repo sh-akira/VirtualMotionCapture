@@ -84,13 +84,7 @@ namespace VMC
             window.VRMRemoteLoadedAction += (string path) =>
             {
                 this.vrmdata = null;
-                if (path.StartsWith("dmmvrconnect://"))
-                {
-                    var parsed = path.Substring("dmmvrconnect://".Length).Split('/');
-                    remoteName = "dmmvrconnect";
-                    remoteJson = Json.Serializer.Serialize(new DMMVRConnectRemote { user_id = parsed[0], avatar_id = parsed[1] });
-                }
-                else if (path.StartsWith("vroidhub://"))
+                if (path.StartsWith("vroidhub://"))
                 {
                     var characterModelId = path.Substring("vroidhub://".Length);
                     remoteName = "vroidhub";
@@ -533,13 +527,6 @@ namespace VMC
             portfield.SetValue(uClient, port);
             uClient.enabled = true;
         }
-    }
-
-    [Serializable]
-    public class DMMVRConnectRemote
-    {
-        public string user_id;
-        public string avatar_id;
     }
 
     [Serializable]
