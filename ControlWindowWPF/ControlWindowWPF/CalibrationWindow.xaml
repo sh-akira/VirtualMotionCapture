@@ -30,8 +30,8 @@
                 </GroupBox>
                 <GroupBox Header="互換モード(古いキャリブレーション)" FontSize="14">
                     <StackPanel>
-                        <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateFixedHandRadioButton}" Name="CalibrateFixedHandRadioButton" Padding="5" GroupName="Calibration"/>
-                        <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton}" Name="CalibrateFixedHandWithGroundRadioButton" Padding="5" GroupName="Calibration"/>
+                        <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateFixedHandRadioButton}" Name="CalibrateFixedHandRadioButton" Padding="5" GroupName="Calibration" IsEnabled="False"/>
+                        <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton}" Name="CalibrateFixedHandWithGroundRadioButton" Padding="5" GroupName="Calibration" IsEnabled="False"/>
                     </StackPanel>
                 </GroupBox>
             </StackPanel>
