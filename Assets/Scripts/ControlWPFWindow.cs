@@ -1139,12 +1139,21 @@ namespace VMC
                 //SetVRIK(CurrentModel);
                 if (animator != null)
                 {
-                    animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(LeftLowerArmAngle, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(RightLowerArmAngle, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(LeftUpperArmAngle, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.RightUpperArm).localEulerAngles = new Vector3(RightUpperArmAngle, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(LeftHandAngle, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(RightHandAngle, 0, 0);
+                    //animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(LeftLowerArmAngle, 0, 0);
+                    //animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(RightLowerArmAngle, 0, 0);
+                    //animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(LeftUpperArmAngle, 0, 0);
+                    //animator.GetBoneTransform(HumanBodyBones.RightUpperArm).localEulerAngles = new Vector3(RightUpperArmAngle, 0, 0);
+                    //animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(LeftHandAngle, 0, 0);
+                    //animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(RightHandAngle, 0, 0);
+
+                    animator.GetBoneTransform(HumanBodyBones.LeftShoulder).localEulerAngles = new Vector3(0, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.RightShoulder).localEulerAngles = new Vector3(0, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(0, 0, 80);
+                    animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(0, 0, 5);
+                    animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(0, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.RightUpperArm).localEulerAngles = new Vector3(0, 0, -80);
+                    animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(0, 0, -5);
+                    animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(0, 0, 0);
 
                     //wristRotationFix.SetVRIK(vrik);
 
@@ -1826,7 +1835,7 @@ namespace VMC
 
             if (calibrateType == PipeCommands.CalibrateType.Default)
             {
-                yield return FinalIKCalibrator.Calibrate(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
+                yield return FinalIKCalibrator.CalibrateIpose(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
             }
             else if (calibrateType == PipeCommands.CalibrateType.FixedHand)
             {
