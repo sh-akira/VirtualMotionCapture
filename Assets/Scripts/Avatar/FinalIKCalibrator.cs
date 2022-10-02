@@ -242,18 +242,7 @@ namespace VMC
             //手と肘トラッカーを手の高さにオフセット
             var modelHandHeight = (vrik.references.leftHand.position.y + vrik.references.rightHand.position.y) / 2f;
             var realHandHeight = (leftHandTargetTransform.position.y + rightHandTargetTransform.position.y) / 2f;
-            var realLeftHandHeight = leftHandTargetTransform.position.y;
-            var realRightHandHeight = rightHandTargetTransform.position.y;
             var handTrackerOffset = new Vector3(0, modelHandHeight - realHandHeight, 0);
-            var realHandCenter = Vector3.Lerp(leftHandTargetTransform.position, rightHandTargetTransform.position, 0.5f);
-            var modelHandCenter = Vector3.Lerp(vrik.references.leftHand.position, vrik.references.rightHand.position, 0.5f);
-            var handForwardDistance = Vector3.Distance(new Vector3(realHandCenter.x, 0, realHandCenter.z), new Vector3(modelHandCenter.x, 0, modelHandCenter.z));
-            var leftHandTrackerOffset = new Vector3(0, modelHandHeight - realLeftHandHeight, 0);
-            var rightHandTrackerOffset = new Vector3(0, modelHandHeight - realRightHandHeight, 0);
-
-
-            vrik.enabled = true;
-
 
             // Head
             //頭の位置は1cm前後後ろに下げる
@@ -269,9 +258,12 @@ namespace VMC
             vrik.solver.spine.headClampWeight = 0;
             vrik.solver.spine.maxRootAngle = 20;
 
+
+            handTrackerRoot.position = handTrackerOffset;
+
             // LeftHand
-            handTrackerRoot.position = leftHandTrackerOffset + currentModel.forward * handForwardDistance;
             var leftHandOffset = CreateTransform("LeftHandIKTarget", true, leftHandTargetTransform, vrik.references.leftHand);
+            leftHandOffset.localPosition = Vector3.zero;
             vrik.solver.leftArm.target = leftHandOffset;
             vrik.solver.leftArm.positionWeight = 1f;
             vrik.solver.leftArm.rotationWeight = 1f;
@@ -283,8 +275,8 @@ namespace VMC
 
 
             // RightHand
-            handTrackerRoot.position = rightHandTrackerOffset + currentModel.forward * handForwardDistance;
             var rightHandOffset = CreateTransform("RightHandIKTarget", true, rightHandTargetTransform, vrik.references.rightHand);
+            rightHandOffset.localPosition = Vector3.zero;
             vrik.solver.rightArm.target = rightHandOffset;
             vrik.solver.rightArm.positionWeight = 1f;
             vrik.solver.rightArm.rotationWeight = 1f;
@@ -293,8 +285,6 @@ namespace VMC
             vrik.solver.rightArm.shoulderRotationMode = IKSolverVR.Arm.ShoulderRotationMode.FromTo;
             vrik.solver.rightArm.shoulderRotationWeight = 0.25f;
             vrik.solver.rightArm.shoulderTwistWeight = 0.7f;
-
-            handTrackerRoot.position = handTrackerOffset;
 
             //手の回転軸を少し上に補正
             //handTrackerRoot.position = handTrackerOffset + Vector3.up * (realHeight * 0.0145f);
@@ -415,6 +405,9 @@ namespace VMC
 
             //wristRotationFix = currentModel.AddComponent<WristRotationFix>();
             //wristRotationFix.SetVRIK(vrik);
+
+
+            vrik.enabled = true;
 
             vrik.solver.IKPositionWeight = 1.0f;
 
