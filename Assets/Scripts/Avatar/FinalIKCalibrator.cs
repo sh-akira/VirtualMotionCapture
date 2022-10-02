@@ -206,7 +206,8 @@ namespace VMC
             Debug.Log($"scaledPelvisHeight:{scaledPelvisPosition.y}");
 
             //アバターの腰のXZ位置をリアルの腰の位置に合わせる
-            currentModel.position = new Vector3(scaledPelvisPosition.x, currentModel.position.y, scaledPelvisPosition.z) + currentModel.forward * modelpelviscenterdistance;
+            currentModel.position = new Vector3(scaledPelvisPosition.x, currentModel.position.y, scaledPelvisPosition.z) - currentModel.forward * modelpelviscenterdistance;
+
 
             //計算された腰の回転軸位置にオブジェクトを設定
             var pelvisTargetTransform = PelvisTrackingPoint?.TargetTransform;
