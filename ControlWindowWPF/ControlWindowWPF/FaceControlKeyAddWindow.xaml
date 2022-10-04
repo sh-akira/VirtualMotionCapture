@@ -8,10 +8,10 @@
         Title="{DynamicResource FaceControlKeyAddWindowTitle}" Height="480" Width="800" Loaded="Window_Loaded" Closing="Window_Closing" Icon="Resources/VirtualMotionCapture_dark.ico">
     <DockPanel>
         <GroupBox Header="{DynamicResource FaceControlKeyAddWindow_UseKey}" DockPanel.Dock="Top">
-            <DockPanel Height="80">
+            <DockPanel>
                 <CheckBox Content="{DynamicResource FaceControlKeyAddWindow_KeyUp}" Name="KeyUpCheckBox" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="5,0"/>
-                <Button Content="{DynamicResource FaceControlKeyAddWindow_Clear}" DockPanel.Dock="Right" Height="20" Width="50" Name="KeyClearButton" Click="KeyClearButton_Click"/>
-                <ListBox Name="KeysListBox" GotFocus="KeysListBox_GotFocus" LostFocus="KeysListBox_LostFocus"/>
+                <Button Content="{DynamicResource ShortcutKeyWindow_Remove}" DockPanel.Dock="Right" Height="20" Width="50" Name="KeyRemoveButton" Click="KeyRemoveButton_Click"/>
+                <ListBox Name="KeysListBox" Height="80" GotFocus="KeysListBox_GotFocus" LostFocus="KeysListBox_LostFocus"/>
             </DockPanel>
         </GroupBox>
         <DockPanel>

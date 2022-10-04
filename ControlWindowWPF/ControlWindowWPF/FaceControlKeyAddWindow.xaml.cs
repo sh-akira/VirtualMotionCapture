@@ -69,7 +69,7 @@ namespace VirtualMotionCaptureControlPanel
             ReceiveKey = false;
         }
 
-        private void KeyClearButton_Click(object sender, RoutedEventArgs e)
+        private void KeyRemoveButton_Click(object sender, RoutedEventArgs e)
         {
             if (KeysListBox.SelectedIndex != -1 && KeyConfigs?.Count > 0)
             {
@@ -80,20 +80,16 @@ namespace VirtualMotionCaptureControlPanel
 
         private void UpdateKeys()
         {
-            var texts = new List<string>();
-            foreach (var key in KeyConfigs)
+            KeysListBox.Items.Clear();
+            if (KeyConfigs.Count > 0)
             {
-                texts.Add(key.ToString());
-            }
-            if (texts.Count > 0)
-            {
-                KeysListBox.Items.Clear();
-                foreach (var t in texts)
-                    KeysListBox.Items.Add(t);
+                foreach (var key in KeyConfigs)
+                {
+                    KeysListBox.Items.Add(key.ToString());
+                }
             }
             else
             {
-                KeysListBox.Items.Clear();
                 KeysListBox.Items.Add(LanguageSelector.Get("KeysWatermark"));
             }
         }
