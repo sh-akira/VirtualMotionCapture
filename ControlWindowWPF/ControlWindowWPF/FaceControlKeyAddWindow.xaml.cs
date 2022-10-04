@@ -25,6 +25,7 @@ namespace VirtualMotionCaptureControlPanel
         {
             InitializeComponent();
             KeysDataGrid.ItemsSource = faceItems;
+            UpdateKeys();
         }
         public FaceControlKeyAddWindow(KeyAction action) : this()
         {
@@ -70,7 +71,7 @@ namespace VirtualMotionCaptureControlPanel
 
         private void KeyClearButton_Click(object sender, RoutedEventArgs e)
         {
-            if (KeysListBox.SelectedIndex != -1)
+            if (KeysListBox.SelectedIndex != -1 && KeyConfigs?.Count > 0)
             {
                 KeyConfigs.RemoveAt(KeysListBox.SelectedIndex);
             }
