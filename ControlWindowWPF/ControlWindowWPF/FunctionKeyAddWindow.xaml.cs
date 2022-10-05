@@ -59,36 +59,38 @@ namespace VirtualMotionCaptureControlPanel
 
         private bool ReceiveKey = false;
 
-        private void KeysTextBox_GotFocus(object sender, RoutedEventArgs e)
+        private void KeysListBox_GotFocus(object sender, RoutedEventArgs e)
         {
             ReceiveKey = true;
         }
 
-        private void KeysTextBox_LostFocus(object sender, RoutedEventArgs e)
+        private void KeysListBox_LostFocus(object sender, RoutedEventArgs e)
         {
             ReceiveKey = false;
         }
 
-        private void KeyClearButton_Click(object sender, RoutedEventArgs e)
+        private void KeyRemoveButton_Click(object sender, RoutedEventArgs e)
         {
-            KeyConfigs.Clear();
+            if (KeysListBox.SelectedIndex != -1 && KeyConfigs?.Count > 0)
+            {
+                KeyConfigs.RemoveAt(KeysListBox.SelectedIndex);
+            }
             UpdateKeys();
         }
 
         private void UpdateKeys()
         {
-            var texts = new List<string>();
-            foreach (var key in KeyConfigs)
+            KeysListBox.Items.Clear();
+            if (KeyConfigs.Count > 0)
             {
-                texts.Add(key.ToString());
-            }
-            if (texts.Count > 0)
-            {
-                KeysTextBox.Text = string.Join(" + ", texts);
+                foreach (var key in KeyConfigs)
+                {
+                    KeysListBox.Items.Add(key.ToString());
+                }
             }
             else
             {
-                KeysTextBox.Text = LanguageSelector.Get("KeysWatermark");
+                KeysListBox.Items.Add(LanguageSelector.Get("KeysWatermark"));
             }
         }
 
