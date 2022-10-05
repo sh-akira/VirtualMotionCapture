@@ -41,6 +41,7 @@ namespace VirtualMotionCaptureControlPanel
         {
             InitializeComponent();
             FunctionComboBox.ItemsSource = FunctionItems;
+            UpdateKeys();
         }
         public FunctionKeyAddWindow(KeyAction action) : this()
         {

@@ -46,6 +46,7 @@ namespace VirtualMotionCaptureControlPanel
                 Directory.CreateDirectory(Globals.GetCurrentAppDir() + PresetDirectory);
             }
             PresetComboBox.ItemsSource = Directory.EnumerateFiles(Globals.GetCurrentAppDir() + PresetDirectory, "*.json").Select(d => System.IO.Path.GetFileNameWithoutExtension(d));
+            UpdateKeys();
         }
         public HandGestureControlKeyAddWindow(KeyAction action) : this()
         {
