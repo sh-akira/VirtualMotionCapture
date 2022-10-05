@@ -10,8 +10,8 @@
         <GroupBox Header="{DynamicResource FunctionKeyAddWindow_UseKey}" DockPanel.Dock="Top">
             <DockPanel>
                 <CheckBox Content="{DynamicResource FunctionKeyAddWindow_KeyUp}" Name="KeyUpCheckBox" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="5,0"/>
-                <Button Content="{DynamicResource FunctionKeyAddWindow_Clear}" DockPanel.Dock="Right" Height="20" Width="50" Name="KeyClearButton" Click="KeyClearButton_Click"/>
-                <TextBox VerticalAlignment="Center" IsReadOnly="True" Name="KeysTextBox" GotFocus="KeysTextBox_GotFocus" LostFocus="KeysTextBox_LostFocus"/>
+                <Button Content="{DynamicResource ShortcutKeyWindow_Remove}" DockPanel.Dock="Right" Height="20" Width="50" Name="KeyRemoveButton" Click="KeyRemoveButton_Click"/>
+                <ListBox Name="KeysListBox" Height="80" GotFocus="KeysListBox_GotFocus" LostFocus="KeysListBox_LostFocus"/>
             </DockPanel>
         </GroupBox>
 
