@@ -290,6 +290,11 @@ namespace VMC
             // Pelvis
             if (pelvisTargetTransform != null)
             {
+                //実際の回転位置のY方向を補正して付いてくるオブジェクト(上下方向補正)
+                var PelvisAdjustFollower = new GameObject("PelvisAdjustFollower");
+                PelvisAdjustFollower.AddComponent<TransformAdjustFollower>().Initialize(pelvisTargetTransform, true, true);
+                pelvisTargetTransform = PelvisAdjustFollower.transform;
+
                 //pelvisTargetTransformは腰の回転軸位置(UpperLeg)に居るので、子のIKターゲットはHip位置にオフセットして指定
                 var pelvisOffset = CreateTransform("PelvisIKTarget", true, pelvisTargetTransform, pelvisTargetTransform.position + UpperLegOffset, vrik.references.pelvis.rotation);
 
