@@ -243,6 +243,7 @@ namespace VMC
             var modelHandHeight = (vrik.references.leftHand.position.y + vrik.references.rightHand.position.y) / 2f;
             var realHandHeight = (leftHandTargetTransform.position.y + rightHandTargetTransform.position.y) / 2f;
             var handTrackerOffset = new Vector3(0, modelHandHeight - realHandHeight, 0);
+            handTrackerRoot.position = handTrackerOffset;
 
             // Head
             //頭の位置は1cm前後後ろに下げる
@@ -257,9 +258,6 @@ namespace VMC
             vrik.solver.spine.neckStiffness = 0.1f;
             vrik.solver.spine.headClampWeight = 0;
             vrik.solver.spine.maxRootAngle = 20;
-
-
-            handTrackerRoot.position = handTrackerOffset;
 
             // LeftHand
             var leftHandOffset = CreateTransform("LeftHandIKTarget", true, leftHandTargetTransform, vrik.references.leftHand);
