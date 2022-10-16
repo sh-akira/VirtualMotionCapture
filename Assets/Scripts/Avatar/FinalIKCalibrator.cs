@@ -230,7 +230,7 @@ namespace VMC
                 var pelvisRotatePoint = new GameObject("PelvisRotatePoint").transform;
                 pelvisRotatePoint.SetParent(pelvisTargetTransform);
                 pelvisRotatePoint.position = scaledPelvisPosition;
-                pelvisRotatePoint.localRotation = Quaternion.identity;
+                pelvisRotatePoint.rotation = Quaternion.identity;
                 pelvisTargetTransform = pelvisRotatePoint;
             }
 
