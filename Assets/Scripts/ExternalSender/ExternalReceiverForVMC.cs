@@ -19,9 +19,11 @@ namespace VMC
         public MidiCCWrapper MIDICCWrapper;
 
         //仮想コントローラソート済み辞書
+        public SortedDictionary<string, SteamVR_Utils.RigidTransform> virtualHmd = new SortedDictionary<string, SteamVR_Utils.RigidTransform>();
         public SortedDictionary<string, SteamVR_Utils.RigidTransform> virtualController = new SortedDictionary<string, SteamVR_Utils.RigidTransform>();
         public SortedDictionary<string, SteamVR_Utils.RigidTransform> virtualTracker = new SortedDictionary<string, SteamVR_Utils.RigidTransform>();
 
+        public SortedDictionary<string, SteamVR_Utils.RigidTransform> virtualHmdFiltered = new SortedDictionary<string, SteamVR_Utils.RigidTransform>();
         public SortedDictionary<string, SteamVR_Utils.RigidTransform> virtualControllerFiltered = new SortedDictionary<string, SteamVR_Utils.RigidTransform>();
         public SortedDictionary<string, SteamVR_Utils.RigidTransform> virtualTrackerFiltered = new SortedDictionary<string, SteamVR_Utils.RigidTransform>();
 
@@ -121,8 +123,36 @@ namespace VMC
                     packets = 0;
                 }
 
+                //仮想Hmd V2.3
+                if (message.address == "/VMC/Ext/Hmd/Pos"
+                    && (message.values[0] is string)
+                    && (message.values[1] is float)
+                    && (message.values[2] is float)
+                    && (message.values[3] is float)
+                    && (message.values[4] is float)
+                    && (message.values[5] is float)
+                    && (message.values[6] is float)
+                    && (message.values[7] is float)
+                )
+                {
+                    string serial = (string)message.values[0];
+                    var rigidTransform = SetTransform(ref pos, ref rot, ref message);
+
+                    lock (LockObject)
+                    {
+                        if (virtualHmd.ContainsKey(serial))
+                        {
+                            virtualHmd[serial] = rigidTransform;
+                        }
+                        else
+                        {
+                            virtualHmd.Add(serial, rigidTransform);
+                            virtualHmdFiltered.Add(serial, rigidTransform);
+                        }
+                    }
+                }
                 //仮想コントローラー V2.3
-                if (message.address == "/VMC/Ext/Con/Pos"
+                else if (message.address == "/VMC/Ext/Con/Pos"
                     && (message.values[0] is string)
                     && (message.values[1] is float)
                     && (message.values[2] is float)
@@ -150,8 +180,7 @@ namespace VMC
                     }
                 }
                 //仮想トラッカー V2.3
-                else if ((message.address == "/VMC/Ext/Hmd/Pos"
-                    || message.address == "/VMC/Ext/Tra/Pos")
+                else if (message.address == "/VMC/Ext/Tra/Pos"
                     && (message.values[0] is string)
                     && (message.values[1] is float)
                     && (message.values[2] is float)
@@ -469,6 +498,12 @@ namespace VMC
         {
             lock (LockObject)
             {
+                foreach (var pair in virtualHmd)
+                {
+                    var newpos = Vector3.Lerp(virtualHmdFiltered[pair.Key].pos, pair.Value.pos, filterStrength * Time.deltaTime);
+                    var newrot = Quaternion.Lerp(virtualHmdFiltered[pair.Key].rot, pair.Value.rot, filterStrength * Time.deltaTime);
+                    virtualHmdFiltered[pair.Key] = new SteamVR_Utils.RigidTransform(newpos, newrot);
+                }
                 foreach (var pair in virtualController)
                 {
                     var newpos = Vector3.Lerp(virtualControllerFiltered[pair.Key].pos, pair.Value.pos, filterStrength * Time.deltaTime);

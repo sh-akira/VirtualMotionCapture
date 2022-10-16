@@ -18,13 +18,14 @@ namespace VMC
             {
                 foreach (var externalReceiver in externalReceivers)
                 {
+                    foreach (var c in externalReceiver.virtualHmdFiltered)
+                    {
+                        UpdateDeviceInfo(c.Key, c.Value, ETrackedDeviceClass.HMD);
+                    }
                     foreach (var c in externalReceiver.virtualControllerFiltered)
                     {
                         UpdateDeviceInfo(c.Key, c.Value, ETrackedDeviceClass.Controller);
                     }
-                }
-                foreach (var externalReceiver in externalReceivers)
-                {
                     foreach (var t in externalReceiver.virtualTrackerFiltered)
                     {
                         UpdateDeviceInfo(t.Key, t.Value, ETrackedDeviceClass.GenericTracker);
