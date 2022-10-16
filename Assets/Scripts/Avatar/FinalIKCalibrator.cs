@@ -143,15 +143,28 @@ namespace VMC
                 rightHandTargetTransform = rightWrist;
             }
 
+            float realHeight = 1.7f;
 
-            //手の高さから身長を算出する
-            // B21 橈骨茎突高 797.7
-            // B1 身長 1654.7
-            // ratio = B1 / B21 = 2.0743387238310141657264635828006
-            // 補正値 0.93694267481427684002272492175445
-            var handHeight = (leftHandTargetTransform.position.y + rightHandTargetTransform.position.y) / 2f;
-            var realHeight = handHeight * 2.07434f * 0.93694f;
-
+            //頭がHMDの場合
+            if (headTarget.DeviceClass == ETrackedDeviceClass.HMD)
+            {
+                //目の高さから身長を算出する
+                // A30 頭頂・内眼角距離 124.6
+                // B1 身長 1654.7
+                // realHeight = (HMDHeight / (B1 - A30)) * A30 + HMDHeight
+                var hmdHeight = headTarget.TargetTransform.position.y;
+                realHeight = (hmdHeight / (1.6547f - 0.1246f)) * 0.1246f + hmdHeight;
+            }
+            else
+            {
+                //手の高さから身長を算出する
+                // B21 橈骨茎突高 797.7
+                // B1 身長 1654.7
+                // ratio = B1 / B21 = 2.0743387238310141657264635828006
+                // 補正値 0.93694267481427684002272492175445
+                var handHeight = (leftHandTargetTransform.position.y + rightHandTargetTransform.position.y) / 2f;
+                realHeight = handHeight * 2.07434f * 0.93694f;
+            }
             Debug.Log($"UserHeight:{realHeight}");
 
             // トラッカー全体のスケールを手の位置に合わせる
