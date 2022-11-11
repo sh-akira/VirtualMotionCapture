@@ -7,8 +7,8 @@ namespace VMC
 {
     public class TransformAdjustFollower : MonoBehaviour
     {
-        private const float AdjustLimit = 0.032f;
-        private const float LerpDistance = 0.023f;
+        private const float AdjustLimit = 0.018f;
+        private const float LerpDistance = 0.009f;
 
         private Transform adjustTargetPoint;
         private float defaultHeight;
