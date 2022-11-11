@@ -216,12 +216,14 @@ namespace VMC
             {
                 scaledCenterPosition = headTarget.TargetTransform.position - hmdForwardAngle.normalized * (realHeight * wscale * 0.063f);
             }
+
             //身長から腰の位置を算出する
-            // B12 臍高 965.7
+            // B13 上前腸骨棘高 891.9
+            // B14 恥骨結合上縁高 809.2
             // B1 身長 1654.7
-            // ratio = B13 / B1 = 0.58361032211276968634797848552608
-            //腰補正値 1.031572735f
-            var realPelvisHeight = realHeight * 0.58361f * 1.031572735f;
+            // ratio = (B13 + (B14 - B13) * 0.?) / B1 = 0.51402066839910557805040188553816
+            //腰補正値 1
+            var realPelvisHeight = realHeight * (809.2f + (891.9f - 809.2f) * 0.67f) / 1654.7f;
 
             Debug.Log($"realPelvisHeight:{realPelvisHeight}");
 
