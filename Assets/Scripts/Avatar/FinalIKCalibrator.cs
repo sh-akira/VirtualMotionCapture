@@ -211,6 +211,11 @@ namespace VMC
             // リアル手と手の中心から少し後ろに下げた位置
             var scaledCenterPosition = Vector3.Lerp(leftHandTargetTransform.position, rightHandTargetTransform.position, 0.5f) - hmdForwardAngle.normalized * (realHeight * wscale * 0.072f);
 
+            //頭がHMDの場合
+            if (headTarget.DeviceClass == ETrackedDeviceClass.HMD)
+            {
+                scaledCenterPosition = headTarget.TargetTransform.position - hmdForwardAngle.normalized * (realHeight * wscale * 0.063f);
+            }
             //身長から腰の位置を算出する
             // B12 臍高 965.7
             // B1 身長 1654.7
