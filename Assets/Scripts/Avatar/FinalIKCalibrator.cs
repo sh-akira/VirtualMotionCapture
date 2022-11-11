@@ -175,6 +175,8 @@ namespace VMC
             var rightUpperArm = vrik.references.rightUpperArm;
             var modelHandDistance = Vector3.Distance(leftHand.position, leftUpperArm.position) + Vector3.Distance(leftUpperArm.position, rightUpperArm.position) + Vector3.Distance(rightUpperArm.position, rightHand.position);
 
+            Debug.Log($"modelHandDistance:{modelHandDistance}");
+
             //身長比 (realHeight / B1)
             var realHeightRatio = realHeight / 1.6547f;
             //C7 上腕長 301.2
@@ -183,9 +185,13 @@ namespace VMC
             var realLowerArmLength = realHeightRatio * 0.2405f;
             //D7 肩峰幅 378.8
             var realShoulderWidth = realHeightRatio * 0.3788f;
-            //補正値 0.90461508349542846218505245206182
-            var realHandDistance = (realShoulderWidth + realUpperArmLength * 2 + realLowerArmLength * 2) * 0.90461f;
-            var wscale = modelHandDistance / realHandDistance;
+
+            var realHandDistance = (realShoulderWidth + realUpperArmLength * 2 + realLowerArmLength * 2);
+
+            Debug.Log($"realHandDistance:{realHandDistance} realUpperArmLength:{realUpperArmLength} realLowerArmLength:{realLowerArmLength} realShoulderWidth:{realShoulderWidth}");
+
+            //補正値 1.1844624376512112799968270419935f
+            var wscale = modelHandDistance / realHandDistance * 1.18446f;
             handTrackerRoot.localScale = new Vector3(wscale, wscale, wscale);
             footTrackerRoot.localScale = new Vector3(wscale, wscale, wscale);
 
