@@ -190,12 +190,13 @@ namespace VMC
 
             Debug.Log($"realHandDistance:{realHandDistance} realUpperArmLength:{realUpperArmLength} realLowerArmLength:{realLowerArmLength} realShoulderWidth:{realShoulderWidth}");
 
-            //補正値 1.1844624376512112799968270419935f
-            var wscale = modelHandDistance / realHandDistance * 1.18446f;
-            handTrackerRoot.localScale = new Vector3(wscale, wscale, wscale);
-            footTrackerRoot.localScale = new Vector3(wscale, wscale, wscale);
+            //補正値 1.0540999304427300866426637117315
+            var realScale = modelHandDistance / realHandDistance;
+            var offsetScale = realScale * 1.08f;
+            handTrackerRoot.localScale = new Vector3(offsetScale, offsetScale, offsetScale);
+            footTrackerRoot.localScale = new Vector3(offsetScale, offsetScale, offsetScale);
 
-            Debug.Log($"wscale:{wscale}");
+            Debug.Log($"wscale:{offsetScale}");
 
             //モデルの体の中心を取っておく
             var handcenterposition = Vector3.Lerp(vrik.references.leftHand.position, vrik.references.rightHand.position, 0.5f);
@@ -209,12 +210,12 @@ namespace VMC
 
 
             // リアル手と手の中心から少し後ろに下げた位置
-            var scaledCenterPosition = Vector3.Lerp(leftHandTargetTransform.position, rightHandTargetTransform.position, 0.5f) - hmdForwardAngle.normalized * (realHeight * wscale * 0.072f);
+            var scaledCenterPosition = Vector3.Lerp(leftHandTargetTransform.position, rightHandTargetTransform.position, 0.5f) - hmdForwardAngle.normalized * (realHeight * offsetScale * 0.052f);
 
             //頭がHMDの場合
             if (headTarget.DeviceClass == ETrackedDeviceClass.HMD)
             {
-                scaledCenterPosition = headTarget.TargetTransform.position - hmdForwardAngle.normalized * (realHeight * wscale * 0.063f);
+                scaledCenterPosition = headTarget.TargetTransform.position - hmdForwardAngle.normalized * (realHeight * offsetScale * 0.043f);
             }
 
             //身長から腰の位置を算出する
@@ -222,12 +223,12 @@ namespace VMC
             // B14 恥骨結合上縁高 809.2
             // B1 身長 1654.7
             // ratio = (B13 + (B14 - B13) * 0.?) / B1 = 0.51402066839910557805040188553816
-            //腰補正値 1
-            var realPelvisHeight = realHeight * (809.2f + (891.9f - 809.2f) * 0.67f) / 1654.7f;
+            //腰補正値 0.95
+            var realPelvisHeight = realHeight * (809.2f + (891.9f - 809.2f) * 0.67f) / 1654.7f * 0.95f;
 
             Debug.Log($"realPelvisHeight:{realPelvisHeight}");
 
-            var scaledPelvisPosition = new Vector3(scaledCenterPosition.x, realPelvisHeight * wscale, scaledCenterPosition.z);
+            var scaledPelvisPosition = new Vector3(scaledCenterPosition.x, realPelvisHeight * offsetScale, scaledCenterPosition.z);
 
             Debug.Log($"scaledPelvisHeight:{scaledPelvisPosition.y}");
 
@@ -273,7 +274,7 @@ namespace VMC
 
             // Head
             //頭の位置は1cm前後後ろに下げる
-            var headOffsetPosition = new Vector3(vrik.references.head.position.x, vrik.references.head.position.y, vrik.references.head.position.z - (realHeight * 0.01f * wscale));
+            var headOffsetPosition = new Vector3(vrik.references.head.position.x, vrik.references.head.position.y, vrik.references.head.position.z - (realHeight * 0.01f * offsetScale));
             var headOffset = CreateTransform("HeadIKTarget", true, headTarget.TargetTransform, headOffsetPosition, vrik.references.head.rotation);
             vrik.solver.spine.headTarget = headOffset;
             vrik.solver.spine.positionWeight = 1f;
