@@ -34,7 +34,7 @@ namespace VMC
             }
             else
             { //前に曲がった時
-                PelvisWeight = Mathf.Lerp(1.0f, 0.9f, (signedAngle) / 120f);
+                PelvisWeight = Mathf.Lerp(1.0f, 0.70f, (signedAngle) / 120f);
             }
 
             vrik.solver.spine.pelvisPositionWeight = PelvisWeight;
