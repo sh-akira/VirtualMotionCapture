@@ -192,7 +192,7 @@ namespace VMC
 
             //補正値 1.0540999304427300866426637117315
             var realScale = modelHandDistance / realHandDistance;
-            var offsetScale = realScale * 1.08f;
+            var offsetScale = realScale * 1.0541f;
             handTrackerRoot.localScale = new Vector3(offsetScale, offsetScale, offsetScale);
             footTrackerRoot.localScale = new Vector3(offsetScale, offsetScale, offsetScale);
 
