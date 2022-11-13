@@ -332,11 +332,12 @@ namespace VMC
                 vrik.solver.plantFeet = false;
                 vrik.solver.spine.neckStiffness = 0f;
                 vrik.solver.spine.maxRootAngle = 180f;
+                vrik.solver.spine.minHeadHeight = -100f;
 
                 //頭が腰に近づいたときに猫背になりすぎないように (Final IK v2.1～)
                 vrik.solver.spine.useAnimatedHeadHeightWeight = 1.0f;
-                vrik.solver.spine.useAnimatedHeadHeightRange = 0.001f;
-                vrik.solver.spine.animatedHeadHeightBlend = 0.28f;
+                vrik.solver.spine.useAnimatedHeadHeightRange = 0.005f;
+                vrik.solver.spine.animatedHeadHeightBlend = 0.08f;
             }
 
             // 腰のトラッキングを調整
@@ -436,10 +437,23 @@ namespace VMC
             //wristRotationFix = currentModel.AddComponent<WristRotationFix>();
             //wristRotationFix.SetVRIK(vrik);
 
-
             vrik.enabled = true;
 
             vrik.solver.IKPositionWeight = 1.0f;
+
+            //頭の位置をかかとの影響がない程度まで上に上げる
+            vrik.UpdateSolverExternal();
+            var baseFootHeight = vrik.references.leftFoot.position.y;
+            var headTargetPosition = headOffset.position;
+            var defaultHeadTargetPosition = headTargetPosition;
+            var headStep = new Vector3(0, 0.005f, 0);
+            while (vrik.references.leftFoot.position.y - baseFootHeight < 0.005f && headTargetPosition.y - defaultHeadTargetPosition.y < 0.4f )
+            {
+                headTargetPosition += headStep;
+                headOffset.position = headTargetPosition;
+                vrik.UpdateSolverExternal();
+            }
+            headOffset.position -= headStep;
 
             vrik.UpdateSolverExternal();
 
