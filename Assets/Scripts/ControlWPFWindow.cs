@@ -1855,13 +1855,14 @@ namespace VMC
                 if (rootController != null) GameObject.Destroy(rootController);
             }
 
-            vrik.solver.locomotion.footDistance = 0.06f;
-            vrik.solver.locomotion.stepThreshold = 0.2f;
-            vrik.solver.locomotion.angleThreshold = 45f;
+            vrik.solver.locomotion.footDistance = 0.08f;
+            vrik.solver.locomotion.stepThreshold = 0.05f;
+            vrik.solver.locomotion.angleThreshold = 10f;
             vrik.solver.locomotion.maxVelocity = 0.04f;
             vrik.solver.locomotion.velocityFactor = 0.04f;
             vrik.solver.locomotion.rootSpeed = 40;
             vrik.solver.locomotion.stepSpeed = 2;
+            vrik.solver.locomotion.offset = new Vector3(0, 0, 0.03f);
 
             Settings.Current.headTracker = StoreTransform.Create(headTracker?.TargetTransform);
             Settings.Current.bodyTracker = StoreTransform.Create(bodyTracker?.TargetTransform);
