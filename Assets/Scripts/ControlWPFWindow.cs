@@ -1883,33 +1883,36 @@ namespace VMC
             Settings.Current.rightKneeTracker = StoreTransform.Create(rightKneeTracker?.TargetTransform);
 
 
-            var calibratedLeftHandTransform = leftHandTracker.TargetTransform?.GetChild(0);
-            var calibratedRightHandTransform = rightHandTracker.TargetTransform?.GetChild(0);
+            var calibratedLeftHandTransform = leftHandTracker.TargetTransform?.OfType<Transform>().FirstOrDefault();
+            var calibratedRightHandTransform = rightHandTracker.TargetTransform?.OfType<Transform>().FirstOrDefault();
 
-            leftHandFreeOffsetRotation = new GameObject(nameof(leftHandFreeOffsetRotation)).transform;
-            rightHandFreeOffsetRotation = new GameObject(nameof(rightHandFreeOffsetRotation)).transform;
-            leftHandFreeOffsetRotation.SetParent(leftHandTracker?.TargetTransform);
-            rightHandFreeOffsetRotation.SetParent(rightHandTracker?.TargetTransform);
-            leftHandFreeOffsetRotation.localPosition = Vector3.zero;
-            leftHandFreeOffsetRotation.localRotation = Quaternion.identity;
-            leftHandFreeOffsetRotation.localScale = Vector3.one;
-            rightHandFreeOffsetRotation.localPosition = Vector3.zero;
-            rightHandFreeOffsetRotation.localRotation = Quaternion.identity;
-            rightHandFreeOffsetRotation.localScale = Vector3.one;
+            if (calibratedLeftHandTransform != null && calibratedRightHandTransform != null)
+            {
+                leftHandFreeOffsetRotation = new GameObject(nameof(leftHandFreeOffsetRotation)).transform;
+                rightHandFreeOffsetRotation = new GameObject(nameof(rightHandFreeOffsetRotation)).transform;
+                leftHandFreeOffsetRotation.SetParent(leftHandTracker?.TargetTransform);
+                rightHandFreeOffsetRotation.SetParent(rightHandTracker?.TargetTransform);
+                leftHandFreeOffsetRotation.localPosition = Vector3.zero;
+                leftHandFreeOffsetRotation.localRotation = Quaternion.identity;
+                leftHandFreeOffsetRotation.localScale = Vector3.one;
+                rightHandFreeOffsetRotation.localPosition = Vector3.zero;
+                rightHandFreeOffsetRotation.localRotation = Quaternion.identity;
+                rightHandFreeOffsetRotation.localScale = Vector3.one;
 
-            leftHandFreeOffsetPosition = new GameObject(nameof(leftHandFreeOffsetPosition)).transform;
-            rightHandFreeOffsetPosition = new GameObject(nameof(rightHandFreeOffsetPosition)).transform;
-            leftHandFreeOffsetPosition.SetParent(leftHandFreeOffsetRotation);
-            rightHandFreeOffsetPosition.SetParent(rightHandFreeOffsetRotation);
-            leftHandFreeOffsetPosition.localPosition = Vector3.zero;
-            leftHandFreeOffsetPosition.localRotation = Quaternion.identity;
-            leftHandFreeOffsetPosition.localScale = Vector3.one;
-            rightHandFreeOffsetPosition.localPosition = Vector3.zero;
-            rightHandFreeOffsetPosition.localRotation = Quaternion.identity;
-            rightHandFreeOffsetPosition.localScale = Vector3.one;
+                leftHandFreeOffsetPosition = new GameObject(nameof(leftHandFreeOffsetPosition)).transform;
+                rightHandFreeOffsetPosition = new GameObject(nameof(rightHandFreeOffsetPosition)).transform;
+                leftHandFreeOffsetPosition.SetParent(leftHandFreeOffsetRotation);
+                rightHandFreeOffsetPosition.SetParent(rightHandFreeOffsetRotation);
+                leftHandFreeOffsetPosition.localPosition = Vector3.zero;
+                leftHandFreeOffsetPosition.localRotation = Quaternion.identity;
+                leftHandFreeOffsetPosition.localScale = Vector3.one;
+                rightHandFreeOffsetPosition.localPosition = Vector3.zero;
+                rightHandFreeOffsetPosition.localRotation = Quaternion.identity;
+                rightHandFreeOffsetPosition.localScale = Vector3.one;
 
-            calibratedLeftHandTransform.parent = leftHandFreeOffsetPosition;
-            calibratedRightHandTransform.parent = rightHandFreeOffsetPosition;
+                calibratedLeftHandTransform.parent = leftHandFreeOffsetPosition;
+                calibratedRightHandTransform.parent = rightHandFreeOffsetPosition;
+            }
 
             SetHandFreeOffset();
 
