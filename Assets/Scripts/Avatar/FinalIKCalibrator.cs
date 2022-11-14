@@ -190,9 +190,9 @@ namespace VMC
 
             Debug.Log($"realHandDistance:{realHandDistance} realUpperArmLength:{realUpperArmLength} realLowerArmLength:{realLowerArmLength} realShoulderWidth:{realShoulderWidth}");
 
-            //補正値 1.0540999304427300866426637117315
+            //補正値 1.15
             var realScale = modelHandDistance / realHandDistance;
-            var offsetScale = realScale * 1.0541f;
+            var offsetScale = realScale * 1.15f;
             handTrackerRoot.localScale = new Vector3(offsetScale, offsetScale, offsetScale);
             footTrackerRoot.localScale = new Vector3(offsetScale, offsetScale, offsetScale);
 
