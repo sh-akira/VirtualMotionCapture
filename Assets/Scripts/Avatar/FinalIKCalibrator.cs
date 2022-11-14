@@ -43,7 +43,7 @@ namespace VMC
         /// <summary>
         /// 通常モード、Iポーズキャリブレーション
         /// </summary>
-        public static IEnumerator CalibrateIpose(Transform handTrackerRoot, Transform footTrackerRoot, VRIK vrik, VRIKCalibrator.Settings settings, TrackingPoint HMDTrackingPoint, TrackingPoint PelvisTrackingPoint = null, TrackingPoint LeftHandTrackingPoint = null, TrackingPoint RightHandTrackingPoint = null, TrackingPoint LeftFootTrackingPoint = null, TrackingPoint RightFootTrackingPoint = null, TrackingPoint LeftElbowTrackingPoint = null, TrackingPoint RightElbowTrackingPoint = null, TrackingPoint LeftKneeTrackingPoint = null, TrackingPoint RightKneeTrackingPoint = null)
+        public static IEnumerator CalibrateIpose(Transform handTrackerRoot, Transform footTrackerRoot, VRIK vrik, VRIKCalibrator.Settings settings, TrackingPoint HMDTrackingPoint, TrackingPoint PelvisTrackingPoint = null, TrackingPoint LeftHandTrackingPoint = null, TrackingPoint RightHandTrackingPoint = null, TrackingPoint LeftFootTrackingPoint = null, TrackingPoint RightFootTrackingPoint = null, TrackingPoint LeftElbowTrackingPoint = null, TrackingPoint RightElbowTrackingPoint = null, TrackingPoint LeftKneeTrackingPoint = null, TrackingPoint RightKneeTrackingPoint = null, Transform generatedObject = null)
         {
             var currentModel = vrik.transform;
 
@@ -321,6 +321,7 @@ namespace VMC
                 var PelvisAdjustFollower = new GameObject("PelvisAdjustFollower");
                 PelvisAdjustFollower.AddComponent<TransformAdjustFollower>().Initialize(pelvisTargetTransform, true, true);
                 pelvisTargetTransform = PelvisAdjustFollower.transform;
+                pelvisTargetTransform.SetParent(generatedObject);
 
                 //pelvisTargetTransformは腰の回転軸位置(UpperLeg)に居るので、子のIKターゲットはHip位置にオフセットして指定
                 var pelvisOffset = CreateTransform("PelvisIKTarget", true, pelvisTargetTransform, pelvisTargetTransform.position + UpperLegOffset, vrik.references.pelvis.rotation);
@@ -380,6 +381,7 @@ namespace VMC
             {
                 // アバターの足の位置についていくオブジェクト(FinalIKの処理順に影響を受けない)
                 var leftFootFollow = CreateTransform("LeftFootFollowObject", true, null, vrik.references.leftFoot);
+                leftFootFollow.SetParent(generatedObject);
                 var follower = leftFootFollow.gameObject.AddComponent<TransformFollower>();
                 follower.Target = vrik.references.leftFoot;
 
@@ -409,6 +411,7 @@ namespace VMC
             {
                 // アバターの足の位置についていくオブジェクト(FinalIKの処理順に影響を受けない)
                 var rightFootFollow = CreateTransform("RightFootFollowObject", true, null, vrik.references.rightFoot);
+                rightFootFollow.SetParent(generatedObject);
                 var follower = rightFootFollow.gameObject.AddComponent<TransformFollower>();
                 follower.Target = vrik.references.rightFoot;
 
@@ -476,7 +479,7 @@ namespace VMC
         /// <summary>
         /// 通常モード、Tポーズキャリブレーション
         /// </summary>
-        public static IEnumerator CalibrateTpose(Transform handTrackerRoot, Transform footTrackerRoot, VRIK vrik, VRIKCalibrator.Settings settings, TrackingPoint HMDTrackingPoint, TrackingPoint PelvisTrackingPoint = null, TrackingPoint LeftHandTrackingPoint = null, TrackingPoint RightHandTrackingPoint = null, TrackingPoint LeftFootTrackingPoint = null, TrackingPoint RightFootTrackingPoint = null, TrackingPoint LeftElbowTrackingPoint = null, TrackingPoint RightElbowTrackingPoint = null, TrackingPoint LeftKneeTrackingPoint = null, TrackingPoint RightKneeTrackingPoint = null)
+        public static IEnumerator CalibrateTpose(Transform handTrackerRoot, Transform footTrackerRoot, VRIK vrik, VRIKCalibrator.Settings settings, TrackingPoint HMDTrackingPoint, TrackingPoint PelvisTrackingPoint = null, TrackingPoint LeftHandTrackingPoint = null, TrackingPoint RightHandTrackingPoint = null, TrackingPoint LeftFootTrackingPoint = null, TrackingPoint RightFootTrackingPoint = null, TrackingPoint LeftElbowTrackingPoint = null, TrackingPoint RightElbowTrackingPoint = null, TrackingPoint LeftKneeTrackingPoint = null, TrackingPoint RightKneeTrackingPoint = null, Transform generatedObject = null)
         {
             var currentModel = vrik.transform;
 
@@ -768,6 +771,7 @@ namespace VMC
             {
                 // アバターの足の位置についていくオブジェクト(FinalIKの処理順に影響を受けない)
                 var leftFootFollow = CreateTransform("LeftFootFollowObject", true, null, vrik.references.leftFoot);
+                leftFootFollow.SetParent(generatedObject);
                 var follower = leftFootFollow.gameObject.AddComponent<TransformFollower>();
                 follower.Target = vrik.references.leftFoot;
 
@@ -797,6 +801,7 @@ namespace VMC
             {
                 // アバターの足の位置についていくオブジェクト(FinalIKの処理順に影響を受けない)
                 var rightFootFollow = CreateTransform("RightFootFollowObject", true, null, vrik.references.rightFoot);
+                rightFootFollow.SetParent(generatedObject);
                 var follower = rightFootFollow.gameObject.AddComponent<TransformFollower>();
                 follower.Target = vrik.references.rightFoot;
 

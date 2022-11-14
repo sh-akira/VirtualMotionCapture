@@ -93,6 +93,8 @@ namespace VMC
 
         public MIDICCBlendShape midiCCBlendShape;
 
+        public Transform generatedObject;
+
         public enum CalibrationState
         {
             Uncalibrated = 0,
@@ -1833,9 +1835,14 @@ namespace VMC
 
             TrackingPointManager.Instance.ClearTrackingWatcher();
 
+            foreach (Transform child in generatedObject)
+            {
+                DestroyImmediate(child.gameObject);
+            }
+
             if (calibrateType == PipeCommands.CalibrateType.Default)
             {
-                yield return FinalIKCalibrator.CalibrateIpose(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
+                yield return FinalIKCalibrator.CalibrateIpose(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker, generatedObject);
             }
             else if (calibrateType == PipeCommands.CalibrateType.FixedHand)
             {
