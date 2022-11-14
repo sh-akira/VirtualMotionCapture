@@ -1882,6 +1882,29 @@ namespace VMC
             Settings.Current.leftKneeTracker = StoreTransform.Create(leftKneeTracker?.TargetTransform);
             Settings.Current.rightKneeTracker = StoreTransform.Create(rightKneeTracker?.TargetTransform);
 
+            var trackerPositions = new TrackerPositions
+            {
+                Head = new TrackerPosition(headTracker),
+                LeftHand = new TrackerPosition(leftHandTracker),
+                RightHand = new TrackerPosition(rightHandTracker),
+                Pelvis = new TrackerPosition(bodyTracker),
+                LeftFoot = new TrackerPosition(leftFootTracker),
+                RightFoot = new TrackerPosition(rightFootTracker),
+                LeftElbow = new TrackerPosition(leftElbowTracker),
+                RightElbow = new TrackerPosition(rightElbowTracker),
+                LeftKnee = new TrackerPosition(leftKneeTracker),
+                RightKnee = new TrackerPosition(rightKneeTracker),
+            };
+
+            try
+            {
+                var trackerPositionsJson = JsonUtility.ToJson(trackerPositions);
+                string path = Path.GetFullPath(Application.dataPath + "/../TrackerPositions.json");
+                var directoryName = Path.GetDirectoryName(path);
+                if (Directory.Exists(directoryName) == false) Directory.CreateDirectory(directoryName);
+                File.WriteAllText(path, Json.Serializer.ToReadable(trackerPositionsJson));
+            }
+            catch { }
 
             var calibratedLeftHandTransform = leftHandTracker.TargetTransform?.OfType<Transform>().FirstOrDefault();
             var calibratedRightHandTransform = rightHandTracker.TargetTransform?.OfType<Transform>().FirstOrDefault();

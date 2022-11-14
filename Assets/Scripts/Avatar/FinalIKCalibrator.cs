@@ -10,19 +10,20 @@ using VRM;
 namespace VMC
 {
 
-#if UNITY_EDITOR
     [Serializable]
     public class TrackerPosition
     {
         public Vector3 Position;
         public Quaternion Rotation;
+        public ETrackedDeviceClass DeviceClass;
 
         public TrackerPosition() { }
-        public TrackerPosition(Transform source)
+        public TrackerPosition(TrackingPoint source)
         {
             if (source == null) return;
-            Position = source.position;
-            Rotation = source.rotation;
+            Position = source.TargetTransform.position;
+            Rotation = source.TargetTransform.rotation;
+            DeviceClass = source.DeviceClass;
         }
     }
 
@@ -34,8 +35,11 @@ namespace VMC
         public TrackerPosition Pelvis;
         public TrackerPosition LeftFoot;
         public TrackerPosition RightFoot;
+        public TrackerPosition LeftElbow;
+        public TrackerPosition RightElbow;
+        public TrackerPosition LeftKnee;
+        public TrackerPosition RightKnee;
     }
-#endif
 
     public class FinalIKCalibrator
     {
@@ -50,12 +54,12 @@ namespace VMC
 #if UNITY_EDITOR
             var trackerPositions = new TrackerPositions
             {
-                Head = new TrackerPosition(HMDTrackingPoint?.TargetTransform),
-                LeftHand = new TrackerPosition(LeftHandTrackingPoint?.TargetTransform),
-                RightHand = new TrackerPosition(RightHandTrackingPoint?.TargetTransform),
-                Pelvis = new TrackerPosition(PelvisTrackingPoint?.TargetTransform),
-                LeftFoot = new TrackerPosition(LeftFootTrackingPoint?.TargetTransform),
-                RightFoot = new TrackerPosition(RightFootTrackingPoint?.TargetTransform),
+                Head = new TrackerPosition(HMDTrackingPoint),
+                LeftHand = new TrackerPosition(LeftHandTrackingPoint),
+                RightHand = new TrackerPosition(RightHandTrackingPoint),
+                Pelvis = new TrackerPosition(PelvisTrackingPoint),
+                LeftFoot = new TrackerPosition(LeftFootTrackingPoint),
+                RightFoot = new TrackerPosition(RightFootTrackingPoint),
             };
 
             var trackerPositionsJson = JsonUtility.ToJson(trackerPositions);
@@ -486,12 +490,12 @@ namespace VMC
 #if UNITY_EDITOR
             var trackerPositions = new TrackerPositions
             {
-                Head = new TrackerPosition(HMDTrackingPoint?.TargetTransform),
-                LeftHand = new TrackerPosition(LeftHandTrackingPoint?.TargetTransform),
-                RightHand = new TrackerPosition(RightHandTrackingPoint?.TargetTransform),
-                Pelvis = new TrackerPosition(PelvisTrackingPoint?.TargetTransform),
-                LeftFoot = new TrackerPosition(LeftFootTrackingPoint?.TargetTransform),
-                RightFoot = new TrackerPosition(RightFootTrackingPoint?.TargetTransform),
+                Head = new TrackerPosition(HMDTrackingPoint),
+                LeftHand = new TrackerPosition(LeftHandTrackingPoint),
+                RightHand = new TrackerPosition(RightHandTrackingPoint),
+                Pelvis = new TrackerPosition(PelvisTrackingPoint),
+                LeftFoot = new TrackerPosition(LeftFootTrackingPoint),
+                RightFoot = new TrackerPosition(RightFootTrackingPoint),
             };
 
             var trackerPositionsJson = JsonUtility.ToJson(trackerPositions);
