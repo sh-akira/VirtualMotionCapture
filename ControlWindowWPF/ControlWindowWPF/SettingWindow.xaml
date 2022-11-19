@@ -101,12 +101,12 @@
                 <GroupBox Header="Eye Tracking">
                     <UniformGrid Columns="2">
                         <Button Content="Tobii Eye Tracker 4C" Name="EyeTracking_TobiiSettingButton" Click="EyeTracking_TobiiSettingButton_Click"/>
-                        <Button Content="VIVE Pro Eye&#xa; Droolon F1" Name="EyeTracking_ViveProEyeSettingButton" Click="EyeTracking_ViveProEyeSettingButton_Click"/>
+                        <Button Content="VIVE Eye Tracker&#xa;Droolon F1" Name="EyeTracking_ViveProEyeSettingButton" Click="EyeTracking_ViveProEyeSettingButton_Click"/>
                     </UniformGrid>
                 </GroupBox>
-                <GroupBox Header="Lip Tracking (Experimental/Prototype)">
+                <GroupBox Header="Facial Tracking">
                     <UniformGrid Columns="2">
-                        <Button Content="VIVE Lip Tracker" Name="LipTracking_ViveSettingButton" Click="LipTracking_ViveSettingButton_Click"/>
+                        <Button Content="VIVE Facial Tracker" Name="LipTracking_ViveSettingButton" Click="LipTracking_ViveSettingButton_Click"/>
                     </UniformGrid>
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_VMCMod}" Name="VMCModGroupBox">
