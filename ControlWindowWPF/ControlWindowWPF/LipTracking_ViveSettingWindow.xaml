@@ -31,7 +31,7 @@
                 </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="LipShape" Binding="{Binding LipShape}" MinWidth="160" IsReadOnly="True"/>
+                <DataGridTextColumn Header="LipShape" Binding="{Binding LipShape}" MinWidth="160" IsReadOnly="True" Foreground="Black"/>
                 <DataGridTemplateColumn Header="BlendShape" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

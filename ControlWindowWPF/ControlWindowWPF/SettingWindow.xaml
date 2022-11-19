@@ -101,7 +101,7 @@
                 <GroupBox Header="Eye Tracking">
                     <UniformGrid Columns="2">
                         <Button Content="Tobii Eye Tracker 4C" Name="EyeTracking_TobiiSettingButton" Click="EyeTracking_TobiiSettingButton_Click"/>
-                        <Button Content="VIVE Eye Tracker&#xa;Droolon F1" Name="EyeTracking_ViveProEyeSettingButton" Click="EyeTracking_ViveProEyeSettingButton_Click"/>
+                        <Button Content="VIVE Pro Eye/Focus 3&#xa;Droolon F1" Name="EyeTracking_ViveProEyeSettingButton" Click="EyeTracking_ViveProEyeSettingButton_Click"/>
                     </UniformGrid>
                 </GroupBox>
                 <GroupBox Header="Facial Tracking">
