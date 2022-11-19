@@ -71,18 +71,7 @@ namespace VirtualMotionCaptureControlPanel
                 Dispatcher.Invoke(() => BlendShapeKeys = ret.Keys);
             });
             BlendShapeKeys?.Insert(0, null);
-            await Globals.Client.SendCommandWaitAsync(new PipeCommands.GetViveLipTrackingBlendShape(), d =>
-            {
-                var ret = (PipeCommands.SetViveLipTrackingBlendShape)d;
-                Dispatcher.Invoke(() =>
-                {
-                    LipShapes = ret.LipShapes;
-                    foreach (var key in LipShapes)
-                    {
-                        BlendShapeItems.Add(new BlendShapeItem { LipShape = key, BlendShape = ret.LipShapesToBlendShapeMap.ContainsKey(key) ? ret.LipShapesToBlendShapeMap[key] : null, BlendShapeKeys = BlendShapeKeys });
-                    }
-                });
-            });
+            await GetViveLipTrackingBlendShape();
             await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetViveLipTrackingEnable(), d =>
             {
                 var data = (PipeCommands.SetViveLipTrackingEnable)d;
@@ -97,6 +86,22 @@ namespace VirtualMotionCaptureControlPanel
             KeysDataGrid.ItemsSource = BlendShapeItems;
         }
 
+        private async Task GetViveLipTrackingBlendShape()
+        {
+            await Globals.Client.SendCommandWaitAsync(new PipeCommands.GetViveLipTrackingBlendShape(), d =>
+            {
+                var ret = (PipeCommands.SetViveLipTrackingBlendShape)d;
+                Dispatcher.Invoke(() =>
+                {
+                    LipShapes = ret.LipShapes;
+                    foreach (var key in LipShapes)
+                    {
+                        BlendShapeItems.Add(new BlendShapeItem { LipShape = key, BlendShape = ret.LipShapesToBlendShapeMap.ContainsKey(key) ? ret.LipShapesToBlendShapeMap[key] : null, BlendShapeKeys = BlendShapeKeys });
+                    }
+                });
+            });
+        }
+
         private async void UseViveLipTrackerCheckBox_ValueChanged(object sender, RoutedEventArgs e)
         {
             if (IsSetting) return;
@@ -104,6 +109,37 @@ namespace VirtualMotionCaptureControlPanel
             {
                 enable = UseViveLipTrackerCheckBox.IsChecked.Value
             });
+            await Task.Delay(1000);
+            await GetViveLipTrackingBlendShape();
+        }
+
+        private void AutoDetectButton_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var item in BlendShapeItems)
+            {
+                if (item.BlendShape != null) continue;
+                item.BlendShape = FindBlendShape(item.LipShape);
+            }
+        }
+
+        private string FindBlendShape(string lipShape)
+        {
+            foreach (var blendShape in BlendShapeKeys)
+            {
+                if (blendShape == null) continue;
+                var lowerBlendShape = blendShape.ToLower();
+                var lowerLipShape = lipShape.ToLower();
+                if (lowerBlendShape == lowerLipShape)
+                {
+                    return blendShape;
+                }
+                else if (lowerBlendShape.Replace("_", "") == lowerLipShape.Replace("_", ""))
+                {
+                    return blendShape;
+                }
+
+            }
+            return null;
         }
     }
 }

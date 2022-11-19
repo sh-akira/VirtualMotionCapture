@@ -12,10 +12,13 @@
                 <CheckBox Content="{DynamicResource EyeTracking_ViveProEyeSettingWindow_UseEyelidMovementsCheckBox}" Name="UseViveLipTrackerCheckBox" Checked="UseViveLipTrackerCheckBox_ValueChanged" Unchecked="UseViveLipTrackerCheckBox_ValueChanged"/>
             </DockPanel>
         </GroupBox>
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Right">
-            <Button Content="{DynamicResource FaceControlKeyAddWindow_Register}" Width="100" Name="ApplyButton" Click="ApplyButton_Click"/>
-            <Button Content="{DynamicResource FaceControlKeyAddWindow_Cancel}" Width="100" Name="IgnoreButton" Click="IgnoreButton_Click"/>
-        </StackPanel>
+        <DockPanel DockPanel.Dock="Bottom" >
+            <Button Content="Auto Detect" Width="150" Name="AutoDetectButton" Click="AutoDetectButton_Click"/>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                <Button Content="{DynamicResource FaceControlKeyAddWindow_Register}" Width="100" Name="ApplyButton" Click="ApplyButton_Click"/>
+                <Button Content="{DynamicResource FaceControlKeyAddWindow_Cancel}" Width="100" Name="IgnoreButton" Click="IgnoreButton_Click"/>
+            </StackPanel>
+        </DockPanel>
         <DataGrid CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" SelectionMode="Single" Name="KeysDataGrid" AutoGenerateColumns="False">
             <DataGrid.Resources>
                 <Style TargetType="DataGridCell">
