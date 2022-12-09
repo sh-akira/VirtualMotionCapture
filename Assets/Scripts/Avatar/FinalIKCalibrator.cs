@@ -455,19 +455,33 @@ namespace VMC
             // Left Knee
             if (leftKneeTargetTransform != null)
             {
-                var leftLegBendGoalTarget = CreateTransform("LeftLegBendGoalTarget", true, leftKneeTargetTransform, vrik.references.leftCalf);
-                if (vrik.solver.leftLeg.bendGoal != null) GameObject.Destroy(vrik.solver.leftLeg.bendGoal);
-                vrik.solver.leftLeg.bendGoal = leftLegBendGoalTarget;
-                vrik.solver.leftLeg.bendGoalWeight = 1.0f;
+                //膝が内曲がりになる時があるので前方にオフセット
+                var leftCalfOffset = new GameObject("leftCalfOffset").transform;
+                leftCalfOffset.parent = vrik.references.leftCalf;
+                leftCalfOffset.position = vrik.references.leftCalf.position + currentModel.forward * 0.1f;
+
+                var leftLegBendGoalTarget = CreateTransform("LeftLegBendGoalTarget", true, leftKneeTargetTransform, leftCalfOffset);
+                if (vrik.solver.leftLeg.bendGoal != null) GameObject.Destroy(vrik.solver.leftLeg.bendGoal.gameObject);
+
+                var boneBendGoal = currentModel.gameObject.AddComponent<BoneBendGoal>();
+                boneBendGoal.SetVRIK(vrik);
+                boneBendGoal.SetBones("LeftLeg", vrik.references.leftThigh, leftCalfOffset, vrik.references.leftFoot, leftLegBendGoalTarget);
             }
 
             // Right Knee
             if (rightKneeTargetTransform != null)
             {
-                var rightLegBendGoalTarget = CreateTransform("RightLegBendGoalTarget", true, rightKneeTargetTransform, vrik.references.rightCalf);
-                if (vrik.solver.rightLeg.bendGoal != null) GameObject.Destroy(vrik.solver.rightLeg.bendGoal);
-                vrik.solver.rightLeg.bendGoal = rightLegBendGoalTarget;
-                vrik.solver.rightLeg.bendGoalWeight = 1.0f;
+                //膝が内曲がりになる時があるので前方にオフセット
+                var rightCalfOffset = new GameObject("rightCalfOffset").transform;
+                rightCalfOffset.parent = vrik.references.rightCalf;
+                rightCalfOffset.position = vrik.references.rightCalf.position + currentModel.forward * 0.1f;
+
+                var rightLegBendGoalTarget = CreateTransform("RightLegBendGoalTarget", true, rightKneeTargetTransform, rightCalfOffset);
+                if (vrik.solver.rightLeg.bendGoal != null) GameObject.Destroy(vrik.solver.rightLeg.bendGoal.gameObject);
+
+                var boneBendGoal = currentModel.gameObject.AddComponent<BoneBendGoal>();
+                boneBendGoal.SetVRIK(vrik);
+                boneBendGoal.SetBones("RightLeg", vrik.references.rightThigh, rightCalfOffset, vrik.references.rightFoot, rightLegBendGoalTarget);
             }
 
             //TrackingWatcherにWeight設定用アクションを設定
