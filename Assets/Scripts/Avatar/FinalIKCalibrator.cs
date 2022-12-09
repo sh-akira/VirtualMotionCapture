@@ -433,7 +433,8 @@ namespace VMC
             if (leftElbowTargetTransform != null)
             {
                 var leftArmBendGoalTarget = CreateTransform("LeftArmBendGoalTarget", true, leftElbowTargetTransform, vrik.references.leftForearm);
-                if (vrik.solver.leftArm.bendGoal != null) GameObject.Destroy(vrik.solver.leftArm.bendGoal);
+                leftArmBendGoalTarget.position += -currentModel.forward * 0.1f;
+                if (vrik.solver.leftArm.bendGoal != null) GameObject.Destroy(vrik.solver.leftArm.bendGoal.gameObject);
                 vrik.solver.leftArm.bendGoal = leftArmBendGoalTarget;
                 vrik.solver.leftArm.bendGoalWeight = 1.0f;
             }
@@ -442,7 +443,8 @@ namespace VMC
             if (rightElbowTargetTransform != null)
             {
                 var rightArmBendGoalTarget = CreateTransform("RightArmBendGoalTarget", true, rightElbowTargetTransform, vrik.references.rightForearm);
-                if (vrik.solver.rightArm.bendGoal != null) GameObject.Destroy(vrik.solver.rightArm.bendGoal);
+                rightArmBendGoalTarget.position += -currentModel.forward * 0.1f;
+                if (vrik.solver.rightArm.bendGoal != null) GameObject.Destroy(vrik.solver.rightArm.bendGoal.gameObject);
                 vrik.solver.rightArm.bendGoal = rightArmBendGoalTarget;
                 vrik.solver.rightArm.bendGoalWeight = 1.0f;
             }
