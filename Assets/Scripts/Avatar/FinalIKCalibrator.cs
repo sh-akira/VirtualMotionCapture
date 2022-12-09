@@ -87,10 +87,8 @@ namespace VMC
 
             var headTarget = HMDTrackingPoint;
 
-            var leftHandTarget = LeftHandTrackingPoint;
-            var rightHandTarget = RightHandTrackingPoint;
-            var leftHandTargetTransform = leftHandTarget.TargetTransform;
-            var rightHandTargetTransform = rightHandTarget.TargetTransform;
+            var leftHandTargetTransform = LeftHandTrackingPoint.TargetTransform;
+            var rightHandTargetTransform = RightHandTrackingPoint.TargetTransform;
 
             //IKの手のターゲットは手首なのでトラッカーに手首までのオフセットを設定
 
@@ -278,8 +276,9 @@ namespace VMC
 
             // Head
             //頭の位置は1cm前後後ろに下げる
+            var headTargetTransform = headTarget.TargetTransform;
             var headOffsetPosition = new Vector3(vrik.references.head.position.x, vrik.references.head.position.y, vrik.references.head.position.z - (realHeight * 0.01f * offsetScale));
-            var headOffset = CreateTransform("HeadIKTarget", true, headTarget.TargetTransform, headOffsetPosition, vrik.references.head.rotation);
+            var headOffset = CreateTransform("HeadIKTarget", true, headTargetTransform, headOffsetPosition, vrik.references.head.rotation);
             vrik.solver.spine.headTarget = headOffset;
             vrik.solver.spine.positionWeight = 1f;
             vrik.solver.spine.rotationWeight = 1f;
@@ -424,6 +423,48 @@ namespace VMC
                 bendGoalTarget.localPosition = new Vector3(0, 0.4f, 2); // 正面2m 高さ40cm
                 bendGoalTarget.localRotation = Quaternion.identity;
                 vrik.solver.rightLeg.bendGoal = bendGoalTarget;
+                vrik.solver.rightLeg.bendGoalWeight = 1.0f;
+            }
+
+            var leftElbowTargetTransform = LeftElbowTrackingPoint?.TargetTransform;
+            var rightElbowTargetTransform = RightElbowTrackingPoint?.TargetTransform;
+
+            // Left Elbow
+            if (leftElbowTargetTransform != null)
+            {
+                var leftArmBendGoalTarget = CreateTransform("LeftArmBendGoalTarget", true, leftElbowTargetTransform, vrik.references.leftForearm);
+                if (vrik.solver.leftArm.bendGoal != null) GameObject.Destroy(vrik.solver.leftArm.bendGoal);
+                vrik.solver.leftArm.bendGoal = leftArmBendGoalTarget;
+                vrik.solver.leftArm.bendGoalWeight = 1.0f;
+            }
+
+            // Right Elbow
+            if (rightElbowTargetTransform != null)
+            {
+                var rightArmBendGoalTarget = CreateTransform("RightArmBendGoalTarget", true, rightElbowTargetTransform, vrik.references.rightForearm);
+                if (vrik.solver.rightArm.bendGoal != null) GameObject.Destroy(vrik.solver.rightArm.bendGoal);
+                vrik.solver.rightArm.bendGoal = rightArmBendGoalTarget;
+                vrik.solver.rightArm.bendGoalWeight = 1.0f;
+            }
+
+            var leftKneeTargetTransform = LeftKneeTrackingPoint?.TargetTransform;
+            var rightKneeTargetTransform = RightKneeTrackingPoint?.TargetTransform;
+
+            // Left Knee
+            if (leftKneeTargetTransform != null)
+            {
+                var leftLegBendGoalTarget = CreateTransform("LeftLegBendGoalTarget", true, leftKneeTargetTransform, vrik.references.leftCalf);
+                if (vrik.solver.leftLeg.bendGoal != null) GameObject.Destroy(vrik.solver.leftLeg.bendGoal);
+                vrik.solver.leftLeg.bendGoal = leftLegBendGoalTarget;
+                vrik.solver.leftLeg.bendGoalWeight = 1.0f;
+            }
+
+            // Right Knee
+            if (rightKneeTargetTransform != null)
+            {
+                var rightLegBendGoalTarget = CreateTransform("RightLegBendGoalTarget", true, rightKneeTargetTransform, vrik.references.rightCalf);
+                if (vrik.solver.rightLeg.bendGoal != null) GameObject.Destroy(vrik.solver.rightLeg.bendGoal);
+                vrik.solver.rightLeg.bendGoal = rightLegBendGoalTarget;
                 vrik.solver.rightLeg.bendGoalWeight = 1.0f;
             }
 
