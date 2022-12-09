@@ -427,6 +427,50 @@ namespace VMC
                 vrik.solver.rightLeg.bendGoalWeight = 1.0f;
             }
 
+            //TrackingWatcherにWeight設定用アクションを設定
+            SetTrackingWatcher(HMDTrackingPoint, weight =>
+            {
+                //Do noting
+            });
+            SetTrackingWatcher(LeftHandTrackingPoint, weight =>
+            {
+                vrik.solver.leftArm.positionWeight = weight;
+                vrik.solver.leftArm.rotationWeight = weight;
+            });
+            SetTrackingWatcher(RightHandTrackingPoint, weight =>
+            {
+                vrik.solver.rightArm.positionWeight = weight;
+                vrik.solver.rightArm.rotationWeight = weight;
+            });
+            SetTrackingWatcher(PelvisTrackingPoint, weight =>
+            {
+                vrik.solver.spine.pelvisPositionWeight = weight;
+                vrik.solver.spine.pelvisRotationWeight = weight;
+            });
+            SetTrackingWatcher(LeftFootTrackingPoint, weight =>
+            {
+                //Do noting
+            });
+            SetTrackingWatcher(RightFootTrackingPoint, weight =>
+            {
+                //Do noting
+            });
+            SetTrackingWatcher(LeftElbowTrackingPoint, weight =>
+            {
+                vrik.solver.leftArm.bendGoalWeight = weight;
+            });
+            SetTrackingWatcher(RightElbowTrackingPoint, weight =>
+            {
+                vrik.solver.rightArm.bendGoalWeight = weight;
+            });
+            SetTrackingWatcher(LeftKneeTrackingPoint, weight =>
+            {
+                vrik.solver.leftLeg.bendGoalWeight = weight;
+            });
+            SetTrackingWatcher(RightKneeTrackingPoint, weight =>
+            {
+                vrik.solver.rightLeg.bendGoalWeight = weight;
+            });
             // 腰トラッカーか両足トラッカーがある場合VRIKRootControllerを使用しないと
             // (特に)180度後ろを向いたときに正しい膝の方向計算ができません
             if (pelvisTargetTransform != null || (leftFootTargetTransform != null && rightFootTargetTransform != null))
@@ -852,6 +896,12 @@ namespace VMC
             //DebugSphere(vrik.references.rightFoot);
 
             yield return null;
+        }
+
+        private static void SetTrackingWatcher(TrackingPoint trackingPoint, Action<float> action)
+        {
+            if (trackingPoint == null) return;
+            trackingPoint.TargetTransform.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight(action);
         }
 
         private static Transform CreateTransform(string name, bool AddDestroy, Transform parent)
