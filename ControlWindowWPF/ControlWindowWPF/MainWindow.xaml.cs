@@ -342,6 +342,12 @@ namespace VirtualMotionCaptureControlPanel
                     var d = (PipeCommands.LoadClosingTime)e.Data;
                     LoadSlider(d.time, 100.0f, ClosingTimeSlider, ClosingTimeSlider_ValueChanged);
                 }
+                else if (e.CommandType == typeof(PipeCommands.SetAutoEyeMovementConfig))
+                {
+                    var d = (PipeCommands.SetAutoEyeMovementConfig)e.Data;
+                    SilentChangeChecked(EyeFluctuationCheckBox, d.FluctuationEnable, EyeFluctuationCheckBox_Checked, EyeFluctuationCheckBox_Checked);
+                    SilentChangeChecked(AutoLookCameraCheckBox, d.AutoLookCameraEnable, EyeFluctuationCheckBox_Checked, EyeFluctuationCheckBox_Checked);
+                }
                 else if (e.CommandType == typeof(PipeCommands.SetLightAngle))
                 {
                     var d = (PipeCommands.SetLightAngle)e.Data;
@@ -781,6 +787,12 @@ namespace VirtualMotionCaptureControlPanel
         private async void ClosingTimeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             await SliderValueChanged(sender, ClosingTimeTextBlock, 100.0f, new PipeCommands.SetClosingTime(), IsSliderSetting);
+        }
+
+
+        private async void EyeFluctuationCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SetAutoEyeMovementConfig {  FluctuationEnable = EyeFluctuationCheckBox.IsChecked.Value, AutoLookCameraEnable = AutoLookCameraCheckBox.IsChecked.Value });
         }
 
 #endregion

@@ -70,6 +70,8 @@ namespace VMC
 
         public PostProcessingManager postProcessingManager;
 
+        public AlwaysLookCameraScript alwaysLookCameraScript;
+
         private uint defaultWindowStyle;
         private uint defaultExWindowStyle;
 
@@ -382,6 +384,19 @@ namespace VMC
                 {
                     var d = (PipeCommands.SetDefaultFace)e.Data;
                     SetDefaultFace(d.face);
+                }
+                else if (e.CommandType == typeof(PipeCommands.SetAutoEyeMovementConfig))
+                {
+                    var d = (PipeCommands.SetAutoEyeMovementConfig)e.Data;
+                    Settings.Current.FluctuationEnable = d.FluctuationEnable;
+                    Settings.Current.AutoLookCameraEnable = d.AutoLookCameraEnable;
+
+                    SetAlwaysLookCamera();
+                }
+                else if (e.CommandType == typeof(PipeCommands.GetAutoEyeMovementConfig))
+                {
+                    var d = (PipeCommands.GetAutoEyeMovementConfig)e.Data;
+                    LoadAlwaysLookCamera();
                 }
                 else if (e.CommandType == typeof(PipeCommands.LoadSettings))
                 {
@@ -1032,6 +1047,20 @@ namespace VMC
         private void SetAdvancedGraphicsOption()
         {
             postProcessingManager.Apply(Settings.Current);
+        }
+
+        private async void LoadAlwaysLookCamera()
+        {
+            SetAlwaysLookCamera();
+            await server.SendCommandAsync(new PipeCommands.SetAutoEyeMovementConfig
+            {
+                FluctuationEnable = Settings.Current.FluctuationEnable,
+                AutoLookCameraEnable = Settings.Current.AutoLookCameraEnable,
+            });
+        }
+        private void SetAlwaysLookCamera()
+        {
+            alwaysLookCameraScript.Apply(Settings.Current);
         }
 
         private bool isFirstTimeExecute = true;
@@ -2258,6 +2287,29 @@ namespace VMC
                     case Functions.ShowPhotoWindow:
                         server?.SendCommandAsync(new PipeCommands.ShowPhotoWindow { });
                         break;
+                    case Functions.FixedGazeControlCamera:
+                        alwaysLookCameraScript.ManualOperation(AlwaysLookCameraScript.FixedGaze.Camera);
+                        break;
+                    case Functions.FixedGazeControlAhead:
+                        alwaysLookCameraScript.ManualOperation(AlwaysLookCameraScript.FixedGaze.Ahead);
+                        break;
+                    case Functions.FixedGazeControlFront:
+                        alwaysLookCameraScript.ManualOperation(AlwaysLookCameraScript.FixedGaze.Front);
+                        break;
+                    case Functions.FixedGazeControlOff:
+                        alwaysLookCameraScript.ManualOperation(AlwaysLookCameraScript.FixedGaze.Off);
+                        break;
+                    case Functions.AutoLookCamerOn:
+                        Settings.Current.AutoLookCameraEnable = true;
+                        LoadAlwaysLookCamera();
+                        break;
+                    case Functions.AutoLookCamerOff:
+                        Settings.Current.AutoLookCameraEnable = false;
+                        LoadAlwaysLookCamera();
+                        break;
+                    default:
+                        Debug.LogError("Unimplemented functions!");
+                        break;
                 }
             }
         }
@@ -2795,6 +2847,7 @@ namespace VMC
             SetExternalBonesReceiverEnable(Settings.Current.ExternalBonesReceiverEnable);
 
             LoadAdvancedGraphicsOption();
+            LoadAlwaysLookCamera();
 
             AdditionalSettingAction?.Invoke(null);
 

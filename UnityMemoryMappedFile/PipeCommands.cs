@@ -619,6 +619,12 @@ namespace UnityMemoryMappedFile
         public class ShowCalibrationWindow { }
         public class ShowPhotoWindow { }
 
+        public class GetAutoEyeMovementConfig { }
+        public class SetAutoEyeMovementConfig
+        {
+            public bool FluctuationEnable { get; set; }
+            public bool AutoLookCameraEnable { get; set; }
+        }
     }
 
     public class ModItem
@@ -1327,6 +1333,12 @@ namespace UnityMemoryMappedFile
         PauseTracking = 10,
         ShowCalibrationWindow = 11,
         ShowPhotoWindow = 12,
+        FixedGazeControlCamera = 13,
+        FixedGazeControlAhead = 14,
+        FixedGazeControlFront = 15,
+        FixedGazeControlOff = 16,
+        AutoLookCamerOn = 17,
+        AutoLookCamerOff = 18,
     }
 
     public enum Hands

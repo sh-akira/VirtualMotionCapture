@@ -463,6 +463,12 @@ namespace VMC
         [OptionalField]
         public bool TurnOffAmbientLight;
 
+        [OptionalField]
+        public bool FluctuationEnable;
+        [OptionalField]
+        public bool AutoLookCameraEnable;
+
+
         //初期値
         [OnDeserializing()]
         internal void OnDeserializingMethod(StreamingContext context)
@@ -611,6 +617,8 @@ namespace VMC
 
             TurnOffAmbientLight = false;
             ExternalBonesReceiverEnable = false;
+            FluctuationEnable = true;
+            AutoLookCameraEnable = false;
         }
     }
 }

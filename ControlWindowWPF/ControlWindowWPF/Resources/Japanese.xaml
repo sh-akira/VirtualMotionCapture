@@ -104,7 +104,9 @@
     <system:String x:Key="MainWindow_TimeToClose">閉じ</system:String>
     <system:String x:Key="MainWindow_TimeToOpen">開き</system:String>
     <system:String x:Key="MainWindow_ClosedTime">閉じたままの時間(秒)</system:String>
-    <system:String x:Key="MainWindow_Face_ToolTip">表情制御</system:String>
+	<system:String x:Key="MainWindow_EyeFluctuation">目の揺れ</system:String>
+	<system:String x:Key="MainWindow_AutoLookCamera">自動カメラ目線</system:String>
+	<system:String x:Key="MainWindow_Face_ToolTip">表情制御</system:String>
     <system:String x:Key="MainWindow_AutoBlink_ToolTip">自動でまばたきする機能を有効にします</system:String>
     <system:String x:Key="MainWindow_DefaultFace_ToolTip">デフォルトの表情をNEUTRALから別の表情に置き換えます</system:String>
     <system:String x:Key="MainWindow_MinTime_ToolTip">次にまばたきが発生するまでの最小秒数を指定します。最短から最長までの間の時間でランダムにまばたきします</system:String>
@@ -118,8 +120,9 @@
     <system:String x:Key="MainWindow_LightAngle">照明角度</system:String>
     <system:String x:Key="MainWindow_LightVerticalDirection">上下</system:String>
     <system:String x:Key="MainWindow_LightHorizontalDirection">回転</system:String>
+	<system:String x:Key="MainWindow_AdvancedGraphicsOption">高度な画質設定(ポストプロセッシング)</system:String>
 
-    <system:String x:Key="MainWindow_ErrorCalibration">VRMモデルが読み込まれていません。先に読み込んでください。</system:String>
+	<system:String x:Key="MainWindow_ErrorCalibration">VRMモデルが読み込まれていません。先に読み込んでください。</system:String>
 
 
     <!-- CalibrationWindow -->
@@ -413,8 +416,14 @@
     <system:String x:Key="Functions_PauseTracking">トラッキング停止切り替え</system:String>
     <system:String x:Key="Functions_ShowCalibrationWindow">キャリブレーションウィンドウの表示</system:String>
     <system:String x:Key="Functions_ShowPhotoWindow">写真撮影ウィンドウの表示</system:String>
-    
-    <!-- PhotoWindow -->
+	<system:String x:Key="Functions_FixedGazeControlCamera">固定視線制御: カメラ</system:String>
+	<system:String x:Key="Functions_FixedGazeControlAhead">固定視線制御: 前方</system:String>
+	<system:String x:Key="Functions_FixedGazeControlFront">固定視線制御: 正面</system:String>
+	<system:String x:Key="Functions_FixedGazeControlOff">固定視線制御: オフ</system:String>
+	<system:String x:Key="Functions_AutoLookCamerOn">自動カメラ目線: オン</system:String>
+	<system:String x:Key="Functions_AutoLookCamerOff">自動カメラ目線: オフ</system:String>
+	
+	<!-- PhotoWindow -->
     <system:String x:Key="PhotoWindowTitle">写真撮影</system:String>
 
     <system:String x:Key="PhotoWindow_Photo">写真撮影</system:String>

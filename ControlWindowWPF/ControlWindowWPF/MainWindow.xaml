@@ -146,6 +146,7 @@
 								<RowDefinition />
 								<RowDefinition />
 								<RowDefinition />
+								<RowDefinition />
 							</Grid.RowDefinitions>
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto"/>
@@ -173,6 +174,9 @@
 							<TextBlock Text="{DynamicResource MainWindow_ClosedTime}" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Right"/>
 							<Slider Name="ClosingTimeSlider" Grid.Row="3" Grid.Column="4" Minimum="0" Value="3" Maximum="200" ValueChanged="ClosingTimeSlider_ValueChanged" SmallChange="1" ToolTip="{DynamicResource MainWindow_ClosedTime_ToolTip}"/>
 							<TextBlock Text="0.10" Name="ClosingTimeTextBlock" Grid.Row="3" Grid.Column="5" TextAlignment="Center"/>
+
+							<CheckBox Content="{DynamicResource MainWindow_EyeFluctuation}" Margin="0" Name="EyeFluctuationCheckBox" Checked=" EyeFluctuationCheckBox_Checked" Unchecked=" EyeFluctuationCheckBox_Checked"  Grid.Row="4" Grid.Column="1"/>
+							<CheckBox Content="{DynamicResource MainWindow_AutoLookCamera}" Margin="0" Name="AutoLookCameraCheckBox" Checked=" EyeFluctuationCheckBox_Checked" Unchecked=" EyeFluctuationCheckBox_Checked"  Grid.Row="4" Grid.Column="4"/>
 						</Grid>
 					</StackPanel>
 				</TabItem>
@@ -191,7 +195,7 @@
 								</DockPanel>
 							</StackPanel>
 						</GroupBox>
-						<Button Content="Advanced Graphics Option" Name="GraphicsOptionButton" Click="GraphicsOptionButton_Click" Height="AUto"/>
+						<Button Content="{DynamicResource MainWindow_AdvancedGraphicsOption}" Name="GraphicsOptionButton" Click="GraphicsOptionButton_Click" Height="AUto"/>
 					</DockPanel>
 				</TabItem>
 				<TabItem Header="ヘルプ">

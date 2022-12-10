@@ -105,6 +105,8 @@
     <system:String x:Key="MainWindow_TimeToClose">To close</system:String>
     <system:String x:Key="MainWindow_TimeToOpen">To open</system:String>
     <system:String x:Key="MainWindow_ClosedTime">Closed time (sec)</system:String>
+    <system:String x:Key="MainWindow_EyeFluctuation">Eye Fluctuation</system:String>
+    <system:String x:Key="MainWindow_AutoLookCamera">Auto Look Camera</system:String>
     <system:String x:Key="MainWindow_Face_ToolTip">Facial expression control</system:String>
     <system:String x:Key="MainWindow_AutoBlink_ToolTip">Enable automatic blinking function</system:String>
     <system:String x:Key="MainWindow_DefaultFace_ToolTip">Replace the default expression from NEUTRAL with another expression</system:String>
@@ -119,6 +121,7 @@
     <system:String x:Key="MainWindow_LightAngle">Light Angle</system:String>
     <system:String x:Key="MainWindow_LightVerticalDirection">Vertical</system:String>
     <system:String x:Key="MainWindow_LightHorizontalDirection">Horizontal</system:String>
+    <system:String x:Key="MainWindow_AdvancedGraphicsOption">Advanced Graphics Option</system:String>
 
     <system:String x:Key="MainWindow_ErrorCalibration">VRM model has not been loaded. Please import first.</system:String>
 
@@ -412,7 +415,13 @@
     <system:String x:Key="Functions_PauseTracking">Pause Tracking</system:String>
     <system:String x:Key="Functions_ShowCalibrationWindow">Show Calibration Window</system:String>
     <system:String x:Key="Functions_ShowPhotoWindow">Show Photo Window</system:String>
-    
+    <system:String x:Key="Functions_FixedGazeControlCamera">Fixed Gaze Control: Camera</system:String>
+    <system:String x:Key="Functions_FixedGazeControlAhead">Fixed Gaze Control: Ahead</system:String>
+    <system:String x:Key="Functions_FixedGazeControlFront">Fixed Gaze Control: Front</system:String>
+    <system:String x:Key="Functions_FixedGazeControlOff">Fixed Gaze Control: Off</system:String>
+	<system:String x:Key="Functions_AutoLookCamerOn">Auto Look Camera: On</system:String>
+    <system:String x:Key="Functions_AutoLookCamerOff">Auto Look Camera: Off</system:String>
+	
     <!-- PhotoWindow -->
     <system:String x:Key="PhotoWindowTitle">Take Photo</system:String>
 

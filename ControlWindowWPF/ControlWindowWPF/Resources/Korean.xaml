@@ -104,7 +104,9 @@
     <system:String x:Key="MainWindow_TimeToClose">감기</system:String>
     <system:String x:Key="MainWindow_TimeToOpen">뜨기</system:String>
     <system:String x:Key="MainWindow_ClosedTime">감은상태의 시간(초)</system:String>
-    <system:String x:Key="MainWindow_Face_ToolTip">표정제어</system:String>
+	<system:String x:Key="MainWindow_EyeFluctuation">Eye Fluctuation</system:String>
+	<system:String x:Key="MainWindow_AutoLookCamera">Auto Look Camera</system:String>
+	<system:String x:Key="MainWindow_Face_ToolTip">표정제어</system:String>
     <system:String x:Key="MainWindow_AutoBlink_ToolTip">자동으로 눈을 깜빡이는 기능을 활성화합니다</system:String>
     <system:String x:Key="MainWindow_DefaultFace_ToolTip">기본표정을 NEUTRAL에서 다른 표정으로 바꿉니다</system:String>
     <system:String x:Key="MainWindow_MinTime_ToolTip">다음으로 눈을 깜빡일 때까지의 최단시간(단위:초)을 지정합니다. 최단시간부터 최장시간까지의 시간 사이에서 랜덤으로 깜빡입니다</system:String>
@@ -118,8 +120,9 @@
     <system:String x:Key="MainWindow_LightAngle">조명각도</system:String>
     <system:String x:Key="MainWindow_LightVerticalDirection">상하</system:String>
     <system:String x:Key="MainWindow_LightHorizontalDirection">회전</system:String>
+	<system:String x:Key="MainWindow_AdvancedGraphicsOption">Advanced Graphics Option</system:String>
 
-    <system:String x:Key="MainWindow_ErrorCalibration">VRM모델을 로드하지 않았습니다. 모델을 먼저 불러와주세요.</system:String>
+	<system:String x:Key="MainWindow_ErrorCalibration">VRM모델을 로드하지 않았습니다. 모델을 먼저 불러와주세요.</system:String>
 
 
     <!-- CalibrationWindow -->
@@ -413,8 +416,14 @@
     <system:String x:Key="Functions_PauseTracking">Pause Tracking</system:String>
     <system:String x:Key="Functions_ShowCalibrationWindow">Show Calibration Window</system:String>
     <system:String x:Key="Functions_ShowPhotoWindow">Show Photo Window</system:String>
-    
-    <!-- PhotoWindow -->
+	<system:String x:Key="Functions_FixedGazeControlCamera">Fixed Gaze Control: Camera</system:String>
+	<system:String x:Key="Functions_FixedGazeControlAhead">Fixed Gaze Control: Ahead</system:String>
+	<system:String x:Key="Functions_FixedGazeControlFront">Fixed Gaze Control: Front</system:String>
+	<system:String x:Key="Functions_FixedGazeControlOff">Fixed Gaze Control: Off</system:String>
+	<system:String x:Key="Functions_AutoLookCamerOn">Auto Look Camera: On</system:String>
+	<system:String x:Key="Functions_AutoLookCamerOff">Auto Look Camera: Off</system:String>
+	
+	<!-- PhotoWindow -->
     <system:String x:Key="PhotoWindowTitle">사진촬영</system:String>
 
     <system:String x:Key="PhotoWindow_Photo">사진촬영</system:String>

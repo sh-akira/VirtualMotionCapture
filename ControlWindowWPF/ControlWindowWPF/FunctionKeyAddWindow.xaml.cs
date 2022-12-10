@@ -36,6 +36,12 @@ namespace VirtualMotionCaptureControlPanel
             LanguageSelector.Get("Functions_PauseTracking"),
             LanguageSelector.Get("Functions_ShowCalibrationWindow"),
             LanguageSelector.Get("Functions_ShowPhotoWindow"),
+            LanguageSelector.Get("Functions_FixedGazeControlCamera"),
+            LanguageSelector.Get("Functions_FixedGazeControlAhead"),
+            LanguageSelector.Get("Functions_FixedGazeControlFront"),
+            LanguageSelector.Get("Functions_FixedGazeControlOff"),
+            LanguageSelector.Get("Functions_AutoLookCamerOn"),
+            LanguageSelector.Get("Functions_AutoLookCamerOff"),
         };
         public FunctionKeyAddWindow()
         {

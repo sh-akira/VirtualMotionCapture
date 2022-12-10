@@ -471,6 +471,23 @@ namespace VMC
                     }
                     //受信と更新のタイミングは切り離した
                 }
+                //ショートカット操作 V3.1
+                else if (message.address == "/VMC/Ext/Set/Shortcut" && (message.values[0] is string))
+                {
+                    string shortcut = (string)message.values[0];
+
+                    if (shortcut.StartsWith("Functions.")) {
+                        Functions func;
+                        if (Enum.TryParse<Functions>(shortcut.Replace("Functions.", ""), out func)) {
+                            KeyAction action = new KeyAction
+                            {
+                                FunctionAction = true,
+                                Function = func,
+                            };
+                            window.DoKeyAction(action);
+                        }
+                    }
+                }
             }
         }
 
