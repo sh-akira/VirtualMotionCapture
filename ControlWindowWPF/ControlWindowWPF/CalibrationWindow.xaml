@@ -25,13 +25,39 @@
                         <Setter Property="Background" Value="Transparent"/>
                     </Style>
                 </StackPanel.Resources>
-                <GroupBox Header="標準モード(新しいキャリブレーション)" FontSize="14">
-                    <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateDefaultRadioButton}" Name="CalibrateDefaultRadioButton" IsChecked="True" Padding="5" GroupName="Calibration"/>
-                </GroupBox>
-                <GroupBox Header="互換モード(古いキャリブレーション)" FontSize="14">
+                <GroupBox Header="{DynamicResource CalibrationWindow_Status_NewCalibrationGroup}" FontSize="14">
                     <StackPanel>
-                        <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateFixedHandRadioButton}" Name="CalibrateFixedHandRadioButton" Padding="5" GroupName="Calibration" IsEnabled="False"/>
-                        <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton}" Name="CalibrateFixedHandWithGroundRadioButton" Padding="5" GroupName="Calibration" IsEnabled="False"/>
+                        <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateIposeRadioButton}" Name="CalibrateIposeRadioButton" IsChecked="True" Padding="5" GroupName="Calibration" Checked="CalibrateRadioButton_Checked"/>
+                        <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateTposeRadioButton}" Name="CalibrateTposeRadioButton" IsChecked="False" Padding="5" GroupName="Calibration" Checked="CalibrateRadioButton_Checked"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="{DynamicResource CalibrationWindow_Status_OldCalibrationGroup}" FontSize="14">
+                    <GroupBox.Style>
+                        <Style TargetType="GroupBox">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="GroupBox">
+                                        <Grid Margin="4,2,4,2">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
+                                            <Border Grid.Row="0" BorderThickness="1" CornerRadius="5,0,0,0" Background="#DDDDEE" BorderBrush="#DDDDEE" TextElement.FontWeight="Bold">
+                                                <ContentPresenter Margin="4,0,4,0" ContentSource="Header" RecognizesAccessKey="True" VerticalAlignment="Center"/>
+                                            </Border>
+
+                                            <Border Grid.Row="1" BorderThickness="1,0,1,1" CornerRadius="0,0,5,0" BorderBrush="#DDDDEE">
+                                                <ContentPresenter Margin="4,1,4,1" />
+                                            </Border>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupBox.Style>
+                    <StackPanel>
+                        <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateFixedHandRadioButton}" Name="CalibrateFixedHandRadioButton" Padding="5" GroupName="Calibration" Checked="CalibrateRadioButton_Checked"/>
+                        <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton}" Name="CalibrateFixedHandWithGroundRadioButton" Padding="5" GroupName="Calibration" Checked="CalibrateRadioButton_Checked"/>
                     </StackPanel>
                 </GroupBox>
             </StackPanel>

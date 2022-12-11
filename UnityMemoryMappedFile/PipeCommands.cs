@@ -69,11 +69,17 @@ namespace UnityMemoryMappedFile
             public CalibrateType CalibrateType { get; set; }
         }
 
+        public class SelectCalibrateMode
+        {
+            public CalibrateType CalibrateType { get; set; }
+        }
+
         public enum CalibrateType
         {
-            Default = 0,
-            FixedHand = 1,
+            FixedHand = 3,
             FixedHandWithGround = 2,
+            Ipose = 0,
+            Tpose = 1,
         }
 
         public class EndCalibrate { }

@@ -132,7 +132,10 @@
     <system:String x:Key="CalibrationWindow_CalibrationButton_ToolTip">Start Calibration</system:String>
     <system:String x:Key="CalibrationWindow_Status_Calibrating">Getting</system:String>
     <system:String x:Key="CalibrationWindow_Status_Finish">Done</system:String>
-    <system:String x:Key="CalibrationWindow_Status_CalibrateDefaultRadioButton">Normal mode(expressing body movement as much as possible)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_NewCalibrationGroup">Standard mode (new calibration)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_OldCalibrationGroup">Compatibility mode (old calibration)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrateIposeRadioButton">I-pose</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrateTposeRadioButton">T-pose</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandRadioButton">MR compositing mode (correct hand position and no leg bending)</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton">MR compositing mode (correct hand position and bend leg to the ground)</system:String>
 

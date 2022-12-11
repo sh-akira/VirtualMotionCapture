@@ -131,7 +131,10 @@
     <system:String x:Key="CalibrationWindow_CalibrationButton_ToolTip">キャリブレーションを開始します</system:String>
     <system:String x:Key="CalibrationWindow_Status_Calibrating">取得中</system:String>
     <system:String x:Key="CalibrationWindow_Status_Finish">完了</system:String>
-    <system:String x:Key="CalibrationWindow_Status_CalibrateDefaultRadioButton">通常モード(体の動きをなるべく再現する)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_NewCalibrationGroup">標準モード(新しいキャリブレーション)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_OldCalibrationGroup">互換モード(古いキャリブレーション)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrateIposeRadioButton">Iポーズ(通常はこちらをお使いください)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrateTposeRadioButton">Tポーズ(手の高さやスケールを微調整したい場合はこちら)</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandRadioButton">MR合成モード(手の位置をなるべく合わせて足は真っ直ぐ伸ばす)</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton">MR合成モード(手の位置をなるべく合わせて足は地面に合わせて曲げる)</system:String>
 

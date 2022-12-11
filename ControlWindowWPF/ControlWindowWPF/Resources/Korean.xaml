@@ -131,7 +131,10 @@
     <system:String x:Key="CalibrationWindow_CalibrationButton_ToolTip">캘리브레이션을 개시합니다</system:String>
     <system:String x:Key="CalibrationWindow_Status_Calibrating">보정중</system:String>
     <system:String x:Key="CalibrationWindow_Status_Finish">완료</system:String>
-    <system:String x:Key="CalibrationWindow_Status_CalibrateDefaultRadioButton">일반모드(몸의 움직임을 최대한 재현함)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_NewCalibrationGroup">Standard mode (new calibration)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_OldCalibrationGroup">Compatibility mode (old calibration)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrateIposeRadioButton">I-pose</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrateTposeRadioButton">T-pose</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandRadioButton">MR합성모드(손의 위치를 최대한 맞추고 다리는 쭉 뻗음)</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton">MR합성모드(손의 위치를 최대한 맞추고 다리는 바닥에 맞추어 구부림)</system:String>
 

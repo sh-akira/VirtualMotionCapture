@@ -132,7 +132,10 @@
     <system:String x:Key="CalibrationWindow_CalibrationButton_ToolTip">开始校准模型</system:String>
     <system:String x:Key="CalibrationWindow_Status_Calibrating">校准中</system:String>
     <system:String x:Key="CalibrationWindow_Status_Finish">校准完成</system:String>
-    <system:String x:Key="CalibrationWindow_Status_CalibrateDefaultRadioButton">普通模式（尽可能地和身体动作一致）</system:String>
+    <system:String x:Key="CalibrationWindow_Status_NewCalibrationGroup">Standard mode (new calibration)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_OldCalibrationGroup">Compatibility mode (old calibration)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrateIposeRadioButton">I-pose</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrateTposeRadioButton">T-pose</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandRadioButton">混合现实模式（正确的手位置但是没有腿部校准）</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton">混合现实模式（正确的手位置并且校准腿部到地面）</system:String>
 
