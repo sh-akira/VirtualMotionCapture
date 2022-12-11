@@ -154,6 +154,7 @@ namespace VMC
 
         private void ModelLoaded(GameObject currentModel)
         {
+            if (currentModel == null) return;
             CurrentModel = currentModel;
             animator = currentModel.GetComponent<Animator>();
 
