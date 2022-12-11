@@ -1,12 +1,8 @@
 ﻿//gpsnmeajp
-using MeshUtility;
 using System.Collections.Generic;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
-using UnityEngine.XR;
 using VMC;
 using VRM;
-using static RootMotion.FinalIK.GrounderQuadruped;
 
 public class AlwaysLookCameraScript : MonoBehaviour
 {
