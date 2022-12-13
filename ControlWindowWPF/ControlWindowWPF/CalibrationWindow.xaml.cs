@@ -83,9 +83,9 @@ namespace VirtualMotionCaptureControlPanel
         }
 
         private PipeCommands.CalibrateType SelectCalibrateType() =>
-            CalibrateFixedHandRadioButton.IsChecked == true ? PipeCommands.CalibrateType.FixedHand : (
-            CalibrateFixedHandWithGroundRadioButton.IsChecked == true ? PipeCommands.CalibrateType.FixedHandWithGround : (
-            CalibrateTposeRadioButton.IsChecked == true ? PipeCommands.CalibrateType.Tpose : PipeCommands.CalibrateType.Ipose));
+            CalibrateFixedHandRadioButton?.IsChecked == true ? PipeCommands.CalibrateType.FixedHand : (
+            CalibrateFixedHandWithGroundRadioButton?.IsChecked == true ? PipeCommands.CalibrateType.FixedHandWithGround : (
+            CalibrateTposeRadioButton?.IsChecked == true ? PipeCommands.CalibrateType.Tpose : PipeCommands.CalibrateType.Ipose));
 
         private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
