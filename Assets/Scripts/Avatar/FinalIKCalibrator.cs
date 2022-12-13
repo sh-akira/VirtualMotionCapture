@@ -633,18 +633,21 @@ namespace VMC
             vrik.solver.IKPositionWeight = 1.0f;
 
             //頭の位置をかかとの影響がない程度まで上に上げる
-            vrik.UpdateSolverExternal();
-            var baseFootHeight = vrik.references.leftFoot.position.y;
-            var headTargetPosition = headOffset.position;
-            var defaultHeadTargetPosition = headTargetPosition;
-            var headStep = new Vector3(0, 0.005f, 0);
-            while (vrik.references.leftFoot.position.y - baseFootHeight < 0.005f && headTargetPosition.y - defaultHeadTargetPosition.y < 0.4f)
+            if (vrik.solver.plantFeet == false)
             {
-                headTargetPosition += headStep;
-                headOffset.position = headTargetPosition;
                 vrik.UpdateSolverExternal();
+                var baseFootHeight = vrik.references.leftFoot.position.y;
+                var headTargetPosition = headOffset.position;
+                var defaultHeadTargetPosition = headTargetPosition;
+                var headStep = new Vector3(0, 0.005f, 0);
+                while (vrik.references.leftFoot.position.y - baseFootHeight < 0.005f && headTargetPosition.y - defaultHeadTargetPosition.y < 0.4f)
+                {
+                    headTargetPosition += headStep;
+                    headOffset.position = headTargetPosition;
+                    vrik.UpdateSolverExternal();
+                }
+                headOffset.position -= headStep;
             }
-            headOffset.position -= headStep;
 
             vrik.UpdateSolverExternal();
 
