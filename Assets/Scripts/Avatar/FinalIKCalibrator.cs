@@ -502,7 +502,14 @@ namespace VMC
             if (leftElbowTargetTransform != null)
             {
                 var leftArmBendGoalTarget = CreateTransform("LeftArmBendGoalTarget", true, leftElbowTargetTransform, vrik.references.leftForearm);
-                leftArmBendGoalTarget.position += -currentModel.forward * 0.1f;
+                if (calibrateMode == CalibrateMode.Ipose)
+                {
+                    leftArmBendGoalTarget.position += -currentModel.forward * 0.1f;
+                }
+                if (calibrateMode == CalibrateMode.Tpose)
+                {
+                    leftArmBendGoalTarget.position += -currentModel.up * 0.1f;
+                }
                 if (vrik.solver.leftArm.bendGoal != null) GameObject.Destroy(vrik.solver.leftArm.bendGoal.gameObject);
                 vrik.solver.leftArm.bendGoal = leftArmBendGoalTarget;
                 vrik.solver.leftArm.bendGoalWeight = 1.0f;
@@ -512,7 +519,14 @@ namespace VMC
             if (rightElbowTargetTransform != null)
             {
                 var rightArmBendGoalTarget = CreateTransform("RightArmBendGoalTarget", true, rightElbowTargetTransform, vrik.references.rightForearm);
-                rightArmBendGoalTarget.position += -currentModel.forward * 0.1f;
+                if (calibrateMode == CalibrateMode.Ipose)
+                {
+                    rightArmBendGoalTarget.position += -currentModel.forward * 0.1f;
+                }
+                if (calibrateMode == CalibrateMode.Tpose)
+                {
+                    rightArmBendGoalTarget.position += -currentModel.up * 0.1f;
+                }
                 if (vrik.solver.rightArm.bendGoal != null) GameObject.Destroy(vrik.solver.rightArm.bendGoal.gameObject);
                 vrik.solver.rightArm.bendGoal = rightArmBendGoalTarget;
                 vrik.solver.rightArm.bendGoalWeight = 1.0f;
