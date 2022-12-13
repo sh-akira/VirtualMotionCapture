@@ -325,8 +325,9 @@ namespace VMC
             var handTrackerOffset = new Vector3(0, modelHandHeight - realHandHeight, 0);
             var realLeftHandHeight = leftHandTargetTransform.position.y;
             var realRightHandHeight = rightHandTargetTransform.position.y;
-            var leftHandTrackerOffset = new Vector3(0, modelHandHeight - realLeftHandHeight, 0);
-            var rightHandTrackerOffset = new Vector3(0, modelHandHeight - realRightHandHeight, 0);
+            var TposeOffset = realHeight * 0.025f;
+            var leftHandTrackerOffset = new Vector3(0, modelHandHeight - realLeftHandHeight + TposeOffset, 0);
+            var rightHandTrackerOffset = new Vector3(0, modelHandHeight - realRightHandHeight + TposeOffset, 0);
             if (calibrateMode == CalibrateMode.Ipose)
             {
                 handTrackerRoot.position = handTrackerOffset;
@@ -353,10 +354,8 @@ namespace VMC
                 handTrackerRoot.position = leftHandTrackerOffset;
             }
             var leftHandOffset = CreateTransform("LeftHandIKTarget", true, leftHandTargetTransform, vrik.references.leftHand);
-            if (calibrateMode == CalibrateMode.Ipose)
-            {
-                leftHandOffset.localPosition = Vector3.zero;
-            }
+            leftHandOffset.localPosition = Vector3.zero;
+
             vrik.solver.leftArm.target = leftHandOffset;
             vrik.solver.leftArm.positionWeight = 1f;
             vrik.solver.leftArm.rotationWeight = 1f;
@@ -373,10 +372,8 @@ namespace VMC
                 handTrackerRoot.position = rightHandTrackerOffset;
             }
             var rightHandOffset = CreateTransform("RightHandIKTarget", true, rightHandTargetTransform, vrik.references.rightHand);
-            if (calibrateMode == CalibrateMode.Ipose)
-            {
-                rightHandOffset.localPosition = Vector3.zero;
-            }
+            rightHandOffset.localPosition = Vector3.zero;
+            
             vrik.solver.rightArm.target = rightHandOffset;
             vrik.solver.rightArm.positionWeight = 1f;
             vrik.solver.rightArm.rotationWeight = 1f;
