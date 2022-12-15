@@ -76,6 +76,7 @@
     <system:String x:Key="MainWindow_PositionFixed_ToolTip">좌표고정카메라(모델과 카메라의 거리와 회전을 고정, 화면에서 마우스휠 드래그, 스크롤, 우클릭으로 자유롭게 이동할 수 있습니다)</system:String>
     <system:String x:Key="MainWindow_Mirror_ToolTip">표시되는 화면을 좌우반전합니다</system:String>
     <system:String x:Key="MainWindow_ShowGrid_ToolTip">화면에 격자를 표시하여 카메라의 위치를 설정하기 쉽게 합니다</system:String>
+    <system:String x:Key="MainWindow_FrontReset">Front reset</system:String>
                           
     <system:String x:Key="MainWindow_LipSync">립싱크</system:String>
     <system:String x:Key="MainWindow_EnableLipSync">립싱크</system:String>
@@ -120,6 +121,13 @@
     <system:String x:Key="MainWindow_LightHorizontalDirection">회전</system:String>
 
     <system:String x:Key="MainWindow_ErrorCalibration">VRM모델을 로드하지 않았습니다. 모델을 먼저 불러와주세요.</system:String>
+
+    <system:String x:Key="MainWindow_Help">Help</system:String>
+    <system:String x:Key="MainWindow_ManualHeader">Please visit the website for usage and other information</system:String>
+    <system:String x:Key="MainWindow_Manual">Instructions</system:String>
+    <system:String x:Key="MainWindow_FAQ">Frequently Asked Questions and Answers</system:String>
+    <system:String x:Key="MainWindow_ClipboardHeader">When an error occurs</system:String>
+    <system:String x:Key="MainWindow_ClipboardDescription">↓Double click on message will copy full text to the clipboard.</system:String>
 
 
     <!-- CalibrationWindow -->
@@ -455,6 +463,23 @@
     <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovements">눈커풀의 움직임을 사용</system:String>
     <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovementsCheckBox">사용한다</system:String>
     <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Close">닫기</system:String>
+
+    <!-- MotionCapture_mocopiSettingWindow -->
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_EnableCheckBox">사용한다</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_ApplyTarget">Apply target</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_Head">Head</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_Chest">Chest</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightArm">Right Arm</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftArm">Left Arm</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_Spine">Spine</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightHand">Right Hand</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftHand">Left Hand</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightLeg">Right Leg</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftLeg">Left Leg</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightFoot">Right Foot</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftFoot">Left Foot</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RootPositionSynchronize">Root position synchronize</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_ResetCenter">Re-center current position</system:String>
 
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">색상선택</system:String>

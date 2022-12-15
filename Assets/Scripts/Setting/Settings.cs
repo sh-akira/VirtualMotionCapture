@@ -463,6 +463,36 @@ namespace VMC
         [OptionalField]
         public bool TurnOffAmbientLight;
 
+        [OptionalField]
+        public bool mocopi_Enable;
+        [OptionalField]
+        public int mocopi_Port;
+        [OptionalField]
+        public bool mocopi_ApplyRootPosition;
+        [OptionalField]
+        public bool mocopi_ApplyChest;
+        [OptionalField]
+        public bool mocopi_ApplySpine;
+        [OptionalField]
+        public bool mocopi_ApplyHead;
+        [OptionalField]
+        public bool mocopi_ApplyLeftArm;
+        [OptionalField]
+        public bool mocopi_ApplyRightArm;
+        [OptionalField]
+        public bool mocopi_ApplyLeftHand;
+        [OptionalField]
+        public bool mocopi_ApplyRightHand;
+        [OptionalField]
+        public bool mocopi_ApplyLeftLeg;
+        [OptionalField]
+        public bool mocopi_ApplyRightLeg;
+        [OptionalField]
+        public bool mocopi_ApplyLeftFoot;
+        [OptionalField]
+        public bool mocopi_ApplyRightFoot;
+
+
         //初期値
         [OnDeserializing()]
         internal void OnDeserializingMethod(StreamingContext context)
@@ -611,6 +641,21 @@ namespace VMC
 
             TurnOffAmbientLight = false;
             ExternalBonesReceiverEnable = false;
+
+            mocopi_Enable = true;
+            mocopi_Port = 12351;
+            mocopi_ApplyRootPosition = true;
+            mocopi_ApplyChest = true;
+            mocopi_ApplySpine = true;
+            mocopi_ApplyHead = true;
+            mocopi_ApplyLeftArm = true;
+            mocopi_ApplyRightArm = true;
+            mocopi_ApplyLeftHand = true;
+            mocopi_ApplyRightHand = true;
+            mocopi_ApplyLeftLeg = true;
+            mocopi_ApplyRightLeg = true;
+            mocopi_ApplyLeftFoot = true;
+            mocopi_ApplyRightFoot = true;
         }
     }
 }

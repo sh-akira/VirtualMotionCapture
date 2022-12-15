@@ -77,6 +77,7 @@
     <system:String x:Key="MainWindow_PositionFixed_ToolTip">Position fixed camera (Fixed distance and rotation of model and camera. You can freely move by dragging the middle mouse button, scrolling, right button drag on the screen)</system:String>
     <system:String x:Key="MainWindow_Mirror_ToolTip">Horizontal inversion of the displayed image</system:String>
     <system:String x:Key="MainWindow_ShowGrid_ToolTip">It makes it easy to set the camera position by displaying the grid on the screen</system:String>
+    <system:String x:Key="MainWindow_FrontReset">Front reset</system:String>
 
     <system:String x:Key="MainWindow_LipSync">LipSync</system:String>
     <system:String x:Key="MainWindow_EnableLipSync">LipSync</system:String>
@@ -121,6 +122,13 @@
     <system:String x:Key="MainWindow_LightHorizontalDirection">Horizontal</system:String>
 
     <system:String x:Key="MainWindow_ErrorCalibration">VRM model has not been loaded. Please import first.</system:String>
+
+    <system:String x:Key="MainWindow_Help">Help</system:String>
+    <system:String x:Key="MainWindow_ManualHeader">Please visit the website for usage and other information</system:String>
+    <system:String x:Key="MainWindow_Manual">Instructions</system:String>
+    <system:String x:Key="MainWindow_FAQ">Frequently Asked Questions and Answers</system:String>
+    <system:String x:Key="MainWindow_ClipboardHeader">When an error occurs</system:String>
+    <system:String x:Key="MainWindow_ClipboardDescription">↓Double click on message will copy full text to the clipboard.</system:String>
 
 
     <!-- CalibrationWindow -->
@@ -454,8 +462,24 @@
     <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovements">Use eyelid movements</system:String>
     <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovementsCheckBox">Use</system:String>
     <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Close">Close</system:String>
-    
 
+    <!-- MotionCapture_mocopiSettingWindow -->
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_EnableCheckBox">Use</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_ApplyTarget">Apply target</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_Head">Head</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_Chest">Chest</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightArm">Right Arm</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftArm">Left Arm</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_Spine">Spine</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightHand">Right Hand</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftHand">Left Hand</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightLeg">Right Leg</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftLeg">Left Leg</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightFoot">Right Foot</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftFoot">Left Foot</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RootPositionSynchronize">Root position synchronize</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_ResetCenter">Re-center current position</system:String>
+    
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">Color Picker</system:String>
     
