@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -70,8 +71,89 @@ namespace VirtualMotionCaptureControlPanel
             Title = $"{LanguageSelector.Get("MainWindowTitle")} ({(CurrentWindowNum == 0 ? LanguageSelector.Get("MainWindowTitleLoading") : CurrentWindowNum.ToString())})";
         }
 
+        private void CheckVMCCameraVersion()
+        {
+            var directory = @"C:\VMC_Camera\";
+            var path32 = directory + "VMC_CameraFilter32bit.dll";
+            var path64 = directory + "VMC_CameraFilter64bit.dll";
+            var path32_old = directory + "VMC_CameraFilter32bit_old.dll";
+            var path64_old = directory + "VMC_CameraFilter64bit_old.dll";
+
+            if (Directory.Exists(directory) == false)
+            {
+                return;
+            }
+
+            bool needUpdate = false;
+            if (File.Exists(path32))
+            {
+                var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(path32);
+                if (string.IsNullOrWhiteSpace(fileVersionInfo.ProductVersion))
+                {
+                    needUpdate = true;
+                }
+            }
+
+            if (File.Exists(path64))
+            {
+                var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(path64);
+                if (string.IsNullOrWhiteSpace(fileVersionInfo.ProductVersion))
+                {
+                    needUpdate = true;
+                }
+            }
+
+            if (needUpdate)
+            {
+                try
+                {
+                    if (File.Exists(path32)) File.Move(path32, path32_old);
+                    if (File.Exists(path64)) File.Move(path64, path64_old);
+                }
+                catch (Exception)
+                {
+                    return;
+                }
+                try
+                {
+                    File.Copy(Globals.GetCurrentAppDir() + @"VMC_Camera\VMC_CameraFilter32bit.dll", path32, true);
+                    File.Copy(Globals.GetCurrentAppDir() + @"VMC_Camera\VMC_CameraFilter64bit.dll", path64, true);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show(LanguageSelector.Get("SettingWindow_FailedFileCopy"), "VMC_Camera update failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                MessageBox.Show(LanguageSelector.Get("SettingWindow_SuccessDriverInstall"), "VMC_Camera update");
+            }
+
+            if (File.Exists(path32_old))
+            {
+                try
+                {
+                    File.Delete(path32_old);
+                }
+                catch (Exception)
+                {
+                }
+            }
+            if (File.Exists(path64_old))
+            {
+                try
+                {
+                    File.Delete(path64_old);
+                }
+                catch (Exception)
+                {
+                }
+            }
+        }
+
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            CheckVMCCameraVersion();
+
             while (Globals.Client.IsConnected != true)
             {
                 await Task.Delay(100);
