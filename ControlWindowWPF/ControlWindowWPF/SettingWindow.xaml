@@ -98,6 +98,11 @@
                 </GroupBox>
             </StackPanel>
             <StackPanel Orientation="Vertical" Grid.Column="1">
+                <GroupBox Header="Motion Capture">
+                    <UniformGrid Columns="2">
+                        <Button Content="mocopi (UDP)" Name="MotionCapture_mocopiSettingButton" Click="MotionCapture_mocopiSettingButton_Click"/>
+                    </UniformGrid>
+                </GroupBox>
                 <GroupBox Header="Eye Tracking">
                     <UniformGrid Columns="2">
                         <Button Content="Tobii Eye Tracker 4C" Name="EyeTracking_TobiiSettingButton" Click="EyeTracking_TobiiSettingButton_Click"/>

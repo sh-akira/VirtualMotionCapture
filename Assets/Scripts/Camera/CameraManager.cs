@@ -30,6 +30,7 @@ namespace VMC
 
         private GameObject CurrentModel;
         private Animator animator;
+        public GameObject CurrentLookTarget = null;
 
         private void Awake()
         {
@@ -125,6 +126,11 @@ namespace VMC
                 {
                     SetCameraLookTarget();
                 }
+                else if (e.CommandType == typeof(PipeCommands.mocopi_SetSetting))
+                {
+                    var d = (PipeCommands.mocopi_SetSetting)e.Data;
+                    SetCameraLookTarget(d.enable);
+                }
                 else if (e.CommandType == typeof(PipeCommands.GetVirtualWebCamConfig))
                 {
                     await controlWPFWindow.server.SendCommandAsync(new PipeCommands.SetVirtualWebCamConfig
@@ -148,6 +154,10 @@ namespace VMC
                 {
                     var d = (PipeCommands.TakePhoto)e.Data;
                     TakePhoto(d.Width, d.TransparentBackground, d.Directory);
+                }
+                else if (e.CommandType == typeof(PipeCommands.ResetCamera))
+                {
+                    CurrentCameraControl?.FrontReset();
                 }
             }, null);
         }
@@ -264,30 +274,32 @@ namespace VMC
             if (mirror != null) mirror.MirrorEnable = mirrorEnable;
         }
 
-        private void SetCameraLookTarget()
+        private void SetCameraLookTarget(bool? EnableHips = null)
         {
             if (animator != null)
             {
                 var spineTransform = animator.GetBoneTransform(HumanBodyBones.Spine);
                 var calcPosition = Vector3.Lerp(animator.GetBoneTransform(HumanBodyBones.Head).position, spineTransform.position, 0.5f);
-                var gameObject = new GameObject("CameraLook");
-                gameObject.transform.position = calcPosition;
-                gameObject.transform.rotation = spineTransform.rotation;
-                gameObject.transform.parent =/* bodyTracker == null ? animator.GetBoneTransform(HumanBodyBones.Spine) :*/ CurrentModel.transform;
+                if (CurrentLookTarget != null) DestroyImmediate(CurrentLookTarget);
+                CurrentLookTarget = new GameObject("CameraLook");
+                CurrentLookTarget.transform.position = calcPosition;
+                CurrentLookTarget.transform.rotation = spineTransform.rotation;
+                CurrentLookTarget.transform.parent = (EnableHips.HasValue == false ? Settings.Current.mocopi_Enable : EnableHips.Value) ? animator.GetBoneTransform(HumanBodyBones.Hips) : CurrentModel.transform;
+                
                 var lookTarget = FrontCamera.GetComponent<CameraMouseControl>();
                 if (lookTarget != null)
                 {
-                    lookTarget.LookTarget = gameObject.transform;
+                    lookTarget.LookTarget = CurrentLookTarget.transform;
                 }
                 lookTarget = BackCamera.GetComponent<CameraMouseControl>();
                 if (lookTarget != null)
                 {
-                    lookTarget.LookTarget = gameObject.transform;
+                    lookTarget.LookTarget = CurrentLookTarget.transform;
                 }
                 var positionFixedCamera = PositionFixedCamera.GetComponent<CameraMouseControl>();
                 if (positionFixedCamera != null)
                 {
-                    positionFixedCamera.PositionFixedTarget = gameObject.transform;
+                    positionFixedCamera.PositionFixedTarget = CurrentLookTarget.transform;
                 }
             }
         }

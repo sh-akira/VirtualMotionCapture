@@ -498,6 +498,7 @@ Ver 0.02
 　・uOSC([uOSC-v0.0.2.unitypackage](https://github.com/hecomi/uOSC/releases/tag/v0.0.2))  
 　・MidiJack([MidiJack.unitypackage](https://github.com/keijiro/MidiJack))  
 　・EasyDeviceDiscoveryProtocolForUnity([EasyDeviceDiscoveryProtocolForUnity_v002.unitypackage](https://github.com/gpsnmeajp/EasyDeviceDiscoveryProtocolForUnity/releases/tag/v0.02))  
+　・mocopi Receiver Plugin for Unity([mocopi-receiver-plugin-for-unity_1.0.1beta.unitypackage](https://sony.net/mocopi-dev))  
 以上のようなフォルダになるように各アセットをインポートしてください。  
 アイトラッキングが不要な場合Assets\Scripts\EyeTrackingフォルダとLipTrackingフォルダを削除します  
 アイトラッキング対応する場合は  

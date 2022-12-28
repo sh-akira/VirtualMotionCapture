@@ -922,5 +922,10 @@ namespace VirtualMotionCaptureControlPanel
         {
             System.Diagnostics.Process.Start(e.Uri.ToString());
         }
+
+        private async void CameraFrontResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client?.SendCommandAsync(new PipeCommands.ResetCamera { });
+        }
     }
 }

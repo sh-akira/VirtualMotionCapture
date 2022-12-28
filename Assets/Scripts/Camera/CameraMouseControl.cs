@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityMemoryMappedFile;
 
 
 namespace VMC
 {
+    //ExecutionOrder after VRIK
+    [DefaultExecutionOrder(20000)]
     public class CameraMouseControl : MonoBehaviour
     {
         public static CameraMouseControl Current;
@@ -44,7 +47,7 @@ namespace VMC
 
         private bool isTargetRotate = false;
 
-        void Update()
+        private void LateUpdate()
         {
             CheckUpdate();
         }
@@ -211,6 +214,36 @@ namespace VMC
                 setPosition = new Vector3(setPosition.x * parentTransform.localScale.x + parentTransform.position.x, setPosition.y * parentTransform.localScale.y + parentTransform.position.y, setPosition.z * parentTransform.localScale.z + parentTransform.position.z);
             }
             transform.position = setPosition;
+        }
+
+
+        public void FrontReset()
+        {
+            StartCoroutine(FrontResetCoroutine());
+        }
+
+        private IEnumerator FrontResetCoroutine()
+        {
+            yield return new WaitForEndOfFrame();
+
+            CameraDistance = 1.5f; //default
+
+            if (LookTarget == null) // free or position fixed
+            {
+                var currentLookTarget = CameraManager.Current.CurrentLookTarget.transform;
+                var lookAt = currentLookTarget.position + LookOffset;
+
+                // カメラとプレイヤーとの間の距離を調整
+                transform.position = lookAt - (currentLookTarget.transform.forward) * -CameraDistance;
+
+                // 注視点の設定
+                transform.LookAt(lookAt);
+
+                CameraTarget = lookAt;
+                CameraAngle = -transform.eulerAngles;
+
+                UpdateRelativePosition();
+            }
         }
 
         private void SaveLookTarget()

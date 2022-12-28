@@ -4,212 +4,218 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
-        mc:Ignorable="d" Width="420" MinHeight="210" SizeToContent="Height"
+        mc:Ignorable="d" Width="460" MinHeight="204" SizeToContent="Height"
         Title="{DynamicResource MainWindowTitle}" FontSize="14" ResizeMode="CanMinimize" Background="#2A2A2A" Loaded="Window_Loaded" Closing="Window_Closing" Icon="Resources/VirtualMotionCapture_dark.ico">
-	<Grid>
-		<Button Visibility="Collapsed"/>
-		<!--This Button for fix style bug-->
-		<DockPanel LastChildFill="True">
-			<StatusBar MouseDoubleClick="StatusBar_MouseDoubleClick" DockPanel.Dock="Bottom" Margin="0,0,0,0" Height="25" Background="#2A2A2A">
-				<StatusBarItem>
-					<TextBlock Name="UnityLogStatusTextBlock" FontSize="12" Foreground="#EEEEEE">Welcome to Virtual Motion Capture</TextBlock>
-				</StatusBarItem>
-			</StatusBar>
+    <Grid>
+        <Button Visibility="Collapsed"/>
+        <!--This Button for fix style bug-->
+        <DockPanel LastChildFill="True">
+            <StatusBar MouseDoubleClick="StatusBar_MouseDoubleClick" DockPanel.Dock="Bottom" Margin="0,0,0,0" Height="25" Background="#2A2A2A">
+                <StatusBarItem>
+                    <TextBlock Name="UnityLogStatusTextBlock" FontSize="12" Foreground="#EEEEEE">Welcome to Virtual Motion Capture</TextBlock>
+                </StatusBarItem>
+            </StatusBar>
 
-			<TabControl Margin="5,5,5,0">
-				<TabItem Header="{DynamicResource MainWindow_Setting}" ToolTip="{DynamicResource MainWindow_Setting_ToolTip}">
-					<UniformGrid Rows="2" Columns="3">
-						<Button Content="{DynamicResource MainWindow_LoadSetting}" Name="LoadSettingsButton" Click="LoadSettingsButton_Click" ToolTip="{DynamicResource MainWindow_LoadSetting_ToolTip}"/>
-						<Button Content="{DynamicResource MainWindow_ImportVRM}" Name="ImportVRMButton" Click="ImportVRMButton_Click" ToolTip="{DynamicResource MainWindow_ImportVRM_ToolTip}"/>
-						<Button Content="{DynamicResource MainWindow_ShortcutKey}" Name="ShortcutKeyButton" Click="ShortcutKeyButton_Click" ToolTip="{DynamicResource MainWindow_ShortcutKey_ToolTip}"/>
-						<Button Content="{DynamicResource MainWindow_SaveSetting}" Name="SaveSettingsButton" Click="SaveSettingsButton_Click" ToolTip="{DynamicResource MainWindow_SaveSetting_ToolTip}"/>
-						<Button Content="{DynamicResource MainWindow_Calibration}" Name="CalibrationButton" Click="CalibrationButton_Click" ToolTip="{DynamicResource MainWindow_Calibration_ToolTip}"/>
-						<Button Content="{DynamicResource MainWindow_AdvancedSetting}" Name="SettingButton" Click="SettingButton_Click" ToolTip="{DynamicResource MainWindow_AdvancedSetting_ToolTip}"/>
-					</UniformGrid>
-				</TabItem>
-				<TabItem Header="{DynamicResource MainWindow_Background}" ToolTip="{DynamicResource MainWindow_Background_ToolTip}">
-					<StackPanel Orientation="Vertical">
-						<UniformGrid Rows="1" Columns="5">
-							<Button Content="{DynamicResource MainWindow_GB}" Background="#00FF00" Foreground="Black" Name="ColorGreenButton" Click="ColorGreenButton_Click" ToolTip="{DynamicResource MainWindow_GB_ToolTip}"/>
-							<Button Content="{DynamicResource MainWindow_BB}" Background="#0000FF" Foreground="White" Name="ColorBlueButton" Click="ColorBlueButton_Click" ToolTip="{DynamicResource MainWindow_BB_ToolTip}"/>
-							<Button Content="{DynamicResource MainWindow_White240}" Background="#F0F0F0" Foreground="Black" Name="ColorWhiteButton" Click="ColorWhiteButton_Click" ToolTip="{DynamicResource MainWindow_White240_ToolTip}"/>
-							<Button Content="{DynamicResource MainWindow_Custom}" Background="#AED4FF" Foreground="Black" Name="ColorCustomButton" Click="ColorCustomButton_Click" MouseRightButtonDown="ColorCustomButton_MouseRightButtonDown" ToolTip="{DynamicResource MainWindow_Custom_ToolTip}"/>
-							<Button Content="{DynamicResource MainWindow_Transparent}" Name="ColorTransparentButton" Click="ColorTransparentButton_Click" ToolTip="{DynamicResource MainWindow_Transparent_ToolTip}"/>
-						</UniformGrid>
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition />
-								<ColumnDefinition />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition />
-								<RowDefinition />
-							</Grid.RowDefinitions>
-							<CheckBox Grid.Column="0" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="3" Content="{DynamicResource MainWindow_WindowAlwaysTopMost}" Name="TopMostCheckBox" Checked="TopMostCheckBox_Checked" Unchecked="TopMostCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_WindowAlwaysTopMost_ToolTip}"/>
-							<CheckBox Grid.Column="1" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="3" Content="{DynamicResource MainWindow_HideWindowBorder}" Name="WindowBorderCheckBox" Checked="WindowBorderCheckBox_Checked" Unchecked="WindowBorderCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_HideWindowBorder_ToolTip}"/>
-							<CheckBox Grid.Column="0" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="3" Content="{DynamicResource MainWindow_MouseInputPassThrough}" Name="WindowClickThroughCheckBox" Checked="WindowClickThroughCheckBox_Checked" Unchecked="WindowClickThroughCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_MouseInputPassThrough_ToolTip}"/>
-						</Grid>
-					</StackPanel>
-				</TabItem>
-				<TabItem Header="{DynamicResource MainWindow_Camera}">
-					<StackPanel Orientation="Vertical">
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
-							</Grid.RowDefinitions>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="Auto"/>
-							</Grid.ColumnDefinitions>
-							<Button Content="{DynamicResource MainWindow_Front}" Name="FrontCameraButton" Click="FrontCameraButton_Click" Grid.Row="0" Grid.Column="0"/>
-							<Button Content="{DynamicResource MainWindow_Back}" Name="BackCameraButton" Click="BackCameraButton_Click" Grid.Row="0" Grid.Column="1"/>
-							<Button Content="{DynamicResource MainWindow_Free}" Name="FreeCameraButton" Click="FreeCameraButton_Click" Grid.Row="0" Grid.Column="2"/>
-							<Button Name="PhotoButton" Click="PhotoButton_Click" Grid.Row="0" Grid.Column="3">
-								<Viewbox Width="30" Height="30">
-									<Canvas Width="420" Height="420">
-										<Path Fill="#000000" Data="M406.8 96.4c-8.4-8.8-20-14-33.2-14h-66.4v-0.8c0-10-4-19.6-10.8-26c-6.8-6.8-16-10.8-26-10.8h-120     c-10.4 0-19.6 4-26.4 10.8c-6.8 6.8-10.8 16-10.8 26v0.8h-66c-13.2 0-24.8 5.2-33.2 14c-8.4 8.4-14 20.4-14 33.2v199.2     C0 342 5.2 353.6 14 362c8.4 8.4 20.4 14 33.2 14h326.4c13.2 0 24.8-5.2 33.2-14c8.4-8.4 14-20.4 14-33.2V129.6     C420.8 116.4 415.6 104.8 406.8 96.4z M400 328.8h-0.4c0 7.2-2.8 13.6-7.6 18.4s-11.2 7.6-18.4 7.6H47.2     c-7.2 0-13.6-2.8-18.4-7.6c-4.8-4.8-7.6-11.2-7.6-18.4V129.6c0-7.2 2.8-13.6 7.6-18.4s11.2-7.6 18.4-7.6h77.2     c6 0 10.8-4.8 10.8-10.8V81.2c0-4.4 1.6-8.4 4.4-11.2s6.8-4.4 11.2-4.4h119.6c4.4 0 8.4 1.6 11.2 4.4c2.8 2.8 4.4 6.8 4.4 11.2     v11.6c0 6 4.8 10.8 10.8 10.8H374c7.2 0 13.6 2.8 18.4 7.6s7.6 11.2 7.6 18.4V328.8z"/>
-										<Path Fill="#000000" Data="M210.4 130.8c-27.2 0-52 11.2-69.6 28.8c-18 18-28.8 42.4-28.8 69.6s11.2 52 28.8 69.6c18 18 42.4 28.8 69.6 28.8     s52-11.2 69.6-28.8c18-18 28.8-42.4 28.8-69.6s-11.2-52-28.8-69.6C262.4 142 237.6 130.8 210.4 130.8z M264.8 284     c-14 13.6-33.2 22.4-54.4 22.4S170 297.6 156 284c-14-14-22.4-33.2-22.4-54.4c0-21.2 8.8-40.4 22.4-54.4     c14-14 33.2-22.4 54.4-22.4s40.4 8.8 54.4 22.4c14 14 22.4 33.2 22.4 54.4C287.6 250.8 278.8 270 264.8 284z"/>
-										<Ellipse Canvas.Left="333.2" Canvas.Top="130.4" Width="39.2" Height="39.2" Fill="#000000"/>
-									</Canvas>
-								</Viewbox>
-							</Button>
-							<Button Content="{DynamicResource MainWindow_PositionFixed}" Name="PositionFixedCameraButton" Click="PositionFixedCameraButton_Click" Grid.Row="1" Grid.Column="0"/>
-							<DockPanel VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3">
-								<DockPanel DockPanel.Dock="Bottom">
-									<TextBlock Text="FOV" DockPanel.Dock="Left"/>
-									<TextBlock Text="60" DockPanel.Dock="Right" Width="30" Name="FOVTextBlock"/>
-									<Slider Name="FOVSlider" Grid.Row="1" Grid.Column="1" Minimum="1" Value="60" Maximum="179" SmallChange="1" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="FOVSlider_ValueChanged"/>
-                                </DockPanel>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" DockPanel.Dock="Right">
-                                    <CheckBox Content="{DynamicResource MainWindow_Mirror}" Name="CameraMirrorCheckBox" Checked="CameraMirrorCheckBox_Checked" Unchecked="CameraMirrorCheckBox_Unchecked"/>
-                                    <CheckBox Content="{DynamicResource MainWindow_ShowGrid}" Name="CameraGridCheckBox" Checked="CameraGridCheckBox_Checked" Unchecked="CameraGridCheckBox_Unchecked"/>
-                                </StackPanel>
+            <TabControl Margin="5,5,5,0">
+                <TabItem Header="{DynamicResource MainWindow_Setting}" ToolTip="{DynamicResource MainWindow_Setting_ToolTip}">
+                    <UniformGrid Rows="2" Columns="3">
+                        <Button Content="{DynamicResource MainWindow_LoadSetting}" Name="LoadSettingsButton" Click="LoadSettingsButton_Click" ToolTip="{DynamicResource MainWindow_LoadSetting_ToolTip}"/>
+                        <Button Content="{DynamicResource MainWindow_ImportVRM}" Name="ImportVRMButton" Click="ImportVRMButton_Click" ToolTip="{DynamicResource MainWindow_ImportVRM_ToolTip}"/>
+                        <Button Content="{DynamicResource MainWindow_ShortcutKey}" Name="ShortcutKeyButton" Click="ShortcutKeyButton_Click" ToolTip="{DynamicResource MainWindow_ShortcutKey_ToolTip}"/>
+                        <Button Content="{DynamicResource MainWindow_SaveSetting}" Name="SaveSettingsButton" Click="SaveSettingsButton_Click" ToolTip="{DynamicResource MainWindow_SaveSetting_ToolTip}"/>
+                        <Button Content="{DynamicResource MainWindow_Calibration}" Name="CalibrationButton" Click="CalibrationButton_Click" ToolTip="{DynamicResource MainWindow_Calibration_ToolTip}"/>
+                        <Button Content="{DynamicResource MainWindow_AdvancedSetting}" Name="SettingButton" Click="SettingButton_Click" ToolTip="{DynamicResource MainWindow_AdvancedSetting_ToolTip}"/>
+                    </UniformGrid>
+                </TabItem>
+                <TabItem Header="{DynamicResource MainWindow_Background}" ToolTip="{DynamicResource MainWindow_Background_ToolTip}">
+                    <StackPanel Orientation="Vertical">
+                        <UniformGrid Rows="1" Columns="5">
+                            <Button Content="{DynamicResource MainWindow_GB}" Background="#00FF00" Foreground="Black" Name="ColorGreenButton" Click="ColorGreenButton_Click" ToolTip="{DynamicResource MainWindow_GB_ToolTip}"/>
+                            <Button Content="{DynamicResource MainWindow_BB}" Background="#0000FF" Foreground="White" Name="ColorBlueButton" Click="ColorBlueButton_Click" ToolTip="{DynamicResource MainWindow_BB_ToolTip}"/>
+                            <Button Content="{DynamicResource MainWindow_White240}" Background="#F0F0F0" Foreground="Black" Name="ColorWhiteButton" Click="ColorWhiteButton_Click" ToolTip="{DynamicResource MainWindow_White240_ToolTip}"/>
+                            <Button Content="{DynamicResource MainWindow_Custom}" Background="#AED4FF" Foreground="Black" Name="ColorCustomButton" Click="ColorCustomButton_Click" MouseRightButtonDown="ColorCustomButton_MouseRightButtonDown" ToolTip="{DynamicResource MainWindow_Custom_ToolTip}"/>
+                            <Button Content="{DynamicResource MainWindow_Transparent}" Name="ColorTransparentButton" Click="ColorTransparentButton_Click" ToolTip="{DynamicResource MainWindow_Transparent_ToolTip}"/>
+                        </UniformGrid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <CheckBox Grid.Column="0" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="3" Content="{DynamicResource MainWindow_WindowAlwaysTopMost}" Name="TopMostCheckBox" Checked="TopMostCheckBox_Checked" Unchecked="TopMostCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_WindowAlwaysTopMost_ToolTip}"/>
+                            <CheckBox Grid.Column="1" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="3" Content="{DynamicResource MainWindow_HideWindowBorder}" Name="WindowBorderCheckBox" Checked="WindowBorderCheckBox_Checked" Unchecked="WindowBorderCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_HideWindowBorder_ToolTip}"/>
+                            <CheckBox Grid.Column="0" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="3" Content="{DynamicResource MainWindow_MouseInputPassThrough}" Name="WindowClickThroughCheckBox" Checked="WindowClickThroughCheckBox_Checked" Unchecked="WindowClickThroughCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_MouseInputPassThrough_ToolTip}"/>
+                        </Grid>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="{DynamicResource MainWindow_Camera}">
+                    <DockPanel>
+                        <TextBlock Text="{DynamicResource MainWindow_CameraDescription}" Margin="0,-3,0,0" VerticalAlignment="Bottom" DockPanel.Dock="Bottom"/>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="3*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Content="{DynamicResource MainWindow_Front}" Name="FrontCameraButton" Click="FrontCameraButton_Click" Grid.Row="0" Grid.Column="0"/>
+                            <Button Content="{DynamicResource MainWindow_Back}" Name="BackCameraButton" Click="BackCameraButton_Click" Grid.Row="0" Grid.Column="1"/>
+                            <GroupBox Grid.Row="0" Grid.Column="2" Grid.RowSpan="2">
                                 <DockPanel>
-                                    <TextBlock Text="Smooth" DockPanel.Dock="Left"/>
-                                    <TextBlock Text="0" DockPanel.Dock="Right" Width="20" Name="CameraSmoothTextBlock"/>
-                                    <Slider Name="CameraSmoothSlider" Minimum="0" Value="0" Maximum="20" SmallChange="1" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="CameraSmoothSlider_ValueChanged"/>
+                                    <DockPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
+                                        <DockPanel DockPanel.Dock="Bottom">
+                                            <TextBlock Text="FOV" DockPanel.Dock="Left"/>
+                                            <TextBlock Text="60" DockPanel.Dock="Right" Width="30" Name="FOVTextBlock"/>
+                                            <Slider Name="FOVSlider" Grid.Row="1" Grid.Column="1" Minimum="1" Value="60" Maximum="179" SmallChange="1" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="FOVSlider_ValueChanged"/>
+                                        </DockPanel>
+                                        <DockPanel>
+                                            <TextBlock Text="Smooth" DockPanel.Dock="Left"/>
+                                            <TextBlock Text="0" DockPanel.Dock="Right" Width="20" Name="CameraSmoothTextBlock"/>
+                                            <Slider Name="CameraSmoothSlider" Minimum="0" Value="0" Maximum="20" SmallChange="1" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="CameraSmoothSlider_ValueChanged"/>
+                                        </DockPanel>
+                                    </DockPanel>
+                                    <Button Name="PhotoButton" Click="PhotoButton_Click" DockPanel.Dock="Right" Height="35">
+                                        <Viewbox Width="30" Height="30">
+                                            <Canvas Width="420" Height="420">
+                                                <Path Fill="#000000" Data="M406.8 96.4c-8.4-8.8-20-14-33.2-14h-66.4v-0.8c0-10-4-19.6-10.8-26c-6.8-6.8-16-10.8-26-10.8h-120     c-10.4 0-19.6 4-26.4 10.8c-6.8 6.8-10.8 16-10.8 26v0.8h-66c-13.2 0-24.8 5.2-33.2 14c-8.4 8.4-14 20.4-14 33.2v199.2     C0 342 5.2 353.6 14 362c8.4 8.4 20.4 14 33.2 14h326.4c13.2 0 24.8-5.2 33.2-14c8.4-8.4 14-20.4 14-33.2V129.6     C420.8 116.4 415.6 104.8 406.8 96.4z M400 328.8h-0.4c0 7.2-2.8 13.6-7.6 18.4s-11.2 7.6-18.4 7.6H47.2     c-7.2 0-13.6-2.8-18.4-7.6c-4.8-4.8-7.6-11.2-7.6-18.4V129.6c0-7.2 2.8-13.6 7.6-18.4s11.2-7.6 18.4-7.6h77.2     c6 0 10.8-4.8 10.8-10.8V81.2c0-4.4 1.6-8.4 4.4-11.2s6.8-4.4 11.2-4.4h119.6c4.4 0 8.4 1.6 11.2 4.4c2.8 2.8 4.4 6.8 4.4 11.2     v11.6c0 6 4.8 10.8 10.8 10.8H374c7.2 0 13.6 2.8 18.4 7.6s7.6 11.2 7.6 18.4V328.8z"/>
+                                                <Path Fill="#000000" Data="M210.4 130.8c-27.2 0-52 11.2-69.6 28.8c-18 18-28.8 42.4-28.8 69.6s11.2 52 28.8 69.6c18 18 42.4 28.8 69.6 28.8     s52-11.2 69.6-28.8c18-18 28.8-42.4 28.8-69.6s-11.2-52-28.8-69.6C262.4 142 237.6 130.8 210.4 130.8z M264.8 284     c-14 13.6-33.2 22.4-54.4 22.4S170 297.6 156 284c-14-14-22.4-33.2-22.4-54.4c0-21.2 8.8-40.4 22.4-54.4     c14-14 33.2-22.4 54.4-22.4s40.4 8.8 54.4 22.4c14 14 22.4 33.2 22.4 54.4C287.6 250.8 278.8 270 264.8 284z"/>
+                                                <Ellipse Canvas.Left="333.2" Canvas.Top="130.4" Width="39.2" Height="39.2" Fill="#000000"/>
+                                            </Canvas>
+                                        </Viewbox>
+                                    </Button>
+                                    <Button Content="{DynamicResource MainWindow_FrontReset}" Name="CameraFrontResetButton" Click="CameraFrontResetButton_Click" Height="35" />
                                 </DockPanel>
-                            </DockPanel>
-						</Grid>
-						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="{DynamicResource MainWindow_CameraDescription}" Margin="0,-3,0,0"/>
-						</StackPanel>
-					</StackPanel>
-				</TabItem>
-				<TabItem ToolTip="{DynamicResource MainWindow_LipSync_ToolTip}">
-					<TabItem.Header>
-						<TextBlock Text="{DynamicResource MainWindow_LipSync}" Name="LipsyncTabTextBlock" Background="PaleVioletRed"/>
-					</TabItem.Header>
-					<StackPanel Orientation="Vertical">
-						<StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-							<CheckBox Content="{DynamicResource MainWindow_EnableLipSync}" Name="LipSyncCheckBox" Checked="LipSyncCheckBox_Checked" Unchecked="LipSyncCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_EnableLipSync_ToolTip}"/>
-							<CheckBox Content="{DynamicResource MainWindow_MaxWeight}" Name="MaxWeightCheckBox" Checked="MaxWeightCheckBox_Checked" Unchecked="MaxWeightCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_MaxWeight_ToolTip}"/>
-							<CheckBox Content="{DynamicResource MainWindow_MaxWeightEmphasis}" Name="MaxWeightEmphasisCheckBox" Checked="MaxWeightEmphasisCheckBox_Checked" Unchecked="MaxWeightEmphasisCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_MaxWeightEmphasis_ToolTip}"/>
-						</StackPanel>
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition />
-								<RowDefinition />
-								<RowDefinition />
-							</Grid.RowDefinitions>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto"/>
-								<ColumnDefinition />
-								<ColumnDefinition Width="Auto"/>
-							</Grid.ColumnDefinitions>
-							<TextBlock Text="{DynamicResource MainWindow_Device}" Grid.Row="0" Grid.Column="0"/>
-							<ComboBox Name="LipSyncDeviceComboBox" Grid.Row="0" Grid.Column="1" Margin="10,0,0,0" SelectionChanged="LipSyncDeviceComboBox_SelectionChanged" ToolTip="{DynamicResource MainWindow_Device_ToolTip}"/>
-							<Button Content="{DynamicResource MainWindow_DeviceRefresh}" Margin="2" Height="20" Name="LipSyncDeviceRefreshButton" Grid.Row="0" Grid.Column="2" Click="LipSyncDeviceRefreshButton_Click" ToolTip="{DynamicResource MainWindow_DeviceRefresh_ToolTip}"/>
-							<TextBlock Text="{DynamicResource MainWindow_Gain}" Grid.Row="1" Grid.Column="0"/>
-							<Slider Name="GainSlider" Grid.Row="1" Grid.Column="1" Minimum="10" Value="10" Maximum="2560" SmallChange="1" ValueChanged="GainSlider_ValueChanged" ToolTip="{DynamicResource MainWindow_Gain_ToolTip}"/>
-							<TextBlock Text="1.0" Name="GainTextBlock" Grid.Row="1" Grid.Column="2" TextAlignment="Center"/>
-							<TextBlock Text="{DynamicResource MainWindow_WeightThreashold}" Grid.Row="2" Grid.Column="0"/>
-							<Slider Name="WeightThreasholdSlider" Grid.Row="2" Grid.Column="1" Minimum="0" Value="0" Maximum="100" SmallChange="1" ValueChanged="WeightThreasholdSlider_ValueChanged" ToolTip="{DynamicResource MainWindow_WeightThreashold_ToolTip}"/>
-							<TextBlock Text="0.00" Name="WeightThreasholdTextBlock" Grid.Row="2" Grid.Column="2" TextAlignment="Center"/>
+                            </GroupBox>
+                            <Button Content="{DynamicResource MainWindow_Free}" Name="FreeCameraButton" Click="FreeCameraButton_Click" Grid.Row="1" Grid.Column="0"/>
+                            <Button Content="{DynamicResource MainWindow_PositionFixed}" Name="PositionFixedCameraButton" Click="PositionFixedCameraButton_Click" Grid.Row="1" Grid.Column="1"/>
+                        </Grid>
+                    </DockPanel>
+                </TabItem>
+                <TabItem ToolTip="{DynamicResource MainWindow_LipSync_ToolTip}">
+                    <TabItem.Header>
+                        <TextBlock Text="{DynamicResource MainWindow_LipSync}" Name="LipsyncTabTextBlock" Background="PaleVioletRed"/>
+                    </TabItem.Header>
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <CheckBox Content="{DynamicResource MainWindow_EnableLipSync}" Name="LipSyncCheckBox" Checked="LipSyncCheckBox_Checked" Unchecked="LipSyncCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_EnableLipSync_ToolTip}"/>
+                            <CheckBox Content="{DynamicResource MainWindow_MaxWeight}" Name="MaxWeightCheckBox" Checked="MaxWeightCheckBox_Checked" Unchecked="MaxWeightCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_MaxWeight_ToolTip}"/>
+                            <CheckBox Content="{DynamicResource MainWindow_MaxWeightEmphasis}" Name="MaxWeightEmphasisCheckBox" Checked="MaxWeightEmphasisCheckBox_Checked" Unchecked="MaxWeightEmphasisCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_MaxWeightEmphasis_ToolTip}"/>
+                        </StackPanel>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{DynamicResource MainWindow_Device}" Grid.Row="0" Grid.Column="0"/>
+                            <ComboBox Name="LipSyncDeviceComboBox" Grid.Row="0" Grid.Column="1" Margin="10,0,0,0" SelectionChanged="LipSyncDeviceComboBox_SelectionChanged" ToolTip="{DynamicResource MainWindow_Device_ToolTip}"/>
+                            <Button Content="{DynamicResource MainWindow_DeviceRefresh}" Margin="2" Height="20" Name="LipSyncDeviceRefreshButton" Grid.Row="0" Grid.Column="2" Click="LipSyncDeviceRefreshButton_Click" ToolTip="{DynamicResource MainWindow_DeviceRefresh_ToolTip}"/>
+                            <TextBlock Text="{DynamicResource MainWindow_Gain}" Grid.Row="1" Grid.Column="0"/>
+                            <Slider Name="GainSlider" Grid.Row="1" Grid.Column="1" Minimum="10" Value="10" Maximum="2560" SmallChange="1" ValueChanged="GainSlider_ValueChanged" ToolTip="{DynamicResource MainWindow_Gain_ToolTip}"/>
+                            <TextBlock Text="1.0" Name="GainTextBlock" Grid.Row="1" Grid.Column="2" TextAlignment="Center"/>
+                            <TextBlock Text="{DynamicResource MainWindow_WeightThreashold}" Grid.Row="2" Grid.Column="0"/>
+                            <Slider Name="WeightThreasholdSlider" Grid.Row="2" Grid.Column="1" Minimum="0" Value="0" Maximum="100" SmallChange="1" ValueChanged="WeightThreasholdSlider_ValueChanged" ToolTip="{DynamicResource MainWindow_WeightThreashold_ToolTip}"/>
+                            <TextBlock Text="0.00" Name="WeightThreasholdTextBlock" Grid.Row="2" Grid.Column="2" TextAlignment="Center"/>
 
-						</Grid>
-					</StackPanel>
-				</TabItem>
-				<TabItem Header="{DynamicResource MainWindow_Face}" ToolTip="{DynamicResource MainWindow_Face_ToolTip}">
-					<StackPanel Orientation="Vertical">
-						<DockPanel Margin="0">
-							<CheckBox Content="{DynamicResource MainWindow_AutoBlink}" Margin="0" Name="AutoBlinkCheckBox" Checked="AutoBlinkCheckBox_Checked" Unchecked="AutoBlinkCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_AutoBlink_ToolTip}"/>
-							<ComboBox Name="DefaultFaceComboBox" DockPanel.Dock="Right" Width="110" SelectionChanged="DefaultFaceComboBox_SelectionChanged" ToolTip="{DynamicResource MainWindow_DefaultFace_ToolTip}"/>
-							<TextBlock Text="{DynamicResource MainWindow_DefaultFace}" VerticalAlignment="Center" DockPanel.Dock="Right" TextAlignment="Right"/>
-						</DockPanel>
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition />
-								<RowDefinition />
-								<RowDefinition />
-								<RowDefinition />
-							</Grid.RowDefinitions>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto"/>
-								<ColumnDefinition />
-								<ColumnDefinition Width="Auto"/>
-								<ColumnDefinition Width="Auto"/>
-								<ColumnDefinition />
-								<ColumnDefinition Width="Auto"/>
-							</Grid.ColumnDefinitions>
-							<TextBlock Text="{DynamicResource MainWindow_TimeToNextBlink}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"/>
-							<TextBlock Text="{DynamicResource MainWindow_MinTime}" Grid.Row="1" Grid.Column="0"/>
-							<Slider Name="BlinkTimeMinSlider" Grid.Row="1" Grid.Column="1" Minimum="0" Value="10" Maximum="6000" ValueChanged="BlinkTimeMinSlider_ValueChanged" SmallChange="1" ToolTip="{DynamicResource MainWindow_MinTime_ToolTip}"/>
-							<TextBlock Text="1.0" Name="BlinkTimeMinTextBlock" Grid.Row="1" Grid.Column="2" TextAlignment="Center"/>
-							<TextBlock Text="{DynamicResource MainWindow_MaxTime}" Grid.Row="2" Grid.Column="0"/>
-							<Slider Name="BlinkTimeMaxSlider" Grid.Row="2" Grid.Column="1" Minimum="0" Value="100" Maximum="6000" ValueChanged="BlinkTimeMaxSlider_ValueChanged" SmallChange="1" ToolTip="{DynamicResource MainWindow_MaxTime_ToolTip}"/>
-							<TextBlock Text="10.0" Name="BlinkTimeMaxTextBlock" Grid.Row="2" Grid.Column="2" TextAlignment="Center"/>
+                        </Grid>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="{DynamicResource MainWindow_Face}" ToolTip="{DynamicResource MainWindow_Face_ToolTip}">
+                    <StackPanel Orientation="Vertical">
+                        <DockPanel Margin="0">
+                            <CheckBox Content="{DynamicResource MainWindow_AutoBlink}" Margin="0" Name="AutoBlinkCheckBox" Checked="AutoBlinkCheckBox_Checked" Unchecked="AutoBlinkCheckBox_Unchecked" ToolTip="{DynamicResource MainWindow_AutoBlink_ToolTip}"/>
+                            <ComboBox Name="DefaultFaceComboBox" DockPanel.Dock="Right" Width="110" SelectionChanged="DefaultFaceComboBox_SelectionChanged" ToolTip="{DynamicResource MainWindow_DefaultFace_ToolTip}"/>
+                            <TextBlock Text="{DynamicResource MainWindow_DefaultFace}" VerticalAlignment="Center" DockPanel.Dock="Right" TextAlignment="Right"/>
+                        </DockPanel>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{DynamicResource MainWindow_TimeToNextBlink}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"/>
+                            <TextBlock Text="{DynamicResource MainWindow_MinTime}" Grid.Row="1" Grid.Column="0"/>
+                            <Slider Name="BlinkTimeMinSlider" Grid.Row="1" Grid.Column="1" Minimum="0" Value="10" Maximum="6000" ValueChanged="BlinkTimeMinSlider_ValueChanged" SmallChange="1" ToolTip="{DynamicResource MainWindow_MinTime_ToolTip}"/>
+                            <TextBlock Text="1.0" Name="BlinkTimeMinTextBlock" Grid.Row="1" Grid.Column="2" TextAlignment="Center"/>
+                            <TextBlock Text="{DynamicResource MainWindow_MaxTime}" Grid.Row="2" Grid.Column="0"/>
+                            <Slider Name="BlinkTimeMaxSlider" Grid.Row="2" Grid.Column="1" Minimum="0" Value="100" Maximum="6000" ValueChanged="BlinkTimeMaxSlider_ValueChanged" SmallChange="1" ToolTip="{DynamicResource MainWindow_MaxTime_ToolTip}"/>
+                            <TextBlock Text="10.0" Name="BlinkTimeMaxTextBlock" Grid.Row="2" Grid.Column="2" TextAlignment="Center"/>
 
-							<TextBlock Text="{DynamicResource MainWindow_AnimationTime}" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="3"/>
-							<TextBlock Text="{DynamicResource MainWindow_TimeToClose}" Grid.Row="1" Grid.Column="3" Margin="5,0,0,0"/>
-							<Slider Name="CloseAnimationTimeSlider" Grid.Row="1" Grid.Column="4" Minimum="0" Value="6" Maximum="200" ValueChanged="CloseAnimationTimeSlider_ValueChanged" SmallChange="1" ToolTip="{DynamicResource MainWindow_TimeToClose_ToolTip}"/>
-							<TextBlock Text="0.06" Name="CloseAnimationTimeTextBlock" Grid.Row="1" Grid.Column="5" TextAlignment="Center"/>
-							<TextBlock Text="{DynamicResource MainWindow_TimeToOpen}" Grid.Row="2" Grid.Column="3" Margin="5,0,0,0"/>
-							<Slider Name="OpenAnimationTimeSlider" Grid.Row="2" Grid.Column="4" Minimum="0" Value="3" Maximum="200" ValueChanged="OpenAnimationTimeSlider_ValueChanged" SmallChange="1" ToolTip="{DynamicResource MainWindow_TimeToOpen_ToolTip}"/>
-							<TextBlock Text="0.03" Name="OpenAnimationTimeTextBlock" Grid.Row="2" Grid.Column="5" TextAlignment="Center"/>
-							<TextBlock Text="{DynamicResource MainWindow_ClosedTime}" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Right"/>
-							<Slider Name="ClosingTimeSlider" Grid.Row="3" Grid.Column="4" Minimum="0" Value="3" Maximum="200" ValueChanged="ClosingTimeSlider_ValueChanged" SmallChange="1" ToolTip="{DynamicResource MainWindow_ClosedTime_ToolTip}"/>
-							<TextBlock Text="0.10" Name="ClosingTimeTextBlock" Grid.Row="3" Grid.Column="5" TextAlignment="Center"/>
-						</Grid>
-					</StackPanel>
-				</TabItem>
-				<TabItem Header="{DynamicResource MainWindow_Appearance}">
-					<DockPanel>
-						<Button Content="{DynamicResource MainWindow_LightColor}" Name="LightColorButton" Click="LightColorButton_Click" DockPanel.Dock="Right" VerticalAlignment="Top"/>
-						<GroupBox DockPanel.Dock="Top" Header="{DynamicResource MainWindow_LightAngle}">
-							<StackPanel Orientation="Vertical">
-								<DockPanel DockPanel.Dock="Top">
-									<TextBlock Text="{DynamicResource MainWindow_LightVerticalDirection}"/>
-									<Slider Name="LightXSlider" Minimum="0" Value="130" Maximum="359" ValueChanged="LightSlider_ValueChanged" SmallChange="1"/>
-								</DockPanel>
-								<DockPanel DockPanel.Dock="Top">
-									<TextBlock Text="{DynamicResource MainWindow_LightHorizontalDirection}"/>
-									<Slider Name="LightYSlider" Minimum="0" Value="43" Maximum="359" ValueChanged="LightSlider_ValueChanged" SmallChange="1" DockPanel.Dock="Top"/>
-								</DockPanel>
-							</StackPanel>
-						</GroupBox>
-						<Button Content="Advanced Graphics Option" Name="GraphicsOptionButton" Click="GraphicsOptionButton_Click" Height="AUto"/>
-					</DockPanel>
-				</TabItem>
-				<TabItem Header="ヘルプ">
-					<StackPanel Orientation="Vertical">
-						<GroupBox Header="使い方などはWebサイトをご覧ください">
-							<StackPanel Orientation="Vertical" DockPanel.Dock="Top">
-								<TextBlock><Hyperlink NavigateUri="https://sh-akira.github.io/VirtualMotionCapture/manual/" RequestNavigate="Hyperlink_RequestNavigate">説明書</Hyperlink></TextBlock>
-								<TextBlock><Hyperlink NavigateUri="https://github.com/sh-akira/VirtualMotionCapture/wiki/%E3%82%88%E3%81%8F%E3%81%82%E3%82%8B%E8%B3%AA%E5%95%8F%E3%81%A8%E5%9B%9E%E7%AD%94" RequestNavigate="Hyperlink_RequestNavigate">よくある質問と回答</Hyperlink></TextBlock>
-							</StackPanel>
-						</GroupBox>
-						<GroupBox Header="エラーが出たときは">
-							<StackPanel Orientation="Vertical" DockPanel.Dock="Top">
-								<TextBlock Text="↓をダブルクリックでクリップボードにコピーされます。" TextWrapping="Wrap"/>
-							</StackPanel>
-						</GroupBox>
-					</StackPanel>
-				</TabItem>
-			</TabControl>
-		</DockPanel>
-	</Grid>
+                            <TextBlock Text="{DynamicResource MainWindow_AnimationTime}" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="3"/>
+                            <TextBlock Text="{DynamicResource MainWindow_TimeToClose}" Grid.Row="1" Grid.Column="3" Margin="5,0,0,0"/>
+                            <Slider Name="CloseAnimationTimeSlider" Grid.Row="1" Grid.Column="4" Minimum="0" Value="6" Maximum="200" ValueChanged="CloseAnimationTimeSlider_ValueChanged" SmallChange="1" ToolTip="{DynamicResource MainWindow_TimeToClose_ToolTip}"/>
+                            <TextBlock Text="0.06" Name="CloseAnimationTimeTextBlock" Grid.Row="1" Grid.Column="5" TextAlignment="Center"/>
+                            <TextBlock Text="{DynamicResource MainWindow_TimeToOpen}" Grid.Row="2" Grid.Column="3" Margin="5,0,0,0"/>
+                            <Slider Name="OpenAnimationTimeSlider" Grid.Row="2" Grid.Column="4" Minimum="0" Value="3" Maximum="200" ValueChanged="OpenAnimationTimeSlider_ValueChanged" SmallChange="1" ToolTip="{DynamicResource MainWindow_TimeToOpen_ToolTip}"/>
+                            <TextBlock Text="0.03" Name="OpenAnimationTimeTextBlock" Grid.Row="2" Grid.Column="5" TextAlignment="Center"/>
+                            <TextBlock Text="{DynamicResource MainWindow_ClosedTime}" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Right"/>
+                            <Slider Name="ClosingTimeSlider" Grid.Row="3" Grid.Column="4" Minimum="0" Value="3" Maximum="200" ValueChanged="ClosingTimeSlider_ValueChanged" SmallChange="1" ToolTip="{DynamicResource MainWindow_ClosedTime_ToolTip}"/>
+                            <TextBlock Text="0.10" Name="ClosingTimeTextBlock" Grid.Row="3" Grid.Column="5" TextAlignment="Center"/>
+                        </Grid>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="{DynamicResource MainWindow_Appearance}">
+                    <DockPanel>
+                        <DockPanel DockPanel.Dock="Right">
+                            <Button Content="{DynamicResource MainWindow_LightColor}" Name="LightColorButton" Click="LightColorButton_Click" DockPanel.Dock="Top" VerticalAlignment="Top"/>
+                            <Button Content="Advanced" Name="GraphicsOptionButton" Click="GraphicsOptionButton_Click" VerticalAlignment="Top"/>
+                        </DockPanel>
+                        <GroupBox DockPanel.Dock="Left" Header="View">
+                            <StackPanel Orientation="Vertical">
+                                <CheckBox Content="{DynamicResource MainWindow_Mirror}" Name="CameraMirrorCheckBox" Checked="CameraMirrorCheckBox_Checked" Unchecked="CameraMirrorCheckBox_Unchecked"/>
+                                <CheckBox Content="{DynamicResource MainWindow_ShowGrid}" Name="CameraGridCheckBox" Checked="CameraGridCheckBox_Checked" Unchecked="CameraGridCheckBox_Unchecked"/>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox DockPanel.Dock="Top" Header="{DynamicResource MainWindow_LightAngle}">
+                            <StackPanel Orientation="Vertical">
+                                <DockPanel DockPanel.Dock="Top">
+                                    <TextBlock Text="{DynamicResource MainWindow_LightVerticalDirection}"/>
+                                    <Slider Name="LightXSlider" Minimum="0" Value="130" Maximum="359" ValueChanged="LightSlider_ValueChanged" SmallChange="1"/>
+                                </DockPanel>
+                                <DockPanel DockPanel.Dock="Top">
+                                    <TextBlock Text="{DynamicResource MainWindow_LightHorizontalDirection}"/>
+                                    <Slider Name="LightYSlider" Minimum="0" Value="43" Maximum="359" ValueChanged="LightSlider_ValueChanged" SmallChange="1" DockPanel.Dock="Top"/>
+                                </DockPanel>
+                            </StackPanel>
+                        </GroupBox>
+                    </DockPanel>
+                </TabItem>
+                <TabItem Header="{DynamicResource MainWindow_Help}">
+                    <StackPanel Orientation="Vertical">
+                        <GroupBox Header="{DynamicResource MainWindow_ManualHeader}">
+                            <StackPanel Orientation="Vertical" DockPanel.Dock="Top">
+                                <TextBlock><Hyperlink NavigateUri="https://sh-akira.github.io/VirtualMotionCapture/manual/" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="{DynamicResource MainWindow_Manual}"/></Hyperlink></TextBlock>
+                                <TextBlock><Hyperlink NavigateUri="https://github.com/sh-akira/VirtualMotionCapture/wiki/%E3%82%88%E3%81%8F%E3%81%82%E3%82%8B%E8%B3%AA%E5%95%8F%E3%81%A8%E5%9B%9E%E7%AD%94" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="{DynamicResource MainWindow_FAQ}"/></Hyperlink></TextBlock>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="{DynamicResource MainWindow_ClipboardHeader}">
+                            <StackPanel Orientation="Vertical" DockPanel.Dock="Top">
+                                <TextBlock Text="{DynamicResource MainWindow_ClipboardDescription}" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
+    </Grid>
 </Window>

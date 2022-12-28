@@ -1153,6 +1153,8 @@ namespace VMC
 
                     handController.SetDefaultAngle(animator);
 
+                    handController.SetNaturalPose();
+
                     //トラッカーのスケールリセット
                     HandTrackerRoot.localPosition = Vector3.zero;
                     HandTrackerRoot.localScale = Vector3.one;
@@ -1210,6 +1212,8 @@ namespace VMC
             }
             CurrentModel = model;
 
+            VMCEvents.OnCurrentModelChanged?.Invoke(CurrentModel);
+
             ModelInitialize();
         }
 
@@ -1253,6 +1257,9 @@ namespace VMC
                 animator.GetBoneTransform(HumanBodyBones.RightUpperArm).eulerAngles = new Vector3(RightUpperArmAngle, 0, 0);
 
                 handController.SetDefaultAngle(animator);
+
+                //初期の指を自然に閉じたポーズにする
+                handController.SetNaturalPose();
             }
             //SetTrackersToVRIK();
 
