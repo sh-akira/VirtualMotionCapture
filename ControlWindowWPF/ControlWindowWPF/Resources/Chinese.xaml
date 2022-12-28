@@ -77,7 +77,7 @@
     <system:String x:Key="MainWindow_PositionFixed_ToolTip">坐标追踪相机（固定相机和模型的相对位置。可以在屏幕上通过鼠标中键拖拽、缩放、右键拖拽以自由移动）</system:String>
     <system:String x:Key="MainWindow_Mirror_ToolTip">水平镜像显示</system:String>
     <system:String x:Key="MainWindow_ShowGrid_ToolTip">显示分镜辅助格以方便调整相机</system:String>
-    <system:String x:Key="MainWindow_FrontReset">Front reset</system:String>
+    <system:String x:Key="MainWindow_FrontReset">重置前方相机</system:String>
 
     <system:String x:Key="MainWindow_LipSync">嘴型</system:String>
     <system:String x:Key="MainWindow_EnableLipSync">同步嘴型</system:String>
@@ -121,32 +121,32 @@
     <system:String x:Key="MainWindow_LightVerticalDirection">纵轴</system:String>
     <system:String x:Key="MainWindow_LightHorizontalDirection">横轴</system:String>
 
-    <system:String x:Key="MainWindow_ErrorCalibration">还没有VRM模型被读取，请先打开一个。</system:String>
+    <system:String x:Key="MainWindow_ErrorCalibration">还没有VRM模型被加载，请先打开模型。</system:String>
 
-    <system:String x:Key="MainWindow_Help">Help</system:String>
-    <system:String x:Key="MainWindow_ManualHeader">Please visit the website for usage and other information</system:String>
-    <system:String x:Key="MainWindow_Manual">Instructions</system:String>
-    <system:String x:Key="MainWindow_FAQ">Frequently Asked Questions and Answers</system:String>
-    <system:String x:Key="MainWindow_ClipboardHeader">When an error occurs</system:String>
-    <system:String x:Key="MainWindow_ClipboardDescription">↓Double click on message will copy full text to the clipboard.</system:String>
+    <system:String x:Key="MainWindow_Help">帮助</system:String>
+    <system:String x:Key="MainWindow_ManualHeader">请浏览如下网站获取使用帮助和其他信息</system:String>
+    <system:String x:Key="MainWindow_Manual">使用说明</system:String>
+    <system:String x:Key="MainWindow_FAQ">常见问题</system:String>
+    <system:String x:Key="MainWindow_ClipboardHeader">当发生错误时</system:String>
+    <system:String x:Key="MainWindow_ClipboardDescription">↓双击下方的信息可复制完整日志至剪贴板。</system:String>
 
 
     <!-- CalibrationWindow -->
     <system:String x:Key="CalibrationWindowTitle">校准模型</system:String>
 
-    <system:String x:Key="CalibrationWindow_CalibrationDescription1">请做出和屏幕上的模型一样的动作并且对齐</system:String>
-    <system:String x:Key="CalibrationWindow_CalibrationDescription2">之后点击按钮或按下手柄的扳机键并等待5秒</system:String>
+    <system:String x:Key="CalibrationWindow_CalibrationDescription1">将在点击按钮或按下手柄的扳机键5秒后校准</system:String>
+    <system:String x:Key="CalibrationWindow_CalibrationDescription2">请面朝前方并做出和屏幕上的模型一样的动作</system:String>
     <system:String x:Key="CalibrationWindow_CalibrationButton">校准模型</system:String>
     <system:String x:Key="CalibrationWindow_CalibrationButton_ToolTip">开始校准模型</system:String>
     <system:String x:Key="CalibrationWindow_Status_Calibrating">校准中</system:String>
     <system:String x:Key="CalibrationWindow_Status_Finish">校准完成</system:String>
-    <system:String x:Key="CalibrationWindow_Status_NewCalibrationGroup">Standard mode (new calibration)</system:String>
-    <system:String x:Key="CalibrationWindow_Status_OldCalibrationGroup">Compatibility mode (old calibration)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_NewCalibrationGroup">标准模式（新校准实现）</system:String>
+    <system:String x:Key="CalibrationWindow_Status_OldCalibrationGroup">兼容模式（旧校准实现）</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateIposeRadioButton">I-pose</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateTposeRadioButton">T-pose</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandRadioButton">混合现实模式（正确的手位置但是没有腿部校准）</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton">混合现实模式（正确的手位置并且校准腿部到地面）</system:String>
-    <system:String x:Key="CalibrationWindow_Status_CalibrationInformation" xml:space="preserve">If I-pose calibration will not work, re-set the room scale and correct the floor height.&#xa;For T-pose, you can adjust the calibration by bending the arm shorter or lifting the arm slightly.&#xa;Note that white balls on the screen are to confirm that trackers are recognized. You do not need to adjust the position.</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrationInformation" xml:space="preserve">如果 I-pose 校准无法正常工作，请重置房间大小并校准地面高度。&#xa;对于 T-pose，你可以将手臂弯曲短一些或略微抬高手臂来调整校准。&#xa;请注意，屏幕上的白球是用于确认追踪器是否被正确识别。你不需要精确对齐。</system:String>
 
     <!-- VRMImportWindow -->
     <system:String x:Key="VRMImportWindowTitle">打开VRM</system:String>
@@ -154,7 +154,7 @@
     <system:String x:Key="VRMImportWindow_VRMImportButton">打开VRM文件</system:String>
     <system:String x:Key="VRMImportWindow_VRMImportOption">载入设置</system:String>
     <system:String x:Key="VRMImportWindow_NormalMapFix">法线贴图自动修正 (for VRoid)</system:String>
-    <system:String x:Key="VRMImportWindow_RemoveHairNormalMap">法线贴图自动修正时头发会被删除 (for VRoid)</system:String>
+    <system:String x:Key="VRMImportWindow_RemoveHairNormalMap">开启自动修正时头发的法线贴图会被删除 (for VRoid)</system:String>
     <system:String x:Key="VRMImportWindow_VRMInformation">VRM信息</system:String>
     <system:String x:Key="VRMImportWindow_ModelTitle">名称</system:String>
     <system:String x:Key="VRMImportWindow_ModelVersion">版本</system:String>
@@ -171,16 +171,16 @@
     <system:String x:Key="VRMImportWindow_ForCommercialUse">用于商业行为的许可</system:String>
     <system:String x:Key="VRMImportWindow_PersonationOtherLicenseUrl">其他协议链接</system:String>
     <system:String x:Key="VRMImportWindow_LicenseRedistributionAndModification">再发布/修改协议</system:String>
-    <system:String x:Key="VRMImportWindow_LicenseType">协议种类</system:String>
+    <system:String x:Key="VRMImportWindow_LicenseType">协议类型</system:String>
     <system:String x:Key="VRMImportWindow_OtherLicenseUrl">其他协议链接</system:String>
     <system:String x:Key="VRMImportWindow_ImportButton">同意并打开</system:String>
     <system:String x:Key="VRMImportWindow_IgnoreButton">不同意</system:String>
     <system:String x:Key="VRMImportWindow_VRMImportButton_ToolTip">读取VRM文件</system:String>
-    <system:String x:Key="VRMImportWindow_RemoveHairNormalMap_ToolTip">法线贴图的自动修正会打开</system:String>
+    <system:String x:Key="VRMImportWindow_RemoveHairNormalMap_ToolTip">当开启法线贴图自动修正时会打开</system:String>
     <system:String x:Key="VRMImportWindow_Thumbnail_ToolTip">模型缩略图</system:String>
-    <system:String x:Key="VRMImportWindow_ImportButton_ToolTip">请确认模型使用许可协议，并确认你可以使用它们</system:String>
+    <system:String x:Key="VRMImportWindow_ImportButton_ToolTip">请始终确认模型的使用许可协议，并在确认没有问题后使用它</system:String>
     <system:String x:Key="VRMImportWindow_IgnoreButton_ToolTip">取消读取</system:String>
-    <system:String x:Key="VRMImportWindow_VRoidNormalMapDescription">如果用VRoid载入出现问题，请用VRoid 0.2.14及以上版本重新上传模型</system:String>
+    <system:String x:Key="VRMImportWindow_VRoidNormalMapDescription">如果用VRoid载入出现光泽度问题，请用VRoid 0.2.14及以上版本重新上传模型以解决法线贴图的问题</system:String>
 
     <system:String x:Key="Unknown">未知</system:String>
     <system:String x:Key="OnlyAuthor">仅作者</system:String>
@@ -214,9 +214,9 @@
     <system:String x:Key="SettingWindow_OpenTrackerConfig">打开追踪器分配设置</system:String>
     <system:String x:Key="SettingWindow_OpenHandFreeOffset">打开设置</system:String>
     <system:String x:Key="SettingWindow_Close">关闭</system:String>
-    <system:String x:Key="SettingWindow_LeftHand_ToolTip">调整左手角度。如果现实手的角度与显示的不同，请调整。</system:String>
-    <system:String x:Key="SettingWindow_RightHand_ToolTip">调整右手角度。如果现实手的角度与显示的不同，请调整。</system:String>
-    <system:String x:Key="SettingWindow_ControllerNumber_ToolTip">选择用来作为相机基准的追踪器（若更换请重新打开.cfg文件）</system:String>
+    <system:String x:Key="SettingWindow_LeftHand_ToolTip">调整左手角度。请在现实中手的角度与模型显示的不同时调整。</system:String>
+    <system:String x:Key="SettingWindow_RightHand_ToolTip">调整右手角度。请在现实中手的角度与模型显示的不同时调整。</system:String>
+    <system:String x:Key="SettingWindow_ControllerNumber_ToolTip">选择用来作为相机基准的追踪器（若需更换请重新打开.cfg文件）</system:String>
     <system:String x:Key="SettingWindow_OpenExternalCameraConfig_ToolTip">读取externalcamera.cfg 以同步模型到VR游戏并使用自由相机</system:String>
     <system:String x:Key="SettingWindow_Close_ToolTip">关闭设置</system:String>
     <system:String x:Key="SettingWindow_Language">语言</system:String>
@@ -227,17 +227,17 @@
     <system:String x:Key="SettingWindow_WebCamEnable">启用虚拟摄像头 (VMC__Camera)</system:String>
     <system:String x:Key="SettingWindow_WebCamResize">调整大小（电脑会卡）</system:String>
     <system:String x:Key="SettingWindow_WebCamMirror">镜像（水平镜像）</system:String>
-    <system:String x:Key="SettingWindow_WebCamBuffering">缓冲（减缓电脑压力/会有延迟）：</system:String>
+    <system:String x:Key="SettingWindow_WebCamBuffering">缓冲（减缓电脑压力/增加延迟）：</system:String>
     <system:String x:Key="SettingWindow_ResolutionSetting">分辨率（请与虚拟摄像头设置的一致）</system:String>
     <system:String x:Key="SettingWindow_Apply">应用</system:String>
     <system:String x:Key="SettingWindow_FailedFolderCreate">创建文件夹失败。请手动创建C:\VMC_Camera文件夹。</system:String>
     <system:String x:Key="SettingWindow_VMTFailedFolderCreate">创建文件夹失败。</system:String>
     <system:String x:Key="SettingWindow_FailedFileCopy">复制文件失败。请手动复制VMC_CameraFilter32bit.dll以及64bit.dll到C:\VMC_Camera文件夹下。</system:String>
-    <system:String x:Key="SettingWindow_SuccessDriverInstall">成功安装摄像头驱动，VMC_Camera将可选</system:String>
+    <system:String x:Key="SettingWindow_SuccessDriverInstall">成功安装摄像头驱动，VMC_Camera将可在摄像头列表中选择</system:String>
     <system:String x:Key="SettingWindow_FailedDriverInstall">安装摄像头驱动失败。请打开命令提示符，移动到C:\VMC_Camera，并执行 regsvr32 VMC_CameraFilter32bit.dll 以及 regsvr32 VMC_CameraFilter64bit.dll</system:String>
     <system:String x:Key="SettingWindow_FailedFileDelete">删除文件失败。请手动删除C:\VMC_Camera文件夹</system:String>
     <system:String x:Key="SettingWindow_FailedFolderDelete">删除文件夹失败。请手动删除C:\VMC_Camera文件夹</system:String>
-    <system:String x:Key="SettingWindow_SuccessDriverUninstall">摄像机驱动已被卸载。VMC_Camera将被移除</system:String>
+    <system:String x:Key="SettingWindow_SuccessDriverUninstall">摄像机驱动已被卸载。VMC_Camera将从摄像头列表中移除</system:String>
     <system:String x:Key="SettingWindow_FailedDriverUninstall">卸载摄像机驱动失败。请打开命令提示符，移动到C:\VMC_Camera，并执行 regsvr32 /u VMC_CameraFilter32bit.dll 以及 regsvr32 /u VMC_CameraFilter64bit.dll。之后删除C:\VMC_Camera文件夹</system:String>
     <system:String x:Key="SettingWindow_SelectedItemError">请选择一个追踪器以设置相机</system:String>
     <system:String x:Key="SettingWindow_ExportExternalCameraConfig">导出externalcamera.cfg</system:String>
@@ -252,7 +252,7 @@
     <system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape</system:String>
     <system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">分配MIDI CC旋钮</system:String>
     <system:String x:Key="SettingWindow_MidiEnable">启用MIDI设备</system:String>
-    <system:String x:Key="SettingWindow_PreventLosingTracking">防丢追踪</system:String>
+    <system:String x:Key="SettingWindow_PreventLosingTracking">防止追踪丢失</system:String>
     <system:String x:Key="SettingWindow_TrackingFilterEnable">开启</system:String>
     <system:String x:Key="SettingWindow_TrackingFilterHmdEnable">头显</system:String>
     <system:String x:Key="SettingWindow_TrackingFilterControllerEnable">控制器</system:String>
@@ -322,7 +322,7 @@
     <system:String x:Key="ShortcutKeyWindow_LeftDivideCount">分区：</system:String>
     <system:String x:Key="ShortcutKeyWindow_RightCenterKey">中心键</system:String>
     <system:String x:Key="ShortcutKeyWindow_RightDivideCount">分区：</system:String>
-    <system:String x:Key="ShortcutKeyWindow_OculusTouchDescription">使用Oculus Touch的时候，摇杆的中心键将不可用</system:String>
+    <system:String x:Key="ShortcutKeyWindow_OculusTouchDescription">使用Oculus Touch的时候，摇杆的中心键区域将不响应</system:String>
     <system:String x:Key="ShortcutKeyWindow_Apply">应用</system:String>
     <system:String x:Key="ShortcutKeyWindow_AddHandGesture">添加手势</system:String>
     <system:String x:Key="ShortcutKeyWindow_AddFacingExpression">添加表情</system:String>
@@ -340,15 +340,15 @@
     <system:String x:Key="ShortcutKeyWindow_RightCenterKey_ToolTip">将右手触摸板中心当做一个按键，或作为Oculus Touch的不响应区域。</system:String>
     <system:String x:Key="ShortcutKeyWindow_RightDivideCount_ToolTip">更改右手柄触摸板/摇杆的分区数量。</system:String>
     <system:String x:Key="ShortcutKeyWindow_Apply_ToolTip">保存触摸板上的分区设置（保存后生效）。</system:String>
-    <system:String x:Key="ShortcutKeyWindow_AddHandGesture_ToolTip">添加改变手型的快捷键</system:String>
-    <system:String x:Key="ShortcutKeyWindow_AddFacingExpression_ToolTip">添加改变表情的快捷键</system:String>
-    <system:String x:Key="ShortcutKeyWindow_AddFunction_ToolTip">添加执行功能的快捷键</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddHandGesture_ToolTip">添加改变手势的快捷键。</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddFacingExpression_ToolTip">添加改变表情的快捷键。</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddFunction_ToolTip">添加执行功能的快捷键。</system:String>
     <system:String x:Key="ShortcutKeyWindow_SelectPreset_ToolTip">从预设中读取快捷键设置。请注意当前设置会被覆盖。</system:String>
     <system:String x:Key="ShortcutKeyWindow_CustomName_ToolTip">请指定快捷键预设的名称。</system:String>
-    <system:String x:Key="ShortcutKeyWindow_SavePreset_ToolTip">保存快捷键设置到预设</system:String>
+    <system:String x:Key="ShortcutKeyWindow_SavePreset_ToolTip">保存快捷键设置到预设。</system:String>
     <system:String x:Key="ShortcutKeyWindow_Edit_ToolTip">编辑被选择的快捷键。</system:String>
     <system:String x:Key="ShortcutKeyWindow_Remove_ToolTip">移除被选择的快捷键。</system:String>
-    <system:String x:Key="ShortcutKeyWindow_ShortcutKeyList_ToolTip">已注册快捷键列表</system:String>
+    <system:String x:Key="ShortcutKeyWindow_ShortcutKeyList_ToolTip">已注册快捷键列表。</system:String>
     <system:String x:Key="ShortcutKeyWindow_UseSkeletal">使用Index指虎追踪手指（手势将不可用）</system:String>
 
 
@@ -373,7 +373,7 @@
     <system:String x:Key="HandGestureControlKeyAddWindow_SecondJoint">第二关节</system:String>
     <system:String x:Key="HandGestureControlKeyAddWindow_ThirdJoint">第三关节</system:String>
     <system:String x:Key="HandGestureControlKeyAddWindow_ThirdJointSide">第三关节（侧）</system:String>
-    <system:String x:Key="HandGestureControlKeyAddWindow_AnimationTime">动画时长（改变手型的时长）</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_AnimationTime">动画时长（改变手势的时长）</system:String>
     <system:String x:Key="HandGestureControlKeyAddWindow_Second">秒</system:String>
     <system:String x:Key="HandGestureControlKeyAddWindow_Preset">选择预设</system:String>
     <system:String x:Key="HandGestureControlKeyAddWindow_CustomName">自定义名称（添加到预设）</system:String>
@@ -393,7 +393,7 @@
     <system:String x:Key="FaceControlKeyAddWindow_DisableBlinking">禁用自动眨眼</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_DisableBlendShapeReception">禁用 BlendShape 接收</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_LipSyncSuppression">抑制嘴型影响</system:String>
-    <system:String x:Key="FaceControlKeyAddWindow_LipSyncMaxLevel">设置上限（0是不使用）</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_LipSyncMaxLevel">设置上限（0是禁用）</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_Register">注册</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_Cancel">取消</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_SaveName">保存名称</system:String>
@@ -439,8 +439,8 @@
     <system:String x:Key="PhotoWindow_Transparent">透明</system:String>
     <system:String x:Key="PhotoWindow_TransparentCheckBox">背景透明</system:String>
     <system:String x:Key="PhotoWindow_Description">点击相机按键或者按下扳机键进行拍照</system:String>
-    <system:String x:Key="PhotoWindow_ErrorTimer">请输入半角整数</system:String>
-    <system:String x:Key="PhotoWindow_ErrorWidth">请输入半角整数</system:String>
+    <system:String x:Key="PhotoWindow_ErrorTimer">请使用半角整数输入等待时间</system:String>
+    <system:String x:Key="PhotoWindow_ErrorWidth">请使用半角整数输入宽度</system:String>
     <system:String x:Key="PhotoWindow_ErrorFolderExist">文件夹不存在</system:String>
     <system:String x:Key="PhotoWindow_FolderSelect">请选择文件夹</system:String>
     <system:String x:Key="PhotoWindow_ContinuousCheckBox">连拍</system:String>
@@ -465,20 +465,20 @@
 
     <!-- MotionCapture_mocopiSettingWindow -->
     <system:String x:Key="MotionCapture_mocopiSettingWindow_EnableCheckBox">使用</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_ApplyTarget">Apply target</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_Head">Head</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_Chest">Chest</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightArm">Right Arm</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftArm">Left Arm</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_Spine">Spine</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightHand">Right Hand</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftHand">Left Hand</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightLeg">Right Leg</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftLeg">Left Leg</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightFoot">Right Foot</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftFoot">Left Foot</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RootPositionSynchronize">Root position synchronize</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_ResetCenter">Re-center current position</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_ApplyTarget">应用部位</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_Head">头</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_Chest">胸</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightArm">右臂</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftArm">左臂</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_Spine">腰</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightHand">右手</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftHand">左手</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightLeg">右腿</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftLeg">左腿</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightFoot">右脚</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftFoot">左脚</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RootPositionSynchronize">同步根位置</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_ResetCenter">重设当前位置为中心</system:String>
 
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">取色器</system:String>
