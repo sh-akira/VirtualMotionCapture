@@ -114,7 +114,7 @@ namespace VMC
 
         public ModManager modManager;
 
-        public PipeCommands.CalibrationResult calibrationResult;
+        public PipeCommands.CalibrationResult calibrationResult = new PipeCommands.CalibrationResult { Type = PipeCommands.CalibrateType.Invalid }; //初期値は失敗
 
         private void Awake()
         {
@@ -2545,7 +2545,12 @@ namespace VMC
                 errorCount = CriticalErrorCount,
             });
 
-            if (type == LogType.Error && cond.StartsWith("[Calib Fail]")) {
+            if (
+                (type == LogType.Error && cond.StartsWith("[Calib Fail]")) ||
+                (type == LogType.Exception && cond.StartsWith("NullReferenceException"))
+                )
+            {
+                PipeCommands.CalibrationResult oldCalibrationResult = calibrationResult;
                 //状態を失敗で上書き
                 calibrationResult = new PipeCommands.CalibrationResult
                 {
@@ -2553,6 +2558,12 @@ namespace VMC
                     Message = cond,
                     UserHeight = -1
                 };
+
+                //以前の状態が失敗ではない場合、
+                if (oldCalibrationResult.Type != PipeCommands.CalibrateType.Invalid) {
+                    //エラー確定なので一旦ここで送ってしまう(例外等の場合は最終送信処理が行われなくなるため)
+                    await server.SendCommandAsync(calibrationResult);
+                }
             }
         }
 

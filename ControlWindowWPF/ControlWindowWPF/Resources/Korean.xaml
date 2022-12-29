@@ -517,5 +517,18 @@
 
     <system:String x:Key="VRoidHubWindow_SelectModelMessage">불러올 모델을 선택해주세요</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionConfirm">이 모델은 사용 시 라이센스를 반드시 표시해야합니다. 영상, 생방송 등에 사용할 시 반드시 명기하셔야 합니다. 사용하시겠습니까?</system:String>
-    
+
+	<!-- CalibrationResultWindow -->
+	<system:String x:Key="CalibrationResultWindowTitle">Calibration Result</system:String>
+
+	<system:String x:Key="CalibrationResultWindow_DetailMessageHideText">▶ Double click here to view details.</system:String>
+	<system:String x:Key="CalibrationResultWindow_CloseButton">Close</system:String>
+	<system:String x:Key="CalibrationResultWindow_CalibrationSucceed">Calibration Succeed</system:String>
+	<system:String x:Key="CalibrationResultWindow_CalibrationFailed">Calibration Failed</system:String>
+	<system:String x:Key="CalibrationResultWindow_BodyParamMessage">Your body parameter calculated.</system:String>
+	<system:String x:Key="CalibrationResultWindow_PleaseCheckDevicesMessage">Check your devices and trackers assignment.</system:String>
+	<system:String x:Key="CalibrationResultWindow_RealHeight">Height</system:String>
+	<system:String x:Key="CalibrationResultWindow_CautionMessage">if you think it is wrong, please check your tracker mounting and check the floor level of your VR space.</system:String>
+	<system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">sec after close automatically.</system:String>
+
 </ResourceDictionary>

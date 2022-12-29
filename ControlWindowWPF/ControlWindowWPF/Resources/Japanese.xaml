@@ -516,5 +516,18 @@
 
     <system:String x:Key="VRoidHubWindow_SelectModelMessage">読み込むモデルを選択してください</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionConfirm">このモデルは使用時のライセンス表示が必須です。動画や配信で使用する際必ず明記する必要があります。使用しますか？</system:String>
-    
+
+	<!-- CalibrationResultWindow -->
+	<system:String x:Key="CalibrationResultWindowTitle">キャリブレーション結果</system:String>
+
+	<system:String x:Key="CalibrationResultWindow_DetailMessageHideText">▶ ここをダブルクリックで詳細を表示します</system:String>
+	<system:String x:Key="CalibrationResultWindow_CloseButton">閉じる</system:String>
+	<system:String x:Key="CalibrationResultWindow_CalibrationSucceed">キャリブレーションが完了しました</system:String>
+	<system:String x:Key="CalibrationResultWindow_CalibrationFailed">キャリブレーションに失敗しました</system:String>
+	<system:String x:Key="CalibrationResultWindow_BodyParamMessage">あなたの身体パラメータを推定しました。</system:String>
+	<system:String x:Key="CalibrationResultWindow_PleaseCheckDevicesMessage">デバイスの認識や割り当て設定を確認してください</system:String>
+	<system:String x:Key="CalibrationResultWindow_RealHeight">身長</system:String>
+	<system:String x:Key="CalibrationResultWindow_CautionMessage">実際の値と大きく違う場合、装着位置や床の高さ設定を確認し、正しい姿勢でもう一度キャリブレーションを実行してください。</system:String>
+	<system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">秒後に自動で閉じます</system:String>
+	
 </ResourceDictionary>

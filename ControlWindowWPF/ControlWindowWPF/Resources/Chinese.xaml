@@ -517,4 +517,17 @@
     <system:String x:Key="VRoidHubWindow_SelectModelMessage">请选择模型并载入</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionConfirm">使用这个模型，你需要确认协议。必须清晰标注模型的来源，是否继续？</system:String>
     
+    <!-- CalibrationResultWindow -->
+    <system:String x:Key="CalibrationResultWindowTitle">Calibration Result</system:String>
+
+    <system:String x:Key="CalibrationResultWindow_DetailMessageHideText">▶ Double click here to view details.</system:String>
+    <system:String x:Key="CalibrationResultWindow_CloseButton">Close</system:String>
+    <system:String x:Key="CalibrationResultWindow_CalibrationSucceed">Calibration Succeed</system:String>
+    <system:String x:Key="CalibrationResultWindow_CalibrationFailed">Calibration Failed</system:String>
+    <system:String x:Key="CalibrationResultWindow_BodyParamMessage">Your body parameter calculated.</system:String>
+    <system:String x:Key="CalibrationResultWindow_PleaseCheckDevicesMessage">Check your devices and trackers assignment.</system:String>
+    <system:String x:Key="CalibrationResultWindow_RealHeight">Height</system:String>
+    <system:String x:Key="CalibrationResultWindow_CautionMessage">if you think it is wrong, please check your tracker mounting and check the floor level of your VR space.</system:String>
+    <system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">sec after close automatically.</system:String>
+
 </ResourceDictionary>

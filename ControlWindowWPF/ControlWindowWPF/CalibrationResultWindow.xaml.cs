@@ -36,10 +36,10 @@ namespace VirtualMotionCaptureControlPanel
                 case PipeCommands.CalibrateType.Tpose:
                     {
                         CalibrationResult_Caption1TextBlock.Background = new SolidColorBrush(Color.FromRgb(230,255,230));
-                        CalibrationResult_Caption1TextBlock.Text = "ℹ キャリブレーションが完了しました";
-                        CalibrationResult_Caption2TextBlock.Text = "あなたの身体パラメータを推定しました。";
+                        CalibrationResult_Caption1TextBlock.Text = "ℹ " + LanguageSelector.Get("CalibrationResultWindow_CalibrationSucceed");
+                        CalibrationResult_Caption2TextBlock.Text = LanguageSelector.Get("CalibrationResultWindow_BodyParamMessage");
 
-                        DetailMessageTextBlock.Text = "身長: "+String.Format("{0:0.0}cm",result.UserHeight*100) + "\n"+"実際の値と大きく違う場合、装着位置や床の高さ設定を確認し、正しい姿勢でもう一度キャリブレーションを実行してください。";
+                        DetailMessageTextBlock.Text = LanguageSelector.Get("CalibrationResultWindow_RealHeight") +": " +String.Format("{0:0.0}cm",result.UserHeight*100) + "\n"+ LanguageSelector.Get("CalibrationResultWindow_CautionMessage");
 
                         DetailMessageContentControl.Visibility = Visibility.Visible;
                         DetailMessageHideTextBlock.Visibility = Visibility.Visible;
@@ -53,7 +53,7 @@ namespace VirtualMotionCaptureControlPanel
                 case PipeCommands.CalibrateType.FixedHandWithGround:
                     {
                         CalibrationResult_Caption1TextBlock.Background = new SolidColorBrush(Color.FromRgb(230, 255, 230));
-                        CalibrationResult_Caption1TextBlock.Text = "ℹ キャリブレーションが完了しました";
+                        CalibrationResult_Caption1TextBlock.Text = "ℹ " + LanguageSelector.Get("CalibrationResultWindow_CalibrationSucceed"); ;
                         CalibrationResult_Caption2TextBlock.Text = "";
 
                         DetailMessageTextBlock.Text = "";
@@ -70,8 +70,8 @@ namespace VirtualMotionCaptureControlPanel
                 default:
                     {
                         CalibrationResult_Caption1TextBlock.Background = new SolidColorBrush(Color.FromRgb(255, 230, 230));
-                        CalibrationResult_Caption1TextBlock.Text = "⚠ キャリブレーションに失敗しました";
-                        CalibrationResult_Caption2TextBlock.Text = "デバイスの認識や割り当て設定を確認してください";
+                        CalibrationResult_Caption1TextBlock.Text = "⚠ "+ LanguageSelector.Get("CalibrationResultWindow_CalibrationFailed");
+                        CalibrationResult_Caption2TextBlock.Text = LanguageSelector.Get("CalibrationResultWindow_PleaseCheckDevicesMessage");
 
                         DetailMessageTextBlock.Text = result.Message;
 
@@ -86,7 +86,7 @@ namespace VirtualMotionCaptureControlPanel
             }
 
             timerCount = 10;
-            TimerCloseTextBlock.Text = timerCount + "秒後に自動で閉じます";
+            TimerCloseTextBlock.Text = timerCount + LanguageSelector.Get("CalibrationResultWindow_AutoCloseTimerMessage");
 
             isShown = true;
             this.Show();
@@ -112,7 +112,7 @@ namespace VirtualMotionCaptureControlPanel
                     else
                     {
                         timerCount--;
-                        TimerCloseTextBlock.Text = timerCount + "秒後に自動で閉じます";
+                        TimerCloseTextBlock.Text = timerCount + LanguageSelector.Get("CalibrationResultWindow_AutoCloseTimerMessage");
                     }
                 }
             });
