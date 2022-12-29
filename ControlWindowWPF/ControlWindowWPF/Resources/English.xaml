@@ -122,7 +122,7 @@
     <system:String x:Key="MainWindow_LightHorizontalDirection">Horizontal</system:String>
 
     <system:String x:Key="MainWindow_ErrorCalibration">VRM model has not been loaded. Please import first.</system:String>
-	<system:String x:Key="MainWindow_ErrorCalibrationFail">Calibration failed.</system:String>
+    <system:String x:Key="MainWindow_ErrorCalibrationFail">Calibration failed.</system:String>
 
     <system:String x:Key="MainWindow_Help">Help</system:String>
     <system:String x:Key="MainWindow_ManualHeader">Please visit the website for usage and other information</system:String>
