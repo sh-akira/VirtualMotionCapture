@@ -1796,6 +1796,10 @@ namespace VMC
         {
             lastCalibrateType = calibrateType;//最後に実施したキャリブレーションタイプとして記録
 
+            if (animator == null) {
+                throw new CalibrationFailedException("No avatar found. (animator == null)");
+            }
+
             animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(0, 0, 0);
             animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(0, 0, 0);
             animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(0, 0, 0);
@@ -1933,6 +1937,15 @@ namespace VMC
             Settings.Current.leftKneeTracker = StoreTransform.Create(leftKneeTracker?.TargetTransform);
             Settings.Current.rightKneeTracker = StoreTransform.Create(rightKneeTracker?.TargetTransform);
 
+            if (leftHandTracker == null)
+            {
+                throw new CalibrationFailedException("Left hand tracker not found");
+            }
+            if (rightHandTracker == null)
+            {
+                throw new CalibrationFailedException("Right hand tracker not found");
+            }
+
             var calibratedLeftHandTransform = leftHandTracker.TargetTransform?.OfType<Transform>().FirstOrDefault();
             var calibratedRightHandTransform = rightHandTracker.TargetTransform?.OfType<Transform>().FirstOrDefault();
 
@@ -2007,19 +2020,22 @@ namespace VMC
                 //キャンセルされたなど
                 calibrationState = CalibrationState.Uncalibrated; //キャリブレーション状態を"未キャリブレーション"に設定
 
-                //IKを初期化
-                animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(0, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(0, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(0, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.RightUpperArm).localEulerAngles = new Vector3(0, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(0, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(0, 0, 0);
+                if (animator != null)
+                {
+                    //IKを初期化
+                    animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(0, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(0, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(0, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.RightUpperArm).localEulerAngles = new Vector3(0, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(0, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(0, 0, 0);
 
-                SetVRIK(CurrentModel);
-                wristRotationFix.SetVRIK(vrik);
+                    SetVRIK(CurrentModel);
+                    wristRotationFix.SetVRIK(vrik);
 
-                animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(LeftHandAngle, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(RightHandAngle, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(LeftHandAngle, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(RightHandAngle, 0, 0);
+                }
             }
         }
 

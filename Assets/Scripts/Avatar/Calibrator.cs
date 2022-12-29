@@ -228,14 +228,12 @@ namespace VMC
 
             if (!ik.solver.initiated)
             {
-                Debug.LogError("Can not calibrate before VRIK has initiated.");
-                yield break;
+                throw new CalibrationFailedException("Can not calibrate before VRIK has initiated.");
             }
 
             if (HMDTransform == null)
             {
-                Debug.LogError("Can not calibrate VRIK without the head tracker.");
-                yield break;
+                throw new CalibrationFailedException("Can not calibrate VRIK without the head tracker.");
             }
 
             //トラッカーのルートスケールを初期値に戻す
@@ -623,14 +621,12 @@ namespace VMC
 
             if (!ik.solver.initiated)
             {
-                Debug.LogError("Can not calibrate before VRIK has initiated.");
-                yield break;
+                throw new CalibrationFailedException("Can not calibrate before VRIK has initiated.");
             }
 
             if (HMDTransform == null)
             {
-                Debug.LogError("Can not calibrate VRIK without the head tracker.");
-                yield break;
+                throw new CalibrationFailedException("Can not calibrate VRIK without the head tracker.");
             }
 
             //トラッカーのルートスケールを初期値に戻す
@@ -1020,14 +1016,12 @@ namespace VMC
 
             if (!ik.solver.initiated)
             {
-                Debug.LogError("Can not calibrate before VRIK has initiated.");
-                yield break;
+                throw new CalibrationFailedException("Can not calibrate before VRIK has initiated.");
             }
 
             if (HMDTransform == null)
             {
-                Debug.LogError("Can not calibrate VRIK without the head tracker.");
-                yield break;
+                throw new CalibrationFailedException("Can not calibrate VRIK without the head tracker.");
             }
 
             //トラッカーのルートスケールを初期値に戻す

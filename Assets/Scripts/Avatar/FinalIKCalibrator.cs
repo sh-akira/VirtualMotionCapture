@@ -77,11 +77,11 @@ namespace VMC
 
             //それぞれのトラッカーを正しいルートに移動
             if (HMDTrackingPoint != null) HMDTrackingPoint.TargetTransform.parent = footTrackerRoot;
-            else { Debug.LogError("Head tracker not found"); yield break; }
+            else { throw new CalibrationFailedException("Head tracker not found");  }
             if (LeftHandTrackingPoint != null) LeftHandTrackingPoint.TargetTransform.parent = handTrackerRoot;
-            else { Debug.LogError("Left hand tracker not found"); yield break; }
+            else { throw new CalibrationFailedException("Left hand tracker not found"); }
             if (RightHandTrackingPoint != null) RightHandTrackingPoint.TargetTransform.parent = handTrackerRoot;
-            else { Debug.LogError("Right hand tracker not found"); yield break; }
+            else { throw new CalibrationFailedException("Right hand tracker not found"); }
             if (PelvisTrackingPoint != null) PelvisTrackingPoint.TargetTransform.parent = footTrackerRoot;
             if (LeftFootTrackingPoint != null) LeftFootTrackingPoint.TargetTransform.parent = footTrackerRoot;
             if (RightFootTrackingPoint != null) RightFootTrackingPoint.TargetTransform.parent = footTrackerRoot;
