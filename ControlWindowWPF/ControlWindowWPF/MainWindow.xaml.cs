@@ -482,9 +482,9 @@ namespace VirtualMotionCaptureControlPanel
                             UnityLogStatusTextBlock.Text = "[" + d.type.ToString() + ":" + d.errorCount + "] " + d.condition;
                             break;
                         case NotifyLogTypes.Warning:
-                            UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 0));
-                            UnityLogStatusTextBlock.Text = "[" + d.type.ToString() + "] " + d.condition;
-                            break;
+                            //UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 0));
+                            //UnityLogStatusTextBlock.Text = "[" + d.type.ToString() + "] " + d.condition;
+                            return;
                         default:
                             //UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(238, 238, 238));
                             return;
