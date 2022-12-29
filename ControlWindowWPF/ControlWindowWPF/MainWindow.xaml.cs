@@ -482,15 +482,16 @@ namespace VirtualMotionCaptureControlPanel
                             UnityLogStatusTextBlock.Text = "[" + d.type.ToString() + ":" + d.errorCount + "] " + d.condition;
                             break;
                         case NotifyLogTypes.Warning:
-                            //UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 0));
-                            //UnityLogStatusTextBlock.Text = "[" + d.type.ToString() + "] " + d.condition;
+                            UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 0));
+                            UnityLogStatusTextBlock.Text = "[" + d.type.ToString() + "] " + d.condition;
                             return;
                         default:
-                            //UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(238, 238, 238));
+                            UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(238, 238, 238));
+                            UnityLogStatusTextBlock.Text = "[" + d.type.ToString() + "] " + d.condition;
                             return;
                     }
 
-                    if (d.type == NotifyLogTypes.Error && d.condition.Contains(" [Calib Fail] ")) {
+                    if (d.type == NotifyLogTypes.Error && d.condition.StartsWith("[Calib Fail] ")) {
                         await Task.Run(() => {
                             //注意: Unity Editorを停止せずにWPF側を何度も開くと、その回数だけダイアログ(というか通信)が増殖する
                             MessageBox.Show(LanguageSelector.Get("MainWindow_ErrorCalibrationFail") + "\n" + d.condition, LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);

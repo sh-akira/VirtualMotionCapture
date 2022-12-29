@@ -1798,7 +1798,7 @@ namespace VMC
         public IEnumerator Calibrate(PipeCommands.CalibrateType calibrateType)
         {
             if (animator == null) { 
-                Debug.LogError(" [Calib Fail] No avatar found. (animator == null)");
+                Debug.LogError("[Calib Fail] No avatar found. (animator == null)");
                 yield break;
             }
 
@@ -2489,7 +2489,7 @@ namespace VMC
         private NotifyLogTypes notifyLogLevel = NotifyLogTypes.Warning;
         private async void LogMessageHandler(string cond, string trace, LogType type)
         {
-            NotifyLogTypes notifyType = NotifyLogTypes.Log;
+            NotifyLogTypes notifyType = NotifyLogTypes.Warning;
             switch (type)
             {
                 case LogType.Assert: notifyType = NotifyLogTypes.Assert; CriticalErrorCount++; break;
@@ -2500,9 +2500,10 @@ namespace VMC
                 default: notifyType = NotifyLogTypes.Log; break;
             }
 
-            if (notifyLogLevel < notifyType)
+            //Warning以下かつ、*から始まらないものはうるさいので飛ばさない
+            if (notifyLogLevel <= notifyType && !cond.StartsWith("*"))
             {
-                return; //Logはうるさいので飛ばさない
+                return;
             }
 
             //あまりにも致命的エラーが多すぎる場合は強制終了する
