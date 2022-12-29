@@ -114,6 +114,8 @@ namespace VMC
 
         public ModManager modManager;
 
+        public PipeCommands.CalibrationResult calibrationResult;
+
         private void Awake()
         {
             Application.targetFrameRate = 60;
@@ -1797,12 +1799,19 @@ namespace VMC
 
         public IEnumerator Calibrate(PipeCommands.CalibrateType calibrateType)
         {
-            if (animator == null) { 
+            lastCalibrateType = calibrateType;//最後に実施したキャリブレーションタイプとして記録
+
+            //開始状態を格納
+            calibrationResult = new PipeCommands.CalibrationResult
+            {
+                Type = calibrateType
+            };
+
+            if (animator == null)
+            {
                 Debug.LogError("[Calib Fail] No avatar found. (animator == null)");
                 yield break;
             }
-
-            lastCalibrateType = calibrateType;//最後に実施したキャリブレーションタイプとして記録
 
             animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(0, 0, 0);
             animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(0, 0, 0);
@@ -1901,7 +1910,7 @@ namespace VMC
 
             if (calibrateType == PipeCommands.CalibrateType.Ipose || calibrateType == PipeCommands.CalibrateType.Tpose)
             {
-                yield return FinalIKCalibrator.Calibrate(calibrateType == PipeCommands.CalibrateType.Ipose ? FinalIKCalibrator.CalibrateMode.Ipose : FinalIKCalibrator.CalibrateMode.Tpose, HandTrackerRoot, PelvisTrackerRoot, vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker, generatedObject);
+                yield return FinalIKCalibrator.Calibrate(this,calibrateType == PipeCommands.CalibrateType.Ipose ? FinalIKCalibrator.CalibrateMode.Ipose : FinalIKCalibrator.CalibrateMode.Tpose, HandTrackerRoot, PelvisTrackerRoot, vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker, generatedObject);
             }
             else if (calibrateType == PipeCommands.CalibrateType.FixedHand)
             {
@@ -2009,6 +2018,12 @@ namespace VMC
             if (calibrationState == CalibrationState.Calibrating)
             {
                 calibrationState = CalibrationState.Calibrated; //キャリブレーション状態を"キャリブレーション完了"に設定
+
+                context.Post(async (_) =>
+                {
+                    //最終結果を送信
+                    await server.SendCommandAsync(calibrationResult);
+                }, null);
             }
             else
             {
@@ -2529,6 +2544,16 @@ namespace VMC
                 type = notifyType,
                 errorCount = CriticalErrorCount,
             });
+
+            if (type == LogType.Error && cond.StartsWith("[Calib Fail]")) {
+                //状態を失敗で上書き
+                calibrationResult = new PipeCommands.CalibrationResult
+                {
+                    Type = PipeCommands.CalibrateType.Invalid,
+                    Message = cond,
+                    UserHeight = -1
+                };
+            }
         }
 
         private bool IsRegisteredEventCallBack = false;

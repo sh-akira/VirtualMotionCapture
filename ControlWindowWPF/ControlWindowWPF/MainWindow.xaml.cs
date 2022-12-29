@@ -49,6 +49,7 @@ namespace VirtualMotionCaptureControlPanel
         private ObservableCollection<string> LipSyncDevices = new ObservableCollection<string>();
 
         private int CurrentWindowNum = 0;
+        CalibrationResultWindow calibrationResultWindow;
 
         public MainWindow()
         {
@@ -152,6 +153,8 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            calibrationResultWindow = new CalibrationResultWindow { Owner = this, Topmost = true, WindowStartupLocation = WindowStartupLocation.CenterScreen };
+
             CheckVMCCameraVersion();
 
             while (Globals.Client.IsConnected != true)
@@ -491,13 +494,6 @@ namespace VirtualMotionCaptureControlPanel
                             return;
                     }
 
-                    if (d.type == NotifyLogTypes.Error && d.condition.StartsWith("[Calib Fail] ")) {
-                        await Task.Run(() => {
-                            //注意: Unity Editorを停止せずにWPF側を何度も開くと、その回数だけダイアログ(というか通信)が増殖する
-                            MessageBox.Show(LanguageSelector.Get("MainWindow_ErrorCalibrationFail") + "\n" + d.condition, LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
-                        });
-                    }
-
                     lastLog = d;
                 }
                 else if (e.CommandType == typeof(PipeCommands.ShowCalibrationWindow))
@@ -530,6 +526,11 @@ namespace VirtualMotionCaptureControlPanel
                         default: break;
                     }
 
+                }
+                else if (e.CommandType == typeof(PipeCommands.CalibrationResult))
+                {
+                    var d = (PipeCommands.CalibrationResult)e.Data;
+                    calibrationResultWindow.Update(d);
                 }
             }));
         }

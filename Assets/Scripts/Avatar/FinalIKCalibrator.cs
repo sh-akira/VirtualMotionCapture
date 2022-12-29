@@ -53,7 +53,7 @@ namespace VMC
         /// <summary>
         /// 通常モード、I/Tポーズキャリブレーション
         /// </summary>
-        public static IEnumerator Calibrate(CalibrateMode calibrateMode, Transform handTrackerRoot, Transform footTrackerRoot, VRIK vrik, VRIKCalibrator.Settings settings, TrackingPoint HMDTrackingPoint, TrackingPoint PelvisTrackingPoint = null, TrackingPoint LeftHandTrackingPoint = null, TrackingPoint RightHandTrackingPoint = null, TrackingPoint LeftFootTrackingPoint = null, TrackingPoint RightFootTrackingPoint = null, TrackingPoint LeftElbowTrackingPoint = null, TrackingPoint RightElbowTrackingPoint = null, TrackingPoint LeftKneeTrackingPoint = null, TrackingPoint RightKneeTrackingPoint = null, Transform generatedObject = null)
+        public static IEnumerator Calibrate(ControlWPFWindow controlWPFWindow, CalibrateMode calibrateMode, Transform handTrackerRoot, Transform footTrackerRoot, VRIK vrik, VRIKCalibrator.Settings settings, TrackingPoint HMDTrackingPoint, TrackingPoint PelvisTrackingPoint = null, TrackingPoint LeftHandTrackingPoint = null, TrackingPoint RightHandTrackingPoint = null, TrackingPoint LeftFootTrackingPoint = null, TrackingPoint RightFootTrackingPoint = null, TrackingPoint LeftElbowTrackingPoint = null, TrackingPoint RightElbowTrackingPoint = null, TrackingPoint LeftKneeTrackingPoint = null, TrackingPoint RightKneeTrackingPoint = null, Transform generatedObject = null)
         {
             var currentModel = vrik.transform;
 
@@ -199,6 +199,7 @@ namespace VMC
                 }
             }
             Debug.Log($"UserHeight:{realHeight}");
+            controlWPFWindow.calibrationResult.UserHeight = realHeight;
 
             // トラッカー全体のスケールを手の位置に合わせる
             // スケールを動かしてから位置を取らないとモデルの位置がずれる
