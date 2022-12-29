@@ -122,6 +122,7 @@
     <system:String x:Key="MainWindow_LightHorizontalDirection">横轴</system:String>
 
     <system:String x:Key="MainWindow_ErrorCalibration">还没有VRM模型被加载，请先打开模型。</system:String>
+	<system:String x:Key="MainWindow_ErrorCalibrationFail">Calibration failed.</system:String>
 
     <system:String x:Key="MainWindow_Help">帮助</system:String>
     <system:String x:Key="MainWindow_ManualHeader">请浏览如下网站获取使用帮助和其他信息</system:String>

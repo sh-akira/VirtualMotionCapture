@@ -121,8 +121,9 @@
     <system:String x:Key="MainWindow_LightHorizontalDirection">회전</system:String>
 
     <system:String x:Key="MainWindow_ErrorCalibration">VRM모델을 로드하지 않았습니다. 모델을 먼저 불러와주세요.</system:String>
+	<system:String x:Key="MainWindow_ErrorCalibrationFail">Calibration failed.</system:String>
 
-    <system:String x:Key="MainWindow_Help">Help</system:String>
+	<system:String x:Key="MainWindow_Help">Help</system:String>
     <system:String x:Key="MainWindow_ManualHeader">Please visit the website for usage and other information</system:String>
     <system:String x:Key="MainWindow_Manual">Instructions</system:String>
     <system:String x:Key="MainWindow_FAQ">Frequently Asked Questions and Answers</system:String>

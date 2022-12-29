@@ -490,6 +490,13 @@ namespace VirtualMotionCaptureControlPanel
                             return;
                     }
 
+                    if (d.type == NotifyLogTypes.Error && d.condition.Contains(" [Calib Fail] ")) {
+                        await Task.Run(() => {
+                            //注意: Unity Editorを停止せずにWPF側を何度も開くと、その回数だけダイアログ(というか通信)が増殖する
+                            MessageBox.Show(LanguageSelector.Get("MainWindow_ErrorCalibrationFail") + "\n" + d.condition, LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
+                        });
+                    }
+
                     lastLog = d;
                 }
                 else if (e.CommandType == typeof(PipeCommands.ShowCalibrationWindow))

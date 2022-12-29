@@ -29,13 +29,13 @@ namespace VMC
         {
             if (!ik.solver.initiated)
             {
-                Debug.LogError("Can not calibrate before VRIK has initiated.");
+                Debug.LogError(" [Calib Fail] Can not calibrate before VRIK has initiated.");
                 return;
             }
 
             if (HMDTransform == null)
             {
-                Debug.LogError("Can not calibrate VRIK without the head tracker.");
+                Debug.LogError(" [Calib Fail] Can not calibrate VRIK without the head tracker.");
                 return;
             }
 
@@ -228,13 +228,13 @@ namespace VMC
 
             if (!ik.solver.initiated)
             {
-                Debug.LogError("Can not calibrate before VRIK has initiated.");
+                Debug.LogError(" [Calib Fail] Can not calibrate before VRIK has initiated.");
                 yield break;
             }
 
             if (HMDTransform == null)
             {
-                Debug.LogError("Can not calibrate VRIK without the head tracker.");
+                Debug.LogError(" [Calib Fail] Can not calibrate VRIK without the head tracker.");
                 yield break;
             }
 
@@ -623,13 +623,13 @@ namespace VMC
 
             if (!ik.solver.initiated)
             {
-                Debug.LogError("Can not calibrate before VRIK has initiated.");
+                Debug.LogError(" [Calib Fail] Can not calibrate before VRIK has initiated.");
                 yield break;
             }
 
             if (HMDTransform == null)
             {
-                Debug.LogError("Can not calibrate VRIK without the head tracker.");
+                Debug.LogError(" [Calib Fail] Can not calibrate VRIK without the head tracker.");
                 yield break;
             }
 
@@ -1020,13 +1020,13 @@ namespace VMC
 
             if (!ik.solver.initiated)
             {
-                Debug.LogError("Can not calibrate before VRIK has initiated.");
+                Debug.LogError(" [Calib Fail] Can not calibrate before VRIK has initiated.");
                 yield break;
             }
 
             if (HMDTransform == null)
             {
-                Debug.LogError("Can not calibrate VRIK without the head tracker.");
+                Debug.LogError(" [Calib Fail] Can not calibrate VRIK without the head tracker.");
                 yield break;
             }
 

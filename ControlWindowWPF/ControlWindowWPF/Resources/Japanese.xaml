@@ -120,9 +120,10 @@
     <system:String x:Key="MainWindow_LightVerticalDirection">上下</system:String>
     <system:String x:Key="MainWindow_LightHorizontalDirection">回転</system:String>
 
-    <system:String x:Key="MainWindow_ErrorCalibration">VRMモデルが読み込まれていません。先に読み込んでください。</system:String>
+	<system:String x:Key="MainWindow_ErrorCalibration">VRMモデルが読み込まれていません。先に読み込んでください。</system:String>
+	<system:String x:Key="MainWindow_ErrorCalibrationFail">キャリブレーションに失敗しました。</system:String>
 
-    <system:String x:Key="MainWindow_Help">ヘルプ</system:String>
+	<system:String x:Key="MainWindow_Help">ヘルプ</system:String>
     <system:String x:Key="MainWindow_ManualHeader">使い方などはWebサイトをご覧ください</system:String>
     <system:String x:Key="MainWindow_Manual">説明書</system:String>
     <system:String x:Key="MainWindow_FAQ">よくある質問と回答</system:String>
