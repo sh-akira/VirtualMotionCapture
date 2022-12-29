@@ -65,6 +65,7 @@ namespace VMC
         private int CurrentWindowNum = 1;
 
         public int CriticalErrorCount = 0;
+        public bool IsCriticalErrorCountOver = false;
 
         public VMTClient vmtClient;
 
@@ -2494,8 +2495,13 @@ namespace VMC
             }
 
             //あまりにも致命的エラーが多すぎる場合は強制終了する
-            if (CriticalErrorCount > 10000)
+            if ((!IsCriticalErrorCountOver) && CriticalErrorCount > PipeCommands.ErrorCountMax)
             {
+                IsCriticalErrorCountOver = true;
+
+                //最後のエラーをファイルとして出力
+                string message = "[" + type.ToString() + "] " + cond + "\n\n" + trace + "\n\n" + DateTime.Now.ToString();
+                File.WriteAllText(Application.dataPath + "/../CriticalErrorCountOver.txt", message);
 #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
 #else

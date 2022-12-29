@@ -63,10 +63,13 @@ namespace UnityMemoryMappedFile
             {
                 while (true)
                 {
-                    while (receiverAccessor.ReadByte(0) != 1)
+                    while (receiverAccessor != null && receiverAccessor?.ReadByte(0) != 1)
                     {
                         if (readCts.Token.IsCancellationRequested) return;
                         Thread.Sleep(1);// await Task.Delay(1);
+                    }
+                    if (receiverAccessor == null) {
+                        break;
                     }
                     System.Diagnostics.Debug.WriteLine($"MemoryMappedFileBase ReadThread DataReceived");
                     long position = 1;

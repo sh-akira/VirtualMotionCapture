@@ -592,6 +592,7 @@ namespace UnityMemoryMappedFile
 
         }
 
+        public const int ErrorCountMax = 10000;
         public class LogNotify {
             public string condition { get; set; }
             public string stackTrace { get; set; }

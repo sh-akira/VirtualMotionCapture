@@ -218,15 +218,28 @@ namespace VirtualMotionCaptureControlPanel
             await Globals.Client.SendCommandAsync(new PipeCommands.LoadCurrentSettings());
         }
 
-        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            try
+            Task.Run(async () =>
             {
-                await Globals.Client?.SendCommandAsync(new PipeCommands.ExitControlPanel { });
-            }
-            catch { }
-            Application.Current.Windows.Cast<Window>().ToList().ForEach(d => { if (d != this) d.Close(); });
+                try
+                {
+                    await Globals.Client?.SendCommandAsync(new PipeCommands.ExitControlPanel { });
+                }
+                catch { }
+            });
+
+            Application.Current?.Windows?.Cast<Window>()?.ToList()?.ForEach(d => { if (d != this) d?.Close(); });
             Globals.Client.Dispose();
+
+            if (lastLog != null)
+            {
+                //エラーカウント超過による自動クローズの場合にメッセージを出す
+                if (lastLog.errorCount >= PipeCommands.ErrorCountMax)
+                {
+                    MessageBox.Show(lastLog.condition, LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
 
         private void SilentChangeChecked(CheckBox checkBox, bool enable, RoutedEventHandler checkedHandler, RoutedEventHandler uncheckedHandler)
@@ -466,16 +479,17 @@ namespace VirtualMotionCaptureControlPanel
                         case NotifyLogTypes.Assert:
                         case NotifyLogTypes.Exception:
                             UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 102, 102));
+                            UnityLogStatusTextBlock.Text = "[" + d.type.ToString() + ":" + d.errorCount + "] " + d.condition;
                             break;
                         case NotifyLogTypes.Warning:
                             UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 0));
+                            UnityLogStatusTextBlock.Text = "[" + d.type.ToString() + "] " + d.condition;
                             break;
                         default:
                             //UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(238, 238, 238));
                             return;
                     }
 
-                    UnityLogStatusTextBlock.Text = "["+d.type.ToString()+"] "+d.condition;
                     lastLog = d;
                 }
                 else if (e.CommandType == typeof(PipeCommands.ShowCalibrationWindow))
@@ -555,7 +569,7 @@ namespace VirtualMotionCaptureControlPanel
             existCalibrationWindow = true;
             if (string.IsNullOrWhiteSpace(Globals.CurrentVRMFilePath))
             {
-                MessageBox.Show(LanguageSelector.Get("MainWindow_ErrorCalibration"), LanguageSelector.Get("Error"));
+                MessageBox.Show(LanguageSelector.Get("MainWindow_ErrorCalibration"), LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 existCalibrationWindow = false;
                 return;
             }
