@@ -31,6 +31,12 @@ namespace VMC
             }
         }
 
+        public void SetNaturalPose()
+        {
+            var handAngles = new List<int> { -16, -16, -17, 1, -16, -16, -20, 3, -16, -25, -10, 1, -22, -12, -21, 2, -24, -51, -9, 15 };
+            SetHandEulerAngles(true, true, CalcHandEulerAngles(handAngles));
+        }
+
 
         private List<HumanBodyBones> FingerBones = new List<HumanBodyBones>
     {

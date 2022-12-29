@@ -33,7 +33,8 @@ namespace VirtualMotionCaptureControlPanel
 
             Globals.LoadCommonSettings();
             var calibrateType = Globals.CurrentCommonSettingsWPF.LastCalibrateType;
-            if (calibrateType == PipeCommands.CalibrateType.Default) CalibrateDefaultRadioButton.IsChecked = true;
+            if (calibrateType == PipeCommands.CalibrateType.Ipose) CalibrateIposeRadioButton.IsChecked = true;
+            else if (calibrateType == PipeCommands.CalibrateType.Tpose) CalibrateTposeRadioButton.IsChecked = true;
             else if (calibrateType == PipeCommands.CalibrateType.FixedHand) CalibrateFixedHandRadioButton.IsChecked = true;
             else if (calibrateType == PipeCommands.CalibrateType.FixedHandWithGround) CalibrateFixedHandWithGroundRadioButton.IsChecked = true;
             CalibrationEndSoundCheckBox.IsChecked = Globals.CurrentCommonSettingsWPF.EnableCalibrationEndSound;
@@ -65,7 +66,7 @@ namespace VirtualMotionCaptureControlPanel
                 await Task.Delay(1000);
             } while (timercount-- > 0);
             StatusTextBlock.Text = LanguageSelector.Get("CalibrationWindow_Status_Calibrating");
-            var calibrateType = CalibrateFixedHandRadioButton.IsChecked == true ? PipeCommands.CalibrateType.FixedHand : (CalibrateFixedHandWithGroundRadioButton.IsChecked == true ? PipeCommands.CalibrateType.FixedHandWithGround : PipeCommands.CalibrateType.Default);
+            var calibrateType = SelectCalibrateType();
             Globals.CurrentCommonSettingsWPF.LastCalibrateType = calibrateType;
             await Globals.Client.SendCommandAsync(new PipeCommands.Calibrate { CalibrateType = calibrateType });
             await Task.Delay(1000);
@@ -81,11 +82,21 @@ namespace VirtualMotionCaptureControlPanel
             Close();
         }
 
+        private PipeCommands.CalibrateType SelectCalibrateType() =>
+            CalibrateFixedHandRadioButton?.IsChecked == true ? PipeCommands.CalibrateType.FixedHand : (
+            CalibrateFixedHandWithGroundRadioButton?.IsChecked == true ? PipeCommands.CalibrateType.FixedHandWithGround : (
+            CalibrateTposeRadioButton?.IsChecked == true ? PipeCommands.CalibrateType.Tpose : PipeCommands.CalibrateType.Ipose));
+
         private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Globals.Client.ReceivedEvent -= Client_Received;
             await Globals.Client.SendCommandAsync(new PipeCommands.EndCalibrate());
             await Globals.Client.SendCommandAsync(new PipeCommands.EndKeyConfig { });
+        }
+
+        private async void CalibrateRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.SelectCalibrateMode { CalibrateType = SelectCalibrateType() });
         }
     }
 }

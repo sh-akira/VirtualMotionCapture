@@ -106,7 +106,8 @@ namespace VMC
         }
 
         public CalibrationState calibrationState = CalibrationState.Uncalibrated;
-        public PipeCommands.CalibrateType lastCalibrateType = PipeCommands.CalibrateType.Default; //最後に行ったキャリブレーションの種類
+        public PipeCommands.CalibrateType lastCalibrateType = PipeCommands.CalibrateType.Ipose; //最後に行ったキャリブレーションの種類
+        private PipeCommands.CalibrateType currentSelectCalibrateType = PipeCommands.CalibrateType.Ipose;
 
         public string lastLoadedConfigPath = "";
 
@@ -274,7 +275,12 @@ namespace VMC
                     //メタ情報をOSC送信する
                     VRMmetaLodedAction?.Invoke(LoadVRM(d.Path));
                 }
-
+                else if (e.CommandType == typeof(PipeCommands.SelectCalibrateMode))
+                {
+                    var d = (PipeCommands.SelectCalibrateMode)e.Data;
+                    currentSelectCalibrateType = d.CalibrateType;
+                    SetCalibratePoseToCurrentModel();
+                }
                 else if (e.CommandType == typeof(PipeCommands.Calibrate))
                 {
                     var d = (PipeCommands.Calibrate)e.Data;
@@ -1170,25 +1176,13 @@ namespace VMC
                 //SetVRIK(CurrentModel);
                 if (animator != null)
                 {
-                    //animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(LeftLowerArmAngle, 0, 0);
-                    //animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(RightLowerArmAngle, 0, 0);
-                    //animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(LeftUpperArmAngle, 0, 0);
-                    //animator.GetBoneTransform(HumanBodyBones.RightUpperArm).localEulerAngles = new Vector3(RightUpperArmAngle, 0, 0);
-                    //animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(LeftHandAngle, 0, 0);
-                    //animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(RightHandAngle, 0, 0);
-
-                    animator.GetBoneTransform(HumanBodyBones.LeftShoulder).localEulerAngles = new Vector3(0, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.RightShoulder).localEulerAngles = new Vector3(0, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(0, 0, 80);
-                    animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(0, 0, 5);
-                    animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(0, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.RightUpperArm).localEulerAngles = new Vector3(0, 0, -80);
-                    animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(0, 0, -5);
-                    animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(0, 0, 0);
+                    SetCalibratePoseToCurrentModel();
 
                     //wristRotationFix.SetVRIK(vrik);
 
                     handController.SetDefaultAngle(animator);
+
+                    handController.SetNaturalPose();
 
                     //トラッカーのスケールリセット
                     HandTrackerRoot.localPosition = Vector3.zero;
@@ -1208,7 +1202,34 @@ namespace VMC
             }
         }
 
-        public void LoadNewModel(GameObject model)
+        private void SetCalibratePoseToCurrentModel()
+        {
+            if (animator != null)
+            {
+                if (currentSelectCalibrateType == PipeCommands.CalibrateType.Ipose)
+                {
+                    animator.GetBoneTransform(HumanBodyBones.LeftShoulder).localEulerAngles = new Vector3(0, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.RightShoulder).localEulerAngles = new Vector3(0, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(0, 0, 80);
+                    animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(0, 0, 5);
+                    animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(0, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.RightUpperArm).localEulerAngles = new Vector3(0, 0, -80);
+                    animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(0, 0, -5);
+                    animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(0, 0, 0);
+                }
+                else
+                {
+                    animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(LeftLowerArmAngle, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(RightLowerArmAngle, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(LeftUpperArmAngle, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.RightUpperArm).localEulerAngles = new Vector3(RightUpperArmAngle, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(LeftHandAngle, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(RightHandAngle, 0, 0);
+                }
+            }
+        }
+
+            public void LoadNewModel(GameObject model)
         {
             if (CurrentModel != null)
             {
@@ -1219,6 +1240,8 @@ namespace VMC
                 CurrentModel = null;
             }
             CurrentModel = model;
+
+            VMCEvents.OnCurrentModelChanged?.Invoke(CurrentModel);
 
             ModelInitialize();
         }
@@ -1263,6 +1286,9 @@ namespace VMC
                 animator.GetBoneTransform(HumanBodyBones.RightUpperArm).eulerAngles = new Vector3(RightUpperArmAngle, 0, 0);
 
                 handController.SetDefaultAngle(animator);
+
+                //初期の指を自然に閉じたポーズにする
+                handController.SetNaturalPose();
             }
             //SetTrackersToVRIK();
 
@@ -1893,9 +1919,9 @@ namespace VMC
             }
             catch { }
 
-            if (calibrateType == PipeCommands.CalibrateType.Default)
+            if (calibrateType == PipeCommands.CalibrateType.Ipose || calibrateType == PipeCommands.CalibrateType.Tpose)
             {
-                yield return FinalIKCalibrator.CalibrateIpose(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker, generatedObject);
+                yield return FinalIKCalibrator.Calibrate(calibrateType == PipeCommands.CalibrateType.Ipose ? FinalIKCalibrator.CalibrateMode.Ipose : FinalIKCalibrator.CalibrateMode.Tpose, HandTrackerRoot, PelvisTrackerRoot, vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker, generatedObject);
             }
             else if (calibrateType == PipeCommands.CalibrateType.FixedHand)
             {

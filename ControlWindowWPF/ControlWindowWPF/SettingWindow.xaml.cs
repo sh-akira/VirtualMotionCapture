@@ -1086,5 +1086,12 @@ namespace VirtualMotionCaptureControlPanel
             var win = new DebugLogWindow();
             win.Show();
         }
+
+        private void MotionCapture_mocopiSettingButton_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new MotionCapture_mocopiSettingWindow();
+            win.Owner = this;
+            win.ShowDialog();
+        }
     }
 }

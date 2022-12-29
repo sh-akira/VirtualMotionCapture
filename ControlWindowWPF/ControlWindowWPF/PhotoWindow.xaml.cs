@@ -24,9 +24,11 @@ namespace VirtualMotionCaptureControlPanel
         public PhotoWindow()
         {
             InitializeComponent();
-            PathTextBox.Text = defaultPath;
-            if (Directory.Exists(defaultPath) == false)
+            var savedPath = Globals.ExistDirectoryOrNull(Globals.CurrentCommonSettingsWPF.CurrentPathOnPhotoFileDialog);
+            PathTextBox.Text = savedPath ?? defaultPath;
+            if (Directory.Exists(PathTextBox.Text) == false)
             {
+                PathTextBox.Text = defaultPath;
                 Directory.CreateDirectory(defaultPath);
             }
         }
@@ -121,6 +123,12 @@ namespace VirtualMotionCaptureControlPanel
             if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 PathTextBox.Text = dlg.SelectedPath;
+
+                if (Globals.CurrentCommonSettingsWPF.CurrentPathOnPhotoFileDialog != PathTextBox.Text)
+                {
+                    Globals.CurrentCommonSettingsWPF.CurrentPathOnPhotoFileDialog = PathTextBox.Text;
+                    Globals.SaveCommonSettings();
+                }
             }
         }
 

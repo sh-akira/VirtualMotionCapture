@@ -355,18 +355,21 @@ namespace VMC
                 //キャリブレーション実行 V2.5
                 else if (message.address == "/VMC/Ext/Set/Calib/Exec" && (message.values[0] is int))
                 {
-                    PipeCommands.CalibrateType calibrateType = PipeCommands.CalibrateType.Default;
+                    PipeCommands.CalibrateType calibrateType = PipeCommands.CalibrateType.Ipose;
 
                     switch ((int)message.values[0])
                     {
                         case 0:
-                            calibrateType = PipeCommands.CalibrateType.Default;
+                            calibrateType = PipeCommands.CalibrateType.Ipose;
                             break;
                         case 1:
-                            calibrateType = PipeCommands.CalibrateType.FixedHand;
+                            calibrateType = PipeCommands.CalibrateType.Tpose;
                             break;
                         case 2:
                             calibrateType = PipeCommands.CalibrateType.FixedHandWithGround;
+                            break;
+                        case 3:
+                            calibrateType = PipeCommands.CalibrateType.FixedHand;
                             break;
                         default: return; //無視
                     }

@@ -5,6 +5,7 @@
     "com.unity.ads": "3.7.5",
     "com.unity.analytics": "3.6.11",
     "com.unity.animation.rigging": "0.2.7-preview",
+    "com.unity.burst": "1.4.11",
     "com.unity.collab-proxy": "1.10.2",
     "com.unity.ide.rider": "1.2.1",
     "com.unity.ide.visualstudio": "2.0.15",

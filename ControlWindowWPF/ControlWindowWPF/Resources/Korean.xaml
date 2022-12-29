@@ -76,6 +76,7 @@
     <system:String x:Key="MainWindow_PositionFixed_ToolTip">좌표고정카메라(모델과 카메라의 거리와 회전을 고정, 화면에서 마우스휠 드래그, 스크롤, 우클릭으로 자유롭게 이동할 수 있습니다)</system:String>
     <system:String x:Key="MainWindow_Mirror_ToolTip">표시되는 화면을 좌우반전합니다</system:String>
     <system:String x:Key="MainWindow_ShowGrid_ToolTip">화면에 격자를 표시하여 카메라의 위치를 설정하기 쉽게 합니다</system:String>
+    <system:String x:Key="MainWindow_FrontReset">Front reset</system:String>
                           
     <system:String x:Key="MainWindow_LipSync">립싱크</system:String>
     <system:String x:Key="MainWindow_EnableLipSync">립싱크</system:String>
@@ -124,6 +125,13 @@
 
 	<system:String x:Key="MainWindow_ErrorCalibration">VRM모델을 로드하지 않았습니다. 모델을 먼저 불러와주세요.</system:String>
 
+    <system:String x:Key="MainWindow_Help">Help</system:String>
+    <system:String x:Key="MainWindow_ManualHeader">Please visit the website for usage and other information</system:String>
+    <system:String x:Key="MainWindow_Manual">Instructions</system:String>
+    <system:String x:Key="MainWindow_FAQ">Frequently Asked Questions and Answers</system:String>
+    <system:String x:Key="MainWindow_ClipboardHeader">When an error occurs</system:String>
+    <system:String x:Key="MainWindow_ClipboardDescription">↓Double click on message will copy full text to the clipboard.</system:String>
+
 
     <!-- CalibrationWindow -->
     <system:String x:Key="CalibrationWindowTitle">캘리브레이션</system:String>
@@ -134,9 +142,13 @@
     <system:String x:Key="CalibrationWindow_CalibrationButton_ToolTip">캘리브레이션을 개시합니다</system:String>
     <system:String x:Key="CalibrationWindow_Status_Calibrating">보정중</system:String>
     <system:String x:Key="CalibrationWindow_Status_Finish">완료</system:String>
-    <system:String x:Key="CalibrationWindow_Status_CalibrateDefaultRadioButton">일반모드(몸의 움직임을 최대한 재현함)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_NewCalibrationGroup">Standard mode (new calibration)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_OldCalibrationGroup">Compatibility mode (old calibration)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrateIposeRadioButton">I-pose</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrateTposeRadioButton">T-pose</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandRadioButton">MR합성모드(손의 위치를 최대한 맞추고 다리는 쭉 뻗음)</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton">MR합성모드(손의 위치를 최대한 맞추고 다리는 바닥에 맞추어 구부림)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrationInformation" xml:space="preserve">If I-pose calibration will not work, re-set the room scale and correct the floor height.&#xa;For T-pose, you can adjust the calibration by bending the arm shorter or lifting the arm slightly.&#xa;Note that white balls on the screen are to confirm that trackers are recognized. You do not need to adjust the position.</system:String>
 
 
     <!-- VRMImportWindow -->
@@ -460,6 +472,23 @@
     <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovements">눈커풀의 움직임을 사용</system:String>
     <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovementsCheckBox">사용한다</system:String>
     <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Close">닫기</system:String>
+
+    <!-- MotionCapture_mocopiSettingWindow -->
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_EnableCheckBox">사용한다</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_ApplyTarget">Apply target</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_Head">Head</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_Chest">Chest</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightArm">Right Arm</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftArm">Left Arm</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_Spine">Spine</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightHand">Right Hand</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftHand">Left Hand</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightLeg">Right Leg</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftLeg">Left Leg</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightFoot">Right Foot</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftFoot">Left Foot</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RootPositionSynchronize">Root position synchronize</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_ResetCenter">Re-center current position</system:String>
 
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">색상선택</system:String>

@@ -70,8 +70,9 @@ namespace VirtualMotionCaptureControlPanel
             public string CurrentPathOnVRMFileDialog = ""; //VRMファイルダイアログパス
             public string CurrentPathOnExternalCameraFileDialog = ""; //ExternalCameraダイアログパス
             public string CurrentPathOnCameraPlusFileDialog = ""; //CameraPlusダイアログパス
+            public string CurrentPathOnPhotoFileDialog = ""; //写真撮影ダイアログパス
 
-            public PipeCommands.CalibrateType LastCalibrateType = PipeCommands.CalibrateType.Default;
+            public PipeCommands.CalibrateType LastCalibrateType = PipeCommands.CalibrateType.Ipose;
             public bool EnableCalibrationEndSound = false;
 
             //初期値
@@ -82,7 +83,8 @@ namespace VirtualMotionCaptureControlPanel
                 CurrentPathOnVRMFileDialog = "";
                 CurrentPathOnExternalCameraFileDialog = "";
                 CurrentPathOnCameraPlusFileDialog = "";
-                LastCalibrateType = PipeCommands.CalibrateType.Default;
+                CurrentPathOnPhotoFileDialog = "";
+                LastCalibrateType = PipeCommands.CalibrateType.Ipose;
                 EnableCalibrationEndSound = false;
             }
         }

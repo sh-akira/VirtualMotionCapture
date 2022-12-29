@@ -63,6 +63,8 @@ Assets/Resources*
 Assets/Scripts/DMMVRConnectConnector*
 ControlWindowWPF/ControlWindowWPF/DMMVRConnectWindow*
 UnityMemoryMappedFile/PipeCommands_DMMVRConnect*
+Assets/ExternalPlugins/MocopiReceiver*
+*mocopi*csproj
 
 
 # Visual Studio cache directory
