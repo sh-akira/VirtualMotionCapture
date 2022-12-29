@@ -198,7 +198,6 @@ namespace VMC
                     realHeight = handHeight * 1.2238f;
                 }
             }
-            Debug.Log($"*UserHeight: {realHeight * 100:f1}cm ({realHeight}m)"); //*を先頭につけたログはWPF側に表示される
             Debug.Log($"UserHeight:{realHeight}");
 
             // トラッカー全体のスケールを手の位置に合わせる
