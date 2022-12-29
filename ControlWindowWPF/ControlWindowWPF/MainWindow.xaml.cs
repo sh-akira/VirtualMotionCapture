@@ -512,6 +512,24 @@ namespace VirtualMotionCaptureControlPanel
                     var d = (PipeCommands.VRMLoadStatus)e.Data;
                     CalibrationButton.IsEnabled = d.Valid;
                 }
+                else if (e.CommandType == typeof(PipeCommands.ChangeCamera))
+                {
+                    var d = (PipeCommands.ChangeCamera)e.Data;
+
+                    FrontCameraButton.IsEnabled = true;
+                    BackCameraButton.IsEnabled = true;
+                    FreeCameraButton.IsEnabled = true;
+                    PositionFixedCameraButton.IsEnabled = true;
+
+                    switch (d.type) {
+                        case CameraTypes.Front: FrontCameraButton.IsEnabled = false; break;
+                        case CameraTypes.Back: BackCameraButton.IsEnabled = false; break;
+                        case CameraTypes.Free: FreeCameraButton.IsEnabled = false; break;
+                        case CameraTypes.PositionFixed: PositionFixedCameraButton.IsEnabled = false; break;
+                        default: break;
+                    }
+
+                }
             }));
         }
 

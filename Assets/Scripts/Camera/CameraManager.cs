@@ -241,6 +241,13 @@ namespace VMC
                 SetCameraEnable(PositionFixedCamera);
             }
             Settings.Current.CameraType = type;
+
+            // UI反映のために送り返す
+            context.Post(async s =>
+            {
+                await controlWPFWindow.server.SendCommandAsync(new PipeCommands.ChangeCamera { type = type });
+            }, null);
+
         }
 
         private void SetCameraEnable(CameraMouseControl camera)
