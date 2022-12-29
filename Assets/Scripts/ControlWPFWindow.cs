@@ -1107,6 +1107,8 @@ namespace VMC
             if (ImportForCalibration == false)
             {
                 calibrationState = CalibrationState.Uncalibrated; //キャリブレーション状態を"未キャリブレーション"に設定
+                await server.SendCommandAsync(new PipeCommands.VRMLoadStatus { Valid = false });
+
                 Settings.Current.VRMPath = path;
                 var context = new VRMImporterContext();
 
@@ -1132,6 +1134,7 @@ namespace VMC
                 }
 
                 LoadNewModel(context.Root);
+                await server.SendCommandAsync(new PipeCommands.VRMLoadStatus { Valid = true });
             }
             else
             {

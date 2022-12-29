@@ -626,6 +626,11 @@ namespace UnityMemoryMappedFile
         public class ShowCalibrationWindow { }
         public class ShowPhotoWindow { }
 
+        public class VRMLoadStatus
+        {
+            public bool Valid { get; set; }
+        }
+
     }
 
     public class ModItem

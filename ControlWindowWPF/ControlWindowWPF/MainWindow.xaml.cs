@@ -507,6 +507,11 @@ namespace VirtualMotionCaptureControlPanel
                 {
                     PhotoButton_Click(null, null);
                 }
+                else if (e.CommandType == typeof(PipeCommands.VRMLoadStatus))
+                {
+                    var d = (PipeCommands.VRMLoadStatus)e.Data;
+                    CalibrationButton.IsEnabled = d.Valid;
+                }
             }));
         }
 
