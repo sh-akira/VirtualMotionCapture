@@ -26,8 +26,9 @@
     <!-- MainWindow -->
     <system:String x:Key="MainWindowTitle">コントロールパネル</system:String>
     <system:String x:Key="MainWindowTitleLoading">起動中</system:String>
-    
-    <system:String x:Key="MainWindow_Setting">設定</system:String>
+    <system:String x:Key="MainWindowOpenVRAlertStatus">⚠ VR内でメニューを開いている間は、位置や操作が正常に取得できません。閉じてください。</system:String>
+
+	<system:String x:Key="MainWindow_Setting">設定</system:String>
     <system:String x:Key="MainWindow_LoadSetting">設定の読込</system:String>
     <system:String x:Key="MainWindow_ImportVRM">VRM読込</system:String>
     <system:String x:Key="MainWindow_ShortcutKey">ショートカットキー</system:String>

@@ -637,6 +637,10 @@ namespace UnityMemoryMappedFile
             public float UserHeight { get; set; }
             public string Message { get; set; }
         }
+        public class OpenVRStatus
+        {
+            public bool DashboardOpened { get; set; }
+        }
 
     }
 

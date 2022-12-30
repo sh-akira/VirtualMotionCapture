@@ -27,6 +27,7 @@
     <!-- MainWindow -->
     <system:String x:Key="MainWindowTitle">控制面板</system:String>
     <system:String x:Key="MainWindowTitleLoading">启动中</system:String>
+    <system:String x:Key="MainWindowOpenVRAlertStatus">⚠ Position and operation will unstable while open In VR Menu. Please close it.</system:String>
 
     <system:String x:Key="MainWindow_Setting">设置</system:String>
     <system:String x:Key="MainWindow_LoadSetting">打开设置</system:String>

@@ -15,6 +15,9 @@ namespace VMC
 
         private bool isOVRConnected = false;
 
+        public Action OpenVREventAction = null;
+        public bool isDashboardActivated = false;
+
         private void Awake()
         {
             Instance = this;
@@ -62,6 +65,14 @@ namespace VMC
                     {
                         case EVREventType.VREvent_Quit:
                             isOVRConnected = false;
+                            break;
+                        case EVREventType.VREvent_DashboardActivated:
+                            isDashboardActivated = true;
+                            OpenVREventAction?.Invoke();
+                            break;
+                        case EVREventType.VREvent_DashboardDeactivated:
+                            isDashboardActivated = false;
+                            OpenVREventAction?.Invoke();
                             break;
                     }
 

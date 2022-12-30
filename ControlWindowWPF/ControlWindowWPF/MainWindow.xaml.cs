@@ -532,6 +532,11 @@ namespace VirtualMotionCaptureControlPanel
                     var d = (PipeCommands.CalibrationResult)e.Data;
                     calibrationResultWindow.Update(d);
                 }
+                else if (e.CommandType == typeof(PipeCommands.OpenVRStatus))
+                {
+                    var d = (PipeCommands.OpenVRStatus)e.Data;
+                    OpenVRAlertStatusTextBlock.Visibility = d.DashboardOpened? Visibility.Visible : Visibility.Collapsed;
+                }
             }));
         }
 

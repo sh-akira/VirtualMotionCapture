@@ -26,8 +26,9 @@
     <!-- MainWindow -->
     <system:String x:Key="MainWindowTitle">컨트롤패널</system:String>
     <system:String x:Key="MainWindowTitleLoading">기동중</system:String>
-    
-    <system:String x:Key="MainWindow_Setting">설정</system:String>
+    <system:String x:Key="MainWindowOpenVRAlertStatus">⚠ Position and operation will unstable while open In VR Menu. Please close it.</system:String>
+
+	<system:String x:Key="MainWindow_Setting">설정</system:String>
     <system:String x:Key="MainWindow_LoadSetting">설정 불러오기</system:String>
     <system:String x:Key="MainWindow_ImportVRM">VRM 로드</system:String>
     <system:String x:Key="MainWindow_ShortcutKey">단축키</system:String>
