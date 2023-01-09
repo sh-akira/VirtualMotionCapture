@@ -245,6 +245,8 @@ namespace VMC
         {
             if (mocopiAvatar == null || modelAnimator == null || mocopiAnimator == null) return;
 
+            //無効になってる時は適用しない
+            if (enabled == false) return;
             //キャリブレーション中は適用しない
             if (controlWPFWindow.calibrationState == ControlWPFWindow.CalibrationState.WaitingForCalibrating ||
                 controlWPFWindow.calibrationState == ControlWPFWindow.CalibrationState.Calibrating) return;
