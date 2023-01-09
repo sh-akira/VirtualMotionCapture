@@ -43,7 +43,7 @@
             </GroupBox>
             <Grid/>
         </DockPanel>
-
+        <Button Content="{DynamicResource ShortcutKeyWindow_Remove}" Name="RemoveButton" Click="RemoveButton_Click" DockPanel.Dock="Bottom" HorizontalAlignment="Right" Width="100"/>
         <DataGrid CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" SelectionMode="Single" Name="KeysDataGrid" AutoGenerateColumns="False">
             <DataGrid.Resources>
                 <Style TargetType="DataGridCell">
