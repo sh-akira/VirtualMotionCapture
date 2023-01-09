@@ -34,6 +34,8 @@ namespace VMC
         private Vector3 centerOffsetPosition;
         private float centerOffsetRotationY;
 
+        private bool isFrameArrived;
+
         private void Awake()
         {
             VMCEvents.OnCurrentModelChanged += OnCurrentModelChanged;
@@ -54,6 +56,7 @@ namespace VMC
 
         private void OnDisable()
         {
+            isFrameArrived = false;
             StopUdpReceiver();
         }
         private void Server_Received(object sender, DataReceivedEventArgs e)
@@ -79,7 +82,7 @@ namespace VMC
                         ApplyLeftFoot = Settings.Current.mocopi_ApplyLeftFoot,
                         ApplyRootPosition = Settings.Current.mocopi_ApplyRootPosition,
                     }, e.RequestId);
-                } 
+                }
                 else if (e.CommandType == typeof(PipeCommands.mocopi_SetSetting))
                 {
                     var d = (PipeCommands.mocopi_SetSetting)e.Data;
@@ -202,6 +205,7 @@ namespace VMC
             {
                 udpReceiver.OnReceiveSkeletonDefinition += mocopiAvatar.InitializeSkeleton;
                 udpReceiver.OnReceiveFrameData += mocopiAvatar.UpdateSkeleton;
+                udpReceiver.OnReceiveFrameData += UpdateSkeleton;
             }
             udpReceiver?.UdpStart();
         }
@@ -216,9 +220,14 @@ namespace VMC
             {
                 udpReceiver.OnReceiveSkeletonDefinition -= mocopiAvatar.InitializeSkeleton;
                 udpReceiver.OnReceiveFrameData -= mocopiAvatar.UpdateSkeleton;
+                udpReceiver.OnReceiveFrameData -= UpdateSkeleton;
             }
 
             udpReceiver = null;
+        }
+        public void UpdateSkeleton(int[] boneIds, float[] rotationsX, float[] rotationsY, float[] rotationsZ, float[] rotationsW, float[] positionsX, float[] positionsY, float[] positionsZ)
+        {
+            isFrameArrived = true;
         }
 
         public void ChangePort(int port)
@@ -247,6 +256,10 @@ namespace VMC
 
             //無効になってる時は適用しない
             if (enabled == false) return;
+
+            //まだ1度も受信して無い時は適用しない
+            if (isFrameArrived == false) return;
+
             //キャリブレーション中は適用しない
             if (controlWPFWindow.calibrationState == ControlWPFWindow.CalibrationState.WaitingForCalibrating ||
                 controlWPFWindow.calibrationState == ControlWPFWindow.CalibrationState.Calibrating) return;
