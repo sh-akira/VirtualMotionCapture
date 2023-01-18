@@ -262,6 +262,8 @@ namespace VMC
                 scaledCenterPosition = headTarget.TargetTransform.position - hmdForwardAngle.normalized * (realHeight * offsetScale * 0.043f);
             }
 
+            Debug.Log($"scaledCenterPosition:({scaledCenterPosition.x}, {scaledCenterPosition.y}, {scaledCenterPosition.z})");
+
             //身長から腰の位置を算出する
             // B13 上前腸骨棘高 891.9
             // B14 恥骨結合上縁高 809.2
