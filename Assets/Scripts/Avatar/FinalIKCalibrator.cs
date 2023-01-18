@@ -187,7 +187,7 @@ namespace VMC
                     // ratio = B1 / B21 = 2.0743387238310141657264635828006
                     // 補正値 0.93694267481427684002272492175445
                     var handHeight = (leftHandTargetTransform.position.y + rightHandTargetTransform.position.y) / 2f;
-                    realHeight = handHeight * 2.07434f * 0.93694f;
+                    realHeight = handHeight * 2.07434f * 1.03f;
                 }
                 else if (calibrateMode == CalibrateMode.Tpose)
                 {
