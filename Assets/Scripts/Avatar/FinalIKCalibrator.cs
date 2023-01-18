@@ -254,7 +254,16 @@ namespace VMC
 
 
             // リアル手と手の中心から少し後ろに下げた位置
-            var scaledCenterPosition = Vector3.Lerp(leftHandTargetTransform.position, rightHandTargetTransform.position, 0.5f) - hmdForwardAngle.normalized * (realHeight * offsetScale * 0.052f);
+            var scaledCenterPosition = Vector3.Lerp(leftHandTargetTransform.position, rightHandTargetTransform.position, 0.5f);
+
+            if (calibrateMode == CalibrateMode.Ipose)
+            {
+                scaledCenterPosition = Vector3.Lerp(leftHandTargetTransform.position, rightHandTargetTransform.position, 0.5f) - hmdForwardAngle.normalized * (realHeight * offsetScale * 0.03f);
+            }
+            else if (calibrateMode == CalibrateMode.Tpose)
+            {
+                scaledCenterPosition = Vector3.Lerp(leftHandTargetTransform.position, rightHandTargetTransform.position, 0.5f) - hmdForwardAngle.normalized * (realHeight * offsetScale * 0.02f);
+            }
 
             //頭がHMDの場合
             if (headTarget.DeviceClass == ETrackedDeviceClass.HMD)
