@@ -417,11 +417,6 @@ namespace VMC
                 vrik.solver.spine.neckStiffness = 0f;
                 vrik.solver.spine.maxRootAngle = 180f;
                 vrik.solver.spine.minHeadHeight = -100f;
-
-                //頭が腰に近づいたときに猫背になりすぎないように (Final IK v2.1～)
-                vrik.solver.spine.useAnimatedHeadHeightWeight = 1.0f;
-                vrik.solver.spine.useAnimatedHeadHeightRange = 0.005f;
-                vrik.solver.spine.animatedHeadHeightBlend = 0.08f;
             }
 
             // 腰のトラッキングを調整
@@ -658,6 +653,11 @@ namespace VMC
                     vrik.UpdateSolverExternal();
                 }
                 headOffset.position -= headStep;
+
+                //頭が腰に近づいたときに猫背になりすぎないように (Final IK v2.1～)
+                vrik.solver.spine.useAnimatedHeadHeightWeight = 1.0f;
+                vrik.solver.spine.useAnimatedHeadHeightRange = 0.009f;
+                vrik.solver.spine.animatedHeadHeightBlend = 0.18f;
             }
 
             vrik.UpdateSolverExternal();
