@@ -492,6 +492,10 @@ namespace VMC
         [OptionalField]
         public bool mocopi_ApplyRightFoot;
 
+        [OptionalField]
+        public bool FluctuationEnable;
+        [OptionalField]
+        public bool AutoLookCameraEnable;
 
         //初期値
         [OnDeserializing()]
@@ -656,6 +660,9 @@ namespace VMC
             mocopi_ApplyRightLeg = true;
             mocopi_ApplyLeftFoot = true;
             mocopi_ApplyRightFoot = true;
+
+            FluctuationEnable = true;
+            AutoLookCameraEnable = false;
         }
     }
 }
