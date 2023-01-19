@@ -311,6 +311,7 @@ namespace VMC
 
             Transform headBone = boneTransformCache[0].target;
             Transform hipBone = null;
+            Transform spineBone = null;
             Vector3 defaultHeadPosition = headBone.position;
             Quaternion defaultHeadRotation = headBone.rotation;
 
@@ -332,6 +333,7 @@ namespace VMC
                         }
                         break;
                     case HumanBodyBones.Spine:
+                        spineBone = target;
                         apply = Settings.Current.mocopi_ApplySpine;
                         break;
                     case HumanBodyBones.Chest:
@@ -379,11 +381,11 @@ namespace VMC
                 if (apply) target.localRotation = source.localRotation;
             }
 
-            if (Settings.Current.mocopi_ApplyHead == false && hipBone != null)
+            if (Settings.Current.mocopi_ApplyHead == false && hipBone != null && spineBone != null)
             {
                 //頭の回転無効の時、VR機器優先するために最後に元の位置に戻るように腰を動かす
                 var rotdiff = defaultHeadRotation * Quaternion.Inverse(headBone.rotation);
-                hipBone.rotation = rotdiff * hipBone.rotation;
+                spineBone.rotation = rotdiff * spineBone.rotation;
                 var posdiff = defaultHeadPosition - headBone.position;
                 hipBone.position = posdiff + hipBone.position;
             }
