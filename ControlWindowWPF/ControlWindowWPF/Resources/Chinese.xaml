@@ -480,6 +480,8 @@
     <system:String x:Key="MotionCapture_mocopiSettingWindow_RootPositionSynchronize">同步根位置</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_RootRotationSynchronize">同步根角度</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_ResetCenter">重设当前位置为中心</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_mocopiOnly">mocopi only</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_WithVRDevice">with VR devices</system:String>
 
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">取色器</system:String>
