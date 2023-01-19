@@ -14,7 +14,7 @@
                 <StatusBarItem>
 					<StackPanel Orientation="Vertical">
 						<TextBlock Name="UnityLogStatusTextBlock" FontSize="12" Foreground="#EEEEEE">Welcome to Virtual Motion Capture</TextBlock>
-						<TextBlock Name="OpenVRAlertStatusTextBlock" FontSize="12" Foreground="#EEEE88" FontWeight="Bold" Visibility="Collapsed" Text="{DynamicResource MainWindowOpenVRAlertStatus}"/>
+                        <TextBlock Name="OpenVRAlertStatusTextBlock" FontSize="12" Foreground="#EEEE88" TextWrapping="Wrap" FontWeight="Bold" Visibility="Collapsed" Text="{DynamicResource MainWindowOpenVRAlertStatus}"/>
 					</StackPanel>
                 </StatusBarItem>
             </StatusBar>
