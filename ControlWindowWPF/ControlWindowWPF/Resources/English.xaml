@@ -478,6 +478,7 @@
     <system:String x:Key="MotionCapture_mocopiSettingWindow_RightFoot">Right Foot</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftFoot">Left Foot</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_RootPositionSynchronize">Root position synchronize</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RootRotationSynchronize">Root rotation synchronize</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_ResetCenter">Re-center current position</system:String>
     
     <!-- PhotoWindow -->

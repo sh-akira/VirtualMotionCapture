@@ -81,6 +81,7 @@ namespace VMC
                         ApplyRightFoot = Settings.Current.mocopi_ApplyRightFoot,
                         ApplyLeftFoot = Settings.Current.mocopi_ApplyLeftFoot,
                         ApplyRootPosition = Settings.Current.mocopi_ApplyRootPosition,
+                        ApplyRootRotation = Settings.Current.mocopi_ApplyRootRotation,
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.mocopi_SetSetting))
@@ -110,6 +111,7 @@ namespace VMC
             Settings.Current.mocopi_ApplyRightFoot = setting.ApplyRightFoot;
             Settings.Current.mocopi_ApplyLeftFoot = setting.ApplyLeftFoot;
             Settings.Current.mocopi_ApplyRootPosition = setting.ApplyRootPosition;
+            Settings.Current.mocopi_ApplyRootRotation = setting.ApplyRootRotation;
 
             if (Settings.Current.mocopi_Enable != setting.enable || Settings.Current.mocopi_Port != setting.port)
             {
@@ -288,14 +290,14 @@ namespace VMC
                 switch (bone)
                 {
                     case HumanBodyBones.Hips:
-                        if (Settings.Current.mocopi_ApplySpine)
+                        if (Settings.Current.mocopi_ApplyRootRotation)
                         {
                             target.localRotation = source.localRotation;
                             target.Rotate(new Vector3(0, centerOffsetRotationY, 0), Space.World);
-                            if (Settings.Current.mocopi_ApplyRootPosition)
-                            {
-                                target.localPosition = source.localPosition + centerOffsetPosition; //Root位置だけは同期
-                            }
+                        }
+                        if (Settings.Current.mocopi_ApplyRootPosition)
+                        {
+                            target.localPosition = source.localPosition + centerOffsetPosition; //Root位置だけは同期
                         }
                         break;
                     case HumanBodyBones.Spine:

@@ -478,6 +478,7 @@
     <system:String x:Key="MotionCapture_mocopiSettingWindow_RightFoot">右足</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftFoot">左足</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_RootPositionSynchronize">ルート位置の同期</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RootRotationSynchronize">ルート回転の同期</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_ResetCenter">現在位置を中心にする</system:String>
 
     <!-- PhotoWindow -->

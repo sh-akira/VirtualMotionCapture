@@ -70,6 +70,7 @@
                     </Grid>
                 </Grid>
                 <CheckBox Content="{DynamicResource MotionCapture_mocopiSettingWindow_RootPositionSynchronize}" Name="RootPositionCheckBox" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                <CheckBox Content="{DynamicResource MotionCapture_mocopiSettingWindow_RootRotationSynchronize}" Name="RootRotationCheckBox" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
             </StackPanel>
         </GroupBox>
         <Button DockPanel.Dock="Right" Content="{DynamicResource SettingWindow_Close}" Width="100" Name="CloseButton" Click="CloseButton_Click"/>

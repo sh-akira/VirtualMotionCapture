@@ -53,6 +53,7 @@ namespace VirtualMotionCaptureControlPanel
             RightFootCheckBox.IsChecked = setting.ApplyRightFoot;
             LeftFootCheckBox.IsChecked = setting.ApplyLeftFoot;
             RootPositionCheckBox.IsChecked = setting.ApplyRootPosition;
+            RootRotationCheckBox.IsChecked = setting.ApplyRootRotation;
             IsSetting = false;
         }
 
@@ -94,6 +95,7 @@ namespace VirtualMotionCaptureControlPanel
                     ApplyRightFoot = RightFootCheckBox.IsChecked.Value,
                     ApplyLeftFoot = LeftFootCheckBox.IsChecked.Value,
                     ApplyRootPosition = RootPositionCheckBox.IsChecked.Value,
+                    ApplyRootRotation = RootRotationCheckBox.IsChecked.Value,
                 });
             }
             else

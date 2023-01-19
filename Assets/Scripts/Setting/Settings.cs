@@ -470,6 +470,8 @@ namespace VMC
         [OptionalField]
         public bool mocopi_ApplyRootPosition;
         [OptionalField]
+        public bool mocopi_ApplyRootRotation;
+        [OptionalField]
         public bool mocopi_ApplyChest;
         [OptionalField]
         public bool mocopi_ApplySpine;
@@ -645,6 +647,7 @@ namespace VMC
             mocopi_Enable = true;
             mocopi_Port = 12351;
             mocopi_ApplyRootPosition = true;
+            mocopi_ApplyRootRotation = true;
             mocopi_ApplyChest = true;
             mocopi_ApplySpine = true;
             mocopi_ApplyHead = true;

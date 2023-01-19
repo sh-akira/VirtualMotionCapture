@@ -15,6 +15,7 @@ namespace UnityMemoryMappedFile
             public int port { get; set; }
 
             public bool ApplyRootPosition { get; set; }
+            public bool ApplyRootRotation { get; set; }
             public bool ApplyChest { get; set; }
             public bool ApplySpine { get; set; }
             public bool ApplyHead { get; set; }
