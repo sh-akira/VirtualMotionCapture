@@ -2492,7 +2492,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsBeta: 0
   IsPreRelease: 0
-  VersionString: v0.53f1r1b10
+  VersionString: v0.53f1r1b11
   LeftWristTransform: {fileID: 0}
   RightWristTransform: {fileID: 0}
   CalibrationCamera: {fileID: 1312323656}
