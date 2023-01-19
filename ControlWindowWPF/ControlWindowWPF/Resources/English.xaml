@@ -27,7 +27,7 @@
     <!-- MainWindow -->
     <system:String x:Key="MainWindowTitle">Control panel</system:String>
     <system:String x:Key="MainWindowTitleLoading">Loading</system:String>
-    <system:String x:Key="MainWindowOpenVRAlertStatus">⚠ Position and operation will unstable while open In VR Menu. Please close it.</system:String>
+    <system:String x:Key="MainWindowOpenVRAlertStatus">⚠ The dashboard in the HMD must be closed to properly capture position and controller inputs.</system:String>
 
     <system:String x:Key="MainWindow_Setting">Settings</system:String>
     <system:String x:Key="MainWindow_LoadSetting">Open settings</system:String>
@@ -527,12 +527,12 @@
 
     <system:String x:Key="CalibrationResultWindow_DetailMessageHideText">▶ Double click here to view details.</system:String>
     <system:String x:Key="CalibrationResultWindow_CloseButton">Close</system:String>
-    <system:String x:Key="CalibrationResultWindow_CalibrationSucceed">Calibration Succeed</system:String>
-    <system:String x:Key="CalibrationResultWindow_CalibrationFailed">Calibration Failed</system:String>
-    <system:String x:Key="CalibrationResultWindow_BodyParamMessage">Your body parameter calculated.</system:String>
+    <system:String x:Key="CalibrationResultWindow_CalibrationSucceed">Calibration succeeded</system:String>
+    <system:String x:Key="CalibrationResultWindow_CalibrationFailed">Calibration failed</system:String>
+    <system:String x:Key="CalibrationResultWindow_BodyParamMessage">Your body parameter was calculated.</system:String>
     <system:String x:Key="CalibrationResultWindow_PleaseCheckDevicesMessage">Check your devices and trackers assignment.</system:String>
     <system:String x:Key="CalibrationResultWindow_RealHeight">Height</system:String>
-    <system:String x:Key="CalibrationResultWindow_CautionMessage">if you think it is wrong, please check your tracker mounting and check the floor level of your VR space.</system:String>
-    <system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">sec after close automatically.</system:String>
+    <system:String x:Key="CalibrationResultWindow_CautionMessage">If you think it is wrong, please check your tracker mount and the floor level of your VR roomscale.</system:String>
+    <system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">seconds left to close</system:String>
 	
 </ResourceDictionary>
