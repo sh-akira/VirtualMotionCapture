@@ -76,10 +76,11 @@ namespace UnityMemoryMappedFile
 
         public enum CalibrateType
         {
-            FixedHand = 3,
-            FixedHandWithGround = 2,
+            Invalid = -1,
             Ipose = 0,
             Tpose = 1,
+            FixedHandWithGround = 2,
+            FixedHand = 3
         }
 
         public class EndCalibrate { }
@@ -592,6 +593,7 @@ namespace UnityMemoryMappedFile
 
         }
 
+        public const int ErrorCountMax = 10000;
         public class LogNotify {
             public string condition { get; set; }
             public string stackTrace { get; set; }
@@ -624,6 +626,21 @@ namespace UnityMemoryMappedFile
         }
         public class ShowCalibrationWindow { }
         public class ShowPhotoWindow { }
+
+        public class VRMLoadStatus
+        {
+            public bool Valid { get; set; }
+        }
+        public class CalibrationResult
+        {
+            public CalibrateType Type { get; set; }
+            public float UserHeight { get; set; }
+            public string Message { get; set; }
+        }
+        public class OpenVRStatus
+        {
+            public bool DashboardOpened { get; set; }
+        }
 
     }
 

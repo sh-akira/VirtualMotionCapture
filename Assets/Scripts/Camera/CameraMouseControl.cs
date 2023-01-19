@@ -228,8 +228,11 @@ namespace VMC
 
             CameraDistance = 1.5f; //default
 
-            if (LookTarget == null) // free or position fixed
+            if (LookTarget != null)
             {
+                SaveLookTarget();
+            }else{ 
+                // free or position fixed
                 var currentLookTarget = CameraManager.Current.CurrentLookTarget.transform;
                 var lookAt = currentLookTarget.position + LookOffset;
 
@@ -243,6 +246,18 @@ namespace VMC
                 CameraAngle = -transform.eulerAngles;
 
                 UpdateRelativePosition();
+
+                yield return new WaitForEndOfFrame();
+
+                if (Settings.Current.CameraType == CameraTypes.Free)
+                {
+                    Settings.Current.FreeCameraTransform.SetPosition(currentNoScaledPosition);
+                    Settings.Current.FreeCameraTransform.SetRotation(transform);
+                }
+                else if (Settings.Current.CameraType == CameraTypes.PositionFixed)
+                {
+                    Settings.Current.PositionFixedCameraTransform.SetPositionAndRotation(transform);
+                }
             }
         }
 

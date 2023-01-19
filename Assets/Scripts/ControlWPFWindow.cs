@@ -65,6 +65,7 @@ namespace VMC
         private int CurrentWindowNum = 1;
 
         public int CriticalErrorCount = 0;
+        public bool IsCriticalErrorCountOver = false;
 
         public VMTClient vmtClient;
 
@@ -113,6 +114,8 @@ namespace VMC
 
         public ModManager modManager;
 
+        public PipeCommands.CalibrationResult calibrationResult = new PipeCommands.CalibrationResult { Type = PipeCommands.CalibrateType.Invalid }; //初期値は失敗
+
         private void Awake()
         {
             Application.targetFrameRate = 60;
@@ -147,6 +150,11 @@ namespace VMC
         {
             Settings.Current.BackgroundColor = BackgroundRenderer.material.color;
             Settings.Current.CustomBackgroundColor = BackgroundRenderer.material.color;
+
+            OpenVRTrackerManager.Instance.OpenVREventAction += async () =>
+            {
+                await server.SendCommandAsync(new PipeCommands.OpenVRStatus { DashboardOpened = OpenVRTrackerManager.Instance.isDashboardActivated });
+            };
         }
 
         private int SetWindowTitle()
@@ -1106,6 +1114,8 @@ namespace VMC
             if (ImportForCalibration == false)
             {
                 calibrationState = CalibrationState.Uncalibrated; //キャリブレーション状態を"未キャリブレーション"に設定
+                await server.SendCommandAsync(new PipeCommands.VRMLoadStatus { Valid = false });
+
                 Settings.Current.VRMPath = path;
                 var context = new VRMImporterContext();
 
@@ -1131,6 +1141,7 @@ namespace VMC
                 }
 
                 LoadNewModel(context.Root);
+                await server.SendCommandAsync(new PipeCommands.VRMLoadStatus { Valid = true });
             }
             else
             {
@@ -1795,6 +1806,18 @@ namespace VMC
         {
             lastCalibrateType = calibrateType;//最後に実施したキャリブレーションタイプとして記録
 
+            //開始状態を格納
+            calibrationResult = new PipeCommands.CalibrationResult
+            {
+                Type = calibrateType
+            };
+
+            if (animator == null)
+            {
+                Debug.LogError("[Calib Fail] No avatar found. (animator == null)");
+                yield break;
+            }
+
             animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(0, 0, 0);
             animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(0, 0, 0);
             animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(0, 0, 0);
@@ -1892,7 +1915,7 @@ namespace VMC
 
             if (calibrateType == PipeCommands.CalibrateType.Ipose || calibrateType == PipeCommands.CalibrateType.Tpose)
             {
-                yield return FinalIKCalibrator.Calibrate(calibrateType == PipeCommands.CalibrateType.Ipose ? FinalIKCalibrator.CalibrateMode.Ipose : FinalIKCalibrator.CalibrateMode.Tpose, HandTrackerRoot, PelvisTrackerRoot, vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker, generatedObject);
+                yield return FinalIKCalibrator.Calibrate(this,calibrateType == PipeCommands.CalibrateType.Ipose ? FinalIKCalibrator.CalibrateMode.Ipose : FinalIKCalibrator.CalibrateMode.Tpose, HandTrackerRoot, PelvisTrackerRoot, vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker, generatedObject);
             }
             else if (calibrateType == PipeCommands.CalibrateType.FixedHand)
             {
@@ -1932,8 +1955,8 @@ namespace VMC
             Settings.Current.leftKneeTracker = StoreTransform.Create(leftKneeTracker?.TargetTransform);
             Settings.Current.rightKneeTracker = StoreTransform.Create(rightKneeTracker?.TargetTransform);
 
-            var calibratedLeftHandTransform = leftHandTracker.TargetTransform?.OfType<Transform>().FirstOrDefault();
-            var calibratedRightHandTransform = rightHandTracker.TargetTransform?.OfType<Transform>().FirstOrDefault();
+            var calibratedLeftHandTransform = leftHandTracker?.TargetTransform?.OfType<Transform>().FirstOrDefault();
+            var calibratedRightHandTransform = rightHandTracker?.TargetTransform?.OfType<Transform>().FirstOrDefault();
 
             if (calibratedLeftHandTransform != null && calibratedRightHandTransform != null)
             {
@@ -2000,25 +2023,34 @@ namespace VMC
             if (calibrationState == CalibrationState.Calibrating)
             {
                 calibrationState = CalibrationState.Calibrated; //キャリブレーション状態を"キャリブレーション完了"に設定
+
+                context.Post(async (_) =>
+                {
+                    //最終結果を送信
+                    await server.SendCommandAsync(calibrationResult);
+                }, null);
             }
             else
             {
                 //キャンセルされたなど
                 calibrationState = CalibrationState.Uncalibrated; //キャリブレーション状態を"未キャリブレーション"に設定
 
-                //IKを初期化
-                animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(0, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(0, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(0, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.RightUpperArm).localEulerAngles = new Vector3(0, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(0, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(0, 0, 0);
+                if (animator != null)
+                {
+                    //IKを初期化
+                    animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(0, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(0, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(0, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.RightUpperArm).localEulerAngles = new Vector3(0, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(0, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(0, 0, 0);
 
-                SetVRIK(CurrentModel);
-                wristRotationFix.SetVRIK(vrik);
+                    SetVRIK(CurrentModel);
+                    wristRotationFix.SetVRIK(vrik);
 
-                animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(LeftHandAngle, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(RightHandAngle, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(LeftHandAngle, 0, 0);
+                    animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(RightHandAngle, 0, 0);
+                }
             }
         }
 
@@ -2477,7 +2509,7 @@ namespace VMC
         private NotifyLogTypes notifyLogLevel = NotifyLogTypes.Warning;
         private async void LogMessageHandler(string cond, string trace, LogType type)
         {
-            NotifyLogTypes notifyType = NotifyLogTypes.Log;
+            NotifyLogTypes notifyType = NotifyLogTypes.Warning;
             switch (type)
             {
                 case LogType.Assert: notifyType = NotifyLogTypes.Assert; CriticalErrorCount++; break;
@@ -2488,14 +2520,20 @@ namespace VMC
                 default: notifyType = NotifyLogTypes.Log; break;
             }
 
-            if (notifyLogLevel < notifyType)
+            //Warning以下かつ、*から始まらないものはうるさいので飛ばさない
+            if (notifyLogLevel <= notifyType && !cond.StartsWith("*"))
             {
-                return; //Logはうるさいので飛ばさない
+                return;
             }
 
             //あまりにも致命的エラーが多すぎる場合は強制終了する
-            if (CriticalErrorCount > 10000)
+            if ((!IsCriticalErrorCountOver) && CriticalErrorCount > PipeCommands.ErrorCountMax)
             {
+                IsCriticalErrorCountOver = true;
+
+                //最後のエラーをファイルとして出力
+                string message = "[" + type.ToString() + "] " + cond + "\n\n" + trace + "\n\n" + DateTime.Now.ToString();
+                File.WriteAllText(Application.dataPath + "/../CriticalErrorCountOver.txt", message);
 #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
 #else
@@ -2511,6 +2549,27 @@ namespace VMC
                 type = notifyType,
                 errorCount = CriticalErrorCount,
             });
+
+            if (
+                (type == LogType.Error && cond.StartsWith("[Calib Fail]")) ||
+                (type == LogType.Exception && cond.StartsWith("NullReferenceException"))
+                )
+            {
+                PipeCommands.CalibrationResult oldCalibrationResult = calibrationResult;
+                //状態を失敗で上書き
+                calibrationResult = new PipeCommands.CalibrationResult
+                {
+                    Type = PipeCommands.CalibrateType.Invalid,
+                    Message = cond,
+                    UserHeight = -1
+                };
+
+                //以前の状態が失敗ではない場合、
+                if (oldCalibrationResult.Type != PipeCommands.CalibrateType.Invalid) {
+                    //エラー確定なので一旦ここで送ってしまう(例外等の場合は最終送信処理が行われなくなるため)
+                    await server.SendCommandAsync(calibrationResult);
+                }
+            }
         }
 
         private bool IsRegisteredEventCallBack = false;

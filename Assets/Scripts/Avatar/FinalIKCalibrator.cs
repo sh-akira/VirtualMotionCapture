@@ -53,7 +53,7 @@ namespace VMC
         /// <summary>
         /// 通常モード、I/Tポーズキャリブレーション
         /// </summary>
-        public static IEnumerator Calibrate(CalibrateMode calibrateMode, Transform handTrackerRoot, Transform footTrackerRoot, VRIK vrik, VRIKCalibrator.Settings settings, TrackingPoint HMDTrackingPoint, TrackingPoint PelvisTrackingPoint = null, TrackingPoint LeftHandTrackingPoint = null, TrackingPoint RightHandTrackingPoint = null, TrackingPoint LeftFootTrackingPoint = null, TrackingPoint RightFootTrackingPoint = null, TrackingPoint LeftElbowTrackingPoint = null, TrackingPoint RightElbowTrackingPoint = null, TrackingPoint LeftKneeTrackingPoint = null, TrackingPoint RightKneeTrackingPoint = null, Transform generatedObject = null)
+        public static IEnumerator Calibrate(ControlWPFWindow controlWPFWindow, CalibrateMode calibrateMode, Transform handTrackerRoot, Transform footTrackerRoot, VRIK vrik, VRIKCalibrator.Settings settings, TrackingPoint HMDTrackingPoint, TrackingPoint PelvisTrackingPoint = null, TrackingPoint LeftHandTrackingPoint = null, TrackingPoint RightHandTrackingPoint = null, TrackingPoint LeftFootTrackingPoint = null, TrackingPoint RightFootTrackingPoint = null, TrackingPoint LeftElbowTrackingPoint = null, TrackingPoint RightElbowTrackingPoint = null, TrackingPoint LeftKneeTrackingPoint = null, TrackingPoint RightKneeTrackingPoint = null, Transform generatedObject = null)
         {
             var currentModel = vrik.transform;
 
@@ -77,11 +77,11 @@ namespace VMC
 
             //それぞれのトラッカーを正しいルートに移動
             if (HMDTrackingPoint != null) HMDTrackingPoint.TargetTransform.parent = footTrackerRoot;
-            else { Debug.LogError("Head tracker not found"); yield break; }
+            else { Debug.LogError("[Calib Fail] Head tracker not found"); yield break; }
             if (LeftHandTrackingPoint != null) LeftHandTrackingPoint.TargetTransform.parent = handTrackerRoot;
-            else { Debug.LogError("Left hand tracker not found"); yield break; }
+            else { Debug.LogError("[Calib Fail] Left hand tracker not found"); yield break; }
             if (RightHandTrackingPoint != null) RightHandTrackingPoint.TargetTransform.parent = handTrackerRoot;
-            else { Debug.LogError("Right hand tracker not found"); yield break; }
+            else { Debug.LogError("[Calib Fail] Right hand tracker not found"); yield break; }
             if (PelvisTrackingPoint != null) PelvisTrackingPoint.TargetTransform.parent = footTrackerRoot;
             if (LeftFootTrackingPoint != null) LeftFootTrackingPoint.TargetTransform.parent = footTrackerRoot;
             if (RightFootTrackingPoint != null) RightFootTrackingPoint.TargetTransform.parent = footTrackerRoot;
@@ -199,6 +199,7 @@ namespace VMC
                 }
             }
             Debug.Log($"UserHeight:{realHeight}");
+            controlWPFWindow.calibrationResult.UserHeight = realHeight;
 
             // トラッカー全体のスケールを手の位置に合わせる
             // スケールを動かしてから位置を取らないとモデルの位置がずれる

@@ -27,6 +27,7 @@
     <!-- MainWindow -->
     <system:String x:Key="MainWindowTitle">Control panel</system:String>
     <system:String x:Key="MainWindowTitleLoading">Loading</system:String>
+    <system:String x:Key="MainWindowOpenVRAlertStatus">⚠ Position and operation will unstable while open In VR Menu. Please close it.</system:String>
 
     <system:String x:Key="MainWindow_Setting">Settings</system:String>
     <system:String x:Key="MainWindow_LoadSetting">Open settings</system:String>
@@ -122,6 +123,7 @@
     <system:String x:Key="MainWindow_LightHorizontalDirection">Horizontal</system:String>
 
     <system:String x:Key="MainWindow_ErrorCalibration">VRM model has not been loaded. Please import first.</system:String>
+    <system:String x:Key="MainWindow_ErrorCalibrationFail">Calibration failed.</system:String>
 
     <system:String x:Key="MainWindow_Help">Help</system:String>
     <system:String x:Key="MainWindow_ManualHeader">Please visit the website for usage and other information</system:String>
@@ -520,4 +522,17 @@
     <system:String x:Key="VRoidHubWindow_SelectModelMessage">Please select the model to load</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionConfirm">When using this model, you need to display the license. &#xa; Credit must be stated clearly when using it. OK?</system:String>
     
+    <!-- CalibrationResultWindow -->
+    <system:String x:Key="CalibrationResultWindowTitle">Calibration Result</system:String>
+
+    <system:String x:Key="CalibrationResultWindow_DetailMessageHideText">▶ Double click here to view details.</system:String>
+    <system:String x:Key="CalibrationResultWindow_CloseButton">Close</system:String>
+    <system:String x:Key="CalibrationResultWindow_CalibrationSucceed">Calibration Succeed</system:String>
+    <system:String x:Key="CalibrationResultWindow_CalibrationFailed">Calibration Failed</system:String>
+    <system:String x:Key="CalibrationResultWindow_BodyParamMessage">Your body parameter calculated.</system:String>
+    <system:String x:Key="CalibrationResultWindow_PleaseCheckDevicesMessage">Check your devices and trackers assignment.</system:String>
+    <system:String x:Key="CalibrationResultWindow_RealHeight">Height</system:String>
+    <system:String x:Key="CalibrationResultWindow_CautionMessage">if you think it is wrong, please check your tracker mounting and check the floor level of your VR space.</system:String>
+    <system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">sec after close automatically.</system:String>
+	
 </ResourceDictionary>

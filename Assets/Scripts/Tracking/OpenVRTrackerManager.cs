@@ -15,6 +15,9 @@ namespace VMC
 
         private bool isOVRConnected = false;
 
+        public Action OpenVREventAction = null;
+        public bool isDashboardActivated = false;
+
         private void Awake()
         {
             Instance = this;
@@ -195,6 +198,16 @@ namespace VMC
             return en;
         }
 
+        public bool IsDashboardVisible()
+        {
+            if (openVR == null)
+            {
+                return false;
+            }
+
+            return OpenVR.Overlay.IsDashboardVisible();
+        }
+
         //コントローラ状態を調べる
         public void GetControllerSerial(out string LeftHandSerial, out string RightHandSerial)
         {
@@ -237,6 +250,12 @@ namespace VMC
             {
                 PollingVREvents();
                 GetAllDevicePose();
+
+                bool dashboardVisible = IsDashboardVisible();
+                if (isDashboardActivated != dashboardVisible) {
+                    isDashboardActivated = dashboardVisible;
+                    OpenVREventAction?.Invoke();
+                }
             }
         }
     }

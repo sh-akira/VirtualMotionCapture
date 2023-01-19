@@ -27,6 +27,7 @@
     <!-- MainWindow -->
     <system:String x:Key="MainWindowTitle">控制面板</system:String>
     <system:String x:Key="MainWindowTitleLoading">启动中</system:String>
+    <system:String x:Key="MainWindowOpenVRAlertStatus">⚠ Position and operation will unstable while open In VR Menu. Please close it.</system:String>
 
     <system:String x:Key="MainWindow_Setting">设置</system:String>
     <system:String x:Key="MainWindow_LoadSetting">打开设置</system:String>
@@ -122,6 +123,7 @@
     <system:String x:Key="MainWindow_LightHorizontalDirection">横轴</system:String>
 
     <system:String x:Key="MainWindow_ErrorCalibration">还没有VRM模型被加载，请先打开模型。</system:String>
+    <system:String x:Key="MainWindow_ErrorCalibrationFail">Calibration failed.</system:String>
 
     <system:String x:Key="MainWindow_Help">帮助</system:String>
     <system:String x:Key="MainWindow_ManualHeader">请浏览如下网站获取使用帮助和其他信息</system:String>
@@ -519,4 +521,17 @@
     <system:String x:Key="VRoidHubWindow_SelectModelMessage">请选择模型并载入</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionConfirm">使用这个模型，你需要确认协议。必须清晰标注模型的来源，是否继续？</system:String>
     
+    <!-- CalibrationResultWindow -->
+    <system:String x:Key="CalibrationResultWindowTitle">Calibration Result</system:String>
+
+    <system:String x:Key="CalibrationResultWindow_DetailMessageHideText">▶ Double click here to view details.</system:String>
+    <system:String x:Key="CalibrationResultWindow_CloseButton">Close</system:String>
+    <system:String x:Key="CalibrationResultWindow_CalibrationSucceed">Calibration Succeed</system:String>
+    <system:String x:Key="CalibrationResultWindow_CalibrationFailed">Calibration Failed</system:String>
+    <system:String x:Key="CalibrationResultWindow_BodyParamMessage">Your body parameter calculated.</system:String>
+    <system:String x:Key="CalibrationResultWindow_PleaseCheckDevicesMessage">Check your devices and trackers assignment.</system:String>
+    <system:String x:Key="CalibrationResultWindow_RealHeight">Height</system:String>
+    <system:String x:Key="CalibrationResultWindow_CautionMessage">if you think it is wrong, please check your tracker mounting and check the floor level of your VR space.</system:String>
+    <system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">sec after close automatically.</system:String>
+
 </ResourceDictionary>
