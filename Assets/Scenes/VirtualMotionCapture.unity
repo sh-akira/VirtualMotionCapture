@@ -2461,6 +2461,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5922db7fa6394da4bb09ed9450b2e430, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDashboardActivated: 0
 --- !u!1 &1407685703
 GameObject:
   m_ObjectHideFlags: 0
@@ -2492,7 +2493,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsBeta: 0
   IsPreRelease: 0
-  VersionString: v0.53f1r1b11
+  VersionString: v0.53f1r1b12
   LeftWristTransform: {fileID: 0}
   RightWristTransform: {fileID: 0}
   CalibrationCamera: {fileID: 1312323656}
@@ -2508,6 +2509,7 @@ MonoBehaviour:
   ExternalMotionReceiverObject: {fileID: 1210221201}
   externalMotionReceivers: []
   CriticalErrorCount: 0
+  IsCriticalErrorCountOver: 0
   vmtClient: {fileID: 1995326176}
   postProcessingManager: {fileID: 795349838}
   EyeTracking_ViveProEyeComponent: {fileID: 0}
