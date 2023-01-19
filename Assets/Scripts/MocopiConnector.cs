@@ -270,7 +270,32 @@ namespace VMC
             {
                 boneTransformCache = new List<(HumanBodyBones humanBodyBone, Transform source, Transform target)>();
 
-                foreach (HumanBodyBones bone in Enum.GetValues(typeof(HumanBodyBones)))
+                var ReverseBodyBones = new HumanBodyBones[] {
+                    HumanBodyBones.Head ,
+                    HumanBodyBones.Neck ,
+                    HumanBodyBones.LeftShoulder ,
+                    HumanBodyBones.RightShoulder ,
+                    HumanBodyBones.LeftUpperArm ,
+                    HumanBodyBones.RightUpperArm ,
+                    HumanBodyBones.LeftLowerArm ,
+                    HumanBodyBones.RightLowerArm ,
+                    HumanBodyBones.UpperChest ,
+                    HumanBodyBones.Chest ,
+                    HumanBodyBones.Spine ,
+                    HumanBodyBones.LeftHand ,
+                    HumanBodyBones.RightHand ,
+                    HumanBodyBones.Hips ,
+                    HumanBodyBones.LeftUpperLeg ,
+                    HumanBodyBones.RightUpperLeg ,
+                    HumanBodyBones.LeftLowerLeg ,
+                    HumanBodyBones.RightLowerLeg ,
+                    HumanBodyBones.LeftFoot ,
+                    HumanBodyBones.RightFoot ,
+                    HumanBodyBones.LeftToes ,
+                    HumanBodyBones.RightToes
+                };
+
+                foreach (HumanBodyBones bone in ReverseBodyBones)
                 {
                     if (bone == HumanBodyBones.LastBone) continue;
 
@@ -284,12 +309,18 @@ namespace VMC
                 }
             }
 
+            Transform headBone = boneTransformCache[0].target;
+            Transform hipBone = null;
+            Vector3 defaultHeadPosition = headBone.position;
+            Quaternion defaultHeadRotation = headBone.rotation;
+
             foreach ((var bone, var source, var target) in boneTransformCache)
             {
                 bool apply = false;
                 switch (bone)
                 {
                     case HumanBodyBones.Hips:
+                        hipBone = target;
                         if (Settings.Current.mocopi_ApplyRootRotation)
                         {
                             target.localRotation = source.localRotation;
@@ -346,6 +377,15 @@ namespace VMC
                 }
 
                 if (apply) target.localRotation = source.localRotation;
+            }
+
+            if (Settings.Current.mocopi_ApplyHead == false && hipBone != null)
+            {
+                //頭の回転無効の時、VR機器優先するために最後に元の位置に戻るように腰を動かす
+                var rotdiff = defaultHeadRotation * Quaternion.Inverse(headBone.rotation);
+                hipBone.rotation = rotdiff * hipBone.rotation;
+                var posdiff = defaultHeadPosition - headBone.position;
+                hipBone.position = posdiff + hipBone.position;
             }
         }
 
