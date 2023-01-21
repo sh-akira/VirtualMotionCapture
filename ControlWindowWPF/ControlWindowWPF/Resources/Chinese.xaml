@@ -27,7 +27,7 @@
     <!-- MainWindow -->
     <system:String x:Key="MainWindowTitle">控制面板</system:String>
     <system:String x:Key="MainWindowTitleLoading">启动中</system:String>
-    <system:String x:Key="MainWindowOpenVRAlertStatus">⚠ The dashboard in the HMD must be closed to properly capture position and controller inputs.</system:String>
+    <system:String x:Key="MainWindowOpenVRAlertStatus">⚠ 在头显中开启 SteamVR 主面板时，定位与控制器输入无法正确获取，请将其关闭。</system:String>
 
     <system:String x:Key="MainWindow_Setting">设置</system:String>
     <system:String x:Key="MainWindow_LoadSetting">打开设置</system:String>
@@ -123,7 +123,7 @@
     <system:String x:Key="MainWindow_LightHorizontalDirection">横轴</system:String>
 
     <system:String x:Key="MainWindow_ErrorCalibration">还没有VRM模型被加载，请先打开模型。</system:String>
-    <system:String x:Key="MainWindow_ErrorCalibrationFail">Calibration failed.</system:String>
+    <system:String x:Key="MainWindow_ErrorCalibrationFail">校准失败。</system:String>
 
     <system:String x:Key="MainWindow_Help">帮助</system:String>
     <system:String x:Key="MainWindow_ManualHeader">请浏览如下网站获取使用帮助和其他信息</system:String>
@@ -142,8 +142,8 @@
     <system:String x:Key="CalibrationWindow_CalibrationButton_ToolTip">开始校准模型</system:String>
     <system:String x:Key="CalibrationWindow_Status_Calibrating">校准中</system:String>
     <system:String x:Key="CalibrationWindow_Status_Finish">校准完成</system:String>
-    <system:String x:Key="CalibrationWindow_Status_NewCalibrationGroup">标准模式（新校准实现）</system:String>
-    <system:String x:Key="CalibrationWindow_Status_OldCalibrationGroup">兼容模式（旧校准实现）</system:String>
+    <system:String x:Key="CalibrationWindow_Status_NewCalibrationGroup">标准模式（新校准方案）</system:String>
+    <system:String x:Key="CalibrationWindow_Status_OldCalibrationGroup">兼容模式（旧校准方案）</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateIposeRadioButton">I-pose</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateTposeRadioButton">T-pose</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandRadioButton">混合现实模式（正确的手位置但是没有腿部校准）</system:String>
@@ -482,8 +482,8 @@
     <system:String x:Key="MotionCapture_mocopiSettingWindow_RootPositionSynchronize">同步根位置</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_RootRotationSynchronize">同步根角度</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_ResetCenter">重设当前位置为中心</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_mocopiOnly">mocopi only</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_WithVRDevice">with VR devices</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_mocopiOnly">仅使用 mocopi</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_WithVRDevice">与 VR 设备使用</system:String>
 
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">取色器</system:String>
@@ -522,16 +522,16 @@
     <system:String x:Key="VRoidHubWindow_CreditCautionConfirm">使用这个模型，你需要确认协议。必须清晰标注模型的来源，是否继续？</system:String>
     
     <!-- CalibrationResultWindow -->
-    <system:String x:Key="CalibrationResultWindowTitle">Calibration Result</system:String>
+    <system:String x:Key="CalibrationResultWindowTitle">校准结果</system:String>
 
-    <system:String x:Key="CalibrationResultWindow_DetailMessageHideText">▶ Double click here to view details.</system:String>
-    <system:String x:Key="CalibrationResultWindow_CloseButton">Close</system:String>
-    <system:String x:Key="CalibrationResultWindow_CalibrationSucceed">Calibration succeeded</system:String>
-    <system:String x:Key="CalibrationResultWindow_CalibrationFailed">Calibration failed</system:String>
-    <system:String x:Key="CalibrationResultWindow_BodyParamMessage">Your body parameter was calculated.</system:String>
-    <system:String x:Key="CalibrationResultWindow_PleaseCheckDevicesMessage">Check your devices and trackers assignment.</system:String>
-    <system:String x:Key="CalibrationResultWindow_RealHeight">Height</system:String>
-    <system:String x:Key="CalibrationResultWindow_CautionMessage">If you think it is wrong, please check your tracker mount and the floor level of your VR roomscale.</system:String>
-    <system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">seconds left to close</system:String>
+    <system:String x:Key="CalibrationResultWindow_DetailMessageHideText">▶ 双击此处以查看详情。</system:String>
+    <system:String x:Key="CalibrationResultWindow_CloseButton">关闭</system:String>
+    <system:String x:Key="CalibrationResultWindow_CalibrationSucceed">校准成功</system:String>
+    <system:String x:Key="CalibrationResultWindow_CalibrationFailed">校准失败</system:String>
+    <system:String x:Key="CalibrationResultWindow_BodyParamMessage">已计算你的身体参数。</system:String>
+    <system:String x:Key="CalibrationResultWindow_PleaseCheckDevicesMessage">请检查你的设备与追踪器分配。</system:String>
+    <system:String x:Key="CalibrationResultWindow_RealHeight">身高</system:String>
+    <system:String x:Key="CalibrationResultWindow_CautionMessage">如果该数据不正确，请检查你的追踪器固定位置以及 VR 空间中的地面高度，然后以正确的姿势重新校准。</system:String>
+    <system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">秒后自动关闭</system:String>
 
 </ResourceDictionary>
