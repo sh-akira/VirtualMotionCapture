@@ -148,6 +148,7 @@ namespace VMC
                 cloneRootTransform = cloneRoot;
 
                 mocopiAvatar = gameObject.AddComponent<MocopiAvatar>();
+                mocopiAvatar.MotionSmoothness = 1.0f;
                 boneTransformCache = null;
 
                 if (enabled)
