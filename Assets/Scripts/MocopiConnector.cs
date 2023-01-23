@@ -16,15 +16,13 @@ namespace VMC
         private ControlWPFWindow controlWPFWindow;
         private System.Threading.SynchronizationContext context = null;
 
-        [SerializeField]
-        private Transform cloneSkeletonRoot;
-
         private MocopiUdpReceiver udpReceiver;
         private MocopiAvatar mocopiAvatar;
         private GameObject currentModel;
 
         private Animator modelAnimator;
         private Animator mocopiAnimator;
+        private Transform cloneRootTransform;
 
         private VRIK vrik;
         private IKSolver ikSolver;
@@ -143,16 +141,13 @@ namespace VMC
                 //ボーンのみのクローンを作成し、mocopiのモーションをそちらに適用させる
                 currentModel = model;
                 modelAnimator = model.GetComponent<Animator>();
-                if (cloneSkeletonRoot == null)
-                {
-                    cloneSkeletonRoot = new GameObject(nameof(cloneSkeletonRoot)).transform;
-                    cloneSkeletonRoot.SetParent(transform, false);
-                }
-                var cloneAvatar = CreateCopyAvatar(model, cloneSkeletonRoot);
-                mocopiAnimator = cloneSkeletonRoot.gameObject.AddComponent<Animator>();
-                mocopiAnimator.avatar = cloneAvatar;
 
-                mocopiAvatar = cloneSkeletonRoot.gameObject.AddComponent<MocopiAvatar>();
+                var (cloneAvatar, cloneRoot) = CreateCopyAvatar(model, transform);
+                mocopiAnimator = gameObject.AddComponent<Animator>();
+                mocopiAnimator.avatar = cloneAvatar;
+                cloneRootTransform = cloneRoot;
+
+                mocopiAvatar = gameObject.AddComponent<MocopiAvatar>();
                 boneTransformCache = null;
 
                 if (enabled)
@@ -163,17 +158,26 @@ namespace VMC
         }
         private void OnModelUnloading(GameObject model)
         {
-
             //前回の生成物の削除
             if (currentModel != null)
             {
-                foreach (Transform child in cloneSkeletonRoot)
+                DestroyImmediate(cloneRootTransform.gameObject);
+                // Destroy SkeletonRoot
+                foreach (Transform child in transform)
                 {
                     DestroyImmediate(child.gameObject);
                 }
-
                 DestroyImmediate(mocopiAvatar);
                 DestroyImmediate(mocopiAnimator);
+
+                if (ikSolver != null)
+                {
+                    ikSolver.OnPostUpdate -= ApplyMotion;
+                }
+                ikSolver = null;
+                vrik = null;
+                currentModel = null;
+                isFrameArrived = false;
             }
         }
 
@@ -207,7 +211,7 @@ namespace VMC
             {
                 udpReceiver.OnReceiveSkeletonDefinition += mocopiAvatar.InitializeSkeleton;
                 udpReceiver.OnReceiveFrameData += mocopiAvatar.UpdateSkeleton;
-                udpReceiver.OnReceiveFrameData += UpdateSkeleton;
+                udpReceiver.OnReceiveSkeletonDefinition += InitializeSkeleton;
             }
             udpReceiver?.UdpStart();
         }
@@ -222,12 +226,12 @@ namespace VMC
             {
                 udpReceiver.OnReceiveSkeletonDefinition -= mocopiAvatar.InitializeSkeleton;
                 udpReceiver.OnReceiveFrameData -= mocopiAvatar.UpdateSkeleton;
-                udpReceiver.OnReceiveFrameData -= UpdateSkeleton;
+                udpReceiver.OnReceiveSkeletonDefinition -= InitializeSkeleton;
             }
-
+            isFrameArrived = false;
             udpReceiver = null;
         }
-        public void UpdateSkeleton(int[] boneIds, float[] rotationsX, float[] rotationsY, float[] rotationsZ, float[] rotationsW, float[] positionsX, float[] positionsY, float[] positionsZ)
+        public void InitializeSkeleton(int[] boneIds, int[] parentBoneIds, float[] rotationsX, float[] rotationsY, float[] rotationsZ, float[] rotationsW, float[] positionsX, float[] positionsY, float[] positionsZ)
         {
             isFrameArrived = true;
         }
@@ -397,7 +401,7 @@ namespace VMC
         /// <param name="model">コピー元モデル</param>
         /// <param name="parent">コピー先の親</param>
         /// <returns></returns>
-        private Avatar CreateCopyAvatar(GameObject model, Transform parent)
+        private (Avatar avatar, Transform root) CreateCopyAvatar(GameObject model, Transform parent)
         {
             var skeletonBones = new List<SkeletonBone>();
             var humanBones = new List<HumanBone>();
@@ -427,7 +431,7 @@ namespace VMC
 
             var avatar = AvatarBuilder.BuildHumanAvatar(parent.gameObject, humanDescription);
 
-            return avatar;
+            return (avatar, rootClone);
         }
 
         private void GetHumanBones(Animator animator, ref List<HumanBone> humanBones)
