@@ -210,7 +210,6 @@ namespace VMC
 
             if (mocopiAvatar != null)
             {
-                udpReceiver.OnReceiveSkeletonDefinition += mocopiAvatar.InitializeSkeleton;
                 udpReceiver.OnReceiveFrameData += mocopiAvatar.UpdateSkeleton;
                 udpReceiver.OnReceiveSkeletonDefinition += InitializeSkeleton;
             }
@@ -225,7 +224,6 @@ namespace VMC
 
             if (mocopiAvatar != null)
             {
-                udpReceiver.OnReceiveSkeletonDefinition -= mocopiAvatar.InitializeSkeleton;
                 udpReceiver.OnReceiveFrameData -= mocopiAvatar.UpdateSkeleton;
                 udpReceiver.OnReceiveSkeletonDefinition -= InitializeSkeleton;
             }
@@ -234,7 +232,11 @@ namespace VMC
         }
         public void InitializeSkeleton(int[] boneIds, int[] parentBoneIds, float[] rotationsX, float[] rotationsY, float[] rotationsZ, float[] rotationsW, float[] positionsX, float[] positionsY, float[] positionsZ)
         {
-            isFrameArrived = true;
+            if (isFrameArrived == false)
+            {
+                mocopiAvatar.InitializeSkeleton(boneIds, parentBoneIds, rotationsX, rotationsY, rotationsZ, rotationsW, positionsX, positionsY, positionsZ);
+                isFrameArrived = true;
+            }
         }
 
         public void ChangePort(int port)
