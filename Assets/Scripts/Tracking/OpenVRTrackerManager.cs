@@ -205,7 +205,7 @@ namespace VMC
                 return false;
             }
 
-            return OpenVR.Overlay.IsDashboardVisible();
+            return OpenVR.Overlay?.IsDashboardVisible() ?? false;
         }
 
         //コントローラ状態を調べる
