@@ -1696,7 +1696,7 @@ namespace VMC
 
                 //ここに来るときは腰か足のトラッカー自動認識になってるとき
                 //割り当てられていないトラッカーリスト
-                var autoTrackers = manager.GetTrackingPoints(ETrackedDeviceClass.GenericTracker).Where(d => trackerIds.Contains(d.Name) == false).Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.TargetTransform.position - headTracker.position), trackingPoint = d });
+                var autoTrackers = manager.GetTrackingPoints(ETrackedDeviceClass.GenericTracker).Where(d => d.TrackingWatcher.ok).Where(d => trackerIds.Contains(d.Name) == false).Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.TargetTransform.position - headTracker.position), trackingPoint = d });
                 if (autoTrackers.Any())
                 {
                     var count = autoTrackers.Count();
