@@ -101,6 +101,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AdminExecute.cs" />
     <Compile Include="CalibrationResultWindow.xaml.cs">
       <DependentUpon>CalibrationResultWindow.xaml</DependentUpon>
     </Compile>
@@ -115,6 +116,9 @@
     </Compile>
     <Compile Include="EyeTracking_TobiiSettingWindow.xaml.cs">
       <DependentUpon>EyeTracking_TobiiSettingWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FirewallManagerWindow.xaml.cs">
+      <DependentUpon>FirewallManagerWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="FunctionKeyAddWindow.xaml.cs">
       <DependentUpon>FunctionKeyAddWindow.xaml</DependentUpon>
@@ -186,6 +190,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="EyeTracking_TobiiSettingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FirewallManagerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -322,6 +330,17 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\VirtualMotionCapture_dark.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="NetFwTypeLib">
+      <Guid>{58FBCF7C-E7A9-467C-80B3-FC65E8FCCA08}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

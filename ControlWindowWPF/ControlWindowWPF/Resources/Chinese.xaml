@@ -534,4 +534,7 @@
     <system:String x:Key="CalibrationResultWindow_CautionMessage">如果该数据不正确，请检查你的追踪器固定位置以及 VR 空间中的地面高度，然后以正确的姿势重新校准。</system:String>
     <system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">秒后自动关闭</system:String>
 
+    <system:String x:Key="FirewallManagerWindow_Description">Configure firewall settings for Virtual Motion Capture to connect with other apps. Would you like to continue?</system:String>
+    <system:String x:Key="FirewallManagerWindow_DontShowAgain">Don't show this again</system:String>
+
 </ResourceDictionary>

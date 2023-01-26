@@ -533,5 +533,8 @@
 	<system:String x:Key="CalibrationResultWindow_RealHeight">身長</system:String>
 	<system:String x:Key="CalibrationResultWindow_CautionMessage">実際の値と大きく違う場合、装着位置や床の高さ設定を確認し、正しい姿勢でもう一度キャリブレーションを実行してください。</system:String>
 	<system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">秒後に自動で閉じます</system:String>
-	
+
+    <system:String x:Key="FirewallManagerWindow_Description">バーチャルモーションキャプチャーが連携アプリと通信するためにファイアウォール設定を行います。よろしいですか？</system:String>
+    <system:String x:Key="FirewallManagerWindow_DontShowAgain">次回以降表示しない</system:String>
+
 </ResourceDictionary>

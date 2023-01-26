@@ -534,5 +534,8 @@
     <system:String x:Key="CalibrationResultWindow_RealHeight">Height</system:String>
     <system:String x:Key="CalibrationResultWindow_CautionMessage">If you think it is wrong, please check your tracker mount and the floor level of your VR roomscale.</system:String>
     <system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">seconds left to close</system:String>
+
+    <system:String x:Key="FirewallManagerWindow_Description">Configure firewall settings for Virtual Motion Capture to connect with other apps. Would you like to continue?</system:String>
+    <system:String x:Key="FirewallManagerWindow_DontShowAgain">Don't show this again</system:String>
 	
 </ResourceDictionary>

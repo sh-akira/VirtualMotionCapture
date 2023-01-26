@@ -53,12 +53,19 @@ namespace VirtualMotionCaptureControlPanel
 
         public MainWindow()
         {
-            InitializeComponent();
+            if (App.CommandLineArgs != null && App.CommandLineArgs.Length == 1 && App.CommandLineArgs.First() == "/firewall")
+            {
+                var firewallManagerWindow = new FirewallManagerWindow();
+                firewallManagerWindow.Show();
+                this.Close();
+                return;
+            }
             if (App.CommandLineArgs == null || App.CommandLineArgs.Length < 2 || App.CommandLineArgs.First().StartsWith("/pipeName") == false)
             {
                 this.Close();
                 return;
             }
+            InitializeComponent();
             Globals.Connect(App.CommandLineArgs[1]);
             Globals.Client.ReceivedEvent += Client_Received;
             DefaultFaceComboBox.ItemsSource = DefaultFacesBase;
@@ -153,6 +160,19 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            if (Globals.CurrentCommonSettingsWPF.FirewallChecked == false && App.CommandLineArgs[1] != "VMCTest")
+            {
+                var (successExecute, exitCode) = AdminExecute.RestartAsAdmin(new[] { "/firewall" });
+                if (successExecute)
+                {
+                    if (exitCode == 0)
+                    {
+                        Globals.CurrentCommonSettingsWPF.FirewallChecked = true;
+                        Globals.SaveCommonSettings();
+                    }
+                }
+            }
+
             calibrationResultWindow = new CalibrationResultWindow { Owner = this, Topmost = true, WindowStartupLocation = WindowStartupLocation.CenterScreen };
 
             CheckVMCCameraVersion();
