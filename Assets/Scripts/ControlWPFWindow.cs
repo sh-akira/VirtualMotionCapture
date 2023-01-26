@@ -2410,6 +2410,7 @@ namespace VMC
             externalMotionSender.ChangeOSCAddress(address, port);
             externalMotionSender.optionString = optionstring;
             easyDeviceDiscoveryProtocolManager.responderEnable = responderEnable;
+            if (responderEnable) easyDeviceDiscoveryProtocolManager.gameObject.SetActive(true);
         }
 
         public void ChangeExternalMotionSenderAddress(string address, int port)
@@ -2430,6 +2431,7 @@ namespace VMC
 
             Settings.Current.ExternalMotionReceiverRequesterEnable = requesterEnable;
             easyDeviceDiscoveryProtocolManager.requesterEnable = requesterEnable;
+            if (requesterEnable) easyDeviceDiscoveryProtocolManager.gameObject.SetActive(true);
         }
 
         private void WaitOneFrameAction(Action action)

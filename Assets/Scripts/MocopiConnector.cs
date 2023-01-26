@@ -33,12 +33,14 @@ namespace VMC
         private float centerOffsetRotationY;
 
         private bool isFrameArrived;
+        private bool isFirstTime = true;
 
         private void Awake()
         {
             VMCEvents.OnCurrentModelChanged += OnCurrentModelChanged;
             VMCEvents.OnModelUnloading += OnModelUnloading;
             controlWPFWindow.AdditionalSettingAction += ApplySettings;
+            enabled = false;
         }
 
         private void Start()
@@ -49,6 +51,11 @@ namespace VMC
 
         private void OnEnable()
         {
+            if (isFirstTime)
+            {
+                isFirstTime = false;
+                return;
+            }
             StartUdpReceiver();
         }
 
