@@ -217,7 +217,7 @@ namespace VMC
                 setPosition = CameraTarget + transform.rotation * Vector3.back * CameraDistance;
             }
             currentNoScaledPosition = setPosition;
-            if (parentTransform != null)
+            if (LookTarget == null && parentTransform != null)
             {
                 setPosition = new Vector3(setPosition.x * parentTransform.localScale.x + parentTransform.position.x, setPosition.y * parentTransform.localScale.y + parentTransform.position.y, setPosition.z * parentTransform.localScale.z + parentTransform.position.z);
             }
