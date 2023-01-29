@@ -33,7 +33,6 @@ namespace VMC
         private float centerOffsetRotationY;
 
         private bool isFrameArrived;
-        private bool isFirstTime = true;
 
         private void Awake()
         {
@@ -51,11 +50,6 @@ namespace VMC
 
         private void OnEnable()
         {
-            if (isFirstTime)
-            {
-                isFirstTime = false;
-                return;
-            }
             StartUdpReceiver();
         }
 
