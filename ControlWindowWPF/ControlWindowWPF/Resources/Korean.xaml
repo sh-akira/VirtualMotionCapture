@@ -203,8 +203,9 @@
     
     <!-- SettingWindow -->
     <system:String x:Key="SettingWindowTitle">설정</system:String>
-                          
+
     <system:String x:Key="SettingWindow_HandRotate">손의 각도 조절</system:String>
+    <system:String x:Key="SettingWindow_CalibrationSetting">Calibration Setting</system:String>
     <system:String x:Key="SettingWindow_LeftHand">왼손</system:String>
     <system:String x:Key="SettingWindow_RightHand">오른손</system:String>
     <system:String x:Key="SettingWindow_VMTInstall">VMT 인스톨</system:String>

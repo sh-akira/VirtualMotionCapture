@@ -443,6 +443,24 @@ namespace VMC
                 {
                     ControlPanelExecuted = false;
                 }
+                else if (e.CommandType == typeof(PipeCommands.GetCalibrationSetting))
+                {
+                    await server.SendCommandAsync(new PipeCommands.SetCalibrationSetting
+                    {
+                        EnableOverrideBodyHeight = Settings.Current.EnableOverrideBodyHeight,
+                        OverrideBodyHeight = (int)(Settings.Current.OverrideBodyHeight * 1000),
+                        PelvisOffsetAdjustY = (int)(Settings.Current.PelvisOffsetAdjustY * 1000),
+                        PelvisOffsetAdjustZ = (int)(Settings.Current.PelvisOffsetAdjustZ * 1000),
+                    }, e.RequestId);
+                }
+                else if (e.CommandType == typeof(PipeCommands.SetCalibrationSetting))
+                {
+                    var d = (PipeCommands.SetCalibrationSetting)e.Data;
+                    Settings.Current.EnableOverrideBodyHeight = d.EnableOverrideBodyHeight;
+                    Settings.Current.OverrideBodyHeight = d.OverrideBodyHeight / 1000f;
+                    Settings.Current.PelvisOffsetAdjustY = d.PelvisOffsetAdjustY / 1000f;
+                    Settings.Current.PelvisOffsetAdjustZ = d.PelvisOffsetAdjustZ / 1000f;
+                }
                 else if (e.CommandType == typeof(PipeCommands.SetHandFreeOffset))
                 {
                     var d = (PipeCommands.SetHandFreeOffset)e.Data;

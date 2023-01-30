@@ -204,6 +204,7 @@
     <system:String x:Key="SettingWindowTitle">設定</system:String>
                           
     <system:String x:Key="SettingWindow_HandRotate">手の角度調整</system:String>
+    <system:String x:Key="SettingWindow_CalibrationSetting">キャリブレーション設定</system:String>
     <system:String x:Key="SettingWindow_LeftHand">左手</system:String>
     <system:String x:Key="SettingWindow_RightHand">右手</system:String>
     <system:String x:Key="SettingWindow_VMTInstall">VMTインストール</system:String>

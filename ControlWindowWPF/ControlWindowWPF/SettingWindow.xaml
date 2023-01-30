@@ -15,8 +15,11 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Vertical">
-                <GroupBox Header="{DynamicResource SettingWindow_HandRotate}" DockPanel.Dock="Top">
-                    <Button Content="{DynamicResource SettingWindow_OpenHandFreeOffset}" Name="HandFreeOffsetButton" Click="HandFreeOffsetButton_Click"/>
+                <GroupBox Header="{DynamicResource CalibrationWindowTitle}" DockPanel.Dock="Top">
+                    <UniformGrid Columns="2">
+                        <Button Content="{DynamicResource SettingWindow_HandRotate}" Name="HandFreeOffsetButton" Click="HandFreeOffsetButton_Click"/>
+                        <Button Content="{DynamicResource SettingWindow_CalibrationSetting}" Name="CalibrationSettingButton" Click="CalibrationSettingButton_Click"/>
+                    </UniformGrid>
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_TrackerConfig}">
                     <Button Content="{DynamicResource SettingWindow_OpenTrackerConfig}" Name="TrackerConfigButton" Click="TrackerConfigButton_Click"/>

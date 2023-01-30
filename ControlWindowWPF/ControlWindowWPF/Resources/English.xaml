@@ -204,6 +204,7 @@
     <system:String x:Key="SettingWindowTitle">Settings</system:String>
 
     <system:String x:Key="SettingWindow_HandRotate">Hand Rotate Fix</system:String>
+    <system:String x:Key="SettingWindow_CalibrationSetting">Calibration Setting</system:String>
     <system:String x:Key="SettingWindow_LeftHand">Left Hand</system:String>
     <system:String x:Key="SettingWindow_RightHand">RightHand</system:String>
     <system:String x:Key="SettingWindow_VMTInstall">VMT Install</system:String>

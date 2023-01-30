@@ -201,6 +201,12 @@ namespace VMC
             Debug.Log($"UserHeight:{realHeight}");
             controlWPFWindow.calibrationResult.UserHeight = realHeight;
 
+            if (Settings.Current.EnableOverrideBodyHeight)
+            {
+                realHeight = Settings.Current.OverrideBodyHeight;
+                Debug.Log($"Override UserHeight:{realHeight}");
+            }
+
             // トラッカー全体のスケールを手の位置に合わせる
             // スケールを動かしてから位置を取らないとモデルの位置がずれる
             var leftHand = vrik.references.leftHand;
@@ -299,7 +305,7 @@ namespace VMC
             {
                 var pelvisRotatePoint = new GameObject("PelvisRotatePoint").transform;
                 pelvisRotatePoint.SetParent(pelvisTargetTransform);
-                pelvisRotatePoint.position = scaledPelvisPosition;
+                pelvisRotatePoint.position = scaledPelvisPosition + new Vector3(0, Settings.Current.PelvisOffsetAdjustY, Settings.Current.PelvisOffsetAdjustZ);
                 pelvisRotatePoint.rotation = Quaternion.identity;
                 pelvisTargetTransform = pelvisRotatePoint;
             }

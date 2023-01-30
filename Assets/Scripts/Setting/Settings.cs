@@ -495,6 +495,16 @@ namespace VMC
         public bool mocopi_ApplyRightFoot;
 
 
+        [OptionalField]
+        public bool EnableOverrideBodyHeight;
+        [OptionalField]
+        public float OverrideBodyHeight;
+        [OptionalField]
+        public float PelvisOffsetAdjustY;
+        [OptionalField]
+        public float PelvisOffsetAdjustZ;
+
+
         //初期値
         [OnDeserializing()]
         internal void OnDeserializingMethod(StreamingContext context)
@@ -659,6 +669,11 @@ namespace VMC
             mocopi_ApplyRightLeg = true;
             mocopi_ApplyLeftFoot = true;
             mocopi_ApplyRightFoot = true;
+
+            EnableOverrideBodyHeight = false;
+            OverrideBodyHeight = 1.7f;
+            PelvisOffsetAdjustY = 0;
+            PelvisOffsetAdjustZ = 0;
         }
     }
 }

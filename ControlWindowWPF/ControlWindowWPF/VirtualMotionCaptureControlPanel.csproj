@@ -130,6 +130,9 @@
     <Compile Include="GraphicsOptionWindow.xaml.cs">
       <DependentUpon>GraphicsOptionWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CalibrationSettingWindow.xaml.cs">
+      <DependentUpon>CalibrationSettingWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HandFreeOffsetWindow.xaml.cs">
       <DependentUpon>HandFreeOffsetWindow.xaml</DependentUpon>
     </Compile>
@@ -208,6 +211,10 @@
     <Page Include="GraphicsOptionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CalibrationSettingWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="HandFreeOffsetWindow.xaml">
       <SubType>Designer</SubType>

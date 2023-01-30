@@ -247,6 +247,15 @@ namespace UnityMemoryMappedFile
             public int SwivelOffset { get; set; }
         }
 
+        public class GetCalibrationSetting { }
+        public class SetCalibrationSetting
+        {
+            public bool EnableOverrideBodyHeight { get; set; }
+            public int OverrideBodyHeight { get; set; }
+            public int PelvisOffsetAdjustY { get; set; }
+            public int PelvisOffsetAdjustZ { get; set; }
+        }
+
         public class SetExternalCameraConfig
         {
             public float x { get; set; }

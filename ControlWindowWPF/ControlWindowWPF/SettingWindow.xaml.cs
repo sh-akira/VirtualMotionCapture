@@ -1093,5 +1093,11 @@ namespace VirtualMotionCaptureControlPanel
             win.Owner = this;
             win.ShowDialog();
         }
+
+        private void CalibrationSettingButton_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new CalibrationSettingWindow();
+            win.Show();
+        }
     }
 }

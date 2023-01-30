@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
         mc:Ignorable="d"
-        Title="ファイアウォール設定" SizeToContent="Height" Width="380" Topmost="True">
+        Title="ファイアウォール設定" ResizeMode="CanMinimize" SizeToContent="Height" Width="380" Topmost="True">
     <DockPanel Margin="10">
         <Button Visibility="Collapsed"/>
         <TextBlock Text="{DynamicResource FirewallManagerWindow_Description}" HorizontalAlignment="Center" FontSize="14" DockPanel.Dock="Top" Margin="10" TextWrapping="Wrap"/>
