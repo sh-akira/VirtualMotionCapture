@@ -22,12 +22,12 @@ namespace VMC
 
         private Animator modelAnimator;
         private Animator mocopiAnimator;
-        private Animator filteredAnimator;
+        private Transform cloneRootTransform;
 
         private VRIK vrik;
         private IKSolver ikSolver;
 
-        private List<(HumanBodyBones humanBodyBone, Transform source, Transform filtered, Transform target)> boneTransformCache;
+        private List<(HumanBodyBones humanBodyBone, Transform source, Transform target)> boneTransformCache;
 
         private Vector3 centerOffsetPosition;
         private float centerOffsetRotationY;
@@ -55,6 +55,7 @@ namespace VMC
 
         private void OnDisable()
         {
+            isFrameArrived = false;
             StopUdpReceiver();
         }
         private void Server_Received(object sender, DataReceivedEventArgs e)
@@ -142,24 +143,13 @@ namespace VMC
                 currentModel = model;
                 modelAnimator = model.GetComponent<Animator>();
 
-                var filteredAvatarObject = new GameObject("filteredAvatar");
-                filteredAvatarObject.transform.SetParent(transform, false);
-
-                var (filteredAvatar, _) = CreateCopyAvatar(model, filteredAvatarObject.transform);
-
-                filteredAnimator = filteredAvatarObject.AddComponent<Animator>();
-                filteredAnimator.avatar = filteredAvatar;
-
-                var mocopiAvatarObject = new GameObject("mocopiAvatar");
-                mocopiAvatarObject.transform.SetParent(transform, false);
-
-                var (cloneAvatar, _) = CreateCopyAvatar(model, mocopiAvatarObject.transform);
-
-                mocopiAnimator = mocopiAvatarObject.AddComponent<Animator>();
+                var (cloneAvatar, cloneRoot) = CreateCopyAvatar(model, transform);
+                mocopiAnimator = gameObject.AddComponent<Animator>();
                 mocopiAnimator.avatar = cloneAvatar;
+                cloneRootTransform = cloneRoot;
 
-                mocopiAvatar = mocopiAvatarObject.AddComponent<MocopiAvatar>();
-                mocopiAvatar.MotionSmoothness = 0.0f; // mocopiAvatarのモーションスムージングは使用せず自前で補正する
+                mocopiAvatar = gameObject.AddComponent<MocopiAvatar>();
+                mocopiAvatar.MotionSmoothness = 1.0f;
                 boneTransformCache = null;
 
                 if (enabled)
@@ -173,12 +163,14 @@ namespace VMC
             //前回の生成物の削除
             if (currentModel != null)
             {
-                DestroyImmediate(mocopiAnimator.gameObject);
+                DestroyImmediate(cloneRootTransform.gameObject);
                 // Destroy SkeletonRoot
                 foreach (Transform child in transform)
                 {
                     DestroyImmediate(child.gameObject);
                 }
+                DestroyImmediate(mocopiAvatar);
+                DestroyImmediate(mocopiAnimator);
 
                 if (ikSolver != null)
                 {
@@ -188,7 +180,6 @@ namespace VMC
                 vrik = null;
                 currentModel = null;
                 isFrameArrived = false;
-                boneTransformCache = null;
             }
         }
 
@@ -239,7 +230,6 @@ namespace VMC
             }
             isFrameArrived = false;
             udpReceiver = null;
-            boneTransformCache = null;
         }
         public void InitializeSkeleton(int[] boneIds, int[] parentBoneIds, float[] rotationsX, float[] rotationsY, float[] rotationsZ, float[] rotationsW, float[] positionsX, float[] positionsY, float[] positionsZ)
         {
@@ -286,7 +276,7 @@ namespace VMC
 
             if (boneTransformCache == null)
             {
-                boneTransformCache = new List<(HumanBodyBones humanBodyBone, Transform source, Transform filtered, Transform target)>();
+                boneTransformCache = new List<(HumanBodyBones humanBodyBone, Transform source, Transform target)>();
 
                 var ReverseBodyBones = new HumanBodyBones[] {
                     HumanBodyBones.Head ,
@@ -320,17 +310,10 @@ namespace VMC
                     var mocopiBone = mocopiAnimator.GetBoneTransform(bone);
                     if (mocopiBone == null) continue;
 
-                    var filteredBone = filteredAnimator.GetBoneTransform(bone);
-                    if (filteredBone == null) continue;
-
-                    // initialize filtered bone
-                    filteredBone.localPosition = mocopiBone.localPosition;
-                    filteredBone.localRotation = mocopiBone.localRotation;
-
                     var modelBone = modelAnimator.GetBoneTransform(bone);
                     if (modelBone == null) continue;
 
-                    boneTransformCache.Add((bone, mocopiBone, filteredBone, modelBone));
+                    boneTransformCache.Add((bone, mocopiBone, modelBone));
                 }
             }
 
@@ -340,19 +323,8 @@ namespace VMC
             Vector3 defaultHeadPosition = headBone.position;
             Quaternion defaultHeadRotation = headBone.rotation;
 
-
-
-            float lerpValue = 0.5f;
-            foreach ((var bone, var source, var filtered, var target) in boneTransformCache)
+            foreach ((var bone, var source, var target) in boneTransformCache)
             {
-                //source to filtered
-                if (bone == HumanBodyBones.Hips)
-                {
-                    filtered.localPosition = Vector3.Lerp(filtered.localPosition, source.localPosition, lerpValue);
-                }
-                filtered.localRotation = Quaternion.Lerp(filtered.localRotation, source.localRotation, lerpValue);
-
-                // filtered to target
                 bool apply = false;
                 switch (bone)
                 {
@@ -360,12 +332,12 @@ namespace VMC
                         hipBone = target;
                         if (Settings.Current.mocopi_ApplyRootRotation)
                         {
-                            target.localRotation = filtered.localRotation;
+                            target.localRotation = source.localRotation;
                             target.Rotate(new Vector3(0, centerOffsetRotationY, 0), Space.World);
                         }
                         if (Settings.Current.mocopi_ApplyRootPosition)
                         {
-                            target.localPosition = filtered.localPosition + centerOffsetPosition; //Root位置だけは同期
+                            target.localPosition = source.localPosition + centerOffsetPosition; //Root位置だけは同期
                         }
                         break;
                     case HumanBodyBones.Spine:
@@ -414,7 +386,7 @@ namespace VMC
                         break;
                 }
 
-                if (apply) target.localRotation = filtered.localRotation;
+                if (apply) target.localRotation = source.localRotation;
             }
 
             if (Settings.Current.mocopi_ApplyHead == false && hipBone != null && spineBone != null)
