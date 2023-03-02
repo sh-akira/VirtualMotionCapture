@@ -1823,7 +1823,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1155637111}
   - component: {fileID: 1155637110}
-  - component: {fileID: 1155637109}
   m_Layer: 0
   m_Name: ExternalSender
   m_TagString: Untagged
@@ -1831,20 +1830,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1155637109
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1155637108}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d36dd9fcae25042bbb815255411ff524, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  address: 127.0.0.1
-  port: 39539
 --- !u!114 &1155637110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1857,7 +1842,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc4032a37a493bf44b54ca33ea768822, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uClient: {fileID: 0}
+  uClients: []
   steamVR2Input: {fileID: 130023280}
   midiCCWrapper: {fileID: 1604201751}
   externalReceiver: {fileID: 389263779}

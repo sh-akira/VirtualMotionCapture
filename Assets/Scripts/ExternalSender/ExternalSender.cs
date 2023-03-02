@@ -2,17 +2,19 @@
 using RootMotion.FinalIK;
 using sh_akira;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityMemoryMappedFile;
+using uOSC;
 using VRM;
 
 namespace VMC
 {
-    [RequireComponent(typeof(uOSC.uOscClient))]
     public class ExternalSender : MonoBehaviour
     {
-        public uOSC.uOscClient uClient = null;
+        public List<uOscClient> uClients = new List<uOscClient>();
         GameObject CurrentModel = null;
         ControlWPFWindow window = null;
         Animator animator = null;
@@ -54,7 +56,6 @@ namespace VMC
 
         void Start()
         {
-            uClient = GetComponent<uOSC.uOscClient>();
             window = GameObject.Find("ControlWPFWindow").GetComponent<ControlWPFWindow>();
             handTrackerRoot = GameObject.Find("HandTrackerRoot");
 
@@ -110,7 +111,7 @@ namespace VMC
                     //Debug.Log("Ext: ConDown");
                     try
                     {
-                        uClient?.Send("/VMC/Ext/Con", 1, e.Name, e.IsLeft ? 1 : 0, e.IsTouch ? 1 : 0, e.IsAxis ? 1 : 0, e.Axis.x, e.Axis.y, e.Axis.z);
+                        Send("/VMC/Ext/Con", 1, e.Name, e.IsLeft ? 1 : 0, e.IsTouch ? 1 : 0, e.IsAxis ? 1 : 0, e.Axis.x, e.Axis.y, e.Axis.z);
                     }
                     catch (Exception ex)
                     {
@@ -126,7 +127,7 @@ namespace VMC
                     //Debug.Log("Ext: ConUp");
                     try
                     {
-                        uClient?.Send("/VMC/Ext/Con", 0, e.Name, e.IsLeft ? 1 : 0, e.IsTouch ? 1 : 0, e.IsAxis ? 1 : 0, e.Axis.x, e.Axis.y, e.Axis.z);
+                        Send("/VMC/Ext/Con", 0, e.Name, e.IsLeft ? 1 : 0, e.IsTouch ? 1 : 0, e.IsAxis ? 1 : 0, e.Axis.x, e.Axis.y, e.Axis.z);
                     }
                     catch (Exception ex)
                     {
@@ -144,7 +145,7 @@ namespace VMC
                     {
                         if (e.IsAxis)
                         {
-                            uClient?.Send("/VMC/Ext/Con", 2, e.Name, e.IsLeft ? 1 : 0, e.IsTouch ? 1 : 0, e.IsAxis ? 1 : 0, e.Axis.x, e.Axis.y, e.Axis.z);
+                            Send("/VMC/Ext/Con", 2, e.Name, e.IsLeft ? 1 : 0, e.IsTouch ? 1 : 0, e.IsAxis ? 1 : 0, e.Axis.x, e.Axis.y, e.Axis.z);
                         }
                     }
                     catch (Exception ex)
@@ -161,7 +162,7 @@ namespace VMC
                     //Debug.Log("Ext: KeyDown");
                     try
                     {
-                        uClient?.Send("/VMC/Ext/Key", 1, e.KeyName, e.KeyCode);
+                        Send("/VMC/Ext/Key", 1, e.KeyName, e.KeyCode);
                     }
                     catch (Exception ex)
                     {
@@ -176,7 +177,7 @@ namespace VMC
                     //Debug.Log("Ext: KeyUp");
                     try
                     {
-                        uClient?.Send("/VMC/Ext/Key", 0, e.KeyName, e.KeyCode);
+                        Send("/VMC/Ext/Key", 0, e.KeyName, e.KeyCode);
                     }
                     catch (Exception ex)
                     {
@@ -192,7 +193,7 @@ namespace VMC
                     //Debug.Log("Ext: KeyDown");
                     try
                     {
-                        uClient?.Send("/VMC/Ext/Midi/Note", 1, (int)channel, note, velocity);
+                        Send("/VMC/Ext/Midi/Note", 1, (int)channel, note, velocity);
                     }
                     catch (Exception ex)
                     {
@@ -207,7 +208,7 @@ namespace VMC
                     //Debug.Log("Ext: KeyDown");
                     try
                     {
-                        uClient?.Send("/VMC/Ext/Midi/Note", 0, (int)channel, note, (float)0f);
+                        Send("/VMC/Ext/Midi/Note", 0, (int)channel, note, (float)0f);
                     }
                     catch (Exception ex)
                     {
@@ -222,7 +223,7 @@ namespace VMC
                     //Debug.Log("Ext: KeyDown");
                     try
                     {
-                        uClient?.Send("/VMC/Ext/Midi/CC/Val", knobNo, value);
+                        Send("/VMC/Ext/Midi/CC/Val", knobNo, value);
                     }
                     catch (Exception ex)
                     {
@@ -237,7 +238,7 @@ namespace VMC
                     //Debug.Log("Ext: KeyDown");
                     try
                     {
-                        uClient?.Send("/VMC/Ext/Midi/CC/Bit", knobNo, (int)(value ? 1 : 0));
+                        Send("/VMC/Ext/Midi/CC/Bit", knobNo, (int)(value ? 1 : 0));
                     }
                     catch (Exception ex)
                     {
@@ -247,7 +248,6 @@ namespace VMC
             };
 
             this.gameObject.SetActive(false);
-            uClient.enabled = true;
         }
         // Update is called once per frame
         void Update()
@@ -270,6 +270,30 @@ namespace VMC
                 SendPerLowRate();
             }
 
+        }
+
+        public void Send(string address, params object[] values)
+        {
+            foreach (var uClient in uClients)
+            {
+                uClient?.Send(address, values);
+            }
+        }
+
+        public void Send(Message message)
+        {
+            foreach (var uClient in uClients)
+            {
+                uClient?.Send(message);
+            }
+        }
+
+        public void Send(Bundle bundle)
+        {
+            foreach (var uClient in uClients)
+            {
+                uClient?.Send(bundle);
+            }
         }
 
         //低頻度(1秒以上)で送信する情報もの。ただし送信要求が来たら即時発信する
@@ -310,28 +334,28 @@ namespace VMC
                 ));
 
                 //送信
-                uClient?.Send(infoBundle);
+                Send(infoBundle);
 
                 //【イベント送信】VRM基本情報(VRM information) [独立送信](大きいため単独で送る)
                 if (vrmdata != null)
                 {
                     //ファイルパス, キャラ名
-                    uClient?.Send(new uOSC.Message("/VMC/Ext/VRM", vrmdata.FilePath, vrmdata.Title));
+                    Send(new uOSC.Message("/VMC/Ext/VRM", vrmdata.FilePath, vrmdata.Title));
                 }
                 else if (string.IsNullOrEmpty(remoteName) == false)
                 {
-                    uClient?.Send(new uOSC.Message("/VMC/Ext/Remote", remoteName, remoteJson));
+                    Send(new uOSC.Message("/VMC/Ext/Remote", remoteName, remoteJson));
                 }
 
                 //【イベント送信】設定ファイルパス(Loaded config path) [独立送信](大きいため単独で送る)
                 if (window != null)
                 {
                     //ファイルパス, キャラ名
-                    uClient?.Send(new uOSC.Message("/VMC/Ext/Config", window.lastLoadedConfigPath));
+                    Send(new uOSC.Message("/VMC/Ext/Config", window.lastLoadedConfigPath));
                 }
 
                 //【イベント送信】Option文字列(Option string) [独立送信](大きいため単独で送る)
-                uClient?.Send(new uOSC.Message("/VMC/Ext/Opt", optionString));
+                Send(new uOSC.Message("/VMC/Ext/Opt", optionString));
             }
         }
 
@@ -394,7 +418,7 @@ namespace VMC
                             //1200バイトを超えない程度に分割する
                             if (cnt > PACKET_DIV_BONE)
                             {
-                                uClient?.Send(boneBundle);
+                                Send(boneBundle);
                                 boneBundle = new uOSC.Bundle(uOSC.Timestamp.Immediate);
                                 cnt = 0;
 
@@ -429,7 +453,7 @@ namespace VMC
                         }
                         blendShapeBundle.Add(new uOSC.Message("/VMC/Ext/Blend/Apply"));
                     }
-                    uClient?.Send(blendShapeBundle);
+                    Send(blendShapeBundle);
                 }
                 frameOfBlendShape++;
             }
@@ -511,21 +535,45 @@ namespace VMC
             }
             frameOfStatus++;
 
-            uClient?.Send(rootBundle);
+            Send(rootBundle);
 
             //---End of frame---
         }
 
         public void ChangeOSCAddress(string address, int port)
         {
-            if (uClient == null) uClient = GetComponent<uOSC.uOscClient>();
-            uClient.enabled = false;
-            var type = typeof(uOSC.uOscClient);
-            var addressfield = type.GetField("address", BindingFlags.SetField | BindingFlags.NonPublic | BindingFlags.Instance);
-            addressfield.SetValue(uClient, address);
-            var portfield = type.GetField("port", BindingFlags.SetField | BindingFlags.NonPublic | BindingFlags.Instance);
-            portfield.SetValue(uClient, port);
-            uClient.enabled = true;
+            var addresses = address.Split(',').Select(d => d.Trim()).ToList();
+            
+            if (uClients.Count != addresses.Count)
+            {
+                foreach(var uClient in uClients)
+                {
+                    DestroyImmediate(uClient.gameObject);
+                }
+
+                uClients.Clear();
+
+                foreach(var addr in addresses)
+                {
+                    var newobject = new GameObject("uOscClient");
+                    newobject.transform.SetParent(transform, false);
+                    uClients.Add(newobject.AddComponent<uOscClient>());
+                }
+            }
+
+            for (int i = 0; i < uClients.Count; i++)
+            {
+                var uClient = uClients[i];
+                var addr = addresses[i];
+
+                uClient.enabled = false;
+                var type = typeof(uOSC.uOscClient);
+                var addressfield = type.GetField("address", BindingFlags.SetField | BindingFlags.NonPublic | BindingFlags.Instance);
+                addressfield.SetValue(uClient, addr);
+                var portfield = type.GetField("port", BindingFlags.SetField | BindingFlags.NonPublic | BindingFlags.Instance);
+                portfield.SetValue(uClient, port);
+                uClient.enabled = true;
+            }
         }
     }
 

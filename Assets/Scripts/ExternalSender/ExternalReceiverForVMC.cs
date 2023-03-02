@@ -353,7 +353,7 @@ namespace VMC
                 //情報要求 V2.4
                 else if (message.address == "/VMC/Ext/Set/Req")
                 {
-                    if (externalSender.isActiveAndEnabled && externalSender.uClient != null)
+                    if (externalSender.isActiveAndEnabled)
                     {
                         externalSender.SendPerLowRate(); //即時送信
                     }
@@ -409,9 +409,9 @@ namespace VMC
                 else if (message.address != null && message.address.StartsWith("/VMC/Thru/"))
                 {
                     //転送する
-                    if (externalSender.isActiveAndEnabled && externalSender.uClient != null)
+                    if (externalSender.isActiveAndEnabled)
                     {
-                        externalSender.uClient.Send(message.address, message.values);
+                        externalSender.Send(message.address, message.values);
                     }
                 }
                 //Directional Light V2.9
