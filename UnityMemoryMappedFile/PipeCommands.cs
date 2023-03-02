@@ -449,6 +449,7 @@ namespace UnityMemoryMappedFile
         public class ChangeExternalMotionReceiverPort
         {
             public int[] ports { get; set; }
+            public int[] DelayMs { get; set; }
             public bool RequesterEnable { get; set; }
         }
         public class GetExternalReceiveBones { }

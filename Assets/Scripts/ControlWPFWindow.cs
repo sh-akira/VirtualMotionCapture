@@ -675,7 +675,7 @@ namespace VMC
                 else if (e.CommandType == typeof(PipeCommands.ChangeExternalMotionReceiverPort))
                 {
                     var d = (PipeCommands.ChangeExternalMotionReceiverPort)e.Data;
-                    ChangeExternalMotionReceiverPort(d.ports, d.RequesterEnable);
+                    ChangeExternalMotionReceiverPort(d.ports, d.DelayMs, d.RequesterEnable);
 
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetExternalMotionReceiverPort))
@@ -683,6 +683,7 @@ namespace VMC
                     await server.SendCommandAsync(new PipeCommands.ChangeExternalMotionReceiverPort
                     {
                         ports = Settings.Current.ExternalMotionReceiverPortList.ToArray(),
+                        DelayMs = Settings.Current.ExternalMotionReceiverDelayMsList.ToArray(),
                         RequesterEnable = Settings.Current.ExternalMotionReceiverRequesterEnable
                     }, e.RequestId);
                 }
@@ -2439,12 +2440,14 @@ namespace VMC
             externalMotionSender.ChangeOSCAddress(address, port);
         }
 
-        private void ChangeExternalMotionReceiverPort(int[] ports, bool requesterEnable)
+        private void ChangeExternalMotionReceiverPort(int[] ports, int[] delayMs, bool requesterEnable)
         {
             Settings.Current.ExternalMotionReceiverPortList = ports.ToList();
+            Settings.Current.ExternalMotionReceiverDelayMsList = delayMs.ToList();
             for (int index = 0; index < externalMotionReceivers.Length; index++)
             {
                 externalMotionReceivers[index].ChangeOSCPort(ports[index]);
+                externalMotionReceivers[index].DelayMs = delayMs[index];
             }
 
             Settings.Current.ExternalMotionReceiverRequesterEnable = requesterEnable;
@@ -2852,7 +2855,8 @@ namespace VMC
             ChangeExternalMotionSenderAddress(Settings.Current.ExternalMotionSenderAddress, Settings.Current.ExternalMotionSenderPort, Settings.Current.ExternalMotionSenderPeriodStatus, Settings.Current.ExternalMotionSenderPeriodRoot, Settings.Current.ExternalMotionSenderPeriodBone, Settings.Current.ExternalMotionSenderPeriodBlendShape, Settings.Current.ExternalMotionSenderPeriodCamera, Settings.Current.ExternalMotionSenderPeriodDevices, Settings.Current.ExternalMotionSenderOptionString, Settings.Current.ExternalMotionSenderResponderEnable);
 
             if (Settings.Current.ExternalMotionReceiverPortList == null) Settings.Current.ExternalMotionReceiverPortList = new List<int>() { Settings.Current.ExternalMotionReceiverPort, Settings.Current.ExternalMotionReceiverPort + 1 };
-            ChangeExternalMotionReceiverPort(Settings.Current.ExternalMotionReceiverPortList.ToArray(), Settings.Current.ExternalMotionReceiverRequesterEnable);
+            if (Settings.Current.ExternalMotionReceiverDelayMsList == null) Settings.Current.ExternalMotionReceiverDelayMsList = new List<int>() { 0, 0 };
+            ChangeExternalMotionReceiverPort(Settings.Current.ExternalMotionReceiverPortList.ToArray(), Settings.Current.ExternalMotionReceiverDelayMsList.ToArray(), Settings.Current.ExternalMotionReceiverRequesterEnable);
             if (Settings.Current.ExternalMotionReceiverEnableList == null) Settings.Current.ExternalMotionReceiverEnableList = new List<bool>() { Settings.Current.ExternalMotionReceiverEnable, false };
             for (int index = 0; index < Settings.Current.ExternalMotionReceiverEnableList.Count; index++)
             {

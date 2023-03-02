@@ -341,6 +341,8 @@ namespace VMC
         [OptionalField]
         public List<int> ExternalMotionReceiverPortList;
         [OptionalField]
+        public List<int> ExternalMotionReceiverDelayMsList;
+        [OptionalField]
         public bool ExternalMotionReceiverRequesterEnable;
         [OptionalField]
         public string ExternalMotionSenderOptionString;
@@ -587,6 +589,7 @@ namespace VMC
             ExternalMotionReceiverEnableList = null;
             ExternalMotionReceiverPort = 39540;
             ExternalMotionReceiverPortList = null;
+            ExternalMotionReceiverDelayMsList = null;
             ExternalMotionReceiverRequesterEnable = true;
 
             MidiCCBlendShape = new List<string>(Enumerable.Repeat(default(string), MidiCCWrapper.KNOBS));

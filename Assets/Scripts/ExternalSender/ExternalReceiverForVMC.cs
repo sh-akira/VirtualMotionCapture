@@ -52,6 +52,9 @@ namespace VMC
         Vector3 pos;
         Quaternion rot;
 
+        public int DelayMs = 0;
+        private Queue<(float timestamp, uOSC.Message message)> MessageBuffer = new Queue<(float timestamp, uOSC.Message message)>();
+
         public int packets = 0;
 
         //ボーン情報取得
@@ -122,6 +125,22 @@ namespace VMC
                 {
                     packets = 0;
                 }
+
+                if (DelayMs == 0)
+                {
+                    ProcessMessage(message);
+                }
+                else
+                {
+                    MessageBuffer.Enqueue((Time.realtimeSinceStartup, message));
+                }
+            }
+        }
+        void ProcessMessage(uOSC.Message message)
+        {
+            //有効なとき以外処理しない
+            if (this.isActiveAndEnabled)
+            {
 
                 //仮想Hmd V2.3
                 if (message.address == "/VMC/Ext/Hmd/Pos"
@@ -499,6 +518,11 @@ namespace VMC
         //修正（LateUpdateに変更）
         private void Update()
         {
+            while (MessageBuffer.Count > 0 && Time.realtimeSinceStartup + (float)DelayMs / 1000f < MessageBuffer.Peek().timestamp)
+            {
+                ProcessMessage(MessageBuffer.Dequeue().message);
+            }
+
             lock (LockObject)
             {
                 foreach (var pair in virtualHmd)

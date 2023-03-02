@@ -320,6 +320,8 @@ namespace VirtualMotionCaptureControlPanel
                     isSetting = true;
                     ExternalMotionReceiverPortTextBox.Text = data.ports[0].ToString();
                     ExternalMotionReceiverPortTextBox2.Text = data.ports[1].ToString();
+                    DelayMsTextbox.Text = data.DelayMs[0].ToString();
+                    DelayMsTextbox2.Text = data.DelayMs[1].ToString();
                     ExternalMotionReceiverRequesterEnableCheckBox.IsChecked = data.RequesterEnable;
                     isSetting = false;
                 });
@@ -728,11 +730,15 @@ namespace VirtualMotionCaptureControlPanel
         {
             var port = TextBoxTryParse(ExternalMotionReceiverPortTextBox);
             var port2 = TextBoxTryParse(ExternalMotionReceiverPortTextBox2);
-            if (port.HasValue && port2.HasValue)
+            var delayms = TextBoxTryParse(DelayMsTextbox);
+            var delayms2 = TextBoxTryParse(DelayMsTextbox2);
+
+            if (port.HasValue && port2.HasValue && delayms.HasValue && delayms2.HasValue)
             {
                 await Globals.Client?.SendCommandAsync(new PipeCommands.ChangeExternalMotionReceiverPort
                 {
                     ports = new int[] { port.Value, port2.Value },
+                    DelayMs = new int[] { delayms.Value, delayms2.Value },
                     RequesterEnable = ExternalMotionReceiverRequesterEnableCheckBox.IsChecked.Value
                 });
             }

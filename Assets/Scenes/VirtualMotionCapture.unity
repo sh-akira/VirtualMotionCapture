@@ -1117,6 +1117,7 @@ MonoBehaviour:
   statusString: 
   eddp: {fileID: 1549762413}
   receiveBonesFlag: 0
+  DelayMs: 0
   packets: 0
   BonePositionSynchronize: 1
 --- !u!4 &389263780
@@ -3057,6 +3058,7 @@ MonoBehaviour:
   statusString: 
   eddp: {fileID: 1549762413}
   receiveBonesFlag: 0
+  DelayMs: 0
   packets: 0
   BonePositionSynchronize: 1
 --- !u!1 &1596440252
