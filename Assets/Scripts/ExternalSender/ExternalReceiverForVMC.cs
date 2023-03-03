@@ -518,7 +518,7 @@ namespace VMC
         //修正（LateUpdateに変更）
         private void Update()
         {
-            while (MessageBuffer.Count > 0 && Time.realtimeSinceStartup + (float)DelayMs / 1000f < MessageBuffer.Peek().timestamp)
+            while (MessageBuffer.Count > 0 && MessageBuffer.Peek().timestamp + (float)DelayMs / 1000f  < Time.realtimeSinceStartup)
             {
                 ProcessMessage(MessageBuffer.Dequeue().message);
             }
