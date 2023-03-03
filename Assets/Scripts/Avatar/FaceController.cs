@@ -218,10 +218,18 @@ namespace VMC
             {
                 if (keys.Any(d => BlendShapeKeyString.ContainsKey(d) == false))
                 {
-                    var convertKeys = keys.Select(d => GetCaseSensitiveKeyName(d))
-                                          .Where(d => BlendShapeKeyString.ContainsKey(d))
-                                          .Select(d => BlendShapeKeyString[d]).ToList();
-                    SetFace(convertKeys, strength, stopBlink);
+                    var convertKeys = new List<BlendShapeKey>();
+                    var convertValues = new List<float>();
+                    for (int i = 0; i < keys.Count; i++)
+                    {
+                        var caseSensitiveKeyName = GetCaseSensitiveKeyName(keys[i]);
+                        if (BlendShapeKeyString.ContainsKey(caseSensitiveKeyName))
+                        {
+                            convertKeys.Add(BlendShapeKeyString[caseSensitiveKeyName]);
+                            convertValues.Add(strength[i]);
+                        }
+                    }
+                    SetFace(convertKeys, convertValues, stopBlink);
                 }
                 else
                 {
@@ -269,10 +277,18 @@ namespace VMC
         {
             if (keys.Any(d => BlendShapeKeyString.ContainsKey(d) == false))
             {
-                var convertKeys = keys.Select(d => GetCaseSensitiveKeyName(d))
-                                      .Where(d => BlendShapeKeyString.ContainsKey(d))
-                                      .Select(d => BlendShapeKeyString[d]).ToArray();
-                MixPresets(presetName, convertKeys, values);
+                var convertKeys = new List<BlendShapeKey>();
+                var convertValues = new List<float>();
+                for (int i = 0; i < keys.Length; i++)
+                {
+                    var caseSensitiveKeyName = GetCaseSensitiveKeyName(keys[i]);
+                    if (BlendShapeKeyString.ContainsKey(caseSensitiveKeyName))
+                    {
+                        convertKeys.Add(BlendShapeKeyString[caseSensitiveKeyName]);
+                        convertValues.Add(values[i]);
+                    }
+                }
+                MixPresets(presetName, convertKeys.ToArray(), convertValues.ToArray());
             }
             else
             {
