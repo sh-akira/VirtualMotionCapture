@@ -60,8 +60,8 @@ CameraPlusは通常主観視点しか映らないBeatSaberに、第三者視点�
 詳細設定のモーション送信にあるOSCでモーション送信を有効にするのチェックを入れます。  
 ![詳細設定画面](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/9f3205d0b5c69ad9e18044fbeca54b9535f45566/docs/images/manual/BeatSaber/01_vmcsetting.png)  
   
-VRMモデルを読み込み、MR合成モードでキャリブレーションをします。
-![キャリブレーション](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/9f3205d0b5c69ad9e18044fbeca54b9535f45566/docs/images/manual/BeatSaber/02_vmccalibration.png)  
+VRMモデルを読み込み、Iポーズでキャリブレーションをします。
+![キャリブレーション](https://rawcdn.githack.com/Assault1892/VirtualMotionCapture/d1650cc9b033dfaa02b6e90c0041041aec1588cc/docs/images/manual/BeatSaber/02_vmccalibration.png)  
   
 以上で完了です。Beat Saber内に自分のアバターが表示されているはずです。  
 アバターが白くなったりする場合はVMCAvatarのページを再度確認してください。  
@@ -86,8 +86,8 @@ Beat Saberはゲーム内SETTINGSのGRAPHICSのNonVR Resolutionから
 それぞれ同じ解像度(1280x720や1920x1080等)に合わせてください。
 
 ## 3. バーチャルモーションキャプチャーの設定
-まずは通常通りVRMモデルを読み込み、MR合成モードでキャリブレーションをします。  
-![キャリブレーション](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/9f3205d0b5c69ad9e18044fbeca54b9535f45566/docs/images/manual/BeatSaber/02_vmccalibration.png)  
+まずは通常通りVRMモデルを読み込み、Iポーズでキャリブレーションをします。  
+![キャリブレーション](https://rawcdn.githack.com/Assault1892/VirtualMotionCapture/d1650cc9b033dfaa02b6e90c0041041aec1588cc/docs/images/manual/BeatSaber/02_vmccalibration.png)  
   
 詳細設定のCameraPlus内のImportボタンからcameraplus.cfgを読み込みます。  
 (通常はC:\Program Files (x86)\Steam\steamapps\common\Beat Saber\UserData\CameraPlusにあります)  
