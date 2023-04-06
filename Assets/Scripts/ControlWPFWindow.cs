@@ -2543,8 +2543,8 @@ namespace VMC
                 default: notifyType = NotifyLogTypes.Log; break;
             }
 
-            //Warning以下かつ、*から始まらないものはうるさいので飛ばさない
-            if (notifyLogLevel <= notifyType && !cond.StartsWith("*"))
+            //通知レベルがLog以外の時かつ、Warning以下かつ、*から始まらないものはうるさいので飛ばさない
+            if (notifyLogLevel != NotifyLogTypes.Log && notifyLogLevel <= notifyType && !cond.StartsWith("*"))
             {
                 return;
             }
