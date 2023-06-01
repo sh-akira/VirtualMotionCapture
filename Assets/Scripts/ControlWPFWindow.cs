@@ -2740,14 +2740,14 @@ namespace VMC
                 UpdateActionQueue.Enqueue(() => ChangeBackgroundColor(Settings.Current.BackgroundColor.r, Settings.Current.BackgroundColor.g, Settings.Current.BackgroundColor.b, false));
             }
 
-            if (Settings.Current.CustomBackgroundColor != null)
-            {
-                await server.SendCommandAsync(new PipeCommands.LoadCustomBackgroundColor { r = Settings.Current.CustomBackgroundColor.r, g = Settings.Current.CustomBackgroundColor.g, b = Settings.Current.CustomBackgroundColor.b });
-            }
-
             if (Settings.Current.IsTransparent)
             {
                 UpdateActionQueue.Enqueue(() => SetBackgroundTransparent());
+            }
+
+            if (Settings.Current.CustomBackgroundColor != null)
+            {
+                await server.SendCommandAsync(new PipeCommands.LoadCustomBackgroundColor { r = Settings.Current.CustomBackgroundColor.r, g = Settings.Current.CustomBackgroundColor.g, b = Settings.Current.CustomBackgroundColor.b });
             }
 
             UpdateActionQueue.Enqueue(() => HideWindowBorder(Settings.Current.HideBorder));
