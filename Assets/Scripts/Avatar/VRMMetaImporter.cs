@@ -9,6 +9,7 @@ using VRM;
 
 namespace VMC
 {
+#if false
     public class VRMMetaImporter
     {
         public static async Task<VRMMetaObject> ImportVRMMeta(string path, bool createThumbnail = false)
@@ -163,4 +164,5 @@ namespace VMC
 #endif
         }
     }
+#endif
 }

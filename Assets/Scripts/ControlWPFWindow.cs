@@ -14,6 +14,8 @@ using Valve.VR;
 using VMCMod;
 using VRM;
 using static VMC.NativeMethods;
+using UniGLTF;
+using VRMShaders;
 #if UNITY_EDITOR   // エディタ上でしか動きません。
 using UnityEditor;
 #endif
@@ -77,7 +79,7 @@ namespace VMC
         private System.Threading.SynchronizationContext context = null;
 
         public Action<GameObject> AdditionalSettingAction = null;
-        public Action<VRMData> VRMmetaLodedAction = null;
+        public Action<UnityMemoryMappedFile.VRMData> VRMmetaLodedAction = null;
         public Action<string> VRMRemoteLoadedAction = null;
 
         public Action<GameObject> EyeTracking_TobiiCalibrationAction = null;
@@ -1071,54 +1073,60 @@ namespace VMC
 
         #region VRM
 
-        public VRMData LoadVRM(string path)
+        public UnityMemoryMappedFile.VRMData LoadVRM(string path)
         {
             if (string.IsNullOrEmpty(path) || File.Exists(path) == false)
             {
                 return null;
             }
-            var vrmdata = new VRMData();
+
+            var vrmdata = new UnityMemoryMappedFile.VRMData();
             vrmdata.FilePath = path;
-            var context = new VRMImporterContext();
 
-            var bytes = File.ReadAllBytes(path);
-
-            // GLB形式でJSONを取得しParseします
-            context.ParseGlb(bytes);
-
-            // metaを取得
-            var meta = context.ReadMeta(true);
-            //サムネイル
-            if (meta.Thumbnail != null)
+            using (GltfData data = new AutoGltfFileParser(path).Parse())
             {
-                vrmdata.ThumbnailPNGBytes = meta.Thumbnail.EncodeToPNG(); //Or SaveAsPng( memoryStream, texture.Width, texture.Height )
+                VRM.VRMData vrmData = new VRM.VRMData(data);
+                using (var context = new VRMImporterContext(vrmData))
+                {
+
+                    // metaを取得
+                    var meta = context.ReadMeta(true);
+
+                    // サムネイル
+                    if (meta.Thumbnail != null)
+                    {
+                        vrmdata.ThumbnailPNGBytes = meta.Thumbnail.EncodeToPNG(); //Or SaveAsPng( memoryStream, texture.Width, texture.Height )
+                    }
+
+                    // Info
+                    vrmdata.Title = meta.Title;
+                    vrmdata.Version = meta.Version;
+                    vrmdata.Author = meta.Author;
+                    vrmdata.ContactInformation = meta.ContactInformation;
+                    vrmdata.Reference = meta.Reference;
+
+                    // Permission
+                    vrmdata.AllowedUser = (UnityMemoryMappedFile.AllowedUser)meta.AllowedUser;
+                    vrmdata.ViolentUssage = (UnityMemoryMappedFile.UssageLicense)meta.ViolentUssage;
+                    vrmdata.SexualUssage = (UnityMemoryMappedFile.UssageLicense)meta.SexualUssage;
+                    vrmdata.CommercialUssage = (UnityMemoryMappedFile.UssageLicense)meta.CommercialUssage;
+                    vrmdata.OtherPermissionUrl = meta.OtherPermissionUrl;
+
+                    // Distribution License
+                    vrmdata.LicenseType = (UnityMemoryMappedFile.LicenseType)meta.LicenseType;
+                    vrmdata.OtherLicenseUrl = meta.OtherLicenseUrl;
+                    /*
+                    // ParseしたJSONをシーンオブジェクトに変換していく
+                    var now = Time.time;
+                    var go = await VRMImporter.LoadVrmAsync(context);
+
+                    var delta = Time.time - now;
+                    Debug.LogFormat("LoadVrmAsync {0:0.0} seconds", delta);
+                    //OnLoaded(go);
+                    */
+                }
             }
-            //Info
-            vrmdata.Title = meta.Title;
-            vrmdata.Version = meta.Version;
-            vrmdata.Author = meta.Author;
-            vrmdata.ContactInformation = meta.ContactInformation;
-            vrmdata.Reference = meta.Reference;
 
-            // Permission
-            vrmdata.AllowedUser = (UnityMemoryMappedFile.AllowedUser)meta.AllowedUser;
-            vrmdata.ViolentUssage = (UnityMemoryMappedFile.UssageLicense)meta.ViolentUssage;
-            vrmdata.SexualUssage = (UnityMemoryMappedFile.UssageLicense)meta.SexualUssage;
-            vrmdata.CommercialUssage = (UnityMemoryMappedFile.UssageLicense)meta.CommercialUssage;
-            vrmdata.OtherPermissionUrl = meta.OtherPermissionUrl;
-
-            // Distribution License
-            vrmdata.LicenseType = (UnityMemoryMappedFile.LicenseType)meta.LicenseType;
-            vrmdata.OtherLicenseUrl = meta.OtherLicenseUrl;
-            /*
-            // ParseしたJSONをシーンオブジェクトに変換していく
-            var now = Time.time;
-            var go = await VRMImporter.LoadVrmAsync(context);
-
-            var delta = Time.time - now;
-            Debug.LogFormat("LoadVrmAsync {0:0.0} seconds", delta);
-            //OnLoaded(go);
-            */
             return vrmdata;
         }
         private const float LeftLowerArmAngle = -30f;
@@ -1136,31 +1144,31 @@ namespace VMC
                 await server.SendCommandAsync(new PipeCommands.VRMLoadStatus { Valid = false });
 
                 Settings.Current.VRMPath = path;
-                var context = new VRMImporterContext();
 
-                var bytes = File.ReadAllBytes(path);
-
-                // GLB形式でJSONを取得しParseします
-                context.ParseGlb(bytes);
-
-                // ParseしたJSONをシーンオブジェクトに変換していく
-                //CurrentModel = await VRMImporter.LoadVrmAsync(context);
-                await context.LoadAsyncTask();
-                context.ShowMeshes();
-
-                //BlendShape目線制御時の表情とのぶつかりを防ぐ
-                if (context.GLTF.extensions.VRM.firstPerson.lookAtType == LookAtType.BlendShape)
+                using (GltfData data = new AutoGltfFileParser(path).Parse())
                 {
-                    var applyer = context.Root.GetComponent<VRMLookAtBlendShapeApplyer>();
-                    applyer.enabled = false;
+                    VRM.VRMData vrmData = new VRM.VRMData(data);
+                    using (var context = new VRMImporterContext(vrmData))
+                    {
+                        // ParseしたJSONをシーンオブジェクトに変換していく
+                        var runtimeGltfInstance = await context.LoadAsync(new RuntimeOnlyAwaitCaller());
+                        runtimeGltfInstance.ShowMeshes();
 
-                    var vmcapplyer = context.Root.AddComponent<VMC_VRMLookAtBlendShapeApplyer>();
-                    vmcapplyer.OnImported(context);
-                    vmcapplyer.faceController = faceController;
+                        // BlendShape目線制御時の表情とのぶつかりを防ぐ
+                        if (context.VRM.firstPerson.lookAtType == LookAtType.BlendShape)
+                        {
+                            var applyer = runtimeGltfInstance.Root.GetComponent<VRMLookAtBlendShapeApplyer>();
+                            applyer.enabled = false;
+
+                            var vmcapplyer = runtimeGltfInstance.Root.AddComponent<VMC_VRMLookAtBlendShapeApplyer>();
+                            vmcapplyer.OnImported(context);
+                            vmcapplyer.faceController = faceController;
+                        }
+
+                        LoadNewModel(runtimeGltfInstance.Root);
+                        await server.SendCommandAsync(new PipeCommands.VRMLoadStatus { Valid = true });
+                    }
                 }
-
-                LoadNewModel(context.Root);
-                await server.SendCommandAsync(new PipeCommands.VRMLoadStatus { Valid = true });
             }
             else
             {

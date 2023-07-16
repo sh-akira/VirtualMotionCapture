@@ -182,6 +182,32 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.vrmc.gltf": {
+      "version": "0.99.4",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.vrmc.vrmshaders": "0.99.4"
+      },
+      "url": "https://package.openupm.com"
+    },
+    "com.vrmc.univrm": {
+      "version": "0.99.4",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.vrmc.vrmshaders": "0.99.4",
+        "com.vrmc.gltf": "0.99.4"
+      },
+      "url": "https://package.openupm.com"
+    },
+    "com.vrmc.vrmshaders": {
+      "version": "0.99.4",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://package.openupm.com"
+    },
     "nuget.mono-cecil": {
       "version": "0.1.6-preview",
       "depth": 1,

@@ -490,7 +490,7 @@ Ver 0.02
 　・VMC_Camera (仮想カメラライブラリ - 入れてあります)  
 　・RootMotion(Plugins/RootMotionフォルダ) ([Final IK 2.1](https://assetstore.unity.com/packages/tools/animation/final-ik-14290))  
 　・SteamVR ([SteamVR.Plugin.unitypackage](https://github.com/ValveSoftware/steamvr_unity_plugin/releases/tag/2.6.1))  
-　・VRM ([UniVRM-0.62.0_0b7f.unitypackage](https://github.com/vrm-c/UniVRM/releases))  
+　・VRM ([UniVRM-0.99.4_8d33.unitypackage](https://github.com/vrm-c/UniVRM/releases/tag/v0.99.4) - UPM経由で自動インポートされます)  
 　・MeshUtility (UniVRM)  
 　・VRMShaders (UniVRM)  
 　・Oculus ([Oculus Lipsync Unity Integration v29](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/29.0.0/))  
