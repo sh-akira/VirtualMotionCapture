@@ -488,7 +488,6 @@ Ver 0.02
 　・OVRTracking (OVRTrackingライブラリ - 入れてあります)  
 　・UnityMemoryMappedFile (共有メモリライブラリ - 入れてあります)  
 　・VMC_Camera (仮想カメラライブラリ - 入れてあります)  
-　・DVRSDK ([DVRSDK v1.10.0](https://github.com/dmm-com/vrlab-dvrsdk) - 入れてあります)  
 　・RootMotion(Plugins/RootMotionフォルダ) ([Final IK 2.1](https://assetstore.unity.com/packages/tools/animation/final-ik-14290))  
 　・SteamVR ([SteamVR.Plugin.unitypackage](https://github.com/ValveSoftware/steamvr_unity_plugin/releases/tag/2.6.1))  
 　・VRM ([UniVRM-0.62.0_0b7f.unitypackage](https://github.com/vrm-c/UniVRM/releases))  
