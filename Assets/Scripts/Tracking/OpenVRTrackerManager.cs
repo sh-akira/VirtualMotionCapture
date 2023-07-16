@@ -28,6 +28,11 @@ namespace VMC
             Setup();
         }
 
+        private void OnDestroy()
+        {
+            Close();
+        }
+
         private bool Setup()
         {
             var error = EVRInitError.None;
@@ -240,6 +245,7 @@ namespace VMC
 
         private void Close()
         {
+            isOVRConnected = false;
             openVR = null;
             OpenVR.Shutdown();
         }
