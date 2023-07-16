@@ -489,7 +489,7 @@ Ver 0.02
 　・UnityMemoryMappedFile (共有メモリライブラリ - 入れてあります)  
 　・VMC_Camera (仮想カメラライブラリ - 入れてあります)  
 　・RootMotion(Plugins/RootMotionフォルダ) ([Final IK 2.1](https://assetstore.unity.com/packages/tools/animation/final-ik-14290))  
-　・SteamVR ([SteamVR.Plugin.unitypackage](https://github.com/ValveSoftware/steamvr_unity_plugin/releases/tag/2.6.1))  
+　・SteamVR ([SteamVR.Plugin.unitypackage](https://github.com/ValveSoftware/steamvr_unity_plugin/releases/tag/2.7.3))  
 　・VRM ([UniVRM-0.99.4_8d33.unitypackage](https://github.com/vrm-c/UniVRM/releases/tag/v0.99.4) - UPM経由で自動インポートされます)  
 　・MeshUtility (UniVRM)  
 　・VRMShaders (UniVRM)  

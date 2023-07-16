@@ -13,12 +13,13 @@
     "com.unity.multiplayer-hlapi": "1.0.8",
     "com.unity.postprocessing": "2.3.0",
     "com.unity.purchasing": "3.2.2",
+    "com.unity.subsystemregistration": "1.1.2",
     "com.unity.test-framework": "1.1.29",
     "com.unity.textmeshpro": "2.1.4",
     "com.unity.timeline": "1.2.18",
     "com.unity.ugui": "1.0.0",
-    "com.unity.xr.legacyinputhelpers": "2.1.8",
-    "com.unity.xr.openvr.standalone": "2.0.5",
+    "com.unity.xr.management": "4.4.0",
+    "com.valvesoftware.unity.openvr": "file:../Assets/ExternalPlugins/SteamVR/OpenVRUnityXRPackage/Editor/com.valvesoftware.unity.openvr-1.1.4.tgz",
     "com.vrmc.univrm": "0.99.4",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
@@ -59,6 +60,6 @@
       "scopes": [
         "com.vrmc"
       ]
-  }
+    }
   ]
 }
