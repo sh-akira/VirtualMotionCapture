@@ -24,7 +24,7 @@ namespace VMC
 
         public void OnImported(VRMImporterContext context)
         {
-            var gltfFirstPerson = context.GLTF.extensions.VRM.firstPerson;
+            var gltfFirstPerson = context.VRM.firstPerson;
             Horizontal.Apply(gltfFirstPerson.lookAtHorizontalOuter);
             VerticalDown.Apply(gltfFirstPerson.lookAtVerticalDown);
             VerticalUp.Apply(gltfFirstPerson.lookAtVerticalUp);

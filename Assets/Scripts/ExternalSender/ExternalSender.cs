@@ -21,7 +21,7 @@ namespace VMC
         VRIK vrik = null;
         VRMBlendShapeProxy blendShapeProxy = null;
         Camera currentCamera = null;
-        VRMData vrmdata = null;
+        UnityMemoryMappedFile.VRMData vrmdata = null;
         string remoteName = null;
         string remoteJson = null;
 
@@ -75,7 +75,7 @@ namespace VMC
                 this.currentCamera = currentCamera;
             };
 
-            window.VRMmetaLodedAction += (VRMData vrmdata) =>
+            window.VRMmetaLodedAction += (UnityMemoryMappedFile.VRMData vrmdata) =>
             {
                 this.vrmdata = vrmdata;
                 this.remoteName = null;
