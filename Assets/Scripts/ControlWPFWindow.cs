@@ -162,6 +162,7 @@ namespace VMC
         private int SetWindowTitle()
         {
             int setWindowNum = 1;
+#if !UNITY_EDITOR
             var allWindowList = GetAllWindowHandle();
             var numlist = allWindowList.Where(p => p.Value.StartsWith(Application.productName + " ") && p.Value.EndsWith(")") && p.Value.Contains('(')).Select(t => int.Parse(t.Value.Split('(').Last().Replace(")", ""))).OrderBy(d => d);
             while (numlist.Contains(setWindowNum))
@@ -182,6 +183,7 @@ namespace VMC
                 buildString = "f" + VersionString.Split('f').Last().Split('r').First();
             }
             NativeMethods.SetUnityWindowTitle($"{Application.productName} {baseVersionString + buildString} ({setWindowNum})");
+#endif
             return setWindowNum;
         }
 
