@@ -21,6 +21,8 @@ namespace VMC
         private static MotionManager instance;
         public static MotionManager Instance => instance;
 
+        private Dictionary<HumanBodyBones, Pose> defaultPose;
+
         private void Awake()
         {
             instance = this;
@@ -33,6 +35,14 @@ namespace VMC
         {
             if (VirtualAvatars.Contains(virtualAvatar) == false)
             {
+                if (currentModel != null)
+                {
+                    var currentPose = GetModelPose(currentModel);
+                    SetModelPose(currentModel, defaultPose);
+                    virtualAvatar.ImportAvatar(currentModel);
+                    SetModelPose(currentModel, currentPose);
+
+                }
                 VirtualAvatars.Add(virtualAvatar);
             }
         }
@@ -44,12 +54,54 @@ namespace VMC
             {
                 currentModel = model;
 
+                defaultPose = GetModelPose(model);
+
                 foreach (var virtualAvatar in VirtualAvatars)
                 {
                     virtualAvatar.ImportAvatar(model);
                 }
             }
         }
+
+        public Dictionary<HumanBodyBones, Pose> GetModelPose(GameObject model)
+        {
+            var animator = model.GetComponent<Animator>();
+            if (animator == null) return null;
+
+            var poses = new Dictionary<HumanBodyBones, Pose>();
+            var rootPose = new Pose(model.transform.localPosition, model.transform.localRotation);
+            poses.Add(VirtualAvatar.HumanBodyBonesRoot, rootPose);
+
+            foreach(var bone in VirtualAvatar.ReverseBodyBones)
+            {
+                var boneTransform = animator.GetBoneTransform(bone);
+                if (boneTransform == null) continue;
+                var pose = new Pose(boneTransform.localPosition, boneTransform.localRotation);
+                poses.Add(bone, pose);
+            }
+
+            return poses;
+        }
+
+        public void SetModelPose(GameObject model, Dictionary<HumanBodyBones, Pose> poses)
+        {
+            var animator = model.GetComponent<Animator>();
+            if (animator == null) return;
+            var rootPose = poses[VirtualAvatar.HumanBodyBonesRoot];
+            model.transform.localPosition = rootPose.position;
+            model.transform.localRotation = rootPose.rotation;
+
+            foreach(var kv in poses)
+            {
+                var bone = kv.Key;
+                var pose = kv.Value;
+                var boneTransform = animator.GetBoneTransform(bone);
+                if (boneTransform == null) continue;
+                boneTransform.transform.localPosition = pose.position;
+                boneTransform.transform.localRotation = pose.rotation;
+            }
+        }
+
         private void OnModelUnloading(GameObject model)
         {
             //前回の生成物の削除
