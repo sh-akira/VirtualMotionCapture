@@ -107,7 +107,7 @@ namespace VMC
                 Vector3 defaultHeadPosition = headBone.position;
                 Quaternion defaultHeadRotation = headBone.rotation;
 
-                foreach (var (bone, cloneBone, modelBone) in virtualAvatar.BoneTransformCache)
+                foreach (var (bone, (cloneBone, modelBone)) in virtualAvatar.BoneTransformCache)
                 {
                     bool apply = false;
                     switch (bone)
@@ -134,6 +134,7 @@ namespace VMC
                             break;
                         case HumanBodyBones.Neck:
                         case HumanBodyBones.Head:
+                        case HumanBodyBones.Jaw:
                             apply = virtualAvatar.ApplyHead;
                             break;
                         case HumanBodyBones.LeftShoulder:
@@ -167,6 +168,47 @@ namespace VMC
                         case HumanBodyBones.RightFoot:
                         case HumanBodyBones.RightToes:
                             apply = virtualAvatar.ApplyRightFoot;
+                            break;
+                        case HumanBodyBones.LeftEye:
+                        case HumanBodyBones.RightEye:
+                            apply = virtualAvatar.ApplyEye;
+                            break;
+                        case HumanBodyBones.LeftThumbProximal:
+                        case HumanBodyBones.LeftThumbIntermediate:
+                        case HumanBodyBones.LeftThumbDistal:
+                        case HumanBodyBones.LeftIndexProximal:
+                        case HumanBodyBones.LeftIndexIntermediate:
+                        case HumanBodyBones.LeftIndexDistal:
+                        case HumanBodyBones.LeftMiddleProximal:
+                        case HumanBodyBones.LeftMiddleIntermediate:
+                        case HumanBodyBones.LeftMiddleDistal:
+                        case HumanBodyBones.LeftRingProximal:
+                        case HumanBodyBones.LeftRingIntermediate:
+                        case HumanBodyBones.LeftRingDistal:
+                        case HumanBodyBones.LeftLittleProximal:
+                        case HumanBodyBones.LeftLittleIntermediate:
+                        case HumanBodyBones.LeftLittleDistal:
+                            apply = virtualAvatar.ApplyLeftFinger;
+                            break;
+                        case HumanBodyBones.RightThumbProximal:
+                        case HumanBodyBones.RightThumbIntermediate:
+                        case HumanBodyBones.RightThumbDistal:
+                        case HumanBodyBones.RightIndexProximal:
+                        case HumanBodyBones.RightIndexIntermediate:
+                        case HumanBodyBones.RightIndexDistal:
+                        case HumanBodyBones.RightMiddleProximal:
+                        case HumanBodyBones.RightMiddleIntermediate:
+                        case HumanBodyBones.RightMiddleDistal:
+                        case HumanBodyBones.RightRingProximal:
+                        case HumanBodyBones.RightRingIntermediate:
+                        case HumanBodyBones.RightRingDistal:
+                        case HumanBodyBones.RightLittleProximal:
+                        case HumanBodyBones.RightLittleIntermediate:
+                        case HumanBodyBones.RightLittleDistal:
+                            apply = virtualAvatar.ApplyRightFinger;
+                            break;
+                        case HumanBodyBones.LastBone:
+                        default:
                             break;
                     }
 

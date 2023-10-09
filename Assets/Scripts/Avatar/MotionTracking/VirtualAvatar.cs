@@ -14,7 +14,7 @@ namespace VMC
 
         private Avatar avatar;
         public Transform RootTransform;
-        private Animator animator;
+        public Animator animator;
 
         public Vector3 CenterOffsetPosition;
         public float CenterOffsetRotationY;
@@ -32,16 +32,89 @@ namespace VMC
         public bool ApplyRightLeg;
         public bool ApplyLeftFoot;
         public bool ApplyRightFoot;
+        public bool ApplyEye;
+        public bool ApplyLeftFinger;
+        public bool ApplyRightFinger;
 
         public bool Enable = true;
+        public bool IgnoreDefaultBone = true;
 
-        public List<(HumanBodyBones humanBodyBone, Transform cloneBone, Transform modelBone)> boneTransformCache;
-        public List<(HumanBodyBones humanBodyBone, Transform cloneBone, Transform modelBone)> BoneTransformCache => InitializeBoneTransformCache();
+        public Dictionary<HumanBodyBones, (Transform cloneBone, Transform modelBone)> boneTransformCache;
+        public Dictionary<HumanBodyBones, (Transform cloneBone, Transform modelBone)> BoneTransformCache => InitializeBoneTransformCache();
+
+
+        public const HumanBodyBones HumanBodyBonesRoot = (HumanBodyBones)(-1);
+        public static HumanBodyBones[] ReverseBodyBones = new HumanBodyBones[] {
+                HumanBodyBones.Head ,
+                HumanBodyBones.Neck ,
+                HumanBodyBones.LeftEye ,
+                HumanBodyBones.RightEye ,
+                HumanBodyBones.Jaw ,
+                HumanBodyBones.LeftShoulder ,
+                HumanBodyBones.RightShoulder ,
+                HumanBodyBones.LeftUpperArm ,
+                HumanBodyBones.RightUpperArm ,
+                HumanBodyBones.LeftLowerArm ,
+                HumanBodyBones.RightLowerArm ,
+                HumanBodyBones.UpperChest ,
+                HumanBodyBones.LeftHand ,
+                HumanBodyBones.RightHand ,
+                HumanBodyBones.LeftThumbProximal ,
+                HumanBodyBones.LeftThumbIntermediate ,
+                HumanBodyBones.LeftThumbDistal ,
+                HumanBodyBones.LeftIndexProximal ,
+                HumanBodyBones.LeftIndexIntermediate ,
+                HumanBodyBones.LeftIndexDistal ,
+                HumanBodyBones.LeftMiddleProximal ,
+                HumanBodyBones.LeftMiddleIntermediate ,
+                HumanBodyBones.LeftMiddleDistal ,
+                HumanBodyBones.LeftRingProximal ,
+                HumanBodyBones.LeftRingIntermediate ,
+                HumanBodyBones.LeftRingDistal ,
+                HumanBodyBones.LeftLittleProximal ,
+                HumanBodyBones.LeftLittleIntermediate ,
+                HumanBodyBones.LeftLittleDistal ,
+                HumanBodyBones.RightThumbProximal ,
+                HumanBodyBones.RightThumbIntermediate ,
+                HumanBodyBones.RightThumbDistal ,
+                HumanBodyBones.RightIndexProximal ,
+                HumanBodyBones.RightIndexIntermediate ,
+                HumanBodyBones.RightIndexDistal ,
+                HumanBodyBones.RightMiddleProximal ,
+                HumanBodyBones.RightMiddleIntermediate ,
+                HumanBodyBones.RightMiddleDistal ,
+                HumanBodyBones.RightRingProximal ,
+                HumanBodyBones.RightRingIntermediate ,
+                HumanBodyBones.RightRingDistal ,
+                HumanBodyBones.RightLittleProximal ,
+                HumanBodyBones.RightLittleIntermediate ,
+                HumanBodyBones.RightLittleDistal ,
+                HumanBodyBones.Chest ,
+                HumanBodyBones.Spine ,
+                HumanBodyBones.Hips ,
+                HumanBodyBones.LeftUpperLeg ,
+                HumanBodyBones.RightUpperLeg ,
+                HumanBodyBones.LeftLowerLeg ,
+                HumanBodyBones.RightLowerLeg ,
+                HumanBodyBones.LeftFoot ,
+                HumanBodyBones.RightFoot ,
+                HumanBodyBones.LeftToes ,
+                HumanBodyBones.RightToes
+            };
 
         public VirtualAvatar(Transform BoneParentTransform)
         {
             parent = BoneParentTransform;
         }
+        public (Transform cloneBone, Transform modelBone) GetBoneTransformPair(HumanBodyBones bone)
+        {
+            if (BoneTransformCache == null) return (null, null);
+            if (BoneTransformCache.ContainsKey(bone) == false) return (null, null);
+            return BoneTransformCache[bone];
+        }
+
+        public Transform GetCloneBoneTransform(HumanBodyBones bone) => GetBoneTransformPair(bone).cloneBone;
+        public Transform GetModelBoneTransform(HumanBodyBones bone) => GetBoneTransformPair(bone).modelBone;
 
         public void ImportAvatar(GameObject model)
         {
@@ -64,7 +137,7 @@ namespace VMC
             animator.avatar = avatar;
         }
 
-        private List<(HumanBodyBones humanBodyBone, Transform cloneBone, Transform modelBone)> InitializeBoneTransformCache(bool force = false)
+        private Dictionary<HumanBodyBones, (Transform cloneBone, Transform modelBone)> InitializeBoneTransformCache(bool force = false)
         {
             if (boneTransformCache != null && boneTransformCache.Count != 0 && force == false) return boneTransformCache;
 
@@ -72,37 +145,12 @@ namespace VMC
 
             if (boneTransformCache == null)
             {
-                boneTransformCache = new List<(HumanBodyBones humanBodyBone, Transform source, Transform target)>();
+                boneTransformCache = new Dictionary<HumanBodyBones, (Transform cloneBone, Transform modelBone)>();
             }
             else
             {
                 boneTransformCache.Clear();
             }
-
-            var ReverseBodyBones = new HumanBodyBones[] {
-                HumanBodyBones.Head ,
-                HumanBodyBones.Neck ,
-                HumanBodyBones.LeftShoulder ,
-                HumanBodyBones.RightShoulder ,
-                HumanBodyBones.LeftUpperArm ,
-                HumanBodyBones.RightUpperArm ,
-                HumanBodyBones.LeftLowerArm ,
-                HumanBodyBones.RightLowerArm ,
-                HumanBodyBones.UpperChest ,
-                HumanBodyBones.Chest ,
-                HumanBodyBones.Spine ,
-                HumanBodyBones.LeftHand ,
-                HumanBodyBones.RightHand ,
-                HumanBodyBones.Hips ,
-                HumanBodyBones.LeftUpperLeg ,
-                HumanBodyBones.RightUpperLeg ,
-                HumanBodyBones.LeftLowerLeg ,
-                HumanBodyBones.RightLowerLeg ,
-                HumanBodyBones.LeftFoot ,
-                HumanBodyBones.RightFoot ,
-                HumanBodyBones.LeftToes ,
-                HumanBodyBones.RightToes
-            };
 
             var modelAnimator = currentModel.GetComponent<Animator>();
 
@@ -118,7 +166,7 @@ namespace VMC
                 var modelBone = modelAnimator.GetBoneTransform(bone);
                 if (modelBone == null) continue;
 
-                boneTransformCache.Add((bone, mocopiBone, modelBone));
+                boneTransformCache.Add(bone, (mocopiBone, modelBone));
             }
             return boneTransformCache.Count == 0 ? null : boneTransformCache;
         }
