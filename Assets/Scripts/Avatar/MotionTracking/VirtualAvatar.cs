@@ -156,17 +156,19 @@ namespace VMC
 
             if (modelAnimator == null) return null;
 
+            boneTransformCache.Add(HumanBodyBonesRoot, (animator.transform, modelAnimator.transform));
+
             foreach (HumanBodyBones bone in ReverseBodyBones)
             {
                 if (bone == HumanBodyBones.LastBone) continue;
 
-                var mocopiBone = animator.GetBoneTransform(bone);
-                if (mocopiBone == null) continue;
+                var cloneBone = animator.GetBoneTransform(bone);
+                if (cloneBone == null) continue;
 
                 var modelBone = modelAnimator.GetBoneTransform(bone);
                 if (modelBone == null) continue;
 
-                boneTransformCache.Add(bone, (mocopiBone, modelBone));
+                boneTransformCache.Add(bone, (cloneBone, modelBone));
             }
             return boneTransformCache.Count == 0 ? null : boneTransformCache;
         }

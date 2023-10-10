@@ -31,6 +31,11 @@ namespace VMC
         public string statusString = "";
         private string statusStringOld = "";
 
+        public bool CorrectRotationWhenCalibration = true;
+        private int lastCalibrationState = 0;
+        private bool doCalibration = false;
+        private Quaternion calibrateRotationOffset = Quaternion.identity;
+
         public EasyDeviceDiscoveryProtocolManager eddp;
         public bool receiveBonesFlag;
 
@@ -68,12 +73,17 @@ namespace VMC
         //ボーン情報テーブル
         Dictionary<HumanBodyBones, Vector3> HumanBodyBonesPositionTable = new Dictionary<HumanBodyBones, Vector3>();
         Dictionary<HumanBodyBones, Quaternion> HumanBodyBonesRotationTable = new Dictionary<HumanBodyBones, Quaternion>();
+        private VirtualAvatar virtualAvatar;
 
         public bool BonePositionSynchronize = true; //ボーン位置適用(回転は強制)
 
         private Dictionary<string, float> blendShapeBuffer = new Dictionary<string, float>();
 
         public bool DisableBlendShapeReception { get; set; }
+
+        public bool EnableBonePosition;
+        private bool enableLocalHandFix = true;
+        private float lastBoneReceivedTime = 0;
 
         void Start()
         {
@@ -107,6 +117,12 @@ namespace VMC
                 vrmLookAtHead.LookWorldPosition();
                 vrmLookAtHead.Target = null;
             };
+
+            var modelRoot = new GameObject("ModelRoot").transform;
+            modelRoot.SetParent(transform, false);
+            virtualAvatar = new VirtualAvatar(modelRoot);
+            virtualAvatar.Enable = false;
+            MotionManager.Instance.AddVirtualAvatar(virtualAvatar);
 
             this.gameObject.SetActive(false);
             server.enabled = true;
@@ -490,8 +506,57 @@ namespace VMC
                         {
                             HumanBodyBonesRotationTable.Add(bone, rot);
                         }
+
+                        // 手以外を受信したとき
+                        if (!(bone == HumanBodyBones.LeftHand &&
+                              bone == HumanBodyBones.RightHand &&
+                              bone >= HumanBodyBones.LeftThumbProximal &&
+                              bone <= HumanBodyBones.RightIndexDistal))
+                        {
+                            enableLocalHandFix = false;
+                            lastBoneReceivedTime = Time.realtimeSinceStartup;
+                        }
                     }
+
+                    virtualAvatar.Enable = true;
+                    virtualAvatar.ApplyRootRotation = true;
+                    virtualAvatar.ApplyRootPosition = true;
+                    virtualAvatar.ApplySpine = true;
+                    virtualAvatar.ApplyChest = true;
+                    virtualAvatar.ApplyHead = true;
+                    virtualAvatar.ApplyLeftArm = true;
+                    virtualAvatar.ApplyRightArm = true;
+                    virtualAvatar.ApplyLeftHand = true;
+                    virtualAvatar.ApplyRightHand = true;
+                    virtualAvatar.ApplyLeftLeg = true;
+                    virtualAvatar.ApplyRightLeg = true;
+                    virtualAvatar.ApplyLeftFoot = true;
+                    virtualAvatar.ApplyRightFoot = true;
+                    virtualAvatar.ApplyEye = true;
+                    virtualAvatar.ApplyLeftFinger = true;
+                    virtualAvatar.ApplyRightFinger = true;
+
                     //受信と更新のタイミングは切り離した
+                }
+
+                //ボーン姿勢
+                else if (message.address == "/VMC/Ext/OK"
+                    && (message.values[0] is int)
+                    )
+                {
+                    int loaded = (int)message.values[0];
+                    if (message.values.Length > 2)
+                    {
+                        int calibrationState = (int)message.values[1];
+                        int calibrationMode = (int)message.values[2];
+
+                        if (calibrationState != lastCalibrationState && calibrationState == 3)
+                        {
+                            doCalibration = true;
+                        }
+                        lastCalibrationState = calibrationState;
+                    }
+
                 }
             }
         }
@@ -515,7 +580,6 @@ namespace VMC
 
         public static float filterStrength = 10.0f;
 
-        //修正（LateUpdateに変更）
         private void Update()
         {
             while (MessageBuffer.Count > 0 && MessageBuffer.Peek().timestamp + (float)DelayMs / 1000f  < Time.realtimeSinceStartup)
@@ -555,14 +619,28 @@ namespace VMC
                     StatusStringUpdated.Invoke(statusString);
                 }
             }
-        }
-        private void LateUpdate()
-        {
+
+            if (CorrectRotationWhenCalibration && doCalibration)
+            {
+                // 現在のアバターの正面方向回転オフセットを取得
+                if (animator != null)
+                {
+                    var hipBone = animator.GetBoneTransform(HumanBodyBones.Hips);
+                    calibrateRotationOffset = Quaternion.Euler(0, -hipBone.root.eulerAngles.y, 0);
+                }
+            }
+            doCalibration = false;
+
             if (receiveBonesFlag)
             {
                 BoneSynchronizeByTable();
+                if (lastBoneReceivedTime + 5f < Time.realtimeSinceStartup)
+                {
+                    enableLocalHandFix = true;
+                }
             }
         }
+
 
         private bool internalActive = false;
 
@@ -632,73 +710,42 @@ namespace VMC
         private void BoneSynchronize(HumanBodyBones bone, Vector3 pos, Quaternion rot)
         {
             //操作可能な状態かチェック
-            if (animator != null && bone != HumanBodyBones.LastBone)
+            if (virtualAvatar != null && bone != HumanBodyBones.LastBone)
             {
-                Transform targetTransform;
+                Transform targetTransform = virtualAvatar.GetCloneBoneTransform(bone);
                 Transform tempTransform;
                 //ボーンによって操作を分ける
-                Transform t = animator.GetBoneTransform(bone);
-                if (t != null)
+                if (targetTransform != null)
                 {
-                    //手首ボーン
-                    if (bone == HumanBodyBones.LeftHand || bone == HumanBodyBones.RightHand)
+                    //手首ボーンから先のみ受信した際は
+                    if (enableLocalHandFix == true && (bone == HumanBodyBones.LeftHand || bone == HumanBodyBones.RightHand))
                     {
                         //ローカル座標系の回転打ち消し
                         Quaternion allLocalRotation = Quaternion.identity;
-                        targetTransform = animator.GetBoneTransform(bone);
                         tempTransform = targetTransform;
-                        while (tempTransform != CurrentModel.transform)
+                        var rootTransform = virtualAvatar.GetCloneBoneTransform(VirtualAvatar.HumanBodyBonesRoot);
+                        while (tempTransform != rootTransform)
                         {
                             tempTransform = tempTransform.parent;
                             //後から逆回転をかけて打ち消し
                             allLocalRotation = allLocalRotation * Quaternion.Inverse(tempTransform.localRotation);
                         }
+                        allLocalRotation = allLocalRotation * Quaternion.Inverse(calibrateRotationOffset);
                         Quaternion receivedRotation = allLocalRotation * rot;
                         //外部からのボーンへの反映
-                        BoneSynchronizeSingle(t, ref bone, ref pos, ref receivedRotation);
+                        BoneSynchronizeSingle(targetTransform, ref bone, ref pos, ref receivedRotation);
                     }
-                    //指ボーン
-                    else if (bone == HumanBodyBones.LeftIndexDistal ||
-                            bone == HumanBodyBones.LeftIndexIntermediate ||
-                            bone == HumanBodyBones.LeftIndexProximal ||
-                            bone == HumanBodyBones.LeftLittleDistal ||
-                            bone == HumanBodyBones.LeftLittleIntermediate ||
-                            bone == HumanBodyBones.LeftLittleProximal ||
-                            bone == HumanBodyBones.LeftMiddleDistal ||
-                            bone == HumanBodyBones.LeftMiddleIntermediate ||
-                            bone == HumanBodyBones.LeftMiddleProximal ||
-                            bone == HumanBodyBones.LeftRingDistal ||
-                            bone == HumanBodyBones.LeftRingIntermediate ||
-                            bone == HumanBodyBones.LeftRingProximal ||
-                            bone == HumanBodyBones.LeftThumbDistal ||
-                            bone == HumanBodyBones.LeftThumbIntermediate ||
-                            bone == HumanBodyBones.LeftThumbProximal ||
-
-                            bone == HumanBodyBones.RightIndexDistal ||
-                            bone == HumanBodyBones.RightIndexIntermediate ||
-                            bone == HumanBodyBones.RightIndexProximal ||
-                            bone == HumanBodyBones.RightLittleDistal ||
-                            bone == HumanBodyBones.RightLittleIntermediate ||
-                            bone == HumanBodyBones.RightLittleProximal ||
-                            bone == HumanBodyBones.RightMiddleDistal ||
-                            bone == HumanBodyBones.RightMiddleIntermediate ||
-                            bone == HumanBodyBones.RightMiddleProximal ||
-                            bone == HumanBodyBones.RightRingDistal ||
-                            bone == HumanBodyBones.RightRingIntermediate ||
-                            bone == HumanBodyBones.RightRingProximal ||
-                            bone == HumanBodyBones.RightThumbDistal ||
-                            bone == HumanBodyBones.RightThumbIntermediate ||
-                            bone == HumanBodyBones.RightThumbProximal)
+                    else
                     {
-                        BoneSynchronizeSingle(t, ref bone, ref pos, ref rot);
-                    }
+                        BoneSynchronizeSingle(targetTransform, ref bone, ref pos, ref rot);
+                    }                    
                 }
             }
         }
         //1本のボーンの同期
         private void BoneSynchronizeSingle(Transform t, ref HumanBodyBones bone, ref Vector3 pos, ref Quaternion rot)
         {
-            t.localPosition = pos;
+            if (EnableBonePosition) t.localPosition = pos;
             t.localRotation = rot;
         }
         //ボーンENUM情報をキャッシュして高速化
