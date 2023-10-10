@@ -20,8 +20,6 @@ namespace VMC
         private MocopiAvatar mocopiAvatar;
         private GameObject currentModel;
 
-        private Animator modelAnimator;
-
         private VirtualAvatar virtualAvatar;
 
         private void Awake()
@@ -32,7 +30,7 @@ namespace VMC
             enabled = false;
 
             virtualAvatar = new VirtualAvatar(transform);
-            SetVirtualAvatarSetting();
+            virtualAvatar.Enable = false;
             MotionManager.Instance.AddVirtualAvatar(virtualAvatar);
         }
 
@@ -135,6 +133,8 @@ namespace VMC
 
         private void ApplySettings(GameObject gameObject)
         {
+            SetVirtualAvatarSetting();
+
             if (enabled == false && Settings.Current.mocopi_Enable == true)
             {
                 Port = Settings.Current.mocopi_Port;
@@ -152,9 +152,7 @@ namespace VMC
                     StopUdpReceiver();
                 }
 
-                //ボーンのみのクローンを作成し、mocopiのモーションをそちらに適用させる
                 currentModel = model;
-                modelAnimator = model.GetComponent<Animator>();
 
                 mocopiAvatar = gameObject.AddComponent<MocopiAvatar>();
                 mocopiAvatar.MotionSmoothness = 0.0f;
