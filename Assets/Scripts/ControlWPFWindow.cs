@@ -2742,7 +2742,7 @@ namespace VMC
             //SetResolutionは強制的にウインドウ枠を復活させるのでBorder設定の前にやっておく必要がある
             if (Screen.resolutions.Any(d => d.width == Settings.Current.ScreenWidth && d.height == Settings.Current.ScreenHeight && d.refreshRate == Settings.Current.ScreenRefreshRate))
             {
-                UpdateActionQueue.Enqueue(() => Screen.SetResolution(Settings.Current.ScreenWidth, Settings.Current.ScreenHeight, false, Settings.Current.ScreenRefreshRate));
+                UpdateActionQueue.Enqueue(() => Screen.SetResolution(Settings.Current.ScreenWidth, Settings.Current.ScreenHeight, FullScreenMode.Windowed, Settings.Current.ScreenRefreshRate));
             }
 
             if (Settings.Current.BackgroundColor != null)
