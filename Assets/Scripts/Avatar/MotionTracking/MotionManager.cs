@@ -21,7 +21,7 @@ namespace VMC
         private static MotionManager instance;
         public static MotionManager Instance => instance;
 
-        private Dictionary<HumanBodyBones, Pose> defaultPose;
+        private Dictionary<HumanBodyBones, Pose> defaultPoses;
 
         private void Awake()
         {
@@ -37,10 +37,10 @@ namespace VMC
             {
                 if (currentModel != null)
                 {
-                    var currentPose = GetModelPose(currentModel);
-                    SetModelPose(currentModel, defaultPose);
+                    var currentPose = GetModelPoses(currentModel);
+                    SetModelPoses(currentModel, defaultPoses);
                     virtualAvatar.ImportAvatar(currentModel);
-                    SetModelPose(currentModel, currentPose);
+                    SetModelPoses(currentModel, currentPose);
 
                 }
                 VirtualAvatars.Add(virtualAvatar);
@@ -54,7 +54,7 @@ namespace VMC
             {
                 currentModel = model;
 
-                defaultPose = GetModelPose(model);
+                defaultPoses = GetModelPoses(model);
 
                 foreach (var virtualAvatar in VirtualAvatars)
                 {
@@ -63,7 +63,7 @@ namespace VMC
             }
         }
 
-        public Dictionary<HumanBodyBones, Pose> GetModelPose(GameObject model)
+        public Dictionary<HumanBodyBones, Pose> GetModelPoses(GameObject model)
         {
             var animator = model.GetComponent<Animator>();
             if (animator == null) return null;
@@ -83,7 +83,7 @@ namespace VMC
             return poses;
         }
 
-        public void SetModelPose(GameObject model, Dictionary<HumanBodyBones, Pose> poses)
+        public void SetModelPoses(GameObject model, Dictionary<HumanBodyBones, Pose> poses)
         {
             var animator = model.GetComponent<Animator>();
             if (animator == null) return;
@@ -153,7 +153,7 @@ namespace VMC
                 if (virtualAvatar.Enable == false) continue;
                 if (virtualAvatar.BoneTransformCache == null) continue;
 
-                Transform headBone = virtualAvatar.BoneTransformCache[0].modelBone;
+                Transform headBone = virtualAvatar.BoneTransformCache[HumanBodyBones.Head].modelBone;
                 Transform hipBone = null;
                 Transform spineBone = null;
                 Vector3 defaultHeadPosition = headBone.position;
@@ -166,14 +166,21 @@ namespace VMC
                     {
                         case HumanBodyBones.Hips:
                             hipBone = modelBone;
-                            if (virtualAvatar.ApplyRootRotation)
+                            if (virtualAvatar.IgnoreDefaultBone && IsDefaultPose(bone, cloneBone))
                             {
-                                modelBone.localRotation = cloneBone.localRotation;
-                                modelBone.Rotate(new Vector3(0, virtualAvatar.CenterOffsetRotationY, 0), Space.World);
+                                apply = false;
                             }
-                            if (virtualAvatar.ApplyRootPosition)
+                            else
                             {
-                                modelBone.localPosition = cloneBone.localPosition + virtualAvatar.CenterOffsetPosition; //Root位置だけは同期
+                                if (virtualAvatar.ApplyRootRotation)
+                                {
+                                    modelBone.localRotation = cloneBone.localRotation;
+                                    modelBone.Rotate(new Vector3(0, virtualAvatar.CenterOffsetRotationY, 0), Space.World);
+                                }
+                                if (virtualAvatar.ApplyRootPosition)
+                                {
+                                    modelBone.localPosition = cloneBone.localPosition + virtualAvatar.CenterOffsetPosition; //Root位置だけは同期
+                                }
                             }
                             break;
                         case HumanBodyBones.Spine:
@@ -264,7 +271,14 @@ namespace VMC
                             break;
                     }
 
-                    if (apply) modelBone.localRotation = cloneBone.localRotation;
+                    if (apply) 
+                    {
+                        if (virtualAvatar.IgnoreDefaultBone && IsDefaultPose(bone, cloneBone))
+                        {
+                            continue;
+                        }
+                        modelBone.localRotation = cloneBone.localRotation; 
+                    }
                 }
 
                 if (virtualAvatar.ApplyHead == false && hipBone != null && spineBone != null)
@@ -277,5 +291,12 @@ namespace VMC
                 }
             }
         }
-    }
+
+        private bool IsDefaultPose(HumanBodyBones bone, Transform cloneBone)
+        {
+            var pose = defaultPoses[bone];
+            return ((cloneBone.localRotation == pose.rotation && cloneBone.localPosition == pose.position) ||
+                    (cloneBone.localRotation == Quaternion.identity && cloneBone.localPosition == Vector3.zero)) ;
+        }
+    }    
 }
