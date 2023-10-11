@@ -1191,11 +1191,13 @@ MonoBehaviour:
   MIDICCWrapper: {fileID: 1604201751}
   receivePort: 39540
   statusString: 
+  CorrectRotationWhenCalibration: 1
   eddp: {fileID: 1549762413}
   receiveBonesFlag: 0
   DelayMs: 0
   packets: 0
   BonePositionSynchronize: 1
+  EnableBonePosition: 0
 --- !u!4 &389263780
 Transform:
   m_ObjectHideFlags: 0
@@ -2604,7 +2606,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsBeta: 0
   IsPreRelease: 0
-  VersionString: v0.56f1r1b4
+  VersionString: v0.56f1r1b5
   LeftWristTransform: {fileID: 0}
   RightWristTransform: {fileID: 0}
   CalibrationCamera: {fileID: 1312323656}
@@ -3244,11 +3246,13 @@ MonoBehaviour:
   MIDICCWrapper: {fileID: 1604201751}
   receivePort: 39541
   statusString: 
+  CorrectRotationWhenCalibration: 1
   eddp: {fileID: 1549762413}
   receiveBonesFlag: 0
   DelayMs: 0
   packets: 0
   BonePositionSynchronize: 1
+  EnableBonePosition: 0
 --- !u!1 &1596440252
 GameObject:
   m_ObjectHideFlags: 0
