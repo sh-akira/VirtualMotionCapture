@@ -508,9 +508,9 @@ namespace VMC
                         }
 
                         // 手以外を受信したとき
-                        if (!(bone == HumanBodyBones.LeftHand &&
-                              bone == HumanBodyBones.RightHand &&
-                              bone >= HumanBodyBones.LeftThumbProximal &&
+                        if (!(bone == HumanBodyBones.LeftHand ||
+                              bone == HumanBodyBones.RightHand ||
+                              bone >= HumanBodyBones.LeftThumbProximal ||
                               bone <= HumanBodyBones.RightIndexDistal))
                         {
                             enableLocalHandFix = false;
