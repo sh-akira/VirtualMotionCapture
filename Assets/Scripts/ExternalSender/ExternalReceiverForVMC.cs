@@ -582,7 +582,7 @@ namespace VMC
 
         private void Update()
         {
-            while (MessageBuffer.Count > 0 && MessageBuffer.Peek().timestamp + (float)DelayMs / 1000f  < Time.realtimeSinceStartup)
+            while (MessageBuffer.Count > 0 && MessageBuffer.Peek().timestamp + (float)DelayMs / 1000f < Time.realtimeSinceStartup)
             {
                 ProcessMessage(MessageBuffer.Dequeue().message);
             }
@@ -619,14 +619,18 @@ namespace VMC
                     StatusStringUpdated.Invoke(statusString);
                 }
             }
+        }
 
+        // VRIKのボーン情報を取得するためにLateUpdateを使う
+        private void LateUpdate()
+        {
             if (CorrectRotationWhenCalibration && doCalibration)
             {
                 // 現在のアバターの正面方向回転オフセットを取得
                 if (animator != null)
                 {
                     var hipBone = animator.GetBoneTransform(HumanBodyBones.Hips);
-                    calibrateRotationOffset = Quaternion.Euler(0, -hipBone.root.eulerAngles.y, 0);
+                    calibrateRotationOffset = Quaternion.Euler(0, hipBone.root.eulerAngles.y, 0);
                 }
             }
             doCalibration = false;
@@ -722,15 +726,16 @@ namespace VMC
                     {
                         //ローカル座標系の回転打ち消し
                         Quaternion allLocalRotation = Quaternion.identity;
-                        tempTransform = targetTransform;
-                        var rootTransform = virtualAvatar.GetCloneBoneTransform(VirtualAvatar.HumanBodyBonesRoot);
+                        var setRotation = rot;
+                        tempTransform = animator.GetBoneTransform(bone);
+                        var rootTransform = animator.transform;
                         while (tempTransform != rootTransform)
                         {
                             tempTransform = tempTransform.parent;
                             //後から逆回転をかけて打ち消し
                             allLocalRotation = allLocalRotation * Quaternion.Inverse(tempTransform.localRotation);
                         }
-                        allLocalRotation = allLocalRotation * Quaternion.Inverse(calibrateRotationOffset);
+                        allLocalRotation = allLocalRotation * calibrateRotationOffset;
                         Quaternion receivedRotation = allLocalRotation * rot;
                         //外部からのボーンへの反映
                         BoneSynchronizeSingle(targetTransform, ref bone, ref pos, ref receivedRotation);
