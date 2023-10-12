@@ -249,8 +249,8 @@ namespace VMC
 
             this.gameObject.SetActive(false);
         }
-        // Update is called once per frame
-        void Update()
+
+        private void LateUpdate()
         {
             //基本的に毎フレーム送信するもの
             SendPerFrame();
