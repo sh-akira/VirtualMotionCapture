@@ -22,12 +22,13 @@ namespace VMC
 
         private VirtualAvatar virtualAvatar;
 
+        private bool isFirstTime = true;
+
         private void Awake()
         {
             VMCEvents.OnCurrentModelChanged += OnCurrentModelChanged;
             VMCEvents.OnModelUnloading += OnModelUnloading;
             controlWPFWindow.AdditionalSettingAction += ApplySettings;
-            enabled = false;
 
             virtualAvatar = new VirtualAvatar(transform);
             virtualAvatar.Enable = false;
@@ -38,10 +39,17 @@ namespace VMC
         {
             context = System.Threading.SynchronizationContext.Current;
             controlWPFWindow.server.ReceivedEvent += Server_Received;
+
+            enabled = false;
         }
 
         private void OnEnable()
         {
+            if (isFirstTime)
+            {
+                isFirstTime = false;
+                return;
+            }
             StartUdpReceiver();
         }
 
