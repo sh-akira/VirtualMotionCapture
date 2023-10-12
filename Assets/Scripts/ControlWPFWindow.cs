@@ -59,6 +59,7 @@ namespace VMC
         private string pipeName = Guid.NewGuid().ToString();
 
         private GameObject CurrentModel = null;
+        private VirtualAvatar CurrentVirtualAvatar = null;
 
         private RootMotion.FinalIK.VRIK vrik = null;
 
@@ -1180,6 +1181,8 @@ namespace VMC
                 {
                     var currentvrik = CurrentModel.GetComponent<VRIK>();
                     if (currentvrik != null) Destroy(currentvrik);
+                    var currentVRIKTimingManager = CurrentModel.GetComponent<VRIKTimingManager>();
+                    if (currentVRIKTimingManager != null) Destroy(currentVRIKTimingManager);
                     var rootController = CurrentModel.GetComponent<VRIKRootController>();
                     if (rootController != null) Destroy(rootController);
                 }
@@ -1550,6 +1553,7 @@ namespace VMC
             }
 
             vrik = model.AddComponent<RootMotion.FinalIK.VRIK>();
+            model.AddComponent<VRIKTimingManager>();
             vrik.AutoDetectReferences();
 
             //親指の方向の検出に失敗すると腕の回転もおかしくなる
