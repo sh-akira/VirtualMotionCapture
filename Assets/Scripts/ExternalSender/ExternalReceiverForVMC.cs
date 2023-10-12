@@ -714,7 +714,7 @@ namespace VMC
         private void BoneSynchronize(HumanBodyBones bone, Vector3 pos, Quaternion rot)
         {
             //操作可能な状態かチェック
-            if (virtualAvatar != null && bone != HumanBodyBones.LastBone)
+            if (virtualAvatar != null && animator != null && bone != HumanBodyBones.LastBone)
             {
                 Transform targetTransform = virtualAvatar.GetCloneBoneTransform(bone);
                 Transform tempTransform;
