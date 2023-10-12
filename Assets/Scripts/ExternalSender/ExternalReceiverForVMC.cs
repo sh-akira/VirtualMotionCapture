@@ -630,7 +630,7 @@ namespace VMC
                 if (animator != null)
                 {
                     var hipBone = animator.GetBoneTransform(HumanBodyBones.Hips);
-                    calibrateRotationOffset = Quaternion.Euler(0, hipBone.root.eulerAngles.y, 0);
+                    calibrateRotationOffset = Quaternion.Euler(0, hipBone.rotation.eulerAngles.y, 0);
                 }
             }
             doCalibration = false;
