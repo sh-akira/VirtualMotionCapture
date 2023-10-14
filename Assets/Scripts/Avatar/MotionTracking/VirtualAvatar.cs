@@ -11,9 +11,11 @@ namespace VMC
     {
         private Transform parent;
         private GameObject currentModel;
-
         private Avatar avatar;
+
+        public MotionSource MotionSource;
         public Transform RootTransform;
+        public Transform transform => RootTransform;
         public Animator animator;
 
         public Vector3 CenterOffsetPosition;
@@ -102,9 +104,10 @@ namespace VMC
                 HumanBodyBones.RightToes
             };
 
-        public VirtualAvatar(Transform BoneParentTransform)
+        public VirtualAvatar(Transform boneParentTransform, MotionSource motionSource)
         {
-            parent = BoneParentTransform;
+            parent = boneParentTransform;
+            MotionSource = motionSource;
         }
         public (Transform cloneBone, Transform modelBone) GetBoneTransformPair(HumanBodyBones bone)
         {
@@ -269,5 +272,14 @@ namespace VMC
 
             return clone;
         }
+
+        public T AddComponent<T>() where T : Component => parent.gameObject.AddComponent<T>();
+        public T GetComponent<T>() where T : Component => parent.gameObject.GetComponent<T>();
+    }
+    public enum MotionSource
+    {
+        VRIK,
+        VMCProtocol,
+        mocopi,
     }
 }

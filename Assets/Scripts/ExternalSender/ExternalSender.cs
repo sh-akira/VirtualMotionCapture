@@ -18,7 +18,6 @@ namespace VMC
         GameObject CurrentModel = null;
         ControlWPFWindow window = null;
         Animator animator = null;
-        VRIK vrik = null;
         VRMBlendShapeProxy blendShapeProxy = null;
         Camera currentCamera = null;
         UnityMemoryMappedFile.VRMData vrmdata = null;
@@ -65,7 +64,6 @@ namespace VMC
                 {
                     this.CurrentModel = CurrentModel;
                     animator = CurrentModel.GetComponent<Animator>();
-                    vrik = CurrentModel.GetComponent<VRIK>();
                     blendShapeProxy = CurrentModel.GetComponent<VRMBlendShapeProxy>();
                 }
             };
@@ -366,19 +364,12 @@ namespace VMC
 
             if (CurrentModel != null && animator != null)
             {
-                //Root
-                if (vrik == null)
-                {
-                    vrik = CurrentModel.GetComponent<VRIK>();
-                    Debug.Log("ExternalSender: VRIK Updated");
-                }
-
                 if (frameOfRoot > periodRoot && periodRoot != 0)
                 {
                     frameOfRoot = 1;
-                    if (vrik != null)
+                    if (animator != null)
                     {
-                        var RootTransform = vrik.references.root;
+                        var RootTransform = animator.transform;
                         var offset = handTrackerRoot.transform;
                         if (RootTransform != null && offset != null)
                         {
@@ -528,7 +519,7 @@ namespace VMC
                 }
                 if (window != null)
                 {
-                    rootBundle.Add(new uOSC.Message("/VMC/Ext/OK", (int)available, (int)window.calibrationState, (int)window.lastCalibrateType));
+                    rootBundle.Add(new uOSC.Message("/VMC/Ext/OK", (int)available, (int)IKManager.Instance.CalibrationState, (int)IKManager.Instance.LastCalibrateType));
                 }
                 rootBundle.Add(new uOSC.Message("/VMC/Ext/T", Time.time));
 

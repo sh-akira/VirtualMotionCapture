@@ -251,11 +251,6 @@ namespace VMC
         public float RightHandTrackerOffsetToBodySide = 0.05f;
 
         [OptionalField]
-        public bool EnableNormalMapFix = true;
-        [OptionalField]
-        public bool DeleteHairNormalMap = true;
-
-        [OptionalField]
         public bool WebCamEnabled = false;
         [OptionalField]
         public bool WebCamResize = false;
@@ -542,9 +537,6 @@ namespace VMC
             RightHandTrackerOffsetToBodySide = 0.05f;
 
             PositionFixedCameraTransform = null;
-
-            EnableNormalMapFix = true;
-            DeleteHairNormalMap = true;
 
             CameraMirrorEnable = false;
 

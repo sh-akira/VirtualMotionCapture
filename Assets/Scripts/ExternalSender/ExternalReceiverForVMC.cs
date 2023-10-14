@@ -120,7 +120,7 @@ namespace VMC
 
             var modelRoot = new GameObject("ModelRoot").transform;
             modelRoot.SetParent(transform, false);
-            virtualAvatar = new VirtualAvatar(modelRoot);
+            virtualAvatar = new VirtualAvatar(modelRoot, MotionSource.VMCProtocol);
             virtualAvatar.Enable = false;
             MotionManager.Instance.AddVirtualAvatar(virtualAvatar);
 
@@ -384,7 +384,7 @@ namespace VMC
                 {
                     if (File.Exists(Settings.Current.VRMPath))
                     {
-                        window.ImportVRM(Settings.Current.VRMPath, true, true, true);
+                        IKManager.Instance.ModelCalibrationInitialize();
                     }
                 }
                 //キャリブレーション実行 V2.5
@@ -408,7 +408,7 @@ namespace VMC
                             break;
                         default: return; //無視
                     }
-                    StartCoroutine(window.Calibrate(calibrateType));
+                    StartCoroutine(IKManager.Instance.Calibrate(calibrateType));
                     Invoke("EndCalibrate", 2f);
                 }
                 //設定読み込み V2.5
@@ -559,11 +559,6 @@ namespace VMC
 
                 }
             }
-        }
-
-        void EndCalibrate()
-        {
-            window.EndCalibrate();
         }
 
         SteamVR_Utils.RigidTransform SetTransform(ref Vector3 pos, ref Quaternion rot, ref uOSC.Message message)

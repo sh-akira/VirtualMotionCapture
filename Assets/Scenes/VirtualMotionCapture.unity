@@ -1330,7 +1330,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49d7b96c4048b244085c84bc1c240b6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handController: {fileID: 69806227}
 --- !u!4 &483683250
 Transform:
   m_ObjectHideFlags: 0
@@ -2012,6 +2011,7 @@ Transform:
   - {fileID: 1218489916}
   - {fileID: 286205154}
   - {fileID: 277256231}
+  - {fileID: 1451331751}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1210221201
@@ -2609,15 +2609,10 @@ MonoBehaviour:
   VersionString: v0.56f1r1b6
   LeftWristTransform: {fileID: 0}
   RightWristTransform: {fileID: 0}
-  CalibrationCamera: {fileID: 1312323656}
   BackgroundRenderer: {fileID: 892957809}
   GridCanvas: {fileID: 814726118}
   LipSync: {fileID: 144144637}
   faceController: {fileID: 69806225}
-  handController: {fileID: 69806227}
-  wristRotationFix: {fileID: 1793473874}
-  HandTrackerRoot: {fileID: 1128534204}
-  PelvisTrackerRoot: {fileID: 836257372}
   ExternalMotionSenderObject: {fileID: 1155637108}
   ExternalMotionReceiverObject: {fileID: 1210221201}
   externalMotionReceivers: []
@@ -2630,9 +2625,6 @@ MonoBehaviour:
   LipTracking_ViveComponent: {fileID: 0}
   SRanipal_Lip_FrameworkComponent: {fileID: 0}
   midiCCBlendShape: {fileID: 1440382163}
-  generatedObject: {fileID: 1670762494}
-  calibrationState: 0
-  lastCalibrateType: 0
   lastLoadedConfigPath: 
   easyDeviceDiscoveryProtocolManager: {fileID: 1549762413}
   modManager: {fileID: 755659414}
@@ -3016,6 +3008,59 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1619438237}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1451331750
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1451331751}
+  - component: {fileID: 1451331752}
+  m_Layer: 0
+  m_Name: IKManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1451331751
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1451331750}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1177174446}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1451331752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1451331750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 047ad6f77be3a2e4f9e9b4133f1fd63c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CalibrationState: 0
+  LastCalibrateType: 0
+  controlWPFWindow: {fileID: 1407685704}
+  HandController: {fileID: 69806227}
+  CalibrationCamera: {fileID: 1312323656}
+  wristRotationFix: {fileID: 1793473874}
+  HandTrackerRoot: {fileID: 1128534204}
+  PelvisTrackerRoot: {fileID: 836257372}
+  generatedObject: {fileID: 1670762494}
 --- !u!1 &1549762411
 GameObject:
   m_ObjectHideFlags: 0

@@ -26,19 +26,20 @@ namespace VMC
 
         private void Awake()
         {
+            context = System.Threading.SynchronizationContext.Current;
+
             VMCEvents.OnCurrentModelChanged += OnCurrentModelChanged;
             VMCEvents.OnModelUnloading += OnModelUnloading;
             controlWPFWindow.AdditionalSettingAction += ApplySettings;
-
-            virtualAvatar = new VirtualAvatar(transform);
-            virtualAvatar.Enable = false;
-            MotionManager.Instance.AddVirtualAvatar(virtualAvatar);
         }
 
         private void Start()
         {
-            context = System.Threading.SynchronizationContext.Current;
             controlWPFWindow.server.ReceivedEvent += Server_Received;
+
+            virtualAvatar = new VirtualAvatar(transform, MotionSource.mocopi);
+            virtualAvatar.Enable = false;
+            MotionManager.Instance.AddVirtualAvatar(virtualAvatar);
 
             enabled = false;
         }

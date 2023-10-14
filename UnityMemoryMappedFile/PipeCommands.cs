@@ -53,11 +53,9 @@ namespace UnityMemoryMappedFile
         public class ImportVRM
         {
             public string Path { get; set; }
-            public bool ImportForCalibration { get; set; }
-            public bool EnableNormalMapFix { get; set; }
-            public bool DeleteHairNormalMap { get; set; }
-            public bool UseCurrentFixSetting { get; set; }
         }
+
+        public class InitializeCalibration { }
 
         public class LoadVRMPath
         {

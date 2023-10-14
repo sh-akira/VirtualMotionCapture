@@ -29,6 +29,8 @@ namespace VMC
             if (controlWPFWindow == null) controlWPFWindow = GameObject.Find("ControlWPFWindow").GetComponent<ControlWPFWindow>();
             VMCEvents.OnCurrentModelChanged += OnCurrentModelChanged;
             VMCEvents.OnModelUnloading += OnModelUnloading;
+
+            StartCoroutine(AfterUpdateCoroutine());
         }
 
         public void AddVirtualAvatar(VirtualAvatar virtualAvatar)
@@ -102,6 +104,8 @@ namespace VMC
             }
         }
 
+        public void ResetVirtualAvatarPose(VirtualAvatar virtualAvatar) => SetModelPoses(virtualAvatar.RootTransform.gameObject, defaultPoses);
+
         private void OnModelUnloading(GameObject model)
         {
             //前回の生成物の削除
@@ -126,12 +130,24 @@ namespace VMC
                 ikSolver.OnPostUpdate -= ApplyMotion;
             }
 
-            vrik = currentModel.GetComponent<VRIK>();
+            vrik = IKManager.Instance.vrik;
 
             if (vrik != null)
             {
                 ikSolver = vrik.GetIKSolver();
                 ikSolver.OnPostUpdate += ApplyMotion;
+            }
+        }
+
+        private IEnumerator AfterUpdateCoroutine()
+        {
+            while (true)
+            {
+                yield return null;
+                // run after Update()
+
+                if (vrik == null) ApplyMotion();
+
             }
         }
 
@@ -143,15 +159,15 @@ namespace VMC
             //無効になってる時は適用しない
             if (enabled == false) return;
 
-            //キャリブレーション中は適用しない
-            if (controlWPFWindow.calibrationState == ControlWPFWindow.CalibrationState.WaitingForCalibrating ||
-                controlWPFWindow.calibrationState == ControlWPFWindow.CalibrationState.Calibrating) return;
-
-
             foreach (var virtualAvatar in VirtualAvatars)
             {
                 if (virtualAvatar.Enable == false) continue;
                 if (virtualAvatar.BoneTransformCache == null) continue;
+
+                //キャリブレーション中は適用しない
+                if (virtualAvatar.MotionSource != MotionSource.VRIK &&
+                    (IKManager.Instance.CalibrationState == CalibrationState.WaitingForCalibrating ||
+                     IKManager.Instance.CalibrationState == CalibrationState.Calibrating)) return;
 
                 Transform headBone = virtualAvatar.BoneTransformCache[HumanBodyBones.Head].modelBone;
                 Transform hipBone = null;

@@ -38,9 +38,6 @@ namespace VMC
         private string skeletonLeftHandActionPath = "/actions/default/in/SkeletonLeftHand";
         private string skeletonRightHandActionPath = "/actions/default/in/SkeletonRightHand";
 
-        [SerializeField]
-        private HandController handController;
-
         //Indexで手を完全に開いたとき
         private Vector3[] indexHandReferences_Paper = new Vector3[] {
         //左手
@@ -409,7 +406,7 @@ namespace VMC
             eulers.Add(GetVRMAngleFromIndexAngle(index++, rightBoneRotations[SteamVR_Skeleton_JointIndexes.thumbMiddle].eulerAngles));
             eulers.Add(GetVRMAngleFromIndexAngle(index++, rightBoneRotations[SteamVR_Skeleton_JointIndexes.thumbProximal].eulerAngles));
 
-            handController.SetHandEulerAngles(leftEnable, rightEnable, eulers);
+            IKManager.Instance.HandController.SetHandEulerAngles(leftEnable, rightEnable, eulers);
         }
 
         private Vector3 GetVRMAngleFromIndexAngle(int index, Vector3 angle)
@@ -460,7 +457,7 @@ namespace VMC
                     vrmangles[19] = vrmeulersideangle;
                     retindex = 14 + onehandCount;
                 }
-                var handEulerAngles = handController.CalcHandEulerAngles(vrmangles);
+                var handEulerAngles = IKManager.Instance.HandController.CalcHandEulerAngles(vrmangles);
                 if (handEulerAngles == null) return Vector3.zero;
                 return handEulerAngles[retindex];
             }

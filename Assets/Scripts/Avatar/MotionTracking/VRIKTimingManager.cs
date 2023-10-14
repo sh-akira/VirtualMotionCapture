@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace VMC
 {
+    [RequireComponent(typeof(VRIK))]
     public class VRIKTimingManager : MonoBehaviour
     {
         private VRIK vrik;
