@@ -133,7 +133,7 @@ namespace VMC
             virtualAvatar.Recenter();
         }
 
-        void Start()
+        public void Initialize()
         {
             var server = GetComponent<uOSC.uOscServer>();
             server.onDataReceived.AddListener(OnDataReceived);

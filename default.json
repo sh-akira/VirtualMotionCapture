@@ -18,7 +18,7 @@
     "CameraFOV":60,
     "CameraMirrorEnable":false,
     "CameraSmooth":0,
-    "CameraType":0,
+    "CameraType":1,
     "CloseAnimationTime":0.06,
     "ClosingTime":0.1,
     "CustomBackgroundColor":{
@@ -62,20 +62,20 @@
     "FixKneeRotation":true,
     "FreeCameraTransform":{
         "localPosition":{
-            "x":-5.48934149E-05,
-            "y":1.19496381,
-            "z":1.50036359
+            "x":0.869873643,
+            "y":1.34042609,
+            "z":1.29499626
         },
         "localRotation":{
             "eulerAngles":{
-                "x":0,
-                "y":180,
+                "x":-0,
+                "y":197.3616,
                 "z":0
             },
-            "w":-4.371139E-08,
-            "x":-0,
-            "y":1,
-            "z":-0
+            "w":-0.1509297,
+            "x":0,
+            "y":0.9885445,
+            "z":0
         },
         "localScale":{
             "x":1,
@@ -83,20 +83,20 @@
             "z":1
         },
         "position":{
-            "x":-5.48934149E-05,
-            "y":1.19496381,
-            "z":1.50036359
+            "x":0.869873643,
+            "y":1.34042609,
+            "z":1.29499626
         },
         "rotation":{
             "eulerAngles":{
-                "x":0,
-                "y":180,
+                "x":-0,
+                "y":197.3616,
                 "z":0
             },
-            "w":-4.371139E-08,
-            "x":-0,
-            "y":1,
-            "z":-0
+            "w":-0.1509297,
+            "x":0,
+            "y":0.9885445,
+            "z":0
         }
     },
     "FrontCameraLookTargetSettings":{

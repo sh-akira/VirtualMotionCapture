@@ -1459,6 +1459,7 @@ namespace VMC
             receiver.MIDICCWrapper = midiCCWrapper;
             receiver.eddp = easyDeviceDiscoveryProtocolManager;
             receiver.CurrentModel = CurrentModel;
+            receiver.Initialize();
 
             externalMotionReceivers.Add(receiver);
             externalMotionSender.externalReceiver = externalMotionReceivers.FirstOrDefault();
