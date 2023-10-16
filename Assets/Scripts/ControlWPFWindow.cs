@@ -45,7 +45,8 @@ namespace VMC
         private ExternalSender externalMotionSender;
 
         public GameObject ExternalMotionReceiverObject;
-        public ExternalReceiverForVMC[] externalMotionReceivers;
+        public List<ExternalReceiverForVMC> externalMotionReceivers = new List<ExternalReceiverForVMC>();
+        public MidiCCWrapper midiCCWrapper;
 
         public MemoryMappedFileServer server;
         private string pipeName = Guid.NewGuid().ToString();
@@ -117,7 +118,6 @@ namespace VMC
             server.Start(pipeName);
 
             externalMotionSender = ExternalMotionSenderObject.GetComponent<ExternalSender>();
-            externalMotionReceivers = ExternalMotionReceiverObject.GetComponentsInChildren<ExternalReceiverForVMC>(true);
         }
 
         void Start()
@@ -549,33 +549,62 @@ namespace VMC
                         ResponderEnable = Settings.Current.ExternalMotionSenderResponderEnable
                     }, e.RequestId);
                 }
-                else if (e.CommandType == typeof(PipeCommands.EnableExternalMotionReceiver))
+                else if (e.CommandType == typeof(PipeCommands.SetVMCProtocolReceiverSetting))
                 {
-                    var d = (PipeCommands.EnableExternalMotionReceiver)e.Data;
-                    SetExternalMotionReceiverEnable(d.enable, d.index);
+                    var d = (PipeCommands.SetVMCProtocolReceiverSetting)e.Data;
+                    SetVMCProtocolReceiverSetting(d);
                 }
-                else if (e.CommandType == typeof(PipeCommands.GetEnableExternalMotionReceiver))
+                else if (e.CommandType == typeof(PipeCommands.GetVMCProtocolReceiverSetting))
                 {
-                    var d = (PipeCommands.GetEnableExternalMotionReceiver)e.Data;
-                    await server.SendCommandAsync(new PipeCommands.EnableExternalMotionReceiver
+                    var d = (PipeCommands.GetVMCProtocolReceiverSetting)e.Data;
+                    if (d.Index == -1)
                     {
-                        enable = Settings.Current.ExternalMotionReceiverEnableList[d.index],
-                        index = d.index
-                    }, e.RequestId);
+                        var newsetting = new VMCProtocolReceiverSettings();
+                        newsetting.Port = 39539;
+                        newsetting.Name = $"Receiver {Settings.Current.VMCProtocolReceiverSettingsList.Count + 1}";
+                        Settings.Current.VMCProtocolReceiverSettingsList.Add(newsetting);
+                        newsetting.Port = Settings.Current.VMCProtocolReceiverSettingsList.Max(d => d.Port) + 1;
+                        AddVMCProtocolReceiver(newsetting);
+                    }
+                    await server.SendCommandAsync(
+                        Settings.Current.VMCProtocolReceiverSettingsList[d.Index].Export(d.Index)
+                    , e.RequestId);
                 }
-                else if (e.CommandType == typeof(PipeCommands.ChangeExternalMotionReceiverPort))
+                else if (e.CommandType == typeof(PipeCommands.GetVMCProtocolReceiverList))
                 {
-                    var d = (PipeCommands.ChangeExternalMotionReceiverPort)e.Data;
-                    ChangeExternalMotionReceiverPort(d.ports, d.DelayMs, d.RequesterEnable);
+                    var d = (PipeCommands.GetVMCProtocolReceiverList)e.Data;
+                    await server.SendCommandAsync(new PipeCommands.SetVMCProtocolReceiverList
+                    {
+                        Items = Settings.Current.VMCProtocolReceiverSettingsList.Select(d => Tuple.Create(d.Enable, d.Name, d.Port)).ToList(),
+                    }
+                    , e.RequestId);
+                }
+                else if (e.CommandType == typeof(PipeCommands.RemoveVMCProtocolReceiver))
+                {
+                    var d = (PipeCommands.RemoveVMCProtocolReceiver)e.Data;
+                    RemoveVMCProtocolReceiver(d.Index);
+                }
+                else if (e.CommandType == typeof(PipeCommands.VMCProtocolReceiverRecenter))
+                {
+                    var d = (PipeCommands.VMCProtocolReceiverRecenter)e.Data;
+                    externalMotionReceivers[d.Index].Recenter();
+                }
+                else if (e.CommandType == typeof(PipeCommands.SetVMCProtocolReceiverEnable))
+                {
+                    var d = (PipeCommands.SetVMCProtocolReceiverEnable)e.Data;
+                    SetVMCProtocolReceiverEnable(d.Index, d.Enable);
+                }
+                else if (e.CommandType == typeof(PipeCommands.ChangeExternalMotionReceiverRequester))
+                {
+                    var d = (PipeCommands.ChangeExternalMotionReceiverRequester)e.Data;
+                    SetExternalMotionReceiverRequester(d.Enable);
 
                 }
-                else if (e.CommandType == typeof(PipeCommands.GetExternalMotionReceiverPort))
+                else if (e.CommandType == typeof(PipeCommands.GetExternalMotionReceiverRequester))
                 {
-                    await server.SendCommandAsync(new PipeCommands.ChangeExternalMotionReceiverPort
+                    await server.SendCommandAsync(new PipeCommands.ChangeExternalMotionReceiverRequester
                     {
-                        ports = Settings.Current.ExternalMotionReceiverPortList.ToArray(),
-                        DelayMs = Settings.Current.ExternalMotionReceiverDelayMsList.ToArray(),
-                        RequesterEnable = Settings.Current.ExternalMotionReceiverRequesterEnable
+                        Enable = Settings.Current.ExternalMotionReceiverRequesterEnable
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetMidiCCBlendShape))
@@ -648,9 +677,9 @@ namespace VMC
                 {
                     string statusStringBuf = "";
                     //有効な場合だけ送る
-                    if (externalMotionReceivers[0].isActiveAndEnabled)
+                    if (externalMotionReceivers.Any() && externalMotionReceivers[0].isActiveAndEnabled)
                     {
-                        statusStringBuf = externalMotionReceivers?[0]?.statusString;
+                        statusStringBuf = externalMotionReceivers[0]?.statusString;
                     }
                     await server.SendCommandAsync(new PipeCommands.SetStatusString
                     {
@@ -791,19 +820,6 @@ namespace VMC
                     Settings.Current.TurnOffAmbientLight = d.TurnOffAmbientLight;
 
                     SetAdvancedGraphicsOption();
-                }
-                else if (e.CommandType == typeof(PipeCommands.ExternalReceiveBones))
-                {
-                    var d = (PipeCommands.ExternalReceiveBones)e.Data;
-                    SetExternalBonesReceiverEnable(d.ReceiveBonesEnable);
-                }
-
-                else if (e.CommandType == typeof(PipeCommands.GetExternalReceiveBones))
-                {
-                    await server.SendCommandAsync(new PipeCommands.ExternalReceiveBones
-                    {
-                        ReceiveBonesEnable = Settings.Current.ExternalBonesReceiverEnable
-                    }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetModIsLoaded))
                 {
@@ -1401,21 +1417,6 @@ namespace VMC
             ExternalMotionSenderObject.SetActive(enable);
         }
 
-        private void SetExternalMotionReceiverEnable(bool enable, int index)
-        {
-            Settings.Current.ExternalMotionReceiverEnableList[index] = enable;
-            externalMotionReceivers[index].SetObjectActive(enable);
-        }
-
-        private void SetExternalBonesReceiverEnable(bool enable)
-        {
-            Settings.Current.ExternalBonesReceiverEnable = enable;
-            foreach (var externalMotionReceiver in externalMotionReceivers)
-            {
-                externalMotionReceiver.receiveBonesFlag = enable;
-            }
-        }
-
         private void ChangeExternalMotionSenderAddress(string address, int port, int pstatus, int proot, int pbone, int pblendshape, int pcamera, int pdevices, string optionstring, bool responderEnable)
         {
             Settings.Current.ExternalMotionSenderAddress = address;
@@ -1449,16 +1450,59 @@ namespace VMC
             externalMotionSender.ChangeOSCAddress(address, port);
         }
 
-        private void ChangeExternalMotionReceiverPort(int[] ports, int[] delayMs, bool requesterEnable)
+        private void AddVMCProtocolReceiver(VMCProtocolReceiverSettings setting)
         {
-            Settings.Current.ExternalMotionReceiverPortList = ports.ToList();
-            Settings.Current.ExternalMotionReceiverDelayMsList = delayMs.ToList();
-            for (int index = 0; index < externalMotionReceivers.Length; index++)
-            {
-                externalMotionReceivers[index].ChangeOSCPort(ports[index]);
-                externalMotionReceivers[index].DelayMs = delayMs[index];
-            }
+            var obj = new GameObject("ExternalReceiver " + setting.Name);
+            obj.transform.parent = ExternalMotionReceiverObject.transform;
+            var receiver = obj.AddComponent<ExternalReceiverForVMC>();
+            receiver.externalSender = externalMotionSender;
+            receiver.MIDICCWrapper = midiCCWrapper;
+            receiver.eddp = easyDeviceDiscoveryProtocolManager;
+            receiver.CurrentModel = CurrentModel;
 
+            externalMotionReceivers.Add(receiver);
+            externalMotionSender.externalReceiver = externalMotionReceivers.FirstOrDefault();
+            receiver.SetSetting(setting);
+            receiver.SetObjectActive(setting.Enable);
+            receiver.ChangeOSCPort(setting.Port);
+        }
+
+        private void RemoveVMCProtocolReceiver(int index)
+        {
+            Destroy(externalMotionReceivers[index].gameObject);
+            Settings.Current.VMCProtocolReceiverSettingsList.RemoveAt(index);
+            if (index == 0)
+            {
+                externalMotionSender.externalReceiver = externalMotionReceivers.FirstOrDefault();
+            }
+        }
+
+        private void SetVMCProtocolReceiverSetting(PipeCommands.SetVMCProtocolReceiverSetting d)
+        {
+            int index = d.Index;
+            bool changePort = d.Port != Settings.Current.VMCProtocolReceiverSettingsList[index].Port;
+            var setting = Settings.Current.VMCProtocolReceiverSettingsList[index].Import(d);
+
+            externalMotionReceivers[index].SetSetting(setting);
+            externalMotionReceivers[index].SetObjectActive(setting.Enable);
+
+            if (changePort)
+            {
+                externalMotionReceivers[index].ChangeOSCPort(setting.Port);
+            }
+        }
+
+        private void SetVMCProtocolReceiverEnable(int index, bool enable)
+        {
+            var setting = Settings.Current.VMCProtocolReceiverSettingsList[index];
+            setting.Enable = enable;
+
+            externalMotionReceivers[index].SetSetting(setting);
+            externalMotionReceivers[index].SetObjectActive(setting.Enable);
+        }
+
+        private void SetExternalMotionReceiverRequester(bool requesterEnable)
+        {
             Settings.Current.ExternalMotionReceiverRequesterEnable = requesterEnable;
             easyDeviceDiscoveryProtocolManager.requesterEnable = requesterEnable;
             if (requesterEnable) easyDeviceDiscoveryProtocolManager.gameObject.SetActive(true);
@@ -1794,10 +1838,8 @@ namespace VMC
 
             KeyAction.KeyActionsUpgrade(Settings.Current.KeyActions);
 
-            if (string.IsNullOrWhiteSpace(Settings.Current.AAA_SavedVersion))
+            if (Settings.Current.IsSettingVersionBefore(0, 48))
             {
-                //before 0.47 _SaveVersion is null.
-
                 //v0.48 BlendShapeKey case sensitive.
                 foreach (var keyAction in Settings.Current.KeyActions)
                 {
@@ -1805,6 +1847,26 @@ namespace VMC
                     {
                         keyAction.FaceNames = keyAction.FaceNames.Select(d => faceController.GetCaseSensitiveKeyName(d)).ToList();
                     }
+                }
+            }
+
+            if (Settings.Current.IsSettingVersionBefore(0, 56))
+            {
+                //v0.56 Configure multiple VMCProtocol receivers
+
+                if (Settings.Current.ExternalMotionReceiverPortList == null) Settings.Current.ExternalMotionReceiverPortList = new List<int>() { Settings.Current.ExternalMotionReceiverPort, Settings.Current.ExternalMotionReceiverPort + 1 };
+                if (Settings.Current.ExternalMotionReceiverDelayMsList == null) Settings.Current.ExternalMotionReceiverDelayMsList = new List<int>() { 0, 0 };
+                if (Settings.Current.ExternalMotionReceiverEnableList == null) Settings.Current.ExternalMotionReceiverEnableList = new List<bool>() { Settings.Current.ExternalMotionReceiverEnable, false };
+
+                for (int i = 0; i < Settings.Current.ExternalMotionReceiverEnableList.Count; i++)
+                {
+                    Settings.Current.VMCProtocolReceiverSettingsList.Add(new VMCProtocolReceiverSettings
+                    {
+                        Enable = Settings.Current.ExternalMotionReceiverEnableList[i],
+                        Port = Settings.Current.ExternalMotionReceiverPortList[i],
+                        DelayMs = Settings.Current.ExternalMotionReceiverDelayMsList[i],
+                        Name = $"Receiver {i + 1}",
+                    }); ;
                 }
             }
 
@@ -1842,13 +1904,14 @@ namespace VMC
             SetExternalMotionSenderEnable(Settings.Current.ExternalMotionSenderEnable);
             ChangeExternalMotionSenderAddress(Settings.Current.ExternalMotionSenderAddress, Settings.Current.ExternalMotionSenderPort, Settings.Current.ExternalMotionSenderPeriodStatus, Settings.Current.ExternalMotionSenderPeriodRoot, Settings.Current.ExternalMotionSenderPeriodBone, Settings.Current.ExternalMotionSenderPeriodBlendShape, Settings.Current.ExternalMotionSenderPeriodCamera, Settings.Current.ExternalMotionSenderPeriodDevices, Settings.Current.ExternalMotionSenderOptionString, Settings.Current.ExternalMotionSenderResponderEnable);
 
-            if (Settings.Current.ExternalMotionReceiverPortList == null) Settings.Current.ExternalMotionReceiverPortList = new List<int>() { Settings.Current.ExternalMotionReceiverPort, Settings.Current.ExternalMotionReceiverPort + 1 };
-            if (Settings.Current.ExternalMotionReceiverDelayMsList == null) Settings.Current.ExternalMotionReceiverDelayMsList = new List<int>() { 0, 0 };
-            ChangeExternalMotionReceiverPort(Settings.Current.ExternalMotionReceiverPortList.ToArray(), Settings.Current.ExternalMotionReceiverDelayMsList.ToArray(), Settings.Current.ExternalMotionReceiverRequesterEnable);
-            if (Settings.Current.ExternalMotionReceiverEnableList == null) Settings.Current.ExternalMotionReceiverEnableList = new List<bool>() { Settings.Current.ExternalMotionReceiverEnable, false };
-            for (int index = 0; index < Settings.Current.ExternalMotionReceiverEnableList.Count; index++)
+            foreach(var receiver in externalMotionReceivers)
             {
-                SetExternalMotionReceiverEnable(Settings.Current.ExternalMotionReceiverEnableList[index], index);
+                DestroyImmediate(receiver.gameObject);
+            }
+
+            foreach(var receiverSetting in Settings.Current.VMCProtocolReceiverSettingsList)
+            {
+                AddVMCProtocolReceiver(receiverSetting);
             }
 
             SetMidiCCBlendShape(Settings.Current.MidiCCBlendShape);
@@ -1888,8 +1951,6 @@ namespace VMC
 
             SetLipShapeToBlendShapeStringMapAction?.Invoke(Settings.Current.LipShapesToBlendShapeMap);
             SetLipTracking_ViveEnable(Settings.Current.LipTracking_ViveEnable);
-
-            SetExternalBonesReceiverEnable(Settings.Current.ExternalBonesReceiverEnable);
 
             LoadAdvancedGraphicsOption();
 

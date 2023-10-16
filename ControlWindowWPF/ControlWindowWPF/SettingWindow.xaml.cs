@@ -37,6 +37,16 @@ namespace VirtualMotionCaptureControlPanel
         public ObservableCollection<TrackerConfigWindow.TrackerInfo> TrackersList { get; set; } = new ObservableCollection<TrackerConfigWindow.TrackerInfo>();
 
         private ObservableCollection<float> RotationItems = new ObservableCollection<float> { -180.0f, -135.0f, -90.0f, -45.0f, 0.0f, 45.0f, 90.0f, 135.0f, 180.0f };
+
+        public class VMCProtocolReceiverItem : ViewModelBase
+        {
+            public bool Enable { get => Getter<bool>(); set => Setter(value); }
+            public string Name { get => Getter<string>(); set => Setter(value); }
+            public int Port { get => Getter<int>(); set => Setter(value); }
+        }
+
+        private ObservableCollection<VMCProtocolReceiverItem> VMCProtocolReceiverItems = new ObservableCollection<VMCProtocolReceiverItem>();
+
         public SettingWindow()
         {
             var language = Globals.CurrentLanguage;
@@ -292,47 +302,29 @@ namespace VirtualMotionCaptureControlPanel
                     ExternalMotionSenderResponderEnableCheckBox.IsChecked = data.ResponderEnable;
                 });
             });
-            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEnableExternalMotionReceiver { index = 0 }, d =>
+
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetVMCProtocolReceiverList { }, d =>
             {
-                var data = (PipeCommands.EnableExternalMotionReceiver)d;
+                var data = (PipeCommands.SetVMCProtocolReceiverList)d;
                 Dispatcher.Invoke(() =>
                 {
                     isSetting = true;
-                    ExternalMotionReceiverEnableCheckBox.IsChecked = data.enable;
+                    foreach((bool enable, string name, int port) in data.Items)
+                    {
+                        VMCProtocolReceiverItems.Add(new VMCProtocolReceiverItem { Enable =  enable, Name = name, Port = port });
+                    }
+                    VMCProtocolReceiverDataGrid.ItemsSource = VMCProtocolReceiverItems;
                     isSetting = false;
                 });
             });
-            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEnableExternalMotionReceiver { index = 1 }, d =>
+
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetExternalMotionReceiverRequester { }, d =>
             {
-                var data = (PipeCommands.EnableExternalMotionReceiver)d;
+                var data = (PipeCommands.ChangeExternalMotionReceiverRequester)d;
                 Dispatcher.Invoke(() =>
                 {
                     isSetting = true;
-                    ExternalMotionReceiverEnableCheckBox2.IsChecked = data.enable;
-                    isSetting = false;
-                });
-            });
-            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetExternalMotionReceiverPort { }, d =>
-            {
-                var data = (PipeCommands.ChangeExternalMotionReceiverPort)d;
-                Dispatcher.Invoke(() =>
-                {
-                    isSetting = true;
-                    ExternalMotionReceiverPortTextBox.Text = data.ports[0].ToString();
-                    ExternalMotionReceiverPortTextBox2.Text = data.ports[1].ToString();
-                    DelayMsTextbox.Text = data.DelayMs[0].ToString();
-                    DelayMsTextbox2.Text = data.DelayMs[1].ToString();
-                    ExternalMotionReceiverRequesterEnableCheckBox.IsChecked = data.RequesterEnable;
-                    isSetting = false;
-                });
-            });
-            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetExternalReceiveBones { }, d =>
-            {
-                var data = (PipeCommands.ExternalReceiveBones)d;
-                Dispatcher.Invoke(() =>
-                {
-                    isSetting = true;
-                    ReceiveBonesEnableCheckBox.IsChecked = data.ReceiveBonesEnable;
+                    ExternalMotionReceiverRequesterEnableCheckBox.IsChecked = data.Enable;
                     isSetting = false;
                 });
             });
@@ -715,44 +707,12 @@ namespace VirtualMotionCaptureControlPanel
             }
         }
 
-        private async void ExternalMotionReceiverCheckBox_Changed(object sender, RoutedEventArgs e)
-        {
-            if (isSetting) return;
-            var CheckBoxes = new CheckBox[] { ExternalMotionReceiverEnableCheckBox, ExternalMotionReceiverEnableCheckBox2 };
-            await Globals.Client?.SendCommandAsync(new PipeCommands.EnableExternalMotionReceiver
-            {
-                enable = (sender as CheckBox).IsChecked.Value,
-                index = Array.IndexOf(CheckBoxes, sender)
-            });
-        }
 
         private async void OSCReceiverApplyButton_Click(object sender, RoutedEventArgs e)
         {
-            var port = TextBoxTryParse(ExternalMotionReceiverPortTextBox);
-            var port2 = TextBoxTryParse(ExternalMotionReceiverPortTextBox2);
-            var delayms = TextBoxTryParse(DelayMsTextbox);
-            var delayms2 = TextBoxTryParse(DelayMsTextbox2);
-
-            if (port.HasValue && port2.HasValue && delayms.HasValue && delayms2.HasValue)
+            await Globals.Client?.SendCommandAsync(new PipeCommands.ChangeExternalMotionReceiverRequester
             {
-                await Globals.Client?.SendCommandAsync(new PipeCommands.ChangeExternalMotionReceiverPort
-                {
-                    ports = new int[] { port.Value, port2.Value },
-                    DelayMs = new int[] { delayms.Value, delayms2.Value },
-                    RequesterEnable = ExternalMotionReceiverRequesterEnableCheckBox.IsChecked.Value
-                });
-            }
-            else
-            {
-                MessageBox.Show("Error: Port", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-        private async void ReceiveBonesEnableCheckBox_Changed(object sender, RoutedEventArgs e)
-        {
-            if (isSetting) return;
-            await Globals.Client?.SendCommandAsync(new PipeCommands.ExternalReceiveBones
-            {
-                ReceiveBonesEnable = ReceiveBonesEnableCheckBox.IsChecked.Value
+                Enable = ExternalMotionReceiverRequesterEnableCheckBox.IsChecked.Value
             });
         }
 
@@ -1104,6 +1064,57 @@ namespace VirtualMotionCaptureControlPanel
         {
             var win = new CalibrationSettingWindow();
             win.Show();
+        }
+
+        private async void VMCProtocolReceiverItem_Changed(object sender, RoutedEventArgs e)
+        {
+            if (isSetting) return;
+
+            var checkbox = sender as CheckBox;
+            var item = checkbox.Tag as VMCProtocolReceiverItem;
+
+            await Globals.Client?.SendCommandAsync(new PipeCommands.SetVMCProtocolReceiverEnable
+            {
+                Index = VMCProtocolReceiverItems.IndexOf(item),
+                Enable = checkbox.IsChecked.Value,
+            });
+        }
+
+        private void VMCProtocolReceiverAddButton_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new VMCProtocolReceiverSettingWindow(-1);
+            win.Owner = this;
+            win.ShowDialog();
+
+            VMCProtocolReceiverItems.Add(new VMCProtocolReceiverItem
+            {
+                Enable = win.EnableCheckBox.IsChecked.Value,
+                Name = win.ReceiverName,
+                Port = win.Port,
+            });
+        }
+
+        private void VMCProtocolReceiverEditButton_Click(object sender, RoutedEventArgs e)
+        {
+            var item = VMCProtocolReceiverDataGrid.SelectedItem as VMCProtocolReceiverItem;
+            if (item == null) return;
+
+            var win = new VMCProtocolReceiverSettingWindow(VMCProtocolReceiverItems.IndexOf(item));
+            win.Owner = this;
+            win.ShowDialog();
+        }
+
+        private async void VMCProtocolReceiverRemoveButton_Click(object sender, RoutedEventArgs e)
+        {
+            var item = VMCProtocolReceiverDataGrid.SelectedItem as VMCProtocolReceiverItem;
+            if (item == null) return;
+
+            await Globals.Client?.SendCommandAsync(new PipeCommands.RemoveVMCProtocolReceiver
+            {
+                Index = VMCProtocolReceiverItems.IndexOf(item),
+            });
+
+            VMCProtocolReceiverItems.Remove(item);
         }
     }
 }

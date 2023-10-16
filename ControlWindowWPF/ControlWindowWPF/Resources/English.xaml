@@ -250,7 +250,7 @@
     <system:String x:Key="SettingWindow_ExternalMotionSender_Free">VMCProtocol Motion sender / VMC Mod</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">Enable OSC motion sender</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">Interval(once every specified frame)</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionReceiver">VMCProtocol Motion receiver</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionReceiver">VMC Protocol receiver</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">Enable OSC motion receiver</system:String>
     <system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape</system:String>
     <system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">Knob to BlendShape setting</system:String>
@@ -486,6 +486,11 @@
     <system:String x:Key="MotionCapture_mocopiSettingWindow_mocopiOnly">mocopi only</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_WithVRDevice">with VR devices</system:String>
 
+    <!-- VMCProtocolReceiverSettingWindow -->
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_All">All</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_Eye">Eyes</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_RightFinger">Right Finger</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_LeftFinger">Left Finger</system:String>
     
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">Color Picker</system:String>

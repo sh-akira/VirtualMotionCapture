@@ -250,7 +250,7 @@
     <system:String x:Key="SettingWindow_ExternalMotionSender_Free">发送外部动作(VMCProtocol) / VMC Mod</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">启用OSC动作发送</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">传输间隔（每隔指定的帧一次）</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionReceiver">接收外部动作(VMCProtocol)</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionReceiver">VMC Protocol 接收</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">启用OSC动作接收</system:String>
     <system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape</system:String>
     <system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">分配MIDI CC旋钮</system:String>
@@ -485,6 +485,12 @@
     <system:String x:Key="MotionCapture_mocopiSettingWindow_ResetCenter">重设当前位置为中心</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_mocopiOnly">仅使用 mocopi</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_WithVRDevice">与 VR 设备使用</system:String>
+
+    <!-- VMCProtocolReceiverSettingWindow -->
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_All">全身</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_Eye">眼</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_RightFinger">右手指</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_LeftFinger">左手指</system:String>
 
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">取色器</system:String>

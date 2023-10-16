@@ -304,8 +304,10 @@ namespace VMC
                 uOSC.Bundle infoBundle = new uOSC.Bundle(uOSC.Timestamp.Immediate);
                 //受信有効情報(Receive enable)
                 //有効可否と、ポート番号の送信
-                infoBundle.Add(new uOSC.Message("/VMC/Ext/Rcv", (int)(externalReceiver.isActiveAndEnabled ? 1 : 0), externalReceiver.receivePort));
-
+                if (externalReceiver != null)
+                {
+                    infoBundle.Add(new uOSC.Message("/VMC/Ext/Rcv", (int)(externalReceiver.isActiveAndEnabled ? 1 : 0), externalReceiver.receivePort));
+                }
 
                 //【イベント送信】DirectionalLight位置・色(DirectionalLight transform & color)
                 if ((window.MainDirectionalLightTransform != null) && (window.MainDirectionalLight.color != null))

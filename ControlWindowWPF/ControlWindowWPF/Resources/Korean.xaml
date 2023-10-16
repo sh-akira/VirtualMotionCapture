@@ -251,7 +251,7 @@
     <system:String x:Key="SettingWindow_ExternalMotionSender_Free">외부로 모션을 송신(VMCProtocol) / VMC Mod</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">OSC로 모션송신을 활성화합니다</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">전송 간격 (지정 프레임에 1 회)</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionReceiver">외부에서 모션 수신(VMCProtocol)</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionReceiver">VMC Protocol 수신</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">OSC에서 모션의 수신을 활성화합니다</system:String>
     <system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape</system:String>
     <system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">Knob to BlendShape setting</system:String>
@@ -477,6 +477,8 @@
     <system:String x:Key="MotionCapture_mocopiSettingWindow_Spine">Spine</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_RightHand">Right Hand</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftHand">Left Hand</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_RightFinger">Right Finger</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_LeftFinger">Left Finger</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_RightLeg">Right Leg</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftLeg">Left Leg</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_RightFoot">Right Foot</system:String>
@@ -486,6 +488,12 @@
     <system:String x:Key="MotionCapture_mocopiSettingWindow_ResetCenter">Re-center current position</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_mocopiOnly">mocopi only</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_WithVRDevice">with VR devices</system:String>
+
+    <!-- VMCProtocolReceiverSettingWindow -->
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_All">All</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_Eye">Eyes</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_RightFinger">Right Finger</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_LeftFinger">Left Finger</system:String>
 
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">색상선택</system:String>

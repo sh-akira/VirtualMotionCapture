@@ -1144,75 +1144,6 @@ MonoBehaviour:
   EnableEye: 1
   EnableEyeDataCallback: 0
   EnableEyeVersion: 0
---- !u!1 &389263777
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 389263780}
-  - component: {fileID: 389263779}
-  - component: {fileID: 389263778}
-  m_Layer: 0
-  m_Name: ExternalReceiver
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &389263778
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 389263777}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed41645692348410d84991648165334c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  port: 39540
---- !u!114 &389263779
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 389263777}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5466e992f0e09e5489c93a853bf3b628, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  externalSender: {fileID: 1155637110}
-  MIDICCWrapper: {fileID: 1604201751}
-  receivePort: 39540
-  statusString: 
-  CorrectRotationWhenCalibration: 1
-  eddp: {fileID: 1549762413}
-  receiveBonesFlag: 0
-  DelayMs: 0
-  packets: 0
-  BonePositionSynchronize: 1
-  EnableBonePosition: 0
---- !u!4 &389263780
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 389263777}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1210221202}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &410353191
 GameObject:
   m_ObjectHideFlags: 0
@@ -1949,7 +1880,7 @@ MonoBehaviour:
   uClients: []
   steamVR2Input: {fileID: 130023280}
   midiCCWrapper: {fileID: 1604201751}
-  externalReceiver: {fileID: 389263779}
+  externalReceiver: {fileID: 0}
   optionString: 
   periodStatus: 1
   periodRoot: 1
@@ -2044,8 +1975,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1155637111}
-  - {fileID: 389263780}
-  - {fileID: 1571681380}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!850595691 &1214600536
@@ -2616,6 +2545,7 @@ MonoBehaviour:
   ExternalMotionSenderObject: {fileID: 1155637108}
   ExternalMotionReceiverObject: {fileID: 1210221201}
   externalMotionReceivers: []
+  midiCCWrapper: {fileID: 1604201751}
   CriticalErrorCount: 0
   IsCriticalErrorCountOver: 0
   vmtClient: {fileID: 1995326176}
@@ -3060,6 +2990,7 @@ MonoBehaviour:
   wristRotationFix: {fileID: 1793473874}
   HandTrackerRoot: {fileID: 1128534204}
   PelvisTrackerRoot: {fileID: 836257372}
+  vrik: {fileID: 0}
   generatedObject: {fileID: 1670762494}
 --- !u!1 &1549762411
 GameObject:
@@ -3107,7 +3038,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   window: {fileID: 1407685704}
   externalSender: {fileID: 1155637110}
-  externalReceiver: {fileID: 389263779}
+  externalReceiver: {fileID: 0}
   myname: Virtual Motion Capture
   found: 0
   requesterEnable: 1
@@ -3229,75 +3160,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1565122224}
   m_CullTransparentMesh: 0
---- !u!1 &1571681379
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1571681380}
-  - component: {fileID: 1571681382}
-  - component: {fileID: 1571681381}
-  m_Layer: 0
-  m_Name: ExternalReceiver2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1571681380
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1571681379}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1210221202}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1571681381
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1571681379}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed41645692348410d84991648165334c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  port: 39540
---- !u!114 &1571681382
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1571681379}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5466e992f0e09e5489c93a853bf3b628, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  externalSender: {fileID: 1155637110}
-  MIDICCWrapper: {fileID: 1604201751}
-  receivePort: 39541
-  statusString: 
-  CorrectRotationWhenCalibration: 1
-  eddp: {fileID: 1549762413}
-  receiveBonesFlag: 0
-  DelayMs: 0
-  packets: 0
-  BonePositionSynchronize: 1
-  EnableBonePosition: 0
 --- !u!1 &1596440252
 GameObject:
   m_ObjectHideFlags: 0

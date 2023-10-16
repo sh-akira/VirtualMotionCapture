@@ -250,7 +250,7 @@
     <system:String x:Key="SettingWindow_ExternalMotionSender_Free">モーション送信(VMCProtocol) / VMC Mod</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">OSCでモーション送信を有効にする</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">送信間隔(指定フレームに1回)</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionReceiver">モーション受信(VMCProtocol)</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionReceiver">VMC Protocol 受信</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">OSCでモーション受信を有効にする</system:String>
     <system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape割り当て</system:String>
     <system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">MIDI CCつまみ割り当て設定を開く</system:String>
@@ -485,6 +485,12 @@
     <system:String x:Key="MotionCapture_mocopiSettingWindow_ResetCenter">現在位置を中心にする</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_mocopiOnly">mocopiのみ</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_WithVRDevice">VR機器と併用</system:String>
+
+    <!-- VMCProtocolReceiverSettingWindow -->
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_All">全て</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_Eye">目</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_RightFinger">右指</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_LeftFinger">左指</system:String>
 
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">色選択</system:String>

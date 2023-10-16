@@ -434,27 +434,79 @@ namespace UnityMemoryMappedFile
             public bool ResponderEnable { get; set; } 
         }
 
-        public class GetEnableExternalMotionReceiver
+        public class GetVMCProtocolReceiverSetting
         {
-            public int index { get; set; }
+            public int Index { get; set; }
         }
-        public class EnableExternalMotionReceiver
+        public class SetVMCProtocolReceiverSetting
         {
-            public bool enable { get; set; }
-            public int index { get; set; }
+            public int Index { get; set; }
+
+            public bool Enable { get; set; }
+            public int Port { get; set; }
+            public int DelayMs { get; set; }
+
+            public string Name { get; set; }
+
+            public bool ApplyRootRotation { get; set; }
+            public bool ApplyRootPosition { get; set; }
+            public bool ApplySpine { get; set; }
+            public bool ApplyChest { get; set; }
+            public bool ApplyHead { get; set; }
+            public bool ApplyLeftArm { get; set; }
+            public bool ApplyRightArm { get; set; }
+            public bool ApplyLeftHand { get; set; }
+            public bool ApplyRightHand { get; set; }
+            public bool ApplyLeftLeg { get; set; }
+            public bool ApplyRightLeg { get; set; }
+            public bool ApplyLeftFoot { get; set; }
+            public bool ApplyRightFoot { get; set; }
+            public bool ApplyEye { get; set; }
+            public bool ApplyLeftFinger { get; set; }
+            public bool ApplyRightFinger { get; set; }
+            public bool FixHandBone { get; set; }
+            public bool UseBonePosition { get; set; }
+
+            public bool ApplyBlendShape { get; set; }
+            public bool ApplyLookAt { get; set; }
+            public bool ApplyTracker { get; set; }
+            public bool ApplyCamera { get; set; }
+            public bool ApplyLight { get; set; }
+            public bool ApplyMidi { get; set; }
+            public bool ApplyStatus { get; set; }
+            public bool ApplyControl { get; set; }
+            public bool ApplySetting { get; set; }
         }
-        public class GetExternalMotionReceiverPort { }
-        public class ChangeExternalMotionReceiverPort
+
+
+        public class GetVMCProtocolReceiverList { }
+        public class SetVMCProtocolReceiverList
         {
-            public int[] ports { get; set; }
-            public int[] DelayMs { get; set; }
-            public bool RequesterEnable { get; set; }
+            public List<Tuple<bool, string, int>> Items { get; set; }
         }
-        public class GetExternalReceiveBones { }
-        public class ExternalReceiveBones
+
+        public class SetVMCProtocolReceiverEnable
         {
-            public bool ReceiveBonesEnable { get; set; }
+            public int Index { get; set; }
+            public bool Enable { get; set; }
         }
+
+        public class RemoveVMCProtocolReceiver
+        {
+            public int Index { get; set; }
+        }
+
+        public class VMCProtocolReceiverRecenter
+        {
+            public int Index { get; set; }
+        }
+
+        public class GetExternalMotionReceiverRequester { }
+        public class ChangeExternalMotionReceiverRequester
+        {
+            public bool Enable { get; set; }
+        }
+
         public class GetMidiCCBlendShape { }
         public class SetMidiCCBlendShape
         {

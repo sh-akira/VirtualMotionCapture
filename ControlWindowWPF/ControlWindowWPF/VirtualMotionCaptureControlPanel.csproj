@@ -150,6 +150,9 @@
     <Compile Include="ModSetting.xaml.cs">
       <DependentUpon>ModSetting.xaml</DependentUpon>
     </Compile>
+    <Compile Include="VMCProtocolReceiverSettingWindow.xaml.cs">
+      <DependentUpon>VMCProtocolReceiverSettingWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MotionCapture_mocopiSettingWindow.xaml.cs">
       <DependentUpon>MotionCapture_mocopiSettingWindow.xaml</DependentUpon>
     </Compile>
@@ -250,6 +253,10 @@
     <Page Include="ModSetting.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VMCProtocolReceiverSettingWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="MotionCapture_mocopiSettingWindow.xaml">
       <SubType>Designer</SubType>

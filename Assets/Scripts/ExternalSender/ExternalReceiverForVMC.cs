@@ -37,12 +37,11 @@ namespace VMC
         private Quaternion calibrateRotationOffset = Quaternion.identity;
 
         public EasyDeviceDiscoveryProtocolManager eddp;
-        public bool receiveBonesFlag;
 
         static public Action<string> StatusStringUpdated = null;
 
         ControlWPFWindow window = null;
-        GameObject CurrentModel = null;
+        public GameObject CurrentModel = null;
         Camera currentCamera = null;
         FaceController faceController = null;
         VRMLookAtHead vrmLookAtHead = null;
@@ -57,7 +56,6 @@ namespace VMC
         Vector3 pos;
         Quaternion rot;
 
-        public int DelayMs = 0;
         private Queue<(float timestamp, uOSC.Message message)> MessageBuffer = new Queue<(float timestamp, uOSC.Message message)>();
 
         public int packets = 0;
@@ -75,15 +73,65 @@ namespace VMC
         Dictionary<HumanBodyBones, Quaternion> HumanBodyBonesRotationTable = new Dictionary<HumanBodyBones, Quaternion>();
         private VirtualAvatar virtualAvatar;
 
-        public bool BonePositionSynchronize = true; //ボーン位置適用(回転は強制)
-
         private Dictionary<string, float> blendShapeBuffer = new Dictionary<string, float>();
 
         public bool DisableBlendShapeReception { get; set; }
 
-        public bool EnableBonePosition;
         private bool enableLocalHandFix = true;
         private float lastBoneReceivedTime = 0;
+
+        private VMCProtocolReceiverSettings receiverSetting;
+
+        private bool ApplyBlendShape;
+        private bool ApplyLookAt;
+        private bool ApplyTracker;
+        private bool ApplyCamera;
+        private bool ApplyLight;
+        private bool ApplyMidi;
+        private bool ApplyStatus;
+        private bool ApplyControl;
+        private bool ApplySetting;
+
+        public void SetSetting(VMCProtocolReceiverSettings setting)
+        {
+            receiverSetting = setting;
+
+            if (virtualAvatar != null)
+            {
+                virtualAvatar.Enable = setting.Enable;
+                virtualAvatar.ApplyRootRotation = setting.ApplyRootRotation;
+                virtualAvatar.ApplyRootPosition = setting.ApplyRootPosition;
+                virtualAvatar.ApplySpine = setting.ApplySpine;
+                virtualAvatar.ApplyChest = setting.ApplyChest;
+                virtualAvatar.ApplyHead = setting.ApplyHead;
+                virtualAvatar.ApplyLeftArm = setting.ApplyLeftArm;
+                virtualAvatar.ApplyRightArm = setting.ApplyRightArm;
+                virtualAvatar.ApplyLeftHand = setting.ApplyLeftHand;
+                virtualAvatar.ApplyRightHand = setting.ApplyRightHand;
+                virtualAvatar.ApplyLeftLeg = setting.ApplyLeftLeg;
+                virtualAvatar.ApplyRightLeg = setting.ApplyRightLeg;
+                virtualAvatar.ApplyLeftFoot = setting.ApplyLeftFoot;
+                virtualAvatar.ApplyRightFoot = setting.ApplyRightFoot;
+                virtualAvatar.ApplyEye = setting.ApplyEye;
+                virtualAvatar.ApplyLeftFinger = setting.ApplyLeftFinger;
+                virtualAvatar.ApplyRightFinger = setting.ApplyRightFinger;
+            }
+
+            ApplyBlendShape = setting.ApplyBlendShape;
+            ApplyLookAt = setting.ApplyLookAt;
+            ApplyTracker = setting.ApplyTracker;
+            ApplyCamera = setting.ApplyCamera;
+            ApplyLight = setting.ApplyLight;
+            ApplyMidi = setting.ApplyMidi;
+            ApplyStatus = setting.ApplyStatus;
+            ApplyControl = setting.ApplyControl;
+            ApplySetting = setting.ApplySetting;
+        }
+
+        public void Recenter()
+        {
+            virtualAvatar.Recenter();
+        }
 
         void Start()
         {
@@ -94,17 +142,8 @@ namespace VMC
             faceController = GameObject.Find("AnimationController").GetComponent<FaceController>();
             VMCEvents.OnModelLoaded += (GameObject CurrentModel) =>
             {
-                if (CurrentModel != null)
-                {
-                    this.CurrentModel = CurrentModel;
-                    vrmLookAtHead = CurrentModel.GetComponent<VRMLookAtHead>();
-                    animator = CurrentModel.GetComponent<Animator>();
-                    headTransform = null;
-                    if (animator != null)
-                    {
-                        headTransform = animator.GetBoneTransform(HumanBodyBones.Head);
-                    }
-                }
+                this.CurrentModel = CurrentModel;
+                OnModelChanged();
             };
             VMCEvents.OnCameraChanged += (Camera currentCamera) =>
             {
@@ -113,6 +152,7 @@ namespace VMC
 
             beforeFaceApply = () =>
             {
+                if (vrmLookAtHead == null || lookTargetOSC == null) return;
                 vrmLookAtHead.Target = lookTargetOSC.transform;
                 vrmLookAtHead.LookWorldPosition();
                 vrmLookAtHead.Target = null;
@@ -123,9 +163,29 @@ namespace VMC
             virtualAvatar = new VirtualAvatar(modelRoot, MotionSource.VMCProtocol);
             virtualAvatar.Enable = false;
             MotionManager.Instance.AddVirtualAvatar(virtualAvatar);
+            if (receiverSetting != null)
+            {
+                SetSetting(receiverSetting);
+            }
+
+            OnModelChanged();
 
             this.gameObject.SetActive(false);
             server.enabled = true;
+        }
+
+        private void OnModelChanged()
+        {
+            if (CurrentModel != null)
+            {
+                vrmLookAtHead = CurrentModel.GetComponent<VRMLookAtHead>();
+                animator = CurrentModel.GetComponent<Animator>();
+                headTransform = null;
+                if (animator != null)
+                {
+                    headTransform = animator.GetBoneTransform(HumanBodyBones.Head);
+                }
+            }
         }
 
         private object LockObject = new object();
@@ -133,7 +193,7 @@ namespace VMC
         void OnDataReceived(uOSC.Message message)
         {
             //有効なとき以外処理しない
-            if (this.isActiveAndEnabled)
+            if (this.isActiveAndEnabled && receiverSetting != null)
             {
                 //生存チェックのためのパケットカウンタ
                 packets++;
@@ -142,7 +202,7 @@ namespace VMC
                     packets = 0;
                 }
 
-                if (DelayMs == 0)
+                if (receiverSetting.DelayMs == 0)
                 {
                     ProcessMessage(message);
                 }
@@ -159,7 +219,7 @@ namespace VMC
             {
 
                 //仮想Hmd V2.3
-                if (message.address == "/VMC/Ext/Hmd/Pos"
+                if (message.address == "/VMC/Ext/Hmd/Pos" && ApplyTracker
                     && (message.values[0] is string)
                     && (message.values[1] is float)
                     && (message.values[2] is float)
@@ -187,7 +247,7 @@ namespace VMC
                     }
                 }
                 //仮想コントローラー V2.3
-                else if (message.address == "/VMC/Ext/Con/Pos"
+                else if (message.address == "/VMC/Ext/Con/Pos" && ApplyTracker
                     && (message.values[0] is string)
                     && (message.values[1] is float)
                     && (message.values[2] is float)
@@ -215,7 +275,7 @@ namespace VMC
                     }
                 }
                 //仮想トラッカー V2.3
-                else if (message.address == "/VMC/Ext/Tra/Pos"
+                else if (message.address == "/VMC/Ext/Tra/Pos" && ApplyTracker
                     && (message.values[0] is string)
                     && (message.values[1] is float)
                     && (message.values[2] is float)
@@ -243,7 +303,7 @@ namespace VMC
                     }
                 }
                 //フレーム設定 V2.3
-                else if (message.address == "/VMC/Ext/Set/Period"
+                else if (message.address == "/VMC/Ext/Set/Period" && ApplySetting
                     && (message.values[0] is int)
                     && (message.values[1] is int)
                     && (message.values[2] is int)
@@ -260,7 +320,7 @@ namespace VMC
                     externalSender.periodDevices = (int)message.values[5];
                 }
                 //Virtual MIDI CC V2.3
-                else if (message.address == "/VMC/Ext/Midi/CC/Val"
+                else if (message.address == "/VMC/Ext/Midi/CC/Val" && ApplyMidi
                     && (message.values[0] is int)
                     && (message.values[1] is float)
                 )
@@ -268,7 +328,7 @@ namespace VMC
                     MIDICCWrapper.KnobUpdated(0, (int)message.values[0], (float)message.values[1]);
                 }
                 //Camera Control V2.3
-                else if (message.address == "/VMC/Ext/Cam"
+                else if (message.address == "/VMC/Ext/Cam" && ApplyCamera
                     && (message.values[0] is string)
                     && (message.values[1] is float)
                     && (message.values[2] is float)
@@ -303,7 +363,7 @@ namespace VMC
                     CameraManager.Current.FreeCamera.transform.localRotation = rot;
                     CameraManager.Current.ControlCamera.fieldOfView = fov;
                 } //ブレンドシェープ同期
-                else if (message.address == "/VMC/Ext/Blend/Val"
+                else if (message.address == "/VMC/Ext/Blend/Val" && ApplyBlendShape
                     && (message.values[0] is string)
                     && (message.values[1] is float)
                     )
@@ -311,7 +371,7 @@ namespace VMC
                     blendShapeBuffer[(string)message.values[0]] = (float)message.values[1];
                 }
                 //ブレンドシェープ適用
-                else if (message.address == "/VMC/Ext/Blend/Apply")
+                else if (message.address == "/VMC/Ext/Blend/Apply" && ApplyBlendShape)
                 {
                     if (DisableBlendShapeReception == true)
                     {
@@ -322,7 +382,7 @@ namespace VMC
                     blendShapeBuffer.Clear();
 
                 }//外部アイトラ V2.3
-                else if (message.address == "/VMC/Ext/Set/Eye"
+                else if (message.address == "/VMC/Ext/Set/Eye" && ApplyLookAt
                     && (message.values[0] is int)
                     && (message.values[1] is float)
                     && (message.values[2] is float)
@@ -367,7 +427,7 @@ namespace VMC
                     }
                 }
                 //情報要求 V2.4
-                else if (message.address == "/VMC/Ext/Set/Req")
+                else if (message.address == "/VMC/Ext/Set/Req" && ApplyControl)
                 {
                     if (externalSender.isActiveAndEnabled)
                     {
@@ -375,12 +435,12 @@ namespace VMC
                     }
                 }
                 //情報表示 V2.4
-                else if (message.address == "/VMC/Ext/Set/Res" && (message.values[0] is string))
+                else if (message.address == "/VMC/Ext/Set/Res" && (message.values[0] is string) && ApplyStatus)
                 {
                     statusString = (string)message.values[0];
                 }
                 //キャリブレーション準備 V2.5
-                else if (message.address == "/VMC/Ext/Set/Calib/Ready")
+                else if (message.address == "/VMC/Ext/Set/Calib/Ready" && ApplyControl)
                 {
                     if (File.Exists(Settings.Current.VRMPath))
                     {
@@ -388,7 +448,7 @@ namespace VMC
                     }
                 }
                 //キャリブレーション実行 V2.5
-                else if (message.address == "/VMC/Ext/Set/Calib/Exec" && (message.values[0] is int))
+                else if (message.address == "/VMC/Ext/Set/Calib/Exec" && (message.values[0] is int) && ApplyControl)
                 {
                     PipeCommands.CalibrateType calibrateType = PipeCommands.CalibrateType.Ipose;
 
@@ -412,7 +472,7 @@ namespace VMC
                     Invoke("EndCalibrate", 2f);
                 }
                 //設定読み込み V2.5
-                else if (message.address == "/VMC/Ext/Set/Config" && (message.values[0] is string))
+                else if (message.address == "/VMC/Ext/Set/Config" && (message.values[0] is string && ApplySetting))
                 {
                     string path = (string)message.values[0];
                     if (File.Exists(path))
@@ -422,7 +482,7 @@ namespace VMC
                     }
                 }
                 //スルー情報 V2.6
-                else if (message.address != null && message.address.StartsWith("/VMC/Thru/"))
+                else if (message.address != null && message.address.StartsWith("/VMC/Thru/") && ApplyControl)
                 {
                     //転送する
                     if (externalSender.isActiveAndEnabled)
@@ -431,7 +491,7 @@ namespace VMC
                     }
                 }
                 //Directional Light V2.9
-                else if (message.address == "/VMC/Ext/Light"
+                else if (message.address == "/VMC/Ext/Light" && ApplyLight
                     && (message.values[0] is string)
                     && (message.values[1] is float)
                     && (message.values[2] is float)
@@ -510,31 +570,13 @@ namespace VMC
                         // 手以外を受信したとき
                         if (!(bone == HumanBodyBones.LeftHand ||
                               bone == HumanBodyBones.RightHand ||
-                              bone >= HumanBodyBones.LeftThumbProximal ||
-                              bone <= HumanBodyBones.RightIndexDistal))
+                              (bone >= HumanBodyBones.LeftThumbProximal &&
+                               bone <= HumanBodyBones.RightLittleDistal)))
                         {
                             enableLocalHandFix = false;
                             lastBoneReceivedTime = Time.realtimeSinceStartup;
                         }
                     }
-
-                    virtualAvatar.Enable = true;
-                    virtualAvatar.ApplyRootRotation = true;
-                    virtualAvatar.ApplyRootPosition = true;
-                    virtualAvatar.ApplySpine = true;
-                    virtualAvatar.ApplyChest = true;
-                    virtualAvatar.ApplyHead = true;
-                    virtualAvatar.ApplyLeftArm = true;
-                    virtualAvatar.ApplyRightArm = true;
-                    virtualAvatar.ApplyLeftHand = true;
-                    virtualAvatar.ApplyRightHand = true;
-                    virtualAvatar.ApplyLeftLeg = true;
-                    virtualAvatar.ApplyRightLeg = true;
-                    virtualAvatar.ApplyLeftFoot = true;
-                    virtualAvatar.ApplyRightFoot = true;
-                    virtualAvatar.ApplyEye = true;
-                    virtualAvatar.ApplyLeftFinger = true;
-                    virtualAvatar.ApplyRightFinger = true;
 
                     //受信と更新のタイミングは切り離した
                 }
@@ -577,7 +619,9 @@ namespace VMC
 
         private void Update()
         {
-            while (MessageBuffer.Count > 0 && MessageBuffer.Peek().timestamp + (float)DelayMs / 1000f < Time.realtimeSinceStartup)
+            if (receiverSetting == null) return;
+
+            while (MessageBuffer.Count > 0 && MessageBuffer.Peek().timestamp + (float)receiverSetting.DelayMs / 1000f < Time.realtimeSinceStartup)
             {
                 ProcessMessage(MessageBuffer.Dequeue().message);
             }
@@ -630,13 +674,10 @@ namespace VMC
             }
             doCalibration = false;
 
-            if (receiveBonesFlag)
+            BoneSynchronizeByTable();
+            if (lastBoneReceivedTime + 5f < Time.realtimeSinceStartup)
             {
-                BoneSynchronizeByTable();
-                if (lastBoneReceivedTime + 5f < Time.realtimeSinceStartup)
-                {
-                    enableLocalHandFix = true;
-                }
+                enableLocalHandFix = true;
             }
         }
 
@@ -678,7 +719,7 @@ namespace VMC
         public void ChangeOSCPort(int port)
         {
             receivePort = port;
-            eddp.found = false;
+            if (eddp != null) eddp.found = false;
 
             var uServer = GetComponent<uOSC.uOscServer>();
             uServer.enabled = false;
@@ -717,7 +758,7 @@ namespace VMC
                 if (targetTransform != null)
                 {
                     //手首ボーンから先のみ受信した際は
-                    if (enableLocalHandFix == true && (bone == HumanBodyBones.LeftHand || bone == HumanBodyBones.RightHand))
+                    if (receiverSetting.FixHandBone && enableLocalHandFix == true && (bone == HumanBodyBones.LeftHand || bone == HumanBodyBones.RightHand))
                     {
                         //ローカル座標系の回転打ち消し
                         Quaternion allLocalRotation = Quaternion.identity;
@@ -745,7 +786,7 @@ namespace VMC
         //1本のボーンの同期
         private void BoneSynchronizeSingle(Transform t, ref HumanBodyBones bone, ref Vector3 pos, ref Quaternion rot)
         {
-            if (EnableBonePosition) t.localPosition = pos;
+            if (receiverSetting.UseBonePosition) t.localPosition = pos;
             t.localRotation = rot;
         }
         //ボーンENUM情報をキャッシュして高速化
