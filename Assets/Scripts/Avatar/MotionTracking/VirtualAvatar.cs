@@ -123,6 +123,7 @@ namespace VMC
         {
             if (avatar != null)
             {
+                GameObject.DestroyImmediate(animator);
                 GameObject.DestroyImmediate(RootTransform.gameObject);
                 // Destroy SkeletonRoot
                 foreach (Transform child in parent)
@@ -138,6 +139,8 @@ namespace VMC
             RootTransform = cloneRoot;
             animator = parent.gameObject.AddComponent<Animator>();
             animator.avatar = avatar;
+
+            InitializeBoneTransformCache(true);
         }
 
         private Dictionary<HumanBodyBones, (Transform cloneBone, Transform modelBone)> InitializeBoneTransformCache(bool force = false)

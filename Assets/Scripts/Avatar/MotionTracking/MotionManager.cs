@@ -89,18 +89,16 @@ namespace VMC
         {
             var animator = model.GetComponent<Animator>();
             if (animator == null) return;
-            var rootPose = poses[VirtualAvatar.HumanBodyBonesRoot];
-            model.transform.localPosition = rootPose.position;
-            model.transform.localRotation = rootPose.rotation;
 
             foreach(var kv in poses)
             {
                 var bone = kv.Key;
                 var pose = kv.Value;
-                var boneTransform = animator.GetBoneTransform(bone);
+
+                var boneTransform = bone == VirtualAvatar.HumanBodyBonesRoot ? model.transform : animator.GetBoneTransform(bone);
                 if (boneTransform == null) continue;
-                boneTransform.transform.localPosition = pose.position;
-                boneTransform.transform.localRotation = pose.rotation;
+                boneTransform.localPosition = pose.position;
+                boneTransform.localRotation = pose.rotation;
             }
         }
 

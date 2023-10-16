@@ -66,6 +66,7 @@ namespace VMC
             MotionManager.Instance.AddVirtualAvatar(virtualAvatar);
 
             VMCEvents.OnCurrentModelChanged += OnCurrentModelChanged;
+            VMCEvents.OnModelUnloading += OnModelUnloading;
             controlWPFWindow.server.ReceivedEvent += Server_Received;
 
 
@@ -92,6 +93,19 @@ namespace VMC
             {
                 CalibrationState = CalibrationState.Uncalibrated; //キャリブレーション状態を"未キャリブレーション"に設定
                 virtualAvatar.Enable = false;
+            }
+        }
+        private void OnModelUnloading(GameObject model)
+        {
+
+            if (virtualAvatar != null)
+            {
+                var currentVRIKTimingManager = virtualAvatar.GetComponent<VRIKTimingManager>();
+                if (currentVRIKTimingManager != null) Destroy(currentVRIKTimingManager);
+                var rootController = virtualAvatar.GetComponent<VRIKRootController>();
+                if (rootController != null) Destroy(rootController);
+                var currentvrik = virtualAvatar.GetComponent<VRIK>();
+                if (currentvrik != null) Destroy(currentvrik);
             }
         }
 
