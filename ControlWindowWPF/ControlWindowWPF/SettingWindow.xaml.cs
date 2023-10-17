@@ -1121,6 +1121,9 @@ namespace VirtualMotionCaptureControlPanel
             var win = new VMCProtocolReceiverSettingWindow(VMCProtocolReceiverItems.IndexOf(item));
             win.Owner = this;
             win.ShowDialog();
+            item.Enable = win.EnableCheckBox.IsChecked.Value;
+            item.Name = win.ReceiverName;
+            item.Port = win.Port;
         }
 
         private async void VMCProtocolReceiverRemoveButton_Click(object sender, RoutedEventArgs e)
