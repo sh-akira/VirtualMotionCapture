@@ -565,6 +565,7 @@ namespace VMC
                         Settings.Current.VMCProtocolReceiverSettingsList.Add(newsetting);
                         newsetting.Port = Settings.Current.VMCProtocolReceiverSettingsList.Max(d => d.Port) + 1;
                         AddVMCProtocolReceiver(newsetting);
+                        d.Index = Settings.Current.VMCProtocolReceiverSettingsList.Count - 1;
                     }
                     await server.SendCommandAsync(
                         Settings.Current.VMCProtocolReceiverSettingsList[d.Index].Export(d.Index)
