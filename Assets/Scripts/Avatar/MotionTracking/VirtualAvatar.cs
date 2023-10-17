@@ -123,8 +123,8 @@ namespace VMC
         {
             if (avatar != null)
             {
-                GameObject.DestroyImmediate(animator);
-                GameObject.DestroyImmediate(RootTransform.gameObject);
+                if(animator != null) GameObject.DestroyImmediate(animator);
+                if (RootTransform != null) GameObject.DestroyImmediate(RootTransform.gameObject);
                 // Destroy SkeletonRoot
                 foreach (Transform child in parent)
                 {

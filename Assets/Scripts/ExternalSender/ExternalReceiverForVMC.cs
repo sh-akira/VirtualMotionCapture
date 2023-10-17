@@ -174,6 +174,14 @@ namespace VMC
             server.enabled = true;
         }
 
+        private void OnDestroy()
+        {
+            if (virtualAvatar != null)
+            {
+                MotionManager.Instance.RemoveVirtualAvatar(virtualAvatar);
+            }
+        }
+
         private void OnModelChanged()
         {
             if (CurrentModel != null)

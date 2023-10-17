@@ -1485,7 +1485,7 @@ namespace VMC
 
         private void RemoveVMCProtocolReceiver(int index)
         {
-            Destroy(externalMotionReceivers[index].gameObject);
+            DestroyImmediate(externalMotionReceivers[index].gameObject);
             externalMotionReceivers.RemoveAt(index);
             Settings.Current.VMCProtocolReceiverSettingsList.RemoveAt(index);
             if (index == 0)
@@ -1891,6 +1891,7 @@ namespace VMC
             {
                 DestroyImmediate(receiver.gameObject);
             }
+            externalMotionReceivers.Clear();
 
             foreach(var receiverSetting in Settings.Current.VMCProtocolReceiverSettingsList)
             {

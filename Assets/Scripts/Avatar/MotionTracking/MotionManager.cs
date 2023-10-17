@@ -49,6 +49,14 @@ namespace VMC
             }
         }
 
+        public void RemoveVirtualAvatar(VirtualAvatar virtualAvatar)
+        {
+            if (VirtualAvatars.Contains(virtualAvatar) == true)
+            {
+                VirtualAvatars.Remove(virtualAvatar);
+            }
+        }
+
 
         private void OnCurrentModelChanged(GameObject model)
         {
@@ -168,6 +176,7 @@ namespace VMC
                      IKManager.Instance.CalibrationState == CalibrationState.Calibrating)) return;
 
                 Transform headBone = virtualAvatar.BoneTransformCache[HumanBodyBones.Head].modelBone;
+                if (headBone == null) continue;
                 Transform hipBone = null;
                 Transform spineBone = null;
                 Vector3 defaultHeadPosition = headBone.position;
@@ -308,6 +317,7 @@ namespace VMC
 
         private bool IsDefaultPose(HumanBodyBones bone, Transform cloneBone)
         {
+            if (cloneBone == null) return true;
             var pose = defaultPoses[bone];
             return ((cloneBone.localRotation == pose.rotation && cloneBone.localPosition == pose.position) ||
                     (cloneBone.localRotation == Quaternion.identity && cloneBone.localPosition == Vector3.zero)) ;
