@@ -1486,6 +1486,7 @@ namespace VMC
         private void RemoveVMCProtocolReceiver(int index)
         {
             Destroy(externalMotionReceivers[index].gameObject);
+            externalMotionReceivers.RemoveAt(index);
             Settings.Current.VMCProtocolReceiverSettingsList.RemoveAt(index);
             if (index == 0)
             {
