@@ -1463,6 +1463,7 @@ namespace VMC
 
             externalMotionReceivers.Add(receiver);
             externalMotionSender.externalReceiver = externalMotionReceivers.FirstOrDefault();
+            easyDeviceDiscoveryProtocolManager.externalReceiver = externalMotionSender.externalReceiver;
             receiver.SetSetting(setting);
             receiver.SetObjectActive(setting.Enable);
             receiver.ChangeOSCPort(setting.Port);
@@ -1475,6 +1476,7 @@ namespace VMC
             if (index == 0)
             {
                 externalMotionSender.externalReceiver = externalMotionReceivers.FirstOrDefault();
+                easyDeviceDiscoveryProtocolManager.externalReceiver = externalMotionSender.externalReceiver;
             }
         }
 
