@@ -165,6 +165,8 @@ namespace VMC
             //無効になってる時は適用しない
             if (enabled == false) return;
 
+            VMCEvents.BeforeApplyMotion?.Invoke(currentModel);
+
             foreach (var virtualAvatar in VirtualAvatars)
             {
                 if (virtualAvatar.Enable == false) continue;
@@ -313,6 +315,8 @@ namespace VMC
                     hipBone.position = posdiff + hipBone.position;
                 }
             }
+
+            VMCEvents.AfterApplyMotion?.Invoke(currentModel);
         }
 
         private bool IsDefaultPose(HumanBodyBones bone, Transform cloneBone)
