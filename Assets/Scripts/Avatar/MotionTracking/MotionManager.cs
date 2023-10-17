@@ -189,22 +189,38 @@ namespace VMC
                     bool apply = false;
                     switch (bone)
                     {
+                        case VirtualAvatar.HumanBodyBonesRoot:
                         case HumanBodyBones.Hips:
-                            hipBone = modelBone;
                             if (virtualAvatar.IgnoreDefaultBone && IsDefaultPose(bone, cloneBone))
                             {
                                 apply = false;
                             }
                             else
                             {
-                                if (virtualAvatar.ApplyRootRotation)
+                                if ((virtualAvatar.MotionSource == MotionSource.VRIK && bone == VirtualAvatar.HumanBodyBonesRoot) ||
+                                (virtualAvatar.MotionSource != MotionSource.VRIK && bone == HumanBodyBones.Hips))
                                 {
-                                    modelBone.localRotation = cloneBone.localRotation;
-                                    modelBone.Rotate(new Vector3(0, virtualAvatar.CenterOffsetRotationY, 0), Space.World);
+                                    hipBone = modelBone;
+                                    if (virtualAvatar.ApplyRootRotation)
+                                    {
+                                        modelBone.localRotation = cloneBone.localRotation;
+                                        modelBone.Rotate(new Vector3(0, virtualAvatar.CenterOffsetRotationY, 0), Space.World);
+                                    }
+                                    if (virtualAvatar.ApplyRootPosition)
+                                    {
+                                        modelBone.localPosition = cloneBone.localPosition + virtualAvatar.CenterOffsetPosition; //Root位置だけは同期
+                                    }
                                 }
-                                if (virtualAvatar.ApplyRootPosition)
+                                else if (virtualAvatar.MotionSource == MotionSource.VRIK && bone == HumanBodyBones.Hips)
                                 {
-                                    modelBone.localPosition = cloneBone.localPosition + virtualAvatar.CenterOffsetPosition; //Root位置だけは同期
+                                    if (virtualAvatar.ApplyRootRotation)
+                                    {
+                                        modelBone.localRotation = cloneBone.localRotation;
+                                    }
+                                    if (virtualAvatar.ApplyRootPosition)
+                                    {
+                                        modelBone.localPosition = cloneBone.localPosition;
+                                    }
                                 }
                             }
                             break;

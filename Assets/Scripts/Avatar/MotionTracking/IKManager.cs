@@ -86,6 +86,8 @@ namespace VMC
             virtualAvatar.ApplyEye = true;
             virtualAvatar.ApplyLeftFinger = true;
             virtualAvatar.ApplyRightFinger = true;
+
+            virtualAvatar.IgnoreDefaultBone = false;
         }
         private void OnCurrentModelChanged(GameObject model)
         {
@@ -215,11 +217,11 @@ namespace VMC
             if (virtualAvatar != null)
             {
                 var currentVRIKTimingManager = virtualAvatar.GetComponent<VRIKTimingManager>();
-                if (currentVRIKTimingManager != null) Destroy(currentVRIKTimingManager);
+                if (currentVRIKTimingManager != null) DestroyImmediate(currentVRIKTimingManager);
                 var rootController = virtualAvatar.GetComponent<VRIKRootController>();
-                if (rootController != null) Destroy(rootController);
+                if (rootController != null) DestroyImmediate(rootController);
                 var currentvrik = virtualAvatar.GetComponent<VRIK>();
-                if (currentvrik != null) Destroy(currentvrik);
+                if (currentvrik != null) DestroyImmediate(currentvrik);
 
                 MotionManager.Instance.ResetVirtualAvatarPose(virtualAvatar);
             }
