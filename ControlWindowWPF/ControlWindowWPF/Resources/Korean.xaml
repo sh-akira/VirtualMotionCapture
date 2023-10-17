@@ -267,6 +267,7 @@
     <system:String x:Key="SettingWindow_TrackingOption">Tracking Option</system:String>
     <system:String x:Key="SettingWindow_PauseTracking">Pause Tracking</system:String>
     <system:String x:Key="SettingWindow_HandleControllerAsTracker">Handle Controller as Tracker</system:String>
+    <system:String x:Key="SettingWindow_LaunchSteamVROnStartup">시작 시 SteamVR 실행</system:String>
     <system:String x:Key="SettingWindow_QualitySettings">Quality Settings</system:String>
     <system:String x:Key="SettingWindow_AntiAliasing">AntiAliasing</system:String>
     <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">Sending motion / VMC Mod is only available for pixivFANBOX and Patreon versions.</system:String>

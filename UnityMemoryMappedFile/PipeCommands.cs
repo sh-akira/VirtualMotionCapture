@@ -586,6 +586,12 @@ namespace UnityMemoryMappedFile
             public bool HandleControllerAsTracker { get; set; }
         }
 
+        public class GetLaunchSteamVROnStartup { }
+        public class SetLaunchSteamVROnStartup
+        {
+            public bool Enable { get; set; }
+        }
+
 
         public class GetQualitySettings { }
         public class SetQualitySettings

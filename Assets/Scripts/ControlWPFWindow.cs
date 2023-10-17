@@ -703,6 +703,19 @@ namespace VMC
                         HandleControllerAsTracker = Settings.Current.HandleControllerAsTracker
                     }, e.RequestId);
                 }
+                else if (e.CommandType == typeof(PipeCommands.SetLaunchSteamVROnStartup))
+                {
+                    var d = (PipeCommands.SetLaunchSteamVROnStartup)e.Data;
+                    CommonSettings.Current.LaunchSteamVROnStartup = d.Enable;
+                    CommonSettings.Save();
+                }
+                else if (e.CommandType == typeof(PipeCommands.GetLaunchSteamVROnStartup))
+                {
+                    await server.SendCommandAsync(new PipeCommands.SetLaunchSteamVROnStartup
+                    {
+                        Enable = CommonSettings.Current.LaunchSteamVROnStartup,
+                    }, e.RequestId);
+                }
                 else if (e.CommandType == typeof(PipeCommands.GetQualitySettings))
                 {
                     await server.SendCommandAsync(new PipeCommands.SetQualitySettings
@@ -1550,41 +1563,6 @@ namespace VMC
         #region Setting
 
 
-        [Serializable]
-        public class CommonSettings
-        {
-            public string LoadSettingFilePathOnStart = ""; //起動時に読み込む設定ファイルパス
-
-            //初期値
-            [OnDeserializing()]
-            internal void OnDeserializingMethod(StreamingContext context)
-            {
-                LoadSettingFilePathOnStart = "";
-            }
-        }
-
-        public static CommonSettings CurrentCommonSettings = new CommonSettings();
-
-        //共通設定の書き込み
-        private void SaveCommonSettings()
-        {
-            string path = Path.GetFullPath(Application.dataPath + "/../Settings/common.json");
-            var directoryName = Path.GetDirectoryName(path);
-            if (Directory.Exists(directoryName) == false) Directory.CreateDirectory(directoryName);
-            File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(CurrentCommonSettings)));
-        }
-
-        //共通設定の読み込み
-        public void LoadCommonSettings()
-        {
-            string path = Path.GetFullPath(Application.dataPath + "/../Settings/common.json");
-            if (!File.Exists(path))
-            {
-                return;
-            }
-            CurrentCommonSettings = Json.Serializer.Deserialize<CommonSettings>(File.ReadAllText(path)); //設定を読み込み
-        }
-
         private NotifyLogTypes notifyLogLevel = NotifyLogTypes.Warning;
         private async void LogMessageHandler(string cond, string trace, LogType type)
         {
@@ -1674,10 +1652,10 @@ namespace VMC
             File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(Settings.Current)));
 
             //ファイルが正常に書き込めたので、現在共通設定に記録されているパスと違う場合、共通設定に書き込む
-            if (CurrentCommonSettings.LoadSettingFilePathOnStart != path)
+            if (CommonSettings.Current.LoadSettingFilePathOnStart != path)
             {
-                CurrentCommonSettings.LoadSettingFilePathOnStart = path;
-                SaveCommonSettings();
+                CommonSettings.Current.LoadSettingFilePathOnStart = path;
+                CommonSettings.Save();
                 Debug.Log("Save last loaded file of " + path);
             }
         }
@@ -1690,10 +1668,10 @@ namespace VMC
             if (string.IsNullOrEmpty(path) || (!File.Exists(path)))
             {
                 //共通設定を読み込み
-                LoadCommonSettings();
+                CommonSettings.Load();
 
                 //初回読み込みファイルが存在しなければdefault.jsonを
-                if (string.IsNullOrEmpty(CurrentCommonSettings.LoadSettingFilePathOnStart) || (!File.Exists(CurrentCommonSettings.LoadSettingFilePathOnStart)))
+                if (string.IsNullOrEmpty(CommonSettings.Current.LoadSettingFilePathOnStart) || (!File.Exists(CommonSettings.Current.LoadSettingFilePathOnStart)))
                 {
                     path = Application.dataPath + "/../default.json";
                     Debug.Log("Load default.json");
@@ -1701,7 +1679,7 @@ namespace VMC
                 else
                 {
                     //存在すればそのPathを読みに行こうとする
-                    path = CurrentCommonSettings.LoadSettingFilePathOnStart;
+                    path = CommonSettings.Current.LoadSettingFilePathOnStart;
                     Debug.Log("Load last loaded file of " + path);
                 }
             }
@@ -1738,10 +1716,10 @@ namespace VMC
                 lastLoadedConfigPath = path; //パスを記録
 
                 //ファイルが正常に存在したので、現在共通設定に記録されているパスと違う場合、共通設定に書き込む
-                if (CurrentCommonSettings.LoadSettingFilePathOnStart != path)
+                if (CommonSettings.Current.LoadSettingFilePathOnStart != path)
                 {
-                    CurrentCommonSettings.LoadSettingFilePathOnStart = path;
-                    SaveCommonSettings();
+                    CommonSettings.Current.LoadSettingFilePathOnStart = path;
+                    CommonSettings.Save();
                     Debug.Log("Save last loaded file of " + path);
                 }
             }

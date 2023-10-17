@@ -362,6 +362,16 @@ namespace VirtualMotionCaptureControlPanel
                     isSetting = false;
                 });
             });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetLaunchSteamVROnStartup { }, d =>
+            {
+                var data = (PipeCommands.SetLaunchSteamVROnStartup)d;
+                Dispatcher.Invoke(() =>
+                {
+                    isSetting = true;
+                    LaunchSteamVROnStartupCheckBox.IsChecked = data.Enable;
+                    isSetting = false;
+                });
+            });
             await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetStatusString { }, d =>
             {
                 var data = (PipeCommands.SetStatusString)d;
@@ -765,6 +775,15 @@ namespace VirtualMotionCaptureControlPanel
             await Globals.Client?.SendCommandAsync(new PipeCommands.EnableHandleControllerAsTracker
             {
                 HandleControllerAsTracker = HandleControllerAsTrackerCheckBox.IsChecked.Value,
+            });
+        }
+
+        private async void LaunchSteamVROnStartupCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            if (isSetting) return;
+            await Globals.Client?.SendCommandAsync(new PipeCommands.SetLaunchSteamVROnStartup
+            {
+                Enable = LaunchSteamVROnStartupCheckBox.IsChecked.Value,
             });
         }
 

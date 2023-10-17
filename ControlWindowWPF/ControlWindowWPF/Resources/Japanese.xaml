@@ -266,6 +266,7 @@
     <system:String x:Key="SettingWindow_TrackingOption">トラッキングオプション</system:String>
     <system:String x:Key="SettingWindow_PauseTracking">トラッキングを一時停止する</system:String>
     <system:String x:Key="SettingWindow_HandleControllerAsTracker">コントローラをトラッカーとして扱う(特殊持ち対応)</system:String>
+    <system:String x:Key="SettingWindow_LaunchSteamVROnStartup">起動時にSteamVRを自動起動する</system:String>
     <system:String x:Key="SettingWindow_QualitySettings">描画品質</system:String>
     <system:String x:Key="SettingWindow_AntiAliasing">アンチエイリアス</system:String>
     <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">モーション送信機能 / VMC ModはpixivFANBOX,Patreon先行配信版限定機能です</system:String>

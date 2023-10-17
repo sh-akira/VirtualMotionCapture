@@ -266,6 +266,7 @@
     <system:String x:Key="SettingWindow_TrackingOption">追踪设置</system:String>
     <system:String x:Key="SettingWindow_PauseTracking">暂停追踪</system:String>
     <system:String x:Key="SettingWindow_HandleControllerAsTracker">控制器当做追踪器</system:String>
+    <system:String x:Key="SettingWindow_LaunchSteamVROnStartup">启动时启动 SteamVR</system:String>
     <system:String x:Key="SettingWindow_QualitySettings">画质设置</system:String>
     <system:String x:Key="SettingWindow_AntiAliasing">抗锯齿</system:String>
     <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">VMC Mod/发送动作功能仅在pixivFANBOX以及Patreon版本下可使用。</system:String>

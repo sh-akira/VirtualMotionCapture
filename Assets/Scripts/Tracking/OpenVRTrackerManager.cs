@@ -35,6 +35,9 @@ namespace VMC
 
         private bool Setup()
         {
+            CommonSettings.Load();
+            if (CommonSettings.Current.LaunchSteamVROnStartup == false) return false;
+
             var error = EVRInitError.None;
             openVR = OpenVR.Init(ref error, EVRApplicationType.VRApplication_Overlay);
 

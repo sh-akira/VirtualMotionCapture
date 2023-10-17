@@ -44,8 +44,9 @@
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_TrackingOption}">
                     <StackPanel Orientation="Vertical">
-                        <CheckBox Content="{DynamicResource SettingWindow_PauseTracking}" Name="PauseTrackingCheckBox" Checked="PauseTrackingCheckBox_Checked" Unchecked="PauseTrackingCheckBox_Unchecked" />
                         <CheckBox Content="{DynamicResource SettingWindow_HandleControllerAsTracker}" Name="HandleControllerAsTrackerCheckBox" Checked="HandleControllerAsTrackerCheckBox_Changed" Unchecked="HandleControllerAsTrackerCheckBox_Changed" />
+                        <CheckBox Content="{DynamicResource SettingWindow_PauseTracking}" Name="PauseTrackingCheckBox" Checked="PauseTrackingCheckBox_Checked" Unchecked="PauseTrackingCheckBox_Unchecked" />
+                        <CheckBox Content="{DynamicResource SettingWindow_LaunchSteamVROnStartup}" Name="LaunchSteamVROnStartupCheckBox" Checked="LaunchSteamVROnStartupCheckBox_Changed" Unchecked="LaunchSteamVROnStartupCheckBox_Changed" />
                     </StackPanel>
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_QualitySettings}">
