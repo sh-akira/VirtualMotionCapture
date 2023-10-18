@@ -1879,6 +1879,22 @@ namespace VMC
                         Port = Settings.Current.ExternalMotionReceiverPortList[i],
                         DelayMs = Settings.Current.ExternalMotionReceiverDelayMsList[i],
                         Name = $"Receiver {i + 1}",
+                        ApplyRootRotation = false,
+                        ApplyRootPosition = false,
+                        ApplySpine = false,
+                        ApplyChest = false,
+                        ApplyHead = false,
+                        ApplyLeftArm = false,
+                        ApplyRightArm = false,
+                        ApplyLeftHand = false,
+                        ApplyRightHand = false,
+                        ApplyLeftLeg = false,
+                        ApplyRightLeg = false,
+                        ApplyLeftFoot = false,
+                        ApplyRightFoot = false,
+                        ApplyEye = false,
+                        ApplyLeftFinger = false,
+                        ApplyRightFinger = false,
                     }); ;
                 }
             }
