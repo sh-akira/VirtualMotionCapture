@@ -33,6 +33,9 @@ namespace VMC
             public int top;
             public int right;
             public int bottom;
+
+            public int width => right - left;
+            public int height => bottom - top;
         }
 
         [DllImport("user32.dll")]
@@ -104,6 +107,7 @@ namespace VMC
         public static RECT GetUnityWindowClientPosition() { RECT r; GetClientRect(GetUnityWindowHandle(), out r); return r; }
         public static void SetUnityWindowPosition(int x, int y) => SetWindowPos(GetUnityWindowHandle(), IntPtr.Zero, x, y, 0, 0, SetWindowPosFlags.IgnoreResize);
         public static void SetUnityWindowSize(int width, int height) => SetWindowPos(GetUnityWindowHandle(), IntPtr.Zero, 0, 0, width, height, SetWindowPosFlags.IgnoreMove);
+        public static void SetUnityWindowFrameChanged() => SetWindowPos(GetUnityWindowHandle(), IntPtr.Zero, 0, 0, 0, 0, SetWindowPosFlags.IgnoreMoveAndResize | SetWindowPosFlags.IgnoreZOrder | SetWindowPosFlags.FrameChanged | SetWindowPosFlags.ShowWindow);
         public static void SetUnityWindowTopMost(bool enable) => SetWindowPos(GetUnityWindowHandle(), enable ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SetWindowPosFlags.IgnoreMoveAndResize);
         public static void SetUnityWindowTitle(string title) => SetWindowText(GetUnityWindowHandle(), title);
 

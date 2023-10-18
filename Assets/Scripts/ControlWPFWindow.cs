@@ -1182,26 +1182,35 @@ namespace VMC
         }
 
         private bool lastHideWindowBorder = false;
+        private int? windowBorderWidth = null;
+        private int? windowBorderHeight = null;
+
         void HideWindowBorder(bool enable)
         {
             if (lastHideWindowBorder == enable) return;
             lastHideWindowBorder = enable;
             Settings.Current.HideBorder = enable;
 #if !UNITY_EDITOR   // エディタ上では動きません。
-        var hwnd = GetUnityWindowHandle();
-        //var hwnd = GetActiveWindow();
-        if (enable)
-        {
+            var hwnd = GetUnityWindowHandle();
             var clientrect = GetUnityWindowClientPosition();
-            SetWindowLong(hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE); //ウインドウ枠の削除
-            SetUnityWindowSize(clientrect.right - clientrect.left, clientrect.bottom - clientrect.top);
-        }
-        else
-        {
-            var windowrect = GetUnityWindowPosition();
-            SetWindowLong(hwnd, GWL_STYLE, defaultWindowStyle);
-            Screen.SetResolution(windowrect.right - windowrect.left, windowrect.bottom - windowrect.top, false);
-        }
+            if (windowBorderWidth.HasValue == false)
+            {
+                var windowrect = GetUnityWindowPosition();
+                windowBorderWidth = windowrect.width - clientrect.width;
+                windowBorderHeight = windowrect.height - clientrect.height;
+            }
+            if (enable)
+            {
+                SetWindowLong(hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE); //ウインドウ枠の削除
+                SetUnityWindowFrameChanged();
+                WaitOneFrameAction(() => SetUnityWindowSize(clientrect.width, clientrect.height));
+            }
+            else
+            {
+                SetWindowLong(hwnd, GWL_STYLE, defaultWindowStyle);
+                SetUnityWindowFrameChanged();
+                WaitOneFrameAction(() => SetUnityWindowSize(clientrect.width + windowBorderWidth.Value, clientrect.height + windowBorderHeight.Value));
+            }
 #endif
         }
         void SetWindowTopMost(bool enable)
