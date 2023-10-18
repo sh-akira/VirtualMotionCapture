@@ -11,6 +11,12 @@ namespace VirtualMotionCaptureControlPanel
     {
         public static void SetAutoLanguage()
         {
+            //Check all language file
+            ChangeLanguage("Japanese");
+            ChangeLanguage("Chinese");
+            ChangeLanguage("Korean");
+            ChangeLanguage("English");
+
             if (System.Globalization.CultureInfo.CurrentCulture.Name == "ja-JP")
             {
                 ChangeLanguage("Japanese");
