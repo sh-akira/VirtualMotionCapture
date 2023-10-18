@@ -2535,7 +2535,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsBeta: 0
   IsPreRelease: 0
-  VersionString: v0.56f2r2b7
+  VersionString: v0.56f3r3b7
   LeftWristTransform: {fileID: 0}
   RightWristTransform: {fileID: 0}
   BackgroundRenderer: {fileID: 892957809}
