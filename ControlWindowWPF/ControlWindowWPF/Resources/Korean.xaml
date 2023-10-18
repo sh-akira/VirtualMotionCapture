@@ -478,8 +478,6 @@
     <system:String x:Key="MotionCapture_mocopiSettingWindow_Spine">Spine</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_RightHand">Right Hand</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftHand">Left Hand</system:String>
-    <system:String x:Key="VMCProtocolReceiverSettingWindow_RightFinger">Right Finger</system:String>
-    <system:String x:Key="VMCProtocolReceiverSettingWindow_LeftFinger">Left Finger</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_RightLeg">Right Leg</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftLeg">Left Leg</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_RightFoot">Right Foot</system:String>
