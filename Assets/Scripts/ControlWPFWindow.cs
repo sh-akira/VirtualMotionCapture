@@ -403,7 +403,7 @@ namespace VMC
                 {
                     await server.SendCommandAsync(new PipeCommands.ReturnResolutions
                     {
-                        List = new List<Tuple<int, int, int>>(Screen.resolutions.Select(r => Tuple.Create(r.width, r.height, r.refreshRate))),
+                        List = new List<Tuple<int, int>>(Screen.resolutions.Select(r => (r.width, r.height)).Distinct().Select(r => new Tuple<int, int>(r.width, r.height))),
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.SetResolution))
@@ -411,8 +411,7 @@ namespace VMC
                     var d = (PipeCommands.SetResolution)e.Data;
                     Settings.Current.ScreenWidth = d.Width;
                     Settings.Current.ScreenHeight = d.Height;
-                    Settings.Current.ScreenRefreshRate = d.RefreshRate;
-                    Screen.SetResolution(d.Width, d.Height, false, d.RefreshRate);
+                    ResizeWindow(d.Width, d.Height);
                 }
                 else if (e.CommandType == typeof(PipeCommands.SetLightAngle))
                 {
@@ -1213,6 +1212,28 @@ namespace VMC
             }
 #endif
         }
+
+        private void ResizeWindow(int width, int height)
+        {
+#if !UNITY_EDITOR
+            var clientrect = GetUnityWindowClientPosition();
+            var windowrect = GetUnityWindowPosition();
+            if (windowBorderWidth.HasValue == false)
+            {
+                windowBorderWidth = windowrect.width - clientrect.width;
+                windowBorderHeight = windowrect.height - clientrect.height;
+            }
+            if (clientrect.width == windowrect.width)
+            {
+                SetUnityWindowSize(width, height);
+            }
+            else
+            {
+                SetUnityWindowSize(width + windowBorderWidth.Value, height + windowBorderHeight.Value);
+            }
+#endif
+        }
+
         void SetWindowTopMost(bool enable)
         {
             Settings.Current.IsTopMost = enable;
@@ -1754,9 +1775,9 @@ namespace VMC
             }
 
             //SetResolutionは強制的にウインドウ枠を復活させるのでBorder設定の前にやっておく必要がある
-            if (Screen.resolutions.Any(d => d.width == Settings.Current.ScreenWidth && d.height == Settings.Current.ScreenHeight && d.refreshRate == Settings.Current.ScreenRefreshRate))
+            if (Screen.resolutions.Any(d => d.width == Settings.Current.ScreenWidth && d.height == Settings.Current.ScreenHeight))
             {
-                UpdateActionQueue.Enqueue(() => Screen.SetResolution(Settings.Current.ScreenWidth, Settings.Current.ScreenHeight, FullScreenMode.Windowed, Settings.Current.ScreenRefreshRate));
+                UpdateActionQueue.Enqueue(() => ResizeWindow(Settings.Current.ScreenWidth, Settings.Current.ScreenHeight));
             }
 
             if (Settings.Current.BackgroundColor != null)

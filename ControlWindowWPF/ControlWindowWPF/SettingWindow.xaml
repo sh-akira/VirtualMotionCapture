@@ -68,9 +68,6 @@
                                         <TextBlock Text="{Binding Width}"/>
                                         <TextBlock Text="x"/>
                                         <TextBlock Text="{Binding Height}"/>
-                                        <TextBlock Text="/"/>
-                                        <TextBlock Text="{Binding RefreshRate}"/>
-                                        <TextBlock Text="Hz"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>

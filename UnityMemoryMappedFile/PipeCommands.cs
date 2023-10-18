@@ -320,13 +320,12 @@ namespace UnityMemoryMappedFile
         public class GetResolutions { }
         public class ReturnResolutions
         {
-            public List<Tuple<int, int, int>> List { get; set; }
+            public List<Tuple<int, int>> List { get; set; }
         }
         public class SetResolution
         {
             public int Width { get; set; }
             public int Height { get; set; }
-            public int RefreshRate { get; set; }
         }
 
         public class SetWindowNum

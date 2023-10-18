@@ -30,7 +30,6 @@ namespace VirtualMotionCaptureControlPanel
         {
             public int Width { get; set; }
             public int Height { get; set; }
-            public int RefreshRate { get; set; }
         }
         public ObservableCollection<ResolutionItem> ResolutionItems;
 
@@ -258,7 +257,7 @@ namespace VirtualMotionCaptureControlPanel
                 var config = (PipeCommands.ReturnResolutions)d;
                 Dispatcher.Invoke(() =>
                 {
-                    ResolutionItems = new ObservableCollection<ResolutionItem>(config.List.Select(r => new ResolutionItem { Width = r.Item1, Height = r.Item2, RefreshRate = r.Item3 }));
+                    ResolutionItems = new ObservableCollection<ResolutionItem>(config.List.Select(r => new ResolutionItem { Width = r.Item1, Height = r.Item2}));
                     ResolutionComboBox.ItemsSource = ResolutionItems;
                 });
             });
@@ -544,7 +543,6 @@ namespace VirtualMotionCaptureControlPanel
             {
                 Width = item.Width,
                 Height = item.Height,
-                RefreshRate = item.RefreshRate,
             });
         }
 
