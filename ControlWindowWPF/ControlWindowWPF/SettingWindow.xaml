@@ -243,10 +243,10 @@
                             <DockPanel>
                                 <UniformGrid Rows="3" DockPanel.Dock="Right"  Height="80">
                                     <Button Content="{DynamicResource FaceControlKeyAddWindow_Add}" Name="VMCProtocolReceiverAddButton" Click="VMCProtocolReceiverAddButton_Click" Height="Auto" Margin="0"/>
-                                    <Button Content="{DynamicResource ShortcutKeyWindow_Edit}" Name="VMCProtocolReceiverEditButton" Click="VMCProtocolReceiverEditButton_Click" Height="Auto" Margin="0"/>
-                                    <Button Content="{DynamicResource ShortcutKeyWindow_Remove}" Name="VMCProtocolReceiverRemoveButton" Click="VMCProtocolReceiverRemoveButton_Click" Height="Auto" Margin="0"/>
+                                    <Button Content="{DynamicResource ShortcutKeyWindow_Edit}" Name="VMCProtocolReceiverEditButton" Click="VMCProtocolReceiverEditButton_Click" Height="Auto" Margin="0" IsEnabled="False"/>
+                                    <Button Content="{DynamicResource ShortcutKeyWindow_Remove}" Name="VMCProtocolReceiverRemoveButton" Click="VMCProtocolReceiverRemoveButton_Click" Height="Auto" Margin="0" IsEnabled="False"/>
                                 </UniformGrid>
-                                <DataGrid Height="84" HeadersVisibility="Column" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" CanUserResizeColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False" SelectionMode="Single" Name="VMCProtocolReceiverDataGrid" AutoGenerateColumns="False">
+                                <DataGrid Height="84" HeadersVisibility="Column" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" CanUserResizeColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False" SelectionMode="Single" Name="VMCProtocolReceiverDataGrid" AutoGenerateColumns="False" SelectionChanged="VMCProtocolReceiverDataGrid_SelectionChanged">
                                     <DataGrid.Columns>
                                         <DataGridTemplateColumn IsReadOnly="True" Header="">
                                             <DataGridTemplateColumn.CellTemplate>

@@ -1136,5 +1136,19 @@ namespace VirtualMotionCaptureControlPanel
 
             VMCProtocolReceiverItems.Remove(item);
         }
+
+        private void VMCProtocolReceiverDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (VMCProtocolReceiverDataGrid.SelectedItem != null)
+            {
+                VMCProtocolReceiverEditButton.IsEnabled = true;
+                VMCProtocolReceiverRemoveButton.IsEnabled = true;
+            } 
+            else
+            {
+                VMCProtocolReceiverEditButton.IsEnabled= false;
+                VMCProtocolReceiverRemoveButton.IsEnabled= false;
+            }
+        }
     }
 }
