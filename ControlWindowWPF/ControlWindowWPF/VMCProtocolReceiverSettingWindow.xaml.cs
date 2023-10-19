@@ -224,5 +224,28 @@ namespace VirtualMotionCaptureControlPanel
             IsSetting = false;
             await ApplySetting();
         }
+
+        private async void UnselectBonesButton_Click(object sender, RoutedEventArgs e)
+        {
+            IsSetting = true;
+            EyeCheckBox.IsChecked = false;
+            HeadCheckBox.IsChecked = false;
+            ChestCheckBox.IsChecked = false;
+            RightArmCheckBox.IsChecked = false;
+            LeftArmCheckBox.IsChecked = false;
+            SpineCheckBox.IsChecked = false;
+            RightHandCheckBox.IsChecked = false;
+            LeftHandCheckBox.IsChecked = false;
+            RightFingerCheckBox.IsChecked = false;
+            LeftFingerCheckBox.IsChecked = false;
+            RightLegCheckBox.IsChecked = false;
+            LeftLegCheckBox.IsChecked = false;
+            RightFootCheckBox.IsChecked = false;
+            LeftFootCheckBox.IsChecked = false;
+            RootPositionCheckBox.IsChecked = false;
+            RootRotationCheckBox.IsChecked = false;
+            IsSetting = false;
+            await ApplySetting();
+        }
     }
 }

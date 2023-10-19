@@ -492,6 +492,7 @@
     <system:String x:Key="VMCProtocolReceiverSettingWindow_Eye">Eyes</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_RightFinger">Right Finger</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_LeftFinger">Left Finger</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_UnselectBones">Unselect bones</system:String>
     
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">Color Picker</system:String>

@@ -27,10 +27,6 @@
             <Grid Margin="5">
                 <StackPanel Orientation="Vertical">
                     <Grid>
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Right">
-                            <Button Content="{DynamicResource VMCProtocolReceiverSettingWindow_All}" Name="FullbodyButton" Click="FullbodyButton_Click"/>
-                            <Button Content="{DynamicResource MotionCapture_mocopiSettingWindow_WithVRDevice}" Name="WithVRDeviceButton" Click="WithVRDeviceButton_Click"/>
-                        </StackPanel>
                         <Grid HorizontalAlignment="Center">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="40"/>
@@ -96,6 +92,11 @@
                             <CheckBox Content="Status" Name="StatusCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
                             <CheckBox Content="Control" Name="ControlCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
                             <CheckBox Content="Setting" Name="SettingCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Right">
+                            <Button Content="{DynamicResource VMCProtocolReceiverSettingWindow_All}" Name="FullbodyButton" Click="FullbodyButton_Click"/>
+                            <Button Content="{DynamicResource MotionCapture_mocopiSettingWindow_WithVRDevice}" Name="WithVRDeviceButton" Click="WithVRDeviceButton_Click"/>
+                            <Button Content="{DynamicResource VMCProtocolReceiverSettingWindow_UnselectBones}" Name="UnselectBonesButton" Click="UnselectBonesButton_Click"/>
                         </StackPanel>
                     </Grid>
                     <CheckBox Content="{DynamicResource MotionCapture_mocopiSettingWindow_RootPositionSynchronize}" Name="RootPositionCheckBox" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>

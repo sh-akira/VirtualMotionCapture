@@ -492,6 +492,7 @@
     <system:String x:Key="VMCProtocolReceiverSettingWindow_Eye">目</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_RightFinger">右指</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_LeftFinger">左指</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_UnselectBones">ボーンを除く</system:String>
 
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">色選択</system:String>
