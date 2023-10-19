@@ -110,7 +110,7 @@ namespace VMC
             }
         }
 
-        public void ResetVirtualAvatarPose(VirtualAvatar virtualAvatar) => SetModelPoses(virtualAvatar.RootTransform.gameObject, defaultPoses);
+        public void ResetVirtualAvatarPose(VirtualAvatar virtualAvatar) => SetModelPoses(virtualAvatar.animator.gameObject, defaultPoses);
 
         private void OnModelUnloading(GameObject model)
         {
