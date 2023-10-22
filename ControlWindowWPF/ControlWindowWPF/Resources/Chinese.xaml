@@ -123,7 +123,7 @@
     <system:String x:Key="MainWindow_LightVerticalDirection">纵轴</system:String>
     <system:String x:Key="MainWindow_LightHorizontalDirection">横轴</system:String>
 
-    <system:String x:Key="MainWindow_ErrorCalibration">还没有VRM模型被加载，请先打开模型。</system:String>
+    <system:String x:Key="MainWindow_ErrorCalibration">还没有 VRM 模型被加载，请先打开模型。</system:String>
     <system:String x:Key="MainWindow_ErrorCalibrationFail">校准失败。</system:String>
 
     <system:String x:Key="MainWindow_Help">帮助</system:String>
@@ -137,7 +137,7 @@
     <!-- CalibrationWindow -->
     <system:String x:Key="CalibrationWindowTitle">校准模型</system:String>
 
-    <system:String x:Key="CalibrationWindow_CalibrationDescription1">将在点击按钮或按下手柄的扳机键5秒后校准</system:String>
+    <system:String x:Key="CalibrationWindow_CalibrationDescription1">将在点击按钮或按下手柄的扳机键 5 秒后校准</system:String>
     <system:String x:Key="CalibrationWindow_CalibrationDescription2">请面朝前方并做出和屏幕上的模型一样的动作</system:String>
     <system:String x:Key="CalibrationWindow_CalibrationButton">校准模型</system:String>
     <system:String x:Key="CalibrationWindow_CalibrationButton_ToolTip">开始校准模型</system:String>
