@@ -32,16 +32,16 @@
 
     <system:String x:Key="MainWindow_Setting">设置</system:String>
     <system:String x:Key="MainWindow_LoadSetting">打开设置</system:String>
-    <system:String x:Key="MainWindow_ImportVRM">打开VRM文件</system:String>
+    <system:String x:Key="MainWindow_ImportVRM">打开 VRM 文件</system:String>
     <system:String x:Key="MainWindow_ShortcutKey">快捷键</system:String>
     <system:String x:Key="MainWindow_SaveSetting">保存设置</system:String>
     <system:String x:Key="MainWindow_Calibration">校准</system:String>
     <system:String x:Key="MainWindow_AdvancedSetting">详细设置</system:String>
     <system:String x:Key="MainWindow_Setting_ToolTip">设置</system:String>
-    <system:String x:Key="MainWindow_LoadSetting_ToolTip">从.json文件读取设置</system:String>
+    <system:String x:Key="MainWindow_LoadSetting_ToolTip">从 .json 文件读取设置</system:String>
     <system:String x:Key="MainWindow_ImportVRM_ToolTip">打开VRM模型</system:String>
     <system:String x:Key="MainWindow_ShortcutKey_ToolTip">通过手柄或键盘执行快捷功能</system:String>
-    <system:String x:Key="MainWindow_SaveSetting_ToolTip">保存所有设置到.json文件</system:String>
+    <system:String x:Key="MainWindow_SaveSetting_ToolTip">保存所有设置到 .json 文件</system:String>
     <system:String x:Key="MainWindow_Calibration_ToolTip">开始校准模型</system:String>
     <system:String x:Key="MainWindow_AdvancedSetting_ToolTip">打开其他详细设置</system:String>
 
@@ -123,7 +123,7 @@
     <system:String x:Key="MainWindow_LightVerticalDirection">纵轴</system:String>
     <system:String x:Key="MainWindow_LightHorizontalDirection">横轴</system:String>
 
-    <system:String x:Key="MainWindow_ErrorCalibration">还没有VRM模型被加载，请先打开模型。</system:String>
+    <system:String x:Key="MainWindow_ErrorCalibration">还没有 VRM 模型被加载，请先打开模型。</system:String>
     <system:String x:Key="MainWindow_ErrorCalibrationFail">校准失败。</system:String>
 
     <system:String x:Key="MainWindow_Help">帮助</system:String>
@@ -137,7 +137,7 @@
     <!-- CalibrationWindow -->
     <system:String x:Key="CalibrationWindowTitle">校准模型</system:String>
 
-    <system:String x:Key="CalibrationWindow_CalibrationDescription1">将在点击按钮或按下手柄的扳机键5秒后校准</system:String>
+    <system:String x:Key="CalibrationWindow_CalibrationDescription1">将在点击按钮或按下手柄的扳机键 5 秒后校准</system:String>
     <system:String x:Key="CalibrationWindow_CalibrationDescription2">请面朝前方并做出和屏幕上的模型一样的动作</system:String>
     <system:String x:Key="CalibrationWindow_CalibrationButton">校准模型</system:String>
     <system:String x:Key="CalibrationWindow_CalibrationButton_ToolTip">开始校准模型</system:String>
@@ -150,16 +150,16 @@
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandRadioButton">混合现实模式（正确的手位置但是没有腿部校准）</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton">混合现实模式（正确的手位置并且校准腿部到地面）</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrationInformation" xml:space="preserve">如果 I-pose 校准无法正常工作，请重置房间大小并校准地面高度。&#xa;对于 T-pose，你可以将手臂弯曲短一些或略微抬高手臂来调整校准。&#xa;请注意，屏幕上的白球是用于确认追踪器是否被正确识别。你不需要精确对齐。</system:String>
-    <system:String x:Key="CalibrationWindow_FinishSound">完了音</system:String>
+    <system:String x:Key="CalibrationWindow_FinishSound">完成音效</system:String>
 
     <!-- VRMImportWindow -->
-    <system:String x:Key="VRMImportWindowTitle">打开VRM</system:String>
+    <system:String x:Key="VRMImportWindowTitle">打开 VRM</system:String>
 
-    <system:String x:Key="VRMImportWindow_VRMImportButton">打开VRM文件</system:String>
+    <system:String x:Key="VRMImportWindow_VRMImportButton">打开 VRM 文件</system:String>
     <system:String x:Key="VRMImportWindow_VRMImportOption">载入设置</system:String>
-    <system:String x:Key="VRMImportWindow_NormalMapFix">法线贴图自动修正 (for VRoid)</system:String>
-    <system:String x:Key="VRMImportWindow_RemoveHairNormalMap">开启自动修正时头发的法线贴图会被删除 (for VRoid)</system:String>
-    <system:String x:Key="VRMImportWindow_VRMInformation">VRM信息</system:String>
+    <system:String x:Key="VRMImportWindow_NormalMapFix">法线贴图自动修正（限 VRoid）</system:String>
+    <system:String x:Key="VRMImportWindow_RemoveHairNormalMap">开启自动修正时头发的法线贴图会被删除（限 VRoid）</system:String>
+    <system:String x:Key="VRMImportWindow_VRMInformation">VRM 信息</system:String>
     <system:String x:Key="VRMImportWindow_ModelTitle">名称</system:String>
     <system:String x:Key="VRMImportWindow_ModelVersion">版本</system:String>
     <system:String x:Key="VRMImportWindow_ModelAuthor">作者</system:String>
@@ -179,12 +179,12 @@
     <system:String x:Key="VRMImportWindow_OtherLicenseUrl">其他协议链接</system:String>
     <system:String x:Key="VRMImportWindow_ImportButton">同意并打开</system:String>
     <system:String x:Key="VRMImportWindow_IgnoreButton">不同意</system:String>
-    <system:String x:Key="VRMImportWindow_VRMImportButton_ToolTip">读取VRM文件</system:String>
+    <system:String x:Key="VRMImportWindow_VRMImportButton_ToolTip">读取 VRM 文件</system:String>
     <system:String x:Key="VRMImportWindow_RemoveHairNormalMap_ToolTip">当开启法线贴图自动修正时会打开</system:String>
     <system:String x:Key="VRMImportWindow_Thumbnail_ToolTip">模型缩略图</system:String>
     <system:String x:Key="VRMImportWindow_ImportButton_ToolTip">请始终确认模型的使用许可协议，并在确认没有问题后使用它</system:String>
     <system:String x:Key="VRMImportWindow_IgnoreButton_ToolTip">取消读取</system:String>
-    <system:String x:Key="VRMImportWindow_VRoidNormalMapDescription">如果用VRoid载入出现光泽度问题，请用VRoid 0.2.14及以上版本重新上传模型以解决法线贴图的问题</system:String>
+    <system:String x:Key="VRMImportWindow_VRoidNormalMapDescription">如果用 VRoid 载入出现光泽度问题，请用 VRoid 0.2.14 及以上版本重新上传模型以解决法线贴图的问题</system:String>
 
     <system:String x:Key="Unknown">未知</system:String>
     <system:String x:Key="OnlyAuthor">仅作者</system:String>
@@ -214,7 +214,7 @@
     <system:String x:Key="SettingWindow_VMTUninstallButton">卸载</system:String>
     <system:String x:Key="SettingWindow_ExternalCameraConfig">externalcamera.cfg（设置自由相机的位置）</system:String>
     <system:String x:Key="SettingWindow_ControllerNumber">控制器编号：</system:String>
-    <system:String x:Key="SettingWindow_OpenExternalCameraConfig">打开externalcamera.cfg</system:String>
+    <system:String x:Key="SettingWindow_OpenExternalCameraConfig">打开 externalcamera.cfg</system:String>
     <system:String x:Key="SettingWindow_TrackerConfig">追踪器设置</system:String>
     <system:String x:Key="SettingWindow_OpenTrackerConfig">打开追踪器分配设置</system:String>
     <system:String x:Key="SettingWindow_OpenHandFreeOffset">打开设置</system:String>
@@ -222,7 +222,7 @@
     <system:String x:Key="SettingWindow_LeftHand_ToolTip">调整左手角度。请在现实中手的角度与模型显示的不同时调整。</system:String>
     <system:String x:Key="SettingWindow_RightHand_ToolTip">调整右手角度。请在现实中手的角度与模型显示的不同时调整。</system:String>
     <system:String x:Key="SettingWindow_ControllerNumber_ToolTip">选择用来作为相机基准的追踪器（若需更换请重新打开.cfg文件）</system:String>
-    <system:String x:Key="SettingWindow_OpenExternalCameraConfig_ToolTip">读取externalcamera.cfg 以同步模型到VR游戏并使用自由相机</system:String>
+    <system:String x:Key="SettingWindow_OpenExternalCameraConfig_ToolTip">读取 externalcamera.cfg 以同步模型到VR游戏并使用自由相机</system:String>
     <system:String x:Key="SettingWindow_Close_ToolTip">关闭设置</system:String>
     <system:String x:Key="SettingWindow_Language">语言</system:String>
     <system:String x:Key="SettingWindow_VirtualWebCamSetting">虚拟摄像头设置</system:String>
@@ -235,28 +235,28 @@
     <system:String x:Key="SettingWindow_WebCamBuffering">缓冲（减缓电脑压力/增加延迟）：</system:String>
     <system:String x:Key="SettingWindow_ResolutionSetting">分辨率（请与虚拟摄像头设置的一致）</system:String>
     <system:String x:Key="SettingWindow_Apply">应用</system:String>
-    <system:String x:Key="SettingWindow_FailedFolderCreate">创建文件夹失败。请手动创建C:\VMC_Camera文件夹。</system:String>
+    <system:String x:Key="SettingWindow_FailedFolderCreate">创建文件夹失败。请手动创建 C:\VMC_Camera 文件夹。</system:String>
     <system:String x:Key="SettingWindow_VMTFailedFolderCreate">创建文件夹失败。</system:String>
-    <system:String x:Key="SettingWindow_FailedFileCopy">复制文件失败。请手动复制VMC_CameraFilter32bit.dll以及64bit.dll到C:\VMC_Camera文件夹下。</system:String>
+    <system:String x:Key="SettingWindow_FailedFileCopy">复制文件失败。请手动复制 VMC_CameraFilter32bit.dll 以及 64bit.dll 到 C:\VMC_Camera 文件夹下。</system:String>
     <system:String x:Key="SettingWindow_SuccessDriverInstall">成功安装摄像头驱动，VMC_Camera将可在摄像头列表中选择</system:String>
-    <system:String x:Key="SettingWindow_FailedDriverInstall">安装摄像头驱动失败。请打开命令提示符，移动到C:\VMC_Camera，并执行 regsvr32 VMC_CameraFilter32bit.dll 以及 regsvr32 VMC_CameraFilter64bit.dll</system:String>
-    <system:String x:Key="SettingWindow_FailedFileDelete">删除文件失败。请手动删除C:\VMC_Camera文件夹</system:String>
-    <system:String x:Key="SettingWindow_FailedFolderDelete">删除文件夹失败。请手动删除C:\VMC_Camera文件夹</system:String>
-    <system:String x:Key="SettingWindow_SuccessDriverUninstall">摄像机驱动已被卸载。VMC_Camera将从摄像头列表中移除</system:String>
-    <system:String x:Key="SettingWindow_FailedDriverUninstall">卸载摄像机驱动失败。请打开命令提示符，移动到C:\VMC_Camera，并执行 regsvr32 /u VMC_CameraFilter32bit.dll 以及 regsvr32 /u VMC_CameraFilter64bit.dll。之后删除C:\VMC_Camera文件夹</system:String>
+    <system:String x:Key="SettingWindow_FailedDriverInstall">安装摄像头驱动失败。请打开命令提示符，移动到 C:\VMC_Camera，并执行 regsvr32 VMC_CameraFilter32bit.dll 以及 regsvr32 VMC_CameraFilter64bit.dll</system:String>
+    <system:String x:Key="SettingWindow_FailedFileDelete">删除文件失败。请手动删除 C:\VMC_Camera 文件夹</system:String>
+    <system:String x:Key="SettingWindow_FailedFolderDelete">删除文件夹失败。请手动删除 C:\VMC_Camera 文件夹</system:String>
+    <system:String x:Key="SettingWindow_SuccessDriverUninstall">摄像机驱动已被卸载。VMC_Camera 将从摄像头列表中移除</system:String>
+    <system:String x:Key="SettingWindow_FailedDriverUninstall">卸载摄像机驱动失败。请打开命令提示符，移动到 C:\VMC_Camera，并执行 regsvr32 /u VMC_CameraFilter32bit.dll 以及 regsvr32 /u VMC_CameraFilter64bit.dll。之后删除 C:\VMC_Camera 文件夹</system:String>
     <system:String x:Key="SettingWindow_SelectedItemError">请选择一个追踪器以设置相机</system:String>
-    <system:String x:Key="SettingWindow_ExportExternalCameraConfig">导出externalcamera.cfg</system:String>
-    <system:String x:Key="SettingWindow_ExportVMTExternalCameraConfig">>导出externalcamera.cfg到LIV</system:String>
-    <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">导出externalcamera.cfg以将模型同步到VR游戏</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionSender">发送外部动作(VMCProtocol)</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionSender_Free">发送外部动作(VMCProtocol) / VMC Mod</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">启用OSC动作发送</system:String>
+    <system:String x:Key="SettingWindow_ExportExternalCameraConfig">导出 externalcamera.cfg</system:String>
+    <system:String x:Key="SettingWindow_ExportVMTExternalCameraConfig">>导出 externalcamera.cfg 到 LIV</system:String>
+    <system:String x:Key="SettingWindow_ExportExternalCameraConfig_ToolTip">导出 externalcamera.cfg 以将模型同步到 VR 游戏</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSender">发送外部动作（VMCProtocol）</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSender_Free">发送外部动作（VMCProtocol）/ VMC Mod</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">启用 OSC 动作发送</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">传输间隔（每隔指定的帧一次）</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiver">VMC Protocol 接收</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">启用OSC动作接收</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">启用 OSC 动作接收</system:String>
     <system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape</system:String>
-    <system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">分配MIDI CC旋钮</system:String>
-    <system:String x:Key="SettingWindow_MidiEnable">启用MIDI设备</system:String>
+    <system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">分配 MIDI CC 旋钮</system:String>
+    <system:String x:Key="SettingWindow_MidiEnable">启用 MIDI 设备</system:String>
     <system:String x:Key="SettingWindow_PreventLosingTracking">防止追踪丢失</system:String>
     <system:String x:Key="SettingWindow_TrackingFilterEnable">开启</system:String>
     <system:String x:Key="SettingWindow_TrackingFilterHmdEnable">头显</system:String>
@@ -271,25 +271,25 @@
     <system:String x:Key="SettingWindow_LaunchSteamVROnStartup">启动时启动 SteamVR</system:String>
     <system:String x:Key="SettingWindow_QualitySettings">画质设置</system:String>
     <system:String x:Key="SettingWindow_AntiAliasing">抗锯齿</system:String>
-    <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">VMC Mod/发送动作功能仅在pixivFANBOX以及Patreon版本下可使用。</system:String>
-    <system:String x:Key="SettingWindow_VirtualMotionTracker">虚拟追踪器(VMT)</system:String>
+    <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">VMC Mod/发送动作功能仅在 pixivFANBOX 以及 Patreon 版本下可使用。</system:String>
+    <system:String x:Key="SettingWindow_VirtualMotionTracker">虚拟追踪器（VMT）</system:String>
     <system:String x:Key="SettingWindow_VirtualMotionTrackerEnable">开启</system:String>
-    <system:String x:Key="SettingWindow_VirtualMotionTrackerInstallSuccess">安装成功！重启SteamVR和VirtualMotionCapture。点击OK并等待重启。</system:String>
-    <system:String x:Key="SettingWindow_VMTContinue">是否继续安装VMT？SteamVR将会重启并且进行中的游戏将会被退出。</system:String>
+    <system:String x:Key="SettingWindow_VirtualMotionTrackerInstallSuccess">安装成功！重启 SteamVR 和 VirtualMotionCapture。点击 OK 并等待重启。</system:String>
+    <system:String x:Key="SettingWindow_VMTContinue">是否继续安装 VMT？SteamVR 将会重启并且进行中的游戏将会被退出。</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderResponderEnable">允许设备检测应答</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiverRequesterEnable">自动检测设备</system:String>
     <system:String x:Key="SettingWindow_ReceiveBonesEnable">手骨接收</system:String>
     <system:String x:Key="SettingWindow_VMCMod">VMC Mod（不保证可用/不受支持）</system:String>
-    <system:String x:Key="SettingWindow_VMCModSetting">已加载MOD列表</system:String>
+    <system:String x:Key="SettingWindow_VMCModSetting">已加载 MOD 列表</system:String>
 
     <!-- CalibrationSettingWindow -->
-    <system:String x:Key="CalibrationSettingWindow_BodyHeight">Body Height</system:String>
-    <system:String x:Key="CalibrationSettingWindow_OverrideBodyHeight">Override body height</system:String>
-    <system:String x:Key="CalibrationSettingWindow_Height">Height :</system:String>
-    <system:String x:Key="CalibrationSettingWindow_Pelvis">Pelvis (Hip)</system:String>
-    <system:String x:Key="CalibrationSettingWindow_OffsetY">Offset Y :</system:String>
-    <system:String x:Key="CalibrationSettingWindow_OffsetZ">Offset Z :</system:String>
-    <system:String x:Key="CalibrationSettingWindow_Notice">Please recalibrate after the change</system:String>
+    <system:String x:Key="CalibrationSettingWindow_BodyHeight">身高</system:String>
+    <system:String x:Key="CalibrationSettingWindow_OverrideBodyHeight">覆盖身高</system:String>
+    <system:String x:Key="CalibrationSettingWindow_Height">高度：</system:String>
+    <system:String x:Key="CalibrationSettingWindow_Pelvis">骨盆（髋）</system:String>
+    <system:String x:Key="CalibrationSettingWindow_OffsetY">Y 偏移：</system:String>
+    <system:String x:Key="CalibrationSettingWindow_OffsetZ">Z 偏移：</system:String>
+    <system:String x:Key="CalibrationSettingWindow_Notice">修改后请重新校准</system:String>
         
     <!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">追踪器分配设置</system:String>
@@ -337,7 +337,7 @@
     <system:String x:Key="ShortcutKeyWindow_LeftDivideCount">分区：</system:String>
     <system:String x:Key="ShortcutKeyWindow_RightCenterKey">中心键</system:String>
     <system:String x:Key="ShortcutKeyWindow_RightDivideCount">分区：</system:String>
-    <system:String x:Key="ShortcutKeyWindow_OculusTouchDescription">使用Oculus Touch的时候，摇杆的中心键区域将不响应</system:String>
+    <system:String x:Key="ShortcutKeyWindow_OculusTouchDescription">使用 Oculus Touch 的时候，摇杆的中心键区域将不响应</system:String>
     <system:String x:Key="ShortcutKeyWindow_Apply">应用</system:String>
     <system:String x:Key="ShortcutKeyWindow_AddHandGesture">添加手势</system:String>
     <system:String x:Key="ShortcutKeyWindow_AddFacingExpression">添加表情</system:String>
@@ -350,9 +350,9 @@
 
     <system:String x:Key="ShortcutKeyWindow_LeftController_ToolTip">为左手触摸板/摇杆分区。你可以通过拖动方块来改变大小。</system:String>
     <system:String x:Key="ShortcutKeyWindow_RightController_ToolTip">为右手触摸板/摇杆分区。你可以通过拖动方块来改变大小。</system:String>
-    <system:String x:Key="ShortcutKeyWindow_LeftCenterKey_ToolTip">将左手触摸板中心当做一个按键，或作为Oculus Touch的不响应区域。</system:String>
+    <system:String x:Key="ShortcutKeyWindow_LeftCenterKey_ToolTip">将左手触摸板中心当做一个按键，或作为 Oculus Touch 的不响应区域。</system:String>
     <system:String x:Key="ShortcutKeyWindow_LeftDivideCount_ToolTip">更改左手柄触摸板/摇杆的分区数量。</system:String>
-    <system:String x:Key="ShortcutKeyWindow_RightCenterKey_ToolTip">将右手触摸板中心当做一个按键，或作为Oculus Touch的不响应区域。</system:String>
+    <system:String x:Key="ShortcutKeyWindow_RightCenterKey_ToolTip">将右手触摸板中心当做一个按键，或作为 Oculus Touch 的不响应区域。</system:String>
     <system:String x:Key="ShortcutKeyWindow_RightDivideCount_ToolTip">更改右手柄触摸板/摇杆的分区数量。</system:String>
     <system:String x:Key="ShortcutKeyWindow_Apply_ToolTip">保存触摸板上的分区设置（保存后生效）。</system:String>
     <system:String x:Key="ShortcutKeyWindow_AddHandGesture_ToolTip">添加改变手势的快捷键。</system:String>
@@ -364,7 +364,7 @@
     <system:String x:Key="ShortcutKeyWindow_Edit_ToolTip">编辑被选择的快捷键。</system:String>
     <system:String x:Key="ShortcutKeyWindow_Remove_ToolTip">移除被选择的快捷键。</system:String>
     <system:String x:Key="ShortcutKeyWindow_ShortcutKeyList_ToolTip">已注册快捷键列表。</system:String>
-    <system:String x:Key="ShortcutKeyWindow_UseSkeletal">使用Index指虎追踪手指（手势将不可用）</system:String>
+    <system:String x:Key="ShortcutKeyWindow_UseSkeletal">使用 Index 指虎追踪手指（手势将不可用）</system:String>
 
 
     <!-- HandGestureControlKeyAddWindow -->
@@ -408,7 +408,7 @@
     <system:String x:Key="FaceControlKeyAddWindow_DisableBlinking">禁用自动眨眼</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_DisableBlendShapeReception">禁用 BlendShape 接收</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_LipSyncSuppression">抑制嘴型影响</system:String>
-    <system:String x:Key="FaceControlKeyAddWindow_LipSyncMaxLevel">设置上限（0是禁用）</system:String>
+    <system:String x:Key="FaceControlKeyAddWindow_LipSyncMaxLevel">设置上限（0 是禁用）</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_Register">注册</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_Cancel">取消</system:String>
     <system:String x:Key="FaceControlKeyAddWindow_SaveName">保存名称</system:String>
@@ -462,7 +462,7 @@
 
     <!-- EyeTracking_TobiiSettingWindow -->
     <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeScale">眼动范围（负号为反向）</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeOffset">眼睛位置修正 (0.01=1cm)</system:String>
+    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeOffset">眼睛位置修正（0.01=1cm）</system:String>
     <system:String x:Key="EyeTracking_TobiiSettingWindow_Horizontal">水平</system:String>
     <system:String x:Key="EyeTracking_TobiiSettingWindow_Vertical">垂直</system:String>
     <system:String x:Key="EyeTracking_TobiiSettingWindow_Calibration">位置校准</system:String>
@@ -471,7 +471,7 @@
 
     <!-- EyeTracking_ViveProEyeSettingWindow -->
     <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeScale">眼动范围（负号为反向）</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeOffset">眼睛位置修正 (0.01=1cm)</system:String>
+    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeOffset">眼睛位置修正（0.01=1cm）</system:String>
     <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Horizontal">水平</system:String>
     <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Vertical">垂直</system:String>
     <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovements">使用眼皮移动</system:String>
@@ -503,27 +503,27 @@
     <system:String x:Key="VMCProtocolReceiverSettingWindow_Eye">眼</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_RightFinger">右手指</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_LeftFinger">左手指</system:String>
-    <system:String x:Key="VMCProtocolReceiverSettingWindow_UnselectBones">Unselect bones</system:String>
-    <system:String x:Key="VMCProtocolReceiverSettingWindow_Port">Port :</system:String>
-    <system:String x:Key="VMCProtocolReceiverSettingWindow_Delay">Delay :</system:String>
-    <system:String x:Key="VMCProtocolReceiverSettingWindow_FixHandBone">Fix hand bone</system:String>
-    <system:String x:Key="VMCProtocolReceiverSettingWindow_UseBonePosition">Use bone position</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_UnselectBones">取消选定骨关节</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_Port">端口：</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_Delay">延迟：</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_FixHandBone">修正手骨</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_UseBonePosition">使用骨关节位置</system:String>
 
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">取色器</system:String>
     
 
     <!-- VRoidHubWindow -->
-    <system:String x:Key="VRoidHubWindowTitle">从VRoid Hub载入模型</system:String>
+    <system:String x:Key="VRoidHubWindowTitle">从 VRoid Hub 载入模型</system:String>
 
-    <system:String x:Key="VRoidHubWindow_LoginDescription">如果要从VRoid Hub载入模型，请登入VRoid Hub并授权Virtual Motion Capture使用。</system:String>
-    <system:String x:Key="VRoidHubWindow_Login">登入VRoid Hub</system:String>
+    <system:String x:Key="VRoidHubWindow_LoginDescription">如果要从 VRoid Hub 载入模型，请登入 VRoid Hub 并授权 Virtual Motion Capture 使用。</system:String>
+    <system:String x:Key="VRoidHubWindow_Login">登入 VRoid Hub</system:String>
     <system:String x:Key="VRoidHubWindow_ErrorDescription">发生了错误，请关闭该窗口并再次打开。</system:String>
     <system:String x:Key="VRoidHubWindow_CodeDescription">请输入浏览器上的验证码</system:String>
     <system:String x:Key="VRoidHubWindow_Paste">粘贴</system:String>
     <system:String x:Key="VRoidHubWindow_Register">进入</system:String>
     <system:String x:Key="VRoidHubWindow_ModelList">模型列表</system:String>
-    <system:String x:Key="VRoidHubWindow_FindModelOnVRoidHub">在VRoid Hub寻找模型</system:String>
+    <system:String x:Key="VRoidHubWindow_FindModelOnVRoidHub">在 VRoid Hub 寻找模型</system:String>
     <system:String x:Key="VRoidHubWindow_ModelInfo">模型信息</system:String>
     <system:String x:Key="VRoidHubWindow_AllowedUser">作为虚拟形象</system:String>
     <system:String x:Key="VRoidHubWindow_ViolentExpression">暴力行为</system:String>
@@ -538,7 +538,7 @@
     <system:String x:Key="VRoidHubWindow_Unnecessary">不必须</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionDescription1">使用这个模型，你需要确认协议。</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionDescription2">来源必须标注清晰。</system:String>
-    <system:String x:Key="VRoidHubWindow_OpenOnVRoidHub">打开VRoid Hub页面</system:String>
+    <system:String x:Key="VRoidHubWindow_OpenOnVRoidHub">打开 VRoid Hub 页面</system:String>
     <system:String x:Key="VRoidHubWindow_LoadModel">同意并打开</system:String>
     <system:String x:Key="VRoidHubWindow_Loading">加载中</system:String>
 
@@ -558,7 +558,7 @@
     <system:String x:Key="CalibrationResultWindow_CautionMessage">如果该数据不正确，请检查你的追踪器固定位置以及 VR 空间中的地面高度，然后以正确的姿势重新校准。</system:String>
     <system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">秒后自动关闭</system:String>
 
-    <system:String x:Key="FirewallManagerWindow_Title">Firewall setting</system:String>
+    <system:String x:Key="FirewallManagerWindow_Title">防火墙设置</system:String>
     <system:String x:Key="FirewallManagerWindow_Description">为了让 Virtual Motion Capture 与其他应用连接，需要应用防火墙设置。是否继续？</system:String>
     <system:String x:Key="FirewallManagerWindow_DontShowAgain">不再显示</system:String>
 
