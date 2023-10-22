@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
         mc:Ignorable="d"
-        Title="EyeTracking Tobii Eye Tracker 4C" Width="400" SizeToContent="Height" Loaded="Window_Loaded">
+        Title="Tobii Eye Tracker 4C" Width="400" SizeToContent="Height" Loaded="Window_Loaded">
     <DockPanel>
         <GroupBox Header="{DynamicResource EyeTracking_TobiiSettingWindow_EyeScale}" DockPanel.Dock="Top">
             <UniformGrid Rows="1" Columns="2">

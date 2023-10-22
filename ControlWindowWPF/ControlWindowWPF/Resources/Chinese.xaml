@@ -3,6 +3,7 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
                     xml:space="preserve">
 
+    <system:String x:Key="OK">OK</system:String>
     <system:String x:Key="Error">错误</system:String>
     <system:String x:Key="Confirm">确认</system:String>
     <system:String x:Key="Custom">自定义</system:String>
@@ -149,6 +150,7 @@
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandRadioButton">混合现实模式（正确的手位置但是没有腿部校准）</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton">混合现实模式（正确的手位置并且校准腿部到地面）</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrationInformation" xml:space="preserve">如果 I-pose 校准无法正常工作，请重置房间大小并校准地面高度。&#xa;对于 T-pose，你可以将手臂弯曲短一些或略微抬高手臂来调整校准。&#xa;请注意，屏幕上的白球是用于确认追踪器是否被正确识别。你不需要精确对齐。</system:String>
+    <system:String x:Key="CalibrationWindow_FinishSound">完了音</system:String>
 
     <!-- VRMImportWindow -->
     <system:String x:Key="VRMImportWindowTitle">打开VRM</system:String>
@@ -279,6 +281,15 @@
     <system:String x:Key="SettingWindow_ReceiveBonesEnable">手骨接收</system:String>
     <system:String x:Key="SettingWindow_VMCMod">VMC Mod（不保证可用/不受支持）</system:String>
     <system:String x:Key="SettingWindow_VMCModSetting">已加载MOD列表</system:String>
+
+    <!-- CalibrationSettingWindow -->
+    <system:String x:Key="CalibrationSettingWindow_BodyHeight">Body Height</system:String>
+    <system:String x:Key="CalibrationSettingWindow_OverrideBodyHeight">Override body height</system:String>
+    <system:String x:Key="CalibrationSettingWindow_Height">Height :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_Pelvis">Pelvis (Hip)</system:String>
+    <system:String x:Key="CalibrationSettingWindow_OffsetY">Offset Y :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_OffsetZ">Offset Z :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_Notice">Please recalibrate after the change</system:String>
         
     <!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">追踪器分配设置</system:String>
@@ -493,6 +504,10 @@
     <system:String x:Key="VMCProtocolReceiverSettingWindow_RightFinger">右手指</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_LeftFinger">左手指</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_UnselectBones">Unselect bones</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_Port">Port :</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_Delay">Delay :</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_FixHandBone">Fix hand bone</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_UseBonePosition">Use bone position</system:String>
 
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">取色器</system:String>
@@ -543,6 +558,7 @@
     <system:String x:Key="CalibrationResultWindow_CautionMessage">如果该数据不正确，请检查你的追踪器固定位置以及 VR 空间中的地面高度，然后以正确的姿势重新校准。</system:String>
     <system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">秒后自动关闭</system:String>
 
+    <system:String x:Key="FirewallManagerWindow_Title">Firewall setting</system:String>
     <system:String x:Key="FirewallManagerWindow_Description">为了让 Virtual Motion Capture 与其他应用连接，需要应用防火墙设置。是否继续？</system:String>
     <system:String x:Key="FirewallManagerWindow_DontShowAgain">不再显示</system:String>
 

@@ -3,6 +3,7 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
                     xml:space="preserve">
 
+    <system:String x:Key="OK">OK</system:String>
     <system:String x:Key="Error">Error</system:String>
     <system:String x:Key="Confirm">Confirm</system:String>
     <system:String x:Key="Custom">Custom</system:String>
@@ -149,6 +150,7 @@
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandRadioButton">MR compositing mode (correct hand position and no leg bending)</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton">MR compositing mode (correct hand position and bend leg to the ground)</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrationInformation" xml:space="preserve">If I-pose calibration will not work, re-set the room scale and correct the floor height.&#xa;For T-pose, you can adjust the calibration by bending the arm shorter or lifting the arm slightly.&#xa;Note that white balls on the screen are to confirm that trackers are recognized. You do not need to adjust the position.</system:String>
+    <system:String x:Key="CalibrationWindow_FinishSound">完了音</system:String>
 
     <!-- VRMImportWindow -->
     <system:String x:Key="VRMImportWindowTitle">Import VRM</system:String>
@@ -279,6 +281,15 @@
     <system:String x:Key="SettingWindow_ReceiveBonesEnable">Receive hand bone</system:String>
     <system:String x:Key="SettingWindow_VMCMod">VMC Mod (No warranty/no support)</system:String>
     <system:String x:Key="SettingWindow_VMCModSetting">Loaded MOD List</system:String>
+
+    <!-- CalibrationSettingWindow -->
+    <system:String x:Key="CalibrationSettingWindow_BodyHeight">Body Height</system:String>
+    <system:String x:Key="CalibrationSettingWindow_OverrideBodyHeight">Override body height</system:String>
+    <system:String x:Key="CalibrationSettingWindow_Height">Height :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_Pelvis">Pelvis (Hip)</system:String>
+    <system:String x:Key="CalibrationSettingWindow_OffsetY">Offset Y :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_OffsetZ">Offset Z :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_Notice">Please recalibrate after the change</system:String>
 
     <!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">Tracker assignment setting</system:String>
@@ -493,6 +504,10 @@
     <system:String x:Key="VMCProtocolReceiverSettingWindow_RightFinger">Right Finger</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_LeftFinger">Left Finger</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_UnselectBones">Unselect bones</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_Port">Port :</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_Delay">Delay :</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_FixHandBone">Fix hand bone</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_UseBonePosition">Use bone position</system:String>
     
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">Color Picker</system:String>
@@ -543,6 +558,7 @@
     <system:String x:Key="CalibrationResultWindow_CautionMessage">If you think it is wrong, please check your tracker mount and the floor level of your VR roomscale.</system:String>
     <system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">seconds left to close</system:String>
 
+    <system:String x:Key="FirewallManagerWindow_Title">Firewall setting</system:String>
     <system:String x:Key="FirewallManagerWindow_Description">Configure firewall settings for Virtual Motion Capture to connect with other apps. Would you like to continue?</system:String>
     <system:String x:Key="FirewallManagerWindow_DontShowAgain">Don't show this again</system:String>
 	

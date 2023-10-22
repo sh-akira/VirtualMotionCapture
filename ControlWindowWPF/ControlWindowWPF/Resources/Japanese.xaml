@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
+    <system:String x:Key="OK">OK</system:String>
     <system:String x:Key="Error">エラー</system:String>
     <system:String x:Key="Confirm">確認</system:String>
     <system:String x:Key="Custom">カスタム</system:String>
@@ -148,6 +149,7 @@
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandRadioButton">MR合成モード(手の位置をなるべく合わせて足は真っ直ぐ伸ばす)</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton">MR合成モード(手の位置をなるべく合わせて足は地面に合わせて曲げる)</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrationInformation" xml:space="preserve">Iポーズキャリブレーションがうまくいかない場合はルームスケールを再設定して床の高さを正しくしてください。&#xa;Tポーズの場合は腕を少し短くなるように曲げたり、腕を少し上げると調整が出来ます。&#xa;画面に表示される白玉はトラッカーが認識されているか確認するための表示です。位置を合わせる必要はありません。</system:String>
+    <system:String x:Key="CalibrationWindow_FinishSound">完了音</system:String>
 
     <!-- VRMImportWindow -->
     <system:String x:Key="VRMImportWindowTitle">VRM読込</system:String>
@@ -279,6 +281,15 @@
     <system:String x:Key="SettingWindow_ReceiveBonesEnable">手ボーン取得</system:String>
     <system:String x:Key="SettingWindow_VMCMod">VMC Mod (無保証/無サポート)</system:String>
     <system:String x:Key="SettingWindow_VMCModSetting">ロード済みModリスト</system:String>
+
+    <!-- CalibrationSettingWindow -->
+    <system:String x:Key="CalibrationSettingWindow_BodyHeight">身長設定</system:String>
+    <system:String x:Key="CalibrationSettingWindow_OverrideBodyHeight">身長を上書き</system:String>
+    <system:String x:Key="CalibrationSettingWindow_Height">身長 :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_Pelvis">腰のオフセット</system:String>
+    <system:String x:Key="CalibrationSettingWindow_OffsetY">Yオフセット :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_OffsetZ">Zオフセット :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_Notice">変更後は再キャリブレーションが必要です</system:String>
 
     <!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">トラッカー割り当て設定</system:String>
@@ -493,6 +504,10 @@
     <system:String x:Key="VMCProtocolReceiverSettingWindow_RightFinger">右指</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_LeftFinger">左指</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_UnselectBones">ボーンを除く</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_Port">ポート :</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_Delay">遅延:</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_FixHandBone">手のボーンを修正</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_UseBonePosition">ボーンの位置を使う</system:String>
 
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">色選択</system:String>
@@ -543,6 +558,7 @@
 	<system:String x:Key="CalibrationResultWindow_CautionMessage">実際の値と大きく違う場合、装着位置や床の高さ設定を確認し、正しい姿勢でもう一度キャリブレーションを実行してください。</system:String>
 	<system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">秒後に自動で閉じます</system:String>
 
+    <system:String x:Key="FirewallManagerWindow_Title">ファイアウォール設定</system:String>
     <system:String x:Key="FirewallManagerWindow_Description">バーチャルモーションキャプチャーが連携アプリと通信するためにファイアウォール設定を行います。よろしいですか？</system:String>
     <system:String x:Key="FirewallManagerWindow_DontShowAgain">次回以降表示しない</system:String>
 

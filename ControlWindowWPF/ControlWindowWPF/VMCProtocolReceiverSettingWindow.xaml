@@ -18,7 +18,7 @@
                 </DockPanel>
                 <DockPanel DockPanel.Dock="Top">
                     <CheckBox Content="{DynamicResource MotionCapture_mocopiSettingWindow_EnableCheckBox}" Name="EnableCheckBox" VerticalAlignment="Center" Padding="4,0,0,0" VerticalContentAlignment="Bottom" Margin="0" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
-                    <TextBlock Text=" Port:" Margin="20,0,0,0"/>
+                    <TextBlock Text="{DynamicResource VMCProtocolReceiverSettingWindow_Port}" Margin="20,0,0,0"/>
                     <TextBox Text="39540" VerticalAlignment="Center" Name="ReceivePortTextBox" Width="50" HorizontalAlignment="Left"/>
                 </DockPanel>
             </DockPanel>
@@ -105,12 +105,12 @@
                 </StackPanel>
                 <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" HorizontalAlignment="Right">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <TextBlock Text="Delay: " Grid.Column="0" Grid.Row="2"/>
+                        <TextBlock Text="{DynamicResource VMCProtocolReceiverSettingWindow_Delay}" Grid.Column="0" Grid.Row="2"/>
                         <TextBox Text="0" VerticalAlignment="Center" Name="DelayMsTextbox" MinWidth="50"/>
                         <TextBlock Text="ms" Margin="5,0,0,0"/>
                     </StackPanel>
-                    <CheckBox Content="Fix hand bone" Name="FixHandBoneCheckBox" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
-                    <CheckBox Content="Use bone position" Name="UseBonePositionCheckBox" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                    <CheckBox Content="{DynamicResource VMCProtocolReceiverSettingWindow_FixHandBone}" Name="FixHandBoneCheckBox" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                    <CheckBox Content="{DynamicResource VMCProtocolReceiverSettingWindow_UseBonePosition}" Name="UseBonePositionCheckBox" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
                 </StackPanel>
             </Grid>
         </GroupBox>

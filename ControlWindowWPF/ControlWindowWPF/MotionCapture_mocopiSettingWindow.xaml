@@ -10,7 +10,7 @@
         <GroupBox Header="mocopi (UDP)" DockPanel.Dock="Top">
             <StackPanel Orientation="Horizontal">
                 <CheckBox Content="{DynamicResource MotionCapture_mocopiSettingWindow_EnableCheckBox}" Name="UsemocopiCheckBox" VerticalAlignment="Center" VerticalContentAlignment="Bottom" Margin="0" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
-                <TextBlock Text=" Port:" Margin="20,0,0,0"/>
+                <TextBlock Text="{DynamicResource VMCProtocolReceiverSettingWindow_Port}" Margin="20,0,0,0"/>
                 <TextBox Text="12351" VerticalAlignment="Center" Name="ReceivePortTextBox" Width="50"/>
                 <Button Content="{DynamicResource SettingWindow_Apply}" DockPanel.Dock="Right" Name="PortApplyButton" Height="24" Click="PortApplyButton_Click"/>
             </StackPanel>
