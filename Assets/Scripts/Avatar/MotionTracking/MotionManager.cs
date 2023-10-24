@@ -2,6 +2,7 @@ using RootMotion.FinalIK;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace VMC
@@ -46,6 +47,8 @@ namespace VMC
 
                 }
                 VirtualAvatars.Add(virtualAvatar);
+
+                VirtualAvatars = VirtualAvatars.OrderBy(d => (int)d.MotionSource).ToList();
             }
         }
 

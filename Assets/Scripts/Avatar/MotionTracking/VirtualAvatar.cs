@@ -282,7 +282,7 @@ namespace VMC
     public enum MotionSource
     {
         VRIK,
-        VMCProtocol,
         mocopi,
+        VMCProtocol,
     }
 }
