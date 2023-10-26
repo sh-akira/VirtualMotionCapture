@@ -126,7 +126,9 @@ namespace VMC
 
         public bool FixHandBone = true;
         public bool UseBonePosition = false;
-        
+        [OptionalField]
+        public bool CorrectHipBone = false;
+
         public bool ApplyBlendShape = true;
         public bool ApplyLookAt = true;
         public bool ApplyTracker = true;
@@ -161,8 +163,9 @@ namespace VMC
             ApplyEye = setting.ApplyEye;
             ApplyLeftFinger = setting.ApplyLeftFinger;
             ApplyRightFinger = setting.ApplyRightFinger;
-            FixHandBone = setting.FixHandBone;
+            FixHandBone = setting.CorrectHandBone;
             UseBonePosition = setting.UseBonePosition;
+            CorrectHipBone = setting.CorrectHipBone;
 
             ApplyBlendShape = setting.ApplyBlendShape;
             ApplyLookAt = setting.ApplyLookAt;
@@ -206,7 +209,8 @@ namespace VMC
 
                 DelayMs = DelayMs,
 
-                FixHandBone = FixHandBone,
+                CorrectHandBone = FixHandBone,
+                CorrectHipBone = CorrectHipBone,
                 UseBonePosition = UseBonePosition,
 
                 ApplyBlendShape = ApplyBlendShape,
@@ -618,6 +622,8 @@ namespace VMC
         public bool mocopi_ApplyLeftFoot;
         [OptionalField]
         public bool mocopi_ApplyRightFoot;
+        [OptionalField]
+        public bool mocopi_CorrectHipBone;
 
 
         [OptionalField]
@@ -794,6 +800,7 @@ namespace VMC
             mocopi_ApplyRightLeg = true;
             mocopi_ApplyLeftFoot = true;
             mocopi_ApplyRightFoot = true;
+            mocopi_CorrectHipBone = false;
 
             EnableOverrideBodyHeight = false;
             OverrideBodyHeight = 1.7f;

@@ -463,8 +463,9 @@ namespace UnityMemoryMappedFile
             public bool ApplyEye { get; set; }
             public bool ApplyLeftFinger { get; set; }
             public bool ApplyRightFinger { get; set; }
-            public bool FixHandBone { get; set; }
+            public bool CorrectHandBone { get; set; }
             public bool UseBonePosition { get; set; }
+            public bool CorrectHipBone { get; set; }
 
             public bool ApplyBlendShape { get; set; }
             public bool ApplyLookAt { get; set; }

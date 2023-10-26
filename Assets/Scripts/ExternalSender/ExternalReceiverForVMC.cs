@@ -115,6 +115,7 @@ namespace VMC
                 virtualAvatar.ApplyEye = setting.ApplyEye;
                 virtualAvatar.ApplyLeftFinger = setting.ApplyLeftFinger;
                 virtualAvatar.ApplyRightFinger = setting.ApplyRightFinger;
+                virtualAvatar.CorrectHipBone = setting.CorrectHipBone;
             }
 
             ApplyBlendShape = setting.ApplyBlendShape;

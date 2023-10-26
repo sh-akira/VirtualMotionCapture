@@ -506,7 +506,8 @@
     <system:String x:Key="VMCProtocolReceiverSettingWindow_UnselectBones">取消选定骨关节</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_Port">端口：</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_Delay">延迟：</system:String>
-    <system:String x:Key="VMCProtocolReceiverSettingWindow_FixHandBone">修正手骨</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_CorrectHandBone">修正手骨</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_CorrectHipBone">修正腰骨</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_UseBonePosition">使用骨关节位置</system:String>
 
     <!-- PhotoWindow -->

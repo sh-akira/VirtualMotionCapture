@@ -54,6 +54,7 @@ namespace VirtualMotionCaptureControlPanel
             LeftFootCheckBox.IsChecked = setting.ApplyLeftFoot;
             RootPositionCheckBox.IsChecked = setting.ApplyRootPosition;
             RootRotationCheckBox.IsChecked = setting.ApplyRootRotation;
+            CorrectHipBoneCheckBox.IsChecked = setting.CorrectHipBone;
             IsSetting = false;
         }
 
@@ -96,6 +97,7 @@ namespace VirtualMotionCaptureControlPanel
                     ApplyLeftFoot = LeftFootCheckBox.IsChecked.Value,
                     ApplyRootPosition = RootPositionCheckBox.IsChecked.Value,
                     ApplyRootRotation = RootRotationCheckBox.IsChecked.Value,
+                    CorrectHipBone = CorrectHipBoneCheckBox.IsChecked.Value,
                 });
             }
             else

@@ -41,6 +41,8 @@ namespace VMC
         public bool Enable = true;
         public bool IgnoreDefaultBone = true;
 
+        public bool CorrectHipBone = false;
+
         public Dictionary<HumanBodyBones, (Transform cloneBone, Transform modelBone)> boneTransformCache;
         public Dictionary<HumanBodyBones, (Transform cloneBone, Transform modelBone)> BoneTransformCache => InitializeBoneTransformCache();
 

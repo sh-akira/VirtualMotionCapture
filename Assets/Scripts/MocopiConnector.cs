@@ -82,6 +82,7 @@ namespace VMC
                         ApplyLeftFoot = Settings.Current.mocopi_ApplyLeftFoot,
                         ApplyRootPosition = Settings.Current.mocopi_ApplyRootPosition,
                         ApplyRootRotation = Settings.Current.mocopi_ApplyRootRotation,
+                        CorrectHipBone = Settings.Current.mocopi_CorrectHipBone,
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.mocopi_SetSetting))
@@ -112,6 +113,7 @@ namespace VMC
             Settings.Current.mocopi_ApplyLeftFoot = setting.ApplyLeftFoot;
             Settings.Current.mocopi_ApplyRootPosition = setting.ApplyRootPosition;
             Settings.Current.mocopi_ApplyRootRotation = setting.ApplyRootRotation;
+            Settings.Current.mocopi_CorrectHipBone = setting.CorrectHipBone;
 
             SetVirtualAvatarSetting();
 
@@ -138,6 +140,7 @@ namespace VMC
             virtualAvatar.ApplyLeftFoot = Settings.Current.mocopi_ApplyLeftFoot;
             virtualAvatar.ApplyRootPosition = Settings.Current.mocopi_ApplyRootPosition;
             virtualAvatar.ApplyRootRotation = Settings.Current.mocopi_ApplyRootRotation;
+            virtualAvatar.CorrectHipBone = Settings.Current.mocopi_CorrectHipBone;
         }
 
         private void ApplySettings(GameObject gameObject)

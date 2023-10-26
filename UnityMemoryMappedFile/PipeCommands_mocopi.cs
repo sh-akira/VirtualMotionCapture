@@ -27,6 +27,7 @@ namespace UnityMemoryMappedFile
             public bool ApplyRightLeg { get; set; }
             public bool ApplyLeftFoot { get; set; }
             public bool ApplyRightFoot { get; set; }
+            public bool CorrectHipBone { get; set; }
         }
         public class mocopi_Recenter { }
     }

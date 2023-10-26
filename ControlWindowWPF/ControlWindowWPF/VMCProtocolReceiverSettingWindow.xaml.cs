@@ -72,8 +72,9 @@ namespace VirtualMotionCaptureControlPanel
 
             DelayMsTextbox.Text = setting.DelayMs.ToString();
 
-            FixHandBoneCheckBox.IsChecked = setting.FixHandBone;
+            CorrectHandBoneCheckBox.IsChecked = setting.CorrectHandBone;
             UseBonePositionCheckBox.IsChecked = setting.UseBonePosition;
+            CorrectHipBoneCheckBox.IsChecked = setting.CorrectHipBone;
 
             BlendShapeCheckBox.IsChecked = setting.ApplyBlendShape;
             LookAtCheckBox.IsChecked = setting.ApplyLookAt;
@@ -145,8 +146,9 @@ namespace VirtualMotionCaptureControlPanel
 
                 DelayMs = delayMs.Value,
 
-                FixHandBone = FixHandBoneCheckBox.IsChecked.Value,
+                CorrectHandBone = CorrectHandBoneCheckBox.IsChecked.Value,
                 UseBonePosition = UseBonePositionCheckBox.IsChecked.Value,
+                CorrectHipBone = CorrectHipBoneCheckBox.IsChecked.Value,
 
                 ApplyBlendShape = BlendShapeCheckBox.IsChecked.Value,
                 ApplyLookAt = LookAtCheckBox.IsChecked.Value,

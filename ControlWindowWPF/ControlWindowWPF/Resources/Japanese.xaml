@@ -506,7 +506,8 @@
     <system:String x:Key="VMCProtocolReceiverSettingWindow_UnselectBones">ボーンを除く</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_Port">ポート :</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_Delay">遅延:</system:String>
-    <system:String x:Key="VMCProtocolReceiverSettingWindow_FixHandBone">手のボーンを修正</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_CorrectHandBone">手のボーンを修正</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_CorrectHipBone">腰のボーンを修正</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_UseBonePosition">ボーンの位置を使う</system:String>
 
     <!-- PhotoWindow -->

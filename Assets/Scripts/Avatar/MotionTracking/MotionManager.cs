@@ -329,7 +329,7 @@ namespace VMC
                     }
                 }
 
-                if (virtualAvatar.ApplyHead == false && hipBone != null && spineBone != null)
+                if (virtualAvatar.CorrectHipBone && virtualAvatar.ApplyHead == false && hipBone != null && spineBone != null)
                 {
                     //頭の回転無効の時、VR機器優先するために最後に元の位置に戻るように腰を動かす
                     var rotdiff = defaultHeadRotation * Quaternion.Inverse(headBone.rotation);

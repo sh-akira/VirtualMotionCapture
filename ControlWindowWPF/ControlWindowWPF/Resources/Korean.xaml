@@ -507,7 +507,8 @@
     <system:String x:Key="VMCProtocolReceiverSettingWindow_UnselectBones">Unselect bones</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_Port">Port :</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_Delay">Delay :</system:String>
-    <system:String x:Key="VMCProtocolReceiverSettingWindow_FixHandBone">Correct hand bone</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_CorrectHandBone">Correct hand bone</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_CorrectHipBone">Correct hip bone</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_UseBonePosition">Use bone position</system:String>
 
     <!-- PhotoWindow -->
