@@ -169,23 +169,27 @@ namespace VMC
             if (enabled == false) return;
 
             VMCEvents.BeforeApplyMotion?.Invoke(currentModel);
+            
+            Transform ikHeadBone = null;
 
             foreach (var virtualAvatar in VirtualAvatars)
             {
-                if (virtualAvatar.Enable == false) continue;
                 if (virtualAvatar.BoneTransformCache == null) continue;
+                if (virtualAvatar.MotionSource == MotionSource.VRIK) ikHeadBone = virtualAvatar.BoneTransformCache[HumanBodyBones.Head].cloneBone;
+                if (virtualAvatar.Enable == false) continue;
 
                 //キャリブレーション中は適用しない
                 if (virtualAvatar.MotionSource != MotionSource.VRIK &&
                     (IKManager.Instance.CalibrationState == CalibrationState.WaitingForCalibrating ||
                      IKManager.Instance.CalibrationState == CalibrationState.Calibrating)) return;
 
+                if (ikHeadBone == null) continue;
+
                 Transform headBone = virtualAvatar.BoneTransformCache[HumanBodyBones.Head].modelBone;
-                if (headBone == null) continue;
                 Transform hipBone = null;
                 Transform spineBone = null;
-                Vector3 defaultHeadPosition = headBone.position;
-                Quaternion defaultHeadRotation = headBone.rotation;
+                Vector3 defaultHeadPosition = ikHeadBone.position;
+                Quaternion defaultHeadRotation = ikHeadBone.rotation;
 
                 foreach (var (bone, (cloneBone, modelBone)) in virtualAvatar.BoneTransformCache)
                 {
