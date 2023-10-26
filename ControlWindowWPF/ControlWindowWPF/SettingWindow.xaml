@@ -273,7 +273,7 @@
                     <ComboBox Name="LanguageComboBox" SelectedIndex="0" SelectionChanged="LanguageComboBox_SelectionChanged">
                         <system:String>Japanese</system:String>
                         <system:String>English</system:String>
-                        <system:String>Chinese (@PoctorXz, @ccloli)</system:String>
+                        <system:String>Chinese (@PoctorXz, @ccloli, @sparanoid)</system:String>
                         <system:String>Korean (@MANKALO_kr)</system:String>
                     </ComboBox>
                 </GroupBox>
