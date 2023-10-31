@@ -509,6 +509,7 @@
     <system:String x:Key="VMCProtocolReceiverSettingWindow_CorrectHandBone">手のボーンを修正</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_CorrectHipBone">腰のボーンを修正</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_UseBonePosition">ボーンの位置を使う</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_IgnoreDefaultBone">デフォルト値のボーンを無視</system:String>
 
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">色選択</system:String>

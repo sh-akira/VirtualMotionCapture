@@ -510,6 +510,7 @@
     <system:String x:Key="VMCProtocolReceiverSettingWindow_CorrectHandBone">Correct hand bone</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_CorrectHipBone">Correct hip bone</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_UseBonePosition">Use bone position</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_IgnoreDefaultBone">Ignore default bones</system:String>
 
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">색상선택</system:String>

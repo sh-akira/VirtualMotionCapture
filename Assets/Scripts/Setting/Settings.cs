@@ -128,6 +128,8 @@ namespace VMC
         public bool UseBonePosition = false;
         [OptionalField]
         public bool CorrectHipBone = false;
+        [OptionalField]
+        public bool IgnoreDefaultBone = false;
 
         public bool ApplyBlendShape = true;
         public bool ApplyLookAt = true;
@@ -166,6 +168,7 @@ namespace VMC
             FixHandBone = setting.CorrectHandBone;
             UseBonePosition = setting.UseBonePosition;
             CorrectHipBone = setting.CorrectHipBone;
+            IgnoreDefaultBone = setting.IgnoreDefaultBone;
 
             ApplyBlendShape = setting.ApplyBlendShape;
             ApplyLookAt = setting.ApplyLookAt;
@@ -212,6 +215,7 @@ namespace VMC
                 CorrectHandBone = FixHandBone,
                 CorrectHipBone = CorrectHipBone,
                 UseBonePosition = UseBonePosition,
+                IgnoreDefaultBone = IgnoreDefaultBone,
 
                 ApplyBlendShape = ApplyBlendShape,
                 ApplyLookAt = ApplyLookAt,

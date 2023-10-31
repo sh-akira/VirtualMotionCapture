@@ -75,6 +75,7 @@ namespace VirtualMotionCaptureControlPanel
             CorrectHandBoneCheckBox.IsChecked = setting.CorrectHandBone;
             UseBonePositionCheckBox.IsChecked = setting.UseBonePosition;
             CorrectHipBoneCheckBox.IsChecked = setting.CorrectHipBone;
+            IgnoreDefaultBoneCheckBox.IsChecked = setting.IgnoreDefaultBone;
 
             BlendShapeCheckBox.IsChecked = setting.ApplyBlendShape;
             LookAtCheckBox.IsChecked = setting.ApplyLookAt;
@@ -149,6 +150,7 @@ namespace VirtualMotionCaptureControlPanel
                 CorrectHandBone = CorrectHandBoneCheckBox.IsChecked.Value,
                 UseBonePosition = UseBonePositionCheckBox.IsChecked.Value,
                 CorrectHipBone = CorrectHipBoneCheckBox.IsChecked.Value,
+                IgnoreDefaultBone = IgnoreDefaultBoneCheckBox.IsChecked.Value,
 
                 ApplyBlendShape = BlendShapeCheckBox.IsChecked.Value,
                 ApplyLookAt = LookAtCheckBox.IsChecked.Value,

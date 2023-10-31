@@ -112,6 +112,7 @@
                     <CheckBox Content="{DynamicResource VMCProtocolReceiverSettingWindow_CorrectHandBone}" Name="CorrectHandBoneCheckBox" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
                     <CheckBox Content="{DynamicResource VMCProtocolReceiverSettingWindow_CorrectHipBone}" Name="CorrectHipBoneCheckBox" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
                     <CheckBox Content="{DynamicResource VMCProtocolReceiverSettingWindow_UseBonePosition}" Name="UseBonePositionCheckBox" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                    <CheckBox Content="{DynamicResource VMCProtocolReceiverSettingWindow_IgnoreDefaultBone}" Name="IgnoreDefaultBoneCheckBox" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
                 </StackPanel>
             </Grid>
         </GroupBox>

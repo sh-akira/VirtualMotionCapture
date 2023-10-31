@@ -509,6 +509,7 @@
     <system:String x:Key="VMCProtocolReceiverSettingWindow_CorrectHandBone">修正手骨</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_CorrectHipBone">修正腰骨</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_UseBonePosition">使用骨关节位置</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_IgnoreDefaultBone">不使用默认值骨</system:String>
 
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">取色器</system:String>
