@@ -533,6 +533,31 @@ namespace VMC
                     window.MainDirectionalLightTransform.rotation = rot;
                 }
 
+                //ルートボーン
+                else if (message.address == "/VMC/Ext/Root/Pos"
+                    && (message.values[0] is string)
+                    && (message.values[1] is float)
+                    && (message.values[2] is float)
+                    && (message.values[3] is float)
+                    && (message.values[4] is float)
+                    && (message.values[5] is float)
+                    && (message.values[6] is float)
+                    && (message.values[7] is float)
+                    )
+                {
+                    string boneName = (string)message.values[0];
+                    pos.x = (float)message.values[1];
+                    pos.y = (float)message.values[2];
+                    pos.z = (float)message.values[3];
+                    rot.x = (float)message.values[4];
+                    rot.y = (float)message.values[5];
+                    rot.z = (float)message.values[6];
+                    rot.w = (float)message.values[7];
+
+                    HumanBodyBonesTable[boneName] = VirtualAvatar.HumanBodyBonesRoot;
+                    HumanBodyBonesPositionTable[VirtualAvatar.HumanBodyBonesRoot] = pos;
+                    HumanBodyBonesRotationTable[VirtualAvatar.HumanBodyBonesRoot] = rot;
+                }
                 //ボーン姿勢
                 else if (message.address == "/VMC/Ext/Bone/Pos"
                     && (message.values[0] is string)
@@ -559,23 +584,8 @@ namespace VMC
                     if (HumanBodyBonesTryParse(ref boneName, out bone))
                     {
                         //あれば位置と回転をキャッシュする
-                        if (HumanBodyBonesPositionTable.ContainsKey(bone))
-                        {
-                            HumanBodyBonesPositionTable[bone] = pos;
-                        }
-                        else
-                        {
-                            HumanBodyBonesPositionTable.Add(bone, pos);
-                        }
-
-                        if (HumanBodyBonesRotationTable.ContainsKey(bone))
-                        {
-                            HumanBodyBonesRotationTable[bone] = rot;
-                        }
-                        else
-                        {
-                            HumanBodyBonesRotationTable.Add(bone, rot);
-                        }
+                        HumanBodyBonesPositionTable[bone] = pos;
+                        HumanBodyBonesRotationTable[bone] = rot;
 
                         // 手以外を受信したとき
                         if (!(bone == HumanBodyBones.LeftHand ||
