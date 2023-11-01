@@ -46,6 +46,8 @@ namespace VMC
         public Dictionary<HumanBodyBones, (Transform cloneBone, Transform modelBone)> boneTransformCache;
         public Dictionary<HumanBodyBones, (Transform cloneBone, Transform modelBone)> BoneTransformCache => InitializeBoneTransformCache();
 
+        public Dictionary<HumanBodyBones, bool> isPoseChanged;
+
 
         public const HumanBodyBones HumanBodyBonesRoot = (HumanBodyBones)(-1);
         public static HumanBodyBones[] ReverseBodyBones = new HumanBodyBones[] {
@@ -121,6 +123,9 @@ namespace VMC
         public Transform GetCloneBoneTransform(HumanBodyBones bone) => GetBoneTransformPair(bone).cloneBone;
         public Transform GetModelBoneTransform(HumanBodyBones bone) => GetBoneTransformPair(bone).modelBone;
 
+        public void SetPoseChanged(HumanBodyBones bone) => isPoseChanged[bone] = true;
+        public bool GetPoseChanged(HumanBodyBones bone) => isPoseChanged.ContainsKey(bone) ? isPoseChanged[bone] : false;
+
         public void ImportAvatar(GameObject model)
         {
             if (avatar != null)
@@ -154,10 +159,12 @@ namespace VMC
             if (boneTransformCache == null)
             {
                 boneTransformCache = new Dictionary<HumanBodyBones, (Transform cloneBone, Transform modelBone)>();
+                isPoseChanged = new Dictionary<HumanBodyBones, bool>();
             }
             else
             {
                 boneTransformCache.Clear();
+                isPoseChanged.Clear();
             }
 
             var modelAnimator = currentModel.GetComponent<Animator>();
@@ -165,6 +172,7 @@ namespace VMC
             if (modelAnimator == null) return null;
 
             boneTransformCache.Add(HumanBodyBonesRoot, (animator.transform, modelAnimator.transform));
+            isPoseChanged.Add(HumanBodyBonesRoot, false);
 
             foreach (HumanBodyBones bone in ReverseBodyBones)
             {
@@ -177,6 +185,7 @@ namespace VMC
                 if (modelBone == null) continue;
 
                 boneTransformCache.Add(bone, (cloneBone, modelBone));
+                isPoseChanged.Add(bone, false);
             }
             return boneTransformCache.Count == 0 ? null : boneTransformCache;
         }

@@ -198,7 +198,7 @@ namespace VMC
                     {
                         case VirtualAvatar.HumanBodyBonesRoot:
                         case HumanBodyBones.Hips:
-                            if (virtualAvatar.IgnoreDefaultBone && IsDefaultPose(bone, cloneBone))
+                            if (virtualAvatar.IgnoreDefaultBone && IsDefaultPose(virtualAvatar, bone, cloneBone))
                             {
                                 apply = false;
                             }
@@ -321,7 +321,7 @@ namespace VMC
 
                     if (apply) 
                     {
-                        if (virtualAvatar.IgnoreDefaultBone && IsDefaultPose(bone, cloneBone))
+                        if (virtualAvatar.IgnoreDefaultBone && IsDefaultPose(virtualAvatar, bone, cloneBone))
                         {
                             continue;
                         }
@@ -342,12 +342,23 @@ namespace VMC
             VMCEvents.AfterApplyMotion?.Invoke(currentModel);
         }
 
-        private bool IsDefaultPose(HumanBodyBones bone, Transform cloneBone)
+        private bool IsDefaultPose(VirtualAvatar virtualAvatar, HumanBodyBones bone, Transform cloneBone)
         {
             if (cloneBone == null) return true;
+            if (virtualAvatar.GetPoseChanged(bone) == true)
+            {
+                // 過去に変動していたら現在の値に関わらずデフォルトじゃない扱い
+                return false;
+            }
             var pose = defaultPoses[bone];
-            return ((cloneBone.localRotation == pose.rotation && cloneBone.localPosition == pose.position) ||
-                    (cloneBone.localRotation == Quaternion.identity && cloneBone.localPosition == Vector3.zero)) ;
+            bool isDefault = ((cloneBone.localRotation == pose.rotation && cloneBone.localPosition == pose.position) ||
+                              (cloneBone.localRotation == Quaternion.identity && cloneBone.localPosition == Vector3.zero));
+            if (isDefault == false)
+            {
+                // ボーンの変動を見つけたとき、デフォルトじゃない扱いする
+                virtualAvatar.SetPoseChanged(bone);
+            }
+            return isDefault;
         }
     }    
 }

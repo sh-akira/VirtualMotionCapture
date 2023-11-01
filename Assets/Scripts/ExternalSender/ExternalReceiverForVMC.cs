@@ -808,6 +808,7 @@ namespace VMC
         {
             if (receiverSetting.UseBonePosition) t.localPosition = pos;
             t.localRotation = rot;
+            virtualAvatar.SetPoseChanged(bone);
         }
         //ボーンENUM情報をキャッシュして高速化
         private bool HumanBodyBonesTryParse(ref string boneName, out HumanBodyBones bone)
