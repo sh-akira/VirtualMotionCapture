@@ -43,7 +43,7 @@ namespace VMC
 
         public Transform generatedObject;
 
-        private Animator animator => virtualAvatar.animator;
+        private Animator animator => virtualAvatar?.animator;
 
 
         private const float LeftLowerArmAngle = -30f;
@@ -62,7 +62,6 @@ namespace VMC
         private void Start()
         {
             virtualAvatar = new VirtualAvatar(transform, MotionSource.VRIK);
-            virtualAvatar.Enable = false;
             MotionManager.Instance.AddVirtualAvatar(virtualAvatar);
 
             VMCEvents.OnCurrentModelChanged += OnCurrentModelChanged;
@@ -94,7 +93,6 @@ namespace VMC
             if (model != null)
             {
                 CalibrationState = CalibrationState.Uncalibrated; //キャリブレーション状態を"未キャリブレーション"に設定
-                virtualAvatar.Enable = false;
             }
         }
         private void OnModelUnloading(GameObject model)
@@ -212,7 +210,6 @@ namespace VMC
         public void ModelCalibrationInitialize()
         {
             CalibrationState = CalibrationState.WaitingForCalibrating; //キャリブレーション状態を"キャリブレーション待機中"に設定
-            virtualAvatar.Enable = true;
 
             if (virtualAvatar != null)
             {
@@ -916,7 +913,6 @@ namespace VMC
             if (CalibrationState == CalibrationState.Calibrating)
             {
                 CalibrationState = CalibrationState.Calibrated; //キャリブレーション状態を"キャリブレーション完了"に設定
-                virtualAvatar.Enable = true;
 
                 context.Post(async (_) =>
                 {
@@ -928,7 +924,6 @@ namespace VMC
             {
                 //キャンセルされたなど
                 CalibrationState = CalibrationState.Uncalibrated; //キャリブレーション状態を"未キャリブレーション"に設定
-                virtualAvatar.Enable = false;
 
                 if (animator != null)
                 {
