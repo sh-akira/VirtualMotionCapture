@@ -141,6 +141,43 @@ namespace VMC
         public bool ApplyControl = true;
         public bool ApplySetting = true;
 
+
+        //初期値
+        [OnDeserializing()]
+        internal void OnDeserializingMethod(StreamingContext context)
+        {
+            Name = "Receiver";
+
+            ApplyRootRotation = true;
+            ApplyRootPosition = true;
+            ApplySpine = true;
+            ApplyChest = true;
+            ApplyHead = true;
+            ApplyLeftArm = true;
+            ApplyRightArm = true;
+            ApplyLeftHand = true;
+            ApplyRightHand = true;
+            ApplyLeftLeg = true;
+            ApplyRightLeg = true;
+            ApplyLeftFoot = true;
+            ApplyRightFoot = true;
+            ApplyLeftFinger = true;
+            ApplyRightFinger = true;
+
+            FixHandBone = true;
+            IgnoreDefaultBone = true;
+
+            ApplyBlendShape = true;
+            ApplyLookAt = true;
+            ApplyTracker = true;
+            ApplyCamera = true;
+            ApplyLight = true;
+            ApplyMidi = true;
+            ApplyStatus = true;
+            ApplyControl = true;
+            ApplySetting = true;
+        }
+
         public VMCProtocolReceiverSettings Import(PipeCommands.SetVMCProtocolReceiverSetting setting)
         {
             Enable = setting.Enable;
