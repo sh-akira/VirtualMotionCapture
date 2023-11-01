@@ -72,8 +72,6 @@ namespace VMC
             GUIUtility.systemCopyBuffer = trackerPositionsJson;
 #endif
 
-            vrik.enabled = false;
-            yield return null;
 
             //それぞれのトラッカーを正しいルートに移動
             if (HMDTrackingPoint != null) HMDTrackingPoint.TargetTransform.parent = footTrackerRoot;
@@ -90,6 +88,8 @@ namespace VMC
             if (LeftKneeTrackingPoint != null) LeftKneeTrackingPoint.TargetTransform.parent = footTrackerRoot;
             if (RightKneeTrackingPoint != null) RightKneeTrackingPoint.TargetTransform.parent = footTrackerRoot;
 
+            vrik.enabled = false;
+            yield return null;
 
             var headTarget = HMDTrackingPoint;
 

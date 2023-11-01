@@ -205,12 +205,8 @@ namespace VMC
             }, null);
         }
 
-
-
-        public void ModelCalibrationInitialize()
+        private void RemoveComponents()
         {
-            CalibrationState = CalibrationState.WaitingForCalibrating; //キャリブレーション状態を"キャリブレーション待機中"に設定
-
             if (virtualAvatar != null)
             {
                 var currentVRIKTimingManager = virtualAvatar.GetComponent<VRIKTimingManager>();
@@ -219,7 +215,16 @@ namespace VMC
                 if (rootController != null) DestroyImmediate(rootController);
                 var currentvrik = virtualAvatar.GetComponent<VRIK>();
                 if (currentvrik != null) DestroyImmediate(currentvrik);
+            }
+        }
 
+        public void ModelCalibrationInitialize()
+        {
+            CalibrationState = CalibrationState.WaitingForCalibrating; //キャリブレーション状態を"キャリブレーション待機中"に設定
+
+            if (virtualAvatar != null)
+            {
+                RemoveComponents();
                 MotionManager.Instance.ResetVirtualAvatarPose(virtualAvatar);
             }
 
@@ -259,11 +264,6 @@ namespace VMC
             if (animator != null)
             {
                 wristRotationFix.SetVRIK(vrik);
-
-                animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).eulerAngles = new Vector3(LeftLowerArmAngle, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.RightLowerArm).eulerAngles = new Vector3(RightLowerArmAngle, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).eulerAngles = new Vector3(LeftUpperArmAngle, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.RightUpperArm).eulerAngles = new Vector3(RightUpperArmAngle, 0, 0);
 
                 HandController.SetDefaultAngle(animator);
 
@@ -689,11 +689,13 @@ namespace VMC
         {
             LastCalibrateType = calibrateType;//最後に実施したキャリブレーションタイプとして記録
 
+
             //開始状態を格納
             CalibrationResult = new PipeCommands.CalibrationResult
             {
                 Type = calibrateType
             };
+
 
             if (animator == null)
             {
@@ -701,27 +703,9 @@ namespace VMC
                 yield break;
             }
 
-            animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(0, 0, 0);
-            animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(0, 0, 0);
-            animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(0, 0, 0);
-            animator.GetBoneTransform(HumanBodyBones.RightUpperArm).localEulerAngles = new Vector3(0, 0, 0);
-            var lefthand = animator.GetBoneTransform(HumanBodyBones.LeftHand); lefthand.localEulerAngles = new Vector3(0, 0, 0);
-            animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(0, 0, 0);
 
             SetVRIK(virtualAvatar);
             wristRotationFix.SetVRIK(vrik);
-
-            //animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(LeftHandAngle, 0, 0);
-            //animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(RightHandAngle, 0, 0);
-
-            //var leftLowerArm = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm);
-            //var leftRelaxer = leftLowerArm.gameObject.AddComponent<TwistRelaxer>();
-            //leftRelaxer.ik = vrik;
-            //leftRelaxer.twistSolvers = new TwistSolver[] { new TwistSolver { transform = leftLowerArm } };
-            //var rightLowerArm = animator.GetBoneTransform(HumanBodyBones.RightLowerArm);
-            //var rightRelaxer = rightLowerArm.gameObject.AddComponent<TwistRelaxer>();
-            //rightRelaxer.ik = vrik;
-            //rightRelaxer.twistSolvers = new TwistSolver[] { new TwistSolver { transform = rightLowerArm } };
 
             var headTracker = GetTrackerTransformBySerialNumber(Settings.Current.Head, TargetType.Head);
             var leftHandTracker = GetTrackerTransformBySerialNumber(Settings.Current.LeftHand, TargetType.LeftArm, headTracker?.TargetTransform);
@@ -925,22 +909,9 @@ namespace VMC
                 //キャンセルされたなど
                 CalibrationState = CalibrationState.Uncalibrated; //キャリブレーション状態を"未キャリブレーション"に設定
 
-                if (animator != null)
-                {
-                    //IKを初期化
-                    animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(0, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(0, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(0, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.RightUpperArm).localEulerAngles = new Vector3(0, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(0, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(0, 0, 0);
-
-                    SetVRIK(virtualAvatar);
-                    wristRotationFix.SetVRIK(vrik);
-
-                    animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(LeftHandAngle, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(RightHandAngle, 0, 0);
-                }
+                RemoveComponents();
+                MotionManager.Instance.ResetVirtualAvatarPose(virtualAvatar);
+                ModelInitialize();
             }
         }
 
