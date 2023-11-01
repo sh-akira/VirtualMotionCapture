@@ -83,7 +83,7 @@ namespace VMC
             virtualAvatar.ApplyRightLeg = true;
             virtualAvatar.ApplyLeftFoot = true;
             virtualAvatar.ApplyRightFoot = true;
-            virtualAvatar.ApplyEye = true;
+            virtualAvatar.ApplyEye = false;
             virtualAvatar.ApplyLeftFinger = true;
             virtualAvatar.ApplyRightFinger = true;
 
