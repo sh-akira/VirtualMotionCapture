@@ -129,7 +129,7 @@ namespace VMC
         [OptionalField]
         public bool CorrectHipBone = false;
         [OptionalField]
-        public bool IgnoreDefaultBone = false;
+        public bool IgnoreDefaultBone = true;
 
         public bool ApplyBlendShape = true;
         public bool ApplyLookAt = true;
