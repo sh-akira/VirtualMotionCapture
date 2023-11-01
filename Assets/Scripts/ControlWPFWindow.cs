@@ -1645,19 +1645,15 @@ namespace VMC
                 )
             {
                 //状態を失敗で上書き
-                var calibrationResult = new PipeCommands.CalibrationResult
+                IKManager.Instance.CalibrationResult = new PipeCommands.CalibrationResult
                 {
                     Type = PipeCommands.CalibrateType.Invalid,
                     Message = cond,
                     UserHeight = -1
                 };
 
-                //以前の状態が失敗ではない場合、
-                if (IKManager.Instance.CalibrationResult.Type != PipeCommands.CalibrateType.Invalid)
-                {
-                    //エラー確定なので一旦ここで送ってしまう(例外等の場合は最終送信処理が行われなくなるため)
-                    await server.SendCommandAsync(calibrationResult);
-                }
+                //エラー送信
+                await server.SendCommandAsync(IKManager.Instance.CalibrationResult);
             }
         }
 

@@ -872,9 +872,16 @@ namespace VMC
                 calibratedRightHandTransform.parent = rightHandFreeOffsetPosition;
             }
 
-            SetHandFreeOffset();
+            yield return null;
 
-            CalibrationState = CalibrationState.Calibrating; //キャリブレーション状態を"キャリブレーション中"に設定(ここまで来なければ失敗している)
+            if (CalibrationResult.Type == PipeCommands.CalibrateType.Invalid)
+            {
+                CalibrationState = CalibrationState.Uncalibrated; //キャリブレーションタイプがInvalidになっているときはキャリブレーション失敗
+            } 
+            else
+            {
+                CalibrationState = CalibrationState.Calibrating; //キャリブレーション状態を"キャリブレーション中"に設定
+            }
         }
 
         private void ClearChildren(params TrackingPoint[] Parents) => ClearChildren(Parents.Select(d => d?.TargetTransform).ToArray());
