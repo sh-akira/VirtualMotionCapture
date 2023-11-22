@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace VMC
 {
+    [Serializable]
     public class VirtualAvatar
     {
         private Transform parent;

@@ -17,6 +17,7 @@ namespace VMC
         private VRIK vrik;
         private IKSolver ikSolver;
 
+        [SerializeField]
         private List<VirtualAvatar> VirtualAvatars = new List<VirtualAvatar>();
 
         private static MotionManager instance;
