@@ -370,6 +370,7 @@ xcopy /I /D /Y /E "$(SolutionDir)\..\BuildRootFiles" "$(TargetDir).."
 cd "$(TargetDir)"
 del /s /q *.pdb
 cd ..
-del /s /q .gitignore</PostBuildEvent>
+del /s /q .gitignore
+rmdir /s /q VirtualMotionCapture_BurstDebugInformation_DoNotShip</PostBuildEvent>
   </PropertyGroup>
 </Project>
