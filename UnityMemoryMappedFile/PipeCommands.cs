@@ -75,10 +75,11 @@ namespace UnityMemoryMappedFile
         public enum CalibrateType
         {
             Invalid = -1,
-            Ipose = 0,
-            Tpose = 1,
+            Default = 0,
+            FixedHand = 1,
             FixedHandWithGround = 2,
-            FixedHand = 3
+            Ipose = 3,
+            Tpose = 4,
         }
 
         public class EndCalibrate { }
