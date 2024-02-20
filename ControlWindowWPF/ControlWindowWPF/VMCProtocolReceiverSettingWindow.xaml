@@ -92,6 +92,8 @@
                             <CheckBox Content="Status" Name="StatusCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
                             <CheckBox Content="Control" Name="ControlCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
                             <CheckBox Content="Setting" Name="SettingCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="Controller Input" Name="ControllerInputCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="Keyboard Input" Name="KeyboardInputCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
                         </StackPanel>
                         <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Right">
                             <Button Content="{DynamicResource VMCProtocolReceiverSettingWindow_All}" Name="FullbodyButton" Click="FullbodyButton_Click"/>

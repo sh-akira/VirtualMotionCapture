@@ -86,6 +86,8 @@ namespace VirtualMotionCaptureControlPanel
             StatusCheckBox.IsChecked = setting.ApplyStatus;
             ControlCheckBox.IsChecked = setting.ApplyControl;
             SettingCheckBox.IsChecked = setting.ApplySetting;
+            ControllerInputCheckBox.IsChecked = setting.ApplyControllerInput;
+            KeyboardInputCheckBox.IsChecked = setting.ApplyKeyboardInput;
             IsSetting = false;
         }
 
@@ -161,6 +163,8 @@ namespace VirtualMotionCaptureControlPanel
                 ApplyStatus = StatusCheckBox.IsChecked.Value,
                 ApplyControl = ControlCheckBox.IsChecked.Value,
                 ApplySetting = SettingCheckBox.IsChecked.Value,
+                ApplyControllerInput = ControllerInputCheckBox.IsChecked.Value,
+                ApplyKeyboardInput = KeyboardInputCheckBox.IsChecked.Value,
 
             });
         }

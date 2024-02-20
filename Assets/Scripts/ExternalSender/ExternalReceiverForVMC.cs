@@ -91,6 +91,8 @@ namespace VMC
         private bool ApplyStatus;
         private bool ApplyControl;
         private bool ApplySetting;
+        private bool ApplyControllerInput;
+        private bool ApplyKeyboardInput;
 
         public void SetSetting(VMCProtocolReceiverSettings setting)
         {
@@ -128,6 +130,8 @@ namespace VMC
             ApplyStatus = setting.ApplyStatus;
             ApplyControl = setting.ApplyControl;
             ApplySetting = setting.ApplySetting;
+            ApplyControllerInput = setting.ApplyControllerInput;
+            ApplyKeyboardInput = setting.ApplyKeyboardInput;
         }
 
         public void Recenter()
@@ -329,6 +333,63 @@ namespace VMC
                     externalSender.periodCamera = (int)message.values[4];
                     externalSender.periodDevices = (int)message.values[5];
                 }
+
+                //コントローラ操作情報 v2.1
+                if (message.address == "/VMC/Ext/Con" && ApplyControllerInput
+                    && (message.values[0] is int)
+                    && (message.values[1] is string)
+                    && (message.values[2] is int)
+                    && (message.values[3] is int)
+                    && (message.values[4] is int)
+                    && (message.values[5] is float)
+                    && (message.values[6] is float)
+                    && (message.values[7] is float)
+                    )
+                {
+                    var active = (int)message.values[0];
+                    var name = (string)message.values[1];
+                    var isLeft = (int)message.values[2] == 1;
+                    var isTouch = (int)message.values[3] == 1;
+                    var isAxis = (int)message.values[4] == 1;
+                    var axis = new Vector3((float)message.values[5], (float)message.values[6], (float)message.values[7]);
+
+                    var keyArgs = new OVRKeyEventArgs(name, axis, isLeft, isAxis, isTouch);
+                    if (active == 1)
+                    {
+                        SteamVR2Input.Instance.KeyDownEvent?.Invoke(this, keyArgs);
+                    }
+                    else if (active == 0)
+                    {
+                        SteamVR2Input.Instance.KeyUpEvent?.Invoke(this, keyArgs);
+                    }
+                    else if (active == 2)
+                    {
+                        SteamVR2Input.Instance.AxisChangedEvent?.Invoke(this, keyArgs);
+                    }
+                }
+                //キーボード操作情報 v2.1
+                else if (message.address == "/VMC/Ext/Key" && ApplyKeyboardInput
+                    && (message.values[0] is int)
+                    && (message.values[1] is string)
+                    && (message.values[2] is int)
+                    )
+                {
+                    var active = (int)message.values[0] == 1;
+                    var name = (string)message.values[1];
+                    var keycode = (int)message.values[2];
+
+                    var keyArgs = new KeyboardEventArgs(keycode);
+
+                    if (active)
+                    {
+                        KeyboardAction.KeyDownEvent?.Invoke(this, keyArgs);
+                    }
+                    else
+                    {
+                        KeyboardAction.KeyUpEvent?.Invoke(this, keyArgs);
+                    }
+                }
+
                 //Virtual MIDI CC V2.3
                 else if (message.address == "/VMC/Ext/Midi/CC/Val" && ApplyMidi
                     && (message.values[0] is int)

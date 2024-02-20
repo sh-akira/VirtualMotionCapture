@@ -140,6 +140,10 @@ namespace VMC
         public bool ApplyStatus = true;
         public bool ApplyControl = true;
         public bool ApplySetting = true;
+        [OptionalField]
+        public bool ApplyControllerInput = true;
+        [OptionalField]
+        public bool ApplyKeyboardInput = false;
 
 
         //初期値
@@ -176,6 +180,8 @@ namespace VMC
             ApplyStatus = true;
             ApplyControl = true;
             ApplySetting = true;
+            ApplyControllerInput = true;
+            ApplyKeyboardInput = false;
         }
 
         public VMCProtocolReceiverSettings Import(PipeCommands.SetVMCProtocolReceiverSetting setting)
@@ -216,6 +222,8 @@ namespace VMC
             ApplyStatus = setting.ApplyStatus;
             ApplyControl = setting.ApplyControl;
             ApplySetting = setting.ApplySetting;
+            ApplyControllerInput = setting.ApplyControllerInput;
+            ApplyKeyboardInput = setting.ApplyKeyboardInput;
 
             return this;
         }
@@ -263,6 +271,8 @@ namespace VMC
                 ApplyStatus = ApplyStatus,
                 ApplyControl = ApplyControl,
                 ApplySetting = ApplySetting,
+                ApplyControllerInput = ApplyControllerInput,
+                ApplyKeyboardInput = ApplyKeyboardInput,
             };
             return setting;
         }

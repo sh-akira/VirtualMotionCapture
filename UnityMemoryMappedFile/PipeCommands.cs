@@ -478,6 +478,8 @@ namespace UnityMemoryMappedFile
             public bool ApplyStatus { get; set; }
             public bool ApplyControl { get; set; }
             public bool ApplySetting { get; set; }
+            public bool ApplyControllerInput { get; set; }
+            public bool ApplyKeyboardInput { get; set; }
         }
 
 
