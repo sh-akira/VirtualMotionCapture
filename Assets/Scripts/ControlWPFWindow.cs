@@ -1100,9 +1100,6 @@ namespace VMC
                 renderer.updateWhenOffscreen = true;
             }
 
-            //まばたき
-            faceController.ImportVRMmodel(CurrentModel);
-
             IKManager.Instance.ModelInitialize();
 
             VMCEvents.OnModelLoaded?.Invoke(CurrentModel);
