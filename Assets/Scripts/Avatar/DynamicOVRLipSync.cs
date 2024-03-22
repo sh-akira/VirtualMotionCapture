@@ -21,7 +21,6 @@ namespace VMC
 
         // smoothing amount
         public int SmoothAmount = 100;
-        private GameObject VRMmodel;
 
         public bool EnableLipSync = false;
 
@@ -49,11 +48,6 @@ namespace VMC
             selectedDevice = device;
             if (string.IsNullOrEmpty(device)) return;
             micSelected = true;
-        }
-
-        public void ImportVRMmodel(GameObject vrmmodel)
-        {
-            VRMmodel = vrmmodel;
         }
 
         // Use this for initialization
