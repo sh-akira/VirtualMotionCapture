@@ -1100,11 +1100,6 @@ namespace VMC
                 renderer.updateWhenOffscreen = true;
             }
 
-            //LipSync
-            LipSync.ImportVRMmodel(CurrentModel);
-            //まばたき
-            faceController.ImportVRMmodel(CurrentModel);
-
             IKManager.Instance.ModelInitialize();
 
             VMCEvents.OnModelLoaded?.Invoke(CurrentModel);
