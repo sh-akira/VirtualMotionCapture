@@ -34,17 +34,9 @@ externalcamera.cfgを出力するためには基準となる3本目のコント�
 
 ![設定タブ](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/07971766022eecc8c4f78f0dcf388e1cbb444e50/docs/images/manual/2-1.png)
 
-キャリブレーションはMR合成モードの二つのうちどちらかを選択します。
+キャリブレーションはIポーズを選択します。
 
-![キャリブレーション画面](https://rawcdn.githack.com/sh-akira/VirtualMotionCapture/07971766022eecc8c4f78f0dcf388e1cbb444e50/docs/images/manual/2-2.png)
-
-・MR合成モード(手の位置をなるべく合わせて足は真っ直ぐ延ばす)を選択すると、足が長いモデルの場合地面に足が刺さります。  
-　BeatSaberのように地面が透明な場合は特に問題ありません  
-  
-・MR合成モード(手の位置をなるべく合わせて足は地面に合わせて曲げる)を選択すると、足が長いモデルの場合膝を曲げて地面に立つようにします。  
-　H3VRのように地面があるゲームの場合、足が貫通するのを防ぎます。  
-  
-※通常モード(体の動きをなるべく再現する)を選択すると、プレイエリアの中心にいる場合は問題ありませんが、移動すると手からコントローラーがずれていくため、基本的には上二つのMR合成モードを使用してください。
+![キャリブレーション画面](https://rawcdn.githack.com/Assault1892/VirtualMotionCapture/b9c97967ec63ecd42425419774791157fa918dcf/docs/images/manual/2-2.png)
 
 ## カメラの向きを決める
 
