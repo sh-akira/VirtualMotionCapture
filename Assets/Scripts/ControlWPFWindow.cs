@@ -1504,8 +1504,8 @@ namespace VMC
             externalMotionSender.externalReceiver = externalMotionReceivers.FirstOrDefault();
             easyDeviceDiscoveryProtocolManager.externalReceiver = externalMotionSender.externalReceiver;
             receiver.SetSetting(setting);
-            receiver.SetObjectActive(setting.Enable);
             receiver.ChangeOSCPort(setting.Port);
+            receiver.SetObjectActive(setting.Enable);
         }
 
         private void RemoveVMCProtocolReceiver(int index)
