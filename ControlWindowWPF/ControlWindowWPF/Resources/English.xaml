@@ -28,7 +28,7 @@
     <!-- MainWindow -->
     <system:String x:Key="MainWindowTitle">Control panel</system:String>
     <system:String x:Key="MainWindowTitleLoading">Loading</system:String>
-    <system:String x:Key="MainWindowOpenVRAlertStatus">⚠ The dashboard in the HMD must be closed to properly capture position and controller inputs.</system:String>
+    <system:String x:Key="MainWindowOpenVRAlertStatus">⚠ Unable to properly obtain the position or operation of the controller. Please close the SteamVR dashboard or keyboard within the HMD.</system:String>
 
     <system:String x:Key="MainWindow_Setting">Settings</system:String>
     <system:String x:Key="MainWindow_LoadSetting">Open settings</system:String>
@@ -150,7 +150,7 @@
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandRadioButton">MR compositing mode (correct hand position and no leg bending)</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton">MR compositing mode (correct hand position and bend leg to the ground)</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrationInformation" xml:space="preserve">If I-pose calibration will not work, re-set the room scale and correct the floor height.&#xa;For T-pose, you can adjust the calibration by bending the arm shorter or lifting the arm slightly.&#xa;Note that white balls on the screen are to confirm that trackers are recognized. You do not need to adjust the position.</system:String>
-    <system:String x:Key="CalibrationWindow_FinishSound">完了音</system:String>
+    <system:String x:Key="CalibrationWindow_FinishSound">Completion sound</system:String>
 
     <!-- VRMImportWindow -->
     <system:String x:Key="VRMImportWindowTitle">Import VRM</system:String>
@@ -555,7 +555,7 @@
     <system:String x:Key="CalibrationResultWindow_CalibrationSucceed">Calibration succeeded</system:String>
     <system:String x:Key="CalibrationResultWindow_CalibrationFailed">Calibration failed</system:String>
     <system:String x:Key="CalibrationResultWindow_BodyParamMessage">Your body parameter was calculated.</system:String>
-    <system:String x:Key="CalibrationResultWindow_PleaseCheckDevicesMessage">Check your devices and trackers assignment.</system:String>
+    <system:String x:Key="CalibrationResultWindow_PleaseCheckDevicesMessage" xml:space="preserve">Check your devices and trackers assignment.&#xa;Calibration is not required if you are using only mocopi.</system:String>
     <system:String x:Key="CalibrationResultWindow_RealHeight">Height</system:String>
     <system:String x:Key="CalibrationResultWindow_CautionMessage">If you think it is wrong, please check your tracker mount and the floor level of your VR roomscale.</system:String>
     <system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">seconds left to close</system:String>

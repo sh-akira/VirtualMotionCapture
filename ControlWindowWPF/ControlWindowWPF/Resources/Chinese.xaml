@@ -28,7 +28,7 @@
     <!-- MainWindow -->
     <system:String x:Key="MainWindowTitle">控制面板</system:String>
     <system:String x:Key="MainWindowTitleLoading">启动中</system:String>
-    <system:String x:Key="MainWindowOpenVRAlertStatus">⚠ 在头显中开启 SteamVR 主面板时，定位与控制器输入无法正确获取，请将其关闭。</system:String>
+    <system:String x:Key="MainWindowOpenVRAlertStatus">⚠ 由于无法正常获取控制器的位置或操作，请关闭HMD内的SteamVR仪表板或键盘。</system:String>
 
     <system:String x:Key="MainWindow_Setting">设置</system:String>
     <system:String x:Key="MainWindow_LoadSetting">打开设置</system:String>
@@ -555,7 +555,7 @@
     <system:String x:Key="CalibrationResultWindow_CalibrationSucceed">校准成功</system:String>
     <system:String x:Key="CalibrationResultWindow_CalibrationFailed">校准失败</system:String>
     <system:String x:Key="CalibrationResultWindow_BodyParamMessage">已计算你的身体参数。</system:String>
-    <system:String x:Key="CalibrationResultWindow_PleaseCheckDevicesMessage">请检查你的设备与追踪器分配。</system:String>
+    <system:String x:Key="CalibrationResultWindow_PleaseCheckDevicesMessage" xml:space="preserve">请检查你的设备与追踪器分配。&#xa;如果只使用mocopi，则无需进行校准。</system:String>
     <system:String x:Key="CalibrationResultWindow_RealHeight">身高</system:String>
     <system:String x:Key="CalibrationResultWindow_CautionMessage">如果该数据不正确，请检查你的追踪器固定位置以及 VR 空间中的地面高度，然后以正确的姿势重新校准。</system:String>
     <system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">秒后自动关闭</system:String>
