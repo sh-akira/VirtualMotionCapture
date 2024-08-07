@@ -1,0 +1,125 @@
+﻿<Window x:Class="VirtualMotionCaptureControlPanel.VMCProtocolReceiverSettingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
+        mc:Ignorable="d"
+        Title="{DynamicResource SettingWindow_ExternalMotionReceiver}" Width="500" SizeToContent="Height" Loaded="Window_Loaded">
+    <DockPanel>
+        <GroupBox Header="{DynamicResource SettingWindow_ExternalMotionReceiver}" DockPanel.Dock="Top">
+            <DockPanel>
+                <Button Content="{DynamicResource SettingWindow_Apply}" DockPanel.Dock="Right" Name="PortApplyButton" Padding="20,5" Click="PortApplyButton_Click"/>
+                <DockPanel DockPanel.Dock="Bottom" Margin="0,0,0,4">
+                    <TextBlock Text="ID: " VerticalAlignment="Center"/>
+                    <TextBlock Text="1" Name="IndexTextBlock" VerticalAlignment="Center" Width="20"/>
+                    <TextBlock Text="{DynamicResource FaceControlKeyAddWindow_SaveName}" VerticalAlignment="Center" Padding="0,0,5,0"/>
+                    <TextBox Name="CustomNameTextBox" VerticalAlignment="Center"/>
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Top">
+                    <CheckBox Content="{DynamicResource MotionCapture_mocopiSettingWindow_EnableCheckBox}" Name="EnableCheckBox" VerticalAlignment="Center" Padding="4,0,0,0" VerticalContentAlignment="Bottom" Margin="0" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                    <TextBlock Text="{DynamicResource VMCProtocolReceiverSettingWindow_Port}" Margin="20,0,0,0"/>
+                    <TextBox Text="39540" VerticalAlignment="Center" Name="ReceivePortTextBox" Width="50" HorizontalAlignment="Left"/>
+                </DockPanel>
+            </DockPanel>
+        </GroupBox>
+        <GroupBox Header="{DynamicResource MotionCapture_mocopiSettingWindow_ApplyTarget}" DockPanel.Dock="Top">
+            <Grid Margin="5">
+                <StackPanel Orientation="Vertical">
+                    <Grid>
+                        <Grid HorizontalAlignment="Center">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="90"/>
+                                <RowDefinition Height="100"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="25"/>
+                                <ColumnDefinition Width="25"/>
+                                <ColumnDefinition Width="25"/>
+                                <ColumnDefinition Width="25"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Ellipse Fill="#AED4FF" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Width="40" Height="40"/>
+
+                            <Border Background="#AED4FF" CornerRadius="8,0,8,8" Grid.Row="1" Grid.Column="0" Margin="10,5,0,5"/>
+                            <Border Background="#AED4FF" CornerRadius="0,0,0,0" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="5,5,5,0"/>
+                            <Border Background="#AED4FF" CornerRadius="0,8,8,8" Grid.Row="1" Grid.Column="3" Margin="0,5,10,5"/>
+
+                            <Border Background="#AED4FF" CornerRadius="0,0,8,8" Grid.Row="2" Grid.Column="1" Margin="5,0,5,0"/>
+                            <Border Background="#AED4FF" CornerRadius="0,0,8,8" Grid.Row="2" Grid.Column="2" Margin="5,0,5,0"/>
+                        </Grid>
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="60"/>
+                                <RowDefinition Height="20"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="25"/>
+                                <ColumnDefinition Width="25"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Content="{DynamicResource VMCProtocolReceiverSettingWindow_Eye}" Name="EyeCheckBox" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource MotionCapture_mocopiSettingWindow_Head}" Name="HeadCheckBox" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource MotionCapture_mocopiSettingWindow_Chest}" Name="ChestCheckBox" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource MotionCapture_mocopiSettingWindow_RightArm}" Name="RightArmCheckBox" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource MotionCapture_mocopiSettingWindow_LeftArm}" Name="LeftArmCheckBox" Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource MotionCapture_mocopiSettingWindow_Spine}" Name="SpineCheckBox" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource MotionCapture_mocopiSettingWindow_RightHand}" Name="RightHandCheckBox" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource MotionCapture_mocopiSettingWindow_LeftHand}" Name="LeftHandCheckBox" Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource VMCProtocolReceiverSettingWindow_RightFinger}" Name="RightFingerCheckBox" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource VMCProtocolReceiverSettingWindow_LeftFinger}" Name="LeftFingerCheckBox" Grid.Row="6" Grid.Column="3" Grid.ColumnSpan="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource MotionCapture_mocopiSettingWindow_RightLeg}" Name="RightLegCheckBox" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource MotionCapture_mocopiSettingWindow_LeftLeg}" Name="LeftLegCheckBox" Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource MotionCapture_mocopiSettingWindow_RightFoot}" Name="RightFootCheckBox" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource MotionCapture_mocopiSettingWindow_LeftFoot}" Name="LeftFootCheckBox" Grid.Row="8" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                        </Grid>
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <CheckBox Content="BlendShape" Name="BlendShapeCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="LookAt" Name="LookAtCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="Tracker" Name="TrackerCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="Camera" Name="CameraCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="Light" Name="LightCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="MIDI" Name="MIDICheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="Status" Name="StatusCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="Control" Name="ControlCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="Setting" Name="SettingCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="Controller Input" Name="ControllerInputCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="Keyboard Input" Name="KeyboardInputCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Right">
+                            <Button Content="{DynamicResource VMCProtocolReceiverSettingWindow_All}" Name="FullbodyButton" Click="FullbodyButton_Click"/>
+                            <Button Content="{DynamicResource MotionCapture_mocopiSettingWindow_WithVRDevice}" Name="WithVRDeviceButton" Click="WithVRDeviceButton_Click"/>
+                            <Button Content="{DynamicResource VMCProtocolReceiverSettingWindow_UnselectBones}" Name="UnselectBonesButton" Click="UnselectBonesButton_Click"/>
+                        </StackPanel>
+                    </Grid>
+                    <CheckBox Content="{DynamicResource MotionCapture_mocopiSettingWindow_RootPositionSynchronize}" Name="RootPositionCheckBox" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                    <CheckBox Content="{DynamicResource MotionCapture_mocopiSettingWindow_RootRotationSynchronize}" Name="RootRotationCheckBox" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+
+                </StackPanel>
+                <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBlock Text="{DynamicResource VMCProtocolReceiverSettingWindow_Delay}" Grid.Column="0" Grid.Row="2"/>
+                        <TextBox Text="0" VerticalAlignment="Center" Name="DelayMsTextbox" MinWidth="50"/>
+                        <TextBlock Text="ms" Margin="5,0,0,0"/>
+                    </StackPanel>
+                    <CheckBox Content="{DynamicResource VMCProtocolReceiverSettingWindow_CorrectHandBone}" Name="CorrectHandBoneCheckBox" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                    <CheckBox Content="{DynamicResource VMCProtocolReceiverSettingWindow_CorrectHipBone}" Name="CorrectHipBoneCheckBox" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                    <CheckBox Content="{DynamicResource VMCProtocolReceiverSettingWindow_UseBonePosition}" Name="UseBonePositionCheckBox" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                    <CheckBox Content="{DynamicResource VMCProtocolReceiverSettingWindow_IgnoreDefaultBone}" Name="IgnoreDefaultBoneCheckBox" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+        <Button DockPanel.Dock="Right" Content="{DynamicResource SettingWindow_Close}" Width="100" Name="CloseButton" Click="CloseButton_Click"/>
+        <Button DockPanel.Dock="Left" Content="{DynamicResource MotionCapture_mocopiSettingWindow_ResetCenter}" Padding="20,0" Name="ResetCenterButton" Click="ResetCenterButton_Click"/>
+        <Grid/>
+    </DockPanel>
+</Window>

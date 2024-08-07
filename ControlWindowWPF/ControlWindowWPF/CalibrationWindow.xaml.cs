@@ -27,7 +27,7 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            await Globals.Client.SendCommandAsync(new PipeCommands.ImportVRM { Path = Globals.CurrentVRMFilePath, ImportForCalibration = true, UseCurrentFixSetting = true });
+            await Globals.Client.SendCommandAsync(new PipeCommands.InitializeCalibration { });
             Globals.Client.ReceivedEvent += Client_Received;
             await Globals.Client.SendCommandAsync(new PipeCommands.StartKeyConfig { });
 

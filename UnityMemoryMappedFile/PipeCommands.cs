@@ -53,11 +53,9 @@ namespace UnityMemoryMappedFile
         public class ImportVRM
         {
             public string Path { get; set; }
-            public bool ImportForCalibration { get; set; }
-            public bool EnableNormalMapFix { get; set; }
-            public bool DeleteHairNormalMap { get; set; }
-            public bool UseCurrentFixSetting { get; set; }
         }
+
+        public class InitializeCalibration { }
 
         public class LoadVRMPath
         {
@@ -76,10 +74,12 @@ namespace UnityMemoryMappedFile
 
         public enum CalibrateType
         {
-            FixedHand = 3,
+            Invalid = -1,
+            Default = 0,
+            FixedHand = 1,
             FixedHandWithGround = 2,
-            Ipose = 0,
-            Tpose = 1,
+            Ipose = 3,
+            Tpose = 4,
         }
 
         public class EndCalibrate { }
@@ -246,6 +246,15 @@ namespace UnityMemoryMappedFile
             public int SwivelOffset { get; set; }
         }
 
+        public class GetCalibrationSetting { }
+        public class SetCalibrationSetting
+        {
+            public bool EnableOverrideBodyHeight { get; set; }
+            public int OverrideBodyHeight { get; set; }
+            public int PelvisOffsetAdjustY { get; set; }
+            public int PelvisOffsetAdjustZ { get; set; }
+        }
+
         public class SetExternalCameraConfig
         {
             public float x { get; set; }
@@ -312,13 +321,12 @@ namespace UnityMemoryMappedFile
         public class GetResolutions { }
         public class ReturnResolutions
         {
-            public List<Tuple<int, int, int>> List { get; set; }
+            public List<Tuple<int, int>> List { get; set; }
         }
         public class SetResolution
         {
             public int Width { get; set; }
             public int Height { get; set; }
-            public int RefreshRate { get; set; }
         }
 
         public class SetWindowNum
@@ -426,26 +434,83 @@ namespace UnityMemoryMappedFile
             public bool ResponderEnable { get; set; } 
         }
 
-        public class GetEnableExternalMotionReceiver
+        public class GetVMCProtocolReceiverSetting
         {
-            public int index { get; set; }
+            public int Index { get; set; }
         }
-        public class EnableExternalMotionReceiver
+        public class SetVMCProtocolReceiverSetting
         {
-            public bool enable { get; set; }
-            public int index { get; set; }
+            public int Index { get; set; }
+
+            public bool Enable { get; set; }
+            public int Port { get; set; }
+            public int DelayMs { get; set; }
+
+            public string Name { get; set; }
+
+            public bool ApplyRootRotation { get; set; }
+            public bool ApplyRootPosition { get; set; }
+            public bool ApplySpine { get; set; }
+            public bool ApplyChest { get; set; }
+            public bool ApplyHead { get; set; }
+            public bool ApplyLeftArm { get; set; }
+            public bool ApplyRightArm { get; set; }
+            public bool ApplyLeftHand { get; set; }
+            public bool ApplyRightHand { get; set; }
+            public bool ApplyLeftLeg { get; set; }
+            public bool ApplyRightLeg { get; set; }
+            public bool ApplyLeftFoot { get; set; }
+            public bool ApplyRightFoot { get; set; }
+            public bool ApplyEye { get; set; }
+            public bool ApplyLeftFinger { get; set; }
+            public bool ApplyRightFinger { get; set; }
+            public bool CorrectHandBone { get; set; }
+            public bool UseBonePosition { get; set; }
+            public bool CorrectHipBone { get; set; }
+            public bool IgnoreDefaultBone { get; set; }
+
+            public bool ApplyBlendShape { get; set; }
+            public bool ApplyLookAt { get; set; }
+            public bool ApplyTracker { get; set; }
+            public bool ApplyCamera { get; set; }
+            public bool ApplyLight { get; set; }
+            public bool ApplyMidi { get; set; }
+            public bool ApplyStatus { get; set; }
+            public bool ApplyControl { get; set; }
+            public bool ApplySetting { get; set; }
+            public bool ApplyControllerInput { get; set; }
+            public bool ApplyKeyboardInput { get; set; }
         }
-        public class GetExternalMotionReceiverPort { }
-        public class ChangeExternalMotionReceiverPort
+
+
+        public class GetVMCProtocolReceiverList { }
+        public class SetVMCProtocolReceiverList
         {
-            public int[] ports { get; set; }
-            public bool RequesterEnable { get; set; }
+            public List<Tuple<bool, string, int>> Items { get; set; }
         }
-        public class GetExternalReceiveBones { }
-        public class ExternalReceiveBones
+
+        public class SetVMCProtocolReceiverEnable
         {
-            public bool ReceiveBonesEnable { get; set; }
+            public int Index { get; set; }
+            public bool Enable { get; set; }
         }
+
+        public class RemoveVMCProtocolReceiver
+        {
+            public int Index { get; set; }
+        }
+
+        public class VMCProtocolReceiverRecenter
+        {
+            public int Index { get; set; }
+        }
+
+        public class GetExternalMotionReceiverRequester { }
+        public class ChangeExternalMotionReceiverRequester
+        {
+            public bool Enable { get; set; }
+        }
+
         public class GetMidiCCBlendShape { }
         public class SetMidiCCBlendShape
         {
@@ -525,6 +590,12 @@ namespace UnityMemoryMappedFile
             public bool HandleControllerAsTracker { get; set; }
         }
 
+        public class GetLaunchSteamVROnStartup { }
+        public class SetLaunchSteamVROnStartup
+        {
+            public bool Enable { get; set; }
+        }
+
 
         public class GetQualitySettings { }
         public class SetQualitySettings
@@ -592,6 +663,7 @@ namespace UnityMemoryMappedFile
 
         }
 
+        public const int ErrorCountMax = 10000;
         public class LogNotify {
             public string condition { get; set; }
             public string stackTrace { get; set; }
@@ -630,6 +702,21 @@ namespace UnityMemoryMappedFile
         {
             public bool FluctuationEnable { get; set; }
             public bool AutoLookCameraEnable { get; set; }
+        }
+      
+        public class VRMLoadStatus
+        {
+            public bool Valid { get; set; }
+        }
+        public class CalibrationResult
+        {
+            public CalibrateType Type { get; set; }
+            public float UserHeight { get; set; }
+            public string Message { get; set; }
+        }
+        public class OpenVRStatus
+        {
+            public bool DashboardOpened { get; set; }
         }
     }
 

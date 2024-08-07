@@ -2,23 +2,26 @@
   "dependencies": {
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.2d.tilemap": "1.0.0",
-    "com.unity.ads": "3.7.5",
-    "com.unity.analytics": "3.6.11",
-    "com.unity.animation.rigging": "0.2.7-preview",
-    "com.unity.burst": "1.4.11",
-    "com.unity.collab-proxy": "1.10.2",
-    "com.unity.ide.rider": "1.2.1",
-    "com.unity.ide.visualstudio": "2.0.15",
-    "com.unity.ide.vscode": "1.2.4",
-    "com.unity.multiplayer-hlapi": "1.0.8",
-    "com.unity.postprocessing": "2.3.0",
-    "com.unity.purchasing": "3.2.2",
-    "com.unity.test-framework": "1.1.29",
-    "com.unity.textmeshpro": "2.1.4",
-    "com.unity.timeline": "1.2.18",
+    "com.unity.ads": "4.4.2",
+    "com.unity.ai.navigation": "1.1.4",
+    "com.unity.analytics": "3.8.1",
+    "com.unity.animation.rigging": "1.2.1",
+    "com.unity.burst": "1.8.7",
+    "com.unity.collab-proxy": "2.0.5",
+    "com.unity.ide.rider": "3.0.24",
+    "com.unity.ide.visualstudio": "2.0.21",
+    "com.unity.ide.vscode": "1.2.5",
+    "com.unity.postprocessing": "3.2.2",
+    "com.unity.purchasing": "4.9.3",
+    "com.unity.subsystemregistration": "1.1.2",
+    "com.unity.test-framework": "1.1.33",
+    "com.unity.textmeshpro": "3.0.6",
+    "com.unity.timeline": "1.7.5",
+    "com.unity.toolchain.win-x86_64-linux-x86_64": "2.0.5",
     "com.unity.ugui": "1.0.0",
-    "com.unity.xr.legacyinputhelpers": "2.1.8",
-    "com.unity.xr.openvr.standalone": "2.0.5",
+    "com.unity.xr.management": "4.4.0",
+    "com.valvesoftware.unity.openvr": "file:../Assets/ExternalPlugins/SteamVR/OpenVRUnityXRPackage/Editor/com.valvesoftware.unity.openvr-1.1.4.tgz",
+    "com.vrmc.univrm": "0.112.0",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
@@ -50,5 +53,14 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  }
+  },
+  "scopedRegistries": [
+    {
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.vrmc"
+      ]
+    }
+  ]
 }

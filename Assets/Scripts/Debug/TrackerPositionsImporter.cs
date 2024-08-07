@@ -9,7 +9,6 @@ namespace VMC
     {
         ControlWPFWindow window = null;
         private VRIK vrik = null;
-        GameObject CurrentModel;
         private Transform RootObject;
 
         private bool isLeftShiftKeyDown = false;
@@ -18,15 +17,6 @@ namespace VMC
         private void Start()
         {
             window = GameObject.Find("ControlWPFWindow").GetComponent<ControlWPFWindow>();
-
-            VMCEvents.OnModelLoaded += (GameObject CurrentModel) =>
-            {
-                if (CurrentModel != null)
-                {
-                    this.CurrentModel = CurrentModel;
-                    vrik = CurrentModel.GetComponent<VRIK>();
-                }
-            };
 
             KeyboardAction.KeyDownEvent += (object sender, KeyboardEventArgs e) =>
             {
@@ -67,10 +57,9 @@ namespace VMC
 
         private void Import(bool createObject)
         {
-            if (vrik == null && CurrentModel != null)
+            if (vrik == null)
             {
-                vrik = CurrentModel.GetComponent<VRIK>();
-                Debug.Log("ExternalSender: VRIK Updated");
+                vrik = IKManager.Instance.vrik;
             }
             if (vrik == null) return;
             var path = Application.dataPath + "/../SavedTrackerPositions/";

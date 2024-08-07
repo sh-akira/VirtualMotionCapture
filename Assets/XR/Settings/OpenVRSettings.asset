@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a32bfe54d957ec4581fa4a630f1647a, type: 3}
+  m_Name: OpenVRSettings
+  m_EditorClassIdentifier: 
+  PromptToUpgradePackage: 1
+  PromptToUpgradePreviewPackages: 1
+  SkipPromptForVersion: 
+  StereoRenderingMode: 1
+  InitializationType: 2
+  EditorAppKey: application.generated.unity.virtualmotioncapture.exe
+  ActionManifestFileRelativeFilePath: StreamingAssets\SteamVR\actions.json
+  MirrorView: 2
+  HasCopiedDefaults: 0

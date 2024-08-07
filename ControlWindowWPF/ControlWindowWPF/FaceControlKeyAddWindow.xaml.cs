@@ -179,5 +179,11 @@ namespace VirtualMotionCaptureControlPanel
         {
             if (LipSyncMaxLevelTextBlock != null) LipSyncMaxLevelTextBlock.Text = LipSyncMaxLevelSlider.Value.ToString("0.00");
         }
+
+        private void RemoveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (KeysDataGrid.SelectedItem == null) return;
+            faceItems.Remove(KeysDataGrid.SelectedItem as FaceItem);
+        }
     }
 }

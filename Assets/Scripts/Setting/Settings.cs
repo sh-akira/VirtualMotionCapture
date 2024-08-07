@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -95,6 +95,186 @@ namespace VMC
         {
             var target = camera.GetComponent<CameraMouseControl>();
             if (target != null) { target.LookOffset = Offset; target.CameraDistance = Distance; }
+        }
+    }
+
+    [Serializable]
+    public class VMCProtocolReceiverSettings
+    {
+        public bool Enable = false;
+        public int Port = 0;
+        public int DelayMs = 0;
+
+        public string Name = "Receiver";
+
+        public bool ApplyRootRotation = true;
+        public bool ApplyRootPosition = true;
+        public bool ApplySpine = true;
+        public bool ApplyChest = true;
+        public bool ApplyHead = true;
+        public bool ApplyLeftArm = true;
+        public bool ApplyRightArm = true;
+        public bool ApplyLeftHand = true;
+        public bool ApplyRightHand = true;
+        public bool ApplyLeftLeg = true;
+        public bool ApplyRightLeg = true;
+        public bool ApplyLeftFoot = true;
+        public bool ApplyRightFoot = true;
+        public bool ApplyEye = false;
+        public bool ApplyLeftFinger = true;
+        public bool ApplyRightFinger = true;
+
+        public bool FixHandBone = true;
+        public bool UseBonePosition = false;
+        [OptionalField]
+        public bool CorrectHipBone = false;
+        [OptionalField]
+        public bool IgnoreDefaultBone = true;
+
+        public bool ApplyBlendShape = true;
+        public bool ApplyLookAt = true;
+        public bool ApplyTracker = true;
+        public bool ApplyCamera = true;
+        public bool ApplyLight = true;
+        public bool ApplyMidi = true;
+        public bool ApplyStatus = true;
+        public bool ApplyControl = true;
+        public bool ApplySetting = true;
+        [OptionalField]
+        public bool ApplyControllerInput = true;
+        [OptionalField]
+        public bool ApplyKeyboardInput = false;
+
+
+        //初期値
+        [OnDeserializing()]
+        internal void OnDeserializingMethod(StreamingContext context)
+        {
+            Name = "Receiver";
+
+            ApplyRootRotation = true;
+            ApplyRootPosition = true;
+            ApplySpine = true;
+            ApplyChest = true;
+            ApplyHead = true;
+            ApplyLeftArm = true;
+            ApplyRightArm = true;
+            ApplyLeftHand = true;
+            ApplyRightHand = true;
+            ApplyLeftLeg = true;
+            ApplyRightLeg = true;
+            ApplyLeftFoot = true;
+            ApplyRightFoot = true;
+            ApplyLeftFinger = true;
+            ApplyRightFinger = true;
+
+            FixHandBone = true;
+            IgnoreDefaultBone = true;
+
+            ApplyBlendShape = true;
+            ApplyLookAt = true;
+            ApplyTracker = true;
+            ApplyCamera = true;
+            ApplyLight = true;
+            ApplyMidi = true;
+            ApplyStatus = true;
+            ApplyControl = true;
+            ApplySetting = true;
+            ApplyControllerInput = true;
+            ApplyKeyboardInput = false;
+        }
+
+        public VMCProtocolReceiverSettings Import(PipeCommands.SetVMCProtocolReceiverSetting setting)
+        {
+            Enable = setting.Enable;
+            Port = setting.Port;
+            DelayMs = setting.DelayMs;
+
+            Name = setting.Name;
+
+            ApplyRootRotation = setting.ApplyRootRotation;
+            ApplyRootPosition = setting.ApplyRootPosition;
+            ApplySpine = setting.ApplySpine;
+            ApplyChest = setting.ApplyChest;
+            ApplyHead = setting.ApplyHead;
+            ApplyLeftArm = setting.ApplyLeftArm;
+            ApplyRightArm = setting.ApplyRightArm;
+            ApplyLeftHand = setting.ApplyLeftHand;
+            ApplyRightHand = setting.ApplyRightHand;
+            ApplyLeftLeg = setting.ApplyLeftLeg;
+            ApplyRightLeg = setting.ApplyRightLeg;
+            ApplyLeftFoot = setting.ApplyLeftFoot;
+            ApplyRightFoot = setting.ApplyRightFoot;
+            ApplyEye = setting.ApplyEye;
+            ApplyLeftFinger = setting.ApplyLeftFinger;
+            ApplyRightFinger = setting.ApplyRightFinger;
+            FixHandBone = setting.CorrectHandBone;
+            UseBonePosition = setting.UseBonePosition;
+            CorrectHipBone = setting.CorrectHipBone;
+            IgnoreDefaultBone = setting.IgnoreDefaultBone;
+
+            ApplyBlendShape = setting.ApplyBlendShape;
+            ApplyLookAt = setting.ApplyLookAt;
+            ApplyTracker = setting.ApplyTracker;
+            ApplyCamera = setting.ApplyCamera;
+            ApplyLight = setting.ApplyLight;
+            ApplyMidi = setting.ApplyMidi;
+            ApplyStatus = setting.ApplyStatus;
+            ApplyControl = setting.ApplyControl;
+            ApplySetting = setting.ApplySetting;
+            ApplyControllerInput = setting.ApplyControllerInput;
+            ApplyKeyboardInput = setting.ApplyKeyboardInput;
+
+            return this;
+        }
+
+        public PipeCommands.SetVMCProtocolReceiverSetting Export(int index)
+        {
+            var setting = new PipeCommands.SetVMCProtocolReceiverSetting
+            {
+
+                Index = index,
+                Enable = Enable,
+                Port = Port,
+                Name = Name,
+
+                ApplyRootRotation = ApplyRootRotation,
+                ApplyRootPosition = ApplyRootPosition,
+                ApplySpine = ApplySpine,
+                ApplyChest = ApplyChest,
+                ApplyHead = ApplyHead,
+                ApplyLeftArm = ApplyLeftArm,
+                ApplyRightArm = ApplyRightArm,
+                ApplyLeftHand = ApplyLeftHand,
+                ApplyRightHand = ApplyRightHand,
+                ApplyLeftLeg = ApplyLeftLeg,
+                ApplyRightLeg = ApplyRightLeg,
+                ApplyLeftFoot = ApplyLeftFoot,
+                ApplyRightFoot = ApplyRightFoot,
+                ApplyEye = ApplyEye,
+                ApplyLeftFinger = ApplyLeftFinger,
+                ApplyRightFinger = ApplyRightFinger,
+
+                DelayMs = DelayMs,
+
+                CorrectHandBone = FixHandBone,
+                CorrectHipBone = CorrectHipBone,
+                UseBonePosition = UseBonePosition,
+                IgnoreDefaultBone = IgnoreDefaultBone,
+
+                ApplyBlendShape = ApplyBlendShape,
+                ApplyLookAt = ApplyLookAt,
+                ApplyTracker = ApplyTracker,
+                ApplyCamera = ApplyCamera,
+                ApplyLight = ApplyLight,
+                ApplyMidi = ApplyMidi,
+                ApplyStatus = ApplyStatus,
+                ApplyControl = ApplyControl,
+                ApplySetting = ApplySetting,
+                ApplyControllerInput = ApplyControllerInput,
+                ApplyKeyboardInput = ApplyKeyboardInput,
+            };
+            return setting;
         }
     }
 
@@ -251,11 +431,6 @@ namespace VMC
         public float RightHandTrackerOffsetToBodySide = 0.05f;
 
         [OptionalField]
-        public bool EnableNormalMapFix = true;
-        [OptionalField]
-        public bool DeleteHairNormalMap = true;
-
-        [OptionalField]
         public bool WebCamEnabled = false;
         [OptionalField]
         public bool WebCamResize = false;
@@ -341,6 +516,8 @@ namespace VMC
         [OptionalField]
         public List<int> ExternalMotionReceiverPortList;
         [OptionalField]
+        public List<int> ExternalMotionReceiverDelayMsList;
+        [OptionalField]
         public bool ExternalMotionReceiverRequesterEnable;
         [OptionalField]
         public string ExternalMotionSenderOptionString;
@@ -355,6 +532,9 @@ namespace VMC
 
         [OptionalField]
         public bool ExternalBonesReceiverEnable;
+
+        [OptionalField]
+        public List<VMCProtocolReceiverSettings> VMCProtocolReceiverSettingsList;
 
         [OptionalField]
         public bool EnableSkeletal;
@@ -470,6 +650,8 @@ namespace VMC
         [OptionalField]
         public bool mocopi_ApplyRootPosition;
         [OptionalField]
+        public bool mocopi_ApplyRootRotation;
+        [OptionalField]
         public bool mocopi_ApplyChest;
         [OptionalField]
         public bool mocopi_ApplySpine;
@@ -491,6 +673,18 @@ namespace VMC
         public bool mocopi_ApplyLeftFoot;
         [OptionalField]
         public bool mocopi_ApplyRightFoot;
+        [OptionalField]
+        public bool mocopi_CorrectHipBone;
+
+
+        [OptionalField]
+        public bool EnableOverrideBodyHeight;
+        [OptionalField]
+        public float OverrideBodyHeight;
+        [OptionalField]
+        public float PelvisOffsetAdjustY;
+        [OptionalField]
+        public float PelvisOffsetAdjustZ;
 
         [OptionalField]
         public bool FluctuationEnable;
@@ -532,9 +726,6 @@ namespace VMC
             RightHandTrackerOffsetToBodySide = 0.05f;
 
             PositionFixedCameraTransform = null;
-
-            EnableNormalMapFix = true;
-            DeleteHairNormalMap = true;
 
             CameraMirrorEnable = false;
 
@@ -579,6 +770,7 @@ namespace VMC
             ExternalMotionReceiverEnableList = null;
             ExternalMotionReceiverPort = 39540;
             ExternalMotionReceiverPortList = null;
+            ExternalMotionReceiverDelayMsList = null;
             ExternalMotionReceiverRequesterEnable = true;
 
             MidiCCBlendShape = new List<string>(Enumerable.Repeat(default(string), MidiCCWrapper.KNOBS));
@@ -646,9 +838,12 @@ namespace VMC
             TurnOffAmbientLight = false;
             ExternalBonesReceiverEnable = false;
 
+            VMCProtocolReceiverSettingsList = new List<VMCProtocolReceiverSettings>();
+
             mocopi_Enable = true;
             mocopi_Port = 12351;
             mocopi_ApplyRootPosition = true;
+            mocopi_ApplyRootRotation = true;
             mocopi_ApplyChest = true;
             mocopi_ApplySpine = true;
             mocopi_ApplyHead = true;
@@ -663,6 +858,45 @@ namespace VMC
 
             FluctuationEnable = true;
             AutoLookCameraEnable = false;
+
+            mocopi_CorrectHipBone = false;
+
+            EnableOverrideBodyHeight = false;
+            OverrideBodyHeight = 1.7f;
+            PelvisOffsetAdjustY = 0;
+            PelvisOffsetAdjustZ = 0;
+        }
+
+        /// <summary>
+        /// 指定したバージョンより前の設定ファイルかどうか(指定バージョンは含まない)
+        /// </summary>
+        /// <param name="major"></param>
+        /// <param name="minor"></param>
+        /// <returns></returns>
+        public bool IsSettingVersionBefore(int major, int minor)
+        {
+            if (major < 0 || minor < 0 || (major == 0 && minor < 48))
+                throw new ArgumentOutOfRangeException(nameof(minor), "over 0.48 only");
+
+            if (string.IsNullOrWhiteSpace(AAA_SavedVersion))
+            {
+                //before 0.47 _SaveVersion is null.
+                return major > 0 || (major == 0 && minor > 47);
+            }
+            else
+            {
+                var split = AAA_SavedVersion.Replace("v", "").Split('.');
+                int pmajor, pminor;
+                if (split.Length == 2 && int.TryParse(split[0], out pmajor) && int.TryParse(split[1], out pminor))
+                {
+                    return major > pmajor || (major == pmajor && minor > pminor);
+                }
+                else
+                {
+                    // parse failed
+                    return false;
+                }
+            }
         }
     }
 }

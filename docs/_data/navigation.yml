@@ -22,8 +22,12 @@
   link: https://vmc.info/
   new_window: false
   highlight: false
+- name: 中文
+  link: https://zh-cn.vmc.info/
+  new_window: false
+  highlight: false
 - name: 한국어
-  link: https://akira.works/VirtualMotionCapture-ko/
+  link: https://ko.vmc.info/
   new_window: false
   highlight: false
 

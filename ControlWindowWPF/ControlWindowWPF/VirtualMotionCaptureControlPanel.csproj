@@ -101,6 +101,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AdminExecute.cs" />
+    <Compile Include="CalibrationResultWindow.xaml.cs">
+      <DependentUpon>CalibrationResultWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ColorPickerWindow.xaml.cs">
       <DependentUpon>ColorPickerWindow.xaml</DependentUpon>
     </Compile>
@@ -113,6 +117,9 @@
     <Compile Include="EyeTracking_TobiiSettingWindow.xaml.cs">
       <DependentUpon>EyeTracking_TobiiSettingWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FirewallManagerWindow.xaml.cs">
+      <DependentUpon>FirewallManagerWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FunctionKeyAddWindow.xaml.cs">
       <DependentUpon>FunctionKeyAddWindow.xaml</DependentUpon>
     </Compile>
@@ -122,6 +129,9 @@
     <Compile Include="Globals.cs" />
     <Compile Include="GraphicsOptionWindow.xaml.cs">
       <DependentUpon>GraphicsOptionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CalibrationSettingWindow.xaml.cs">
+      <DependentUpon>CalibrationSettingWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="HandFreeOffsetWindow.xaml.cs">
       <DependentUpon>HandFreeOffsetWindow.xaml</DependentUpon>
@@ -139,6 +149,9 @@
     </Compile>
     <Compile Include="ModSetting.xaml.cs">
       <DependentUpon>ModSetting.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VMCProtocolReceiverSettingWindow.xaml.cs">
+      <DependentUpon>VMCProtocolReceiverSettingWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MotionCapture_mocopiSettingWindow.xaml.cs">
       <DependentUpon>MotionCapture_mocopiSettingWindow.xaml</DependentUpon>
@@ -162,6 +175,10 @@
     <Compile Include="VRoidHubWindow.xaml.cs">
       <DependentUpon>VRoidHubWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="CalibrationResultWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="CalibrationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -182,6 +199,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="FirewallManagerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="FunctionKeyAddWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -193,6 +214,10 @@
     <Page Include="GraphicsOptionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CalibrationSettingWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="HandFreeOffsetWindow.xaml">
       <SubType>Designer</SubType>
@@ -228,6 +253,10 @@
     <Page Include="ModSetting.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VMCProtocolReceiverSettingWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="MotionCapture_mocopiSettingWindow.xaml">
       <SubType>Designer</SubType>
@@ -316,6 +345,17 @@
   <ItemGroup>
     <Resource Include="Resources\VirtualMotionCapture_dark.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="NetFwTypeLib">
+      <Guid>{58FBCF7C-E7A9-467C-80B3-FC65E8FCCA08}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>if not exist "$(ProjectDir)VRoidHubWindow.xaml" echo ^&lt;Window x:Class="VirtualMotionCaptureControlPanel.VRoidHubWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" /^&gt; &gt; "$(ProjectDir)VRoidHubWindow.xaml"
@@ -330,6 +370,7 @@ xcopy /I /D /Y /E "$(SolutionDir)\..\BuildRootFiles" "$(TargetDir).."
 cd "$(TargetDir)"
 del /s /q *.pdb
 cd ..
-del /s /q .gitignore</PostBuildEvent>
+del /s /q .gitignore
+rmdir /s /q VirtualMotionCapture_BurstDebugInformation_DoNotShip</PostBuildEvent>
   </PropertyGroup>
 </Project>

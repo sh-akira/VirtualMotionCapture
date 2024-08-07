@@ -72,16 +72,14 @@ namespace VMC
             GUIUtility.systemCopyBuffer = trackerPositionsJson;
 #endif
 
-            vrik.enabled = false;
-            yield return null;
 
             //それぞれのトラッカーを正しいルートに移動
             if (HMDTrackingPoint != null) HMDTrackingPoint.TargetTransform.parent = footTrackerRoot;
-            else { Debug.LogError("Head tracker not found"); yield break; }
+            else { Debug.LogError("[Calib Fail] Head tracker not found"); yield break; }
             if (LeftHandTrackingPoint != null) LeftHandTrackingPoint.TargetTransform.parent = handTrackerRoot;
-            else { Debug.LogError("Left hand tracker not found"); yield break; }
+            else { Debug.LogError("[Calib Fail] Left hand tracker not found"); yield break; }
             if (RightHandTrackingPoint != null) RightHandTrackingPoint.TargetTransform.parent = handTrackerRoot;
-            else { Debug.LogError("Right hand tracker not found"); yield break; }
+            else { Debug.LogError("[Calib Fail] Right hand tracker not found"); yield break; }
             if (PelvisTrackingPoint != null) PelvisTrackingPoint.TargetTransform.parent = footTrackerRoot;
             if (LeftFootTrackingPoint != null) LeftFootTrackingPoint.TargetTransform.parent = footTrackerRoot;
             if (RightFootTrackingPoint != null) RightFootTrackingPoint.TargetTransform.parent = footTrackerRoot;
@@ -90,6 +88,8 @@ namespace VMC
             if (LeftKneeTrackingPoint != null) LeftKneeTrackingPoint.TargetTransform.parent = footTrackerRoot;
             if (RightKneeTrackingPoint != null) RightKneeTrackingPoint.TargetTransform.parent = footTrackerRoot;
 
+            vrik.enabled = false;
+            yield return null;
 
             var headTarget = HMDTrackingPoint;
 
@@ -187,7 +187,7 @@ namespace VMC
                     // ratio = B1 / B21 = 2.0743387238310141657264635828006
                     // 補正値 0.93694267481427684002272492175445
                     var handHeight = (leftHandTargetTransform.position.y + rightHandTargetTransform.position.y) / 2f;
-                    realHeight = handHeight * 2.07434f * 0.93694f;
+                    realHeight = handHeight * 2.07434f * 1.03f;
                 }
                 else if (calibrateMode == CalibrateMode.Tpose)
                 {
@@ -199,6 +199,13 @@ namespace VMC
                 }
             }
             Debug.Log($"UserHeight:{realHeight}");
+            IKManager.Instance.CalibrationResult.UserHeight = realHeight;
+
+            if (Settings.Current.EnableOverrideBodyHeight)
+            {
+                realHeight = Settings.Current.OverrideBodyHeight;
+                Debug.Log($"Override UserHeight:{realHeight}");
+            }
 
             // トラッカー全体のスケールを手の位置に合わせる
             // スケールを動かしてから位置を取らないとモデルの位置がずれる
@@ -254,13 +261,24 @@ namespace VMC
 
 
             // リアル手と手の中心から少し後ろに下げた位置
-            var scaledCenterPosition = Vector3.Lerp(leftHandTargetTransform.position, rightHandTargetTransform.position, 0.5f) - hmdForwardAngle.normalized * (realHeight * offsetScale * 0.052f);
+            var scaledCenterPosition = Vector3.Lerp(leftHandTargetTransform.position, rightHandTargetTransform.position, 0.5f);
+
+            if (calibrateMode == CalibrateMode.Ipose)
+            {
+                scaledCenterPosition = Vector3.Lerp(leftHandTargetTransform.position, rightHandTargetTransform.position, 0.5f) - hmdForwardAngle.normalized * (realHeight * offsetScale * 0.03f);
+            }
+            else if (calibrateMode == CalibrateMode.Tpose)
+            {
+                scaledCenterPosition = Vector3.Lerp(leftHandTargetTransform.position, rightHandTargetTransform.position, 0.5f) - hmdForwardAngle.normalized * (realHeight * offsetScale * 0.02f);
+            }
 
             //頭がHMDの場合
             if (headTarget.DeviceClass == ETrackedDeviceClass.HMD)
             {
                 scaledCenterPosition = headTarget.TargetTransform.position - hmdForwardAngle.normalized * (realHeight * offsetScale * 0.043f);
             }
+
+            Debug.Log($"scaledCenterPosition:({scaledCenterPosition.x}, {scaledCenterPosition.y}, {scaledCenterPosition.z})");
 
             //身長から腰の位置を算出する
             // B13 上前腸骨棘高 891.9
@@ -287,7 +305,7 @@ namespace VMC
             {
                 var pelvisRotatePoint = new GameObject("PelvisRotatePoint").transform;
                 pelvisRotatePoint.SetParent(pelvisTargetTransform);
-                pelvisRotatePoint.position = scaledPelvisPosition;
+                pelvisRotatePoint.position = scaledPelvisPosition + new Vector3(0, Settings.Current.PelvisOffsetAdjustY, Settings.Current.PelvisOffsetAdjustZ);
                 pelvisRotatePoint.rotation = Quaternion.identity;
                 pelvisTargetTransform = pelvisRotatePoint;
             }
@@ -406,11 +424,6 @@ namespace VMC
                 vrik.solver.spine.neckStiffness = 0f;
                 vrik.solver.spine.maxRootAngle = 180f;
                 vrik.solver.spine.minHeadHeight = -100f;
-
-                //頭が腰に近づいたときに猫背になりすぎないように (Final IK v2.1～)
-                vrik.solver.spine.useAnimatedHeadHeightWeight = 1.0f;
-                vrik.solver.spine.useAnimatedHeadHeightRange = 0.005f;
-                vrik.solver.spine.animatedHeadHeightBlend = 0.08f;
             }
 
             // 腰のトラッキングを調整
@@ -647,6 +660,11 @@ namespace VMC
                     vrik.UpdateSolverExternal();
                 }
                 headOffset.position -= headStep;
+
+                //頭が腰に近づいたときに猫背になりすぎないように (Final IK v2.1～)
+                vrik.solver.spine.useAnimatedHeadHeightWeight = 1.0f;
+                vrik.solver.spine.useAnimatedHeadHeightRange = 0.009f;
+                vrik.solver.spine.animatedHeadHeightBlend = 0.18f;
             }
 
             vrik.UpdateSolverExternal();

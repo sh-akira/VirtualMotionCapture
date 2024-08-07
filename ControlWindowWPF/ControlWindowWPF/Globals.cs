@@ -75,6 +75,8 @@ namespace VirtualMotionCaptureControlPanel
             public PipeCommands.CalibrateType LastCalibrateType = PipeCommands.CalibrateType.Ipose;
             public bool EnableCalibrationEndSound = false;
 
+            public bool FirewallChecked = false;
+
             //初期値
             [OnDeserializing()]
             internal void OnDeserializingMethod(StreamingContext context)
@@ -86,6 +88,7 @@ namespace VirtualMotionCaptureControlPanel
                 CurrentPathOnPhotoFileDialog = "";
                 LastCalibrateType = PipeCommands.CalibrateType.Ipose;
                 EnableCalibrationEndSound = false;
+                FirewallChecked = false;
             }
         }
 

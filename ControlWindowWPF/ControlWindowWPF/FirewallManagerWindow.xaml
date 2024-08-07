@@ -1,0 +1,18 @@
+﻿<Window x:Class="VirtualMotionCaptureControlPanel.FirewallManagerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
+        mc:Ignorable="d"
+        Title="{DynamicResource FirewallManagerWindow_Title}" ResizeMode="CanMinimize" SizeToContent="Height" Width="380" Topmost="True">
+    <DockPanel Margin="10">
+        <Button Visibility="Collapsed"/>
+        <TextBlock Text="{DynamicResource FirewallManagerWindow_Description}" HorizontalAlignment="Center" FontSize="14" DockPanel.Dock="Top" Margin="10" TextWrapping="Wrap"/>
+        <CheckBox Content="{DynamicResource FirewallManagerWindow_DontShowAgain}" DockPanel.Dock="Top" Margin="10,10,0,0" Name="DontShowAgainCheckBox"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="{DynamicResource OK}" Name="OKButton" Click="OKButton_Click" IsDefault="True" Width="100" FontWeight="Bold"/>
+            <Button Content="{DynamicResource FaceControlKeyAddWindow_Cancel}" Name="CancelButton" Click="CancelButton_Click" IsCancel="True" Width="100"/>
+        </StackPanel>
+    </DockPanel>
+</Window>

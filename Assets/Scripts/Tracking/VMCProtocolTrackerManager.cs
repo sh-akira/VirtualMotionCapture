@@ -8,7 +8,7 @@ namespace VMC
     public class VMCProtocolTrackerManager : MonoBehaviour
     {
         public ControlWPFWindow controlWPFWindow;
-        private ExternalReceiverForVMC[] externalReceivers => controlWPFWindow.externalMotionReceivers;
+        private List<ExternalReceiverForVMC> externalReceivers => controlWPFWindow.externalMotionReceivers;
 
         private Dictionary<string, DeviceInfo> allDeviceInfo = new Dictionary<string, DeviceInfo>();
 

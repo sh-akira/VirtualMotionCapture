@@ -10,9 +10,12 @@
         <Button Visibility="Collapsed"/>
         <!--This Button for fix style bug-->
         <DockPanel LastChildFill="True">
-            <StatusBar MouseDoubleClick="StatusBar_MouseDoubleClick" DockPanel.Dock="Bottom" Margin="0,0,0,0" Height="25" Background="#2A2A2A">
+            <StatusBar MouseDoubleClick="StatusBar_MouseDoubleClick" DockPanel.Dock="Bottom" Margin="0,0,0,0" Background="#2A2A2A">
                 <StatusBarItem>
-                    <TextBlock Name="UnityLogStatusTextBlock" FontSize="12" Foreground="#EEEEEE">Welcome to Virtual Motion Capture</TextBlock>
+					<StackPanel Orientation="Vertical">
+						<TextBlock Name="UnityLogStatusTextBlock" FontSize="12" Foreground="#EEEEEE">Welcome to Virtual Motion Capture</TextBlock>
+                        <TextBlock Name="OpenVRAlertStatusTextBlock" FontSize="12" Foreground="#EEEE88" TextWrapping="Wrap" FontWeight="Bold" Visibility="Collapsed" Text="{DynamicResource MainWindowOpenVRAlertStatus}"/>
+					</StackPanel>
                 </StatusBarItem>
             </StatusBar>
 

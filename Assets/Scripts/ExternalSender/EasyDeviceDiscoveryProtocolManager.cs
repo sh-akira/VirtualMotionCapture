@@ -44,6 +44,8 @@ namespace VMC
 
         void Update()
         {
+            if (externalReceiver == null) return;
+
             //受信ポートを常に反映
             responder.servicePort = externalReceiver.receivePort;
             requester.servicePort = externalReceiver.receivePort;

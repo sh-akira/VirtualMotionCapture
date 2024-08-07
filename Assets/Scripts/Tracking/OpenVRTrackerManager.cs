@@ -15,6 +15,9 @@ namespace VMC
 
         private bool isOVRConnected = false;
 
+        public Action OpenVREventAction = null;
+        public bool isDashboardActivated = false;
+
         private void Awake()
         {
             Instance = this;
@@ -25,8 +28,16 @@ namespace VMC
             Setup();
         }
 
+        private void OnDestroy()
+        {
+            Close();
+        }
+
         private bool Setup()
         {
+            CommonSettings.Load();
+            if (CommonSettings.Current.LaunchSteamVROnStartup == false) return false;
+
             var error = EVRInitError.None;
             openVR = OpenVR.Init(ref error, EVRApplicationType.VRApplication_Overlay);
 
@@ -195,6 +206,16 @@ namespace VMC
             return en;
         }
 
+        public bool IsDashboardVisible()
+        {
+            if (openVR == null)
+            {
+                return false;
+            }
+
+            return OpenVR.Overlay?.IsDashboardVisible() ?? false;
+        }
+
         //コントローラ状態を調べる
         public void GetControllerSerial(out string LeftHandSerial, out string RightHandSerial)
         {
@@ -227,6 +248,7 @@ namespace VMC
 
         private void Close()
         {
+            isOVRConnected = false;
             openVR = null;
             OpenVR.Shutdown();
         }
@@ -237,6 +259,12 @@ namespace VMC
             {
                 PollingVREvents();
                 GetAllDevicePose();
+
+                bool dashboardVisible = IsDashboardVisible();
+                if (isDashboardActivated != dashboardVisible) {
+                    isDashboardActivated = dashboardVisible;
+                    OpenVREventAction?.Invoke();
+                }
             }
         }
     }

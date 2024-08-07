@@ -49,15 +49,23 @@ namespace VirtualMotionCaptureControlPanel
         private ObservableCollection<string> LipSyncDevices = new ObservableCollection<string>();
 
         private int CurrentWindowNum = 0;
+        CalibrationResultWindow calibrationResultWindow;
 
         public MainWindow()
         {
-            InitializeComponent();
+            if (App.CommandLineArgs != null && App.CommandLineArgs.Length == 1 && App.CommandLineArgs.First() == "/firewall")
+            {
+                var firewallManagerWindow = new FirewallManagerWindow();
+                firewallManagerWindow.Show();
+                this.Close();
+                return;
+            }
             if (App.CommandLineArgs == null || App.CommandLineArgs.Length < 2 || App.CommandLineArgs.First().StartsWith("/pipeName") == false)
             {
                 this.Close();
                 return;
             }
+            InitializeComponent();
             Globals.Connect(App.CommandLineArgs[1]);
             Globals.Client.ReceivedEvent += Client_Received;
             DefaultFaceComboBox.ItemsSource = DefaultFacesBase;
@@ -152,6 +160,21 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            if (Globals.CurrentCommonSettingsWPF.FirewallChecked == false && App.CommandLineArgs[1] != "VMCTest")
+            {
+                var (successExecute, exitCode) = AdminExecute.RestartAsAdmin(new[] { "/firewall" });
+                if (successExecute)
+                {
+                    if (exitCode == 0)
+                    {
+                        Globals.CurrentCommonSettingsWPF.FirewallChecked = true;
+                        Globals.SaveCommonSettings();
+                    }
+                }
+            }
+
+            calibrationResultWindow = new CalibrationResultWindow { Owner = this, Topmost = true, WindowStartupLocation = WindowStartupLocation.CenterScreen };
+
             CheckVMCCameraVersion();
 
             while (Globals.Client.IsConnected != true)
@@ -218,15 +241,28 @@ namespace VirtualMotionCaptureControlPanel
             await Globals.Client.SendCommandAsync(new PipeCommands.LoadCurrentSettings());
         }
 
-        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            try
+            Task.Run(async () =>
             {
-                await Globals.Client?.SendCommandAsync(new PipeCommands.ExitControlPanel { });
-            }
-            catch { }
-            Application.Current.Windows.Cast<Window>().ToList().ForEach(d => { if (d != this) d.Close(); });
+                try
+                {
+                    await Globals.Client?.SendCommandAsync(new PipeCommands.ExitControlPanel { });
+                }
+                catch { }
+            });
+
+            Application.Current?.Windows?.Cast<Window>()?.ToList()?.ForEach(d => { if (d != this) d?.Close(); });
             Globals.Client.Dispose();
+
+            if (lastLog != null)
+            {
+                //エラーカウント超過による自動クローズの場合にメッセージを出す
+                if (lastLog.errorCount >= PipeCommands.ErrorCountMax)
+                {
+                    MessageBox.Show(lastLog.condition, LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
 
         private void SilentChangeChecked(CheckBox checkBox, bool enable, RoutedEventHandler checkedHandler, RoutedEventHandler uncheckedHandler)
@@ -472,16 +508,18 @@ namespace VirtualMotionCaptureControlPanel
                         case NotifyLogTypes.Assert:
                         case NotifyLogTypes.Exception:
                             UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 102, 102));
+                            UnityLogStatusTextBlock.Text = "[" + d.type.ToString() + ":" + d.errorCount + "] " + d.condition;
                             break;
                         case NotifyLogTypes.Warning:
                             UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 0));
-                            break;
+                            UnityLogStatusTextBlock.Text = "[" + d.type.ToString() + "] " + d.condition;
+                            return;
                         default:
-                            //UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(238, 238, 238));
+                            UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(238, 238, 238));
+                            UnityLogStatusTextBlock.Text = "[" + d.type.ToString() + "] " + d.condition;
                             return;
                     }
 
-                    UnityLogStatusTextBlock.Text = "["+d.type.ToString()+"] "+d.condition;
                     lastLog = d;
                 }
                 else if (e.CommandType == typeof(PipeCommands.ShowCalibrationWindow))
@@ -491,6 +529,39 @@ namespace VirtualMotionCaptureControlPanel
                 else if (e.CommandType == typeof(PipeCommands.ShowPhotoWindow))
                 {
                     PhotoButton_Click(null, null);
+                }
+                else if (e.CommandType == typeof(PipeCommands.VRMLoadStatus))
+                {
+                    var d = (PipeCommands.VRMLoadStatus)e.Data;
+                    CalibrationButton.IsEnabled = d.Valid;
+                }
+                else if (e.CommandType == typeof(PipeCommands.ChangeCamera))
+                {
+                    var d = (PipeCommands.ChangeCamera)e.Data;
+
+                    FrontCameraButton.IsEnabled = true;
+                    BackCameraButton.IsEnabled = true;
+                    FreeCameraButton.IsEnabled = true;
+                    PositionFixedCameraButton.IsEnabled = true;
+
+                    switch (d.type) {
+                        case CameraTypes.Front: FrontCameraButton.IsEnabled = false; break;
+                        case CameraTypes.Back: BackCameraButton.IsEnabled = false; break;
+                        case CameraTypes.Free: FreeCameraButton.IsEnabled = false; break;
+                        case CameraTypes.PositionFixed: PositionFixedCameraButton.IsEnabled = false; break;
+                        default: break;
+                    }
+
+                }
+                else if (e.CommandType == typeof(PipeCommands.CalibrationResult))
+                {
+                    var d = (PipeCommands.CalibrationResult)e.Data;
+                    calibrationResultWindow.Update(d);
+                }
+                else if (e.CommandType == typeof(PipeCommands.OpenVRStatus))
+                {
+                    var d = (PipeCommands.OpenVRStatus)e.Data;
+                    OpenVRAlertStatusTextBlock.Visibility = d.DashboardOpened? Visibility.Visible : Visibility.Collapsed;
                 }
             }));
         }
@@ -561,7 +632,7 @@ namespace VirtualMotionCaptureControlPanel
             existCalibrationWindow = true;
             if (string.IsNullOrWhiteSpace(Globals.CurrentVRMFilePath))
             {
-                MessageBox.Show(LanguageSelector.Get("MainWindow_ErrorCalibration"), LanguageSelector.Get("Error"));
+                MessageBox.Show(LanguageSelector.Get("MainWindow_ErrorCalibration"), LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 existCalibrationWindow = false;
                 return;
             }

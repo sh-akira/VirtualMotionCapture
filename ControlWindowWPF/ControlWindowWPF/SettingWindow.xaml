@@ -15,8 +15,11 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Vertical">
-                <GroupBox Header="{DynamicResource SettingWindow_HandRotate}" DockPanel.Dock="Top">
-                    <Button Content="{DynamicResource SettingWindow_OpenHandFreeOffset}" Name="HandFreeOffsetButton" Click="HandFreeOffsetButton_Click"/>
+                <GroupBox Header="{DynamicResource CalibrationWindowTitle}" DockPanel.Dock="Top">
+                    <UniformGrid Columns="2">
+                        <Button Content="{DynamicResource SettingWindow_HandRotate}" Name="HandFreeOffsetButton" Click="HandFreeOffsetButton_Click"/>
+                        <Button Content="{DynamicResource SettingWindow_CalibrationSetting}" Name="CalibrationSettingButton" Click="CalibrationSettingButton_Click"/>
+                    </UniformGrid>
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_TrackerConfig}">
                     <Button Content="{DynamicResource SettingWindow_OpenTrackerConfig}" Name="TrackerConfigButton" Click="TrackerConfigButton_Click"/>
@@ -41,8 +44,9 @@
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_TrackingOption}">
                     <StackPanel Orientation="Vertical">
-                        <CheckBox Content="{DynamicResource SettingWindow_PauseTracking}" Name="PauseTrackingCheckBox" Checked="PauseTrackingCheckBox_Checked" Unchecked="PauseTrackingCheckBox_Unchecked" />
                         <CheckBox Content="{DynamicResource SettingWindow_HandleControllerAsTracker}" Name="HandleControllerAsTrackerCheckBox" Checked="HandleControllerAsTrackerCheckBox_Changed" Unchecked="HandleControllerAsTrackerCheckBox_Changed" />
+                        <CheckBox Content="{DynamicResource SettingWindow_PauseTracking}" Name="PauseTrackingCheckBox" Checked="PauseTrackingCheckBox_Checked" Unchecked="PauseTrackingCheckBox_Unchecked" />
+                        <CheckBox Content="{DynamicResource SettingWindow_LaunchSteamVROnStartup}" Name="LaunchSteamVROnStartupCheckBox" Checked="LaunchSteamVROnStartupCheckBox_Changed" Unchecked="LaunchSteamVROnStartupCheckBox_Changed" />
                     </StackPanel>
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_QualitySettings}">
@@ -64,9 +68,6 @@
                                         <TextBlock Text="{Binding Width}"/>
                                         <TextBlock Text="x"/>
                                         <TextBlock Text="{Binding Height}"/>
-                                        <TextBlock Text="/"/>
-                                        <TextBlock Text="{Binding RefreshRate}"/>
-                                        <TextBlock Text="Hz"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
@@ -114,12 +115,6 @@
                         <Button Content="VIVE Facial Tracker" Name="LipTracking_ViveSettingButton" Click="LipTracking_ViveSettingButton_Click"/>
                     </UniformGrid>
                 </GroupBox>
-                <GroupBox Header="{DynamicResource SettingWindow_VMCMod}" Name="VMCModGroupBox">
-                    <DockPanel>
-                        <Button Content="Log" DockPanel.Dock="Right" Name="DebugLogButton" Click="DebugLogButton_Click"/>
-                        <Button Content="{DynamicResource SettingWindow_VMCModSetting}" Name="ModSetting" Click="ModSetting_Click"/>
-                    </DockPanel>
-                </GroupBox>
                 <GroupBox Header="CameraPlus (BeatSaber MOD)">
                     <UniformGrid Columns="2">
                         <Button Content="Import" Name="CameraPlus_ImportButton" Click="CameraPlus_ImportButton_Click"/>
@@ -151,6 +146,23 @@
                         <ComboBox  Name="ControllerComboBox" VerticalAlignment="Center" ItemsSource="{Binding TrackersList}" ToolTip="{DynamicResource SettingWindow_ControllerNumber_ToolTip}"/>
                     </DockPanel>
                 </GroupBox>
+                <GroupBox Header="{DynamicResource SettingWindow_VirtualMotionTracker}">
+                    <StackPanel Orientation="Vertical">
+                        <DockPanel>
+                            <CheckBox Content="{DynamicResource SettingWindow_VirtualMotionTrackerEnable}" Name="VirtualMotionTrackerEnableCheckBox" Checked="VirtualMotionTrackerEnableCheckBox_Changed" Unchecked="VirtualMotionTrackerEnableCheckBox_Changed"  DockPanel.Dock="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0"/>
+                            <TextBlock Text="No: " DockPanel.Dock="Left" VerticalAlignment="Center" Margin="15,0,0,0"/>
+                            <Button Content="Set" Name="VirtualMotionTrackerSetButton" Click="VirtualMotionTrackerSetButton_Click" Padding="5,0" Margin="5,0" Height="Auto" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                            <TextBox Text="50" VerticalAlignment="Center" Name="VirtualMotionTrackerNumber"/>
+                        </DockPanel>
+                        <GroupBox Header="{DynamicResource SettingWindow_VMTInstall}" DockPanel.Dock="Top">
+                            <UniformGrid Columns="2">
+                                <Button Content="{DynamicResource SettingWindow_VMTInstallButton}" Name="VMTInstallButton" Click="VMTInstallButton_Click"/>
+                                <Button Content="{DynamicResource SettingWindow_VMTUninstallButton}" Name="VMTUninstallButton" Click="VMTUninstallButton_Click"/>
+                            </UniformGrid>
+                        </GroupBox>
+                        <Button DockPanel.Dock="Bottom" Content="{DynamicResource SettingWindow_ExportVMTExternalCameraConfig}" Name="LIVExternalCameraConigExportButton" Click="LIVExternalCameraConigExportButton_Click" ToolTip="{DynamicResource SettingWindow_ExportExternalCameraConfig_ToolTip}"/>
+                    </StackPanel>
+                </GroupBox>
             </StackPanel>
             <StackPanel Orientation="Vertical" Grid.Column="2">
                 <GroupBox Header="{DynamicResource SettingWindow_ExternalMotionSender_Free}" Name="FreeExternalMotionSenderGroupBox">
@@ -172,7 +184,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="Address:" Grid.Column="0"/>
-                            <TextBox Text="127.0.0.1" Grid.Column="1" VerticalAlignment="Center" Name="ExternalMotionSenderAddressTextBox"/>
+                            <TextBox Text="127.0.0.1" VerticalAlignment="Top" Name="ExternalMotionSenderAddressTextBox" Grid.ColumnSpan="3" Margin="45,0,27,0"/>
                             <TextBlock Text=" Port:" Grid.Column="2"/>
                             <TextBox Text="39539" Grid.Column="3" VerticalAlignment="Center" Name="ExternalMotionSenderPortTextBox"/>
                         </Grid>
@@ -216,76 +228,52 @@
                 </GroupBox>
                 <GroupBox>
                     <GroupBox.Header>
-                        <WrapPanel>
+                        <Grid>
                             <TextBlock Text="{DynamicResource SettingWindow_ExternalMotionReceiver}" FontWeight="Bold"/>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text=" IP:"/>
-                                <Button Content="Check IP" Name="CheckIPAddressButton" Click="CheckIPAddressButton_Click" Padding="5,0" Margin="5,0" Height="Auto"/>
-                            </StackPanel>
-                        </WrapPanel>
+                            <Button Content="Check IP" Name="CheckIPAddressButton" Click="CheckIPAddressButton_Click" Padding="5,0" Margin="5,0" Height="Auto" HorizontalAlignment="Right"/>
+                        </Grid>
                     </GroupBox.Header>
                     <DockPanel>
-                        <CheckBox Content="{DynamicResource SettingWindow_ReceiveBonesEnable}" Name="ReceiveBonesEnableCheckBox" Checked="ReceiveBonesEnableCheckBox_Changed" Unchecked="ReceiveBonesEnableCheckBox_Changed" DockPanel.Dock="Bottom"/>
-                        <GroupBox>
+                        <DockPanel DockPanel.Dock="Bottom">
+                            <TextBlock Text="Status: "/>
+                            <TextBox Text="" IsReadOnly="True" IsEnabled="False" VerticalAlignment="Center" Name="StatusStringTextbox"/>
+                        </DockPanel>
+                        <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionReceiverRequesterEnable}" Name="ExternalMotionReceiverRequesterEnableCheckBox" DockPanel.Dock="Bottom"/>
+                        <GroupBox Header="受信機一覧">
                             <DockPanel>
-                                <Button Content="{DynamicResource SettingWindow_Apply}" Name="OSCReceiverApplyButton" Click="OSCReceiverApplyButton_Click" DockPanel.Dock="Right" Padding="10,5"/>
-                                <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionReceiverEnable}" Name="ExternalMotionReceiverEnableCheckBox" Checked="ExternalMotionReceiverCheckBox_Changed" Unchecked="ExternalMotionReceiverCheckBox_Changed" DockPanel.Dock="Top"/>
-                                <Grid DockPanel.Dock="Top">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="40"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text=" Port:" Grid.Column="0" Grid.Row="0"/>
-                                    <TextBox Text="39540" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Name="ExternalMotionReceiverPortTextBox"/>
-                                    <TextBlock Text="Status: " Grid.Column="0" Grid.Row="1"/>
-                                    <TextBox Text="" Grid.Column="1" Grid.Row="1" IsReadOnly="True" IsEnabled="False" VerticalAlignment="Center" Name="StatusStringTextbox"/>
-                                </Grid>
-                                <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionReceiverRequesterEnable}" Name="ExternalMotionReceiverRequesterEnableCheckBox" DockPanel.Dock="Top" Margin="40,0,0,0"/>
-                                <DockPanel DockPanel.Dock="Top">
-                                    <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionReceiverEnable}" Name="ExternalMotionReceiverEnableCheckBox2" Checked="ExternalMotionReceiverCheckBox_Changed" Unchecked="ExternalMotionReceiverCheckBox_Changed" DockPanel.Dock="Left"/>
-                                    <TextBlock Text="(2)"/>
-                                </DockPanel>
-                                <Grid DockPanel.Dock="Top">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="40"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text=" Port:" Grid.Column="0" Grid.Row="0"/>
-                                    <TextBox Text="39541" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Name="ExternalMotionReceiverPortTextBox2"/>
-                                </Grid>
+                                <UniformGrid Rows="3" DockPanel.Dock="Right"  Height="80">
+                                    <Button Content="{DynamicResource FaceControlKeyAddWindow_Add}" Name="VMCProtocolReceiverAddButton" Click="VMCProtocolReceiverAddButton_Click" Height="Auto" Margin="0"/>
+                                    <Button Content="{DynamicResource ShortcutKeyWindow_Edit}" Name="VMCProtocolReceiverEditButton" Click="VMCProtocolReceiverEditButton_Click" Height="Auto" Margin="0" IsEnabled="False"/>
+                                    <Button Content="{DynamicResource ShortcutKeyWindow_Remove}" Name="VMCProtocolReceiverRemoveButton" Click="VMCProtocolReceiverRemoveButton_Click" Height="Auto" Margin="0" IsEnabled="False"/>
+                                </UniformGrid>
+                                <DataGrid Height="84" HeadersVisibility="Column" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" CanUserResizeColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False" SelectionMode="Single" Name="VMCProtocolReceiverDataGrid" AutoGenerateColumns="False" SelectionChanged="VMCProtocolReceiverDataGrid_SelectionChanged">
+                                    <DataGrid.Columns>
+                                        <DataGridTemplateColumn IsReadOnly="True" Header="">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <CheckBox Margin="0" Tag="{Binding}" IsChecked="{Binding Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Checked="VMCProtocolReceiverItem_Changed" Unchecked="VMCProtocolReceiverItem_Changed"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" Width="*"/>
+                                        <DataGridTextColumn Header="Port" Binding="{Binding Port}" IsReadOnly="True" Width="46"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
                             </DockPanel>
                         </GroupBox>
                     </DockPanel>
                 </GroupBox>
-                <GroupBox Header="{DynamicResource SettingWindow_VirtualMotionTracker}">
-                    <StackPanel Orientation="Vertical">
-                        <DockPanel>
-                            <CheckBox Content="{DynamicResource SettingWindow_VirtualMotionTrackerEnable}" Name="VirtualMotionTrackerEnableCheckBox" Checked="VirtualMotionTrackerEnableCheckBox_Changed" Unchecked="VirtualMotionTrackerEnableCheckBox_Changed"  DockPanel.Dock="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0"/>
-                            <TextBlock Text="No: " DockPanel.Dock="Left" VerticalAlignment="Center" Margin="15,0,0,0"/>
-                            <Button Content="Set" Name="VirtualMotionTrackerSetButton" Click="VirtualMotionTrackerSetButton_Click" Padding="5,0" Margin="5,0" Height="Auto" VerticalAlignment="Center" DockPanel.Dock="Right"/>
-                            <TextBox Text="50" VerticalAlignment="Center" Name="VirtualMotionTrackerNumber"/>
-                        </DockPanel>
-                        <GroupBox Header="{DynamicResource SettingWindow_VMTInstall}" DockPanel.Dock="Top">
-                            <UniformGrid Columns="2">
-                                <Button Content="{DynamicResource SettingWindow_VMTInstallButton}" Name="VMTInstallButton" Click="VMTInstallButton_Click"/>
-                                <Button Content="{DynamicResource SettingWindow_VMTUninstallButton}" Name="VMTUninstallButton" Click="VMTUninstallButton_Click"/>
-                            </UniformGrid>
-                        </GroupBox>
-                        <Button DockPanel.Dock="Bottom" Content="{DynamicResource SettingWindow_ExportVMTExternalCameraConfig}" Name="LIVExternalCameraConigExportButton" Click="LIVExternalCameraConigExportButton_Click" ToolTip="{DynamicResource SettingWindow_ExportExternalCameraConfig_ToolTip}"/>
-                    </StackPanel>
+                <GroupBox Header="{DynamicResource SettingWindow_VMCMod}" Name="VMCModGroupBox">
+                    <DockPanel>
+                        <Button Content="Log" DockPanel.Dock="Right" Name="DebugLogButton" Click="DebugLogButton_Click"/>
+                        <Button Content="{DynamicResource SettingWindow_VMCModSetting}" Name="ModSetting" Click="ModSetting_Click"/>
+                    </DockPanel>
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_Language}">
                     <ComboBox Name="LanguageComboBox" SelectedIndex="0" SelectionChanged="LanguageComboBox_SelectionChanged">
                         <system:String>Japanese</system:String>
                         <system:String>English</system:String>
-                        <system:String>Chinese (@PoctorXz, @ccloli)</system:String>
+                        <system:String>Chinese (@PoctorXz, @ccloli, @sparanoid)</system:String>
                         <system:String>Korean (@MANKALO_kr)</system:String>
                     </ComboBox>
                 </GroupBox>

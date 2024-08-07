@@ -14,6 +14,8 @@ using Valve.VR;
 using VMCMod;
 using VRM;
 using static VMC.NativeMethods;
+using UniGLTF;
+using VRMShaders;
 #if UNITY_EDITOR   // エディタ上でしか動きません。
 using UnityEditor;
 #endif
@@ -31,8 +33,6 @@ namespace VMC
         public Transform LeftWristTransform = null;
         public Transform RightWristTransform = null;
 
-        public CameraLookTarget CalibrationCamera;
-
         public Renderer BackgroundRenderer;
 
         public GameObject GridCanvas;
@@ -40,31 +40,23 @@ namespace VMC
         public DynamicOVRLipSync LipSync;
 
         public FaceController faceController;
-        public HandController handController;
-
-        public WristRotationFix wristRotationFix;
-
-        public Transform HandTrackerRoot;
-        public Transform PelvisTrackerRoot;
 
         public GameObject ExternalMotionSenderObject;
         private ExternalSender externalMotionSender;
 
         public GameObject ExternalMotionReceiverObject;
-        public ExternalReceiverForVMC[] externalMotionReceivers;
+        public List<ExternalReceiverForVMC> externalMotionReceivers = new List<ExternalReceiverForVMC>();
+        public MidiCCWrapper midiCCWrapper;
 
         public MemoryMappedFileServer server;
         private string pipeName = Guid.NewGuid().ToString();
 
         private GameObject CurrentModel = null;
 
-        private RootMotion.FinalIK.VRIK vrik = null;
-
-        private Animator animator = null;
-
         private int CurrentWindowNum = 1;
 
         public int CriticalErrorCount = 0;
+        public bool IsCriticalErrorCountOver = false;
 
         public VMTClient vmtClient;
 
@@ -78,7 +70,7 @@ namespace VMC
         private System.Threading.SynchronizationContext context = null;
 
         public Action<GameObject> AdditionalSettingAction = null;
-        public Action<VRMData> VRMmetaLodedAction = null;
+        public Action<UnityMemoryMappedFile.VRMData> VRMmetaLodedAction = null;
         public Action<string> VRMRemoteLoadedAction = null;
 
         public Action<GameObject> EyeTracking_TobiiCalibrationAction = null;
@@ -94,20 +86,6 @@ namespace VMC
         public Behaviour SRanipal_Lip_FrameworkComponent = null;
 
         public MIDICCBlendShape midiCCBlendShape;
-
-        public Transform generatedObject;
-
-        public enum CalibrationState
-        {
-            Uncalibrated = 0,
-            WaitingForCalibrating = 1,
-            Calibrating = 2,
-            Calibrated = 3,
-        }
-
-        public CalibrationState calibrationState = CalibrationState.Uncalibrated;
-        public PipeCommands.CalibrateType lastCalibrateType = PipeCommands.CalibrateType.Ipose; //最後に行ったキャリブレーションの種類
-        private PipeCommands.CalibrateType currentSelectCalibrateType = PipeCommands.CalibrateType.Ipose;
 
         public string lastLoadedConfigPath = "";
 
@@ -142,18 +120,23 @@ namespace VMC
             server.Start(pipeName);
 
             externalMotionSender = ExternalMotionSenderObject.GetComponent<ExternalSender>();
-            externalMotionReceivers = ExternalMotionReceiverObject.GetComponentsInChildren<ExternalReceiverForVMC>(true);
         }
 
         void Start()
         {
             Settings.Current.BackgroundColor = BackgroundRenderer.material.color;
             Settings.Current.CustomBackgroundColor = BackgroundRenderer.material.color;
+
+            OpenVRTrackerManager.Instance.OpenVREventAction += async () =>
+            {
+                await server.SendCommandAsync(new PipeCommands.OpenVRStatus { DashboardOpened = OpenVRTrackerManager.Instance.isDashboardActivated });
+            };
         }
 
         private int SetWindowTitle()
         {
             int setWindowNum = 1;
+#if !UNITY_EDITOR
             var allWindowList = GetAllWindowHandle();
             var numlist = allWindowList.Where(p => p.Value.StartsWith(Application.productName + " ") && p.Value.EndsWith(")") && p.Value.Contains('(')).Select(t => int.Parse(t.Value.Split('(').Last().Replace(")", ""))).OrderBy(d => d);
             while (numlist.Contains(setWindowNum))
@@ -174,6 +157,7 @@ namespace VMC
                 buildString = "f" + VersionString.Split('f').Last().Split('r').First();
             }
             NativeMethods.SetUnityWindowTitle($"{Application.productName} {baseVersionString + buildString} ({setWindowNum})");
+#endif
             return setWindowNum;
         }
 
@@ -231,7 +215,7 @@ namespace VMC
         private void OnApplicationQuit()
         {
             // アプリが終了したらコントロールパネルも終了する。
-            server?.SendCommandAsync(new PipeCommands.QuitApplication { });
+            server?.SendCommand(new PipeCommands.QuitApplication { });
 
             server.ReceivedEvent -= Server_Received;
             server?.Dispose();
@@ -270,25 +254,10 @@ namespace VMC
                 else if (e.CommandType == typeof(PipeCommands.ImportVRM))
                 {
                     var d = (PipeCommands.ImportVRM)e.Data;
-                    var t = ImportVRM(d.Path, d.ImportForCalibration, d.UseCurrentFixSetting ? Settings.Current.EnableNormalMapFix : d.EnableNormalMapFix, d.UseCurrentFixSetting ? Settings.Current.DeleteHairNormalMap : d.DeleteHairNormalMap);
+                    var t = ImportVRM(d.Path);
 
                     //メタ情報をOSC送信する
                     VRMmetaLodedAction?.Invoke(LoadVRM(d.Path));
-                }
-                else if (e.CommandType == typeof(PipeCommands.SelectCalibrateMode))
-                {
-                    var d = (PipeCommands.SelectCalibrateMode)e.Data;
-                    currentSelectCalibrateType = d.CalibrateType;
-                    SetCalibratePoseToCurrentModel();
-                }
-                else if (e.CommandType == typeof(PipeCommands.Calibrate))
-                {
-                    var d = (PipeCommands.Calibrate)e.Data;
-                    StartCoroutine(Calibrate(d.CalibrateType));
-                }
-                else if (e.CommandType == typeof(PipeCommands.EndCalibrate))
-                {
-                    EndCalibrate();
                 }
 
                 else if (e.CommandType == typeof(PipeCommands.SetLipSyncEnable))
@@ -432,11 +401,6 @@ namespace VMC
                         Settings.Current.RightTouchPadPoints = d.RightPoints;
                     }
                 }
-                else if (e.CommandType == typeof(PipeCommands.SetHandAngle))
-                {
-                    var d = (PipeCommands.SetHandAngle)e.Data;
-                    handController.SetHandEulerAngles(d.LeftEnable, d.RightEnable, handController.CalcHandEulerAngles(d.HandAngles));
-                }
                 else if (e.CommandType == typeof(PipeCommands.GetFaceKeys))
                 {
                     await server.SendCommandAsync(new PipeCommands.ReturnFaceKeys { Keys = faceController.BlendShapeClips.Select(d => d.BlendShapeName).ToList() }, e.RequestId);
@@ -450,58 +414,11 @@ namespace VMC
                 {
                     ControlPanelExecuted = false;
                 }
-                else if (e.CommandType == typeof(PipeCommands.SetHandFreeOffset))
-                {
-                    var d = (PipeCommands.SetHandFreeOffset)e.Data;
-                    Settings.Current.LeftHandPositionX = d.LeftHandPositionX / 1000f;
-                    Settings.Current.LeftHandPositionY = d.LeftHandPositionY / 1000f;
-                    Settings.Current.LeftHandPositionZ = d.LeftHandPositionZ / 1000f;
-                    Settings.Current.LeftHandRotationX = d.LeftHandRotationX;
-                    Settings.Current.LeftHandRotationY = d.LeftHandRotationY;
-                    Settings.Current.LeftHandRotationZ = d.LeftHandRotationZ;
-                    Settings.Current.RightHandPositionX = d.RightHandPositionX / 1000f;
-                    Settings.Current.RightHandPositionY = d.RightHandPositionY / 1000f;
-                    Settings.Current.RightHandPositionZ = d.RightHandPositionZ / 1000f;
-                    Settings.Current.RightHandRotationX = d.RightHandRotationX;
-                    Settings.Current.RightHandRotationY = d.RightHandRotationY;
-                    Settings.Current.RightHandRotationZ = d.RightHandRotationZ;
-                    Settings.Current.SwivelOffset = d.SwivelOffset;
-                    SetHandFreeOffset();
-                }
-                else if (e.CommandType == typeof(PipeCommands.GetTrackerSerialNumbers))
-                {
-                    await server.SendCommandAsync(new PipeCommands.ReturnTrackerSerialNumbers { List = GetTrackerSerialNumbers(), CurrentSetting = GetCurrentTrackerSettings() }, e.RequestId);
-                }
-                else if (e.CommandType == typeof(PipeCommands.SetTrackerSerialNumbers))
-                {
-                    var d = (PipeCommands.SetTrackerSerialNumbers)e.Data;
-                    SetTrackerSerialNumbers(d);
-
-                }
-                else if (e.CommandType == typeof(PipeCommands.GetTrackerOffsets))
-                {
-                    await server.SendCommandAsync(new PipeCommands.SetTrackerOffsets
-                    {
-                        LeftHandTrackerOffsetToBodySide = Settings.Current.LeftHandTrackerOffsetToBodySide,
-                        LeftHandTrackerOffsetToBottom = Settings.Current.LeftHandTrackerOffsetToBottom,
-                        RightHandTrackerOffsetToBodySide = Settings.Current.RightHandTrackerOffsetToBodySide,
-                        RightHandTrackerOffsetToBottom = Settings.Current.RightHandTrackerOffsetToBottom
-                    }, e.RequestId);
-                }
-                else if (e.CommandType == typeof(PipeCommands.SetTrackerOffsets))
-                {
-                    var d = (PipeCommands.SetTrackerOffsets)e.Data;
-                    Settings.Current.LeftHandTrackerOffsetToBodySide = d.LeftHandTrackerOffsetToBodySide;
-                    Settings.Current.LeftHandTrackerOffsetToBottom = d.LeftHandTrackerOffsetToBottom;
-                    Settings.Current.RightHandTrackerOffsetToBodySide = d.RightHandTrackerOffsetToBodySide;
-                    Settings.Current.RightHandTrackerOffsetToBottom = d.RightHandTrackerOffsetToBottom;
-
-                }
                 else if (e.CommandType == typeof(PipeCommands.GetResolutions))
                 {
                     await server.SendCommandAsync(new PipeCommands.ReturnResolutions
                     {
-                        List = new List<Tuple<int, int, int>>(Screen.resolutions.Select(r => Tuple.Create(r.width, r.height, r.refreshRate))),
+                        List = new List<Tuple<int, int>>(Screen.resolutions.Select(r => (r.width, r.height)).Distinct().Select(r => new Tuple<int, int>(r.width, r.height))),
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.SetResolution))
@@ -509,8 +426,7 @@ namespace VMC
                     var d = (PipeCommands.SetResolution)e.Data;
                     Settings.Current.ScreenWidth = d.Width;
                     Settings.Current.ScreenHeight = d.Height;
-                    Settings.Current.ScreenRefreshRate = d.RefreshRate;
-                    Screen.SetResolution(d.Width, d.Height, false, d.RefreshRate);
+                    ResizeWindow(d.Width, d.Height);
                 }
                 else if (e.CommandType == typeof(PipeCommands.SetLightAngle))
                 {
@@ -647,32 +563,63 @@ namespace VMC
                         ResponderEnable = Settings.Current.ExternalMotionSenderResponderEnable
                     }, e.RequestId);
                 }
-                else if (e.CommandType == typeof(PipeCommands.EnableExternalMotionReceiver))
+                else if (e.CommandType == typeof(PipeCommands.SetVMCProtocolReceiverSetting))
                 {
-                    var d = (PipeCommands.EnableExternalMotionReceiver)e.Data;
-                    SetExternalMotionReceiverEnable(d.enable, d.index);
+                    var d = (PipeCommands.SetVMCProtocolReceiverSetting)e.Data;
+                    SetVMCProtocolReceiverSetting(d);
                 }
-                else if (e.CommandType == typeof(PipeCommands.GetEnableExternalMotionReceiver))
+                else if (e.CommandType == typeof(PipeCommands.GetVMCProtocolReceiverSetting))
                 {
-                    var d = (PipeCommands.GetEnableExternalMotionReceiver)e.Data;
-                    await server.SendCommandAsync(new PipeCommands.EnableExternalMotionReceiver
+                    var d = (PipeCommands.GetVMCProtocolReceiverSetting)e.Data;
+                    if (d.Index == -1)
                     {
-                        enable = Settings.Current.ExternalMotionReceiverEnableList[d.index],
-                        index = d.index
-                    }, e.RequestId);
+                        var newsetting = new VMCProtocolReceiverSettings();
+                        newsetting.Port = 39539;
+                        newsetting.Name = $"Receiver {Settings.Current.VMCProtocolReceiverSettingsList.Count + 1}";
+                        Settings.Current.VMCProtocolReceiverSettingsList.Add(newsetting);
+                        newsetting.Port = Settings.Current.VMCProtocolReceiverSettingsList.Max(d => d.Port) + 1;
+                        AddVMCProtocolReceiver(newsetting);
+                        d.Index = Settings.Current.VMCProtocolReceiverSettingsList.Count - 1;
+                    }
+                    await server.SendCommandAsync(
+                        Settings.Current.VMCProtocolReceiverSettingsList[d.Index].Export(d.Index)
+                    , e.RequestId);
                 }
-                else if (e.CommandType == typeof(PipeCommands.ChangeExternalMotionReceiverPort))
+                else if (e.CommandType == typeof(PipeCommands.GetVMCProtocolReceiverList))
                 {
-                    var d = (PipeCommands.ChangeExternalMotionReceiverPort)e.Data;
-                    ChangeExternalMotionReceiverPort(d.ports, d.RequesterEnable);
+                    var d = (PipeCommands.GetVMCProtocolReceiverList)e.Data;
+                    await server.SendCommandAsync(new PipeCommands.SetVMCProtocolReceiverList
+                    {
+                        Items = Settings.Current.VMCProtocolReceiverSettingsList.Select(d => Tuple.Create(d.Enable, d.Name, d.Port)).ToList(),
+                    }
+                    , e.RequestId);
+                }
+                else if (e.CommandType == typeof(PipeCommands.RemoveVMCProtocolReceiver))
+                {
+                    var d = (PipeCommands.RemoveVMCProtocolReceiver)e.Data;
+                    RemoveVMCProtocolReceiver(d.Index);
+                }
+                else if (e.CommandType == typeof(PipeCommands.VMCProtocolReceiverRecenter))
+                {
+                    var d = (PipeCommands.VMCProtocolReceiverRecenter)e.Data;
+                    externalMotionReceivers[d.Index].Recenter();
+                }
+                else if (e.CommandType == typeof(PipeCommands.SetVMCProtocolReceiverEnable))
+                {
+                    var d = (PipeCommands.SetVMCProtocolReceiverEnable)e.Data;
+                    SetVMCProtocolReceiverEnable(d.Index, d.Enable);
+                }
+                else if (e.CommandType == typeof(PipeCommands.ChangeExternalMotionReceiverRequester))
+                {
+                    var d = (PipeCommands.ChangeExternalMotionReceiverRequester)e.Data;
+                    SetExternalMotionReceiverRequester(d.Enable);
 
                 }
-                else if (e.CommandType == typeof(PipeCommands.GetExternalMotionReceiverPort))
+                else if (e.CommandType == typeof(PipeCommands.GetExternalMotionReceiverRequester))
                 {
-                    await server.SendCommandAsync(new PipeCommands.ChangeExternalMotionReceiverPort
+                    await server.SendCommandAsync(new PipeCommands.ChangeExternalMotionReceiverRequester
                     {
-                        ports = Settings.Current.ExternalMotionReceiverPortList.ToArray(),
-                        RequesterEnable = Settings.Current.ExternalMotionReceiverRequesterEnable
+                        Enable = Settings.Current.ExternalMotionReceiverRequesterEnable
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetMidiCCBlendShape))
@@ -745,9 +692,9 @@ namespace VMC
                 {
                     string statusStringBuf = "";
                     //有効な場合だけ送る
-                    if (externalMotionReceivers[0].isActiveAndEnabled)
+                    if (externalMotionReceivers.Any() && externalMotionReceivers[0].isActiveAndEnabled)
                     {
-                        statusStringBuf = externalMotionReceivers?[0]?.statusString;
+                        statusStringBuf = externalMotionReceivers[0]?.statusString;
                     }
                     await server.SendCommandAsync(new PipeCommands.SetStatusString
                     {
@@ -769,6 +716,19 @@ namespace VMC
                     await server.SendCommandAsync(new PipeCommands.EnableHandleControllerAsTracker
                     {
                         HandleControllerAsTracker = Settings.Current.HandleControllerAsTracker
+                    }, e.RequestId);
+                }
+                else if (e.CommandType == typeof(PipeCommands.SetLaunchSteamVROnStartup))
+                {
+                    var d = (PipeCommands.SetLaunchSteamVROnStartup)e.Data;
+                    CommonSettings.Current.LaunchSteamVROnStartup = d.Enable;
+                    CommonSettings.Save();
+                }
+                else if (e.CommandType == typeof(PipeCommands.GetLaunchSteamVROnStartup))
+                {
+                    await server.SendCommandAsync(new PipeCommands.SetLaunchSteamVROnStartup
+                    {
+                        Enable = CommonSettings.Current.LaunchSteamVROnStartup,
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetQualitySettings))
@@ -888,19 +848,6 @@ namespace VMC
                     Settings.Current.TurnOffAmbientLight = d.TurnOffAmbientLight;
 
                     SetAdvancedGraphicsOption();
-                }
-                else if (e.CommandType == typeof(PipeCommands.ExternalReceiveBones))
-                {
-                    var d = (PipeCommands.ExternalReceiveBones)e.Data;
-                    SetExternalBonesReceiverEnable(d.ReceiveBonesEnable);
-                }
-
-                else if (e.CommandType == typeof(PipeCommands.GetExternalReceiveBones))
-                {
-                    await server.SendCommandAsync(new PipeCommands.ExternalReceiveBones
-                    {
-                        ReceiveBonesEnable = Settings.Current.ExternalBonesReceiverEnable
-                    }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetModIsLoaded))
                 {
@@ -1073,163 +1020,96 @@ namespace VMC
 
         #region VRM
 
-        public VRMData LoadVRM(string path)
+        public UnityMemoryMappedFile.VRMData LoadVRM(string path)
         {
             if (string.IsNullOrEmpty(path) || File.Exists(path) == false)
             {
                 return null;
             }
-            var vrmdata = new VRMData();
+
+            var vrmdata = new UnityMemoryMappedFile.VRMData();
             vrmdata.FilePath = path;
-            var context = new VRMImporterContext();
 
-            var bytes = File.ReadAllBytes(path);
-
-            // GLB形式でJSONを取得しParseします
-            context.ParseGlb(bytes);
-
-            // metaを取得
-            var meta = context.ReadMeta(true);
-            //サムネイル
-            if (meta.Thumbnail != null)
+            using (GltfData data = new AutoGltfFileParser(path).Parse())
             {
-                vrmdata.ThumbnailPNGBytes = meta.Thumbnail.EncodeToPNG(); //Or SaveAsPng( memoryStream, texture.Width, texture.Height )
+                VRM.VRMData vrmData = new VRM.VRMData(data);
+                using (var context = new VRMImporterContext(vrmData))
+                {
+
+                    // metaを取得
+                    var meta = context.ReadMeta(true);
+
+                    // サムネイル
+                    if (meta.Thumbnail != null)
+                    {
+                        vrmdata.ThumbnailPNGBytes = meta.Thumbnail.EncodeToPNG(); //Or SaveAsPng( memoryStream, texture.Width, texture.Height )
+                    }
+
+                    // Info
+                    vrmdata.Title = meta.Title;
+                    vrmdata.Version = meta.Version;
+                    vrmdata.Author = meta.Author;
+                    vrmdata.ContactInformation = meta.ContactInformation;
+                    vrmdata.Reference = meta.Reference;
+
+                    // Permission
+                    vrmdata.AllowedUser = (UnityMemoryMappedFile.AllowedUser)meta.AllowedUser;
+                    vrmdata.ViolentUssage = (UnityMemoryMappedFile.UssageLicense)meta.ViolentUssage;
+                    vrmdata.SexualUssage = (UnityMemoryMappedFile.UssageLicense)meta.SexualUssage;
+                    vrmdata.CommercialUssage = (UnityMemoryMappedFile.UssageLicense)meta.CommercialUssage;
+                    vrmdata.OtherPermissionUrl = meta.OtherPermissionUrl;
+
+                    // Distribution License
+                    vrmdata.LicenseType = (UnityMemoryMappedFile.LicenseType)meta.LicenseType;
+                    vrmdata.OtherLicenseUrl = meta.OtherLicenseUrl;
+                    /*
+                    // ParseしたJSONをシーンオブジェクトに変換していく
+                    var now = Time.time;
+                    var go = await VRMImporter.LoadVrmAsync(context);
+
+                    var delta = Time.time - now;
+                    Debug.LogFormat("LoadVrmAsync {0:0.0} seconds", delta);
+                    //OnLoaded(go);
+                    */
+                }
             }
-            //Info
-            vrmdata.Title = meta.Title;
-            vrmdata.Version = meta.Version;
-            vrmdata.Author = meta.Author;
-            vrmdata.ContactInformation = meta.ContactInformation;
-            vrmdata.Reference = meta.Reference;
 
-            // Permission
-            vrmdata.AllowedUser = (UnityMemoryMappedFile.AllowedUser)meta.AllowedUser;
-            vrmdata.ViolentUssage = (UnityMemoryMappedFile.UssageLicense)meta.ViolentUssage;
-            vrmdata.SexualUssage = (UnityMemoryMappedFile.UssageLicense)meta.SexualUssage;
-            vrmdata.CommercialUssage = (UnityMemoryMappedFile.UssageLicense)meta.CommercialUssage;
-            vrmdata.OtherPermissionUrl = meta.OtherPermissionUrl;
-
-            // Distribution License
-            vrmdata.LicenseType = (UnityMemoryMappedFile.LicenseType)meta.LicenseType;
-            vrmdata.OtherLicenseUrl = meta.OtherLicenseUrl;
-            /*
-            // ParseしたJSONをシーンオブジェクトに変換していく
-            var now = Time.time;
-            var go = await VRMImporter.LoadVrmAsync(context);
-
-            var delta = Time.time - now;
-            Debug.LogFormat("LoadVrmAsync {0:0.0} seconds", delta);
-            //OnLoaded(go);
-            */
             return vrmdata;
         }
-        private const float LeftLowerArmAngle = -30f;
-        private const float RightLowerArmAngle = -30f;
-        private const float LeftUpperArmAngle = -30f;
-        private const float RightUpperArmAngle = -30f;
-        private const float LeftHandAngle = -30f;
-        private const float RightHandAngle = -30f;
 
-        public async Task ImportVRM(string path, bool ImportForCalibration, bool EnableNormalMapFix, bool DeleteHairNormalMap)
+        public async Task ImportVRM(string path)
         {
-            if (ImportForCalibration == false)
+            await server.SendCommandAsync(new PipeCommands.VRMLoadStatus { Valid = false });
+
+            Settings.Current.VRMPath = path;
+
+            using (GltfData data = new AutoGltfFileParser(path).Parse())
             {
-                calibrationState = CalibrationState.Uncalibrated; //キャリブレーション状態を"未キャリブレーション"に設定
-                Settings.Current.VRMPath = path;
-                var context = new VRMImporterContext();
-
-                var bytes = File.ReadAllBytes(path);
-
-                // GLB形式でJSONを取得しParseします
-                context.ParseGlb(bytes);
-
-                // ParseしたJSONをシーンオブジェクトに変換していく
-                //CurrentModel = await VRMImporter.LoadVrmAsync(context);
-                await context.LoadAsyncTask();
-                context.ShowMeshes();
-
-                //BlendShape目線制御時の表情とのぶつかりを防ぐ
-                if (context.GLTF.extensions.VRM.firstPerson.lookAtType == LookAtType.BlendShape)
+                VRM.VRMData vrmData = new VRM.VRMData(data);
+                using (var context = new VRMImporterContext(vrmData))
                 {
-                    var applyer = context.Root.GetComponent<VRMLookAtBlendShapeApplyer>();
-                    applyer.enabled = false;
+                    // ParseしたJSONをシーンオブジェクトに変換していく
+                    var runtimeGltfInstance = await context.LoadAsync(new RuntimeOnlyAwaitCaller());
+                    runtimeGltfInstance.ShowMeshes();
 
-                    var vmcapplyer = context.Root.AddComponent<VMC_VRMLookAtBlendShapeApplyer>();
-                    vmcapplyer.OnImported(context);
-                    vmcapplyer.faceController = faceController;
-                }
-
-                LoadNewModel(context.Root);
-            }
-            else
-            {
-                calibrationState = CalibrationState.WaitingForCalibrating; //キャリブレーション状態を"キャリブレーション待機中"に設定
-
-                if (CurrentModel != null)
-                {
-                    var currentvrik = CurrentModel.GetComponent<VRIK>();
-                    if (currentvrik != null) Destroy(currentvrik);
-                    var rootController = CurrentModel.GetComponent<VRIKRootController>();
-                    if (rootController != null) Destroy(rootController);
-                }
-                LoadDefaultCurrentModelTransforms();
-                //SetVRIK(CurrentModel);
-                if (animator != null)
-                {
-                    SetCalibratePoseToCurrentModel();
-
-                    //wristRotationFix.SetVRIK(vrik);
-
-                    handController.SetDefaultAngle(animator);
-
-                    handController.SetNaturalPose();
-
-                    //トラッカーのスケールリセット
-                    HandTrackerRoot.localPosition = Vector3.zero;
-                    HandTrackerRoot.localScale = Vector3.one;
-                    PelvisTrackerRoot.localPosition = Vector3.zero;
-                    PelvisTrackerRoot.localScale = Vector3.one;
-
-                    //トラッカー位置の表示
-                    TrackingPointManager.Instance.SetTrackingPointPositionVisible(true);
-
-                    if (CalibrationCamera != null)
+                    // BlendShape目線制御時の表情とのぶつかりを防ぐ
+                    if (context.VRM.firstPerson.lookAtType == LookAtType.BlendShape)
                     {
-                        CalibrationCamera.Target = animator.GetBoneTransform(HumanBodyBones.Head);
-                        CalibrationCamera.gameObject.SetActive(true);
+                        var applyer = runtimeGltfInstance.Root.GetComponent<VRMLookAtBlendShapeApplyer>();
+                        applyer.enabled = false;
+
+                        var vmcapplyer = runtimeGltfInstance.Root.AddComponent<VMC_VRMLookAtBlendShapeApplyer>();
+                        vmcapplyer.OnImported(context);
+                        vmcapplyer.faceController = faceController;
                     }
+
+                    LoadNewModel(runtimeGltfInstance.Root);
+                    await server.SendCommandAsync(new PipeCommands.VRMLoadStatus { Valid = true });
                 }
             }
         }
 
-        private void SetCalibratePoseToCurrentModel()
-        {
-            if (animator != null)
-            {
-                if (currentSelectCalibrateType == PipeCommands.CalibrateType.Ipose)
-                {
-                    animator.GetBoneTransform(HumanBodyBones.LeftShoulder).localEulerAngles = new Vector3(0, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.RightShoulder).localEulerAngles = new Vector3(0, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(0, 0, 80);
-                    animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(0, 0, 5);
-                    animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(0, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.RightUpperArm).localEulerAngles = new Vector3(0, 0, -80);
-                    animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(0, 0, -5);
-                    animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(0, 0, 0);
-                }
-                else
-                {
-                    animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(LeftLowerArmAngle, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(RightLowerArmAngle, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(LeftUpperArmAngle, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.RightUpperArm).localEulerAngles = new Vector3(RightUpperArmAngle, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(LeftHandAngle, 0, 0);
-                    animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(RightHandAngle, 0, 0);
-                }
-            }
-        }
-
-            public void LoadNewModel(GameObject model)
+        public void LoadNewModel(GameObject model)
         {
             if (CurrentModel != null)
             {
@@ -1243,813 +1123,17 @@ namespace VMC
 
             VMCEvents.OnCurrentModelChanged?.Invoke(CurrentModel);
 
-            ModelInitialize();
-        }
-
-        public void ModelInitialize()
-        {
-
-            SaveDefaultCurrentModelTransforms();
-
-            //Settings.Current.EnableNormalMapFix = EnableNormalMapFix;
-            //Settings.Current.DeleteHairNormalMap = DeleteHairNormalMap;
-            //if (EnableNormalMapFix)
-            //{
-            //    //VRoidモデルのNormalMapテカテカを修正する
-            //    Yashinut.VRoid.CorrectNormalMapImport.CorrectNormalMap(CurrentModel, DeleteHairNormalMap);
-            //}
-
             //モデルのSkinnedMeshRendererがカリングされないように、すべてのオプション変更
             foreach (var renderer in CurrentModel.GetComponentsInChildren<SkinnedMeshRenderer>(true))
             {
                 renderer.updateWhenOffscreen = true;
             }
 
-            //LipSync
-            LipSync.ImportVRMmodel(CurrentModel);
-            //まばたき
-            faceController.ImportVRMmodel(CurrentModel);
-
-            //CurrentModel.transform.SetParent(transform, false);
-
-            animator = CurrentModel.GetComponent<Animator>();
-
-            SetVRIK(CurrentModel);
-
-            if (animator != null)
-            {
-                wristRotationFix.SetVRIK(vrik);
-
-                animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).eulerAngles = new Vector3(LeftLowerArmAngle, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.RightLowerArm).eulerAngles = new Vector3(RightLowerArmAngle, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).eulerAngles = new Vector3(LeftUpperArmAngle, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.RightUpperArm).eulerAngles = new Vector3(RightUpperArmAngle, 0, 0);
-
-                handController.SetDefaultAngle(animator);
-
-                //初期の指を自然に閉じたポーズにする
-                handController.SetNaturalPose();
-            }
-            //SetTrackersToVRIK();
+            IKManager.Instance.ModelInitialize();
 
             VMCEvents.OnModelLoaded?.Invoke(CurrentModel);
         }
-        /*
-        private Vector3 DefaultModelPosition;
-        private Quaternion DefaultModelRotation;
-        private Vector3 DefaultModelScale;
-        private Dictionary<HumanBodyBones, Quaternion> DefaultRotations;
 
-        public void SaveDefaultCurrentModelTransforms()
-        {
-            DefaultModelPosition = CurrentModel.transform.position;
-            DefaultModelRotation = CurrentModel.transform.rotation;
-            DefaultModelScale = CurrentModel.transform.localScale;
-            DefaultRotations = new Dictionary<HumanBodyBones, Quaternion>();
-            var animator = CurrentModel.GetComponent<Animator>();
-            for (int i = 0; i < (int)HumanBodyBones.LastBone; i++)
-            {
-                var t = animator.GetBoneTransform((HumanBodyBones)i);
-                if (t != null)
-                {
-                    DefaultRotations.Add((HumanBodyBones)i, t.rotation);
-                }
-            }
-        }
-
-        public void LoadDefaultCurrentModelTransforms()
-        {
-            if (DefaultRotations == null) return;
-            CurrentModel.transform.position = DefaultModelPosition;
-            CurrentModel.transform.rotation = DefaultModelRotation;
-            CurrentModel.transform.localScale = DefaultModelScale;
-            foreach (var pair in DefaultRotations)
-            {
-                var t = animator.GetBoneTransform(pair.Key);
-                if (t != null)
-                {
-                    t.rotation = pair.Value;
-                }
-            }
-        }
-        */
-
-        private GameObject PositionSavedModel;
-        private Vector3 DefaultModelPosition;
-        private Quaternion DefaultModelRotation;
-        private Vector3 DefaultModelScale;
-        private Dictionary<Transform, Vector3> DefaultPositions;
-        private Dictionary<Transform, Quaternion> DefaultRotations;
-        private Dictionary<Transform, Vector3> DefaultScales;
-        private Dictionary<VRMSpringBoneColliderGroup.SphereCollider, Vector4> DefaultColliders;
-
-        public void SaveDefaultCurrentModelTransforms()
-        {
-            PositionSavedModel = CurrentModel;
-            DefaultModelPosition = CurrentModel.transform.position;
-            DefaultModelRotation = CurrentModel.transform.rotation;
-            DefaultModelScale = CurrentModel.transform.localScale;
-            DefaultPositions = new Dictionary<Transform, Vector3>();
-            DefaultRotations = new Dictionary<Transform, Quaternion>();
-            DefaultScales = new Dictionary<Transform, Vector3>();
-            DefaultColliders = new Dictionary<VRMSpringBoneColliderGroup.SphereCollider, Vector4>();
-            var allTransforms = CurrentModel.transform.GetComponentsInChildren<Transform>(true);
-            foreach (var t in allTransforms)
-            {
-                DefaultPositions.Add(t, t.position);
-                DefaultRotations.Add(t, t.rotation);
-                DefaultScales.Add(t, t.localScale);
-            }
-
-            //VRMモデルのコライダー
-            var springBoneColiderGroups = CurrentModel.GetComponentsInChildren<VRM.VRMSpringBoneColliderGroup>();
-            foreach (var springBoneColiderGroup in springBoneColiderGroups)
-            {
-                foreach (var collider in springBoneColiderGroup.Colliders)
-                {
-                    DefaultColliders.Add(collider, new Vector4(collider.Offset.x, collider.Offset.y, collider.Offset.z, collider.Radius));
-                }
-            }
-        }
-
-        public void LoadDefaultCurrentModelTransforms()
-        {
-            if (PositionSavedModel != CurrentModel || CurrentModel == null) return;
-            CurrentModel.transform.localScale = DefaultModelScale;
-            CurrentModel.transform.rotation = DefaultModelRotation;
-            CurrentModel.transform.position = DefaultModelPosition;
-            var animator = CurrentModel.GetComponent<Animator>();
-            foreach (var pair in DefaultScales)
-            {
-                var t = pair.Key;
-                if (t != null)
-                {
-                    t.localScale = pair.Value;
-                }
-            }
-            foreach (var pair in DefaultRotations)
-            {
-                var t = pair.Key;
-                if (t != null)
-                {
-                    t.rotation = pair.Value;
-                }
-            }
-            foreach (var pair in DefaultPositions)
-            {
-                var t = pair.Key;
-                if (t != null)
-                {
-                    t.position = pair.Value;
-                }
-            }
-
-            //VRMモデルのコライダー
-            var springBoneColiderGroups = CurrentModel.GetComponentsInChildren<VRM.VRMSpringBoneColliderGroup>();
-            foreach (var springBoneColiderGroup in springBoneColiderGroups)
-            {
-                foreach (var collider in springBoneColiderGroup.Colliders)
-                {
-                    if (DefaultColliders.ContainsKey(collider))
-                    {
-                        var col = DefaultColliders[collider];
-                        collider.Offset = new Vector3(col.x, col.y, col.z);
-                        collider.Radius = col.w;
-                    }
-                }
-            }
-        }
-
-        #endregion
-
-        #region Calibration
-
-        public void FixLegDirection(GameObject targetHumanoidModel)
-        {
-            var avatarForward = targetHumanoidModel.transform.forward;
-            var animator = targetHumanoidModel.GetComponent<Animator>();
-
-            var leftUpperLeg = animator.GetBoneTransform(HumanBodyBones.LeftUpperLeg);
-            var leftLowerLeg = animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg);
-            var leftFoot = animator.GetBoneTransform(HumanBodyBones.LeftFoot);
-            var leftFootDefaultRotation = leftFoot.rotation;
-            var leftFootTargetPosition = new Vector3(leftFoot.position.x, leftFoot.position.y, leftFoot.position.z);
-            LookAtBones(leftFootTargetPosition + avatarForward * 0.03f, leftUpperLeg, leftLowerLeg);
-            LookAtBones(leftFootTargetPosition, leftLowerLeg, leftFoot);
-            leftFoot.rotation = leftFootDefaultRotation;
-
-            var rightUpperLeg = animator.GetBoneTransform(HumanBodyBones.RightUpperLeg);
-            var rightLowerLeg = animator.GetBoneTransform(HumanBodyBones.RightLowerLeg);
-            var rightFoot = animator.GetBoneTransform(HumanBodyBones.RightFoot);
-            var rightFootDefaultRotation = rightFoot.rotation;
-            var rightFootTargetPosition = new Vector3(rightFoot.position.x, rightFoot.position.y, rightFoot.position.z);
-            LookAtBones(rightFootTargetPosition + avatarForward * 0.03f, rightUpperLeg, rightLowerLeg);
-            LookAtBones(rightFootTargetPosition, rightLowerLeg, rightFoot);
-            rightFoot.rotation = rightFootDefaultRotation;
-        }
-
-        public void FixArmDirection(GameObject targetHumanoidModel)
-        {
-            var avatarForward = targetHumanoidModel.transform.forward;
-            var animator = targetHumanoidModel.GetComponent<Animator>();
-
-            var leftShoulder = animator.GetBoneTransform(HumanBodyBones.LeftShoulder);
-            var leftUpperArm = animator.GetBoneTransform(HumanBodyBones.LeftUpperArm);
-            var leftLowerArm = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm);
-            var leftHand = animator.GetBoneTransform(HumanBodyBones.LeftHand);
-            var leftHandDefaultRotation = leftHand.rotation;
-            var leftHandTargetPosition = new Vector3(leftHand.position.x, leftHand.position.y, leftHand.position.z);
-            LookAtBones(leftHandTargetPosition + avatarForward * 0.01f, leftShoulder, leftUpperArm);
-            LookAtBones(leftHandTargetPosition - avatarForward * 0.01f, leftUpperArm, leftLowerArm);
-            LookAtBones(leftHandTargetPosition, leftLowerArm, leftHand);
-            leftHand.rotation = leftHandDefaultRotation;
-
-            var rightShoulder = animator.GetBoneTransform(HumanBodyBones.RightShoulder);
-            var rightUpperArm = animator.GetBoneTransform(HumanBodyBones.RightUpperArm);
-            var rightLowerArm = animator.GetBoneTransform(HumanBodyBones.RightLowerArm);
-            var rightHand = animator.GetBoneTransform(HumanBodyBones.RightHand);
-            var rightHandDefaultRotation = rightHand.rotation;
-            var rightHandTargetPosition = new Vector3(rightHand.position.x, rightHand.position.y, rightHand.position.z);
-            LookAtBones(rightHandTargetPosition + avatarForward * 0.01f, rightShoulder, rightUpperArm);
-            LookAtBones(rightHandTargetPosition - avatarForward * 0.01f, rightUpperArm, rightLowerArm);
-            LookAtBones(rightHandTargetPosition, rightLowerArm, rightHand);
-            rightHand.rotation = rightHandDefaultRotation;
-        }
-
-        private void LookAtBones(Vector3 lookTargetPosition, params Transform[] bones)
-        {
-            for (int i = 0; i < bones.Length - 1; i++)
-            {
-                bones[i].rotation = Quaternion.FromToRotation((bones[i].position - bones[i + 1].position).normalized, (bones[i].position - lookTargetPosition).normalized) * bones[i].rotation;
-            }
-        }
-
-        private Vector3 fixKneeBone(Transform UpperLeg, Transform Knee, Transform Ankle)
-        {
-            var a = UpperLeg.position;
-            var b = Ankle.position;
-            var z = Mathf.Max(a.z, b.z) + 0.001f;
-            var x = Mathf.Lerp(a.x, b.x, 0.5f);
-            var offset = Knee.position - new Vector3(x, Knee.position.y, z);
-            Knee.position -= offset;
-            Ankle.position += offset;
-            return offset;
-        }
-
-        private Vector3 fixPelvisBone(Transform Spine, Transform Pelvis)
-        {
-            if (Spine.position.z < Pelvis.position.z)
-            {
-                return Vector3.zero;
-            }
-
-            var offset = new Vector3(0, 0, Pelvis.position.z - Spine.position.z + 0.1f);
-            Pelvis.position -= offset;
-            foreach (var child in Pelvis.GetComponentsInChildren<Transform>(true))
-            {
-                //child.position += offset;
-            }
-            return offset;
-        }
-
-
-        private void unfixKneeBone(Vector3 offset, Transform Knee, Transform Ankle)
-        {
-            //return;
-            Knee.position += offset;
-            Ankle.position -= offset;
-        }
-
-        private void SetVRIK(GameObject model)
-        {
-            //膝のボーンの曲がる方向で膝の向きが決まってしまうため、強制的に膝のボーンを少し前に曲げる
-            var leftOffset = Vector3.zero;
-            var rightOffset = Vector3.zero;
-            if (animator != null && Settings.Current.FixKneeRotation)
-            {
-                //leftOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.LeftUpperLeg), animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg), animator.GetBoneTransform(HumanBodyBones.LeftFoot));
-                //rightOffset = fixKneeBone(animator.GetBoneTransform(HumanBodyBones.RightUpperLeg), animator.GetBoneTransform(HumanBodyBones.RightLowerLeg), animator.GetBoneTransform(HumanBodyBones.RightFoot));
-                //fixPelvisBone(animator.GetBoneTransform(HumanBodyBones.Spine), animator.GetBoneTransform(HumanBodyBones.Hips));
-                FixLegDirection(model);
-            }
-
-            if (animator != null && Settings.Current.FixElbowRotation)
-            {
-                FixArmDirection(model);
-            }
-
-            vrik = model.AddComponent<RootMotion.FinalIK.VRIK>();
-            vrik.AutoDetectReferences();
-
-            //親指の方向の検出に失敗すると腕の回転もおかしくなる
-            vrik.solver.leftArm.palmToThumbAxis = new Vector3(0, 0, 1);
-            vrik.solver.rightArm.palmToThumbAxis = new Vector3(0, 0, 1);
-
-            vrik.solver.FixTransforms();
-
-            vrik.solver.IKPositionWeight = 0f;
-            vrik.solver.leftArm.stretchCurve = new AnimationCurve();
-            vrik.solver.rightArm.stretchCurve = new AnimationCurve();
-            vrik.UpdateSolverExternal();
-
-            //膝のボーンの曲がる方向で膝の向きが決まってしまうため、強制的に膝のボーンを少し前に曲げる
-            //if (animator != null)
-            //{
-            //    unfixKneeBone(leftOffset, animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg), animator.GetBoneTransform(HumanBodyBones.LeftFoot));
-            //    unfixKneeBone(rightOffset, animator.GetBoneTransform(HumanBodyBones.RightLowerLeg), animator.GetBoneTransform(HumanBodyBones.RightFoot));
-            //}
-            //if (animator != null)
-            //{
-            //    var leftWrist = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).gameObject;
-            //    var rightWrist = animator.GetBoneTransform(HumanBodyBones.RightLowerArm).gameObject;
-            //    var leftRelaxer = leftWrist.AddComponent<TwistRelaxer>();
-            //    var rightRelaxer = rightWrist.AddComponent<TwistRelaxer>();
-            //    leftRelaxer.ik = vrik;
-            //    rightRelaxer.ik = vrik;
-            //}
-        }
-
-        private List<Tuple<string, string>> GetTrackerSerialNumbers()
-        {
-            var list = new List<Tuple<string, string>>();
-            foreach (var trackingPoint in TrackingPointManager.Instance.GetTrackingPoints())
-            {
-                if (trackingPoint.DeviceClass == ETrackedDeviceClass.HMD)
-                {
-                    list.Add(Tuple.Create("HMD", trackingPoint.Name));
-                }
-                else if (trackingPoint.DeviceClass == ETrackedDeviceClass.Controller)
-                {
-                    list.Add(Tuple.Create("コントローラー", trackingPoint.Name));
-                }
-                else if (trackingPoint.DeviceClass == ETrackedDeviceClass.GenericTracker)
-                {
-                    list.Add(Tuple.Create("トラッカー", trackingPoint.Name));
-                }
-                else
-                {
-                    list.Add(Tuple.Create("Unknown", trackingPoint.Name));
-                }
-            }
-            return list;
-        }
-
-        private PipeCommands.SetTrackerSerialNumbers GetCurrentTrackerSettings()
-        {
-            var deviceDictionary = new Dictionary<ETrackedDeviceClass, string>
-        {
-            {ETrackedDeviceClass.HMD, "HMD"},
-            {ETrackedDeviceClass.Controller, "コントローラー"},
-            {ETrackedDeviceClass.GenericTracker, "トラッカー"},
-            {ETrackedDeviceClass.TrackingReference, "ベースステーション"},
-            {ETrackedDeviceClass.Invalid, "割り当てしない"},
-        };
-            return new PipeCommands.SetTrackerSerialNumbers
-            {
-                Head = Tuple.Create(deviceDictionary[Settings.Current.Head.Item1], Settings.Current.Head.Item2),
-                LeftHand = Tuple.Create(deviceDictionary[Settings.Current.LeftHand.Item1], Settings.Current.LeftHand.Item2),
-                RightHand = Tuple.Create(deviceDictionary[Settings.Current.RightHand.Item1], Settings.Current.RightHand.Item2),
-                Pelvis = Tuple.Create(deviceDictionary[Settings.Current.Pelvis.Item1], Settings.Current.Pelvis.Item2),
-                LeftFoot = Tuple.Create(deviceDictionary[Settings.Current.LeftFoot.Item1], Settings.Current.LeftFoot.Item2),
-                RightFoot = Tuple.Create(deviceDictionary[Settings.Current.RightFoot.Item1], Settings.Current.RightFoot.Item2),
-                LeftElbow = Tuple.Create(deviceDictionary[Settings.Current.LeftElbow.Item1], Settings.Current.LeftElbow.Item2),
-                RightElbow = Tuple.Create(deviceDictionary[Settings.Current.RightElbow.Item1], Settings.Current.RightElbow.Item2),
-                LeftKnee = Tuple.Create(deviceDictionary[Settings.Current.LeftKnee.Item1], Settings.Current.LeftKnee.Item2),
-                RightKnee = Tuple.Create(deviceDictionary[Settings.Current.RightKnee.Item1], Settings.Current.RightKnee.Item2),
-            };
-        }
-
-        private void SetTrackerSerialNumbers(PipeCommands.SetTrackerSerialNumbers data)
-        {
-            var deviceDictionary = new Dictionary<string, ETrackedDeviceClass>
-        {
-            {"HMD", ETrackedDeviceClass.HMD },
-            {"コントローラー", ETrackedDeviceClass.Controller },
-            {"トラッカー", ETrackedDeviceClass.GenericTracker },
-            {"ベースステーション", ETrackedDeviceClass.TrackingReference },
-            {"割り当てしない", ETrackedDeviceClass.Invalid },
-        };
-
-            Settings.Current.Head = Tuple.Create(deviceDictionary[data.Head.Item1], data.Head.Item2);
-            Settings.Current.LeftHand = Tuple.Create(deviceDictionary[data.LeftHand.Item1], data.LeftHand.Item2);
-            Settings.Current.RightHand = Tuple.Create(deviceDictionary[data.RightHand.Item1], data.RightHand.Item2);
-            Settings.Current.Pelvis = Tuple.Create(deviceDictionary[data.Pelvis.Item1], data.Pelvis.Item2);
-            Settings.Current.LeftFoot = Tuple.Create(deviceDictionary[data.LeftFoot.Item1], data.LeftFoot.Item2);
-            Settings.Current.RightFoot = Tuple.Create(deviceDictionary[data.RightFoot.Item1], data.RightFoot.Item2);
-            Settings.Current.LeftElbow = Tuple.Create(deviceDictionary[data.LeftElbow.Item1], data.LeftElbow.Item2);
-            Settings.Current.RightElbow = Tuple.Create(deviceDictionary[data.RightElbow.Item1], data.RightElbow.Item2);
-            Settings.Current.LeftKnee = Tuple.Create(deviceDictionary[data.LeftKnee.Item1], data.LeftKnee.Item2);
-            Settings.Current.RightKnee = Tuple.Create(deviceDictionary[data.RightKnee.Item1], data.RightKnee.Item2);
-            SetVRIKTargetTrackers();
-        }
-
-        private enum TargetType
-        {
-            Head, Pelvis, LeftArm, RightArm, LeftLeg, RightLeg, LeftElbow, RightElbow, LeftKnee, RightKnee
-        }
-
-        private TrackingPoint GetTrackerTransformBySerialNumber(Tuple<ETrackedDeviceClass, string> serial, TargetType setTo, Transform headTracker = null)
-        {
-            var manager = TrackingPointManager.Instance;
-            if (serial.Item1 == ETrackedDeviceClass.HMD)
-            {
-                if (string.IsNullOrEmpty(serial.Item2)) 
-                {
-                    return manager.GetTrackingPoints(ETrackedDeviceClass.HMD).FirstOrDefault();
-                }
-                else if (manager.TryGetTrackingPoint(serial.Item2, out var hmdTrackingPoint))
-                {
-                    return hmdTrackingPoint;
-                }
-            }
-            else if (serial.Item1 == ETrackedDeviceClass.Controller)
-            {
-                var controllers = manager.GetTrackingPoints(ETrackedDeviceClass.Controller).Where(d => d.Name.Contains("LIV Virtual Camera") == false);
-                TrackingPoint ret = null;
-                foreach (var controller in controllers)
-                {
-                    if (controller != null && controller.Name == serial.Item2)
-                    {
-                        if (setTo == TargetType.LeftArm || setTo == TargetType.RightArm)
-                        {
-                            ret = controller;
-                            break;
-                        }
-                        return controller;
-                    }
-                }
-                if (ret == null)
-                {
-                    var controllerTrackingPoints = controllers.Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.TargetTransform.position - headTracker.position), trackingPoint = d })
-                                                           .OrderBy(d => d.pos.x)
-                                                           .Select(d => d.trackingPoint);
-                    if (setTo == TargetType.LeftArm) ret = controllerTrackingPoints.ElementAtOrDefault(0);
-                    if (setTo == TargetType.RightArm) ret = controllerTrackingPoints.ElementAtOrDefault(1);
-                }
-                return ret;
-            }
-            else if (serial.Item1 == ETrackedDeviceClass.GenericTracker)
-            {
-                foreach (var tracker in manager.GetTrackingPoints(ETrackedDeviceClass.GenericTracker).Where(d => d.Name.Contains("LIV Virtual Camera") == false && !(Settings.Current.VirtualMotionTrackerEnable && d.Name.Contains($"VMT_{Settings.Current.VirtualMotionTrackerNo}"))))
-                {
-                    if (tracker != null && tracker.Name == serial.Item2)
-                    {
-                        return tracker;
-                    }
-                }
-                if (string.IsNullOrEmpty(serial.Item2) == false) return null; //Serialあるのに見つからなかったらnull
-
-                var trackerIds = new List<string>();
-
-                if (Settings.Current.Head.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.Head.Item2);
-                if (Settings.Current.LeftHand.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.LeftHand.Item2);
-                if (Settings.Current.RightHand.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.RightHand.Item2);
-                if (Settings.Current.Pelvis.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.Pelvis.Item2);
-                if (Settings.Current.LeftFoot.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.LeftFoot.Item2);
-                if (Settings.Current.RightFoot.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.RightFoot.Item2);
-                if (Settings.Current.LeftElbow.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.LeftElbow.Item2);
-                if (Settings.Current.RightElbow.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.RightElbow.Item2);
-                if (Settings.Current.LeftKnee.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.LeftKnee.Item2);
-                if (Settings.Current.RightKnee.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.RightKnee.Item2);
-
-                //ここに来るときは腰か足のトラッカー自動認識になってるとき
-                //割り当てられていないトラッカーリスト
-                var autoTrackers = manager.GetTrackingPoints(ETrackedDeviceClass.GenericTracker).Where(d => trackerIds.Contains(d.Name) == false).Select((d, i) => new { index = i, pos = headTracker.InverseTransformDirection(d.TargetTransform.position - headTracker.position), trackingPoint = d });
-                if (autoTrackers.Any())
-                {
-                    var count = autoTrackers.Count();
-                    if (count >= 3)
-                    {
-                        if (setTo == TargetType.Pelvis)
-                        { //腰は一番高い位置にあるトラッカー
-                            return autoTrackers.OrderByDescending(d => d.pos.y).Select(d => d.trackingPoint).First();
-                        }
-                    }
-                    if (count >= 2)
-                    {
-                        if (setTo == TargetType.LeftLeg)
-                        {
-                            return autoTrackers.OrderBy(d => d.pos.y).Take(2).OrderBy(d => d.pos.x).Select(d => d.trackingPoint).First();
-                        }
-                        else if (setTo == TargetType.RightLeg)
-                        {
-                            return autoTrackers.OrderBy(d => d.pos.y).Take(2).OrderByDescending(d => d.pos.x).Select(d => d.trackingPoint).First();
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-
-        private void SetVRIKTargetTrackers()
-        {
-            if (vrik == null) { return; } //まだmodelがない
-
-            vrik.solver.spine.headTarget = GetTrackerTransformBySerialNumber(Settings.Current.Head, TargetType.Head)?.TargetTransform;
-            vrik.solver.spine.headClampWeight = 0.38f;
-
-            vrik.solver.spine.pelvisTarget = GetTrackerTransformBySerialNumber(Settings.Current.Pelvis, TargetType.Pelvis, vrik.solver.spine.headTarget)?.TargetTransform;
-            if (vrik.solver.spine.pelvisTarget != null)
-            {
-                vrik.solver.spine.pelvisPositionWeight = 1f;
-                vrik.solver.spine.pelvisRotationWeight = 1f;
-                vrik.solver.plantFeet = false;
-                vrik.solver.spine.neckStiffness = 0f;
-                vrik.solver.spine.maxRootAngle = 180f;
-            }
-            else
-            {
-                vrik.solver.spine.pelvisPositionWeight = 0f;
-                vrik.solver.spine.pelvisRotationWeight = 0f;
-                vrik.solver.plantFeet = true;
-                vrik.solver.spine.neckStiffness = 1f;
-                vrik.solver.spine.maxRootAngle = 0f;
-            }
-
-            vrik.solver.leftArm.target = GetTrackerTransformBySerialNumber(Settings.Current.LeftHand, TargetType.LeftArm, vrik.solver.spine.headTarget)?.TargetTransform;
-            if (vrik.solver.leftArm.target != null)
-            {
-                vrik.solver.leftArm.positionWeight = 1f;
-                vrik.solver.leftArm.rotationWeight = 1f;
-            }
-            else
-            {
-                vrik.solver.leftArm.positionWeight = 0f;
-                vrik.solver.leftArm.rotationWeight = 0f;
-            }
-
-            vrik.solver.rightArm.target = GetTrackerTransformBySerialNumber(Settings.Current.RightHand, TargetType.RightArm, vrik.solver.spine.headTarget)?.TargetTransform;
-            if (vrik.solver.rightArm.target != null)
-            {
-                vrik.solver.rightArm.positionWeight = 1f;
-                vrik.solver.rightArm.rotationWeight = 1f;
-            }
-            else
-            {
-                vrik.solver.rightArm.positionWeight = 0f;
-                vrik.solver.rightArm.rotationWeight = 0f;
-            }
-
-            vrik.solver.leftLeg.target = GetTrackerTransformBySerialNumber(Settings.Current.LeftFoot, TargetType.LeftLeg, vrik.solver.spine.headTarget)?.TargetTransform;
-            if (vrik.solver.leftLeg.target != null)
-            {
-                vrik.solver.leftLeg.positionWeight = 1f;
-                vrik.solver.leftLeg.rotationWeight = 1f;
-            }
-            else
-            {
-                vrik.solver.leftLeg.positionWeight = 0f;
-                vrik.solver.leftLeg.rotationWeight = 0f;
-            }
-
-            vrik.solver.rightLeg.target = GetTrackerTransformBySerialNumber(Settings.Current.RightFoot, TargetType.RightLeg, vrik.solver.spine.headTarget)?.TargetTransform;
-            if (vrik.solver.rightLeg.target != null)
-            {
-                vrik.solver.rightLeg.positionWeight = 1f;
-                vrik.solver.rightLeg.rotationWeight = 1f;
-            }
-            else
-            {
-                vrik.solver.rightLeg.positionWeight = 0f;
-                vrik.solver.rightLeg.rotationWeight = 0f;
-            }
-        }
-
-        private Transform leftHandFreeOffsetRotation;
-        private Transform rightHandFreeOffsetRotation;
-        private Transform leftHandFreeOffsetPosition;
-        private Transform rightHandFreeOffsetPosition;
-
-        public IEnumerator Calibrate(PipeCommands.CalibrateType calibrateType)
-        {
-            lastCalibrateType = calibrateType;//最後に実施したキャリブレーションタイプとして記録
-
-            animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(0, 0, 0);
-            animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(0, 0, 0);
-            animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(0, 0, 0);
-            animator.GetBoneTransform(HumanBodyBones.RightUpperArm).localEulerAngles = new Vector3(0, 0, 0);
-            var lefthand = animator.GetBoneTransform(HumanBodyBones.LeftHand); lefthand.localEulerAngles = new Vector3(0, 0, 0);
-            animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(0, 0, 0);
-
-            SetVRIK(CurrentModel);
-            wristRotationFix.SetVRIK(vrik);
-
-            //animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(LeftHandAngle, 0, 0);
-            //animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(RightHandAngle, 0, 0);
-
-            //var leftLowerArm = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm);
-            //var leftRelaxer = leftLowerArm.gameObject.AddComponent<TwistRelaxer>();
-            //leftRelaxer.ik = vrik;
-            //leftRelaxer.twistSolvers = new TwistSolver[] { new TwistSolver { transform = leftLowerArm } };
-            //var rightLowerArm = animator.GetBoneTransform(HumanBodyBones.RightLowerArm);
-            //var rightRelaxer = rightLowerArm.gameObject.AddComponent<TwistRelaxer>();
-            //rightRelaxer.ik = vrik;
-            //rightRelaxer.twistSolvers = new TwistSolver[] { new TwistSolver { transform = rightLowerArm } };
-
-            var headTracker = GetTrackerTransformBySerialNumber(Settings.Current.Head, TargetType.Head);
-            var leftHandTracker = GetTrackerTransformBySerialNumber(Settings.Current.LeftHand, TargetType.LeftArm, headTracker?.TargetTransform);
-            var rightHandTracker = GetTrackerTransformBySerialNumber(Settings.Current.RightHand, TargetType.RightArm, headTracker?.TargetTransform);
-            var bodyTracker = GetTrackerTransformBySerialNumber(Settings.Current.Pelvis, TargetType.Pelvis, headTracker?.TargetTransform);
-            var leftFootTracker = GetTrackerTransformBySerialNumber(Settings.Current.LeftFoot, TargetType.LeftLeg, headTracker?.TargetTransform);
-            var rightFootTracker = GetTrackerTransformBySerialNumber(Settings.Current.RightFoot, TargetType.RightLeg, headTracker?.TargetTransform);
-            var leftElbowTracker = GetTrackerTransformBySerialNumber(Settings.Current.LeftElbow, TargetType.LeftElbow, headTracker?.TargetTransform);
-            var rightElbowTracker = GetTrackerTransformBySerialNumber(Settings.Current.RightElbow, TargetType.RightElbow, headTracker?.TargetTransform);
-            var leftKneeTracker = GetTrackerTransformBySerialNumber(Settings.Current.LeftKnee, TargetType.LeftKnee, headTracker?.TargetTransform);
-            var rightKneeTracker = GetTrackerTransformBySerialNumber(Settings.Current.RightKnee, TargetType.RightKnee, headTracker?.TargetTransform);
-
-            ClearChildren(headTracker, leftHandTracker, rightHandTracker, bodyTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
-
-            var settings = new RootMotion.FinalIK.VRIKCalibrator.Settings();
-
-            yield return new WaitForEndOfFrame();
-
-            var leftHandOffset = Vector3.zero;
-            var rightHandOffset = Vector3.zero;
-
-            //トラッカー
-            //xをプラス方向に動かすとトラッカーの左(LEDを上に見たとき)に進む
-            //yをプラス方向に動かすとトラッカーの上(LED方向)に進む
-            //zをマイナス方向に動かすとトラッカーの底面に向かって進む
-
-            if (Settings.Current.LeftHand.Item1 == ETrackedDeviceClass.GenericTracker)
-            {
-                //角度補正(左手なら右のトラッカーに向けた)後
-                //xを＋方向は体の正面に向かって進む
-                //yを＋方向は体の上(天井方向)に向かって進む
-                //zを＋方向は体中心(左手なら右手の方向)に向かって進む
-                leftHandOffset = new Vector3(1.0f, Settings.Current.LeftHandTrackerOffsetToBottom, Settings.Current.LeftHandTrackerOffsetToBodySide); // Vector3 (IsEnable, ToTrackerBottom, ToBodySide)
-            }
-            if (Settings.Current.RightHand.Item1 == ETrackedDeviceClass.GenericTracker)
-            {
-                //角度補正(左手なら右のトラッカーに向けた)後
-                //xを－方向は体の正面に向かって進む
-                //yを＋方向は体の上(天井方向)に向かって進む
-                //zを＋方向は体中心(左手なら右手の方向)に向かって進む
-                rightHandOffset = new Vector3(1.0f, Settings.Current.RightHandTrackerOffsetToBottom, Settings.Current.RightHandTrackerOffsetToBodySide); // Vector3 (IsEnable, ToTrackerBottom, ToBodySide)
-            }
-
-            TrackingPointManager.Instance.ClearTrackingWatcher();
-
-            foreach (Transform child in generatedObject)
-            {
-                DestroyImmediate(child.gameObject);
-            }
-
-            var trackerPositions = new TrackerPositions
-            {
-                Head = new TrackerPosition(headTracker),
-                LeftHand = new TrackerPosition(leftHandTracker),
-                RightHand = new TrackerPosition(rightHandTracker),
-                Pelvis = new TrackerPosition(bodyTracker),
-                LeftFoot = new TrackerPosition(leftFootTracker),
-                RightFoot = new TrackerPosition(rightFootTracker),
-                LeftElbow = new TrackerPosition(leftElbowTracker),
-                RightElbow = new TrackerPosition(rightElbowTracker),
-                LeftKnee = new TrackerPosition(leftKneeTracker),
-                RightKnee = new TrackerPosition(rightKneeTracker),
-            };
-
-            try
-            {
-                var trackerPositionsJson = JsonUtility.ToJson(trackerPositions);
-                string path = Path.GetFullPath(Application.dataPath + "/../TrackerPositions.json");
-                var directoryName = Path.GetDirectoryName(path);
-                if (Directory.Exists(directoryName) == false) Directory.CreateDirectory(directoryName);
-                File.WriteAllText(path, Json.Serializer.ToReadable(trackerPositionsJson));
-            }
-            catch { }
-
-            if (calibrateType == PipeCommands.CalibrateType.Ipose || calibrateType == PipeCommands.CalibrateType.Tpose)
-            {
-                yield return FinalIKCalibrator.Calibrate(calibrateType == PipeCommands.CalibrateType.Ipose ? FinalIKCalibrator.CalibrateMode.Ipose : FinalIKCalibrator.CalibrateMode.Tpose, HandTrackerRoot, PelvisTrackerRoot, vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker, generatedObject);
-            }
-            else if (calibrateType == PipeCommands.CalibrateType.FixedHand)
-            {
-                yield return Calibrator.CalibrateFixedHand(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
-            }
-            else if (calibrateType == PipeCommands.CalibrateType.FixedHandWithGround)
-            {
-                yield return Calibrator.CalibrateFixedHandWithGround(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
-            }
-
-            vrik.solver.IKPositionWeight = 1.0f;
-            if (leftFootTracker == null && rightFootTracker == null)
-            {
-                vrik.solver.plantFeet = true;
-                vrik.solver.locomotion.weight = 1.0f;
-                var rootController = vrik.references.root.GetComponent<RootMotion.FinalIK.VRIKRootController>();
-                if (rootController != null) GameObject.Destroy(rootController);
-            }
-
-            vrik.solver.locomotion.footDistance = 0.08f;
-            vrik.solver.locomotion.stepThreshold = 0.05f;
-            vrik.solver.locomotion.angleThreshold = 10f;
-            vrik.solver.locomotion.maxVelocity = 0.04f;
-            vrik.solver.locomotion.velocityFactor = 0.04f;
-            vrik.solver.locomotion.rootSpeed = 40;
-            vrik.solver.locomotion.stepSpeed = 2;
-            vrik.solver.locomotion.offset = new Vector3(0, 0, 0.03f);
-
-            Settings.Current.headTracker = StoreTransform.Create(headTracker?.TargetTransform);
-            Settings.Current.bodyTracker = StoreTransform.Create(bodyTracker?.TargetTransform);
-            Settings.Current.leftHandTracker = StoreTransform.Create(leftHandTracker?.TargetTransform);
-            Settings.Current.rightHandTracker = StoreTransform.Create(rightHandTracker?.TargetTransform);
-            Settings.Current.leftFootTracker = StoreTransform.Create(leftFootTracker?.TargetTransform);
-            Settings.Current.rightFootTracker = StoreTransform.Create(rightFootTracker?.TargetTransform);
-            Settings.Current.leftElbowTracker = StoreTransform.Create(leftElbowTracker?.TargetTransform);
-            Settings.Current.rightElbowTracker = StoreTransform.Create(rightElbowTracker?.TargetTransform);
-            Settings.Current.leftKneeTracker = StoreTransform.Create(leftKneeTracker?.TargetTransform);
-            Settings.Current.rightKneeTracker = StoreTransform.Create(rightKneeTracker?.TargetTransform);
-
-            var calibratedLeftHandTransform = leftHandTracker.TargetTransform?.OfType<Transform>().FirstOrDefault();
-            var calibratedRightHandTransform = rightHandTracker.TargetTransform?.OfType<Transform>().FirstOrDefault();
-
-            if (calibratedLeftHandTransform != null && calibratedRightHandTransform != null)
-            {
-                leftHandFreeOffsetRotation = new GameObject(nameof(leftHandFreeOffsetRotation)).transform;
-                rightHandFreeOffsetRotation = new GameObject(nameof(rightHandFreeOffsetRotation)).transform;
-                leftHandFreeOffsetRotation.SetParent(leftHandTracker?.TargetTransform);
-                rightHandFreeOffsetRotation.SetParent(rightHandTracker?.TargetTransform);
-                leftHandFreeOffsetRotation.localPosition = Vector3.zero;
-                leftHandFreeOffsetRotation.localRotation = Quaternion.identity;
-                leftHandFreeOffsetRotation.localScale = Vector3.one;
-                rightHandFreeOffsetRotation.localPosition = Vector3.zero;
-                rightHandFreeOffsetRotation.localRotation = Quaternion.identity;
-                rightHandFreeOffsetRotation.localScale = Vector3.one;
-
-                leftHandFreeOffsetPosition = new GameObject(nameof(leftHandFreeOffsetPosition)).transform;
-                rightHandFreeOffsetPosition = new GameObject(nameof(rightHandFreeOffsetPosition)).transform;
-                leftHandFreeOffsetPosition.SetParent(leftHandFreeOffsetRotation);
-                rightHandFreeOffsetPosition.SetParent(rightHandFreeOffsetRotation);
-                leftHandFreeOffsetPosition.localPosition = Vector3.zero;
-                leftHandFreeOffsetPosition.localRotation = Quaternion.identity;
-                leftHandFreeOffsetPosition.localScale = Vector3.one;
-                rightHandFreeOffsetPosition.localPosition = Vector3.zero;
-                rightHandFreeOffsetPosition.localRotation = Quaternion.identity;
-                rightHandFreeOffsetPosition.localScale = Vector3.one;
-
-                calibratedLeftHandTransform.parent = leftHandFreeOffsetPosition;
-                calibratedRightHandTransform.parent = rightHandFreeOffsetPosition;
-            }
-
-            SetHandFreeOffset();
-
-            calibrationState = CalibrationState.Calibrating; //キャリブレーション状態を"キャリブレーション中"に設定(ここまで来なければ失敗している)
-        }
-
-        private void ClearChildren(params TrackingPoint[] Parents) => ClearChildren(Parents.Select(d => d?.TargetTransform).ToArray());
-
-        private void ClearChildren(params Transform[] Parents)
-        {
-            foreach (var parent in Parents)
-            {
-                if (parent != null)
-                {
-                    foreach (Transform child in parent)
-                    {
-                        Destroy(child.gameObject);
-                    }
-                }
-            }
-        }
-
-        public void EndCalibrate()
-        {
-            //トラッカー位置の非表示
-            TrackingPointManager.Instance.SetTrackingPointPositionVisible(false);
-
-            if (CalibrationCamera != null)
-            {
-                CalibrationCamera.gameObject.SetActive(false);
-            }
-            SetHandFreeOffset();
-            //SetTrackersToVRIK();
-
-            //直前がキャリブレーション実行中なら
-            if (calibrationState == CalibrationState.Calibrating)
-            {
-                calibrationState = CalibrationState.Calibrated; //キャリブレーション状態を"キャリブレーション完了"に設定
-            }
-            else
-            {
-                //キャンセルされたなど
-                calibrationState = CalibrationState.Uncalibrated; //キャリブレーション状態を"未キャリブレーション"に設定
-
-                //IKを初期化
-                animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localEulerAngles = new Vector3(0, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localEulerAngles = new Vector3(0, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).localEulerAngles = new Vector3(0, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.RightUpperArm).localEulerAngles = new Vector3(0, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(0, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(0, 0, 0);
-
-                SetVRIK(CurrentModel);
-                wristRotationFix.SetVRIK(vrik);
-
-                animator.GetBoneTransform(HumanBodyBones.LeftHand).localEulerAngles = new Vector3(LeftHandAngle, 0, 0);
-                animator.GetBoneTransform(HumanBodyBones.RightHand).localEulerAngles = new Vector3(RightHandAngle, 0, 0);
-            }
-        }
 
         #endregion
 
@@ -2121,28 +1205,59 @@ namespace VMC
         }
 
         private bool lastHideWindowBorder = false;
+        private int? windowBorderWidth = null;
+        private int? windowBorderHeight = null;
+
         void HideWindowBorder(bool enable)
         {
             if (lastHideWindowBorder == enable) return;
             lastHideWindowBorder = enable;
             Settings.Current.HideBorder = enable;
 #if !UNITY_EDITOR   // エディタ上では動きません。
-        var hwnd = GetUnityWindowHandle();
-        //var hwnd = GetActiveWindow();
-        if (enable)
-        {
+            var hwnd = GetUnityWindowHandle();
             var clientrect = GetUnityWindowClientPosition();
-            SetWindowLong(hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE); //ウインドウ枠の削除
-            SetUnityWindowSize(clientrect.right - clientrect.left, clientrect.bottom - clientrect.top);
-        }
-        else
-        {
-            var windowrect = GetUnityWindowPosition();
-            SetWindowLong(hwnd, GWL_STYLE, defaultWindowStyle);
-            Screen.SetResolution(windowrect.right - windowrect.left, windowrect.bottom - windowrect.top, false);
-        }
+            if (windowBorderWidth.HasValue == false)
+            {
+                var windowrect = GetUnityWindowPosition();
+                windowBorderWidth = windowrect.width - clientrect.width;
+                windowBorderHeight = windowrect.height - clientrect.height;
+            }
+            if (enable)
+            {
+                SetWindowLong(hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE); //ウインドウ枠の削除
+                SetUnityWindowFrameChanged();
+                WaitOneFrameAction(() => SetUnityWindowSize(clientrect.width, clientrect.height));
+            }
+            else
+            {
+                SetWindowLong(hwnd, GWL_STYLE, defaultWindowStyle);
+                SetUnityWindowFrameChanged();
+                WaitOneFrameAction(() => SetUnityWindowSize(clientrect.width + windowBorderWidth.Value, clientrect.height + windowBorderHeight.Value));
+            }
 #endif
         }
+
+        private void ResizeWindow(int width, int height)
+        {
+#if !UNITY_EDITOR
+            var clientrect = GetUnityWindowClientPosition();
+            var windowrect = GetUnityWindowPosition();
+            if (windowBorderWidth.HasValue == false)
+            {
+                windowBorderWidth = windowrect.width - clientrect.width;
+                windowBorderHeight = windowrect.height - clientrect.height;
+            }
+            if (clientrect.width == windowrect.width)
+            {
+                SetUnityWindowSize(width, height);
+            }
+            else
+            {
+                SetUnityWindowSize(width + windowBorderWidth.Value, height + windowBorderHeight.Value);
+            }
+#endif
+        }
+
         void SetWindowTopMost(bool enable)
         {
             Settings.Current.IsTopMost = enable;
@@ -2259,7 +1374,7 @@ namespace VMC
         {
             if (action.HandAction)
             {
-                handController.SetHandAngle(action.Hand == Hands.Left || action.Hand == Hands.Both, action.Hand == Hands.Right || action.Hand == Hands.Both, action.HandAngles, action.HandChangeTime);
+                IKManager.Instance.HandController.SetHandAngle(action.Hand == Hands.Left || action.Hand == Hands.Both, action.Hand == Hands.Right || action.Hand == Hands.Both, action.HandAngles, action.HandChangeTime);
             }
             else if (action.FaceAction)
             {
@@ -2393,21 +1508,6 @@ namespace VMC
             ExternalMotionSenderObject.SetActive(enable);
         }
 
-        private void SetExternalMotionReceiverEnable(bool enable, int index)
-        {
-            Settings.Current.ExternalMotionReceiverEnableList[index] = enable;
-            externalMotionReceivers[index].SetObjectActive(enable);
-        }
-
-        private void SetExternalBonesReceiverEnable(bool enable)
-        {
-            Settings.Current.ExternalBonesReceiverEnable = enable;
-            foreach (var externalMotionReceiver in externalMotionReceivers)
-            {
-                externalMotionReceiver.receiveBonesFlag = enable;
-            }
-        }
-
         private void ChangeExternalMotionSenderAddress(string address, int port, int pstatus, int proot, int pbone, int pblendshape, int pcamera, int pdevices, string optionstring, bool responderEnable)
         {
             Settings.Current.ExternalMotionSenderAddress = address;
@@ -2430,6 +1530,7 @@ namespace VMC
             externalMotionSender.ChangeOSCAddress(address, port);
             externalMotionSender.optionString = optionstring;
             easyDeviceDiscoveryProtocolManager.responderEnable = responderEnable;
+            if (responderEnable) easyDeviceDiscoveryProtocolManager.gameObject.SetActive(true);
         }
 
         public void ChangeExternalMotionSenderAddress(string address, int port)
@@ -2440,16 +1541,66 @@ namespace VMC
             externalMotionSender.ChangeOSCAddress(address, port);
         }
 
-        private void ChangeExternalMotionReceiverPort(int[] ports, bool requesterEnable)
+        private void AddVMCProtocolReceiver(VMCProtocolReceiverSettings setting)
         {
-            Settings.Current.ExternalMotionReceiverPortList = ports.ToList();
-            for (int index = 0; index < externalMotionReceivers.Length; index++)
-            {
-                externalMotionReceivers[index].ChangeOSCPort(ports[index]);
-            }
+            var obj = new GameObject("ExternalReceiver " + setting.Name);
+            obj.transform.parent = ExternalMotionReceiverObject.transform;
+            var receiver = obj.AddComponent<ExternalReceiverForVMC>();
+            receiver.externalSender = externalMotionSender;
+            receiver.MIDICCWrapper = midiCCWrapper;
+            receiver.eddp = easyDeviceDiscoveryProtocolManager;
+            receiver.CurrentModel = CurrentModel;
+            receiver.Initialize();
 
+            externalMotionReceivers.Add(receiver);
+            externalMotionSender.externalReceiver = externalMotionReceivers.FirstOrDefault();
+            easyDeviceDiscoveryProtocolManager.externalReceiver = externalMotionSender.externalReceiver;
+            receiver.SetSetting(setting);
+            receiver.ChangeOSCPort(setting.Port);
+            receiver.SetObjectActive(setting.Enable);
+        }
+
+        private void RemoveVMCProtocolReceiver(int index)
+        {
+            DestroyImmediate(externalMotionReceivers[index].gameObject);
+            externalMotionReceivers.RemoveAt(index);
+            Settings.Current.VMCProtocolReceiverSettingsList.RemoveAt(index);
+            if (index == 0)
+            {
+                externalMotionSender.externalReceiver = externalMotionReceivers.FirstOrDefault();
+                easyDeviceDiscoveryProtocolManager.externalReceiver = externalMotionSender.externalReceiver;
+            }
+        }
+
+        private void SetVMCProtocolReceiverSetting(PipeCommands.SetVMCProtocolReceiverSetting d)
+        {
+            int index = d.Index;
+            bool changePort = d.Port != Settings.Current.VMCProtocolReceiverSettingsList[index].Port;
+            var setting = Settings.Current.VMCProtocolReceiverSettingsList[index].Import(d);
+
+            externalMotionReceivers[index].SetSetting(setting);
+            externalMotionReceivers[index].SetObjectActive(setting.Enable);
+
+            if (changePort)
+            {
+                externalMotionReceivers[index].ChangeOSCPort(setting.Port);
+            }
+        }
+
+        private void SetVMCProtocolReceiverEnable(int index, bool enable)
+        {
+            var setting = Settings.Current.VMCProtocolReceiverSettingsList[index];
+            setting.Enable = enable;
+
+            externalMotionReceivers[index].SetSetting(setting);
+            externalMotionReceivers[index].SetObjectActive(setting.Enable);
+        }
+
+        private void SetExternalMotionReceiverRequester(bool requesterEnable)
+        {
             Settings.Current.ExternalMotionReceiverRequesterEnable = requesterEnable;
             easyDeviceDiscoveryProtocolManager.requesterEnable = requesterEnable;
+            if (requesterEnable) easyDeviceDiscoveryProtocolManager.gameObject.SetActive(true);
         }
 
         private void WaitOneFrameAction(Action action)
@@ -2491,45 +1642,10 @@ namespace VMC
         #region Setting
 
 
-        [Serializable]
-        public class CommonSettings
-        {
-            public string LoadSettingFilePathOnStart = ""; //起動時に読み込む設定ファイルパス
-
-            //初期値
-            [OnDeserializing()]
-            internal void OnDeserializingMethod(StreamingContext context)
-            {
-                LoadSettingFilePathOnStart = "";
-            }
-        }
-
-        public static CommonSettings CurrentCommonSettings = new CommonSettings();
-
-        //共通設定の書き込み
-        private void SaveCommonSettings()
-        {
-            string path = Path.GetFullPath(Application.dataPath + "/../Settings/common.json");
-            var directoryName = Path.GetDirectoryName(path);
-            if (Directory.Exists(directoryName) == false) Directory.CreateDirectory(directoryName);
-            File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(CurrentCommonSettings)));
-        }
-
-        //共通設定の読み込み
-        public void LoadCommonSettings()
-        {
-            string path = Path.GetFullPath(Application.dataPath + "/../Settings/common.json");
-            if (!File.Exists(path))
-            {
-                return;
-            }
-            CurrentCommonSettings = Json.Serializer.Deserialize<CommonSettings>(File.ReadAllText(path)); //設定を読み込み
-        }
-
         private NotifyLogTypes notifyLogLevel = NotifyLogTypes.Warning;
         private async void LogMessageHandler(string cond, string trace, LogType type)
         {
-            NotifyLogTypes notifyType = NotifyLogTypes.Log;
+            NotifyLogTypes notifyType = NotifyLogTypes.Warning;
             switch (type)
             {
                 case LogType.Assert: notifyType = NotifyLogTypes.Assert; CriticalErrorCount++; break;
@@ -2540,14 +1656,20 @@ namespace VMC
                 default: notifyType = NotifyLogTypes.Log; break;
             }
 
-            if (notifyLogLevel < notifyType)
+            //通知レベルがLog以外の時かつ、Warning以下かつ、*から始まらないものはうるさいので飛ばさない
+            if (notifyLogLevel != NotifyLogTypes.Log && notifyLogLevel <= notifyType && !cond.StartsWith("*"))
             {
-                return; //Logはうるさいので飛ばさない
+                return;
             }
 
             //あまりにも致命的エラーが多すぎる場合は強制終了する
-            if (CriticalErrorCount > 10000)
+            if ((!IsCriticalErrorCountOver) && CriticalErrorCount > PipeCommands.ErrorCountMax)
             {
+                IsCriticalErrorCountOver = true;
+
+                //最後のエラーをファイルとして出力
+                string message = "[" + type.ToString() + "] " + cond + "\n\n" + trace + "\n\n" + DateTime.Now.ToString();
+                File.WriteAllText(Application.dataPath + "/../CriticalErrorCountOver.txt", message);
 #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
 #else
@@ -2563,6 +1685,23 @@ namespace VMC
                 type = notifyType,
                 errorCount = CriticalErrorCount,
             });
+
+            if (
+                (type == LogType.Error && cond.StartsWith("[Calib Fail]")) ||
+                (type == LogType.Exception && cond.StartsWith("NullReferenceException"))
+                )
+            {
+                //状態を失敗で上書き
+                IKManager.Instance.CalibrationResult = new PipeCommands.CalibrationResult
+                {
+                    Type = PipeCommands.CalibrateType.Invalid,
+                    Message = cond,
+                    UserHeight = -1
+                };
+
+                //エラー送信
+                await server.SendCommandAsync(IKManager.Instance.CalibrationResult);
+            }
         }
 
         private bool IsRegisteredEventCallBack = false;
@@ -2588,10 +1727,10 @@ namespace VMC
             File.WriteAllText(path, Json.Serializer.ToReadable(Json.Serializer.Serialize(Settings.Current)));
 
             //ファイルが正常に書き込めたので、現在共通設定に記録されているパスと違う場合、共通設定に書き込む
-            if (CurrentCommonSettings.LoadSettingFilePathOnStart != path)
+            if (CommonSettings.Current.LoadSettingFilePathOnStart != path)
             {
-                CurrentCommonSettings.LoadSettingFilePathOnStart = path;
-                SaveCommonSettings();
+                CommonSettings.Current.LoadSettingFilePathOnStart = path;
+                CommonSettings.Save();
                 Debug.Log("Save last loaded file of " + path);
             }
         }
@@ -2604,10 +1743,10 @@ namespace VMC
             if (string.IsNullOrEmpty(path) || (!File.Exists(path)))
             {
                 //共通設定を読み込み
-                LoadCommonSettings();
+                CommonSettings.Load();
 
                 //初回読み込みファイルが存在しなければdefault.jsonを
-                if (string.IsNullOrEmpty(CurrentCommonSettings.LoadSettingFilePathOnStart) || (!File.Exists(CurrentCommonSettings.LoadSettingFilePathOnStart)))
+                if (string.IsNullOrEmpty(CommonSettings.Current.LoadSettingFilePathOnStart) || (!File.Exists(CommonSettings.Current.LoadSettingFilePathOnStart)))
                 {
                     path = Application.dataPath + "/../default.json";
                     Debug.Log("Load default.json");
@@ -2615,7 +1754,7 @@ namespace VMC
                 else
                 {
                     //存在すればそのPathを読みに行こうとする
-                    path = CurrentCommonSettings.LoadSettingFilePathOnStart;
+                    path = CommonSettings.Current.LoadSettingFilePathOnStart;
                     Debug.Log("Load last loaded file of " + path);
                 }
             }
@@ -2642,7 +1781,7 @@ namespace VMC
             Debug.Log("Loaded config: " + path);
 
             //スケールを元に戻す
-            ResetTrackerScale();
+            IKManager.Instance.ResetTrackerScale();
             //設定を適用する
             ApplySettings();
 
@@ -2652,37 +1791,16 @@ namespace VMC
                 lastLoadedConfigPath = path; //パスを記録
 
                 //ファイルが正常に存在したので、現在共通設定に記録されているパスと違う場合、共通設定に書き込む
-                if (CurrentCommonSettings.LoadSettingFilePathOnStart != path)
+                if (CommonSettings.Current.LoadSettingFilePathOnStart != path)
                 {
-                    CurrentCommonSettings.LoadSettingFilePathOnStart = path;
-                    SaveCommonSettings();
+                    CommonSettings.Current.LoadSettingFilePathOnStart = path;
+                    CommonSettings.Save();
                     Debug.Log("Save last loaded file of " + path);
                 }
             }
 
             //設定の変更を通知
             VMCEvents.OnLoadedConfigPathChanged?.Invoke(path);
-        }
-
-        private void ResetTrackerScale()
-        {
-            //jsonが正しくデコードできていなければ無視する
-            if (Settings.Current == null)
-            {
-                return;
-            }
-
-            //トラッカーのルートスケールを初期値に戻す
-            HandTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-            PelvisTrackerRoot.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-            HandTrackerRoot.position = Vector3.zero;
-            PelvisTrackerRoot.position = Vector3.zero;
-
-            //スケール変更時の位置オフセット設定
-            var handTrackerOffset = HandTrackerRoot.GetComponent<ScalePositionOffset>();
-            var footTrackerOffset = PelvisTrackerRoot.GetComponent<ScalePositionOffset>();
-            handTrackerOffset.ResetTargetAndPosition();
-            footTrackerOffset.ResetTargetAndPosition();
         }
 
         //Settings.Currentを各種設定に適用
@@ -2693,16 +1811,16 @@ namespace VMC
                 && File.Exists(Settings.Current.VRMPath))
             {
                 await server.SendCommandAsync(new PipeCommands.LoadVRMPath { Path = Settings.Current.VRMPath });
-                await ImportVRM(Settings.Current.VRMPath, false, Settings.Current.EnableNormalMapFix, Settings.Current.DeleteHairNormalMap);
+                await ImportVRM(Settings.Current.VRMPath);
 
                 //メタ情報をOSC送信する
                 VRMmetaLodedAction?.Invoke(LoadVRM(Settings.Current.VRMPath));
             }
 
             //SetResolutionは強制的にウインドウ枠を復活させるのでBorder設定の前にやっておく必要がある
-            if (Screen.resolutions.Any(d => d.width == Settings.Current.ScreenWidth && d.height == Settings.Current.ScreenHeight && d.refreshRate == Settings.Current.ScreenRefreshRate))
+            if (Screen.resolutions.Any(d => d.width == Settings.Current.ScreenWidth && d.height == Settings.Current.ScreenHeight))
             {
-                UpdateActionQueue.Enqueue(() => Screen.SetResolution(Settings.Current.ScreenWidth, Settings.Current.ScreenHeight, false, Settings.Current.ScreenRefreshRate));
+                UpdateActionQueue.Enqueue(() => ResizeWindow(Settings.Current.ScreenWidth, Settings.Current.ScreenHeight));
             }
 
             if (Settings.Current.BackgroundColor != null)
@@ -2710,14 +1828,14 @@ namespace VMC
                 UpdateActionQueue.Enqueue(() => ChangeBackgroundColor(Settings.Current.BackgroundColor.r, Settings.Current.BackgroundColor.g, Settings.Current.BackgroundColor.b, false));
             }
 
-            if (Settings.Current.CustomBackgroundColor != null)
-            {
-                await server.SendCommandAsync(new PipeCommands.LoadCustomBackgroundColor { r = Settings.Current.CustomBackgroundColor.r, g = Settings.Current.CustomBackgroundColor.g, b = Settings.Current.CustomBackgroundColor.b });
-            }
-
             if (Settings.Current.IsTransparent)
             {
                 UpdateActionQueue.Enqueue(() => SetBackgroundTransparent());
+            }
+
+            if (Settings.Current.CustomBackgroundColor != null)
+            {
+                await server.SendCommandAsync(new PipeCommands.LoadCustomBackgroundColor { r = Settings.Current.CustomBackgroundColor.r, g = Settings.Current.CustomBackgroundColor.g, b = Settings.Current.CustomBackgroundColor.b });
             }
 
             UpdateActionQueue.Enqueue(() => HideWindowBorder(Settings.Current.HideBorder));
@@ -2776,10 +1894,8 @@ namespace VMC
 
             KeyAction.KeyActionsUpgrade(Settings.Current.KeyActions);
 
-            if (string.IsNullOrWhiteSpace(Settings.Current.AAA_SavedVersion))
+            if (Settings.Current.IsSettingVersionBefore(0, 48))
             {
-                //before 0.47 _SaveVersion is null.
-
                 //v0.48 BlendShapeKey case sensitive.
                 foreach (var keyAction in Settings.Current.KeyActions)
                 {
@@ -2787,6 +1903,42 @@ namespace VMC
                     {
                         keyAction.FaceNames = keyAction.FaceNames.Select(d => faceController.GetCaseSensitiveKeyName(d)).ToList();
                     }
+                }
+            }
+
+            if (Settings.Current.IsSettingVersionBefore(0, 56))
+            {
+                //v0.56 Configure multiple VMCProtocol receivers
+
+                if (Settings.Current.ExternalMotionReceiverPortList == null) Settings.Current.ExternalMotionReceiverPortList = new List<int>() { Settings.Current.ExternalMotionReceiverPort, Settings.Current.ExternalMotionReceiverPort + 1 };
+                if (Settings.Current.ExternalMotionReceiverDelayMsList == null) Settings.Current.ExternalMotionReceiverDelayMsList = new List<int>() { 0, 0 };
+                if (Settings.Current.ExternalMotionReceiverEnableList == null) Settings.Current.ExternalMotionReceiverEnableList = new List<bool>() { Settings.Current.ExternalMotionReceiverEnable, false };
+
+                for (int i = 0; i < Settings.Current.ExternalMotionReceiverEnableList.Count; i++)
+                {
+                    Settings.Current.VMCProtocolReceiverSettingsList.Add(new VMCProtocolReceiverSettings
+                    {
+                        Enable = Settings.Current.ExternalMotionReceiverEnableList[i],
+                        Port = Settings.Current.ExternalMotionReceiverPortList[i],
+                        DelayMs = Settings.Current.ExternalMotionReceiverDelayMsList[i],
+                        Name = $"Receiver {i + 1}",
+                        ApplyRootRotation = false,
+                        ApplyRootPosition = false,
+                        ApplySpine = false,
+                        ApplyChest = false,
+                        ApplyHead = false,
+                        ApplyLeftArm = false,
+                        ApplyRightArm = false,
+                        ApplyLeftHand = false,
+                        ApplyRightHand = false,
+                        ApplyLeftLeg = false,
+                        ApplyRightLeg = false,
+                        ApplyLeftFoot = false,
+                        ApplyRightFoot = false,
+                        ApplyEye = false,
+                        ApplyLeftFinger = false,
+                        ApplyRightFinger = false,
+                    }); ;
                 }
             }
 
@@ -2811,7 +1963,7 @@ namespace VMC
                 RightHandRotationZ = (int)Settings.Current.RightHandRotationZ,
                 SwivelOffset = Settings.Current.SwivelOffset,
             });
-            SetHandFreeOffset();
+            IKManager.Instance.SetHandFreeOffset();
 
             await server.SendCommandAsync(new PipeCommands.LoadLipSyncEnable { enable = Settings.Current.LipSyncEnable });
             SetLipSyncEnable(Settings.Current.LipSyncEnable);
@@ -2824,12 +1976,15 @@ namespace VMC
             SetExternalMotionSenderEnable(Settings.Current.ExternalMotionSenderEnable);
             ChangeExternalMotionSenderAddress(Settings.Current.ExternalMotionSenderAddress, Settings.Current.ExternalMotionSenderPort, Settings.Current.ExternalMotionSenderPeriodStatus, Settings.Current.ExternalMotionSenderPeriodRoot, Settings.Current.ExternalMotionSenderPeriodBone, Settings.Current.ExternalMotionSenderPeriodBlendShape, Settings.Current.ExternalMotionSenderPeriodCamera, Settings.Current.ExternalMotionSenderPeriodDevices, Settings.Current.ExternalMotionSenderOptionString, Settings.Current.ExternalMotionSenderResponderEnable);
 
-            if (Settings.Current.ExternalMotionReceiverPortList == null) Settings.Current.ExternalMotionReceiverPortList = new List<int>() { Settings.Current.ExternalMotionReceiverPort, Settings.Current.ExternalMotionReceiverPort + 1 };
-            ChangeExternalMotionReceiverPort(Settings.Current.ExternalMotionReceiverPortList.ToArray(), Settings.Current.ExternalMotionReceiverRequesterEnable);
-            if (Settings.Current.ExternalMotionReceiverEnableList == null) Settings.Current.ExternalMotionReceiverEnableList = new List<bool>() { Settings.Current.ExternalMotionReceiverEnable, false };
-            for (int index = 0; index < Settings.Current.ExternalMotionReceiverEnableList.Count; index++)
+            foreach(var receiver in externalMotionReceivers)
             {
-                SetExternalMotionReceiverEnable(Settings.Current.ExternalMotionReceiverEnableList[index], index);
+                DestroyImmediate(receiver.gameObject);
+            }
+            externalMotionReceivers.Clear();
+
+            foreach(var receiverSetting in Settings.Current.VMCProtocolReceiverSettingsList)
+            {
+                AddVMCProtocolReceiver(receiverSetting);
             }
 
             SetMidiCCBlendShape(Settings.Current.MidiCCBlendShape);
@@ -2870,8 +2025,6 @@ namespace VMC
             SetLipShapeToBlendShapeStringMapAction?.Invoke(Settings.Current.LipShapesToBlendShapeMap);
             SetLipTracking_ViveEnable(Settings.Current.LipTracking_ViveEnable);
 
-            SetExternalBonesReceiverEnable(Settings.Current.ExternalBonesReceiverEnable);
-
             LoadAdvancedGraphicsOption();
             LoadAlwaysLookCamera();
 
@@ -2906,41 +2059,6 @@ namespace VMC
             InputManager.Current.midiCCWrapper.gameObject.SetActive(enable);
         }
 
-        private void SetHandFreeOffset()
-        {
-            if (vrik == null) return;
-            if (leftHandFreeOffsetRotation == null) return;
-            if (rightHandFreeOffsetRotation == null) return;
-            if (leftHandFreeOffsetPosition == null) return;
-            if (rightHandFreeOffsetPosition == null) return;
-
-            // Beat Saber compatible
-
-            leftHandFreeOffsetRotation.localRotation = Quaternion.Euler(
-                Settings.Current.LeftHandRotationX,
-                -Settings.Current.LeftHandRotationY,
-                Settings.Current.LeftHandRotationZ
-            );
-            leftHandFreeOffsetPosition.localPosition = new Vector3(
-                -Settings.Current.LeftHandPositionX,
-                Settings.Current.LeftHandPositionY,
-                Settings.Current.LeftHandPositionZ
-            );
-
-            rightHandFreeOffsetRotation.localRotation = Quaternion.Euler(
-                Settings.Current.RightHandRotationX,
-                Settings.Current.RightHandRotationY,
-                Settings.Current.RightHandRotationZ
-            );
-            rightHandFreeOffsetPosition.localPosition = new Vector3(
-                Settings.Current.RightHandPositionX,
-                Settings.Current.RightHandPositionY,
-                Settings.Current.RightHandPositionZ
-            );
-
-            vrik.solver.leftArm.swivelOffset = Settings.Current.SwivelOffset;
-            vrik.solver.rightArm.swivelOffset = -Settings.Current.SwivelOffset;
-        }
 
         private ConcurrentQueue<Action> UpdateActionQueue = new ConcurrentQueue<Action>();
 

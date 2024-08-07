@@ -53,6 +53,8 @@ namespace VirtualMotionCaptureControlPanel
             RightFootCheckBox.IsChecked = setting.ApplyRightFoot;
             LeftFootCheckBox.IsChecked = setting.ApplyLeftFoot;
             RootPositionCheckBox.IsChecked = setting.ApplyRootPosition;
+            RootRotationCheckBox.IsChecked = setting.ApplyRootRotation;
+            CorrectHipBoneCheckBox.IsChecked = setting.CorrectHipBone;
             IsSetting = false;
         }
 
@@ -94,6 +96,8 @@ namespace VirtualMotionCaptureControlPanel
                     ApplyRightFoot = RightFootCheckBox.IsChecked.Value,
                     ApplyLeftFoot = LeftFootCheckBox.IsChecked.Value,
                     ApplyRootPosition = RootPositionCheckBox.IsChecked.Value,
+                    ApplyRootRotation = RootRotationCheckBox.IsChecked.Value,
+                    CorrectHipBone = CorrectHipBoneCheckBox.IsChecked.Value,
                 });
             }
             else
@@ -118,6 +122,46 @@ namespace VirtualMotionCaptureControlPanel
         private async void ResetCenterButton_Click(object sender, RoutedEventArgs e)
         {
             await Globals.Client?.SendCommandAsync(new PipeCommands.mocopi_Recenter { });
+        }
+
+        private async void mocopiOnlyButton_Click(object sender, RoutedEventArgs e)
+        {
+            IsSetting = true;
+            HeadCheckBox.IsChecked = true;
+            ChestCheckBox.IsChecked = true;
+            RightArmCheckBox.IsChecked = true;
+            LeftArmCheckBox.IsChecked = true;
+            SpineCheckBox.IsChecked = true;
+            RightHandCheckBox.IsChecked = true;
+            LeftHandCheckBox.IsChecked = true;
+            RightLegCheckBox.IsChecked = true;
+            LeftLegCheckBox.IsChecked = true;
+            RightFootCheckBox.IsChecked = true;
+            LeftFootCheckBox.IsChecked = true;
+            RootPositionCheckBox.IsChecked = true;
+            RootRotationCheckBox.IsChecked = true;
+            IsSetting = false;
+            await ApplySetting();
+        }
+
+        private async void WithVRDeviceButton_Click(object sender, RoutedEventArgs e)
+        {
+            IsSetting = true;
+            HeadCheckBox.IsChecked = false;
+            ChestCheckBox.IsChecked = true;
+            RightArmCheckBox.IsChecked = false;
+            LeftArmCheckBox.IsChecked = false;
+            SpineCheckBox.IsChecked = true;
+            RightHandCheckBox.IsChecked = false;
+            LeftHandCheckBox.IsChecked = false;
+            RightLegCheckBox.IsChecked = true;
+            LeftLegCheckBox.IsChecked = true;
+            RightFootCheckBox.IsChecked = true;
+            LeftFootCheckBox.IsChecked = true;
+            RootPositionCheckBox.IsChecked = true;
+            RootRotationCheckBox.IsChecked = true;
+            IsSetting = false;
+            await ApplySetting();
         }
     }
 }

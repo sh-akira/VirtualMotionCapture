@@ -8,19 +8,9 @@ namespace VMC
     {
         ControlWPFWindow window = null;
         VRIK vrik = null;
-        GameObject CurrentModel;
         private void Start()
         {
             window = GameObject.Find("ControlWPFWindow").GetComponent<ControlWPFWindow>();
-
-            VMCEvents.OnModelLoaded += (GameObject CurrentModel) =>
-            {
-                if (CurrentModel != null)
-                {
-                    this.CurrentModel = CurrentModel;
-                    vrik = CurrentModel.GetComponent<VRIK>();
-                }
-            };
 
             KeyboardAction.KeyDownEvent += (object sender, KeyboardEventArgs e) =>
             {
@@ -36,10 +26,9 @@ namespace VMC
 
         private void Export()
         {
-            if (vrik == null && CurrentModel != null)
+            if (vrik == null)
             {
-                vrik = CurrentModel.GetComponent<VRIK>();
-                Debug.Log("ExternalSender: VRIK Updated");
+                vrik = IKManager.Instance.vrik;
             }
             if (vrik == null) return;
             var Trackers = new List<TrackerPositionData>();

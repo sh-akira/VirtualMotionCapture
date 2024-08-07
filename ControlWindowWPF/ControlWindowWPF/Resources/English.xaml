@@ -3,6 +3,7 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
                     xml:space="preserve">
 
+    <system:String x:Key="OK">OK</system:String>
     <system:String x:Key="Error">Error</system:String>
     <system:String x:Key="Confirm">Confirm</system:String>
     <system:String x:Key="Custom">Custom</system:String>
@@ -27,6 +28,7 @@
     <!-- MainWindow -->
     <system:String x:Key="MainWindowTitle">Control panel</system:String>
     <system:String x:Key="MainWindowTitleLoading">Loading</system:String>
+    <system:String x:Key="MainWindowOpenVRAlertStatus">⚠ Unable to properly obtain the position or operation of the controller. Please close the SteamVR dashboard or keyboard within the HMD.</system:String>
 
     <system:String x:Key="MainWindow_Setting">Settings</system:String>
     <system:String x:Key="MainWindow_LoadSetting">Open settings</system:String>
@@ -125,6 +127,7 @@
     <system:String x:Key="MainWindow_AdvancedGraphicsOption">Advanced Graphics Option</system:String>
 
     <system:String x:Key="MainWindow_ErrorCalibration">VRM model has not been loaded. Please import first.</system:String>
+    <system:String x:Key="MainWindow_ErrorCalibrationFail">Calibration failed.</system:String>
 
     <system:String x:Key="MainWindow_Help">Help</system:String>
     <system:String x:Key="MainWindow_ManualHeader">Please visit the website for usage and other information</system:String>
@@ -150,6 +153,7 @@
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandRadioButton">MR compositing mode (correct hand position and no leg bending)</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton">MR compositing mode (correct hand position and bend leg to the ground)</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrationInformation" xml:space="preserve">If I-pose calibration will not work, re-set the room scale and correct the floor height.&#xa;For T-pose, you can adjust the calibration by bending the arm shorter or lifting the arm slightly.&#xa;Note that white balls on the screen are to confirm that trackers are recognized. You do not need to adjust the position.</system:String>
+    <system:String x:Key="CalibrationWindow_FinishSound">Completion sound</system:String>
 
     <!-- VRMImportWindow -->
     <system:String x:Key="VRMImportWindowTitle">Import VRM</system:String>
@@ -205,6 +209,7 @@
     <system:String x:Key="SettingWindowTitle">Settings</system:String>
 
     <system:String x:Key="SettingWindow_HandRotate">Hand Rotate Fix</system:String>
+    <system:String x:Key="SettingWindow_CalibrationSetting">Calibration Setting</system:String>
     <system:String x:Key="SettingWindow_LeftHand">Left Hand</system:String>
     <system:String x:Key="SettingWindow_RightHand">RightHand</system:String>
     <system:String x:Key="SettingWindow_VMTInstall">VMT Install</system:String>
@@ -250,7 +255,7 @@
     <system:String x:Key="SettingWindow_ExternalMotionSender_Free">VMCProtocol Motion sender / VMC Mod</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderEnable">Enable OSC motion sender</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">Interval(once every specified frame)</system:String>
-    <system:String x:Key="SettingWindow_ExternalMotionReceiver">VMCProtocol Motion receiver</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionReceiver">VMC Protocol receiver</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">Enable OSC motion receiver</system:String>
     <system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape</system:String>
     <system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">Knob to BlendShape setting</system:String>
@@ -266,6 +271,7 @@
     <system:String x:Key="SettingWindow_TrackingOption">Tracking Option</system:String>
     <system:String x:Key="SettingWindow_PauseTracking">Pause Tracking</system:String>
     <system:String x:Key="SettingWindow_HandleControllerAsTracker">Handle Controller as Tracker</system:String>
+    <system:String x:Key="SettingWindow_LaunchSteamVROnStartup">Launch SteamVR on startup</system:String>
     <system:String x:Key="SettingWindow_QualitySettings">Quality Settings</system:String>
     <system:String x:Key="SettingWindow_AntiAliasing">AntiAliasing</system:String>
     <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">Sending motion / VMC Mod is only available for pixivFANBOX and Patreon versions.</system:String>
@@ -278,6 +284,15 @@
     <system:String x:Key="SettingWindow_ReceiveBonesEnable">Receive hand bone</system:String>
     <system:String x:Key="SettingWindow_VMCMod">VMC Mod (No warranty/no support)</system:String>
     <system:String x:Key="SettingWindow_VMCModSetting">Loaded MOD List</system:String>
+
+    <!-- CalibrationSettingWindow -->
+    <system:String x:Key="CalibrationSettingWindow_BodyHeight">Body Height</system:String>
+    <system:String x:Key="CalibrationSettingWindow_OverrideBodyHeight">Override body height</system:String>
+    <system:String x:Key="CalibrationSettingWindow_Height">Height :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_Pelvis">Pelvis (Hip)</system:String>
+    <system:String x:Key="CalibrationSettingWindow_OffsetY">Offset Y :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_OffsetZ">Offset Z :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_Notice">Please recalibrate after the change</system:String>
 
     <!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">Tracker assignment setting</system:String>
@@ -487,7 +502,23 @@
     <system:String x:Key="MotionCapture_mocopiSettingWindow_RightFoot">Right Foot</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftFoot">Left Foot</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_RootPositionSynchronize">Root position synchronize</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_RootRotationSynchronize">Root rotation synchronize</system:String>
     <system:String x:Key="MotionCapture_mocopiSettingWindow_ResetCenter">Re-center current position</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_mocopiOnly">mocopi only</system:String>
+    <system:String x:Key="MotionCapture_mocopiSettingWindow_WithVRDevice">with VR devices</system:String>
+
+    <!-- VMCProtocolReceiverSettingWindow -->
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_All">All</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_Eye">Eyes</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_RightFinger">Right Finger</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_LeftFinger">Left Finger</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_UnselectBones">Unselect bones</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_Port">Port :</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_Delay">Delay :</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_CorrectHandBone">Correct hand bone</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_CorrectHipBone">Correct hip bone</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_UseBonePosition">Use bone position</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_IgnoreDefaultBone">Ignore default bones</system:String>
     
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">Color Picker</system:String>
@@ -525,4 +556,21 @@
     <system:String x:Key="VRoidHubWindow_SelectModelMessage">Please select the model to load</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionConfirm">When using this model, you need to display the license. &#xa; Credit must be stated clearly when using it. OK?</system:String>
     
+    <!-- CalibrationResultWindow -->
+    <system:String x:Key="CalibrationResultWindowTitle">Calibration Result</system:String>
+
+    <system:String x:Key="CalibrationResultWindow_DetailMessageHideText">▶ Double click here to view details.</system:String>
+    <system:String x:Key="CalibrationResultWindow_CloseButton">Close</system:String>
+    <system:String x:Key="CalibrationResultWindow_CalibrationSucceed">Calibration succeeded</system:String>
+    <system:String x:Key="CalibrationResultWindow_CalibrationFailed">Calibration failed</system:String>
+    <system:String x:Key="CalibrationResultWindow_BodyParamMessage">Your body parameter was calculated.</system:String>
+    <system:String x:Key="CalibrationResultWindow_PleaseCheckDevicesMessage" xml:space="preserve">Check your devices and trackers assignment.&#xa;Calibration is not required if you are using only mocopi.</system:String>
+    <system:String x:Key="CalibrationResultWindow_RealHeight">Height</system:String>
+    <system:String x:Key="CalibrationResultWindow_CautionMessage">If you think it is wrong, please check your tracker mount and the floor level of your VR roomscale.</system:String>
+    <system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">seconds left to close</system:String>
+
+    <system:String x:Key="FirewallManagerWindow_Title">Firewall setting</system:String>
+    <system:String x:Key="FirewallManagerWindow_Description">Configure firewall settings for Virtual Motion Capture to connect with other apps. Would you like to continue?</system:String>
+    <system:String x:Key="FirewallManagerWindow_DontShowAgain">Don't show this again</system:String>
+	
 </ResourceDictionary>

@@ -178,6 +178,8 @@ namespace VMC
             doUpdateRelativePosition = true;
         }
 
+        private Vector3 oldLookAt;
+
         void UpdateCamera()
         {
             if (doUpdateRelativePosition && PositionFixedTarget != null)
@@ -190,11 +192,17 @@ namespace VMC
             {
 
                 var lookAt = LookTarget.position + LookOffset;
+                if (oldLookAt == Vector3.zero) oldLookAt = lookAt;
+                lookAt = Vector3.Lerp(oldLookAt, lookAt, Time.deltaTime * 10f);
+                oldLookAt = lookAt;
 
                 // カメラとプレイヤーとの間の距離を調整
-                setPosition = lookAt - (LookTarget.transform.forward) * (Settings.Current.CameraType == CameraTypes.Front ? -CameraDistance : CameraDistance);
-
+                var oldPosition = transform.position;
+                setPosition = lookAt - (Quaternion.Euler(0, LookTarget.transform.rotation.eulerAngles.y, LookTarget.transform.rotation.eulerAngles.z) * Vector3.forward) * (Settings.Current.CameraType == CameraTypes.Front ? -CameraDistance : CameraDistance);
+                setPosition = Vector3.Lerp(oldPosition, setPosition, Time.deltaTime * 5f);
+                setPosition = lookAt - (Quaternion.LookRotation(setPosition - lookAt) * Vector3.forward) * -CameraDistance;
                 transform.position = setPosition;
+
                 // 注視点の設定
                 transform.LookAt(lookAt);
             }
@@ -209,7 +217,7 @@ namespace VMC
                 setPosition = CameraTarget + transform.rotation * Vector3.back * CameraDistance;
             }
             currentNoScaledPosition = setPosition;
-            if (parentTransform != null)
+            if (LookTarget == null && parentTransform != null)
             {
                 setPosition = new Vector3(setPosition.x * parentTransform.localScale.x + parentTransform.position.x, setPosition.y * parentTransform.localScale.y + parentTransform.position.y, setPosition.z * parentTransform.localScale.z + parentTransform.position.z);
             }
@@ -228,8 +236,11 @@ namespace VMC
 
             CameraDistance = 1.5f; //default
 
-            if (LookTarget == null) // free or position fixed
+            if (LookTarget != null)
             {
+                SaveLookTarget();
+            }else{ 
+                // free or position fixed
                 var currentLookTarget = CameraManager.Current.CurrentLookTarget.transform;
                 var lookAt = currentLookTarget.position + LookOffset;
 
@@ -243,6 +254,18 @@ namespace VMC
                 CameraAngle = -transform.eulerAngles;
 
                 UpdateRelativePosition();
+
+                yield return new WaitForEndOfFrame();
+
+                if (Settings.Current.CameraType == CameraTypes.Free)
+                {
+                    Settings.Current.FreeCameraTransform.SetPosition(currentNoScaledPosition);
+                    Settings.Current.FreeCameraTransform.SetRotation(transform);
+                }
+                else if (Settings.Current.CameraType == CameraTypes.PositionFixed)
+                {
+                    Settings.Current.PositionFixedCameraTransform.SetPositionAndRotation(transform);
+                }
             }
         }
 

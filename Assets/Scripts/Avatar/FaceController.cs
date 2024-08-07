@@ -102,13 +102,6 @@ namespace VMC
             return KeyUpperCaseDictionary.ContainsKey(upperCase) ? KeyUpperCaseDictionary[upperCase] : upperCase;
         }
 
-        public void ImportVRMmodel(GameObject vrmmodel)
-        {
-            VRMmodel = vrmmodel;
-            proxy = null;
-            InitializeProxy();
-        }
-
         private void Start()
         {
             var dict = new Dictionary<BlendShapeKey, float>();
@@ -119,6 +112,23 @@ namespace VMC
             CurrentShapeKeys = dict;
 
             CreateAnimation();
+        }
+
+        private void OnEnable()
+        {
+            VMCEvents.OnCurrentModelChanged += OnCurrentModelChanged;
+        }
+
+        private void OnDisable()
+        {
+            VMCEvents.OnCurrentModelChanged -= OnCurrentModelChanged;
+        }
+
+        private void OnCurrentModelChanged(GameObject model)
+        {
+            VRMmodel = model;
+            proxy = null;
+            InitializeProxy();
         }
 
         private void CreateAnimation()
@@ -218,10 +228,18 @@ namespace VMC
             {
                 if (keys.Any(d => BlendShapeKeyString.ContainsKey(d) == false))
                 {
-                    var convertKeys = keys.Select(d => GetCaseSensitiveKeyName(d))
-                                          .Where(d => BlendShapeKeyString.ContainsKey(d))
-                                          .Select(d => BlendShapeKeyString[d]).ToList();
-                    SetFace(convertKeys, strength, stopBlink);
+                    var convertKeys = new List<BlendShapeKey>();
+                    var convertValues = new List<float>();
+                    for (int i = 0; i < keys.Count; i++)
+                    {
+                        var caseSensitiveKeyName = GetCaseSensitiveKeyName(keys[i]);
+                        if (BlendShapeKeyString.ContainsKey(caseSensitiveKeyName))
+                        {
+                            convertKeys.Add(BlendShapeKeyString[caseSensitiveKeyName]);
+                            convertValues.Add(strength[i]);
+                        }
+                    }
+                    SetFace(convertKeys, convertValues, stopBlink);
                 }
                 else
                 {
@@ -269,10 +287,18 @@ namespace VMC
         {
             if (keys.Any(d => BlendShapeKeyString.ContainsKey(d) == false))
             {
-                var convertKeys = keys.Select(d => GetCaseSensitiveKeyName(d))
-                                      .Where(d => BlendShapeKeyString.ContainsKey(d))
-                                      .Select(d => BlendShapeKeyString[d]).ToArray();
-                MixPresets(presetName, convertKeys, values);
+                var convertKeys = new List<BlendShapeKey>();
+                var convertValues = new List<float>();
+                for (int i = 0; i < keys.Length; i++)
+                {
+                    var caseSensitiveKeyName = GetCaseSensitiveKeyName(keys[i]);
+                    if (BlendShapeKeyString.ContainsKey(caseSensitiveKeyName))
+                    {
+                        convertKeys.Add(BlendShapeKeyString[caseSensitiveKeyName]);
+                        convertValues.Add(values[i]);
+                    }
+                }
+                MixPresets(presetName, convertKeys.ToArray(), convertValues.ToArray());
             }
             else
             {
@@ -396,39 +422,32 @@ namespace VMC
         // Update is called once per frame
         void Update()
         {
-            if (VRMmodel != null)
+            if (VRMmodel == null) return;
+
+            if (IsSetting == false)
             {
-                if (proxy == null)
+                if (EnableBlink && ViveProEyeEnabled == false)
                 {
-                    InitializeProxy();
-                }
-                if (IsSetting == false)
-                {
-                    if (EnableBlink && ViveProEyeEnabled == false)
+                    isReset = false;
+                    if (StopBlink == false)
                     {
-                        isReset = false;
-                        if (StopBlink == false)
-                        {
-                            if (animationController?.Next() == false)
-                            {//最後まで行ったら値更新のためにアニメーション作り直す
-                                CreateAnimation();
-                            }
+                        if (animationController?.Next() == false)
+                        {//最後まで行ったら値更新のためにアニメーション作り直す
+                            CreateAnimation();
                         }
                     }
-                    else
-                    {
-                        if (isReset == false)
-                        {
-                            isReset = true;
-                            animationController?.Reset();
-                        }
-                    }
-
                 }
-
-                AccumulateBlendShapes();
+                else
+                {
+                    if (isReset == false)
+                    {
+                        isReset = true;
+                        animationController?.Reset();
+                    }
+                }
             }
 
+            AccumulateBlendShapes();
         }
     }
 }
