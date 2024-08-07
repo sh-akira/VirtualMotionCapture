@@ -27,7 +27,7 @@
     <!-- MainWindow -->
     <system:String x:Key="MainWindowTitle">컨트롤패널</system:String>
     <system:String x:Key="MainWindowTitleLoading">기동중</system:String>
-    <system:String x:Key="MainWindowOpenVRAlertStatus">⚠ The dashboard in the HMD must be closed to properly capture position and controller inputs.</system:String>
+	<system:String x:Key="MainWindowOpenVRAlertStatus">⚠ 컨트롤러의 위치나 조작을 정상적으로 확인할 수 없습니다. HMD 내의 SteamVR 대시보드나 키보드를 닫아주십시오.</system:String>
 
 	<system:String x:Key="MainWindow_Setting">설정</system:String>
     <system:String x:Key="MainWindow_LoadSetting">설정 불러오기</system:String>
@@ -149,7 +149,7 @@
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandRadioButton">MR합성모드(손의 위치를 최대한 맞추고 다리는 쭉 뻗음)</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton">MR합성모드(손의 위치를 최대한 맞추고 다리는 바닥에 맞추어 구부림)</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrationInformation" xml:space="preserve">If I-pose calibration will not work, re-set the room scale and correct the floor height.&#xa;For T-pose, you can adjust the calibration by bending the arm shorter or lifting the arm slightly.&#xa;Note that white balls on the screen are to confirm that trackers are recognized. You do not need to adjust the position.</system:String>
-    <system:String x:Key="CalibrationWindow_FinishSound">完了音</system:String>
+	<system:String x:Key="CalibrationWindow_FinishSound">Completion sound</system:String>
 
 
     <!-- VRMImportWindow -->
@@ -549,20 +549,20 @@
     <system:String x:Key="VRoidHubWindow_CreditCautionConfirm">이 모델은 사용 시 라이센스를 반드시 표시해야합니다. 영상, 생방송 등에 사용할 시 반드시 명기하셔야 합니다. 사용하시겠습니까?</system:String>
 
 	<!-- CalibrationResultWindow -->
-	<system:String x:Key="CalibrationResultWindowTitle">Calibration Result</system:String>
+	<system:String x:Key="CalibrationResultWindowTitle">교정 결과</system:String>
 
-	<system:String x:Key="CalibrationResultWindow_DetailMessageHideText">▶ Double click here to view details.</system:String>
-	<system:String x:Key="CalibrationResultWindow_CloseButton">Close</system:String>
-    <system:String x:Key="CalibrationResultWindow_CalibrationSucceed">Calibration succeeded</system:String>
-    <system:String x:Key="CalibrationResultWindow_CalibrationFailed">Calibration failed</system:String>
-    <system:String x:Key="CalibrationResultWindow_BodyParamMessage">Your body parameter was calculated.</system:String>
-    <system:String x:Key="CalibrationResultWindow_PleaseCheckDevicesMessage">Check your devices and trackers assignment.</system:String>
-    <system:String x:Key="CalibrationResultWindow_RealHeight">Height</system:String>
-    <system:String x:Key="CalibrationResultWindow_CautionMessage">If you think it is wrong, please check your tracker mount and the floor level of your VR roomscale.</system:String>
-    <system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">seconds left to close</system:String>
+	<system:String x:Key="CalibrationResultWindow_DetailMessageHideText">▶ 자세한 정보를 보려면 여기를 두 번 클릭하세요.</system:String>
+	<system:String x:Key="CalibrationResultWindow_CloseButton">닫기</system:String>
+	<system:String x:Key="CalibrationResultWindow_CalibrationSucceed">교정 성공</system:String>
+	<system:String x:Key="CalibrationResultWindow_CalibrationFailed">교정 실패</system:String>
+	<system:String x:Key="CalibrationResultWindow_BodyParamMessage">당신의 신체 매개변수가 계산되었습니다.</system:String>
+	<system:String x:Key="CalibrationResultWindow_PleaseCheckDevicesMessage" xml:space="preserve">기기 및 추적기 할당을 확인하세요.&#xa;mocopi만 사용하는 경우 교정이 필요하지 않습니다.</system:String>
+	<system:String x:Key="CalibrationResultWindow_RealHeight">신장</system:String>
+	<system:String x:Key="CalibrationResultWindow_CautionMessage">잘못된 경우, 추적기 장착 상태와 VR 룸스케일의 바닥 레벨을 확인해 주세요.</system:String>
+	<system:String x:Key="CalibrationResultWindow_AutoCloseTimerMessage">닫기까지 남은 시간</system:String>
 
-    <system:String x:Key="FirewallManagerWindow_Title">Firewall setting</system:String>
-    <system:String x:Key="FirewallManagerWindow_Description">Configure firewall settings for Virtual Motion Capture to connect with other apps. Would you like to continue?</system:String>
-    <system:String x:Key="FirewallManagerWindow_DontShowAgain">Don't show this again</system:String>
+	<system:String x:Key="FirewallManagerWindow_Title">방화벽 설정</system:String>
+	<system:String x:Key="FirewallManagerWindow_Description">Virtual Motion Capture가 다른 앱과 연결될 수 있도록 방화벽 설정을 구성합니다. 계속하시겠습니까?</system:String>
+	<system:String x:Key="FirewallManagerWindow_DontShowAgain">다시 표시하지 않기</system:String>
 
 </ResourceDictionary>
