@@ -569,9 +569,9 @@ namespace VMC
                 var leftLegBendGoalTarget = CreateTransform("LeftLegBendGoalTarget", leftKneeTargetTransform, leftCalfOffset);
                 if (vrik.solver.leftLeg.bendGoal != null) GameObject.Destroy(vrik.solver.leftLeg.bendGoal.gameObject);
 
-                var boneBendGoal = currentModel.gameObject.AddComponent<BoneBendGoal>();
-                boneBendGoal.SetVRIK(vrik);
+                var boneBendGoal = leftLegBendGoalTarget.gameObject.AddComponent<BoneBendGoal>();
                 boneBendGoal.SetBones("LeftLeg", vrik.references.leftThigh, leftCalfOffset, vrik.references.leftFoot, leftLegBendGoalTarget);
+                vrik.solver.leftLeg.bendGoal = leftLegBendGoalTarget;
             }
 
             // Right Knee
@@ -585,9 +585,9 @@ namespace VMC
                 var rightLegBendGoalTarget = CreateTransform("RightLegBendGoalTarget", rightKneeTargetTransform, rightCalfOffset);
                 if (vrik.solver.rightLeg.bendGoal != null) GameObject.Destroy(vrik.solver.rightLeg.bendGoal.gameObject);
 
-                var boneBendGoal = currentModel.gameObject.AddComponent<BoneBendGoal>();
-                boneBendGoal.SetVRIK(vrik);
+                var boneBendGoal = rightLegBendGoalTarget.gameObject.AddComponent<BoneBendGoal>();
                 boneBendGoal.SetBones("RightLeg", vrik.references.rightThigh, rightCalfOffset, vrik.references.rightFoot, rightLegBendGoalTarget);
+                vrik.solver.rightLeg.bendGoal = rightLegBendGoalTarget;
             }
 
             //TrackingWatcherにWeight設定用アクションを設定
