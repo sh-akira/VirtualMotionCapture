@@ -99,6 +99,7 @@ namespace VMC
         }
         private void OnModelUnloading(GameObject model)
         {
+            FinalIKCalibrator.ClearGeneratedGameObjects();
             RemoveComponents();
         }
 

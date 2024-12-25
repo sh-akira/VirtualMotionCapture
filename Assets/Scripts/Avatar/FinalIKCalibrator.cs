@@ -52,6 +52,16 @@ namespace VMC
 
         private static List<GameObject> GeneratedGameObjects = new List<GameObject>();
 
+        public static void ClearGeneratedGameObjects()
+        {
+            foreach (var gameObject in GeneratedGameObjects)
+            {
+                if (gameObject != null) GameObject.DestroyImmediate(gameObject);
+            }
+
+            GeneratedGameObjects.Clear();
+        }
+
         /// <summary>
         /// 通常モード、I/Tポーズキャリブレーション
         /// </summary>
@@ -92,14 +102,9 @@ namespace VMC
 
             vrik.enabled = false;
 
-            foreach(var gameObject in GeneratedGameObjects)
-            {
-                if(gameObject != null) GameObject.DestroyImmediate(gameObject);
-            }
+            ClearGeneratedGameObjects();
 
             yield return null;
-
-            GeneratedGameObjects.Clear();
 
             var headTarget = HMDTrackingPoint;
 
