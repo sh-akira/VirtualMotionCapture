@@ -148,6 +148,7 @@
     <system:String x:Key="CalibrationWindow_Status_CalibrateTposeRadioButton">T-pose</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandRadioButton">MR합성모드(손의 위치를 최대한 맞추고 다리는 쭉 뻗음)</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton">MR합성모드(손의 위치를 최대한 맞추고 다리는 바닥에 맞추어 구부림)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrateDefaultRadioButton">일반모드</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrationInformation" xml:space="preserve">If I-pose calibration will not work, re-set the room scale and correct the floor height.&#xa;For T-pose, you can adjust the calibration by bending the arm shorter or lifting the arm slightly.&#xa;Note that white balls on the screen are to confirm that trackers are recognized. You do not need to adjust the position.</system:String>
 	<system:String x:Key="CalibrationWindow_FinishSound">Completion sound</system:String>
 

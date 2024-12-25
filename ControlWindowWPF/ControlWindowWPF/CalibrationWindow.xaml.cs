@@ -37,6 +37,7 @@ namespace VirtualMotionCaptureControlPanel
             else if (calibrateType == PipeCommands.CalibrateType.Tpose) CalibrateTposeRadioButton.IsChecked = true;
             else if (calibrateType == PipeCommands.CalibrateType.FixedHand) CalibrateFixedHandRadioButton.IsChecked = true;
             else if (calibrateType == PipeCommands.CalibrateType.FixedHandWithGround) CalibrateFixedHandWithGroundRadioButton.IsChecked = true;
+            else if (calibrateType == PipeCommands.CalibrateType.Default) CalibrateDefaultRadioButton.IsChecked = true;
             CalibrationEndSoundCheckBox.IsChecked = Globals.CurrentCommonSettingsWPF.EnableCalibrationEndSound;
         }
 
@@ -83,9 +84,10 @@ namespace VirtualMotionCaptureControlPanel
         }
 
         private PipeCommands.CalibrateType SelectCalibrateType() =>
+            CalibrateDefaultRadioButton?.IsChecked == true ? PipeCommands.CalibrateType.Default : (
             CalibrateFixedHandRadioButton?.IsChecked == true ? PipeCommands.CalibrateType.FixedHand : (
             CalibrateFixedHandWithGroundRadioButton?.IsChecked == true ? PipeCommands.CalibrateType.FixedHandWithGround : (
-            CalibrateTposeRadioButton?.IsChecked == true ? PipeCommands.CalibrateType.Tpose : PipeCommands.CalibrateType.Ipose));
+            CalibrateTposeRadioButton?.IsChecked == true ? PipeCommands.CalibrateType.Tpose : PipeCommands.CalibrateType.Ipose)));
 
         private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {

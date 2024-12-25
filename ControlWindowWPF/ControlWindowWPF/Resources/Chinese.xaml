@@ -149,6 +149,7 @@
     <system:String x:Key="CalibrationWindow_Status_CalibrateTposeRadioButton">T-pose</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandRadioButton">混合现实模式（正确的手位置但是没有腿部校准）</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton">混合现实模式（正确的手位置并且校准腿部到地面）</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrateDefaultRadioButton">普通模式</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrationInformation" xml:space="preserve">如果 I-pose 校准无法正常工作，请重置房间大小并校准地面高度。&#xa;对于 T-pose，你可以将手臂弯曲短一些或略微抬高手臂来调整校准。&#xa;请注意，屏幕上的白球是用于确认追踪器是否被正确识别。你不需要精确对齐。</system:String>
     <system:String x:Key="CalibrationWindow_FinishSound">完成音效</system:String>
 

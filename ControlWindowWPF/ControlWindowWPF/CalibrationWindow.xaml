@@ -58,6 +58,7 @@
                     <StackPanel>
                         <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateFixedHandRadioButton}" Name="CalibrateFixedHandRadioButton" Padding="5" GroupName="Calibration" Checked="CalibrateRadioButton_Checked"/>
                         <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton}" Name="CalibrateFixedHandWithGroundRadioButton" Padding="5" GroupName="Calibration" Checked="CalibrateRadioButton_Checked"/>
+                        <RadioButton Content="{DynamicResource CalibrationWindow_Status_CalibrateDefaultRadioButton}" Name="CalibrateDefaultRadioButton" Padding="5" GroupName="Calibration" Checked="CalibrateRadioButton_Checked"/>
                     </StackPanel>
                 </GroupBox>
             </StackPanel>

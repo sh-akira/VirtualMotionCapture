@@ -51,6 +51,7 @@ namespace VirtualMotionCaptureControlPanel
                     }
                 case PipeCommands.CalibrateType.FixedHand:
                 case PipeCommands.CalibrateType.FixedHandWithGround:
+                case PipeCommands.CalibrateType.Default:
                     {
                         CalibrationResult_Caption1TextBlock.Background = new SolidColorBrush(Color.FromRgb(230, 255, 230));
                         CalibrationResult_Caption1TextBlock.Text = "ℹ " + LanguageSelector.Get("CalibrationResultWindow_CalibrationSucceed"); ;

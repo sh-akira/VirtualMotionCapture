@@ -808,6 +808,9 @@ namespace VMC
             {
                 yield return Calibrator.CalibrateFixedHandWithGround(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker, chestTracker);
             }
+            else if (calibrateType == PipeCommands.CalibrateType.Default)
+            {
+                yield return Calibrator.CalibrateScaled(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker, chestTracker);
             }
 
             vrik.solver.IKPositionWeight = 1.0f;

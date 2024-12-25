@@ -149,6 +149,7 @@
     <system:String x:Key="CalibrationWindow_Status_CalibrateTposeRadioButton">T-pose</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandRadioButton">MR compositing mode (correct hand position and no leg bending)</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton">MR compositing mode (correct hand position and bend leg to the ground)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrateDefaultRadioButton">Normal mode</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrationInformation" xml:space="preserve">If I-pose calibration will not work, re-set the room scale and correct the floor height.&#xa;For T-pose, you can adjust the calibration by bending the arm shorter or lifting the arm slightly.&#xa;Note that white balls on the screen are to confirm that trackers are recognized. You do not need to adjust the position.</system:String>
     <system:String x:Key="CalibrationWindow_FinishSound">Completion sound</system:String>
 

@@ -148,6 +148,7 @@
     <system:String x:Key="CalibrationWindow_Status_CalibrateTposeRadioButton">Tポーズ(手の高さやスケールを微調整したい場合はこちら)</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandRadioButton">MR合成モード(手の位置をなるべく合わせて足は真っ直ぐ伸ばす)</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrateFixedHandWithGroundRadioButton">MR合成モード(手の位置をなるべく合わせて足は地面に合わせて曲げる)</system:String>
+    <system:String x:Key="CalibrationWindow_Status_CalibrateDefaultRadioButton">通常モード</system:String>
     <system:String x:Key="CalibrationWindow_Status_CalibrationInformation" xml:space="preserve">Iポーズキャリブレーションがうまくいかない場合はルームスケールを再設定して床の高さを正しくしてください。&#xa;Tポーズの場合は腕を少し短くなるように曲げたり、腕を少し上げると調整が出来ます。&#xa;画面に表示される白玉はトラッカーが認識されているか確認するための表示です。位置を合わせる必要はありません。</system:String>
     <system:String x:Key="CalibrationWindow_FinishSound">完了音</system:String>
 
