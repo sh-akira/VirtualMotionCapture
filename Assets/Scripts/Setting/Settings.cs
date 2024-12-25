@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -690,6 +690,10 @@ namespace VMC
         [OptionalField]
         public float PelvisOffsetAdjustZ;
 
+        [OptionalField]
+        public bool FluctuationEnable;
+        [OptionalField]
+        public bool AutoLookCameraEnable;
 
         //初期値
         [OnDeserializing()]
@@ -856,6 +860,10 @@ namespace VMC
             mocopi_ApplyRightLeg = true;
             mocopi_ApplyLeftFoot = true;
             mocopi_ApplyRightFoot = true;
+
+            FluctuationEnable = true;
+            AutoLookCameraEnable = false;
+
             mocopi_CorrectHipBone = false;
 
             EnableOverrideBodyHeight = false;
