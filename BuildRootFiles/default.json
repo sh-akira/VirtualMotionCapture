@@ -3,7 +3,7 @@
     "AAA_1":" Virtual Motion Capture Setting File",
     "AAA_2":" See more : vmc.info",
     "AAA_3":"========================================",
-    "AAA_SavedVersion":"v0.56",
+    "AAA_SavedVersion":"v0.59",
     "AntiAliasing":4,
     "AutoBlinkEnable":true,
     "BackCameraLookTargetSettings":null,
@@ -19,6 +19,10 @@
     "CameraMirrorEnable":false,
     "CameraSmooth":0,
     "CameraType":1,
+    "Chest":{
+        "m_Item1":0,
+        "m_Item2":null
+    },
     "CloseAnimationTime":0.06,
     "ClosingTime":0.1,
     "CustomBackgroundColor":{
@@ -765,8 +769,10 @@
             "ApplyCamera":true,
             "ApplyChest":true,
             "ApplyControl":true,
+            "ApplyControllerInput":true,
             "ApplyEye":true,
             "ApplyHead":true,
+            "ApplyKeyboardInput":false,
             "ApplyLeftArm":true,
             "ApplyLeftFinger":true,
             "ApplyLeftFoot":true,
@@ -799,8 +805,10 @@
             "ApplyCamera":true,
             "ApplyChest":true,
             "ApplyControl":true,
+            "ApplyControllerInput":true,
             "ApplyEye":true,
             "ApplyHead":true,
+            "ApplyKeyboardInput":false,
             "ApplyLeftArm":true,
             "ApplyLeftFinger":true,
             "ApplyLeftFoot":true,
@@ -839,6 +847,7 @@
     "WebCamResize":false,
     "WindowClickThrough":false,
     "bodyTracker":null,
+    "chestTracker":null,
     "headTracker":{
         "localPosition":{
             "x":-0.362957,
