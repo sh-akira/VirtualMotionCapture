@@ -308,6 +308,8 @@ namespace VMC
         public StoreTransform leftKneeTracker = null;
         [OptionalField]
         public StoreTransform rightKneeTracker = null;
+        [OptionalField]
+        public StoreTransform chestTracker = null;
         public Color BackgroundColor;
         public Color CustomBackgroundColor;
         public bool IsTransparent;
@@ -420,6 +422,8 @@ namespace VMC
         public Tuple<ETrackedDeviceClass, string> LeftKnee = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
         [OptionalField]
         public Tuple<ETrackedDeviceClass, string> RightKnee = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
+        [OptionalField]
+        public Tuple<ETrackedDeviceClass, string> Chest = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
 
         [OptionalField]
         public float LeftHandTrackerOffsetToBottom = 0.02f;
@@ -715,6 +719,7 @@ namespace VMC
             RightElbow = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
             LeftKnee = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
             RightKnee = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
+            Chest = Tuple.Create(ETrackedDeviceClass.GenericTracker, default(string));
 
             LeftHandTrackerOffsetToBottom = 0.02f;
             LeftHandTrackerOffsetToBodySide = 0.05f;

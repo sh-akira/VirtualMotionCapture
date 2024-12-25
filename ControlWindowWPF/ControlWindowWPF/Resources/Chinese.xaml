@@ -305,6 +305,7 @@
     <system:String x:Key="TrackerConfigWindow_RightElbow">右胳膊肘</system:String>
     <system:String x:Key="TrackerConfigWindow_LeftKnee">左膝盖</system:String>
     <system:String x:Key="TrackerConfigWindow_RightKnee">右膝盖</system:String>
+    <system:String x:Key="TrackerConfigWindow_Chest">胸部</system:String>
     <system:String x:Key="TrackerConfigWindow_TrackersList">追踪器列表（移动中的追踪器会有绿色重点提示）</system:String>
     <system:String x:Key="TrackerConfigWindow_TrackerOffset">设置手部追踪器偏移量（设置追踪器底部螺丝孔到手腕关节中心的距离）</system:String>
     <system:String x:Key="TrackerConfigWindow_OffsetLeftHand">左手</system:String>

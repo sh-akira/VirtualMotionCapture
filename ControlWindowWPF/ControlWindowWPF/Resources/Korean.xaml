@@ -306,6 +306,7 @@
     <system:String x:Key="TrackerConfigWindow_RightElbow">오른팔꿈치</system:String>
     <system:String x:Key="TrackerConfigWindow_LeftKnee">왼무릎</system:String>
     <system:String x:Key="TrackerConfigWindow_RightKnee">오른무릎</system:String>
+    <system:String x:Key="TrackerConfigWindow_Chest">가슴</system:String>
     <system:String x:Key="TrackerConfigWindow_TrackersList">트래커 목록(이동한 트래커는 색이 칠해집니다)</system:String>
     <system:String x:Key="TrackerConfigWindow_TrackerOffset">손 트래커 오프셋 설정(트래커 바닥 나사구멍에서 손목관절 중심까지의 거리를 설정)</system:String>
     <system:String x:Key="TrackerConfigWindow_OffsetLeftHand">왼손</system:String>

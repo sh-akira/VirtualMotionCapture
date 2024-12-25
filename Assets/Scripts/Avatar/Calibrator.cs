@@ -212,7 +212,7 @@ namespace VMC
             //leg.bendGoal = null;
             //leg.bendGoalWeight = 0f;
         }
-        public static IEnumerator CalibrateScaled(Transform handTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, TrackingPoint HMDTrackingPoint, TrackingPoint PelvisTrackingPoint = null, TrackingPoint LeftHandTrackingPoint = null, TrackingPoint RightHandTrackingPoint = null, TrackingPoint LeftFootTrackingPoint = null, TrackingPoint RightFootTrackingPoint = null, TrackingPoint LeftElbowTrackingPoint = null, TrackingPoint RightElbowTrackingPoint = null, TrackingPoint LeftKneeTrackingPoint = null, TrackingPoint RightKneeTrackingPoint = null)
+        public static IEnumerator CalibrateScaled(Transform handTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, TrackingPoint HMDTrackingPoint, TrackingPoint PelvisTrackingPoint = null, TrackingPoint LeftHandTrackingPoint = null, TrackingPoint RightHandTrackingPoint = null, TrackingPoint LeftFootTrackingPoint = null, TrackingPoint RightFootTrackingPoint = null, TrackingPoint LeftElbowTrackingPoint = null, TrackingPoint RightElbowTrackingPoint = null, TrackingPoint LeftKneeTrackingPoint = null, TrackingPoint RightKneeTrackingPoint = null, TrackingPoint ChestTrackingPoint = null)
         {
             Transform HMDTransform = HMDTrackingPoint?.TargetTransform;
             Transform PelvisTransform = PelvisTrackingPoint?.TargetTransform;
@@ -224,6 +224,7 @@ namespace VMC
             Transform RightElbowTransform = RightElbowTrackingPoint?.TargetTransform;
             Transform LeftKneeTransform = LeftKneeTrackingPoint?.TargetTransform;
             Transform RightKneeTransform = RightKneeTrackingPoint?.TargetTransform;
+            Transform ChestTransform = ChestTrackingPoint?.TargetTransform;
 
 
             if (!ik.solver.initiated)
@@ -259,6 +260,7 @@ namespace VMC
             if (RightElbowTransform != null) RightElbowTransform.parent = handTrackerRoot;
             if (LeftKneeTransform != null) LeftKneeTransform.parent = footTrackerRoot;
             if (RightKneeTransform != null) RightKneeTransform.parent = footTrackerRoot;
+            if (ChestTransform != null) ChestTransform.parent = handTrackerRoot;
 
             HandSwapManagerScript handSwapManagerScript = GameObject.Find("HandSwapManager").GetComponent<HandSwapManagerScript>();
             handSwapManagerScript.WPFLeftHandTransform = LeftHandTransform; //左手登録
@@ -427,6 +429,18 @@ namespace VMC
             ik.solver.spine.maintainPelvisPosition = 0.0f;
 
             yield return new WaitForEndOfFrame();
+
+            // Chest
+            if (ChestTransform != null && ik.references.chest != null)
+            {
+                var chestBone = ik.references.chest;
+                var bendGoal = new GameObject("ChestBendGoal").transform;
+                bendGoal.parent = ChestTransform;
+                bendGoal.position = chestBone.position + ik.references.root.forward * 0.5f;
+                ik.solver.spine.chestGoal = bendGoal;
+                ik.solver.spine.chestGoalWeight = 1.0f;
+                ik.solver.spine.chestClampWeight = 0f;
+            }
 
             // Left Hand
             if (LeftHandTransform != null)
@@ -607,7 +621,7 @@ namespace VMC
             ik.solver.locomotion.weight = PelvisTransform == null && LeftFootTransform == null && RightFootTransform == null ? 1f : 0f;
         }
 
-        public static IEnumerator CalibrateFixedHand(Transform handTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, TrackingPoint HMDTrackingPoint, TrackingPoint PelvisTrackingPoint = null, TrackingPoint LeftHandTrackingPoint = null, TrackingPoint RightHandTrackingPoint = null, TrackingPoint LeftFootTrackingPoint = null, TrackingPoint RightFootTrackingPoint = null, TrackingPoint LeftElbowTrackingPoint = null, TrackingPoint RightElbowTrackingPoint = null, TrackingPoint LeftKneeTrackingPoint = null, TrackingPoint RightKneeTrackingPoint = null)
+        public static IEnumerator CalibrateFixedHand(Transform handTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, TrackingPoint HMDTrackingPoint, TrackingPoint PelvisTrackingPoint = null, TrackingPoint LeftHandTrackingPoint = null, TrackingPoint RightHandTrackingPoint = null, TrackingPoint LeftFootTrackingPoint = null, TrackingPoint RightFootTrackingPoint = null, TrackingPoint LeftElbowTrackingPoint = null, TrackingPoint RightElbowTrackingPoint = null, TrackingPoint LeftKneeTrackingPoint = null, TrackingPoint RightKneeTrackingPoint = null, TrackingPoint ChestTrackingPoint = null)
         {
             Transform HMDTransform = HMDTrackingPoint?.TargetTransform;
             Transform PelvisTransform = PelvisTrackingPoint?.TargetTransform;
@@ -619,6 +633,7 @@ namespace VMC
             Transform RightElbowTransform = RightElbowTrackingPoint?.TargetTransform;
             Transform LeftKneeTransform = LeftKneeTrackingPoint?.TargetTransform;
             Transform RightKneeTransform = RightKneeTrackingPoint?.TargetTransform;
+            Transform ChestTransform = ChestTrackingPoint?.TargetTransform;
 
 
             if (!ik.solver.initiated)
@@ -658,6 +673,7 @@ namespace VMC
             if (RightElbowTransform != null) RightElbowTransform.parent = handTrackerRoot;
             if (LeftKneeTransform != null) LeftKneeTransform.parent = footTrackerRoot;
             if (RightKneeTransform != null) RightKneeTransform.parent = footTrackerRoot;
+            if (ChestTransform != null) ChestTransform.parent = handTrackerRoot;
 
             //コントローラーの場合手首までのオフセットを追加
             if (LeftHandOffset == Vector3.zero)
@@ -812,6 +828,18 @@ namespace VMC
             ik.solver.spine.maintainPelvisPosition = 0.0f;
 
             yield return new WaitForEndOfFrame();
+
+            // Chest
+            if (ChestTransform != null && ik.references.chest != null)
+            {
+                var chestBone = ik.references.chest;
+                var bendGoal = new GameObject("ChestBendGoal").transform;
+                bendGoal.parent = ChestTransform;
+                bendGoal.position = chestBone.position + ik.references.root.forward * 0.5f;
+                ik.solver.spine.chestGoal = bendGoal;
+                ik.solver.spine.chestGoalWeight = 1.0f;
+                ik.solver.spine.chestClampWeight = 0f;
+            }
 
             // Left Hand
             if (LeftHandTransform != null)
@@ -1004,7 +1032,7 @@ namespace VMC
             ik.solver.locomotion.weight = PelvisTransform == null && LeftFootTransform == null && RightFootTransform == null ? 1f : 0f;
         }
 
-        public static IEnumerator CalibrateFixedHandWithGround(Transform handTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, TrackingPoint HMDTrackingPoint, TrackingPoint PelvisTrackingPoint = null, TrackingPoint LeftHandTrackingPoint = null, TrackingPoint RightHandTrackingPoint = null, TrackingPoint LeftFootTrackingPoint = null, TrackingPoint RightFootTrackingPoint = null, TrackingPoint LeftElbowTrackingPoint = null, TrackingPoint RightElbowTrackingPoint = null, TrackingPoint LeftKneeTrackingPoint = null, TrackingPoint RightKneeTrackingPoint = null)
+        public static IEnumerator CalibrateFixedHandWithGround(Transform handTrackerRoot, Transform footTrackerRoot, VRIK ik, VRIKCalibrator.Settings settings, Vector3 LeftHandOffset, Vector3 RightHandOffset, TrackingPoint HMDTrackingPoint, TrackingPoint PelvisTrackingPoint = null, TrackingPoint LeftHandTrackingPoint = null, TrackingPoint RightHandTrackingPoint = null, TrackingPoint LeftFootTrackingPoint = null, TrackingPoint RightFootTrackingPoint = null, TrackingPoint LeftElbowTrackingPoint = null, TrackingPoint RightElbowTrackingPoint = null, TrackingPoint LeftKneeTrackingPoint = null, TrackingPoint RightKneeTrackingPoint = null, TrackingPoint ChestTrackingPoint = null)
         {
             Transform HMDTransform = HMDTrackingPoint?.TargetTransform;
             Transform PelvisTransform = PelvisTrackingPoint?.TargetTransform;
@@ -1016,6 +1044,7 @@ namespace VMC
             Transform RightElbowTransform = RightElbowTrackingPoint?.TargetTransform;
             Transform LeftKneeTransform = LeftKneeTrackingPoint?.TargetTransform;
             Transform RightKneeTransform = RightKneeTrackingPoint?.TargetTransform;
+            Transform ChestTransform = ChestTrackingPoint?.TargetTransform;
 
 
             if (!ik.solver.initiated)
@@ -1055,6 +1084,7 @@ namespace VMC
             if (RightElbowTransform != null) RightElbowTransform.parent = handTrackerRoot;
             if (LeftKneeTransform != null) LeftKneeTransform.parent = footTrackerRoot;
             if (RightKneeTransform != null) RightKneeTransform.parent = footTrackerRoot;
+            if (ChestTransform != null) ChestTransform.parent = handTrackerRoot;
 
             //コントローラーの場合手首までのオフセットを追加
             if (LeftHandOffset == Vector3.zero)
@@ -1209,6 +1239,18 @@ namespace VMC
             ik.solver.spine.maintainPelvisPosition = 0.0f;
 
             yield return new WaitForEndOfFrame();
+
+            // Chest
+            if (ChestTransform != null && ik.references.chest != null)
+            {
+                var chestBone = ik.references.chest;
+                var bendGoal = new GameObject("ChestBendGoal").transform;
+                bendGoal.parent = ChestTransform;
+                bendGoal.position = chestBone.position + ik.references.root.forward * 0.5f;
+                ik.solver.spine.chestGoal = bendGoal;
+                ik.solver.spine.chestGoalWeight = 1.0f;
+                ik.solver.spine.chestClampWeight = 0f;
+            }
 
             // Left Hand
             if (LeftHandTransform != null)

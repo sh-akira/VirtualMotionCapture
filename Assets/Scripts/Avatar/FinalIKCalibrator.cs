@@ -39,6 +39,7 @@ namespace VMC
         public TrackerPosition RightElbow;
         public TrackerPosition LeftKnee;
         public TrackerPosition RightKnee;
+        public TrackerPosition Chest;
     }
 
     public class FinalIKCalibrator
@@ -65,7 +66,7 @@ namespace VMC
         /// <summary>
         /// 通常モード、I/Tポーズキャリブレーション
         /// </summary>
-        public static IEnumerator Calibrate(CalibrateMode calibrateMode, Transform handTrackerRoot, Transform footTrackerRoot, VRIK vrik, VRIKCalibrator.Settings settings, TrackingPoint HMDTrackingPoint, TrackingPoint PelvisTrackingPoint = null, TrackingPoint LeftHandTrackingPoint = null, TrackingPoint RightHandTrackingPoint = null, TrackingPoint LeftFootTrackingPoint = null, TrackingPoint RightFootTrackingPoint = null, TrackingPoint LeftElbowTrackingPoint = null, TrackingPoint RightElbowTrackingPoint = null, TrackingPoint LeftKneeTrackingPoint = null, TrackingPoint RightKneeTrackingPoint = null, Transform generatedObject = null)
+        public static IEnumerator Calibrate(CalibrateMode calibrateMode, Transform handTrackerRoot, Transform footTrackerRoot, VRIK vrik, VRIKCalibrator.Settings settings, TrackingPoint HMDTrackingPoint, TrackingPoint PelvisTrackingPoint = null, TrackingPoint LeftHandTrackingPoint = null, TrackingPoint RightHandTrackingPoint = null, TrackingPoint LeftFootTrackingPoint = null, TrackingPoint RightFootTrackingPoint = null, TrackingPoint LeftElbowTrackingPoint = null, TrackingPoint RightElbowTrackingPoint = null, TrackingPoint LeftKneeTrackingPoint = null, TrackingPoint RightKneeTrackingPoint = null, TrackingPoint ChestTrackingPoint = null, Transform generatedObject = null)
         {
             var currentModel = vrik.transform;
 
@@ -99,6 +100,7 @@ namespace VMC
             if (RightElbowTrackingPoint != null) RightElbowTrackingPoint.TargetTransform.parent = handTrackerRoot;
             if (LeftKneeTrackingPoint != null) LeftKneeTrackingPoint.TargetTransform.parent = footTrackerRoot;
             if (RightKneeTrackingPoint != null) RightKneeTrackingPoint.TargetTransform.parent = footTrackerRoot;
+            if (ChestTrackingPoint != null) ChestTrackingPoint.TargetTransform.parent = handTrackerRoot;
 
             vrik.enabled = false;
 
@@ -443,6 +445,19 @@ namespace VMC
 
             // 腰のトラッキングを調整
             vrik.solver.spine.maintainPelvisPosition = 0; // アバターによって腰がグリングリンするのが直ります
+
+            // Chest
+            var chestTargetTransform = ChestTrackingPoint?.TargetTransform;
+
+            if (chestTargetTransform != null && vrik.references.chest != null)
+            {
+                var chestBone = vrik.references.chest;
+                var bendGoal = CreateTransform("ChestBendGoal", chestTargetTransform);
+                bendGoal.position = chestBone.position + currentModel.forward * 0.5f;
+                vrik.solver.spine.chestGoal = bendGoal;
+                vrik.solver.spine.chestGoalWeight = 1.0f;
+                vrik.solver.spine.chestClampWeight = 0f;
+            }
 
             var leftFootTargetTransform = LeftFootTrackingPoint?.TargetTransform;
             var rightFootTargetTransform = RightFootTrackingPoint?.TargetTransform;

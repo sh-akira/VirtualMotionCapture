@@ -298,6 +298,7 @@ namespace UnityMemoryMappedFile
             public Tuple<string, string> RightElbow { get; set; }
             public Tuple<string, string> LeftKnee { get; set; }
             public Tuple<string, string> RightKnee { get; set; }
+            public Tuple<string, string> Chest { get; set; }
         }
 
         public class GetTrackerOffsets { }

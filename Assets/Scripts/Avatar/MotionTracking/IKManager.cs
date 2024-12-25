@@ -486,6 +486,7 @@ namespace VMC
                 RightElbow = Tuple.Create(deviceDictionary[Settings.Current.RightElbow.Item1], Settings.Current.RightElbow.Item2),
                 LeftKnee = Tuple.Create(deviceDictionary[Settings.Current.LeftKnee.Item1], Settings.Current.LeftKnee.Item2),
                 RightKnee = Tuple.Create(deviceDictionary[Settings.Current.RightKnee.Item1], Settings.Current.RightKnee.Item2),
+                Chest = Tuple.Create(deviceDictionary[Settings.Current.Chest.Item1], Settings.Current.Chest.Item2),
             };
         }
 
@@ -510,12 +511,13 @@ namespace VMC
             Settings.Current.RightElbow = Tuple.Create(deviceDictionary[data.RightElbow.Item1], data.RightElbow.Item2);
             Settings.Current.LeftKnee = Tuple.Create(deviceDictionary[data.LeftKnee.Item1], data.LeftKnee.Item2);
             Settings.Current.RightKnee = Tuple.Create(deviceDictionary[data.RightKnee.Item1], data.RightKnee.Item2);
+            Settings.Current.Chest = Tuple.Create(deviceDictionary[data.Chest.Item1], data.Chest.Item2);
             SetVRIKTargetTrackers();
         }
 
         private enum TargetType
         {
-            Head, Pelvis, LeftArm, RightArm, LeftLeg, RightLeg, LeftElbow, RightElbow, LeftKnee, RightKnee
+            Head, Pelvis, LeftArm, RightArm, LeftLeg, RightLeg, LeftElbow, RightElbow, LeftKnee, RightKnee, Chest
         }
 
         private TrackingPoint GetTrackerTransformBySerialNumber(Tuple<ETrackedDeviceClass, string> serial, TargetType setTo, Transform headTracker = null)
@@ -581,6 +583,7 @@ namespace VMC
                 if (Settings.Current.RightElbow.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.RightElbow.Item2);
                 if (Settings.Current.LeftKnee.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.LeftKnee.Item2);
                 if (Settings.Current.RightKnee.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.RightKnee.Item2);
+                if (Settings.Current.Chest.Item1 == ETrackedDeviceClass.GenericTracker) trackerIds.Add(Settings.Current.Chest.Item2);
 
                 //ここに来るときは腰か足のトラッカー自動認識になってるとき
                 //割り当てられていないトラッカーリスト
@@ -728,8 +731,9 @@ namespace VMC
             var rightElbowTracker = GetTrackerTransformBySerialNumber(Settings.Current.RightElbow, TargetType.RightElbow, headTracker?.TargetTransform);
             var leftKneeTracker = GetTrackerTransformBySerialNumber(Settings.Current.LeftKnee, TargetType.LeftKnee, headTracker?.TargetTransform);
             var rightKneeTracker = GetTrackerTransformBySerialNumber(Settings.Current.RightKnee, TargetType.RightKnee, headTracker?.TargetTransform);
+            var chestTracker = GetTrackerTransformBySerialNumber(Settings.Current.Chest, TargetType.Chest, headTracker?.TargetTransform);
 
-            ClearChildren(headTracker, leftHandTracker, rightHandTracker, bodyTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
+            ClearChildren(headTracker, leftHandTracker, rightHandTracker, bodyTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker, chestTracker);
 
             var settings = new RootMotion.FinalIK.VRIKCalibrator.Settings();
 
@@ -779,6 +783,7 @@ namespace VMC
                 RightElbow = new TrackerPosition(rightElbowTracker),
                 LeftKnee = new TrackerPosition(leftKneeTracker),
                 RightKnee = new TrackerPosition(rightKneeTracker),
+                Chest = new TrackerPosition(chestTracker),
             };
 
             try
@@ -793,15 +798,16 @@ namespace VMC
 
             if (calibrateType == PipeCommands.CalibrateType.Ipose || calibrateType == PipeCommands.CalibrateType.Tpose)
             {
-                yield return FinalIKCalibrator.Calibrate(calibrateType == PipeCommands.CalibrateType.Ipose ? FinalIKCalibrator.CalibrateMode.Ipose : FinalIKCalibrator.CalibrateMode.Tpose, HandTrackerRoot, PelvisTrackerRoot, vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker, generatedObject);
+                yield return FinalIKCalibrator.Calibrate(calibrateType == PipeCommands.CalibrateType.Ipose ? FinalIKCalibrator.CalibrateMode.Ipose : FinalIKCalibrator.CalibrateMode.Tpose, HandTrackerRoot, PelvisTrackerRoot, vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker, chestTracker, generatedObject);
             }
             else if (calibrateType == PipeCommands.CalibrateType.FixedHand)
             {
-                yield return Calibrator.CalibrateFixedHand(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
+                yield return Calibrator.CalibrateFixedHand(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker, chestTracker);
             }
             else if (calibrateType == PipeCommands.CalibrateType.FixedHandWithGround)
             {
-                yield return Calibrator.CalibrateFixedHandWithGround(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker);
+                yield return Calibrator.CalibrateFixedHandWithGround(HandTrackerRoot, PelvisTrackerRoot, vrik, settings, leftHandOffset, rightHandOffset, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker, chestTracker);
+            }
             }
 
             vrik.solver.IKPositionWeight = 1.0f;
@@ -832,6 +838,7 @@ namespace VMC
             Settings.Current.rightElbowTracker = StoreTransform.Create(rightElbowTracker?.TargetTransform);
             Settings.Current.leftKneeTracker = StoreTransform.Create(leftKneeTracker?.TargetTransform);
             Settings.Current.rightKneeTracker = StoreTransform.Create(rightKneeTracker?.TargetTransform);
+            Settings.Current.chestTracker = StoreTransform.Create(chestTracker?.TargetTransform);
 
             var calibratedLeftHandTransform = leftHandTracker?.TargetTransform?.OfType<Transform>().FirstOrDefault();
             var calibratedRightHandTransform = rightHandTracker?.TargetTransform?.OfType<Transform>().FirstOrDefault();

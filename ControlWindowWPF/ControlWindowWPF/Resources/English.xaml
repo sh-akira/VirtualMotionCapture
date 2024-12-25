@@ -305,6 +305,7 @@
     <system:String x:Key="TrackerConfigWindow_RightElbow">Right elbow</system:String>
     <system:String x:Key="TrackerConfigWindow_LeftKnee">Left knee</system:String>
     <system:String x:Key="TrackerConfigWindow_RightKnee">Right knee</system:String>
+    <system:String x:Key="TrackerConfigWindow_Chest">Chest</system:String>
     <system:String x:Key="TrackerConfigWindow_TrackersList">Tracker list (If tracker is moving, background will be green)</system:String>
     <system:String x:Key="TrackerConfigWindow_TrackerOffset">Set the tracker offset of the hand (Set distance from screw hole on bottom of tracker to joint center of wrist)</system:String>
     <system:String x:Key="TrackerConfigWindow_OffsetLeftHand">Left hand</system:String>
