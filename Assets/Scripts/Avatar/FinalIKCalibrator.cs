@@ -666,11 +666,16 @@ namespace VMC
             //頭の位置をかかとの影響がない程度まで上に上げる
             if (vrik.solver.plantFeet == false)
             {
+                //頭が腰に近づいたときに猫背になりすぎないように (Final IK v2.1～)
+                vrik.solver.spine.useAnimatedHeadHeightWeight = 1.0f;
+                vrik.solver.spine.useAnimatedHeadHeightRange = 0.009f;
+                vrik.solver.spine.animatedHeadHeightBlend = 0.18f;
+
                 vrik.UpdateSolverExternal();
                 var baseFootHeight = vrik.references.leftFoot.position.y;
                 var headTargetPosition = headOffset.position;
                 var defaultHeadTargetPosition = headTargetPosition;
-                var headStep = new Vector3(0, 0.005f, 0);
+                var headStep = new Vector3(0, 0.0005f, 0);
                 while (vrik.references.leftFoot.position.y - baseFootHeight < 0.005f && headTargetPosition.y - defaultHeadTargetPosition.y < 0.4f)
                 {
                     headTargetPosition += headStep;
@@ -679,10 +684,8 @@ namespace VMC
                 }
                 headOffset.position -= headStep;
 
-                //頭が腰に近づいたときに猫背になりすぎないように (Final IK v2.1～)
-                vrik.solver.spine.useAnimatedHeadHeightWeight = 1.0f;
-                vrik.solver.spine.useAnimatedHeadHeightRange = 0.009f;
-                vrik.solver.spine.animatedHeadHeightBlend = 0.18f;
+                //ずらした分腰を下げる
+                vrik.solver.spine.pelvisTarget.position -= headOffset.position - defaultHeadTargetPosition;
             }
 
             vrik.UpdateSolverExternal();
