@@ -50,6 +50,8 @@ namespace VMC
             Tpose,
         }
 
+        private static List<GameObject> GeneratedGameObjects = new List<GameObject>();
+
         /// <summary>
         /// 通常モード、I/Tポーズキャリブレーション
         /// </summary>
@@ -89,7 +91,15 @@ namespace VMC
             if (RightKneeTrackingPoint != null) RightKneeTrackingPoint.TargetTransform.parent = footTrackerRoot;
 
             vrik.enabled = false;
+
+            foreach(var gameObject in GeneratedGameObjects)
+            {
+                if(gameObject != null) GameObject.DestroyImmediate(gameObject);
+            }
+
             yield return null;
+
+            GeneratedGameObjects.Clear();
 
             var headTarget = HMDTrackingPoint;
 
@@ -101,7 +111,7 @@ namespace VMC
             if (LeftHandTrackingPoint.DeviceClass == ETrackedDeviceClass.Controller)
             {
                 //コントローラーの場合手首までのオフセットを追加
-                var offset = new GameObject("LeftWristOffset").transform;
+                var offset = CreateGameObject("LeftWristOffset").transform;
                 offset.parent = leftHandTargetTransform;
                 offset.localPosition = new Vector3(-0.04f, 0.04f, -0.15f);
                 offset.localRotation = Quaternion.Euler(60, 0, 90);
@@ -113,7 +123,7 @@ namespace VMC
                 //トラッカーの場合設定のオフセットを適用
 
                 //お互いのトラッカー同士を向き合わせてオフセットを適用する
-                var leftWristLookAtTransform = new GameObject("LeftWristLookAt").transform;
+                var leftWristLookAtTransform = CreateGameObject("LeftWristLookAt").transform;
                 leftWristLookAtTransform.SetParent(leftHandTargetTransform);
                 leftWristLookAtTransform.localPosition = Vector3.zero;
                 leftWristLookAtTransform.localRotation = Quaternion.identity;
@@ -134,7 +144,7 @@ namespace VMC
 
             if (RightHandTrackingPoint.DeviceClass == ETrackedDeviceClass.Controller)
             {
-                var offset = new GameObject("RightWristOffset").transform;
+                var offset = CreateGameObject("RightWristOffset").transform;
                 offset.parent = rightHandTargetTransform;
                 offset.localPosition = new Vector3(0.04f, 0.04f, -0.15f);
                 offset.localRotation = Quaternion.Euler(60, 0, -90);
@@ -146,7 +156,7 @@ namespace VMC
                 //トラッカーの場合設定のオフセットを適用
 
                 //お互いのトラッカー同士を向き合わせてオフセットを適用する
-                var rightWristLookAtTransform = new GameObject("RightWristLookAt").transform;
+                var rightWristLookAtTransform = CreateGameObject("RightWristLookAt").transform;
                 rightWristLookAtTransform.SetParent(rightHandTargetTransform);
                 rightWristLookAtTransform.localPosition = Vector3.zero;
                 rightWristLookAtTransform.localRotation = Quaternion.identity;
@@ -303,7 +313,7 @@ namespace VMC
 
             if (pelvisTargetTransform != null)
             {
-                var pelvisRotatePoint = new GameObject("PelvisRotatePoint").transform;
+                var pelvisRotatePoint = CreateGameObject("PelvisRotatePoint").transform;
                 pelvisRotatePoint.SetParent(pelvisTargetTransform);
                 pelvisRotatePoint.position = scaledPelvisPosition + new Vector3(0, Settings.Current.PelvisOffsetAdjustY, Settings.Current.PelvisOffsetAdjustZ);
                 pelvisRotatePoint.rotation = Quaternion.identity;
@@ -355,7 +365,7 @@ namespace VMC
             //頭の位置は1cm前後後ろに下げる
             var headTargetTransform = headTarget.TargetTransform;
             var headOffsetPosition = new Vector3(vrik.references.head.position.x, vrik.references.head.position.y, vrik.references.head.position.z - (realHeight * 0.01f * offsetScale));
-            var headOffset = CreateTransform("HeadIKTarget", true, headTargetTransform, headOffsetPosition, vrik.references.head.rotation);
+            var headOffset = CreateTransform("HeadIKTarget", headTargetTransform, headOffsetPosition, vrik.references.head.rotation);
             vrik.solver.spine.headTarget = headOffset;
             vrik.solver.spine.positionWeight = 1f;
             vrik.solver.spine.rotationWeight = 1f;
@@ -371,7 +381,7 @@ namespace VMC
             {
                 handTrackerRoot.position = leftHandTrackerOffset;
             }
-            var leftHandOffset = CreateTransform("LeftHandIKTarget", true, leftHandTargetTransform, vrik.references.leftHand);
+            var leftHandOffset = CreateTransform("LeftHandIKTarget", leftHandTargetTransform, vrik.references.leftHand);
             leftHandOffset.localPosition = Vector3.zero;
 
             vrik.solver.leftArm.target = leftHandOffset;
@@ -389,7 +399,7 @@ namespace VMC
             {
                 handTrackerRoot.position = rightHandTrackerOffset;
             }
-            var rightHandOffset = CreateTransform("RightHandIKTarget", true, rightHandTargetTransform, vrik.references.rightHand);
+            var rightHandOffset = CreateTransform("RightHandIKTarget", rightHandTargetTransform, vrik.references.rightHand);
             rightHandOffset.localPosition = Vector3.zero;
             
             vrik.solver.rightArm.target = rightHandOffset;
@@ -408,13 +418,13 @@ namespace VMC
             if (pelvisTargetTransform != null)
             {
                 //実際の回転位置のY方向を補正して付いてくるオブジェクト(上下方向補正)
-                var PelvisAdjustFollower = new GameObject("PelvisAdjustFollower");
+                var PelvisAdjustFollower = CreateGameObject("PelvisAdjustFollower");
                 PelvisAdjustFollower.AddComponent<TransformAdjustFollower>().Initialize(pelvisTargetTransform, true, true);
                 pelvisTargetTransform = PelvisAdjustFollower.transform;
                 pelvisTargetTransform.SetParent(generatedObject);
 
                 //pelvisTargetTransformは腰の回転軸位置(UpperLeg)に居るので、子のIKターゲットはHip位置にオフセットして指定
-                var pelvisOffset = CreateTransform("PelvisIKTarget", true, pelvisTargetTransform, pelvisTargetTransform.position + UpperLegOffset, vrik.references.pelvis.rotation);
+                var pelvisOffset = CreateTransform("PelvisIKTarget", pelvisTargetTransform, pelvisTargetTransform.position + UpperLegOffset, vrik.references.pelvis.rotation);
 
                 vrik.solver.spine.pelvisTarget = pelvisOffset;
                 vrik.solver.spine.pelvisPositionWeight = 1f;
@@ -451,12 +461,12 @@ namespace VMC
             if (leftFootTargetTransform != null)
             {
                 var footBone = vrik.references.leftToes != null ? vrik.references.leftToes : vrik.references.leftFoot;
-                var leftFootOffset = CreateTransform("LeftFootIKTarget", true, leftFootTargetTransform, footBone);
+                var leftFootOffset = CreateTransform("LeftFootIKTarget", leftFootTargetTransform, footBone);
                 vrik.solver.leftLeg.target = leftFootOffset;
                 vrik.solver.leftLeg.positionWeight = 1f;
                 vrik.solver.leftLeg.rotationWeight = 1f;
 
-                var bendGoal = CreateTransform("LeftFootBendGoal", true, leftFootTargetTransform);
+                var bendGoal = CreateTransform("LeftFootBendGoal", leftFootTargetTransform);
                 bendGoal.position = footBone.position + currentModel.forward + currentModel.up;
                 vrik.solver.leftLeg.bendGoal = bendGoal;
                 vrik.solver.leftLeg.bendGoalWeight = 0.7f;
@@ -465,13 +475,13 @@ namespace VMC
             else
             {
                 // アバターの足の位置についていくオブジェクト(FinalIKの処理順に影響を受けない)
-                var leftFootFollow = CreateTransform("LeftFootFollowObject", true, null, vrik.references.leftFoot);
+                var leftFootFollow = CreateTransform("LeftFootFollowObject", null, vrik.references.leftFoot);
                 leftFootFollow.SetParent(generatedObject);
                 var follower = leftFootFollow.gameObject.AddComponent<TransformFollower>();
                 follower.Target = vrik.references.leftFoot;
 
                 // 腰の子に膝のBendGoal設定用(足トラッカーが無いとき利用される)
-                var bendGoalTarget = CreateTransform("LeftFootBendGoalTarget", true, leftFootFollow);
+                var bendGoalTarget = CreateTransform("LeftFootBendGoalTarget", leftFootFollow);
                 bendGoalTarget.localPosition = new Vector3(0, 0.4f, 2); // 正面2m 高さ40cm
                 bendGoalTarget.localRotation = Quaternion.identity;
                 vrik.solver.leftLeg.bendGoal = bendGoalTarget;
@@ -481,12 +491,12 @@ namespace VMC
             if (rightFootTargetTransform != null)
             {
                 var footBone = vrik.references.rightToes != null ? vrik.references.rightToes : vrik.references.rightFoot;
-                var rightFootOffset = CreateTransform("RightFootIKTarget", true, rightFootTargetTransform, footBone);
+                var rightFootOffset = CreateTransform("RightFootIKTarget", rightFootTargetTransform, footBone);
                 vrik.solver.rightLeg.target = rightFootOffset;
                 vrik.solver.rightLeg.positionWeight = 1f;
                 vrik.solver.rightLeg.rotationWeight = 1f;
 
-                var bendGoal = CreateTransform("RightFootBendGoal", true, rightFootTargetTransform);
+                var bendGoal = CreateTransform("RightFootBendGoal", rightFootTargetTransform);
                 bendGoal.position = footBone.position + currentModel.forward + currentModel.up;
                 vrik.solver.rightLeg.bendGoal = bendGoal;
                 vrik.solver.rightLeg.bendGoalWeight = 0.7f;
@@ -495,13 +505,13 @@ namespace VMC
             else
             {
                 // アバターの足の位置についていくオブジェクト(FinalIKの処理順に影響を受けない)
-                var rightFootFollow = CreateTransform("RightFootFollowObject", true, null, vrik.references.rightFoot);
+                var rightFootFollow = CreateTransform("RightFootFollowObject", null, vrik.references.rightFoot);
                 rightFootFollow.SetParent(generatedObject);
                 var follower = rightFootFollow.gameObject.AddComponent<TransformFollower>();
                 follower.Target = vrik.references.rightFoot;
 
                 // 腰の子に膝のBendGoal設定用(足トラッカーが無いとき利用される)
-                var bendGoalTarget = CreateTransform("RightFootBendGoalTarget", true, rightFootFollow);
+                var bendGoalTarget = CreateTransform("RightFootBendGoalTarget", rightFootFollow);
                 bendGoalTarget.localPosition = new Vector3(0, 0.4f, 2); // 正面2m 高さ40cm
                 bendGoalTarget.localRotation = Quaternion.identity;
                 vrik.solver.rightLeg.bendGoal = bendGoalTarget;
@@ -514,7 +524,7 @@ namespace VMC
             // Left Elbow
             if (leftElbowTargetTransform != null)
             {
-                var leftArmBendGoalTarget = CreateTransform("LeftArmBendGoalTarget", true, leftElbowTargetTransform, vrik.references.leftForearm);
+                var leftArmBendGoalTarget = CreateTransform("LeftArmBendGoalTarget", leftElbowTargetTransform, vrik.references.leftForearm);
                 if (calibrateMode == CalibrateMode.Ipose)
                 {
                     leftArmBendGoalTarget.position += -currentModel.forward * 0.1f;
@@ -531,7 +541,7 @@ namespace VMC
             // Right Elbow
             if (rightElbowTargetTransform != null)
             {
-                var rightArmBendGoalTarget = CreateTransform("RightArmBendGoalTarget", true, rightElbowTargetTransform, vrik.references.rightForearm);
+                var rightArmBendGoalTarget = CreateTransform("RightArmBendGoalTarget", rightElbowTargetTransform, vrik.references.rightForearm);
                 if (calibrateMode == CalibrateMode.Ipose)
                 {
                     rightArmBendGoalTarget.position += -currentModel.forward * 0.1f;
@@ -552,11 +562,11 @@ namespace VMC
             if (leftKneeTargetTransform != null)
             {
                 //膝が内曲がりになる時があるので前方にオフセット
-                var leftCalfOffset = new GameObject("leftCalfOffset").transform;
+                var leftCalfOffset = CreateGameObject("leftCalfOffset").transform;
                 leftCalfOffset.parent = vrik.references.leftCalf;
                 leftCalfOffset.position = vrik.references.leftCalf.position + currentModel.forward * 0.1f;
 
-                var leftLegBendGoalTarget = CreateTransform("LeftLegBendGoalTarget", true, leftKneeTargetTransform, leftCalfOffset);
+                var leftLegBendGoalTarget = CreateTransform("LeftLegBendGoalTarget", leftKneeTargetTransform, leftCalfOffset);
                 if (vrik.solver.leftLeg.bendGoal != null) GameObject.Destroy(vrik.solver.leftLeg.bendGoal.gameObject);
 
                 var boneBendGoal = currentModel.gameObject.AddComponent<BoneBendGoal>();
@@ -568,11 +578,11 @@ namespace VMC
             if (rightKneeTargetTransform != null)
             {
                 //膝が内曲がりになる時があるので前方にオフセット
-                var rightCalfOffset = new GameObject("rightCalfOffset").transform;
+                var rightCalfOffset = CreateGameObject("rightCalfOffset").transform;
                 rightCalfOffset.parent = vrik.references.rightCalf;
                 rightCalfOffset.position = vrik.references.rightCalf.position + currentModel.forward * 0.1f;
 
-                var rightLegBendGoalTarget = CreateTransform("RightLegBendGoalTarget", true, rightKneeTargetTransform, rightCalfOffset);
+                var rightLegBendGoalTarget = CreateTransform("RightLegBendGoalTarget", rightKneeTargetTransform, rightCalfOffset);
                 if (vrik.solver.rightLeg.bendGoal != null) GameObject.Destroy(vrik.solver.rightLeg.bendGoal.gameObject);
 
                 var boneBendGoal = currentModel.gameObject.AddComponent<BoneBendGoal>();
@@ -628,13 +638,16 @@ namespace VMC
             // (特に)180度後ろを向いたときに正しい膝の方向計算ができません
             if (pelvisTargetTransform != null || (leftFootTargetTransform != null && rightFootTargetTransform != null))
             {
-                var vrikRootController = vrik.references.root.gameObject.AddComponent<VRIKRootController>();
+                var vrikRootController = vrik.references.root.gameObject.GetComponent<VRIKRootController>();
+                if (vrikRootController != null) GameObject.DestroyImmediate(vrikRootController);
+                vrikRootController = vrik.references.root.gameObject.AddComponent<VRIKRootController>();
             }
 
             if (pelvisTargetTransform != null)
             {
                 var pelvisWeightAdjuster = vrik.references.root.gameObject.GetComponent<PelvisWeightAdjuster>();
-                if (pelvisWeightAdjuster == null) pelvisWeightAdjuster = vrik.references.root.gameObject.AddComponent<PelvisWeightAdjuster>();
+                if (pelvisWeightAdjuster != null) GameObject.DestroyImmediate(pelvisWeightAdjuster);
+                pelvisWeightAdjuster = vrik.references.root.gameObject.AddComponent<PelvisWeightAdjuster>();
                 pelvisWeightAdjuster.vrik = vrik;
             }
 
@@ -692,19 +705,24 @@ namespace VMC
             trackingPoint.TargetTransform.GetComponent<TrackingWatcher>()?.SetActionOfSetWeight(action);
         }
 
-        private static Transform CreateTransform(string name, bool AddDestroy, Transform parent)
-            => CreateTransform(name, AddDestroy, parent, null, null);
-        private static Transform CreateTransform(string name, bool AddDestroy, Transform parent, Transform placeTransform)
-            => CreateTransform(name, AddDestroy, parent, placeTransform != null ? placeTransform.position : null as Vector3?, placeTransform != null ? placeTransform.rotation : null as Quaternion?);
-        private static Transform CreateTransform(string name, bool AddDestroy, Transform parent, Vector3? position, Quaternion? rotation)
+        private static Transform CreateTransform(string name, Transform parent)
+            => CreateTransform(name, parent, null, null);
+        private static Transform CreateTransform(string name, Transform parent, Transform placeTransform)
+            => CreateTransform(name, parent, placeTransform != null ? placeTransform.position : null as Vector3?, placeTransform != null ? placeTransform.rotation : null as Quaternion?);
+        private static Transform CreateTransform(string name, Transform parent, Vector3? position, Quaternion? rotation)
         {
-            var newGameObject = new GameObject(name);
-            //if (AddDestroy) GeneratedGameObjects.Add(newGameObject);
-            var t = newGameObject.transform;
+            var t = CreateGameObject(name).transform;
             if (parent != null) t.SetParent(parent, false);
             if (position != null) t.position = position.Value;
             if (rotation != null) t.rotation = rotation.Value;
             return t;
+        }
+
+        private static GameObject CreateGameObject(string name)
+        {
+            var newGameObject = new GameObject(name);
+            GeneratedGameObjects.Add(newGameObject);
+            return newGameObject;
         }
 
         private static GameObject DebugSphere(Transform parent)
