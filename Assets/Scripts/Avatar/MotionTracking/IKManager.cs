@@ -45,6 +45,7 @@ namespace VMC
 
         private Animator animator => virtualAvatar?.animator;
 
+        private SortedDictionary<int, List<(Guid eventId, Action action)>> OnPostUpdateEvents = new SortedDictionary<int, List<(Guid eventId, Action action)>>();
 
         private const float LeftLowerArmAngle = -30f;
         private const float RightLowerArmAngle = -30f;
@@ -57,6 +58,7 @@ namespace VMC
         {
             instance = this;
             context = System.Threading.SynchronizationContext.Current;
+            StartCoroutine(AfterUpdateCoroutine());
         }
 
         private void Start()
@@ -97,16 +99,7 @@ namespace VMC
         }
         private void OnModelUnloading(GameObject model)
         {
-
-            if (virtualAvatar != null)
-            {
-                var currentVRIKTimingManager = virtualAvatar.GetComponent<VRIKTimingManager>();
-                if (currentVRIKTimingManager != null) Destroy(currentVRIKTimingManager);
-                var rootController = virtualAvatar.GetComponent<VRIKRootController>();
-                if (rootController != null) Destroy(rootController);
-                var currentvrik = virtualAvatar.GetComponent<VRIK>();
-                if (currentvrik != null) Destroy(currentvrik);
-            }
+            RemoveComponents();
         }
 
         private void Server_Received(object sender, DataReceivedEventArgs e)
@@ -214,7 +207,11 @@ namespace VMC
                 var rootController = virtualAvatar.GetComponent<VRIKRootController>();
                 if (rootController != null) DestroyImmediate(rootController);
                 var currentvrik = virtualAvatar.GetComponent<VRIK>();
-                if (currentvrik != null) DestroyImmediate(currentvrik);
+                if (currentvrik != null)
+                {
+                    currentvrik.solver.OnPostUpdate -= OnPostUpdate;
+                    DestroyImmediate(currentvrik);
+                }
             }
         }
 
@@ -421,6 +418,8 @@ namespace VMC
             vrik.solver.leftArm.stretchCurve = new AnimationCurve();
             vrik.solver.rightArm.stretchCurve = new AnimationCurve();
             vrik.UpdateSolverExternal();
+
+            vrik.solver.OnPostUpdate += OnPostUpdate;
 
             //膝のボーンの曲がる方向で膝の向きが決まってしまうため、強制的に膝のボーンを少し前に曲げる
             //if (animator != null)
@@ -869,7 +868,7 @@ namespace VMC
             if (CalibrationResult.Type == PipeCommands.CalibrateType.Invalid)
             {
                 CalibrationState = CalibrationState.Uncalibrated; //キャリブレーションタイプがInvalidになっているときはキャリブレーション失敗
-            } 
+            }
             else
             {
                 CalibrationState = CalibrationState.Calibrating; //キャリブレーション状態を"キャリブレーション中"に設定
@@ -963,6 +962,56 @@ namespace VMC
         }
 
         #endregion
+
+        public Guid AddOnPostUpdate(int priority, Action action)
+        {
+            if (OnPostUpdateEvents.ContainsKey(priority) == false) OnPostUpdateEvents.Add(priority, new List<(Guid eventId, Action action)>());
+            var eventId = Guid.NewGuid();
+            OnPostUpdateEvents[priority].Add((eventId, action));
+            return eventId;
+        }
+
+        public void RemoveOnPostUpdate(Guid eventId)
+        {
+            foreach(var list in OnPostUpdateEvents.Values)
+            {
+                foreach(var value in list)
+                {
+                    if (value.eventId == eventId)
+                    {
+                        list.Remove(value);
+                        return;
+                    }
+                }
+            }
+        }
+
+        private void OnPostUpdate()
+        {
+            foreach (var list in OnPostUpdateEvents.Values)
+            {
+                foreach (var value in list)
+                {
+                    if (value.action != null)
+                    {
+                        value.action.Invoke();
+                    }
+                }
+            }
+        }
+
+        private IEnumerator AfterUpdateCoroutine()
+        {
+            while (true)
+            {
+                yield return null;
+                // run after Update()
+
+                if (vrik != null) continue;
+                //VRIKが無い時に他のモーションソースを動かすために手動で実行する
+                OnPostUpdate();
+            }
+        }
 
     }
     public enum CalibrationState

@@ -1,7 +1,9 @@
 ﻿using RootMotion.FinalIK;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using VMC;
 
 public class BoneBendGoal : MonoBehaviour
 {
@@ -12,18 +14,12 @@ public class BoneBendGoal : MonoBehaviour
     public Transform EndBone; // Hand等
     public Transform BendGoal;
 
-    public VRIK ik;
+    private Guid eventId;
 
     public void Start()
     {
         if (Name == null) Name = name;
-    }
-
-    public void SetVRIK(VRIK setIK)
-    {
-        if (ik != null) ik.GetIKSolver().OnPostUpdate -= OnPostUpdate;
-        ik = setIK;
-        if (ik != null) ik.GetIKSolver().OnPostUpdate += OnPostUpdate;
+        eventId = IKManager.Instance.AddOnPostUpdate(1, OnPostUpdate);
     }
 
     public void SetBones(string name, Transform upperBone, Transform lowerBone, Transform endBone, Transform bendGoal)
@@ -37,7 +33,7 @@ public class BoneBendGoal : MonoBehaviour
 
     void OnDestroy()
     {
-        if (ik != null) ik.GetIKSolver().OnPostUpdate -= OnPostUpdate;
+        IKManager.Instance.RemoveOnPostUpdate(eventId);
     }
 
     private void OnPostUpdate()

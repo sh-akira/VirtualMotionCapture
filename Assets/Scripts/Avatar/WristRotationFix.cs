@@ -16,10 +16,11 @@ namespace VMC
 
         public float ElbowFixWeight = 0.5f;
         public float UpperArmFixWeight = 0.2f; //0.5では強すぎて肩がねじれる場合がある
+        private Guid? eventId = null;
 
         public void SetVRIK(VRIK setIK)
         {
-            if (ik != null) ik.GetIKSolver().OnPostUpdate -= OnPostUpdate;
+            if (eventId != null) IKManager.Instance.RemoveOnPostUpdate(eventId.Value);
             ik = setIK;
 
             LeftElbowFixItem = new FixItem(ik.references.leftUpperArm, ik.references.leftForearm, ik.references.leftHand, () => ElbowFixWeight);
@@ -27,12 +28,12 @@ namespace VMC
             RightElbowFixItem = new FixItem(ik.references.rightUpperArm, ik.references.rightForearm, ik.references.rightHand, () => ElbowFixWeight);
             RightUpperArmFixItem = new FixItem(ik.references.rightShoulder, ik.references.rightUpperArm, ik.references.rightForearm, () => UpperArmFixWeight);
 
-            if (ik != null) ik.GetIKSolver().OnPostUpdate += OnPostUpdate;
+            eventId = IKManager.Instance.AddOnPostUpdate(10, OnPostUpdate);
         }
 
         void OnDestroy()
         {
-            if (ik != null) ik.GetIKSolver().OnPostUpdate -= OnPostUpdate;
+            if (eventId != null) IKManager.Instance.RemoveOnPostUpdate(eventId.Value);
         }
 
         private void OnPostUpdate()

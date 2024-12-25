@@ -2,20 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 using RootMotion.FinalIK;
+using VMC;
+using System;
 
 public class VRIKSpineOffset : MonoBehaviour
 {
     public VRIK ik;
     public Vector3 spineFix;
+    private Guid? eventId = null;
 
     private void OnEnable()
     {
-        ik.solver.OnPostUpdate += AfterVRIK;
+        eventId = IKManager.Instance.AddOnPostUpdate(50, AfterVRIK);
     }
 
     private void OnDisable()
     {
-        ik.solver.OnPostUpdate -= AfterVRIK;
+        if (eventId != null) IKManager.Instance.RemoveOnPostUpdate(eventId.Value);
     }
 
     private void AfterVRIK()

@@ -14,9 +14,6 @@ namespace VMC
 
         private GameObject currentModel;
 
-        private VRIK vrik;
-        private IKSolver ikSolver;
-
         [SerializeField]
         private List<VirtualAvatar> VirtualAvatars = new List<VirtualAvatar>();
 
@@ -25,14 +22,24 @@ namespace VMC
 
         private Dictionary<HumanBodyBones, Pose> defaultPoses;
 
+        private Guid eventId;
+
         private void Awake()
         {
             instance = this;
             if (controlWPFWindow == null) controlWPFWindow = GameObject.Find("ControlWPFWindow").GetComponent<ControlWPFWindow>();
             VMCEvents.OnCurrentModelChanged += OnCurrentModelChanged;
             VMCEvents.OnModelUnloading += OnModelUnloading;
+        }
 
-            StartCoroutine(AfterUpdateCoroutine());
+        private void Start()
+        {
+            eventId = IKManager.Instance.AddOnPostUpdate(100, ApplyMotion);
+        }
+
+        private void OnDestroy()
+        {
+            IKManager.Instance.RemoveOnPostUpdate(eventId);
         }
 
         public void AddVirtualAvatar(VirtualAvatar virtualAvatar)
@@ -121,46 +128,9 @@ namespace VMC
             //前回の生成物の削除
             if (currentModel != null)
             {
-                if (ikSolver != null)
-                {
-                    ikSolver.OnPostUpdate -= ApplyMotion;
-                }
-                ikSolver = null;
-                vrik = null;
                 currentModel = null;
             }
         }
-        private void Update()
-        {
-            if (currentModel == null) return;
-            if (vrik != null) return;
-
-            if (ikSolver != null)
-            {
-                ikSolver.OnPostUpdate -= ApplyMotion;
-            }
-
-            vrik = IKManager.Instance.vrik;
-
-            if (vrik != null)
-            {
-                ikSolver = vrik.GetIKSolver();
-                ikSolver.OnPostUpdate += ApplyMotion;
-            }
-        }
-
-        private IEnumerator AfterUpdateCoroutine()
-        {
-            while (true)
-            {
-                yield return null;
-                // run after Update()
-
-                if (vrik == null) ApplyMotion();
-
-            }
-        }
-
 
         private void ApplyMotion()
         {
