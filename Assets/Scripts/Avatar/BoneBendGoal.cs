@@ -39,6 +39,7 @@ public class BoneBendGoal : MonoBehaviour
     private void OnPostUpdate()
     {
         if (enabled == false) return;
+        if (IKManager.Instance.vrik == null) return;
 
         Quaternion currentEndBoneRotation = EndBone.rotation;
 

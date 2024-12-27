@@ -38,6 +38,8 @@ namespace VMC
 
         private void OnPostUpdate()
         {
+            if (IKManager.Instance.vrik == null) return;
+
             FixAxis(LeftElbowFixItem);
             FixAxis(LeftUpperArmFixItem);
             FixAxis(RightElbowFixItem);

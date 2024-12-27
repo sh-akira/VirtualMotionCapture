@@ -23,6 +23,7 @@ public class VRIKSpineOffset : MonoBehaviour
 
     private void AfterVRIK()
     {
+        if (IKManager.Instance.vrik == null) return;
         Vector3 headPos = ik.references.head.position;
         Quaternion headRot = ik.references.head.rotation;
 
