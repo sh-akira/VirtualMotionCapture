@@ -1605,7 +1605,11 @@ namespace VMC
             }
 
             //通知レベルがLog以外の時かつ、Warning以下かつ、*から始まらないものはうるさいので飛ばさない
-            if (notifyLogLevel != NotifyLogTypes.Log && notifyLogLevel <= notifyType && !cond.StartsWith("*"))
+            if (cond.StartsWith("*"))
+            {
+                cond = cond.Substring(1);
+            }
+            else if (notifyLogLevel != NotifyLogTypes.Log && notifyLogLevel <= notifyType)
             {
                 return;
             }

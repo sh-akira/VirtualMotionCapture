@@ -796,6 +796,13 @@ namespace VMC
             }
             catch { }
 
+            if (bodyTracker == null && chestTracker != null)
+            {
+                Debug.LogWarning("*No waist tracker. Reassign chest tracker to waist.");
+                bodyTracker = chestTracker;
+                chestTracker = null;
+            }
+
             if (calibrateType == PipeCommands.CalibrateType.Ipose || calibrateType == PipeCommands.CalibrateType.Tpose)
             {
                 yield return FinalIKCalibrator.Calibrate(calibrateType == PipeCommands.CalibrateType.Ipose ? FinalIKCalibrator.CalibrateMode.Ipose : FinalIKCalibrator.CalibrateMode.Tpose, HandTrackerRoot, PelvisTrackerRoot, vrik, settings, headTracker, bodyTracker, leftHandTracker, rightHandTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker, chestTracker, generatedObject);
