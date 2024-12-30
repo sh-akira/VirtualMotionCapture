@@ -248,7 +248,7 @@ namespace VirtualMotionCaptureControlPanel
             {
                 var cwidth = width * 2 / 5;
                 var cheight = height * 2 / 5;
-                FillEllipse(wb, (int)(width / 2.0), (int)(height / 2.0), (int)(cwidth / 2), (int)(cheight / 2), isTouchPad ? CenterColor : Color.FromRgb(80, 80, 80));
+                FillEllipse(wb, (int)(width / 2.0), (int)(height / 2.0), (int)(cwidth / 2), (int)(cheight / 2), CenterColor);
             }
             var isChecked = false;
             TextBlock centerIndexTextBlock;
@@ -264,10 +264,10 @@ namespace VirtualMotionCaptureControlPanel
                     isChecked = RightCenterKeyCheckBox.IsChecked.Value;
                     centerIndexTextBlock = RightCenterIndexTextBlock;
                 }
+                centerIndexTextBlock.Text = isChecked ? (points.Count + 1).ToString() : "";
             }
             else
             {
-                isChecked = true;
                 if (isLeft)
                 {
                     centerIndexTextBlock = LeftStickCenterIndexTextBlock;
@@ -276,8 +276,8 @@ namespace VirtualMotionCaptureControlPanel
                 {
                     centerIndexTextBlock = RightStickCenterIndexTextBlock;
                 }
+                centerIndexTextBlock.Text = "";
             }
-            centerIndexTextBlock.Text = isChecked ? (points.Count + 1).ToString() : "" ;
             //円形に切り取り
             FillEllipse(wb, (int)(width / 2), (int)(height / 2), (int)(width / 2), (int)(height / 2), Colors.White, true);
             wb.AddDirtyRect(new Int32Rect(0, 0, wb.PixelWidth, wb.PixelHeight));

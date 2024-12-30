@@ -182,15 +182,23 @@ namespace VMC
             config.isTouch = e.IsTouch;
             if (e.IsAxis)
             {
-                if (config.keyIndex < 0) return;
+                //if (config.keyIndex < 0) return; スティック真ん中をタッチしたときは反応させることにしたのでコメントアウト
                 if (e.IsLeft)
                 {
-                    if (isStick) lastStickLeftAxisPoint = config.keyIndex;
+                    if (isStick)
+                    {
+                        lastStickLeftAxisPoint = config.keyIndex;
+                        isStickLeftTouchDown = true;
+                    }
                     else lastTouchpadLeftAxisPoint = config.keyIndex;
                 }
                 else
                 {
-                    if (isStick) lastStickRightAxisPoint = config.keyIndex;
+                    if (isStick)
+                    {
+                        lastStickRightAxisPoint = config.keyIndex;
+                        isStickRightTouchDown = true;
+                    }
                     else lastTouchpadRightAxisPoint = config.keyIndex;
                 }
             }
@@ -218,29 +226,38 @@ namespace VMC
                 if (doKeyConfig) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
                 else CheckKey(config, false);
                 config.keyIndex = newindex;
-                if (config.keyIndex < 0) return;
+                //if (config.keyIndex < 0) return; スティック真ん中をタッチしたときは反応させることにしたのでコメントアウト
                 //新しいキーを押す
                 if (doKeyConfig) await controlWPFWindow.server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
                 else CheckKey(config, true);
             }
             if (doKeyConfig || doKeySend) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
             if (!doKeyConfig) CheckKey(config, false);
+            if (e.IsAxis && isStick)
+            {
+                if (e.IsLeft) isStickLeftTouchDown = false;
+                else isStickRightTouchDown = false;
+            }
         }
 
         private int lastTouchpadLeftAxisPoint = -1;
         private int lastTouchpadRightAxisPoint = -1;
         private int lastStickLeftAxisPoint = -1;
         private int lastStickRightAxisPoint = -1;
+        private bool isStickLeftTouchDown = false;
+        private bool isStickRightTouchDown = false;
 
         private bool isSendingKey = false;
         //タッチパッドやアナログスティックの変動
         private async void ControllerAction_AxisChanged(object sender, OVRKeyEventArgs e)
         {
             if (e.IsAxis == false) return;
+            //if (e.Axis == Vector3.zero) return;
             var keyName = e.Name;
             if (keyName.Contains("Trigger")) return; //トリガーは現時点ではアナログ入力無効
             if (keyName.Contains("Position")) keyName = keyName.Replace("Position", "Touch"); //ポジションはいったんタッチと同じにする
             bool isStick = keyName.Contains("Stick");
+            //Debug.Log($"ControllerAction_AxisChanged[{e.Name}] IsLeft:{e.IsLeft} isStick:{isStick} Axis:({e.Axis.x}, {e.Axis.y}, {e.Axis.z})");
             var newindex = NearestPointIndex(e.IsLeft, e.Axis.x, e.Axis.y, isStick);
             if ((isStick ? (e.IsLeft ? lastStickLeftAxisPoint : lastStickRightAxisPoint) : (e.IsLeft ? lastTouchpadLeftAxisPoint : lastTouchpadRightAxisPoint)) != newindex)
             {//ドラッグで隣の領域に入った場合
@@ -266,7 +283,14 @@ namespace VMC
                         isSendingKey = false;
                     }
                 }
-                if (!doKeyConfig) CheckKey(config, true);
+                if (newindex == -1 && isStick && ((e.IsLeft && isStickLeftTouchDown　== false) || (e.IsLeft == false && isStickRightTouchDown == false)))
+                {
+                    // スティックにタッチしておらず、センターに戻った時は何もしない
+                }
+                else
+                { 
+                    if (!doKeyConfig) CheckKey(config, true);
+                }
                 if (e.IsLeft)
                 {
                     if (isStick) lastStickLeftAxisPoint = newindex;

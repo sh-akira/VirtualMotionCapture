@@ -97,16 +97,17 @@ namespace VMC
             public List<SteamVRDefaultBinding> default_bindings;
         }
 
-        private Dictionary<string, Vector3> LastPositions = new Dictionary<string, Vector3>();
+        private Dictionary<ulong, (string name, Vector3 axis)> LastPositions = new Dictionary<ulong, (string name, Vector3 axis)>();
 
-        private Vector3 GetLastPosition(string shortName)
+        private Vector3 GetLastPosition(string shortName, bool isLeft)
         {
             Vector3 axis = Vector3.zero;
             var partname = shortName.Substring("Touch".Length);
-            var key = LastPositions.Keys.FirstOrDefault(d => d.Contains(partname));
-            if (key != null)
+            var startsWith = isLeft ? "Left" : "Right";
+            var value = LastPositions.Values.FirstOrDefault(d => d.name.StartsWith(startsWith) && d.name.Contains(partname));
+            if (value.name != null)
             {
-                axis = LastPositions[key];
+                axis = value.axis;
             }
             return axis;
         }
@@ -215,16 +216,18 @@ namespace VMC
                             Debug.Log($"<b>[SteamVR]</b> GetDigitalActionData IsKeyDown ({action.name}): {err} handle: {action.handle}");
 
                             bool isTouch = action.ShortName.StartsWith("Touch") && action.ShortName.Contains("Trigger") == false;
-                            Vector3 axis = isTouch ? GetLastPosition(action.ShortName) : Vector3.zero;
-                            KeyDownEvent?.Invoke(this, new OVRKeyEventArgs(action.ShortName, axis, actionset.IsLeft != handSwap, axis != Vector3.zero, isTouch));
+                            bool isStick = action.ShortName.Contains("Stick");
+                            Vector3 axis = isTouch ? GetLastPosition(action.ShortName, actionset.IsLeft) : Vector3.zero;
+                            KeyDownEvent?.Invoke(this, new OVRKeyEventArgs(action.ShortName, axis, actionset.IsLeft != handSwap, axis != Vector3.zero || isStick, isTouch));
                         }
                         if (IsKeyUp(action.digitalActionData))
                         {
                             Debug.Log($"<b>[SteamVR]</b> GetDigitalActionData IsKeyUp ({action.name}): {err} handle: {action.handle}");
 
                             bool isTouch = action.ShortName.StartsWith("Touch") && action.ShortName.Contains("Trigger") == false;
-                            Vector3 axis = isTouch ? GetLastPosition(action.ShortName) : Vector3.zero;
-                            KeyUpEvent?.Invoke(this, new OVRKeyEventArgs(action.ShortName, axis, actionset.IsLeft != handSwap, axis != Vector3.zero, isTouch));
+                            bool isStick = action.ShortName.Contains("Stick");
+                            Vector3 axis = isTouch ? GetLastPosition(action.ShortName, actionset.IsLeft) : Vector3.zero;
+                            KeyUpEvent?.Invoke(this, new OVRKeyEventArgs(action.ShortName, axis, actionset.IsLeft != handSwap, axis != Vector3.zero || isStick, isTouch));
                         }
                     }
                     else if (action.type == "vector1" || action.type == "vector2" || action.type == "vector3")
@@ -237,11 +240,18 @@ namespace VMC
                             Debug.LogWarning($"<b>[SteamVR]</b> GetAnalogActionData error ({action.name}): {err} handle: {action.handle}");
                             continue;
                         }
-                        //Debug.Log($"<b>[SteamVR]</b> GetAnalogActionData Position:{action.analogActionData.x},{action.analogActionData.y} ({action.name}): {err} handle: {action.handle}");
-                        var axis = new Vector3(action.analogActionData.x, action.analogActionData.y, action.analogActionData.z);
-                        if (axis != Vector3.zero)
+                        if (action.analogActionData.bActive == false || action.ShortName.Contains("Grip")) //QuestのGripアナログは捨てる
                         {
-                            LastPositions[action.name] = axis;
+                            continue;
+                        }
+                        var axis = new Vector3(action.analogActionData.x, action.analogActionData.y, action.analogActionData.z);
+                        var startsWith = actionset.IsLeft ? "Left" : "Right";
+                        var name = startsWith + action.name;
+                        // 初めてか、axisがゼロじゃない時か、前回がゼロ以外だったら1発ゼロは取得する(Oculusでスティックを倒したまま指を離したとき対策)
+                        // ここで名前ではなくhandleで取り回さないとLeftHandとRightHand以外のActionSetの分でゼロが入って狂う
+                        if (axis != Vector3.zero || (LastPositions.ContainsKey(action.handle) == true && LastPositions[action.handle].axis != Vector3.zero))
+                        {
+                            LastPositions[action.handle] = (name, axis);
                             AxisChangedEvent?.Invoke(this, new OVRKeyEventArgs(action.ShortName, axis, actionset.IsLeft != handSwap, true, false));
                         }
                     }
