@@ -97,7 +97,7 @@ namespace VMC
             public List<SteamVRDefaultBinding> default_bindings;
         }
 
-        private Dictionary<ulong, (string name, Vector3 axis)> LastPositions = new Dictionary<ulong, (string name, Vector3 axis)>();
+        private Dictionary<(ulong ulRestrictedToDevice, ulong handle), (string name, Vector3 axis)> LastPositions = new Dictionary<(ulong ulRestrictedToDevice, ulong handle), (string name, Vector3 axis)>();
 
         private Vector3 GetLastPosition(string shortName, bool isLeft)
         {
@@ -244,14 +244,16 @@ namespace VMC
                         {
                             continue;
                         }
+                        bool isStick = action.ShortName.Contains("Stick");
                         var axis = new Vector3(action.analogActionData.x, action.analogActionData.y, action.analogActionData.z);
                         var startsWith = actionset.IsLeft ? "Left" : "Right";
                         var name = startsWith + action.name;
                         // 初めてか、axisがゼロじゃない時か、前回がゼロ以外だったら1発ゼロは取得する(Oculusでスティックを倒したまま指を離したとき対策)
                         // ここで名前ではなくhandleで取り回さないとLeftHandとRightHand以外のActionSetの分でゼロが入って狂う
-                        if (axis != Vector3.zero || (LastPositions.ContainsKey(action.handle) == true && LastPositions[action.handle].axis != Vector3.zero))
+                        var key = (actionset.ulRestrictedToDevice, action.handle);
+                        if (axis != Vector3.zero || (isStick && LastPositions.ContainsKey(key) == true && LastPositions[key].axis != Vector3.zero))
                         {
-                            LastPositions[action.handle] = (name, axis);
+                            LastPositions[key] = (name, axis);
                             AxisChangedEvent?.Invoke(this, new OVRKeyEventArgs(action.ShortName, axis, actionset.IsLeft != handSwap, true, false));
                         }
                     }
