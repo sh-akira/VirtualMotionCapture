@@ -190,7 +190,11 @@ namespace VMC
                         lastStickLeftAxisPoint = config.keyIndex;
                         isStickLeftTouchDown = true;
                     }
-                    else lastTouchpadLeftAxisPoint = config.keyIndex;
+                    else
+                    { 
+                        lastTouchpadLeftAxisPoint = config.keyIndex; 
+                        isTouchpadLeftTouchDown = true;
+                    }
                 }
                 else
                 {
@@ -199,7 +203,11 @@ namespace VMC
                         lastStickRightAxisPoint = config.keyIndex;
                         isStickRightTouchDown = true;
                     }
-                    else lastTouchpadRightAxisPoint = config.keyIndex;
+                    else
+                    {
+                        lastTouchpadRightAxisPoint = config.keyIndex;
+                        isTouchpadRightTouchDown = true;
+                    }
                 }
             }
             if (doKeyConfig || doKeySend) await controlWPFWindow.server.SendCommandAsync(new PipeCommands.KeyDown { Config = config });
@@ -233,10 +241,18 @@ namespace VMC
             }
             if (doKeyConfig || doKeySend) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
             if (!doKeyConfig) CheckKey(config, false);
-            if (e.IsAxis && isStick)
+            if (e.IsAxis)
             {
-                if (e.IsLeft) isStickLeftTouchDown = false;
-                else isStickRightTouchDown = false;
+                if (isStick)
+                {
+                    if (e.IsLeft) isStickLeftTouchDown = false;
+                    else isStickRightTouchDown = false;
+                }
+                else
+                {
+                    if (e.IsLeft) isTouchpadLeftTouchDown = false;
+                    else isTouchpadRightTouchDown = false;
+                }
             }
         }
 
@@ -246,6 +262,8 @@ namespace VMC
         private int lastStickRightAxisPoint = -1;
         private bool isStickLeftTouchDown = false;
         private bool isStickRightTouchDown = false;
+        private bool isTouchpadLeftTouchDown = false;
+        private bool isTouchpadRightTouchDown = false;
 
         private bool isSendingKey = false;
         //タッチパッドやアナログスティックの変動
@@ -271,7 +289,10 @@ namespace VMC
                 config.isTouch = true;// e.IsTouch; //ポジションはいったんタッチと同じにする
                                       //前のキーを離す
                 if (doKeyConfig || doKeySend) { }//  await server.SendCommandAsync(new PipeCommands.KeyUp { Config = config });
-                if (!doKeyConfig) CheckKey(config, false);
+                if (isStick || ((e.IsLeft && isTouchpadLeftTouchDown) || (e.IsLeft == false && isTouchpadRightTouchDown)))
+                {
+                    if (!doKeyConfig) CheckKey(config, false);
+                }
                 config.keyIndex = newindex;
                 //新しいキーを押す
                 if (doKeyConfig || doKeySend)
@@ -287,8 +308,8 @@ namespace VMC
                 {
                     // スティックにタッチしておらず、センターに戻った時は何もしない
                 }
-                else
-                { 
+                else if (isStick || ((e.IsLeft && isTouchpadLeftTouchDown) || (e.IsLeft == false && isTouchpadRightTouchDown)))
+                { //スティックか、タッチパッドに触れたまま移動したとき反応する(Axisが先に来るため触れた瞬間は反応しない)
                     if (!doKeyConfig) CheckKey(config, true);
                 }
                 if (e.IsLeft)
