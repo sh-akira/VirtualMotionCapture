@@ -108,6 +108,8 @@
     <system:String x:Key="MainWindow_TimeToClose">闭眼</system:String>
     <system:String x:Key="MainWindow_TimeToOpen">睁眼</system:String>
     <system:String x:Key="MainWindow_ClosedTime">闭眼时长（秒）</system:String>
+    <system:String x:Key="MainWindow_EyeFluctuation">Eye Fluctuation</system:String>
+    <system:String x:Key="MainWindow_AutoLookCamera">Auto Look Camera</system:String>
     <system:String x:Key="MainWindow_Face_ToolTip">面部表情控制</system:String>
     <system:String x:Key="MainWindow_AutoBlink_ToolTip">打开自动眨眼功能</system:String>
     <system:String x:Key="MainWindow_DefaultFace_ToolTip">更换默认表情为其他表情（默认为 NEUTRAL）</system:String>
@@ -122,6 +124,7 @@
     <system:String x:Key="MainWindow_LightAngle">光线角度</system:String>
     <system:String x:Key="MainWindow_LightVerticalDirection">纵轴</system:String>
     <system:String x:Key="MainWindow_LightHorizontalDirection">横轴</system:String>
+    <system:String x:Key="MainWindow_AdvancedGraphicsOption">Advanced Graphics Option</system:String>
 
     <system:String x:Key="MainWindow_ErrorCalibration">还没有 VRM 模型被加载，请先打开模型。</system:String>
     <system:String x:Key="MainWindow_ErrorCalibrationFail">校准失败。</system:String>
@@ -441,7 +444,13 @@
     <system:String x:Key="Functions_PauseTracking">暂停追踪</system:String>
     <system:String x:Key="Functions_ShowCalibrationWindow">显示校准窗口</system:String>
     <system:String x:Key="Functions_ShowPhotoWindow">显示拍照窗口</system:String>
-    
+    <system:String x:Key="Functions_FixedGazeControlCamera">Fixed Gaze Control: Camera</system:String>
+    <system:String x:Key="Functions_FixedGazeControlAhead">Fixed Gaze Control: Ahead</system:String>
+    <system:String x:Key="Functions_FixedGazeControlFront">Fixed Gaze Control: Front</system:String>
+    <system:String x:Key="Functions_FixedGazeControlOff">Fixed Gaze Control: Off</system:String>
+	<system:String x:Key="Functions_AutoLookCamerOn">Auto Look Camera: On</system:String>
+    <system:String x:Key="Functions_AutoLookCamerOff">Auto Look Camera: Off</system:String>
+	
     <!-- PhotoWindow -->
     <system:String x:Key="PhotoWindowTitle">拍照</system:String>
 
