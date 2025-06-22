@@ -690,6 +690,8 @@ namespace VMC
         [OptionalField]
         public float PelvisOffsetAdjustZ;
 
+        [OptionalField]
+        public bool UnityChildWindowEnable;
 
         //初期値
         [OnDeserializing()]
@@ -862,6 +864,8 @@ namespace VMC
             OverrideBodyHeight = 1.7f;
             PelvisOffsetAdjustY = 0;
             PelvisOffsetAdjustZ = 0;
+
+            UnityChildWindowEnable = false;
         }
 
         /// <summary>

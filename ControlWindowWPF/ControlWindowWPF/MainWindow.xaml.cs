@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,6 +24,39 @@ namespace VirtualMotionCaptureControlPanel
     /// </summary>
     public partial class MainWindow : Window
     {
+        public struct RECT
+        {
+            public int left;
+            public int top;
+            public int right;
+            public int bottom;
+
+            public int width => right - left;
+            public int height => bottom - top;
+        }
+
+        public const int GWL_STYLE = -16;
+        public const uint WS_MINIMIZEBOX = 0x00020000;
+        public const uint WS_SYSMENU = 0x00080000;
+        public const uint WS_CAPTION = 0x00C00000;
+        public const uint WS_CHILD = 0x40000000;
+        public const uint WS_POPUP = 0x80000000;
+        public const uint WS_VISIBLE = 0x10000000;
+
+       [DllImport("user32.dll")]
+        public static extern bool GetWindowRect(IntPtr hWnd, out RECT rect);
+        [DllImport("user32.dll")]
+        public static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
+        [DllImport("user32.dll")]
+        public static extern int SetWindowLong(IntPtr hWnd, int nIndex, uint dwNewLong); /*x uint o int unchecked*/
+        [DllImport("user32.dll")]
+        public static extern uint GetWindowLong(IntPtr hWnd, int nIndex);
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+        [DllImport("user32.dll", SetLastError = true)]
+        internal static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
+
+
         private ObservableCollection<string> DefaultFaces = new ObservableCollection<string> {
             "通常(NEUTRAL)",
             "喜(JOY)",
@@ -50,6 +84,7 @@ namespace VirtualMotionCaptureControlPanel
 
         private int CurrentWindowNum = 0;
         CalibrationResultWindow calibrationResultWindow;
+        bool isChildWindow = false;
 
         public MainWindow()
         {
@@ -66,6 +101,7 @@ namespace VirtualMotionCaptureControlPanel
                 return;
             }
             InitializeComponent();
+
             Globals.Connect(App.CommandLineArgs[1]);
             Globals.Client.ReceivedEvent += Client_Received;
             DefaultFaceComboBox.ItemsSource = DefaultFacesBase;
@@ -555,7 +591,37 @@ namespace VirtualMotionCaptureControlPanel
                 else if (e.CommandType == typeof(PipeCommands.OpenVRStatus))
                 {
                     var d = (PipeCommands.OpenVRStatus)e.Data;
-                    OpenVRAlertStatusTextBlock.Visibility = d.DashboardOpened? Visibility.Visible : Visibility.Collapsed;
+                    OpenVRAlertStatusTextBlock.Visibility = d.DashboardOpened ? Visibility.Visible : Visibility.Collapsed;
+                }
+                else if (e.CommandType == typeof(PipeCommands.WindowInfo))
+                {
+                    var d = (PipeCommands.WindowInfo)e.Data;
+
+                    var wih = new System.Windows.Interop.WindowInteropHelper(this);
+                    var hWnd = wih.Handle;
+                    if (d.Child && !isChildWindow)
+                    {
+                        var n = GetWindowLong(hWnd, GWL_STYLE);
+                        SetWindowLong(hWnd, GWL_STYLE, WS_VISIBLE | WS_CHILD);
+
+                        // Unityを親にする
+                        SetParent(hWnd, d.Hwnd);
+                        isChildWindow = true;
+
+                        MoveWindow(hWnd, 0, 0, 460, 204, true); // DPIの影響を受ける
+                    }
+                    if (!d.Child && isChildWindow) {
+                        var n = GetWindowLong(hWnd, GWL_STYLE);
+                        SetWindowLong(hWnd, GWL_STYLE, WS_VISIBLE | WS_POPUP | WS_CAPTION| WS_SYSMENU| WS_MINIMIZEBOX);
+
+                        // デスクトップを親にする
+                        SetParent(hWnd, IntPtr.Zero);
+                        isChildWindow = false;
+
+                        MoveWindow(hWnd, 0, 0, 460, 204, true); // DPIの影響を受ける
+                    }
+                    this.Width = 460;
+                    this.Height = 204;
                 }
             }));
         }

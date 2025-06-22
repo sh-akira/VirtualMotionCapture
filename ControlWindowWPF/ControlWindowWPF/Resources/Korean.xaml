@@ -283,8 +283,11 @@
     <system:String x:Key="SettingWindow_ReceiveBonesEnable">손 본받는</system:String>
     <system:String x:Key="SettingWindow_VMCMod">VMC Mod (No warranty/no support)</system:String>
     <system:String x:Key="SettingWindow_VMCModSetting">Loaded MOD List</system:String>
+	<system:String x:Key="SettingWindow_Other">Other</system:String>
+	<system:String x:Key="SettingWindow_UnityChildWindow">Display Control Panel in Unity</system:String>
 
-    <!-- CalibrationSettingWindow -->
+
+	<!-- CalibrationSettingWindow -->
     <system:String x:Key="CalibrationSettingWindow_BodyHeight">Body Height</system:String>
     <system:String x:Key="CalibrationSettingWindow_OverrideBodyHeight">Override body height</system:String>
     <system:String x:Key="CalibrationSettingWindow_Height">Height :</system:String>

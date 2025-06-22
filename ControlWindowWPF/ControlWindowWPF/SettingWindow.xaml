@@ -269,7 +269,10 @@
                         <Button Content="{DynamicResource SettingWindow_VMCModSetting}" Name="ModSetting" Click="ModSetting_Click"/>
                     </DockPanel>
                 </GroupBox>
-                <GroupBox Header="{DynamicResource SettingWindow_Language}">
+				<GroupBox Header="{DynamicResource SettingWindow_Other}">
+					<CheckBox Content="{DynamicResource SettingWindow_UnityChildWindow}" Name="UnityChildWindowCheckBox" Checked="UnityChildWindowCheckBox_Changed" Unchecked="UnityChildWindowCheckBox_Changed" />
+				</GroupBox>
+				<GroupBox Header="{DynamicResource SettingWindow_Language}">
                     <ComboBox Name="LanguageComboBox" SelectedIndex="0" SelectionChanged="LanguageComboBox_SelectionChanged">
                         <system:String>Japanese</system:String>
                         <system:String>English</system:String>

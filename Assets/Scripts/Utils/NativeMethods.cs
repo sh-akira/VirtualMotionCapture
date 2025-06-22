@@ -38,6 +38,13 @@ namespace VMC
             public int height => bottom - top;
         }
 
+        public enum PROCESS_DPI_AWARENESS
+        {
+            Process_DPI_Unaware = 0,
+            Process_System_DPI_Aware = 1,
+            Process_Per_Monitor_DPI_Aware = 2
+        }
+
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool GetCursorPos(out POINT lpPoint);
@@ -78,6 +85,11 @@ namespace VMC
         public static extern bool GetWindowRect(IntPtr hWnd, out RECT rect);
         [DllImport("user32.dll")]
         public static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
+        [DllImport("Shcore.dll")]
+        public static extern int SetProcessDpiAwareness(PROCESS_DPI_AWARENESS awareness);
+        [DllImport("user32.dll")]
+        public static extern bool SetProcessDPIAware();
+
         public static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
         public static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
         public static readonly IntPtr HWND_TOP = new IntPtr(0);
@@ -122,6 +134,7 @@ namespace VMC
         public const int GWL_STYLE = -16;
         public const uint WS_POPUP = 0x80000000;
         public const uint WS_VISIBLE = 0x10000000;
+        public const uint WS_CLIPCHILDREN = 0x02000000;
         public const int GWL_EXSTYLE = -20;
         public const uint WS_EX_LAYERED = 0x00080000;
         public const uint WS_EX_TRANSPARENT = 0x00000020;
