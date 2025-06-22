@@ -282,6 +282,8 @@
     <system:String x:Key="SettingWindow_ReceiveBonesEnable">Receive hand bone</system:String>
     <system:String x:Key="SettingWindow_VMCMod">VMC Mod (No warranty/no support)</system:String>
     <system:String x:Key="SettingWindow_VMCModSetting">Loaded MOD List</system:String>
+	<system:String x:Key="SettingWindow_Other">Other</system:String>
+	<system:String x:Key="SettingWindow_UnityChildWindow">Display Control Panel in Unity</system:String>
 
     <!-- CalibrationSettingWindow -->
     <system:String x:Key="CalibrationSettingWindow_BodyHeight">Body Height</system:String>

@@ -427,6 +427,17 @@ namespace VirtualMotionCaptureControlPanel
                 });
             });
 
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetUnityChildWindowEnable { }, d =>
+            {
+                var data = (PipeCommands.SetUnityChildWindowEnable)d;
+                Dispatcher.Invoke(() =>
+                {
+                    isSetting = true;
+                    UnityChildWindowCheckBox.IsChecked = data.enable;
+                    isSetting = false;
+                });
+            });
+
             await Globals.Client?.SendCommandAsync(new PipeCommands.TrackerMovedRequest { doSend = true });
             await Globals.Client?.SendCommandAsync(new PipeCommands.StatusStringChangedRequest { doSend = true });
 
@@ -1149,6 +1160,15 @@ namespace VirtualMotionCaptureControlPanel
                 VMCProtocolReceiverEditButton.IsEnabled= false;
                 VMCProtocolReceiverRemoveButton.IsEnabled= false;
             }
+        }
+
+        private async void UnityChildWindowCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            if (isSetting) return;
+            await Globals.Client?.SendCommandAsync(new PipeCommands.SetUnityChildWindowEnable
+            {
+                enable = UnityChildWindowCheckBox.IsChecked.Value
+            });
         }
     }
 }

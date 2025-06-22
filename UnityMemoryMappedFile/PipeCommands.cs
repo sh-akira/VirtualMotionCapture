@@ -712,6 +712,17 @@ namespace UnityMemoryMappedFile
         {
             public bool DashboardOpened { get; set; }
         }
+        public class WindowInfo
+        {
+            public IntPtr Hwnd { get; set; }
+            public bool Child { get; set; }
+        }
+
+        public class GetUnityChildWindowEnable { }
+        public class SetUnityChildWindowEnable
+        {
+            public bool enable { get; set; }
+        }
 
     }
 
