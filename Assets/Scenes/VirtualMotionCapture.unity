@@ -2536,7 +2536,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsBeta: 0
   IsPreRelease: 0
-  VersionString: v0.59f2r2b3
+  VersionString: v0.60f1r1b1
   LeftWristTransform: {fileID: 0}
   RightWristTransform: {fileID: 0}
   BackgroundRenderer: {fileID: 892957809}
@@ -3581,8 +3581,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ik: {fileID: 0}
-  ElbowFixWeight: 0.5
-  UpperArmFixWeight: 0.4
+  UpperArmWeight: 0.3
+  ForearmWeight: 0.5
+  smoothingTime: 0.05
+  maxAccumulatedTwist: 300
 --- !u!4 &1793473875
 Transform:
   m_ObjectHideFlags: 0
