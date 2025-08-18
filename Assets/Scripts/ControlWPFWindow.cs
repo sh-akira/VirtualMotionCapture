@@ -99,12 +99,34 @@ namespace VMC
             pipeName = "VMCTest";
 #else
             //Debug.unityLogger.logEnabled = false;
-            pipeName = "VMCpipe" + Guid.NewGuid().ToString();
+
+            bool isRunWithPipeName = false;
+
+            var args = Environment.GetCommandLineArgs();
+            if (args.Length > 1)
+            {
+                for (int i = 1; i < args.Length - 1; i++)
+                {
+                    if (args[i].StartsWith("/pipeName") || args[i].StartsWith("-pipeName"))
+                    {
+                        // コマンドライン引数からパイプ名を取得
+                        pipeName = args[i + 1];
+                        isRunWithPipeName = true;
+                        break;
+                    }
+                }
+            }
+            
+            if (isRunWithPipeName == false)
+            {
+                // パイプ名をランダムに生成
+                pipeName = "VMCpipe" + Guid.NewGuid().ToString();
+            }
 #endif
 
 #if !UNITY_EDITOR
             //start control panel
-            ExecuteControlPanel();
+            if (isRunWithPipeName == false) ExecuteControlPanel();
 #endif
 
             context = System.Threading.SynchronizationContext.Current;
