@@ -3581,8 +3581,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ik: {fileID: 0}
-  UpperArmWeight: 0.3
-  ForearmWeight: 0.5
+  UpperArmWeight: 0.05
+  ForearmWeight: 0.45
   smoothingTime: 0.05
   maxAccumulatedTwist: 300
 --- !u!4 &1793473875

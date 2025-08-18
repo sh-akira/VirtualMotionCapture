@@ -11,8 +11,9 @@ namespace VMC
 
         private ArmFixItem LeftArmFixItem;
         private ArmFixItem RightArmFixItem;
-        public float UpperArmWeight = 0.3f; // 30%
-        public float ForearmWeight = 0.5f;  // 70%
+        // VRIKで元から回ってる分があるので上腕は特に弱くて良い
+        public float UpperArmWeight = 0.05f; // 5%
+        public float ForearmWeight = 0.45f;  // 45%
 
         private Guid? eventId = null;
 
