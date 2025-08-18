@@ -292,6 +292,14 @@
     <system:String x:Key="CalibrationSettingWindow_OffsetZ">Zオフセット :</system:String>
     <system:String x:Key="CalibrationSettingWindow_Notice">変更後は再キャリブレーションが必要です</system:String>
 
+    <!-- CalibrationSettingWindow - WristRotationFix -->
+    <system:String x:Key="CalibrationSettingWindow_WristRotationFix">手首回転補正</system:String>
+    <system:String x:Key="CalibrationSettingWindow_UpperArmWeight">上腕配分 :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_ForearmWeight">前腕配分 :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_SmoothingTime">スムージング時間 :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_MaxAccumulatedTwist">最大累積回転 :</system:String>
+
+
     <!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">トラッカー割り当て設定</system:String>
 

@@ -1,6 +1,7 @@
 ﻿using RootMotion.FinalIK;
 using System;
 using UnityEngine;
+using UnityMemoryMappedFile;
 
 namespace VMC
 {
@@ -8,6 +9,10 @@ namespace VMC
     {
 
         public VRIK ik;
+
+        // ControlWPFWindowの参照を保持
+        [SerializeField]
+        private ControlWPFWindow controlWPFWindow;
 
         private ArmFixItem LeftArmFixItem;
         private ArmFixItem RightArmFixItem;
@@ -27,6 +32,101 @@ namespace VMC
         [Range(180f, 720f)]
         public float maxAccumulatedTwist = 300f;
 
+        private System.Threading.SynchronizationContext context = null;
+
+        void Start()
+        {
+            context = System.Threading.SynchronizationContext.Current;
+            
+            // ControlWPFWindowの参照取得（SerializeFieldで設定されていない場合のみ）
+            if (controlWPFWindow == null)
+            {
+                controlWPFWindow = GameObject.Find("ControlWPFWindow")?.GetComponent<ControlWPFWindow>();
+            }
+            
+            // 設定からパラメータを読み込み
+            LoadSettingsValues();
+            
+            // UIとの通信を設定
+            if (controlWPFWindow != null)
+            {
+                controlWPFWindow.server.ReceivedEvent += Server_Received;
+                // AdditionalSettingActionに登録して設定読み込み時に自動実行されるようにする
+                controlWPFWindow.AdditionalSettingAction += ApplySettings;
+            }
+        }
+
+        void OnDestroy()
+        {
+            if (eventId != null) IKManager.Instance.RemoveOnPostUpdate(eventId.Value);
+            
+            // 通信ハンドラの登録解除
+            if (controlWPFWindow != null)
+            {
+                controlWPFWindow.server.ReceivedEvent -= Server_Received;
+                controlWPFWindow.AdditionalSettingAction -= ApplySettings;
+            }
+        }
+
+        // 設定読み込み時に呼ばれるメソッド（IKManager.SetHandFreeOffsetと同様）
+        private void ApplySettings(GameObject gameObject)
+        {
+            LoadSettingsValues();
+        }
+
+        private void Server_Received(object sender, DataReceivedEventArgs e)
+        {
+            context.Post(async s =>
+            {
+                if (e.CommandType == typeof(PipeCommands.GetWristRotationFixSetting))
+                {
+                    if (controlWPFWindow != null)
+                    {
+                        await controlWPFWindow.server.SendCommandAsync(new PipeCommands.SetWristRotationFixSetting
+                        {
+                            UpperArmWeight = (int)(UpperArmWeight * 1000),
+                            ForearmWeight = (int)(ForearmWeight * 1000),
+                            SmoothingTime = (int)(smoothingTime * 1000),
+                            MaxAccumulatedTwist = (int)maxAccumulatedTwist,
+                        }, e.RequestId);
+                    }
+                }
+                else if (e.CommandType == typeof(PipeCommands.SetWristRotationFixSetting))
+                {
+                    var d = (PipeCommands.SetWristRotationFixSetting)e.Data;
+                    UpperArmWeight = d.UpperArmWeight / 1000f;
+                    ForearmWeight = d.ForearmWeight / 1000f;
+                    smoothingTime = d.SmoothingTime / 1000f;
+                    maxAccumulatedTwist = d.MaxAccumulatedTwist;
+                    
+                    // 設定を保存
+                    SaveSettingsValues();
+                }
+            }, null);
+        }
+
+        private void LoadSettingsValues()
+        {
+            if (Settings.Current != null)
+            {
+                UpperArmWeight = Settings.Current.WristRotationFix_UpperArmWeight;
+                ForearmWeight = Settings.Current.WristRotationFix_ForearmWeight;
+                smoothingTime = Settings.Current.WristRotationFix_SmoothingTime;
+                maxAccumulatedTwist = Settings.Current.WristRotationFix_MaxAccumulatedTwist;
+            }
+        }
+
+        private void SaveSettingsValues()
+        {
+            if (Settings.Current != null)
+            {
+                Settings.Current.WristRotationFix_UpperArmWeight = UpperArmWeight;
+                Settings.Current.WristRotationFix_ForearmWeight = ForearmWeight;
+                Settings.Current.WristRotationFix_SmoothingTime = smoothingTime;
+                Settings.Current.WristRotationFix_MaxAccumulatedTwist = maxAccumulatedTwist;
+            }
+        }
+
         public void SetVRIK(VRIK setIK)
         {
             if (eventId != null) IKManager.Instance.RemoveOnPostUpdate(eventId.Value);
@@ -35,12 +135,10 @@ namespace VMC
             LeftArmFixItem = new ArmFixItem(ik.references.leftShoulder, ik.references.leftUpperArm, ik.references.leftForearm, ik.references.leftHand);
             RightArmFixItem = new ArmFixItem(ik.references.rightShoulder, ik.references.rightUpperArm, ik.references.rightForearm, ik.references.rightHand);
 
-            eventId = IKManager.Instance.AddOnPostUpdate(10, OnPostUpdate);
-        }
+            // 設定を再読み込み
+            LoadSettingsValues();
 
-        void OnDestroy()
-        {
-            if (eventId != null) IKManager.Instance.RemoveOnPostUpdate(eventId.Value);
+            eventId = IKManager.Instance.AddOnPostUpdate(10, OnPostUpdate);
         }
 
         private void OnPostUpdate()

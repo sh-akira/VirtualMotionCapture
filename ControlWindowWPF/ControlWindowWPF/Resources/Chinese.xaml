@@ -291,6 +291,14 @@
     <system:String x:Key="CalibrationSettingWindow_OffsetY">Y 偏移：</system:String>
     <system:String x:Key="CalibrationSettingWindow_OffsetZ">Z 偏移：</system:String>
     <system:String x:Key="CalibrationSettingWindow_Notice">修改后请重新校准</system:String>
+
+    <!-- CalibrationSettingWindow - WristRotationFix -->
+    <system:String x:Key="CalibrationSettingWindow_WristRotationFix">手腕旋转修正</system:String>
+    <system:String x:Key="CalibrationSettingWindow_UpperArmWeight">上臂权重 :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_ForearmWeight">前臂权重 :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_SmoothingTime">平滑时间 :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_MaxAccumulatedTwist">最大累积扭转 :</system:String>
+
         
     <!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">追踪器分配设置</system:String>
@@ -397,6 +405,7 @@
     <system:String x:Key="HandGestureControlKeyAddWindow_Save">保存</system:String>
     <system:String x:Key="HandGestureControlKeyAddWindow_Register">注册</system:String>
     <system:String x:Key="HandGestureControlKeyAddWindow_Cancel">取消</system:String>
+    <system:String x:Key="HandGestureControlKeyAddWindow_ClearAll">清除所有手势</system:String>
 
 
     <!-- FaceControlKeyAddWindow -->

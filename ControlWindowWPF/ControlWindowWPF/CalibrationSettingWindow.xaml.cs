@@ -22,22 +22,33 @@ namespace VirtualMotionCaptureControlPanel
     {
 
         private CalibrationSettingItem CalibrationSetting = new CalibrationSettingItem();
+        private WristRotationFixSettingItem WristRotationFixSetting = new WristRotationFixSettingItem();
 
         public CalibrationSettingWindow()
         {
             InitializeComponent();
-            DataContext = CalibrationSetting;
+            
+            OverrideBodyHeightGroupBox.DataContext = CalibrationSetting;
+            PelvisOffsetGroupBox.DataContext = CalibrationSetting;
+            WristRotationFixSettingGroupBox.DataContext = WristRotationFixSetting;
         }
 
         bool disablePropertyChanged = false;
-        private async void FreeOffset_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private async void CalibrationSetting_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (disablePropertyChanged) return;
             await Globals.Client?.SendCommandAsync(CalibrationSetting.ConvertToPipeCommands());
         }
 
+        private async void WristRotationFixSetting_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (disablePropertyChanged) return;
+            await Globals.Client?.SendCommandAsync(WristRotationFixSetting.ConvertToPipeCommands());
+        }
+
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            // CalibrationSetting読み込み
             await Globals.Client.SendCommandWaitAsync(new PipeCommands.GetCalibrationSetting(), d =>
             {
                 var ret = (PipeCommands.SetCalibrationSetting)d;
@@ -47,14 +58,29 @@ namespace VirtualMotionCaptureControlPanel
                     disablePropertyChanged = false;
                 });
             });
-            CalibrationSetting.PropertyChanged += FreeOffset_PropertyChanged;
+
+            // WristRotationFixSetting読み込み
+            await Globals.Client.SendCommandWaitAsync(new PipeCommands.GetWristRotationFixSetting(), d =>
+            {
+                var ret = (PipeCommands.SetWristRotationFixSetting)d;
+                Dispatcher.Invoke(() => {
+                    disablePropertyChanged = true;
+                    WristRotationFixSetting.SetFromPipeCommands(ret);
+                    disablePropertyChanged = false;
+                });
+            });
+
+            CalibrationSetting.PropertyChanged += CalibrationSetting_PropertyChanged;
+            WristRotationFixSetting.PropertyChanged += WristRotationFixSetting_PropertyChanged;
         }
 
         private void Window_Unloaded(object sender, RoutedEventArgs e)
         {
-            CalibrationSetting.PropertyChanged -= FreeOffset_PropertyChanged;
+            CalibrationSetting.PropertyChanged -= CalibrationSetting_PropertyChanged;
+            WristRotationFixSetting.PropertyChanged -= WristRotationFixSetting_PropertyChanged;
         }
     }
+
     public class CalibrationSettingItem : ViewModelBase
     {
         public bool EnableOverrideBodyHeight { get => Getter<bool>(); set => Setter(value); }
@@ -86,6 +112,52 @@ namespace VirtualMotionCaptureControlPanel
             PelvisOffsetAdjustZcm = CalibrationSetting.PelvisOffsetAdjustZ / 10f;
             PelvisOffsetAdjustY = CalibrationSetting.PelvisOffsetAdjustY;
             PelvisOffsetAdjustZ = CalibrationSetting.PelvisOffsetAdjustZ;
+        }
+    }
+
+    public class WristRotationFixSettingItem : ViewModelBase
+    {
+        public int UpperArmWeight { get => Getter<int>(); set => Setter(value); }
+        public int ForearmWeight { get => Getter<int>(); set => Setter(value); }
+        public int SmoothingTime { get => Getter<int>(); set => Setter(value); }
+        public int MaxAccumulatedTwist { get => Getter<int>(); set => Setter(value); }
+
+        public float UpperArmWeightPercent 
+        { 
+            get => Getter<float>(); 
+            set { UpperArmWeight = Convert.ToInt32(value * 10); Setter(value); } 
+        }
+        public float ForearmWeightPercent 
+        { 
+            get => Getter<float>(); 
+            set { ForearmWeight = Convert.ToInt32(value * 10); Setter(value); } 
+        }
+        public float SmoothingTimeSeconds 
+        { 
+            get => Getter<float>(); 
+            set { SmoothingTime = Convert.ToInt32(value * 1000); Setter(value); } 
+        }
+
+        public PipeCommands.SetWristRotationFixSetting ConvertToPipeCommands()
+        {
+            return new PipeCommands.SetWristRotationFixSetting
+            {
+                UpperArmWeight = UpperArmWeight,
+                ForearmWeight = ForearmWeight,
+                SmoothingTime = SmoothingTime,
+                MaxAccumulatedTwist = MaxAccumulatedTwist,
+            };
+        }
+
+        public void SetFromPipeCommands(PipeCommands.SetWristRotationFixSetting WristRotationFixSetting)
+        {
+            UpperArmWeightPercent = WristRotationFixSetting.UpperArmWeight / 10f;
+            ForearmWeightPercent = WristRotationFixSetting.ForearmWeight / 10f;
+            SmoothingTimeSeconds = WristRotationFixSetting.SmoothingTime / 1000f;
+            MaxAccumulatedTwist = WristRotationFixSetting.MaxAccumulatedTwist;
+            UpperArmWeight = WristRotationFixSetting.UpperArmWeight;
+            ForearmWeight = WristRotationFixSetting.ForearmWeight;
+            SmoothingTime = WristRotationFixSetting.SmoothingTime;
         }
     }
 }

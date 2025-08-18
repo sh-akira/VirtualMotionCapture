@@ -319,6 +319,15 @@ namespace UnityMemoryMappedFile
             public int Buffering { get; set; }
         }
 
+        public class GetWristRotationFixSetting { }
+        public class SetWristRotationFixSetting
+        {
+            public int UpperArmWeight { get; set; }      // 1000倍した値 (0.05f -> 50)
+            public int ForearmWeight { get; set; }       // 1000倍した値 (0.45f -> 450)
+            public int SmoothingTime { get; set; }       // 1000倍した値 (0.05f -> 50)
+            public int MaxAccumulatedTwist { get; set; } // そのまま (300)
+        }
+
         public class GetResolutions { }
         public class ReturnResolutions
         {

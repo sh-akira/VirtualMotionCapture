@@ -292,6 +292,14 @@
     <system:String x:Key="CalibrationSettingWindow_OffsetZ">Offset Z :</system:String>
     <system:String x:Key="CalibrationSettingWindow_Notice">Please recalibrate after the change</system:String>
 
+    <!-- CalibrationSettingWindow - WristRotationFix -->
+    <system:String x:Key="CalibrationSettingWindow_WristRotationFix">Wrist Rotation Fix</system:String>
+    <system:String x:Key="CalibrationSettingWindow_UpperArmWeight">Upper Arm Weight :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_ForearmWeight">Forearm Weight :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_SmoothingTime">Smoothing Time :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_MaxAccumulatedTwist">Max Accumulated Twist :</system:String>
+
+
     <!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">Tracker assignment setting</system:String>
 
