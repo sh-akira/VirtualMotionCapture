@@ -144,61 +144,89 @@ namespace VMC
         private void OnPostUpdate()
         {
             if (IKManager.Instance.vrik == null) return;
+            if (enabled == false) return;
 
-            //FixAxis(LeftElbowFixItem);
-            //FixAxis(LeftUpperArmFixItem);
-            //FixAxis(RightElbowFixItem);
-            //FixAxis(RightUpperArmFixItem);
             ApplyArmTwistFix(LeftArmFixItem);
             ApplyArmTwistFix(RightArmFixItem);
         }
         private void ApplyArmTwistFix(ArmFixItem item)
         {
             Quaternion originalHandRotation = item.Hand.rotation;
-            Quaternion originalUpperArmRotation = item.UpperArm.rotation;
-            Quaternion originalForearmRotation = item.Forearm.rotation;
+            Quaternion currentUpperArmRotation = item.UpperArm.rotation;
+            Quaternion currentForearmRotation = item.Forearm.rotation;
 
-            // 1. HandのForearmに対するローカル回転からTwist角度を計算
-            float twistAngle = CalculateHandTwistAngle(item, originalForearmRotation, originalHandRotation);
+            // 1. UpperArmとForearmの現在の回転からTwist成分のみを除去し、Swing成分のみを残す
+            Quaternion upperArmSwingOnly = RemoveTwistFromRotation(currentUpperArmRotation, item.InitialUpperArmRotation, item.UpperArmTwistAxis);
+            Quaternion forearmSwingOnly = RemoveTwistFromRotation(currentForearmRotation, item.InitialForearmRotation, item.ForearmTwistAxis);
 
-            // 2. 連続性を保つための補正
+            // 2. Swing成分のみの回転を適用（IKの結果を保持）
+            item.UpperArm.rotation = upperArmSwingOnly;
+            item.Forearm.rotation = forearmSwingOnly;
+
+            // 3. HandのForearmに対するローカル回転からTwist角度を計算
+            float twistAngle = CalculateHandTwistAngle(item, forearmSwingOnly, originalHandRotation);
+
+            // 4. 連続性を保つための補正
             float lastAngle = item.LastTwistAngle;
             float delta = Mathf.DeltaAngle(lastAngle, twistAngle);
             
             // 通常の連続性補正
             twistAngle = lastAngle + delta;
             
-            // 現在のTwist角度が閾値を超えたらリセット
-            if (Mathf.Abs(twistAngle) > maxAccumulatedTwist)
+            // 5. 初期角度からの累積角度を更新
+            item.AccumulatedTwistFromInitial += delta;
+            
+            // 初期角度から±maxAccumulatedTwist度を超えたらリセット
+            if (Mathf.Abs(item.AccumulatedTwistFromInitial) > maxAccumulatedTwist)
             {
-                // 360度単位で正規化して連続性を保つ
-                float cycles = Mathf.Floor(twistAngle / 360f);
-                twistAngle -= cycles * 360f;
+                // リセット時の処理：360度逆回転させる
+                float resetDirection = Mathf.Sign(item.AccumulatedTwistFromInitial);
+                float resetAdjustment = -resetDirection * 360f;
+                
+                // Twist角度と累積角度を調整
+                twistAngle += resetAdjustment;
+                item.AccumulatedTwistFromInitial += resetAdjustment;
                 
                 // デバッグ用
-                Debug.Log($"Twist angle normalized from {lastAngle + delta} to {twistAngle} degrees");
+                Debug.Log($"Twist angle reset: direction = {resetDirection}, adjustment = {resetAdjustment} degrees, new accumulated = {item.AccumulatedTwistFromInitial}");
             }
-
-            // 3. スムージング（調整可能）
-            if (smoothingTime > 0 && ShouldApplySmoothing(twistAngle, lastAngle))
+            else
             {
-                twistAngle = SmoothTwistAngle(item.LastTwistAngle, twistAngle, smoothingTime);
+                // 6. スムージング（調整可能）- リセット時以外のみ適用
+                if (smoothingTime > 0 && ShouldApplySmoothing(twistAngle, lastAngle))
+                {
+                    twistAngle = SmoothTwistAngle(item.LastTwistAngle, twistAngle, smoothingTime);
+                }
             }
 
             item.LastTwistAngle = twistAngle;
 
-            // 4. Twist角度をUpperArmとForearmに分配
+            // 7. Twist角度をUpperArmとForearmに分配
             float upperArmTwist = twistAngle * UpperArmWeight;
             float forearmTwist = twistAngle * ForearmWeight;
 
-            // 5. Twist軸を定義（多くのアバターではX軸）
-            Vector3 upperArmTwistAxis = item.UpperArm.right;
-            Vector3 forearmTwistAxis = item.Forearm.right;
+            // 8. Twist軸を使用してTwist回転を適用
+            Vector3 upperArmTwistAxis = item.UpperArm.TransformDirection(item.UpperArmTwistAxis);
+            Vector3 forearmTwistAxis = item.Forearm.TransformDirection(item.ForearmTwistAxis);
 
-            // 6. 回転を適用
-            item.UpperArm.rotation = Quaternion.AngleAxis(upperArmTwist, upperArmTwistAxis) * originalUpperArmRotation;
-            item.Forearm.rotation = Quaternion.AngleAxis(forearmTwist, forearmTwistAxis) * originalForearmRotation;
+            // 9. Swing成分にTwist回転を加算
+            item.UpperArm.rotation = Quaternion.AngleAxis(upperArmTwist, upperArmTwistAxis) * upperArmSwingOnly;
+            item.Forearm.rotation = Quaternion.AngleAxis(forearmTwist, forearmTwistAxis) * forearmSwingOnly;
             item.Hand.rotation = originalHandRotation;
+        }
+
+        // 回転からTwist成分を除去し、Swing成分のみを残す
+        private Quaternion RemoveTwistFromRotation(Quaternion currentRotation, Quaternion initialRotation, Vector3 twistAxis)
+        {
+            // 初期回転からの相対回転を取得
+            Quaternion relativeRotation = currentRotation * Quaternion.Inverse(initialRotation);
+            
+            // Swing-Twist分解でSwing成分のみを抽出
+            Quaternion swing, twist;
+            SwingTwistDecomposition(relativeRotation, twistAxis, out swing, out twist);
+            
+            // Swing成分のみを初期回転に適用
+            return swing * initialRotation;
         }
 
         // HandのTwist角度を計算（Swing-Twist分解を使用）
@@ -292,9 +320,16 @@ namespace VMC
 
             // 前回のTwist角度
             public float LastTwistAngle = 0f;
+            
+            // 初期角度からの累積Twist角度
+            public float AccumulatedTwistFromInitial = 0f;
 
             // 初期状態のHandの回転（T-Pose時など）
             public Quaternion NeutralHandRotation;
+            
+            // T-ポーズ時の初期回転を保存
+            public Quaternion InitialUpperArmRotation;
+            public Quaternion InitialForearmRotation;
 
             public ArmFixItem(Transform shoulder, Transform upperArm, Transform forearm, Transform hand)
             {
@@ -310,6 +345,10 @@ namespace VMC
 
                 // 初期状態のHandの回転を保存
                 NeutralHandRotation = Quaternion.Inverse(forearm.rotation) * hand.rotation;
+                
+                // T-ポーズ時の初期回転を保存
+                InitialUpperArmRotation = upperArm.rotation;
+                InitialForearmRotation = forearm.rotation;
             }
         }
     }
