@@ -1,13 +1,34 @@
-ƒo[ƒ`ƒƒƒ‹ƒ‚[ƒVƒ‡ƒ“ƒLƒƒƒvƒ`ƒƒ[‚ÌƒRƒ“ƒgƒ[ƒ‹ƒpƒlƒ‹‚ª‹N“®‚µ‚È‚¢ê‡A
-Windows‚ÌSmartScreen‚É‚æ‚Á‚ÄƒuƒƒbƒN‚³‚ê‚Ä‚¢‚Ü‚·B
-1. ‚Ü‚¸‚ÍRemoveZoneID.bat‚ğƒ_ƒuƒ‹ƒNƒŠƒbƒN‚µ‚Ä‚©‚çAVirtualMotionCapture.exe‚ğÄ“x‹N“®‚·‚é‚©‚µ‚Ä‚­‚¾‚³‚¢B
-2. ‚»‚ê‚Å‚à‹N“®‚µ‚È‚¢ê‡‚ÍVirtualMotionCapture.bat‚ğƒ_ƒuƒ‹ƒNƒŠƒbƒN‚µ‚Ä‹N“®‚·‚é‚©‚µ‚Ä‚­‚¾‚³‚¢B
-3. ‚Ç‚¿‚ç‚Å‚à‹N“®‚µ‚È‚¢ê‡‚ÍAWindows‚ÌƒXƒ^[ƒgƒƒjƒ…[‚Ìİ’è‚Åu•]‰¿ƒx[ƒX‚Ì•ÛŒìv‚ÆŒŸõ‚µAƒAƒvƒŠ‚Æƒtƒ@ƒCƒ‹‚ÌŠm”F‚ğƒIƒt‚É‚µ‚Ä‚©‚çAVirtualMotionCapture.exe‚ğÄ“x‹N“®‚·‚é‚©‚µ‚Ä‚­‚¾‚³‚¢B
+ãƒãƒ¼ãƒãƒ£ãƒ«ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã‚­ãƒ£ãƒ—ãƒãƒ£ãƒ¼ã®ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ãƒ‘ãƒãƒ«ãŒèµ·å‹•ã—ãªã„å ´åˆã€
+Windowsã®SmartScreenã«ã‚ˆã£ã¦ãƒ–ãƒ­ãƒƒã‚¯ã•ã‚Œã¦ã„ã¾ã™ã€‚
+
+1. ã¾ãšã¯RemoveZoneID.batã‚’ãƒ€ãƒ–ãƒ«ã‚¯ãƒªãƒƒã‚¯ã—ã¦ã‹ã‚‰ã€VirtualMotionCapture.exeã‚’å†åº¦èµ·å‹•ã™ã‚‹ã‹è©¦ã—ã¦ãã ã•ã„ã€‚
+2. ãã‚Œã§ã‚‚èµ·å‹•ã—ãªã„å ´åˆã¯VirtualMotionCapture.batã‚’ãƒ€ãƒ–ãƒ«ã‚¯ãƒªãƒƒã‚¯ã—ã¦èµ·å‹•ã™ã‚‹ã‹è©¦ã—ã¦ãã ã•ã„ã€‚
+3. ã©ã¡ã‚‰ã§ã‚‚èµ·å‹•ã—ãªã„å ´åˆã¯ã€Windowsã®ã‚¹ã‚¿ãƒ¼ãƒˆãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®è¨­å®šã§ã€Œè©•ä¾¡ãƒ™ãƒ¼ã‚¹ã®ä¿è­·ã€ã¨æ¤œç´¢ã—ã€ã‚¢ãƒ—ãƒªã¨ãƒ•ã‚¡ã‚¤ãƒ«ã®ç¢ºèªã‚’ã‚ªãƒ•ã«ã—ã¦ã‹ã‚‰ã€VirtualMotionCapture.exeã‚’å†åº¦èµ·å‹•ã™ã‚‹ã‹è©¦ã—ã¦ãã ã•ã„ã€‚
 
 ---
 
-If the Virtual Motion Capture control panel does not start up, it is being blocked by Windows SmartScreen.
+If the Virtual Motion Capture control panel does not start up, 
+it is being blocked by Windows SmartScreen.
 
 1. First, try double-clicking RemoveZoneID.bat and then restart VirtualMotionCapture.exe.
 2. If it still doesn't start, try double-clicking VirtualMotionCapture.bat to launch it.
 3. If neither method works, search for "reputation-based protection" in Windows Start menu settings, turn off "Check apps and files", and then try restarting VirtualMotionCapture.exe.
+
+---
+
+ë²„ì¶”ì–¼ ëª¨ì…˜ ìº¡ì²˜ì˜ ì»¨íŠ¸ë¡¤ íŒ¨ë„ì´ ì‹œì‘ë˜ì§€ ì•ŠëŠ” ê²½ìš°,
+Windows SmartScreenì— ì˜í•´ ì°¨ë‹¨ë˜ì—ˆìŠµë‹ˆë‹¤.
+
+1. ë¨¼ì € RemoveZoneID.batë¥¼ ë”ë¸”í´ë¦­í•œ í›„, VirtualMotionCapture.exeë¥¼ ë‹¤ì‹œ ì‹œì‘í•´ë³´ì„¸ìš”.
+2. ê·¸ë˜ë„ ì‹œì‘ë˜ì§€ ì•Šìœ¼ë©´ VirtualMotionCapture.batë¥¼ ë”ë¸”í´ë¦­í•˜ì—¬ ì‹œì‘í•´ë³´ì„¸ìš”.
+3. ë‘˜ ë‹¤ ì‹œì‘ë˜ì§€ ì•Šìœ¼ë©´, Windows ì‹œì‘ ë©”ë‰´ì˜ ì„¤ì •ì—ì„œ "í‰íŒ ê¸°ë°˜ ë³´í˜¸"ë¥¼ ê²€ìƒ‰í•˜ê³ , ì•± ë° íŒŒì¼ í™•ì¸ì„ ëˆ ë‹¤ìŒ VirtualMotionCapture.exeë¥¼ ë‹¤ì‹œ ì‹œì‘í•´ë³´ì„¸ìš”.
+
+---
+
+å¦‚æœVirtual Motion Captureæ§åˆ¶é¢æ¿æ— æ³•å¯åŠ¨ï¼Œ
+è¿™æ˜¯è¢«Windows SmartScreené˜»æ­¢äº†ã€‚
+
+1. é¦–å…ˆåŒå‡»RemoveZoneID.batï¼Œç„¶åå°è¯•é‡æ–°å¯åŠ¨VirtualMotionCapture.exeã€‚
+2. å¦‚æœä»ç„¶æ— æ³•å¯åŠ¨ï¼Œè¯·å°è¯•åŒå‡»VirtualMotionCapture.batæ¥å¯åŠ¨ã€‚
+3. å¦‚æœä¸¤ç§æ–¹æ³•éƒ½æ— æ³•å¯åŠ¨ï¼Œè¯·åœ¨Windowså¼€å§‹èœå•çš„è®¾ç½®ä¸­æœç´¢"åŸºäºå£°èª‰çš„ä¿æŠ¤"ï¼Œå…³é—­"æ£€æŸ¥åº”ç”¨å’Œæ–‡ä»¶"ï¼Œç„¶åå°è¯•é‡æ–°å¯åŠ¨VirtualMotionCapture.exeã€‚
+
