@@ -691,13 +691,13 @@ namespace VMC
         public float PelvisOffsetAdjustZ;
 
         [OptionalField]
-        public float WristRotationFix_UpperArmWeight = 0.05f;
+        public int WristRotationFix_UpperArmWeight = 200; // /1000
         [OptionalField]
-        public float WristRotationFix_ForearmWeight = 0.45f;
+        public int WristRotationFix_ForearmWeight = 570; // /1000
         [OptionalField]
-        public float WristRotationFix_SmoothingTime = 0.05f;
+        public int WristRotationFix_SmoothingTime = 50; // /1000
         [OptionalField]
-        public float WristRotationFix_MaxAccumulatedTwist = 300f;
+        public int WristRotationFix_MaxAccumulatedTwist = 300;
 
 
         //初期値
@@ -872,10 +872,10 @@ namespace VMC
             PelvisOffsetAdjustY = 0;
             PelvisOffsetAdjustZ = 0;
 
-            WristRotationFix_UpperArmWeight = 0.05f;
-            WristRotationFix_ForearmWeight = 0.45f;
-            WristRotationFix_SmoothingTime = 0.05f;
-            WristRotationFix_MaxAccumulatedTwist = 300f;
+            WristRotationFix_UpperArmWeight = 200;
+            WristRotationFix_ForearmWeight = 570;
+            WristRotationFix_SmoothingTime = 50;
+            WristRotationFix_MaxAccumulatedTwist = 300;
         }
 
         /// <summary>

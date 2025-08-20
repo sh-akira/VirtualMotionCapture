@@ -3582,8 +3582,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ik: {fileID: 0}
   controlWPFWindow: {fileID: 0}
-  UpperArmWeight: 0.05
-  ForearmWeight: 0.45
+  UpperArmWeight: 0.2
+  ForearmWeight: 0.57
   smoothingTime: 0.05
   maxAccumulatedTwist: 300
 --- !u!4 &1793473875

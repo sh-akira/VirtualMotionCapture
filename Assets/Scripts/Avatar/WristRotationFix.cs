@@ -17,8 +17,8 @@ namespace VMC
         private ArmFixItem LeftArmFixItem;
         private ArmFixItem RightArmFixItem;
         // VRIKで元から回ってる分があるので上腕は特に弱くて良い
-        public float UpperArmWeight = 0.05f; // 5%
-        public float ForearmWeight = 0.45f;  // 45%
+        public float UpperArmWeight = 0.2f; // 20%
+        public float ForearmWeight = 0.57f;  // 57%
 
         private Guid? eventId = null;
 
@@ -84,23 +84,19 @@ namespace VMC
                     {
                         await controlWPFWindow.server.SendCommandAsync(new PipeCommands.SetWristRotationFixSetting
                         {
-                            UpperArmWeight = (int)(UpperArmWeight * 1000),
-                            ForearmWeight = (int)(ForearmWeight * 1000),
-                            SmoothingTime = (int)(smoothingTime * 1000),
-                            MaxAccumulatedTwist = (int)maxAccumulatedTwist,
+                            UpperArmWeight = Settings.Current.WristRotationFix_UpperArmWeight,
+                            ForearmWeight = Settings.Current.WristRotationFix_ForearmWeight,
+                            SmoothingTime = Settings.Current.WristRotationFix_SmoothingTime,
+                            MaxAccumulatedTwist = Settings.Current.WristRotationFix_MaxAccumulatedTwist,
                         }, e.RequestId);
                     }
                 }
                 else if (e.CommandType == typeof(PipeCommands.SetWristRotationFixSetting))
                 {
                     var d = (PipeCommands.SetWristRotationFixSetting)e.Data;
-                    UpperArmWeight = d.UpperArmWeight / 1000f;
-                    ForearmWeight = d.ForearmWeight / 1000f;
-                    smoothingTime = d.SmoothingTime / 1000f;
-                    maxAccumulatedTwist = d.MaxAccumulatedTwist;
                     
                     // 設定を保存
-                    SaveSettingsValues();
+                    SaveSettingsValues(d);
                 }
             }, null);
         }
@@ -109,21 +105,25 @@ namespace VMC
         {
             if (Settings.Current != null)
             {
-                UpperArmWeight = Settings.Current.WristRotationFix_UpperArmWeight;
-                ForearmWeight = Settings.Current.WristRotationFix_ForearmWeight;
-                smoothingTime = Settings.Current.WristRotationFix_SmoothingTime;
+                UpperArmWeight = Settings.Current.WristRotationFix_UpperArmWeight / 1000f;
+                ForearmWeight = Settings.Current.WristRotationFix_ForearmWeight / 1000f;
+                smoothingTime = Settings.Current.WristRotationFix_SmoothingTime / 1000f;
                 maxAccumulatedTwist = Settings.Current.WristRotationFix_MaxAccumulatedTwist;
             }
         }
 
-        private void SaveSettingsValues()
+        private void SaveSettingsValues(PipeCommands.SetWristRotationFixSetting d)
         {
+            UpperArmWeight = d.UpperArmWeight / 1000f;
+            ForearmWeight = d.ForearmWeight / 1000f;
+            smoothingTime = d.SmoothingTime / 1000f;
+            maxAccumulatedTwist = d.MaxAccumulatedTwist;
             if (Settings.Current != null)
             {
-                Settings.Current.WristRotationFix_UpperArmWeight = UpperArmWeight;
-                Settings.Current.WristRotationFix_ForearmWeight = ForearmWeight;
-                Settings.Current.WristRotationFix_SmoothingTime = smoothingTime;
-                Settings.Current.WristRotationFix_MaxAccumulatedTwist = maxAccumulatedTwist;
+                Settings.Current.WristRotationFix_UpperArmWeight = d.UpperArmWeight;
+                Settings.Current.WristRotationFix_ForearmWeight = d.ForearmWeight;
+                Settings.Current.WristRotationFix_SmoothingTime = d.SmoothingTime;
+                Settings.Current.WristRotationFix_MaxAccumulatedTwist = d.MaxAccumulatedTwist;
             }
         }
 
