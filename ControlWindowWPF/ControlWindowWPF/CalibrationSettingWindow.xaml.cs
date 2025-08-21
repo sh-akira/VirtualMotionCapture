@@ -119,7 +119,6 @@ namespace VirtualMotionCaptureControlPanel
     {
         public int UpperArmWeight { get => Getter<int>(); set => Setter(value); }
         public int ForearmWeight { get => Getter<int>(); set => Setter(value); }
-        public int SmoothingTime { get => Getter<int>(); set => Setter(value); }
         public int MaxAccumulatedTwist { get => Getter<int>(); set => Setter(value); }
 
         public float UpperArmWeightPercent 
@@ -132,11 +131,6 @@ namespace VirtualMotionCaptureControlPanel
             get => Getter<float>(); 
             set { ForearmWeight = Convert.ToInt32(value * 10); Setter(value); } 
         }
-        public float SmoothingTimeSeconds 
-        { 
-            get => Getter<float>(); 
-            set { SmoothingTime = Convert.ToInt32(value * 1000); Setter(value); } 
-        }
 
         public PipeCommands.SetWristRotationFixSetting ConvertToPipeCommands()
         {
@@ -144,7 +138,6 @@ namespace VirtualMotionCaptureControlPanel
             {
                 UpperArmWeight = UpperArmWeight,
                 ForearmWeight = ForearmWeight,
-                SmoothingTime = SmoothingTime,
                 MaxAccumulatedTwist = MaxAccumulatedTwist,
             };
         }
@@ -153,11 +146,9 @@ namespace VirtualMotionCaptureControlPanel
         {
             UpperArmWeightPercent = WristRotationFixSetting.UpperArmWeight / 10f;
             ForearmWeightPercent = WristRotationFixSetting.ForearmWeight / 10f;
-            SmoothingTimeSeconds = WristRotationFixSetting.SmoothingTime / 1000f;
             MaxAccumulatedTwist = WristRotationFixSetting.MaxAccumulatedTwist;
             UpperArmWeight = WristRotationFixSetting.UpperArmWeight;
             ForearmWeight = WristRotationFixSetting.ForearmWeight;
-            SmoothingTime = WristRotationFixSetting.SmoothingTime;
         }
     }
 }

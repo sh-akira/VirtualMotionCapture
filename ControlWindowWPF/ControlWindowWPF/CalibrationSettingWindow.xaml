@@ -7,42 +7,50 @@
         mc:Ignorable="d"
         Title="{DynamicResource SettingWindow_CalibrationSetting}" SizeToContent="Height" Width="400" Loaded="Window_Loaded" Unloaded="Window_Unloaded">
     <DockPanel>
-        <GroupBox DockPanel.Dock="Top" Margin="10,10,10,0" Name="OverrideBodyHeightGroupBox">
+        <GroupBox DockPanel.Dock="Top" Margin="10,10,10,0">
             <GroupBox.Header>
-                <TextBlock Text="{DynamicResource CalibrationSettingWindow_BodyHeight}"/>
+                <TextBlock Text="{DynamicResource SettingWindow_CalibrationSetting}"/>
             </GroupBox.Header>
-            <StackPanel Orientation="Vertical">
-                <DockPanel DockPanel.Dock="Top" Margin="10,5,10,0">
-                    <CheckBox Content="{DynamicResource CalibrationSettingWindow_OverrideBodyHeight}" IsChecked="{Binding EnableOverrideBodyHeight}"/>
-                </DockPanel>
-                <DockPanel DockPanel.Dock="Top" Margin="10,5,10,5">
-                    <TextBlock Text="{DynamicResource CalibrationSettingWindow_Height}" VerticalAlignment="Center" DockPanel.Dock="Left" Width="60"/>
-                    <TextBlock Text="cm" VerticalAlignment="Center" DockPanel.Dock="Right" Width="20"/>
-                    <TextBlock Text="{Binding OverrideBodyHeightcm}" Width="30" TextAlignment="Right" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
-                    <Slider Value="{Binding OverrideBodyHeightcm}" Minimum="0" Maximum="220" IsSnapToTickEnabled="True" TickFrequency="0.1" LargeChange="0.1" SmallChange="0.1" TickPlacement="None"/>
-                </DockPanel>
-            </StackPanel>
+            <DockPanel>
+                <GroupBox DockPanel.Dock="Top" Margin="0,10,0,0" Name="OverrideBodyHeightGroupBox">
+                    <GroupBox.Header>
+                        <TextBlock Text="{DynamicResource CalibrationSettingWindow_BodyHeight}"/>
+                    </GroupBox.Header>
+                    <StackPanel Orientation="Vertical">
+                        <DockPanel DockPanel.Dock="Top" Margin="10,5,10,0">
+                            <CheckBox Content="{DynamicResource CalibrationSettingWindow_OverrideBodyHeight}" IsChecked="{Binding EnableOverrideBodyHeight}"/>
+                        </DockPanel>
+                        <DockPanel DockPanel.Dock="Top" Margin="10,5,10,5">
+                            <TextBlock Text="{DynamicResource CalibrationSettingWindow_Height}" VerticalAlignment="Center" DockPanel.Dock="Left" Width="60"/>
+                            <TextBlock Text="cm" VerticalAlignment="Center" DockPanel.Dock="Right" Width="20"/>
+                            <TextBlock Text="{Binding OverrideBodyHeightcm}" Width="30" TextAlignment="Right" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                            <Slider Value="{Binding OverrideBodyHeightcm}" Minimum="0" Maximum="220" IsSnapToTickEnabled="True" TickFrequency="0.1" LargeChange="0.1" SmallChange="0.1" TickPlacement="None"/>
+                        </DockPanel>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox DockPanel.Dock="Top" Margin="0,10,0,0" Name="PelvisOffsetGroupBox">
+                    <GroupBox.Header>
+                        <TextBlock Text="{DynamicResource CalibrationSettingWindow_Pelvis}"/>
+                    </GroupBox.Header>
+                    <StackPanel Orientation="Vertical">
+                        <DockPanel DockPanel.Dock="Top" Margin="10,5,10,0">
+                            <TextBlock Text="{DynamicResource CalibrationSettingWindow_OffsetY}" VerticalAlignment="Center" DockPanel.Dock="Left" Width="60"/>
+                            <TextBlock Text="cm" VerticalAlignment="Center" DockPanel.Dock="Right" Width="20"/>
+                            <TextBlock Text="{Binding PelvisOffsetAdjustYcm}" Width="30" TextAlignment="Right" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                            <Slider Value="{Binding PelvisOffsetAdjustYcm}" Minimum="-50" Maximum="50" IsSnapToTickEnabled="True" TickFrequency="0.1" LargeChange="0.1" SmallChange="0.1" TickPlacement="None"/>
+                        </DockPanel>
+                        <DockPanel DockPanel.Dock="Top" Margin="10,5,10,5">
+                            <TextBlock Text="{DynamicResource CalibrationSettingWindow_OffsetZ}" VerticalAlignment="Center" DockPanel.Dock="Left" Width="60"/>
+                            <TextBlock Text="cm" VerticalAlignment="Center" DockPanel.Dock="Right" Width="20"/>
+                            <TextBlock Text="{Binding PelvisOffsetAdjustZcm}" Width="30" TextAlignment="Right" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                            <Slider Value="{Binding PelvisOffsetAdjustZcm}" Minimum="-50" Maximum="50" IsSnapToTickEnabled="True" TickFrequency="0.1" LargeChange="0.1" SmallChange="0.1" TickPlacement="None"/>
+                        </DockPanel>
+                    </StackPanel>
+                </GroupBox>
+                <TextBlock Text="{DynamicResource CalibrationSettingWindow_Notice}" Margin="5,0,5,5"/>
+            </DockPanel>
         </GroupBox>
-        <GroupBox DockPanel.Dock="Top" Margin="10,10,10,0" Name="PelvisOffsetGroupBox">
-            <GroupBox.Header>
-                <TextBlock Text="{DynamicResource CalibrationSettingWindow_Pelvis}"/>
-            </GroupBox.Header>
-            <StackPanel Orientation="Vertical">
-                <DockPanel DockPanel.Dock="Top" Margin="10,5,10,0">
-                    <TextBlock Text="{DynamicResource CalibrationSettingWindow_OffsetY}" VerticalAlignment="Center" DockPanel.Dock="Left" Width="60"/>
-                    <TextBlock Text="cm" VerticalAlignment="Center" DockPanel.Dock="Right" Width="20"/>
-                    <TextBlock Text="{Binding PelvisOffsetAdjustYcm}" Width="30" TextAlignment="Right" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
-                    <Slider Value="{Binding PelvisOffsetAdjustYcm}" Minimum="-50" Maximum="50" IsSnapToTickEnabled="True" TickFrequency="0.1" LargeChange="0.1" SmallChange="0.1" TickPlacement="None"/>
-                </DockPanel>
-                <DockPanel DockPanel.Dock="Top" Margin="10,5,10,5">
-                    <TextBlock Text="{DynamicResource CalibrationSettingWindow_OffsetZ}" VerticalAlignment="Center" DockPanel.Dock="Left" Width="60"/>
-                    <TextBlock Text="cm" VerticalAlignment="Center" DockPanel.Dock="Right" Width="20"/>
-                    <TextBlock Text="{Binding PelvisOffsetAdjustZcm}" Width="30" TextAlignment="Right" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
-                    <Slider Value="{Binding PelvisOffsetAdjustZcm}" Minimum="-50" Maximum="50" IsSnapToTickEnabled="True" TickFrequency="0.1" LargeChange="0.1" SmallChange="0.1" TickPlacement="None"/>
-                </DockPanel>
-            </StackPanel>
-        </GroupBox>
-        <GroupBox DockPanel.Dock="Top" Margin="10,10,10,0" Name="WristRotationFixSettingGroupBox">
+        <GroupBox DockPanel.Dock="Top" Margin="10,10,10,10" Name="WristRotationFixSettingGroupBox">
             <GroupBox.Header>
                 <TextBlock Text="{DynamicResource CalibrationSettingWindow_WristRotationFix}"/>
             </GroupBox.Header>
@@ -59,12 +67,6 @@
                     <TextBlock Text="{Binding ForearmWeightPercent}" Width="30" TextAlignment="Right" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
                     <Slider Value="{Binding ForearmWeightPercent}" Minimum="0" Maximum="100" IsSnapToTickEnabled="True" TickFrequency="0.1" LargeChange="0.1" SmallChange="0.1" TickPlacement="None"/>
                 </DockPanel>
-                <DockPanel DockPanel.Dock="Top" Margin="10,5,10,0">
-                    <TextBlock Text="{DynamicResource CalibrationSettingWindow_SmoothingTime}" VerticalAlignment="Center" DockPanel.Dock="Left" Width="120"/>
-                    <TextBlock Text="s" VerticalAlignment="Center" DockPanel.Dock="Right" Width="20"/>
-                    <TextBlock Text="{Binding SmoothingTimeSeconds}" Width="30" TextAlignment="Right" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
-                    <Slider Value="{Binding SmoothingTimeSeconds}" Minimum="0" Maximum="0.2" IsSnapToTickEnabled="True" TickFrequency="0.001" LargeChange="0.001" SmallChange="0.001" TickPlacement="None"/>
-                </DockPanel>
                 <DockPanel DockPanel.Dock="Top" Margin="10,5,10,5">
                     <TextBlock Text="{DynamicResource CalibrationSettingWindow_MaxAccumulatedTwist}" VerticalAlignment="Center" DockPanel.Dock="Left" Width="120"/>
                     <TextBlock Text="°" VerticalAlignment="Center" DockPanel.Dock="Right" Width="20"/>
@@ -73,6 +75,5 @@
                 </DockPanel>
             </StackPanel>
         </GroupBox>
-        <TextBlock Text="{DynamicResource CalibrationSettingWindow_Notice}" Margin="15,0,15,10"/>
     </DockPanel>
 </Window>

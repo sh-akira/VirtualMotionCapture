@@ -695,8 +695,6 @@ namespace VMC
         [OptionalField]
         public int WristRotationFix_ForearmWeight = 570; // /1000
         [OptionalField]
-        public int WristRotationFix_SmoothingTime = 50; // /1000
-        [OptionalField]
         public int WristRotationFix_MaxAccumulatedTwist = 300;
 
 
@@ -874,7 +872,6 @@ namespace VMC
 
             WristRotationFix_UpperArmWeight = 200;
             WristRotationFix_ForearmWeight = 570;
-            WristRotationFix_SmoothingTime = 50;
             WristRotationFix_MaxAccumulatedTwist = 300;
         }
 

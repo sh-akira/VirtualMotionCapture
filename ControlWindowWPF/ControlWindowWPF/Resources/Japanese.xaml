@@ -296,7 +296,6 @@
     <system:String x:Key="CalibrationSettingWindow_WristRotationFix">手首回転補正</system:String>
     <system:String x:Key="CalibrationSettingWindow_UpperArmWeight">上腕配分 :</system:String>
     <system:String x:Key="CalibrationSettingWindow_ForearmWeight">前腕配分 :</system:String>
-    <system:String x:Key="CalibrationSettingWindow_SmoothingTime">スムージング時間 :</system:String>
     <system:String x:Key="CalibrationSettingWindow_MaxAccumulatedTwist">最大累積回転 :</system:String>
 
 

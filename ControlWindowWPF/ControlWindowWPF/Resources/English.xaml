@@ -296,7 +296,6 @@
     <system:String x:Key="CalibrationSettingWindow_WristRotationFix">Wrist Rotation Fix</system:String>
     <system:String x:Key="CalibrationSettingWindow_UpperArmWeight">Upper Arm Weight :</system:String>
     <system:String x:Key="CalibrationSettingWindow_ForearmWeight">Forearm Weight :</system:String>
-    <system:String x:Key="CalibrationSettingWindow_SmoothingTime">Smoothing Time :</system:String>
     <system:String x:Key="CalibrationSettingWindow_MaxAccumulatedTwist">Max Accumulated Twist :</system:String>
 
 

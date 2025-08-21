@@ -16,16 +16,11 @@ namespace VMC
 
         private ArmFixItem LeftArmFixItem;
         private ArmFixItem RightArmFixItem;
-        // VRIKで元から回ってる分があるので上腕は特に弱くて良い
+        // VRIKで元から回ってる分はキャンセルされるのでこの割合の通りに回転される
         public float UpperArmWeight = 0.2f; // 20%
         public float ForearmWeight = 0.57f;  // 57%
 
         private Guid? eventId = null;
-
-        [Header("Smoothing")]
-        [Tooltip("スムージングの強さ。0で無効、値が大きいほど滑らか（遅延も増加）")]
-        [Range(0f, 0.2f)]
-        public float smoothingTime = 0.05f;
 
         [Header("Twist Limits")]
         [Tooltip("累積回転がこの角度を超えたら連続性をリセット")]
@@ -86,7 +81,6 @@ namespace VMC
                         {
                             UpperArmWeight = Settings.Current.WristRotationFix_UpperArmWeight,
                             ForearmWeight = Settings.Current.WristRotationFix_ForearmWeight,
-                            SmoothingTime = Settings.Current.WristRotationFix_SmoothingTime,
                             MaxAccumulatedTwist = Settings.Current.WristRotationFix_MaxAccumulatedTwist,
                         }, e.RequestId);
                     }
@@ -107,7 +101,6 @@ namespace VMC
             {
                 UpperArmWeight = Settings.Current.WristRotationFix_UpperArmWeight / 1000f;
                 ForearmWeight = Settings.Current.WristRotationFix_ForearmWeight / 1000f;
-                smoothingTime = Settings.Current.WristRotationFix_SmoothingTime / 1000f;
                 maxAccumulatedTwist = Settings.Current.WristRotationFix_MaxAccumulatedTwist;
             }
         }
@@ -116,13 +109,11 @@ namespace VMC
         {
             UpperArmWeight = d.UpperArmWeight / 1000f;
             ForearmWeight = d.ForearmWeight / 1000f;
-            smoothingTime = d.SmoothingTime / 1000f;
             maxAccumulatedTwist = d.MaxAccumulatedTwist;
             if (Settings.Current != null)
             {
                 Settings.Current.WristRotationFix_UpperArmWeight = d.UpperArmWeight;
                 Settings.Current.WristRotationFix_ForearmWeight = d.ForearmWeight;
-                Settings.Current.WristRotationFix_SmoothingTime = d.SmoothingTime;
                 Settings.Current.WristRotationFix_MaxAccumulatedTwist = d.MaxAccumulatedTwist;
             }
         }
@@ -149,6 +140,7 @@ namespace VMC
             ApplyArmTwistFix(LeftArmFixItem);
             ApplyArmTwistFix(RightArmFixItem);
         }
+        
         private void ApplyArmTwistFix(ArmFixItem item)
         {
             Quaternion originalHandRotation = item.Hand.rotation;
@@ -187,29 +179,35 @@ namespace VMC
                 twistAngle += resetAdjustment;
                 item.AccumulatedTwistFromInitial += resetAdjustment;
                 
-                // デバッグ用
-                Debug.Log($"Twist angle reset: direction = {resetDirection}, adjustment = {resetAdjustment} degrees, new accumulated = {item.AccumulatedTwistFromInitial}");
-            }
-            else
-            {
-                // 6. スムージング（調整可能）- リセット時以外のみ適用
-                if (smoothingTime > 0 && ShouldApplySmoothing(twistAngle, lastAngle))
+                // twistAngleがmaxAccumulatedTwist範囲を超えた場合に正規化
+                if (twistAngle > maxAccumulatedTwist)
                 {
-                    twistAngle = SmoothTwistAngle(item.LastTwistAngle, twistAngle, smoothingTime);
+                    // 正の範囲を超えた場合：360度引く
+                    twistAngle -= 360f;
+                    item.AccumulatedTwistFromInitial -= 360f;
                 }
+                else if (twistAngle < -maxAccumulatedTwist)
+                {
+                    // 負の範囲を超えた場合：360度足す
+                    twistAngle += 360f;
+                    item.AccumulatedTwistFromInitial += 360f;
+                }
+                
+                // デバッグ用
+                Debug.Log($"Twist angle reset ({(item.IsLeftArm ? "Left" : "Right")} Arm): direction = {resetDirection}, adjustment = {resetAdjustment} degrees, normalized twistAngle = {twistAngle}, new accumulated = {item.AccumulatedTwistFromInitial}");
             }
 
             item.LastTwistAngle = twistAngle;
 
-            // 7. Twist角度をUpperArmとForearmに分配
+            // 6. Twist角度をUpperArmとForearmに分配
             float upperArmTwist = twistAngle * UpperArmWeight;
             float forearmTwist = twistAngle * ForearmWeight;
 
-            // 8. Twist軸を使用してTwist回転を適用
+            // 7. Twist軸を使用してTwist回転を適用
             Vector3 upperArmTwistAxis = item.UpperArm.TransformDirection(item.UpperArmTwistAxis);
             Vector3 forearmTwistAxis = item.Forearm.TransformDirection(item.ForearmTwistAxis);
 
-            // 9. Swing成分にTwist回転を加算
+            // 8. Swing成分にTwist回転を加算
             item.UpperArm.rotation = Quaternion.AngleAxis(upperArmTwist, upperArmTwistAxis) * upperArmSwingOnly;
             item.Forearm.rotation = Quaternion.AngleAxis(forearmTwist, forearmTwistAxis) * forearmSwingOnly;
             item.Hand.rotation = originalHandRotation;
@@ -283,28 +281,6 @@ namespace VMC
 
             // Swing成分
             swing = rotation * Quaternion.Inverse(twist);
-        }
-
-        // Twist角度のスムージング（オプション）
-        private float SmoothTwistAngle(float currentAngle, float targetAngle, float smoothTime = 0.1f)
-        {
-            float delta = Mathf.DeltaAngle(currentAngle, targetAngle);
-            return currentAngle + delta * Mathf.Min(1f, Time.deltaTime / smoothTime);
-        }
-
-        // スムージングを適用すべきか判定
-        private bool ShouldApplySmoothing(float currentAngle, float lastAngle)
-        {
-            float angleDiff = Mathf.Abs(Mathf.DeltaAngle(currentAngle, lastAngle));
-
-            // 急激な変化（30度以上）の場合はスムージングを適用
-            if (angleDiff > 30f) return true;
-
-            // 0度や180度付近（±10度）の場合もスムージングを適用
-            float absAngle = Mathf.Abs(currentAngle % 180f);
-            if (absAngle < 10f || absAngle > 170f) return true;
-
-            return false;
         }
 
         public class ArmFixItem

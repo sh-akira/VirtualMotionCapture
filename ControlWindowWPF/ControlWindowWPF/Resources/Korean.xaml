@@ -297,7 +297,6 @@
     <system:String x:Key="CalibrationSettingWindow_WristRotationFix">손목 회전 보정</system:String>
     <system:String x:Key="CalibrationSettingWindow_UpperArmWeight">상완 가중치 :</system:String>
     <system:String x:Key="CalibrationSettingWindow_ForearmWeight">전완 가중치 :</system:String>
-    <system:String x:Key="CalibrationSettingWindow_SmoothingTime">스무딩 시간 :</system:String>
     <system:String x:Key="CalibrationSettingWindow_MaxAccumulatedTwist">최대 누적 비틀림 :</system:String>
 
 

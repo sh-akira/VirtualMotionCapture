@@ -296,7 +296,6 @@
     <system:String x:Key="CalibrationSettingWindow_WristRotationFix">手腕旋转修正</system:String>
     <system:String x:Key="CalibrationSettingWindow_UpperArmWeight">上臂权重 :</system:String>
     <system:String x:Key="CalibrationSettingWindow_ForearmWeight">前臂权重 :</system:String>
-    <system:String x:Key="CalibrationSettingWindow_SmoothingTime">平滑时间 :</system:String>
     <system:String x:Key="CalibrationSettingWindow_MaxAccumulatedTwist">最大累积扭转 :</system:String>
 
         
