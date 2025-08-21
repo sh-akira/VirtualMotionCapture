@@ -238,6 +238,13 @@ namespace VMC
 
             // Swing-Twist分解でTwist成分のみを抽出
             Vector3 twistAxis = Vector3.right; // ForearmのローカルX軸（Twist軸）
+            
+            // 左腕の場合はTwist軸を反転
+            if (item.IsLeftArm)
+            {
+                twistAxis = -twistAxis; // Vector3.leftと同等
+            }
+            
             Quaternion swing, twist;
             SwingTwistDecomposition(deltaRotation, twistAxis, out swing, out twist);
 
@@ -290,6 +297,9 @@ namespace VMC
             public Transform Forearm;
             public Transform Hand;
 
+            // 左腕かどうかの判定（初期化時に決定）
+            public bool IsLeftArm;
+
             // Twist軸（ローカル空間）
             public Vector3 UpperArmTwistAxis;
             public Vector3 ForearmTwistAxis;
@@ -313,6 +323,10 @@ namespace VMC
                 UpperArm = upperArm;
                 Forearm = forearm;
                 Hand = hand;
+
+                // 初期化時に肩から手への方向で左右を判定
+                Vector3 shoulderToHand = hand.position - shoulder.position;
+                IsLeftArm = shoulderToHand.x < 0;
 
                 // UpperArmのTwist軸（Forearm→UpperArm方向をUpperArmローカル空間で）
                 UpperArmTwistAxis = upperArm.InverseTransformDirection(forearm.position - upperArm.position).normalized;
