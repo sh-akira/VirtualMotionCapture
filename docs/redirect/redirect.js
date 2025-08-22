@@ -1,5 +1,6 @@
 const allowedURLs = [
-    'ms-settings:*'
+    'ms-settings:*',
+    'vrmonitor:*'
 ];
 
 const r = new URLSearchParams(window.location.search).get('r');
