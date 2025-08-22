@@ -371,6 +371,16 @@ namespace VirtualMotionCaptureControlPanel
                     isSetting = false;
                 });
             });
+            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetTrackerReassignmentWhenChestAvailable { }, d =>
+            {
+                var data = (PipeCommands.EnableTrackerReassignmentWhenChestAvailable)d;
+                Dispatcher.Invoke(() =>
+                {
+                    isSetting = true;
+                    TrackerReassignmentWhenChestAvailableCheckBox.IsChecked = data.TrackerReassignmentWhenChestAvailable;
+                    isSetting = false;
+                });
+            });
             await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetStatusString { }, d =>
             {
                 var data = (PipeCommands.SetStatusString)d;
@@ -782,6 +792,15 @@ namespace VirtualMotionCaptureControlPanel
             await Globals.Client?.SendCommandAsync(new PipeCommands.SetLaunchSteamVROnStartup
             {
                 Enable = LaunchSteamVROnStartupCheckBox.IsChecked.Value,
+            });
+        }
+
+        private async void TrackerReassignmentWhenChestAvailableCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            if (isSetting) return;
+            await Globals.Client?.SendCommandAsync(new PipeCommands.EnableTrackerReassignmentWhenChestAvailable
+            {
+                TrackerReassignmentWhenChestAvailable = TrackerReassignmentWhenChestAvailableCheckBox.IsChecked.Value,
             });
         }
 

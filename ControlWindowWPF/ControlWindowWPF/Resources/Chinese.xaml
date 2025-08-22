@@ -273,6 +273,8 @@
     <system:String x:Key="SettingWindow_QualitySettings">画质设置</system:String>
     <system:String x:Key="SettingWindow_AntiAliasing">抗锯齿</system:String>
     <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">VMC Mod/发送动作功能仅在 pixivFANBOX 以及 Patreon 版本下可使用。</system:String>
+    <system:String x:Key="SettingWindow_TrackerReassignmentWhenChestAvailable">腰部追踪器缺失时如有胸部追踪器则重新分配</system:String>
+
     <system:String x:Key="SettingWindow_VirtualMotionTracker">虚拟追踪器（VMT）</system:String>
     <system:String x:Key="SettingWindow_VirtualMotionTrackerEnable">开启</system:String>
     <system:String x:Key="SettingWindow_VirtualMotionTrackerInstallSuccess">安装成功！重启 SteamVR 和 VirtualMotionCapture。点击 OK 并等待重启。</system:String>

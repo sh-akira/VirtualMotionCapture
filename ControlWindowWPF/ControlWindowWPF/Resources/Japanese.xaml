@@ -272,6 +272,7 @@
     <system:String x:Key="SettingWindow_LaunchSteamVROnStartup">起動時にSteamVRを自動起動する</system:String>
     <system:String x:Key="SettingWindow_QualitySettings">描画品質</system:String>
     <system:String x:Key="SettingWindow_AntiAliasing">アンチエイリアス</system:String>
+    <system:String x:Key="SettingWindow_TrackerReassignmentWhenChestAvailable">腰トラッカー無しで胸がある場合再割り当て</system:String>
     <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">モーション送信機能 / VMC ModはpixivFANBOX,Patreon先行配信版限定機能です</system:String>
     <system:String x:Key="SettingWindow_VirtualMotionTracker">Virtual Motion Tracker (VMT)</system:String>
     <system:String x:Key="SettingWindow_VirtualMotionTrackerEnable">有効</system:String>

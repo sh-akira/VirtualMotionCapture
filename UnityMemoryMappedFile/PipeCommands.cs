@@ -599,6 +599,12 @@ namespace UnityMemoryMappedFile
             public bool HandleControllerAsTracker { get; set; }
         }
 
+        public class GetTrackerReassignmentWhenChestAvailable { }
+        public class EnableTrackerReassignmentWhenChestAvailable
+        {
+            public bool TrackerReassignmentWhenChestAvailable { get; set; }
+        }
+
         public class GetLaunchSteamVROnStartup { }
         public class SetLaunchSteamVROnStartup
         {

@@ -752,6 +752,18 @@ namespace VMC
                         Enable = CommonSettings.Current.LaunchSteamVROnStartup,
                     }, e.RequestId);
                 }
+                else if (e.CommandType == typeof(PipeCommands.EnableTrackerReassignmentWhenChestAvailable))
+                {
+                    var d = (PipeCommands.EnableTrackerReassignmentWhenChestAvailable)e.Data;
+                    Settings.Current.TrackerReassignmentWhenChestAvailable = d.TrackerReassignmentWhenChestAvailable;
+                }
+                else if (e.CommandType == typeof(PipeCommands.GetTrackerReassignmentWhenChestAvailable))
+                {
+                    await server.SendCommandAsync(new PipeCommands.EnableTrackerReassignmentWhenChestAvailable
+                    {
+                        TrackerReassignmentWhenChestAvailable = Settings.Current.TrackerReassignmentWhenChestAvailable
+                    }, e.RequestId);
+                }
                 else if (e.CommandType == typeof(PipeCommands.GetQualitySettings))
                 {
                     await server.SendCommandAsync(new PipeCommands.SetQualitySettings

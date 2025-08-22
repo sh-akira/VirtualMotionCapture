@@ -562,6 +562,9 @@ namespace VMC
         public bool HandleControllerAsTracker;
 
         [OptionalField]
+        public bool TrackerReassignmentWhenChestAvailable;
+
+        [OptionalField]
         public int AntiAliasing;
 
         [OptionalField]
@@ -796,6 +799,8 @@ namespace VMC
             FixElbowRotation = true;
 
             HandleControllerAsTracker = false;
+
+            TrackerReassignmentWhenChestAvailable = false;
 
             AntiAliasing = 2;
 

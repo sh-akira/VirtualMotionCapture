@@ -796,7 +796,8 @@ namespace VMC
             }
             catch { }
 
-            if (bodyTracker == null && chestTracker != null)
+            // 胸だけでも良い感じに動くことが分かったので、オプション対応に変更
+            if (Settings.Current.TrackerReassignmentWhenChestAvailable && bodyTracker == null && chestTracker != null)
             {
                 Debug.LogWarning("*No waist tracker. Reassign chest tracker to waist.");
                 bodyTracker = chestTracker;
