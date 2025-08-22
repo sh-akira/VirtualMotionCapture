@@ -123,8 +123,11 @@ namespace VMC
             if (eventId != null) IKManager.Instance.RemoveOnPostUpdate(eventId.Value);
             ik = setIK;
 
-            LeftArmFixItem = new ArmFixItem(ik.references.leftShoulder, ik.references.leftUpperArm, ik.references.leftForearm, ik.references.leftHand);
-            RightArmFixItem = new ArmFixItem(ik.references.rightShoulder, ik.references.rightUpperArm, ik.references.rightForearm, ik.references.rightHand);
+            // 基準となるTransformを取得（胸が優先、なければルート）
+            Transform referenceTransform = ik.references.chest ?? ik.references.root;
+
+            LeftArmFixItem = new ArmFixItem(ik.references.leftShoulder, ik.references.leftUpperArm, ik.references.leftForearm, ik.references.leftHand, referenceTransform);
+            RightArmFixItem = new ArmFixItem(ik.references.rightShoulder, ik.references.rightUpperArm, ik.references.rightForearm, ik.references.rightHand, referenceTransform);
 
             // 設定を再読み込み
             LoadSettingsValues();
@@ -148,8 +151,8 @@ namespace VMC
             Quaternion currentForearmRotation = item.Forearm.rotation;
 
             // 1. UpperArmとForearmの現在の回転からTwist成分のみを除去し、Swing成分のみを残す
-            Quaternion upperArmSwingOnly = RemoveTwistFromRotation(currentUpperArmRotation, item.InitialUpperArmRotation, item.UpperArmTwistAxis);
-            Quaternion forearmSwingOnly = RemoveTwistFromRotation(currentForearmRotation, item.InitialForearmRotation, item.ForearmTwistAxis);
+            Quaternion upperArmSwingOnly = RemoveTwistFromRotation(currentUpperArmRotation, item.InitialUpperArmRotation, item.UpperArmTwistAxis, item);
+            Quaternion forearmSwingOnly = RemoveTwistFromRotation(currentForearmRotation, item.InitialForearmRotation, item.ForearmTwistAxis, item);
 
             // 2. Swing成分のみの回転を適用（IKの結果を保持）
             item.UpperArm.rotation = upperArmSwingOnly;
@@ -214,17 +217,45 @@ namespace VMC
         }
 
         // 回転からTwist成分を除去し、Swing成分のみを残す
-        private Quaternion RemoveTwistFromRotation(Quaternion currentRotation, Quaternion initialRotation, Vector3 twistAxis)
+        private Quaternion RemoveTwistFromRotation(Quaternion currentRotation, Quaternion initialRotation, Vector3 twistAxis, ArmFixItem item)
         {
-            // 初期回転からの相対回転を取得
-            Quaternion relativeRotation = currentRotation * Quaternion.Inverse(initialRotation);
+            Quaternion relativeRotation;
             
-            // Swing-Twist分解でSwing成分のみを抽出
-            Quaternion swing, twist;
-            SwingTwistDecomposition(relativeRotation, twistAxis, out swing, out twist);
+            // 基準Transform（胸またはルート）を取得
+            Transform referenceTransform = ik.references.chest ?? ik.references.root;
             
-            // Swing成分のみを初期回転に適用
-            return swing * initialRotation;
+            if (referenceTransform != null)
+            {
+                // 基準Transformを使った相対回転計算
+                Quaternion currentReferenceRotation = referenceTransform.rotation;
+                
+                // 現在の腕の回転を基準Transformからの相対回転として計算
+                Quaternion currentArmRelativeToReference = Quaternion.Inverse(currentReferenceRotation) * currentRotation;
+                
+                // 初期状態との相対回転を計算（基準Transformの回転変化の影響を除去）
+                Quaternion initialArmRelativeToReference = (initialRotation == item.InitialUpperArmRotation) 
+                    ? item.InitialUpperArmRelativeToReference 
+                    : item.InitialForearmRelativeToReference;
+                
+                relativeRotation = currentArmRelativeToReference * Quaternion.Inverse(initialArmRelativeToReference);
+                
+                // Swing-Twist分解でSwing成分のみを抽出
+                Quaternion swing, twist;
+                SwingTwistDecomposition(relativeRotation, twistAxis, out swing, out twist);
+                
+                // 結果を基準Transformを基準としたワールド座標に戻す
+                return currentReferenceRotation * (swing * initialArmRelativeToReference);
+            }
+            else
+            {
+                // 基準Transformがない場合は従来の方法
+                relativeRotation = currentRotation * Quaternion.Inverse(initialRotation);
+                
+                Quaternion swing, twist;
+                SwingTwistDecomposition(relativeRotation, twistAxis, out swing, out twist);
+                
+                return swing * initialRotation;
+            }
         }
 
         // HandのTwist角度を計算（Swing-Twist分解を使用）
@@ -316,8 +347,15 @@ namespace VMC
             // T-ポーズ時の初期回転を保存
             public Quaternion InitialUpperArmRotation;
             public Quaternion InitialForearmRotation;
+            
+            // 基準Transform（胸またはルート）の初期回転を保存
+            public Quaternion InitialReferenceRotation;
+            
+            // 腕の初期回転を基準Transformからの相対回転として保存
+            public Quaternion InitialUpperArmRelativeToReference;
+            public Quaternion InitialForearmRelativeToReference;
 
-            public ArmFixItem(Transform shoulder, Transform upperArm, Transform forearm, Transform hand)
+            public ArmFixItem(Transform shoulder, Transform upperArm, Transform forearm, Transform hand, Transform referenceTransform)
             {
                 Shoulder = shoulder;
                 UpperArm = upperArm;
@@ -336,9 +374,26 @@ namespace VMC
                 // 初期状態のHandの回転を保存
                 NeutralHandRotation = Quaternion.Inverse(forearm.rotation) * hand.rotation;
                 
-                // T-ポーズ時の初期回転を保存
+                // T-ポーズ時の絶対回転を保存
                 InitialUpperArmRotation = upperArm.rotation;
                 InitialForearmRotation = forearm.rotation;
+                
+                // 基準Transform（胸またはルート）の初期回転を保存
+                if (referenceTransform != null)
+                {
+                    InitialReferenceRotation = referenceTransform.rotation;
+                    
+                    // 腕の回転を基準Transformからの相対回転として保存
+                    InitialUpperArmRelativeToReference = Quaternion.Inverse(referenceTransform.rotation) * upperArm.rotation;
+                    InitialForearmRelativeToReference = Quaternion.Inverse(referenceTransform.rotation) * forearm.rotation;
+                }
+                else
+                {
+                    // 基準Transformがない場合は従来の方法を使用
+                    InitialReferenceRotation = Quaternion.identity;
+                    InitialUpperArmRelativeToReference = upperArm.rotation;
+                    InitialForearmRelativeToReference = forearm.rotation;
+                }
             }
         }
     }
