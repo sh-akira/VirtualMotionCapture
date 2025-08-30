@@ -476,12 +476,12 @@ Ver 0.02
   
   
 # ビルド手順  
-ビルド環境：Unity 2019.4.8f1 / Visual Studio 2019 (Windowsデスクトップ開発パッケージ)  
+ビルド環境：Unity 2022.3.5f1 / Visual Studio 2022 (Windowsデスクトップ開発パッケージ)  
   
   
 ・このリポジトリをクローンかダウンロードします。  
 ・ダウンロードした場合ColorPickerWPFフォルダがありませんので、忘れずにそちらもダウンロードして入れてください  
-※以下、UnityはUnity 2019.4.8f1で開いてください。  
+※以下、UnityはUnity 2022.3.5f1で開いてください。  
 ※以下のプラグインインポート前に、ProjectSettingsフォルダをコピーしてバックアップしてください！  
 ※API UpdaterはNo, Thanksで問題ありません。  
 ・Assets直下にExternalPluginsフォルダを作って、その下に  
@@ -505,7 +505,7 @@ Ver 0.02
 
 ※インポートが終わったらUnityをいったん終了し、ProjectSettingsフォルダを削除して、バックアップしておいたProjectSettingsフォルダを戻してください！ 
 
-・ControlWindowWPF/ControlWindowWPF.slnをVisual Studio 2019で開きます。  
+・ControlWindowWPF/ControlWindowWPF.slnをVisual Studioで開きます。  
 ・VirtualMotionCaptureControlPanelプロジェクトのプロパティを開きデバッグのコマンドライン引数を/pipeName VMCTestにする。  
 ・そのままVisualStudioで1回開始します。自動でexeが作成されます。開いたコントロールパネルは閉じて1回終了します。  
 ・Unityをもう一度起動します  
