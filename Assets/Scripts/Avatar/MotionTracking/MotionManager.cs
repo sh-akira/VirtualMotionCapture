@@ -297,6 +297,7 @@ namespace VMC
                         {
                             continue;
                         }
+                        modelBone.localPosition = cloneBone.localPosition;
                         modelBone.localRotation = cloneBone.localRotation; 
                     }
                 }
