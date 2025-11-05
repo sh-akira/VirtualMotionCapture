@@ -189,7 +189,8 @@ namespace VMC
                                         modelBone.localPosition = cloneBone.localPosition + virtualAvatar.CenterOffsetPosition; //Root位置だけは同期
                                     }
                                 }
-                                else if (virtualAvatar.MotionSource == MotionSource.VRIK && bone == HumanBodyBones.Hips)
+                                else if ((virtualAvatar.MotionSource == MotionSource.VRIK && bone == HumanBodyBones.Hips) ||
+                                    (virtualAvatar.MotionSource == MotionSource.VMCProtocol && bone == VirtualAvatar.HumanBodyBonesRoot))
                                 {
                                     if (virtualAvatar.ApplyRootRotation)
                                     {
