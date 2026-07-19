@@ -218,6 +218,31 @@
                                                     <Setter Property="Text" Value="○"/>
                                                     <Setter Property="Foreground" Value="Green"/>
                                                 </DataTrigger>
+                                                <!-- VRM 1.0 -->
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding MetaVersion}" Value="1"/>
+                                                        <Condition Binding="{Binding CommercialUsageType}" Value="0"/>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Text" Value="×"/>
+                                                    <Setter Property="Foreground" Value="Red"/>
+                                                </MultiDataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding MetaVersion}" Value="1"/>
+                                                        <Condition Binding="{Binding CommercialUsageType}" Value="1"/>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Text" Value="△"/>
+                                                    <Setter Property="Foreground" Value="Orange"/>
+                                                </MultiDataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding MetaVersion}" Value="1"/>
+                                                        <Condition Binding="{Binding CommercialUsageType}" Value="2"/>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Text" Value="○"/>
+                                                    <Setter Property="Foreground" Value="Green"/>
+                                                </MultiDataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBlock.Style>
@@ -233,6 +258,28 @@
                                                 <DataTrigger Binding="{Binding CommercialUssage}" Value="1">
                                                     <Setter Property="Text" Value="{DynamicResource Allow}"/>
                                                 </DataTrigger>
+                                                <!-- VRM 1.0 -->
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding MetaVersion}" Value="1"/>
+                                                        <Condition Binding="{Binding CommercialUsageType}" Value="0"/>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Text" Value="{DynamicResource CommercialUssage_PersonalNonProfit}"/>
+                                                </MultiDataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding MetaVersion}" Value="1"/>
+                                                        <Condition Binding="{Binding CommercialUsageType}" Value="1"/>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Text" Value="{DynamicResource CommercialUssage_PersonalProfit}"/>
+                                                </MultiDataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding MetaVersion}" Value="1"/>
+                                                        <Condition Binding="{Binding CommercialUsageType}" Value="2"/>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Text" Value="{DynamicResource CommercialUssage_Corporation}"/>
+                                                </MultiDataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBlock.Style>
@@ -240,13 +287,13 @@
                             </StackPanel>
                         </Border>
                     </Grid>
-                    <Grid>
+                    <Grid DockPanel.Dock="Top">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition  Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition />
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="20"/>
@@ -258,12 +305,27 @@
                         <TextBlock Grid.Row="0" Grid.Column="1" Text="{DynamicResource VRMImportWindow_PersonationOtherLicenseUrl}"/>
                         <TextBox Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" Text="{Binding OtherPermissionUrl}"/>
                         <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Text="{DynamicResource VRMImportWindow_LicenseRedistributionAndModification}" FontSize="18"/>
-                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{DynamicResource VRMImportWindow_LicenseType}"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{DynamicResource VRMImportWindow_LicenseType}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                    <Style.Triggers>
+                                        <!-- ライセンス種別はVRM0.xのみの項目のためVRM1.0では非表示 -->
+                                        <DataTrigger Binding="{Binding MetaVersion}" Value="1">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                         <TextBox Grid.Row="2" Grid.Column="3" >
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                     <Setter Property="Text" Value="{DynamicResource Unknown}"/>
                                     <Style.Triggers>
+                                        <!-- ライセンス種別はVRM0.xのみの項目のためVRM1.0では非表示 -->
+                                        <DataTrigger Binding="{Binding MetaVersion}" Value="1">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
                                         <DataTrigger Binding="{Binding LicenseType}" Value="0">
                                             <Setter Property="Text" Value="{DynamicResource LicenseType_RedistributionProhibited}"/>
                                         </DataTrigger>
@@ -301,6 +363,133 @@
                             <Button Content="{DynamicResource VRMImportWindow_ImportButton}" Margin="10,10,10,5" Name="ImportButton" Click="ImportButton_Click" ToolTip="{DynamicResource VRMImportWindow_ImportButton_ToolTip}" IsEnabled="False"/>
                             <Button Content="{DynamicResource VRMImportWindow_IgnoreButton}" Margin="10,5,10,10" Name="IgnoreButton" Click="IgnoreButton_Click" ToolTip="{DynamicResource VRMImportWindow_IgnoreButton_ToolTip}" IsEnabled="False"/>
                         </UniformGrid>
+                    </Grid>
+                    <!-- VRM 1.0 追加ライセンス表示 (MetaVersion==1のときのみ表示) -->
+                    <Grid Margin="0,5,0,0">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding MetaVersion}" Value="1">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <UniformGrid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Columns="5" Margin="0,0,0,5">
+                            <StackPanel Margin="0,0,10,0">
+                                <TextBlock Text="{DynamicResource VRMImportWindow_PoliticalOrReligiousUsage}" TextWrapping="Wrap"/>
+                                <TextBox Margin="0,3,0,3">
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                            <Setter Property="Text" Value="{DynamicResource Unknown}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding PoliticalOrReligiousUsage}" Value="0">
+                                                    <Setter Property="Text" Value="{DynamicResource Disallow}"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding PoliticalOrReligiousUsage}" Value="1">
+                                                    <Setter Property="Text" Value="{DynamicResource Allow}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,10,0">
+                                <TextBlock Text="{DynamicResource VRMImportWindow_AntisocialOrHateUsage}" TextWrapping="Wrap"/>
+                                <TextBox Margin="0,3,0,3">
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                            <Setter Property="Text" Value="{DynamicResource Unknown}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding AntisocialOrHateUsage}" Value="0">
+                                                    <Setter Property="Text" Value="{DynamicResource Disallow}"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding AntisocialOrHateUsage}" Value="1">
+                                                    <Setter Property="Text" Value="{DynamicResource Allow}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,10,0">
+                                <TextBlock Text="{DynamicResource VRMImportWindow_CreditNotation}" TextWrapping="Wrap"/>
+                                <TextBox Margin="0,3,0,3">
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                            <Setter Property="Text" Value="{DynamicResource Unknown}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding CreditNotation}" Value="0">
+                                                    <Setter Property="Text" Value="{DynamicResource CreditNotation_Required}"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding CreditNotation}" Value="1">
+                                                    <Setter Property="Text" Value="{DynamicResource CreditNotation_Unnecessary}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,10,0">
+                                <TextBlock Text="{DynamicResource VRMImportWindow_Redistribution}" TextWrapping="Wrap"/>
+                                <TextBox Margin="0,3,0,3">
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                            <Setter Property="Text" Value="{DynamicResource Unknown}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Redistribution}" Value="0">
+                                                    <Setter Property="Text" Value="{DynamicResource Disallow}"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Redistribution}" Value="1">
+                                                    <Setter Property="Text" Value="{DynamicResource Allow}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,10,0">
+                                <TextBlock Text="{DynamicResource VRMImportWindow_Modification}" TextWrapping="Wrap"/>
+                                <TextBox Margin="0,3,0,3">
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                            <Setter Property="Text" Value="{DynamicResource Unknown}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ModificationType}" Value="0">
+                                                    <Setter Property="Text" Value="{DynamicResource Modification_Prohibited}"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ModificationType}" Value="1">
+                                                    <Setter Property="Text" Value="{DynamicResource Modification_AllowModification}"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ModificationType}" Value="2">
+                                                    <Setter Property="Text" Value="{DynamicResource Modification_AllowModificationRedistribution}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                            </StackPanel>
+                        </UniformGrid>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{DynamicResource VRMImportWindow_LicenseUrl}"/>
+                        <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding LicenseUrl}"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{DynamicResource VRMImportWindow_CopyrightInformation}"/>
+                        <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding CopyrightInformation}"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{DynamicResource VRMImportWindow_ThirdPartyLicenses}" VerticalAlignment="Top" Margin="0,6,0,0"/>
+                        <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding ThirdPartyLicenses}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Height="76" VerticalAlignment="Top"/>
                     </Grid>
                 </DockPanel>
             </DockPanel>

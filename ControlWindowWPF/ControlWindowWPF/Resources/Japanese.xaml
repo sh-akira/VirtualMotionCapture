@@ -201,8 +201,25 @@
     <system:String x:Key="LicenseType_CC_BY_ND">Creative Commons CC BY NDライセンス(CC_BY_ND)</system:String>
     <system:String x:Key="LicenseType_CC_BY_NC_ND">Creative Commons CC BY NC NDライセンス(CC_BY_NC_ND)</system:String>
     <system:String x:Key="LicenseType_Other">その他(Other)</system:String>
-    
-    
+
+    <!-- VRMImportWindow (VRM 1.0) -->
+    <system:String x:Key="VRMImportWindow_PoliticalOrReligiousUsage">政治・宗教目的の利用</system:String>
+    <system:String x:Key="VRMImportWindow_AntisocialOrHateUsage">反社会的・憎悪表現の利用</system:String>
+    <system:String x:Key="VRMImportWindow_CreditNotation">クレジット表記</system:String>
+    <system:String x:Key="VRMImportWindow_Redistribution">再配布</system:String>
+    <system:String x:Key="VRMImportWindow_Modification">改変</system:String>
+    <system:String x:Key="VRMImportWindow_LicenseUrl">ライセンスURL</system:String>
+    <system:String x:Key="VRMImportWindow_CopyrightInformation">著作権情報</system:String>
+    <system:String x:Key="VRMImportWindow_ThirdPartyLicenses">サードパーティライセンス</system:String>
+    <system:String x:Key="CommercialUssage_PersonalNonProfit">個人の非営利のみ</system:String>
+    <system:String x:Key="CommercialUssage_PersonalProfit">個人の営利利用可</system:String>
+    <system:String x:Key="CommercialUssage_Corporation">法人利用可</system:String>
+    <system:String x:Key="CreditNotation_Required">必要</system:String>
+    <system:String x:Key="CreditNotation_Unnecessary">不要</system:String>
+    <system:String x:Key="Modification_Prohibited">改変禁止</system:String>
+    <system:String x:Key="Modification_AllowModification">改変可(再配布禁止)</system:String>
+    <system:String x:Key="Modification_AllowModificationRedistribution">改変・改変物の再配布可</system:String>
+
     <!-- SettingWindow -->
     <system:String x:Key="SettingWindowTitle">設定</system:String>
                           

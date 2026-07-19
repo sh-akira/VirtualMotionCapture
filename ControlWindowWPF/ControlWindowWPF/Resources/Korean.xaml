@@ -202,8 +202,25 @@
     <system:String x:Key="LicenseType_CC_BY_ND">Creative Commons CC BY ND라이센스(CC_BY_ND)</system:String>
     <system:String x:Key="LicenseType_CC_BY_NC_ND">Creative Commons CC BY NC ND라이센스(CC_BY_NC_ND)</system:String>
     <system:String x:Key="LicenseType_Other">기타(Other)</system:String>
-    
-    
+
+    <!-- VRMImportWindow (VRM 1.0) -->
+    <system:String x:Key="VRMImportWindow_PoliticalOrReligiousUsage">정치·종교 목적 이용</system:String>
+    <system:String x:Key="VRMImportWindow_AntisocialOrHateUsage">반사회적·혐오 표현 이용</system:String>
+    <system:String x:Key="VRMImportWindow_CreditNotation">크레딧 표기</system:String>
+    <system:String x:Key="VRMImportWindow_Redistribution">재배포</system:String>
+    <system:String x:Key="VRMImportWindow_Modification">개변(수정)</system:String>
+    <system:String x:Key="VRMImportWindow_LicenseUrl">라이센스 URL</system:String>
+    <system:String x:Key="VRMImportWindow_CopyrightInformation">저작권 정보</system:String>
+    <system:String x:Key="VRMImportWindow_ThirdPartyLicenses">서드파티 라이센스</system:String>
+    <system:String x:Key="CommercialUssage_PersonalNonProfit">개인 비영리만</system:String>
+    <system:String x:Key="CommercialUssage_PersonalProfit">개인 영리 이용 가능</system:String>
+    <system:String x:Key="CommercialUssage_Corporation">법인 이용 가능</system:String>
+    <system:String x:Key="CreditNotation_Required">필요</system:String>
+    <system:String x:Key="CreditNotation_Unnecessary">불필요</system:String>
+    <system:String x:Key="Modification_Prohibited">수정 금지</system:String>
+    <system:String x:Key="Modification_AllowModification">수정 가능(재배포 금지)</system:String>
+    <system:String x:Key="Modification_AllowModificationRedistribution">수정 및 수정물 재배포 가능</system:String>
+
     <!-- SettingWindow -->
     <system:String x:Key="SettingWindowTitle">설정</system:String>
 

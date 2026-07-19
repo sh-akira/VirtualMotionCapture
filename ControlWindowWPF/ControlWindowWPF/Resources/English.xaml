@@ -203,6 +203,24 @@
     <system:String x:Key="LicenseType_CC_BY_NC_ND">Creative Commons CC BY NC ND License(CC_BY_NC_ND)</system:String>
     <system:String x:Key="LicenseType_Other">Other</system:String>
 
+    <!-- VRMImportWindow (VRM 1.0) -->
+    <system:String x:Key="VRMImportWindow_PoliticalOrReligiousUsage">Political / Religious use</system:String>
+    <system:String x:Key="VRMImportWindow_AntisocialOrHateUsage">Antisocial / Hate use</system:String>
+    <system:String x:Key="VRMImportWindow_CreditNotation">Credit notation</system:String>
+    <system:String x:Key="VRMImportWindow_Redistribution">Redistribution</system:String>
+    <system:String x:Key="VRMImportWindow_Modification">Modification</system:String>
+    <system:String x:Key="VRMImportWindow_LicenseUrl">License URL</system:String>
+    <system:String x:Key="VRMImportWindow_CopyrightInformation">Copyright information</system:String>
+    <system:String x:Key="VRMImportWindow_ThirdPartyLicenses">Third party licenses</system:String>
+    <system:String x:Key="CommercialUssage_PersonalNonProfit">Personal non-profit only</system:String>
+    <system:String x:Key="CommercialUssage_PersonalProfit">Personal profit allowed</system:String>
+    <system:String x:Key="CommercialUssage_Corporation">Corporation allowed</system:String>
+    <system:String x:Key="CreditNotation_Required">Required</system:String>
+    <system:String x:Key="CreditNotation_Unnecessary">Unnecessary</system:String>
+    <system:String x:Key="Modification_Prohibited">Prohibited</system:String>
+    <system:String x:Key="Modification_AllowModification">Allowed (no redistribution)</system:String>
+    <system:String x:Key="Modification_AllowModificationRedistribution">Modification and redistribution allowed</system:String>
+
     <!-- SettingWindow -->
     <system:String x:Key="SettingWindowTitle">Settings</system:String>
 

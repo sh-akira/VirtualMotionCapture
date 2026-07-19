@@ -63,7 +63,9 @@ namespace VMC
                 {
                     this.CurrentModel = CurrentModel;
                     animator = CurrentModel.GetComponent<Animator>();
-                    //blendShapeProxy = CurrentModel.GetComponent<VRMBlendShapeProxy>();
+                    //モデル入れ替え時に古いモデルのExpressionを参照し続けないように更新する
+                    var vrm10Instance = CurrentModel.GetComponent<Vrm10Instance>();
+                    vrm10RuntimeExpression = vrm10Instance != null ? vrm10Instance.Runtime.Expression : null;
                 }
             };
 
@@ -425,8 +427,12 @@ namespace VMC
                 //Blendsharp
                 if (vrm10RuntimeExpression == null)
                 {
-                    vrm10RuntimeExpression = CurrentModel.GetComponent<Vrm10Instance>().Runtime.Expression;
-                    Debug.Log("ExternalSender: Vrm10RuntimeExpression Updated");
+                    var vrm10Instance = CurrentModel.GetComponent<Vrm10Instance>();
+                    if (vrm10Instance != null)
+                    {
+                        vrm10RuntimeExpression = vrm10Instance.Runtime.Expression;
+                        Debug.Log("ExternalSender: Vrm10RuntimeExpression Updated");
+                    }
                 }
 
                 if (frameOfBlendShape > periodBlendShape && periodBlendShape != 0)
@@ -436,10 +442,12 @@ namespace VMC
                     uOSC.Bundle blendShapeBundle = new uOSC.Bundle(uOSC.Timestamp.Immediate);
                     if (vrm10RuntimeExpression != null)
                     {
-                        foreach (var b in vrm10RuntimeExpression.GetWeights())
+                        //VMCProtocolの仕様上、VRM1.0モデル使用時もプリセット表情はVRM0.xの名称で送信する
+                        //(LookAt等の適用後の値を送るためActualWeightsを使用)
+                        foreach (var b in vrm10RuntimeExpression.ActualWeights)
                         {
                             blendShapeBundle.Add(new uOSC.Message("/VMC/Ext/Blend/Val",
-                                b.Key.ToString(),
+                                VRM10CompatibleNames.GetVRM0CompatibleName(b.Key),
                                 (float)b.Value
                                 ));
                         }

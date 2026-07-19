@@ -96,9 +96,13 @@ namespace VMC
                 if ((SRanipal_Eye_Framework.Status != SRanipal_Eye_Framework.FrameworkStatus.WORKING &&
                     SRanipal_Eye_Framework.Status != SRanipal_Eye_Framework.FrameworkStatus.NOT_SUPPORT) ||
                     SRanipal_Eye_Framework.Status == SRanipal_Eye_Framework.FrameworkStatus.NOT_SUPPORT || enabled == false) return;
-                //vrm10Instance.LookAtTarget = LookTarget.transform;
-                //vrmLookAtHead.LookWorldPosition();
-                //vrm10Instance.LookAtTarget = null;
+                if (LookTarget == null) return;
+                if (vrm10Instance == null) return;
+                //アイトラッキングが動作している時だけLookTargetの方向を目線に反映する
+                //(LookAtTarget未使用時のみ有効。ボーン/Expressionどちらの目線タイプもRuntimeが処理する)
+                var lookAt = vrm10Instance.Runtime.LookAt;
+                var (yaw, pitch) = lookAt.CalculateYawPitchFromLookAtPosition(LookTarget.transform.position);
+                lookAt.SetYawPitchManually(yaw, pitch);
             };
             faceController.BeforeApply += faceBeforeApply;
             StartPos = LookTarget.transform.localPosition;

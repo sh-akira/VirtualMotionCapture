@@ -80,16 +80,18 @@ namespace VMC
             LookTarget.transform.parent = MonitorPosition.transform;
             LookTarget.transform.localRotation = Quaternion.identity;
             LookTarget.transform.localPosition = new Vector3(0, 0, 0f);
-            //var vrmLookAtHead = currentModel.GetComponent<VRM.VRMLookAtHead>();
+            var vrm10Instance = currentModel.GetComponent<UniVRM10.Vrm10Instance>();
             if (faceBeforeApply != null) faceController.BeforeApply -= faceBeforeApply;
             faceBeforeApply = () =>
             {
                 if (LookTarget == null) return;
-                //if (vrmLookAtHead.Head == null) return;
+                if (vrm10Instance == null) return;
                 if (isValidPosition == false) return;
-                //vrmLookAtHead.Target = LookTarget.transform;
-                //vrmLookAtHead.LookWorldPosition();
-                //vrmLookAtHead.Target = null;
+                //視線が有効な時だけLookTargetの方向を目線に反映する
+                //(LookAtTarget未使用時のみ有効。ボーン/Expressionどちらの目線タイプもRuntimeが処理する)
+                var lookAt = vrm10Instance.Runtime.LookAt;
+                var (yaw, pitch) = lookAt.CalculateYawPitchFromLookAtPosition(LookTarget.transform.position);
+                lookAt.SetYawPitchManually(yaw, pitch);
             };
             faceController.BeforeApply += faceBeforeApply;
             StartPos = LookTarget.transform.localPosition;

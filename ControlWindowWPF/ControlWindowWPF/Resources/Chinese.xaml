@@ -203,6 +203,24 @@
     <system:String x:Key="LicenseType_CC_BY_NC_ND">知识共享 署名-非商业性使用-禁止演绎 (CC_BY_NC_ND)</system:String>
     <system:String x:Key="LicenseType_Other">其他</system:String>
 
+    <!-- VRMImportWindow (VRM 1.0) -->
+    <system:String x:Key="VRMImportWindow_PoliticalOrReligiousUsage">政治或宗教用途</system:String>
+    <system:String x:Key="VRMImportWindow_AntisocialOrHateUsage">反社会或仇恨表现用途</system:String>
+    <system:String x:Key="VRMImportWindow_CreditNotation">署名要求</system:String>
+    <system:String x:Key="VRMImportWindow_Redistribution">再分发</system:String>
+    <system:String x:Key="VRMImportWindow_Modification">修改</system:String>
+    <system:String x:Key="VRMImportWindow_LicenseUrl">许可协议URL</system:String>
+    <system:String x:Key="VRMImportWindow_CopyrightInformation">版权信息</system:String>
+    <system:String x:Key="VRMImportWindow_ThirdPartyLicenses">第三方许可协议</system:String>
+    <system:String x:Key="CommercialUssage_PersonalNonProfit">仅限个人非营利</system:String>
+    <system:String x:Key="CommercialUssage_PersonalProfit">允许个人营利使用</system:String>
+    <system:String x:Key="CommercialUssage_Corporation">允许法人使用</system:String>
+    <system:String x:Key="CreditNotation_Required">必须</system:String>
+    <system:String x:Key="CreditNotation_Unnecessary">不需要</system:String>
+    <system:String x:Key="Modification_Prohibited">禁止修改</system:String>
+    <system:String x:Key="Modification_AllowModification">允许修改(禁止再分发)</system:String>
+    <system:String x:Key="Modification_AllowModificationRedistribution">允许修改及再分发修改物</system:String>
+
     <!-- SettingWindow -->
     <system:String x:Key="SettingWindowTitle">设置</system:String>
 

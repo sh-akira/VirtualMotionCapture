@@ -1476,6 +1476,19 @@ namespace UnityMemoryMappedFile
         // Distribution License
         public LicenseType LicenseType { get; set; }
         public string OtherLicenseUrl { get; set; }
+
+        // VRM 1.0 (VRMC_vrm meta)
+        // 古いバージョンの相手との通信互換性維持のため、新しいenumは追加せずint/既存enumで表現する
+        public int MetaVersion { get; set; } // 0:VRM0.x 1:VRM1.0
+        public string CopyrightInformation { get; set; }
+        public string ThirdPartyLicenses { get; set; }
+        public string LicenseUrl { get; set; }
+        public int CommercialUsageType { get; set; } // 0:personalNonProfit 1:personalProfit 2:corporation
+        public UssageLicense PoliticalOrReligiousUsage { get; set; }
+        public UssageLicense AntisocialOrHateUsage { get; set; }
+        public int CreditNotation { get; set; } // 0:required 1:unnecessary
+        public UssageLicense Redistribution { get; set; }
+        public int ModificationType { get; set; } // 0:prohibited 1:allowModification 2:allowModificationRedistribution
     }
 
     public enum AllowedUser

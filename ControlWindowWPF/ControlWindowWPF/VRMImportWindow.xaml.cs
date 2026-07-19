@@ -61,6 +61,8 @@ namespace VirtualMotionCaptureControlPanel
             {
                 CurrentMeta = meta;
                 this.DataContext = meta;
+                //VRM1.0は追加のライセンス項目を表示するためウインドウを広げる
+                this.Height = meta.MetaVersion == 1 ? 780 : 565;
                 ImportButton.IsEnabled = true;
                 IgnoreButton.IsEnabled = true;
                 if (meta.ThumbnailPNGBytes != null)
