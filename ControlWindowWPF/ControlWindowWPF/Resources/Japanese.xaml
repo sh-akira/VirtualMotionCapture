@@ -203,6 +203,7 @@
     <system:String x:Key="LicenseType_Other">その他(Other)</system:String>
 
     <!-- VRMImportWindow (VRM 1.0) -->
+    <system:String x:Key="VRMImportWindow_VRM10AdditionalLicense">VRM1.0 追加ライセンス情報</system:String>
     <system:String x:Key="VRMImportWindow_PoliticalOrReligiousUsage">政治・宗教目的の利用</system:String>
     <system:String x:Key="VRMImportWindow_AntisocialOrHateUsage">反社会的・憎悪表現の利用</system:String>
     <system:String x:Key="VRMImportWindow_CreditNotation">クレジット表記</system:String>

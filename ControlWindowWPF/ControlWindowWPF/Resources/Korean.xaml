@@ -204,6 +204,7 @@
     <system:String x:Key="LicenseType_Other">기타(Other)</system:String>
 
     <!-- VRMImportWindow (VRM 1.0) -->
+    <system:String x:Key="VRMImportWindow_VRM10AdditionalLicense">VRM 1.0 추가 라이선스 정보</system:String>
     <system:String x:Key="VRMImportWindow_PoliticalOrReligiousUsage">정치·종교 목적 이용</system:String>
     <system:String x:Key="VRMImportWindow_AntisocialOrHateUsage">반사회적·혐오 표현 이용</system:String>
     <system:String x:Key="VRMImportWindow_CreditNotation">크레딧 표기</system:String>

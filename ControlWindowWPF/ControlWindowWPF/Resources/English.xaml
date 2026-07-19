@@ -204,6 +204,7 @@
     <system:String x:Key="LicenseType_Other">Other</system:String>
 
     <!-- VRMImportWindow (VRM 1.0) -->
+    <system:String x:Key="VRMImportWindow_VRM10AdditionalLicense">VRM 1.0 Additional License Information</system:String>
     <system:String x:Key="VRMImportWindow_PoliticalOrReligiousUsage">Political / Religious use</system:String>
     <system:String x:Key="VRMImportWindow_AntisocialOrHateUsage">Antisocial / Hate use</system:String>
     <system:String x:Key="VRMImportWindow_CreditNotation">Credit notation</system:String>
