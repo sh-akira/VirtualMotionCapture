@@ -162,7 +162,8 @@ namespace VMC
                 Debug.LogWarning($"Failed to detect frame rate: {ex}");
             }
 
-            using var loader = new VrmAnimationImporter(data);
+            //UniVRM 0.131でVrmAnimationImporterのコンストラクタがGltfData→VrmAnimationDataに変更された
+            using var loader = new VrmAnimationImporter(new VrmAnimationData(data));
             var instance = await loader.LoadAsync(new RuntimeOnlyAwaitCaller());
             Root = instance.gameObject;
             IsVrma = true;

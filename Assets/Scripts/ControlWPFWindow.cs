@@ -1083,7 +1083,7 @@ namespace VMC
                 var thumbnail = await loader.LoadVrmThumbnailAsync(awaitCaller);
                 if (thumbnail != null)
                 {
-                    vrmdata.ThumbnailPNGBytes = thumbnail.EncodeToPNG();
+                    vrmdata.ThumbnailPNGBytes = EncodeTextureToPNG(thumbnail);
                 }
             }
             finally
@@ -1092,6 +1092,39 @@ namespace VMC
             }
 
             return vrmdata;
+        }
+
+        /// <summary>
+        /// テクスチャをPNGバイト列に変換する。
+        /// UniVRM 0.131系のサムネイルはnon-readableで生成されEncodeToPNGが失敗するため、
+        /// 一度RenderTexture経由で読み取り可能なコピーを作ってからエンコードする。
+        /// </summary>
+        private static byte[] EncodeTextureToPNG(Texture2D source)
+        {
+            if (source == null) return null;
+            if (source.isReadable)
+            {
+                return source.EncodeToPNG();
+            }
+
+            var previousActive = RenderTexture.active;
+            var rt = RenderTexture.GetTemporary(source.width, source.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+            Texture2D readable = null;
+            try
+            {
+                Graphics.Blit(source, rt);
+                RenderTexture.active = rt;
+                readable = new Texture2D(source.width, source.height, TextureFormat.RGBA32, false);
+                readable.ReadPixels(new Rect(0, 0, source.width, source.height), 0, 0);
+                readable.Apply();
+                return readable.EncodeToPNG();
+            }
+            finally
+            {
+                RenderTexture.active = previousActive;
+                RenderTexture.ReleaseTemporary(rt);
+                if (readable != null) Destroy(readable);
+            }
         }
 
         public async Task ImportVRM(string path)
