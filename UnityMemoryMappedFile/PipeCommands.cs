@@ -1349,6 +1349,12 @@ namespace UnityMemoryMappedFile
         public float HandChangeTime { get; set; } = 0.1f;
         public float LipSyncMaxLevel { get; set; } = 1.0f;
 
+        // モーション再生アクション
+        public bool MotionAction { get; set; }
+        public int MotionPlayType { get; set; } // 0:再生 1:ポーズ適用 2:解除(停止)
+        public string MotionFilePath { get; set; }
+        public int MotionFrame { get; set; }
+
         public static void KeyActionsUpgrade(List<KeyAction> keyActions)
         {
             //古いバージョンで保存したVIVE/Oculus用のキーコンフィグをアップグレード
@@ -1421,6 +1427,8 @@ namespace UnityMemoryMappedFile
         PauseTracking = 10,
         ShowCalibrationWindow = 11,
         ShowPhotoWindow = 12,
+        StartMotionRecording = 13,
+        StopMotionRecording = 14,
     }
 
     public enum Hands

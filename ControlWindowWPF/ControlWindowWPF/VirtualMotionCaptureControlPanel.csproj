@@ -156,6 +156,15 @@
     <Compile Include="MotionCapture_mocopiSettingWindow.xaml.cs">
       <DependentUpon>MotionCapture_mocopiSettingWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MotionPlaybackWindow.xaml.cs">
+      <DependentUpon>MotionPlaybackWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MotionRecordWindow.xaml.cs">
+      <DependentUpon>MotionRecordWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MotionKeyAddWindow.xaml.cs">
+      <DependentUpon>MotionKeyAddWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PhotoWindow.xaml.cs">
       <DependentUpon>PhotoWindow.xaml</DependentUpon>
     </Compile>
@@ -259,6 +268,18 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="MotionCapture_mocopiSettingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MotionPlaybackWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MotionRecordWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MotionKeyAddWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

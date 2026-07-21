@@ -616,6 +616,34 @@ namespace VirtualMotionCaptureControlPanel
             win.ShowDialog();
         }
 
+        private MotionPlaybackWindow motionPlaybackWindow = null;
+        private void MotionPlaybackButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (motionPlaybackWindow != null)
+            {
+                motionPlaybackWindow.Activate();
+                return;
+            }
+            motionPlaybackWindow = new MotionPlaybackWindow();
+            motionPlaybackWindow.Owner = this;
+            motionPlaybackWindow.Closed += (s, ev) => motionPlaybackWindow = null;
+            motionPlaybackWindow.Show();
+        }
+
+        private MotionRecordWindow motionRecordWindow = null;
+        private void MotionRecordButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (motionRecordWindow != null)
+            {
+                motionRecordWindow.Activate();
+                return;
+            }
+            motionRecordWindow = new MotionRecordWindow();
+            motionRecordWindow.Owner = this;
+            motionRecordWindow.Closed += (s, ev) => motionRecordWindow = null;
+            motionRecordWindow.Show();
+        }
+
         private bool existCalibrationWindow = false;
         private void CalibrationButton_Click(object sender, RoutedEventArgs e)
         {

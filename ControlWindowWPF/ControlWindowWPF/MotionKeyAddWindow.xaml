@@ -1,0 +1,38 @@
+<Window x:Class="VirtualMotionCaptureControlPanel.MotionKeyAddWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
+        mc:Ignorable="d"
+        Title="{DynamicResource MotionKeyAddWindowTitle}" SizeToContent="Height" Width="450" Loaded="Window_Loaded" Closing="Window_Closing" Icon="Resources/VirtualMotionCapture_dark.ico">
+    <DockPanel>
+        <GroupBox Header="{DynamicResource FunctionKeyAddWindow_UseKey}" DockPanel.Dock="Top">
+            <DockPanel>
+                <CheckBox Content="{DynamicResource FunctionKeyAddWindow_KeyUp}" Name="KeyUpCheckBox" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="5,0"/>
+                <Button Content="{DynamicResource ShortcutKeyWindow_Remove}" DockPanel.Dock="Right" Height="20" Width="50" Name="KeyRemoveButton" Click="KeyRemoveButton_Click"/>
+                <ListBox Name="KeysListBox" Height="80" GotFocus="KeysListBox_GotFocus" LostFocus="KeysListBox_LostFocus"/>
+            </DockPanel>
+        </GroupBox>
+
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+            <Button Content="{DynamicResource FunctionKeyAddWindow_Register}" Width="100" Name="ApplyButton" Click="ApplyButton_Click"/>
+            <Button Content="{DynamicResource FunctionKeyAddWindow_Cancel}" Width="100" Name="IgnoreButton" Click="IgnoreButton_Click"/>
+        </StackPanel>
+        <DockPanel>
+            <GroupBox Header="{DynamicResource MotionKeyAddWindow_SelectAction}" DockPanel.Dock="Top">
+                <StackPanel Orientation="Vertical" Margin="5">
+                    <ComboBox Name="ActionTypeComboBox" SelectionChanged="ActionTypeComboBox_SelectionChanged"/>
+                    <DockPanel Margin="0,8,0,0" Name="MotionFilePanel">
+                        <TextBlock Text="{DynamicResource MotionKeyAddWindow_MotionFile}" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                        <ComboBox Name="MotionFileComboBox" Margin="8,0,0,0"/>
+                    </DockPanel>
+                    <DockPanel Margin="0,8,0,3" Name="FramePanel">
+                        <TextBlock Text="{DynamicResource MotionKeyAddWindow_Frame}" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                        <TextBox Name="FrameTextBox" Width="80" Margin="8,0,0,0" Text="0" HorizontalAlignment="Left"/>
+                    </DockPanel>
+                </StackPanel>
+            </GroupBox>
+        </DockPanel>
+    </DockPanel>
+</Window>

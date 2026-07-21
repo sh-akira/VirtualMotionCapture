@@ -40,6 +40,8 @@ namespace VMC
 
         public GameObject ExternalMotionSenderObject;
         private ExternalSender externalMotionSender;
+        private MotionPlayer motionPlayer;
+        private MotionRecorder motionRecorder;
 
         public GameObject ExternalMotionReceiverObject;
         public List<ExternalReceiverForVMC> externalMotionReceivers = new List<ExternalReceiverForVMC>();
@@ -115,6 +117,14 @@ namespace VMC
             server.Start(pipeName);
 
             externalMotionSender = ExternalMotionSenderObject.GetComponent<ExternalSender>();
+
+            //モーション再生・記録
+            var motionPlayerObject = new GameObject("MotionPlayer");
+            motionPlayerObject.transform.SetParent(transform, false);
+            motionPlayer = motionPlayerObject.AddComponent<MotionPlayer>();
+            var motionRecorderObject = new GameObject("MotionRecorder");
+            motionRecorderObject.transform.SetParent(transform, false);
+            motionRecorder = motionRecorderObject.AddComponent<MotionRecorder>();
         }
 
         void Start()
@@ -1439,6 +1449,27 @@ namespace VMC
                     case Functions.ShowPhotoWindow:
                         server?.SendCommandAsync(new PipeCommands.ShowPhotoWindow { });
                         break;
+                    case Functions.StartMotionRecording:
+                        motionRecorder?.StartRecording();
+                        break;
+                    case Functions.StopMotionRecording:
+                        motionRecorder?.StopRecording();
+                        break;
+                }
+            }
+            else if (action.MotionAction)
+            {
+                if (action.MotionPlayType == 0) //モーション再生
+                {
+                    motionPlayer?.PlayByPath(action.MotionFilePath);
+                }
+                else if (action.MotionPlayType == 1) //ポーズ適用
+                {
+                    motionPlayer?.ApplyPoseByPath(action.MotionFilePath, action.MotionFrame);
+                }
+                else //解除(停止)
+                {
+                    motionPlayer?.Stop();
                 }
             }
         }

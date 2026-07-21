@@ -36,6 +36,8 @@ namespace VirtualMotionCaptureControlPanel
             LanguageSelector.Get("Functions_PauseTracking"),
             LanguageSelector.Get("Functions_ShowCalibrationWindow"),
             LanguageSelector.Get("Functions_ShowPhotoWindow"),
+            LanguageSelector.Get("Functions_StartMotionRecording"),
+            LanguageSelector.Get("Functions_StopMotionRecording"),
         };
         public FunctionKeyAddWindow()
         {
