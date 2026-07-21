@@ -27,10 +27,14 @@
                         <TextBlock Text="{DynamicResource MotionKeyAddWindow_MotionFile}" DockPanel.Dock="Left" VerticalAlignment="Center"/>
                         <ComboBox Name="MotionFileComboBox" Margin="8,0,0,0"/>
                     </DockPanel>
-                    <DockPanel Margin="0,8,0,3" Name="FramePanel">
-                        <TextBlock Text="{DynamicResource MotionKeyAddWindow_Frame}" DockPanel.Dock="Left" VerticalAlignment="Center"/>
-                        <TextBox Name="FrameTextBox" Width="80" Margin="8,0,0,0" Text="0" HorizontalAlignment="Left"/>
-                    </DockPanel>
+                    <StackPanel Orientation="Vertical" Margin="0,8,0,3" Name="FramePanel">
+                        <TextBlock Text="{DynamicResource MotionKeyAddWindow_FrameHint}" TextWrapping="Wrap" Foreground="Gray" FontSize="11"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            <TextBlock Text="{DynamicResource MotionKeyAddWindow_Frame}" VerticalAlignment="Center"/>
+                            <TextBox Name="FrameTextBox" Width="70" Margin="8,0,0,0" Text="0" VerticalAlignment="Center"/>
+                            <TextBlock Name="FrameTotalTextBlock" Text="" VerticalAlignment="Center" Margin="6,0,0,0" Foreground="Gray"/>
+                        </StackPanel>
+                    </StackPanel>
                 </StackPanel>
             </GroupBox>
         </DockPanel>

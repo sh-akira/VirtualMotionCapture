@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -18,6 +19,7 @@ namespace VirtualMotionCaptureControlPanel
             public string LengthStr { get; set; }
             public string FpsStr { get; set; }
             public string FormatStr { get; set; }
+            public string ShortcutStr { get; set; } //割り当て済みショートカットキー
             public string FilePath { get; set; }
             public float Length { get; set; }
             public float FrameRate { get; set; }
@@ -75,8 +77,37 @@ namespace VirtualMotionCaptureControlPanel
                             MotionItems.Add(MotionItem.Create(info));
                         }
                     }
+                    UpdateShortcuts();
                 });
             });
+        }
+
+        /// <summary>
+        /// 各モーションに割り当て済みのショートカットキーを一覧に反映する
+        /// </summary>
+        private void UpdateShortcuts()
+        {
+            foreach (var item in MotionItems)
+            {
+                item.ShortcutStr = BuildShortcutStr(item.FilePath);
+            }
+            MotionsDataGrid.Items.Refresh();
+        }
+
+        private string BuildShortcutStr(string filePath)
+        {
+            if (Globals.KeyActions == null) return "";
+            var parts = new List<string>();
+            foreach (var ka in Globals.KeyActions)
+            {
+                if (ka.MotionAction == false) continue;
+                if (ka.MotionPlayType == 2) continue; //解除はモーション非依存のため一覧には出さない
+                if (ka.MotionFilePath != filePath) continue;
+                var keys = string.Join("+", ka.KeyConfigs.Select(k => k.ToString()));
+                var typ = ka.MotionPlayType == 1 ? LanguageSelector.Get("MotionKeyAddWindow_TypePose") : LanguageSelector.Get("MotionKeyAddWindow_TypePlay");
+                parts.Add($"{typ}:{keys}");
+            }
+            return string.Join(", ", parts);
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -96,7 +127,17 @@ namespace VirtualMotionCaptureControlPanel
                     SeekSlider.Maximum = d.Length > 0 ? d.Length : 1;
                     SeekSlider.Value = Math.Min(d.Time, SeekSlider.Maximum);
                     IsSliderSetting = false;
-                    TimeTextBlock.Text = $"{d.Time:0.00} / {d.Length:0.00}";
+
+                    //時間に加えて現在フレーム/総フレームも表示する(ポーズ登録位置の目安)
+                    var frameStr = "";
+                    if (d.Index >= 0 && d.Index < MotionItems.Count && MotionItems[d.Index].FrameRate > 0)
+                    {
+                        var m = MotionItems[d.Index];
+                        var total = Math.Max(0, m.FrameCount - 1);
+                        var frame = Math.Max(0, Math.Min((int)Math.Round(d.Time * m.FrameRate), total));
+                        frameStr = $"  [{frame}/{total} F]";
+                    }
+                    TimeTextBlock.Text = $"{d.Time:0.00} / {d.Length:0.00}{frameStr}";
                     if (d.State == 1 && d.Index >= 0 && d.Index < MotionItems.Count && MotionsDataGrid.SelectedIndex != d.Index)
                     {
                         MotionsDataGrid.SelectedIndex = d.Index;
@@ -249,6 +290,48 @@ namespace VirtualMotionCaptureControlPanel
         {
             if (IsSliderSetting) return;
             await Globals.Client.SendCommandAsync(new PipeCommands.Motion_Seek { Seconds = (float)SeekSlider.Value });
+        }
+
+        private void MotionsDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            //行のダブルクリックでもショートカット設定を開く
+            if (MotionsDataGrid.SelectedItem is MotionItem)
+            {
+                OpenShortcutSetting();
+            }
+        }
+
+        private void ShortcutButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenShortcutSetting();
+        }
+
+        private async void OpenShortcutSetting()
+        {
+            var item = MotionsDataGrid.SelectedItem as MotionItem;
+            if (item == null)
+            {
+                MessageBox.Show(this, LanguageSelector.Get("MotionPlaybackWindow_SelectMotionFirst"), LanguageSelector.Get("MotionPlaybackWindow_Title"), MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            //選択中のモーションが再生画面でプレビュー中(=シークバーが対応)なら、現在のフレームを取り込む。
+            //ポーズ適用のフレーム番号を手入力せず、見えている姿勢をそのまま登録できるようにする
+            int currentFrame = 0;
+            if (playingIndex == MotionsDataGrid.SelectedIndex && item.FrameRate > 0)
+            {
+                var total = Math.Max(0, item.FrameCount - 1);
+                currentFrame = Math.Max(0, Math.Min((int)Math.Round(SeekSlider.Value * item.FrameRate), total));
+            }
+
+            await Globals.Client.SendCommandAsync(new PipeCommands.StartKeyConfig { });
+            var win = new MotionKeyAddWindow(item.FilePath, currentFrame, item.FrameCount);
+            win.Owner = this;
+            var result = win.ShowDialog();
+            await Globals.Client.SendCommandAsync(new PipeCommands.EndKeyConfig { });
+            if (result == true)
+            {
+                UpdateShortcuts();
+            }
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)

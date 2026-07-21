@@ -5,21 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
         mc:Ignorable="d"
-        Title="{DynamicResource MotionPlaybackWindow_Title}" Width="480" SizeToContent="Height" Loaded="Window_Loaded" Closing="Window_Closing">
+        Title="{DynamicResource MotionPlaybackWindow_Title}" Width="580" SizeToContent="Height" Loaded="Window_Loaded" Closing="Window_Closing">
     <DockPanel>
         <GroupBox Header="{DynamicResource MotionPlaybackWindow_MotionFiles}" DockPanel.Dock="Top">
             <DockPanel>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="0,5,0,0">
                     <Button Content="{DynamicResource MotionPlaybackWindow_AddFile}" Width="100" Name="AddFileButton" Click="AddFileButton_Click"/>
                     <Button Content="{DynamicResource MotionPlaybackWindow_RemoveFile}" Width="100" Margin="5,0,0,0" Name="RemoveFileButton" Click="RemoveFileButton_Click"/>
+                    <Button Content="{DynamicResource MotionPlaybackWindow_ShortcutButton}" Width="140" Margin="5,0,0,0" Name="ShortcutButton" Click="ShortcutButton_Click" ToolTip="{DynamicResource MotionPlaybackWindow_ShortcutButton_ToolTip}"/>
                 </StackPanel>
                 <DataGrid CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" SelectionMode="Single" IsReadOnly="True"
-                          Name="MotionsDataGrid" AutoGenerateColumns="False" Height="140">
+                          Name="MotionsDataGrid" AutoGenerateColumns="False" Height="140" MouseDoubleClick="MotionsDataGrid_MouseDoubleClick">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="{DynamicResource MotionPlaybackWindow_ColumnName}" Binding="{Binding Name}" Width="*"/>
                         <DataGridTextColumn Header="{DynamicResource MotionPlaybackWindow_ColumnLength}" Binding="{Binding LengthStr}" MinWidth="60"/>
                         <DataGridTextColumn Header="FPS" Binding="{Binding FpsStr}" MinWidth="50"/>
                         <DataGridTextColumn Header="{DynamicResource MotionPlaybackWindow_ColumnFormat}" Binding="{Binding FormatStr}" MinWidth="50"/>
+                        <DataGridTextColumn Header="{DynamicResource MotionPlaybackWindow_ColumnShortcut}" Binding="{Binding ShortcutStr}" MinWidth="120"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </DockPanel>

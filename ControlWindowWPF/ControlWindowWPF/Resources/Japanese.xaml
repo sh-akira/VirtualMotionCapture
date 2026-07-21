@@ -235,6 +235,10 @@
     <system:String x:Key="MotionPlaybackWindow_ColumnName">名前</system:String>
     <system:String x:Key="MotionPlaybackWindow_ColumnLength">長さ</system:String>
     <system:String x:Key="MotionPlaybackWindow_ColumnFormat">形式</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ColumnShortcut">割当キー</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ShortcutButton">ショートカット設定</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ShortcutButton_ToolTip">選択中のモーションにショートカットキー(再生/ポーズ適用)を割り当てます</system:String>
+    <system:String x:Key="MotionPlaybackWindow_SelectMotionFirst">先にモーションを選択してください</system:String>
     <system:String x:Key="MotionPlaybackWindow_Playback">再生コントロール</system:String>
     <system:String x:Key="MotionPlaybackWindow_PlayButton">▶ 再生</system:String>
     <system:String x:Key="MotionPlaybackWindow_PauseButton">一時停止</system:String>
@@ -274,7 +278,8 @@
     <system:String x:Key="MotionKeyAddWindowTitle">モーションショートカットキー追加</system:String>
     <system:String x:Key="MotionKeyAddWindow_SelectAction">動作を選択</system:String>
     <system:String x:Key="MotionKeyAddWindow_MotionFile">モーション</system:String>
-    <system:String x:Key="MotionKeyAddWindow_Frame">フレーム番号</system:String>
+    <system:String x:Key="MotionKeyAddWindow_Frame">フレーム</system:String>
+    <system:String x:Key="MotionKeyAddWindow_FrameHint">再生画面でプレビュー中のフレームが入っています。変更したい場合は再生画面のシークバーやコマ送りで目的の姿勢まで動かしてから、この画面を開き直してください。</system:String>
     <system:String x:Key="MotionKeyAddWindow_TypePlay">モーション再生</system:String>
     <system:String x:Key="MotionKeyAddWindow_TypePose">ポーズ適用</system:String>
     <system:String x:Key="MotionKeyAddWindow_TypeRelease">解除(停止)</system:String>

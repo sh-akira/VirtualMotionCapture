@@ -236,6 +236,10 @@
     <system:String x:Key="MotionPlaybackWindow_ColumnName">名称</system:String>
     <system:String x:Key="MotionPlaybackWindow_ColumnLength">长度</system:String>
     <system:String x:Key="MotionPlaybackWindow_ColumnFormat">格式</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ColumnShortcut">快捷键</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ShortcutButton">设置快捷键</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ShortcutButton_ToolTip">为选中的动作分配快捷键(播放/应用姿势)</system:String>
+    <system:String x:Key="MotionPlaybackWindow_SelectMotionFirst">请先选择动作</system:String>
     <system:String x:Key="MotionPlaybackWindow_Playback">播放控制</system:String>
     <system:String x:Key="MotionPlaybackWindow_PlayButton">▶ 播放</system:String>
     <system:String x:Key="MotionPlaybackWindow_PauseButton">暂停</system:String>
@@ -275,7 +279,8 @@
     <system:String x:Key="MotionKeyAddWindowTitle">添加动作快捷键</system:String>
     <system:String x:Key="MotionKeyAddWindow_SelectAction">选择动作</system:String>
     <system:String x:Key="MotionKeyAddWindow_MotionFile">动作</system:String>
-    <system:String x:Key="MotionKeyAddWindow_Frame">帧编号</system:String>
+    <system:String x:Key="MotionKeyAddWindow_Frame">帧</system:String>
+    <system:String x:Key="MotionKeyAddWindow_FrameHint">已填入播放窗口中正在预览的帧。如需更改，请先在播放窗口用进度条或逐帧按钮移动到目标姿势，然后重新打开此窗口。</system:String>
     <system:String x:Key="MotionKeyAddWindow_TypePlay">播放动作</system:String>
     <system:String x:Key="MotionKeyAddWindow_TypePose">应用姿势</system:String>
     <system:String x:Key="MotionKeyAddWindow_TypeRelease">解除(停止)</system:String>

@@ -22,6 +22,7 @@ namespace VirtualMotionCaptureControlPanel
 
         private List<KeyConfig> KeyConfigs = new List<KeyConfig>();
         private KeyAction EditTargetAction = null;
+        private string preselectMotionPath = null;
 
         public MotionKeyAddWindow()
         {
@@ -46,6 +47,23 @@ namespace VirtualMotionCaptureControlPanel
             UpdateKeys();
         }
 
+        //再生画面から特定モーションを選択済みの状態で開く
+        public MotionKeyAddWindow(string motionFilePath) : this()
+        {
+            preselectMotionPath = motionFilePath;
+        }
+
+        //再生画面のプレビュー位置(フレーム)を取り込んで開く
+        public MotionKeyAddWindow(string motionFilePath, int currentFrame, int frameCount) : this()
+        {
+            preselectMotionPath = motionFilePath;
+            FrameTextBox.Text = currentFrame.ToString();
+            if (frameCount > 0)
+            {
+                FrameTotalTextBlock.Text = $"/ {frameCount - 1}";
+            }
+        }
+
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Globals.Client.ReceivedEvent += Client_Received;
@@ -64,9 +82,10 @@ namespace VirtualMotionCaptureControlPanel
                             MotionFileComboBox.Items.Add(new MotionFileItem { Name = info.Name, FilePath = info.FilePath });
                         }
                     }
-                    if (EditTargetAction != null)
+                    var targetPath = EditTargetAction != null ? EditTargetAction.MotionFilePath : preselectMotionPath;
+                    if (string.IsNullOrEmpty(targetPath) == false)
                     {
-                        var item = MotionFileComboBox.Items.Cast<MotionFileItem>().FirstOrDefault(f => f.FilePath == EditTargetAction.MotionFilePath);
+                        var item = MotionFileComboBox.Items.Cast<MotionFileItem>().FirstOrDefault(f => f.FilePath == targetPath);
                         if (item != null) MotionFileComboBox.SelectedItem = item;
                     }
                     else if (MotionFileComboBox.Items.Count > 0)

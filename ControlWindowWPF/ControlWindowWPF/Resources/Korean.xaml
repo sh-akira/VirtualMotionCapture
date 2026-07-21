@@ -236,6 +236,10 @@
     <system:String x:Key="MotionPlaybackWindow_ColumnName">이름</system:String>
     <system:String x:Key="MotionPlaybackWindow_ColumnLength">길이</system:String>
     <system:String x:Key="MotionPlaybackWindow_ColumnFormat">형식</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ColumnShortcut">단축키</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ShortcutButton">단축키 설정</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ShortcutButton_ToolTip">선택한 모션에 단축키(재생/포즈 적용)를 할당합니다</system:String>
+    <system:String x:Key="MotionPlaybackWindow_SelectMotionFirst">먼저 모션을 선택하세요</system:String>
     <system:String x:Key="MotionPlaybackWindow_Playback">재생 컨트롤</system:String>
     <system:String x:Key="MotionPlaybackWindow_PlayButton">▶ 재생</system:String>
     <system:String x:Key="MotionPlaybackWindow_PauseButton">일시정지</system:String>
@@ -275,7 +279,8 @@
     <system:String x:Key="MotionKeyAddWindowTitle">모션 단축키 추가</system:String>
     <system:String x:Key="MotionKeyAddWindow_SelectAction">동작 선택</system:String>
     <system:String x:Key="MotionKeyAddWindow_MotionFile">모션</system:String>
-    <system:String x:Key="MotionKeyAddWindow_Frame">프레임 번호</system:String>
+    <system:String x:Key="MotionKeyAddWindow_Frame">프레임</system:String>
+    <system:String x:Key="MotionKeyAddWindow_FrameHint">재생 창에서 미리보기 중인 프레임이 입력되어 있습니다. 변경하려면 재생 창의 seek 바나 프레임 이동으로 원하는 포즈까지 움직인 뒤 이 창을 다시 여세요.</system:String>
     <system:String x:Key="MotionKeyAddWindow_TypePlay">모션 재생</system:String>
     <system:String x:Key="MotionKeyAddWindow_TypePose">포즈 적용</system:String>
     <system:String x:Key="MotionKeyAddWindow_TypeRelease">해제(정지)</system:String>

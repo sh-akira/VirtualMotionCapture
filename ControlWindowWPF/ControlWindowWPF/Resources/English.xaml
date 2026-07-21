@@ -236,6 +236,10 @@
     <system:String x:Key="MotionPlaybackWindow_ColumnName">Name</system:String>
     <system:String x:Key="MotionPlaybackWindow_ColumnLength">Length</system:String>
     <system:String x:Key="MotionPlaybackWindow_ColumnFormat">Format</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ColumnShortcut">Shortcut</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ShortcutButton">Assign Shortcut</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ShortcutButton_ToolTip">Assign a shortcut key (play / apply pose) to the selected motion</system:String>
+    <system:String x:Key="MotionPlaybackWindow_SelectMotionFirst">Please select a motion first</system:String>
     <system:String x:Key="MotionPlaybackWindow_Playback">Playback Control</system:String>
     <system:String x:Key="MotionPlaybackWindow_PlayButton">▶ Play</system:String>
     <system:String x:Key="MotionPlaybackWindow_PauseButton">Pause</system:String>
@@ -276,6 +280,7 @@
     <system:String x:Key="MotionKeyAddWindow_SelectAction">Select Action</system:String>
     <system:String x:Key="MotionKeyAddWindow_MotionFile">Motion</system:String>
     <system:String x:Key="MotionKeyAddWindow_Frame">Frame</system:String>
+    <system:String x:Key="MotionKeyAddWindow_FrameHint">The frame currently previewed in the Motion Playback window is filled in. To change it, scrub the seek bar / step frames in the playback window to the desired pose, then reopen this window.</system:String>
     <system:String x:Key="MotionKeyAddWindow_TypePlay">Play motion</system:String>
     <system:String x:Key="MotionKeyAddWindow_TypePose">Apply pose</system:String>
     <system:String x:Key="MotionKeyAddWindow_TypeRelease">Release (stop)</system:String>
