@@ -536,6 +536,18 @@ namespace VMC
             var tempNodes = new List<GameObject>();
             try
             {
+                //視線ノードは表情ノードより「先」に作る(=glTFノードindexが表情より小さくなる)。
+                //公式VrmAnimationImporterは表情ノードをRemoveAtで削除しindexを詰めるが視線チャンネルは補正しないため、
+                //視線を表情より後(高index)に置くと削除で視線チャンネルのtarget.nodeがずれて公式実装で壊れる。
+                //(表情/視線ノードはexportRoot直下=ルート除外によりトップレベル扱いになりchildrenは汚さない)
+                if (saveLookAt)
+                {
+                    var node = new GameObject("VMC_LookAtTarget");
+                    node.transform.SetParent(exportRoot.transform, false);
+                    tempNodes.Add(node);
+                    lookAtNode = node.transform;
+                }
+
                 for (int i = 0; i < recordedExpressionKeys.Count; i++)
                 {
                     var key = recordedExpressionKeys[i];
@@ -547,14 +559,6 @@ namespace VMC
                     node.transform.SetParent(exportRoot.transform, false);
                     tempNodes.Add(node);
                     expressionNodes[i] = node.transform;
-                }
-
-                if (saveLookAt)
-                {
-                    var node = new GameObject("VMC_LookAtTarget");
-                    node.transform.SetParent(exportRoot.transform, false);
-                    tempNodes.Add(node);
-                    lookAtNode = node.transform;
                 }
 
                 //バインドポーズ(VRMのTポーズ=アバターのレスト基準)に戻してからエクスポータを準備する。
@@ -610,7 +614,9 @@ namespace VMC
                             ApplyFrameToSkeleton(i, saveMotion);
                             if (lookAtNode != null)
                             {
-                                lookAtNode.position = CalculateLookAtPosition(animator, recordedLookAt[i]);
+                                //VRMA仕様: 視線はノードのローカル回転(Extrinsic ZXY, Y=yaw, X=pitch)で表す。
+                                //recordedLookAt=(yaw, pitch)。UnityのQuaternion.Euler(x,y,z)はZ→X→Y適用=Extrinsic ZXYと一致。
+                                lookAtNode.localRotation = Quaternion.Euler(recordedLookAt[i].y, recordedLookAt[i].x, 0f);
                             }
                             vrma.AddFrame(time);
                         }
@@ -628,15 +634,6 @@ namespace VMC
                 //スケルトンをバインドポーズに戻す
                 virtualAvatar.RestoreBindPose();
             }
-        }
-
-        private Vector3 CalculateLookAtPosition(Animator animator, Vector2 yawPitch)
-        {
-            var head = animator.GetBoneTransform(HumanBodyBones.Head);
-            if (head == null) return animator.transform.position + Vector3.forward;
-            //yaw:右が正 pitch:上が正
-            var direction = Quaternion.AngleAxis(yawPitch.x, Vector3.up) * Quaternion.AngleAxis(-yawPitch.y, Vector3.right) * Vector3.forward;
-            return head.position + head.rotation * direction * 1.0f;
         }
 
         private static Transform GetParentBone(Dictionary<HumanBodyBones, Transform> map, Vrm10HumanoidBones bone)

@@ -106,12 +106,13 @@ namespace VMC
         }
 
         /// <summary>
-        /// 視線(LookAt)の注視点ノード
+        /// 視線(LookAt)ノード
+        /// VRMA仕様では視線はノードの「ローカル回転」で表す(Extrinsic ZXY, Y=yaw, X=pitch)。translationではない。
         /// </summary>
-        PositionExporter m_lookAt;
-        public void SetLookAt(Transform node, Transform root)
+        RotationExporter m_lookAt;
+        public void SetLookAt(Transform node, Transform parent)
         {
-            m_lookAt = new PositionExporter(node, root);
+            m_lookAt = new RotationExporter(node, parent);
         }
 
         public void AddFrame(TimeSpan time)
@@ -190,7 +191,7 @@ namespace VMC
             if (m_lookAt != null)
             {
                 var output = _data.ExtendBufferAndGetAccessorIndex(m_lookAt.Values.ToArray());
-                AddChannel(output, m_lookAt.Node.name, "translation");
+                AddChannel(output, m_lookAt.Node.name, "rotation");
             }
 
             // VRMC_vrm_animation

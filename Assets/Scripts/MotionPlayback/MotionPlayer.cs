@@ -28,8 +28,17 @@ namespace VMC
         private System.Threading.SynchronizationContext context = null;
 
         private VirtualAvatar virtualAvatar;
-        private readonly List<LoadedMotion> motions = new List<LoadedMotion>();
-        public IReadOnlyList<LoadedMotion> Motions => motions;
+        private Vrm10Instance currentVrm10Instance; //視線(LookAt)適用用
+
+        //遅延読み込み: 起動時はメタ情報(Info)だけ保持し、実体(LoadedMotion)は初回再生時に生成する
+        private class MotionEntry
+        {
+            public string FilePath;
+            public UnityMemoryMappedFile.MotionFileInfo Info; //軽量メタ(名前/長さ/FPS/フレーム数)
+            public LoadedMotion Loaded;                       //本読み込み後の実体(未読込はnull)
+            public bool IsLoading;
+        }
+        private readonly List<MotionEntry> entries = new List<MotionEntry>();
 
         private PlayState state = PlayState.Stopped;
         private int currentIndex = -1;
@@ -50,6 +59,7 @@ namespace VMC
             context = System.Threading.SynchronizationContext.Current;
             controlWPFWindow = GameObject.Find("ControlWPFWindow").GetComponent<ControlWPFWindow>();
             controlWPFWindow.AdditionalSettingAction += ApplySettings;
+            VMCEvents.OnCurrentModelChanged += OnCurrentModelChanged;
             VMCEvents.OnModelUnloading += OnModelUnloading;
         }
 
@@ -88,9 +98,9 @@ namespace VMC
                     var ret = new PipeCommands.Motion_ReturnLoadFile();
                     try
                     {
-                        var motion = await LoadMotionAsync(d.Path);
+                        var entry = await LoadMotionAsync(d.Path);
                         ret.Success = true;
-                        ret.Info = motion.ToInfo();
+                        ret.Info = entry.Info;
                     }
                     catch (Exception ex)
                     {
@@ -109,7 +119,7 @@ namespace VMC
                 {
                     await controlWPFWindow.server.SendCommandAsync(new PipeCommands.Motion_ReturnFileList
                     {
-                        Files = motions.Select(m => m.ToInfo()).ToList()
+                        Files = entries.Select(m => m.Info).ToList()
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.Motion_Play))
@@ -224,10 +234,10 @@ namespace VMC
         {
             SetVirtualAvatarSetting();
 
-            //設定ファイルに保存されたモーションファイルを読み込む
+            //設定ファイルに保存されたモーションファイルを登録する(メタ情報のみ。実体は初回再生時に読み込む)
             var files = Settings.Current.MotionPlayback_MotionFiles;
             if (files == null) return;
-            var pathsToLoad = files.Where(p => motions.Any(m => m.FilePath == p) == false).ToList();
+            var pathsToLoad = files.Where(p => entries.Any(m => m.FilePath == p) == false).ToList();
             foreach (var path in pathsToLoad)
             {
                 try
@@ -241,48 +251,69 @@ namespace VMC
             }
         }
 
-        public async Task<LoadedMotion> LoadMotionAsync(string path)
+        /// <summary>
+        /// モーションファイルを一覧に登録する(メタ情報のみ読み取り、実体はまだ生成しない)
+        /// </summary>
+        private async Task<MotionEntry> LoadMotionAsync(string path)
         {
-            var exist = motions.FirstOrDefault(m => m.FilePath == path);
+            var exist = entries.FirstOrDefault(m => m.FilePath == path);
             if (exist != null) return exist;
 
-            var motion = await LoadedMotion.LoadAsync(path);
+            //メタ情報の読み取りはファイルパースを伴うため別スレッドで実行
+            var info = await Task.Run(() => LoadedMotion.ReadInfo(path));
 
-            //ロード中(await中)に同じファイルが読み込まれた場合は重複させない
-            exist = motions.FirstOrDefault(m => m.FilePath == path);
-            if (exist != null)
-            {
-                motion.Dispose();
-                return exist;
-            }
+            exist = entries.FirstOrDefault(m => m.FilePath == path);
+            if (exist != null) return exist;
 
-            motion.Root.transform.SetParent(transform, false);
-            motions.Add(motion);
+            var entry = new MotionEntry { FilePath = path, Info = info };
+            entries.Add(entry);
             if (MotionFilePaths.Contains(path) == false)
             {
                 MotionFilePaths.Add(path);
             }
-            return motion;
+            return entry;
+        }
+
+        /// <summary>
+        /// 実体(LoadedMotion)を必要になった時点で生成する(遅延読み込み)
+        /// </summary>
+        private async Task<LoadedMotion> EnsureLoadedAsync(MotionEntry entry)
+        {
+            if (entry.Loaded != null) return entry.Loaded;
+            if (entry.IsLoading) return null;
+            entry.IsLoading = true;
+            try
+            {
+                var motion = await LoadedMotion.LoadAsync(entry.FilePath);
+                motion.Root.transform.SetParent(transform, false);
+                entry.Loaded = motion;
+                entry.Info = motion.ToInfo(); //実体から得た正確なメタで更新
+                return motion;
+            }
+            finally
+            {
+                entry.IsLoading = false;
+            }
         }
 
         private void RemoveMotion(int index)
         {
-            if (index < 0 || index >= motions.Count) return;
+            if (index < 0 || index >= entries.Count) return;
             if (currentIndex == index)
             {
                 Stop();
                 currentIndex = -1;
             }
-            var motion = motions[index];
-            MotionFilePaths.Remove(motion.FilePath);
-            motions.RemoveAt(index);
-            motion.Dispose();
+            var entry = entries[index];
+            MotionFilePaths.Remove(entry.FilePath);
+            entries.RemoveAt(index);
+            entry.Loaded?.Dispose();
             if (currentIndex > index) currentIndex--;
         }
 
         public void Play(int index)
         {
-            if (index < 0 || index >= motions.Count) return;
+            if (index < 0 || index >= entries.Count) return;
             if (state == PlayState.Paused && index == currentIndex)
             {
                 //一時停止からの再開
@@ -301,7 +332,7 @@ namespace VMC
 
         public void PlayByPath(string path)
         {
-            var index = motions.FindIndex(m => m.FilePath == path);
+            var index = entries.FindIndex(m => m.FilePath == path);
             if (index < 0) return;
             Play(index);
         }
@@ -325,8 +356,8 @@ namespace VMC
 
         public void Seek(float seconds)
         {
-            if (currentIndex < 0 || currentIndex >= motions.Count) return;
-            currentTime = Mathf.Clamp(seconds, 0f, motions[currentIndex].Length);
+            if (currentIndex < 0 || currentIndex >= entries.Count) return;
+            currentTime = Mathf.Clamp(seconds, 0f, entries[currentIndex].Info.Length);
             if (state == PlayState.Stopped)
             {
                 state = PlayState.Paused;
@@ -341,12 +372,12 @@ namespace VMC
         /// </summary>
         public void FrameStep(int delta)
         {
-            if (currentIndex < 0 || currentIndex >= motions.Count)
+            if (currentIndex < 0 || currentIndex >= entries.Count)
             {
-                if (motions.Count == 0) return;
+                if (entries.Count == 0) return;
                 currentIndex = 0;
             }
-            var motion = motions[currentIndex];
+            var info = entries[currentIndex].Info;
             if (state == PlayState.Playing)
             {
                 state = PlayState.Paused;
@@ -356,7 +387,8 @@ namespace VMC
                 state = PlayState.Paused;
                 virtualAvatar.Enable = true;
             }
-            currentTime = Mathf.Clamp(currentTime + delta / motion.FrameRate, 0f, motion.Length);
+            var fps = info.FrameRate > 0 ? info.FrameRate : 30f;
+            currentTime = Mathf.Clamp(currentTime + delta / fps, 0f, info.Length);
             ApplyCurrentFrame();
             SendStatus();
         }
@@ -368,11 +400,14 @@ namespace VMC
         {
             try
             {
-                var motion = await LoadMotionAsync(path);
-                currentIndex = motions.IndexOf(motion);
-                currentTime = Mathf.Clamp(frame / motion.FrameRate, 0f, motion.Length);
+                var entry = await LoadMotionAsync(path);
+                currentIndex = entries.IndexOf(entry);
+                var fps = entry.Info.FrameRate > 0 ? entry.Info.FrameRate : 30f;
+                currentTime = Mathf.Clamp(frame / fps, 0f, entry.Info.Length);
                 state = PlayState.PoseHold;
                 virtualAvatar.Enable = true;
+                //実体を読み込んでから適用する
+                await EnsureLoadedAsync(entry);
                 ApplyCurrentFrame();
                 SendStatus();
             }
@@ -382,8 +417,14 @@ namespace VMC
             }
         }
 
+        private void OnCurrentModelChanged(GameObject model)
+        {
+            currentVrm10Instance = model != null ? model.GetComponent<Vrm10Instance>() : null;
+        }
+
         private void OnModelUnloading(GameObject model)
         {
+            currentVrm10Instance = null;
             cloneHandler?.Dispose();
             cloneHandler = null;
             cloneHandlerAnimator = null;
@@ -399,22 +440,22 @@ namespace VMC
         {
             if (state == PlayState.Playing)
             {
-                if (currentIndex < 0 || currentIndex >= motions.Count)
+                if (currentIndex < 0 || currentIndex >= entries.Count)
                 {
                     Stop();
                     return;
                 }
-                var motion = motions[currentIndex];
+                var length = entries[currentIndex].Info.Length;
                 currentTime += Time.deltaTime;
-                if (currentTime >= motion.Length)
+                if (currentTime >= length)
                 {
                     switch (Settings.Current.MotionPlayback_RepeatMode)
                     {
                         case 1: //1ファイルループ
-                            currentTime = motion.Length > 0f ? currentTime % motion.Length : 0f;
+                            currentTime = length > 0f ? currentTime % length : 0f;
                             break;
                         case 2: //リストのループ再生
-                            currentIndex = (currentIndex + 1) % motions.Count;
+                            currentIndex = (currentIndex + 1) % entries.Count;
                             currentTime = 0f;
                             break;
                         default: //1ショット
@@ -433,8 +474,16 @@ namespace VMC
 
         private void ApplyCurrentFrame()
         {
-            if (currentIndex < 0 || currentIndex >= motions.Count) return;
-            var motion = motions[currentIndex];
+            if (currentIndex < 0 || currentIndex >= entries.Count) return;
+            var entry = entries[currentIndex];
+
+            //遅延読み込み: 実体が未生成なら読み込みを開始し、このフレームはスキップ(読込完了後のフレームから適用)
+            if (entry.Loaded == null)
+            {
+                _ = EnsureLoadedAsync(entry);
+                return;
+            }
+            var motion = entry.Loaded;
 
             motion.Sample(currentTime);
 
@@ -459,6 +508,21 @@ namespace VMC
                     ClearExpressions();
                 }
             }
+
+            //視線(VRMAに視線情報がある場合のみ / ApplyEye設定に従う)
+            //SetYawPitchManuallyはLookAtTargetType!=SpecifiedTransformのときのみ有効(アイトラッキングと同じ挙動)
+            if (currentVrm10Instance != null && motion.IsVrma && virtualAvatar != null && virtualAvatar.ApplyEye
+                && motion.HasLookAt && motion.TryGetLookAtYawPitch(out var yaw, out var pitch))
+            {
+                try
+                {
+                    currentVrm10Instance.Runtime.LookAt.SetYawPitchManually(yaw, pitch);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"Failed to apply lookat: {ex.Message}");
+                }
+            }
         }
 
         private bool EnsureCloneHandler()
@@ -481,7 +545,7 @@ namespace VMC
         private async void SendStatus()
         {
             lastStatusSendTime = Time.realtimeSinceStartup;
-            var length = (currentIndex >= 0 && currentIndex < motions.Count) ? motions[currentIndex].Length : 0f;
+            var length = (currentIndex >= 0 && currentIndex < entries.Count) ? entries[currentIndex].Info.Length : 0f;
             await controlWPFWindow.server.SendCommandAsync(new PipeCommands.Motion_PlaybackStatus
             {
                 Index = currentIndex,
