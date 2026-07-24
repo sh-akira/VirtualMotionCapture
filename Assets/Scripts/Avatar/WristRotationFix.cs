@@ -1,6 +1,7 @@
 ﻿using RootMotion.FinalIK;
 using System;
 using UnityEngine;
+using UnityMemoryMappedFile;
 
 namespace VMC
 {
@@ -9,106 +10,390 @@ namespace VMC
 
         public VRIK ik;
 
-        private FixItem LeftElbowFixItem;
-        private FixItem LeftUpperArmFixItem;
-        private FixItem RightElbowFixItem;
-        private FixItem RightUpperArmFixItem;
+        // ControlWPFWindowの参照を保持
+        [SerializeField]
+        private ControlWPFWindow controlWPFWindow;
 
-        public float ElbowFixWeight = 0.5f;
-        public float UpperArmFixWeight = 0.2f; //0.5では強すぎて肩がねじれる場合がある
+        private ArmFixItem LeftArmFixItem;
+        private ArmFixItem RightArmFixItem;
+        // VRIKで元から回ってる分はキャンセルされるのでこの割合の通りに回転される
+        public float UpperArmWeight = 0.2f; // 20%
+        public float ForearmWeight = 0.57f;  // 57%
+
         private Guid? eventId = null;
+
+        [Header("Twist Limits")]
+        [Tooltip("累積回転がこの角度を超えたら連続性をリセット")]
+        [Range(180f, 720f)]
+        public float maxAccumulatedTwist = 300f;
+
+        private System.Threading.SynchronizationContext context = null;
+
+        void Start()
+        {
+            context = System.Threading.SynchronizationContext.Current;
+            
+            // ControlWPFWindowの参照取得（SerializeFieldで設定されていない場合のみ）
+            if (controlWPFWindow == null)
+            {
+                controlWPFWindow = GameObject.Find("ControlWPFWindow")?.GetComponent<ControlWPFWindow>();
+            }
+            
+            // 設定からパラメータを読み込み
+            LoadSettingsValues();
+            
+            // UIとの通信を設定
+            if (controlWPFWindow != null)
+            {
+                controlWPFWindow.server.ReceivedEvent += Server_Received;
+                // AdditionalSettingActionに登録して設定読み込み時に自動実行されるようにする
+                controlWPFWindow.AdditionalSettingAction += ApplySettings;
+            }
+        }
+
+        void OnDestroy()
+        {
+            if (eventId != null) IKManager.Instance.RemoveOnPostUpdate(eventId.Value);
+            
+            // 通信ハンドラの登録解除
+            if (controlWPFWindow != null)
+            {
+                controlWPFWindow.server.ReceivedEvent -= Server_Received;
+                controlWPFWindow.AdditionalSettingAction -= ApplySettings;
+            }
+        }
+
+        // 設定読み込み時に呼ばれるメソッド（IKManager.SetHandFreeOffsetと同様）
+        private void ApplySettings(GameObject gameObject)
+        {
+            LoadSettingsValues();
+        }
+
+        private void Server_Received(object sender, DataReceivedEventArgs e)
+        {
+            context.Post(async s =>
+            {
+                if (e.CommandType == typeof(PipeCommands.GetWristRotationFixSetting))
+                {
+                    if (controlWPFWindow != null)
+                    {
+                        await controlWPFWindow.server.SendCommandAsync(new PipeCommands.SetWristRotationFixSetting
+                        {
+                            UpperArmWeight = Settings.Current.WristRotationFix_UpperArmWeight,
+                            ForearmWeight = Settings.Current.WristRotationFix_ForearmWeight,
+                            MaxAccumulatedTwist = Settings.Current.WristRotationFix_MaxAccumulatedTwist,
+                        }, e.RequestId);
+                    }
+                }
+                else if (e.CommandType == typeof(PipeCommands.SetWristRotationFixSetting))
+                {
+                    var d = (PipeCommands.SetWristRotationFixSetting)e.Data;
+                    
+                    // 設定を保存
+                    SaveSettingsValues(d);
+                }
+            }, null);
+        }
+
+        private void LoadSettingsValues()
+        {
+            if (Settings.Current != null)
+            {
+                UpperArmWeight = Settings.Current.WristRotationFix_UpperArmWeight / 1000f;
+                ForearmWeight = Settings.Current.WristRotationFix_ForearmWeight / 1000f;
+                maxAccumulatedTwist = Settings.Current.WristRotationFix_MaxAccumulatedTwist;
+            }
+        }
+
+        private void SaveSettingsValues(PipeCommands.SetWristRotationFixSetting d)
+        {
+            UpperArmWeight = d.UpperArmWeight / 1000f;
+            ForearmWeight = d.ForearmWeight / 1000f;
+            maxAccumulatedTwist = d.MaxAccumulatedTwist;
+            if (Settings.Current != null)
+            {
+                Settings.Current.WristRotationFix_UpperArmWeight = d.UpperArmWeight;
+                Settings.Current.WristRotationFix_ForearmWeight = d.ForearmWeight;
+                Settings.Current.WristRotationFix_MaxAccumulatedTwist = d.MaxAccumulatedTwist;
+            }
+        }
 
         public void SetVRIK(VRIK setIK)
         {
             if (eventId != null) IKManager.Instance.RemoveOnPostUpdate(eventId.Value);
             ik = setIK;
 
-            LeftElbowFixItem = new FixItem(ik.references.leftUpperArm, ik.references.leftForearm, ik.references.leftHand, () => ElbowFixWeight);
-            LeftUpperArmFixItem = new FixItem(ik.references.leftShoulder, ik.references.leftUpperArm, ik.references.leftForearm, () => UpperArmFixWeight);
-            RightElbowFixItem = new FixItem(ik.references.rightUpperArm, ik.references.rightForearm, ik.references.rightHand, () => ElbowFixWeight);
-            RightUpperArmFixItem = new FixItem(ik.references.rightShoulder, ik.references.rightUpperArm, ik.references.rightForearm, () => UpperArmFixWeight);
+            // 基準となるTransformを取得（胸が優先、なければルート）
+            Transform referenceTransform = ik.references.chest ?? ik.references.root;
+
+            LeftArmFixItem = new ArmFixItem(ik.references.leftShoulder, ik.references.leftUpperArm, ik.references.leftForearm, ik.references.leftHand, referenceTransform);
+            RightArmFixItem = new ArmFixItem(ik.references.rightShoulder, ik.references.rightUpperArm, ik.references.rightForearm, ik.references.rightHand, referenceTransform);
+
+            // 設定を再読み込み
+            LoadSettingsValues();
 
             eventId = IKManager.Instance.AddOnPostUpdate(10, OnPostUpdate);
-        }
-
-        void OnDestroy()
-        {
-            if (eventId != null) IKManager.Instance.RemoveOnPostUpdate(eventId.Value);
         }
 
         private void OnPostUpdate()
         {
             if (IKManager.Instance.vrik == null) return;
+            if (enabled == false) return;
 
-            FixAxis(LeftElbowFixItem);
-            FixAxis(LeftUpperArmFixItem);
-            FixAxis(RightElbowFixItem);
-            FixAxis(RightUpperArmFixItem);
+            ApplyArmTwistFix(LeftArmFixItem);
+            ApplyArmTwistFix(RightArmFixItem);
         }
-
-        private void FixAxis(FixItem fix)
+        
+        private void ApplyArmTwistFix(ArmFixItem item)
         {
-            //Quaternion.AngleAxis:軸を決めて回転させる
-            //Quaternion * Vector3: 指定方向に回転させたVector3が返ってくる
-            Quaternion targetRotation = fix.Target.rotation;
-            Quaternion twistOffset = Quaternion.AngleAxis(0, targetRotation * fix.TwistAxis);
-            targetRotation = twistOffset * targetRotation;
+            Quaternion originalHandRotation = item.Hand.rotation;
+            Quaternion currentUpperArmRotation = item.UpperArm.rotation;
+            Quaternion currentForearmRotation = item.Forearm.rotation;
 
-            // 親(肩)と子(手首)のワールド座標の緩和軸を求める
-            Vector3 relaxedAxisParent = twistOffset * fix.Parent.rotation * fix.AxisRelativeToParentDefault;
-            Vector3 relaxedAxisChild = twistOffset * fix.Child.rotation * fix.AxisRelativeToChildDefault;
+            // 1. UpperArmとForearmの現在の回転からTwist成分のみを除去し、Swing成分のみを残す
+            Quaternion upperArmSwingOnly = RemoveTwistFromRotation(currentUpperArmRotation, item.InitialUpperArmRotation, item.UpperArmTwistAxis, item);
+            Quaternion forearmSwingOnly = RemoveTwistFromRotation(currentForearmRotation, item.InitialForearmRotation, item.ForearmTwistAxis, item);
 
-            // 親(肩)と子(手首)の中間の回転角度を計算する
-            Vector3 relaxedAxis = Vector3.Slerp(relaxedAxisParent, relaxedAxisChild, fix.GetFixWeight());
+            // 2. Swing成分のみの回転を適用（IKの結果を保持）
+            item.UpperArm.rotation = upperArmSwingOnly;
+            item.Forearm.rotation = forearmSwingOnly;
 
-            // relaxedAxisを（axis、twistAxis）空間で変換して、ねじれ角を計算できます
-            Quaternion r = Quaternion.LookRotation(targetRotation * fix.Axis, targetRotation * fix.TwistAxis);
-            relaxedAxis = Quaternion.Inverse(r) * relaxedAxis;
+            // 3. HandのForearmに対するローカル回転からTwist角度を計算
+            float twistAngle = CalculateHandTwistAngle(item, forearmSwingOnly, originalHandRotation);
 
-            // ねじれ軸を中心にこのTransformを回転させるために必要な角度を計算します
-            float angle = Mathf.Atan2(relaxedAxis.x, relaxedAxis.z) * Mathf.Rad2Deg;
-            //Debug.Log($"Angle{angle}");
-
-            // 子(手首)の回転を取っておいて、対象(ひじ)を回転させた後戻せるようにしておく
-            Quaternion childRotation = fix.Child.rotation;
-
-            // 対象(ひじ)を回転させる
-            fix.Target.rotation = Quaternion.AngleAxis(angle, targetRotation * fix.TwistAxis) * targetRotation;
-
-            // 対象(ひじ)で動いてしまった子(手首)の回転を元に戻す
-            fix.Child.rotation = childRotation;
-        }
-
-        private class FixItem
-        {
-            public Vector3 TwistAxis = Vector3.right;
-            public Vector3 Axis = Vector3.forward;
-            public Vector3 AxisRelativeToParentDefault;
-            public Vector3 AxisRelativeToChildDefault;
-
-            public Transform Parent;
-            public Transform Target;
-            public Transform Child;
-
-            public Func<float> GetFixWeight;
-
-            public FixItem(Transform parent, Transform target, Transform child, Func<float> getFixWeight)
+            // 4. 連続性を保つための補正
+            float lastAngle = item.LastTwistAngle;
+            float delta = Mathf.DeltaAngle(lastAngle, twistAngle);
+            
+            // 通常の連続性補正
+            twistAngle = lastAngle + delta;
+            
+            // 5. 初期角度からの累積角度を更新
+            item.AccumulatedTwistFromInitial += delta;
+            
+            // 初期角度から±maxAccumulatedTwist度を超えたらリセット
+            if (Mathf.Abs(item.AccumulatedTwistFromInitial) > maxAccumulatedTwist)
             {
-                Parent = parent;
-                Target = target;
-                Child = child;
-                GetFixWeight = getFixWeight;
+                // リセット時の処理：360度逆回転させる
+                float resetDirection = Mathf.Sign(item.AccumulatedTwistFromInitial);
+                float resetAdjustment = -resetDirection * 360f;
+                
+                // Twist角度と累積角度を調整
+                twistAngle += resetAdjustment;
+                item.AccumulatedTwistFromInitial += resetAdjustment;
+                
+                // twistAngleがmaxAccumulatedTwist範囲を超えた場合に正規化
+                if (twistAngle > maxAccumulatedTwist)
+                {
+                    // 正の範囲を超えた場合：360度引く
+                    twistAngle -= 360f;
+                    item.AccumulatedTwistFromInitial -= 360f;
+                }
+                else if (twistAngle < -maxAccumulatedTwist)
+                {
+                    // 負の範囲を超えた場合：360度足す
+                    twistAngle += 360f;
+                    item.AccumulatedTwistFromInitial += 360f;
+                }
+                
+                // デバッグ用
+                Debug.Log($"Twist angle reset ({(item.IsLeftArm ? "Left" : "Right")} Arm): direction = {resetDirection}, adjustment = {resetAdjustment} degrees, normalized twistAngle = {twistAngle}, new accumulated = {item.AccumulatedTwistFromInitial}");
+            }
 
-                //InverseTransformDirection:特定のワールド座標が自身のローカル座標だといくつになるか
-                TwistAxis = target.InverseTransformDirection(child.position - target.position);
-                Axis = new Vector3(TwistAxis.y, TwistAxis.z, TwistAxis.x);
+            item.LastTwistAngle = twistAngle;
 
-                // ワールド座標での軸
-                Vector3 elbowAxisWorld = target.rotation * Axis;
+            // 6. Twist角度をUpperArmとForearmに分配
+            float upperArmTwist = twistAngle * UpperArmWeight;
+            float forearmTwist = twistAngle * ForearmWeight;
 
-                //　肩と手首のワールド座標での軸
-                AxisRelativeToParentDefault = Quaternion.Inverse(parent.rotation) * elbowAxisWorld;
-                AxisRelativeToChildDefault = Quaternion.Inverse(child.rotation) * elbowAxisWorld;
+            // 7. Twist軸を使用してTwist回転を適用
+            Vector3 upperArmTwistAxis = item.UpperArm.TransformDirection(item.UpperArmTwistAxis);
+            Vector3 forearmTwistAxis = item.Forearm.TransformDirection(item.ForearmTwistAxis);
+
+            // 8. Swing成分にTwist回転を加算
+            item.UpperArm.rotation = Quaternion.AngleAxis(upperArmTwist, upperArmTwistAxis) * upperArmSwingOnly;
+            item.Forearm.rotation = Quaternion.AngleAxis(forearmTwist, forearmTwistAxis) * forearmSwingOnly;
+            item.Hand.rotation = originalHandRotation;
+        }
+
+        // 回転からTwist成分を除去し、Swing成分のみを残す
+        private Quaternion RemoveTwistFromRotation(Quaternion currentRotation, Quaternion initialRotation, Vector3 twistAxis, ArmFixItem item)
+        {
+            Quaternion relativeRotation;
+            
+            // 基準Transform（胸またはルート）を取得
+            Transform referenceTransform = ik.references.chest ?? ik.references.root;
+            
+            if (referenceTransform != null)
+            {
+                // 基準Transformを使った相対回転計算
+                Quaternion currentReferenceRotation = referenceTransform.rotation;
+                
+                // 現在の腕の回転を基準Transformからの相対回転として計算
+                Quaternion currentArmRelativeToReference = Quaternion.Inverse(currentReferenceRotation) * currentRotation;
+                
+                // 初期状態との相対回転を計算（基準Transformの回転変化の影響を除去）
+                Quaternion initialArmRelativeToReference = (initialRotation == item.InitialUpperArmRotation) 
+                    ? item.InitialUpperArmRelativeToReference 
+                    : item.InitialForearmRelativeToReference;
+                
+                relativeRotation = currentArmRelativeToReference * Quaternion.Inverse(initialArmRelativeToReference);
+                
+                // Swing-Twist分解でSwing成分のみを抽出
+                Quaternion swing, twist;
+                SwingTwistDecomposition(relativeRotation, twistAxis, out swing, out twist);
+                
+                // 結果を基準Transformを基準としたワールド座標に戻す
+                return currentReferenceRotation * (swing * initialArmRelativeToReference);
+            }
+            else
+            {
+                // 基準Transformがない場合は従来の方法
+                relativeRotation = currentRotation * Quaternion.Inverse(initialRotation);
+                
+                Quaternion swing, twist;
+                SwingTwistDecomposition(relativeRotation, twistAxis, out swing, out twist);
+                
+                return swing * initialRotation;
+            }
+        }
+
+        // HandのTwist角度を計算（Swing-Twist分解を使用）
+        private float CalculateHandTwistAngle(ArmFixItem item, Quaternion forearmRotation, Quaternion handRotation)
+        {
+            // HandのForearmに対するローカル回転
+            Quaternion handLocal = Quaternion.Inverse(forearmRotation) * handRotation;
+
+            // 初期状態との差分
+            Quaternion deltaRotation = handLocal * Quaternion.Inverse(item.NeutralHandRotation);
+
+            // Swing-Twist分解でTwist成分のみを抽出
+            Vector3 twistAxis = Vector3.right; // ForearmのローカルX軸（Twist軸）
+            
+            // 左腕の場合はTwist軸を反転
+            if (item.IsLeftArm)
+            {
+                twistAxis = -twistAxis; // Vector3.leftと同等
+            }
+            
+            Quaternion swing, twist;
+            SwingTwistDecomposition(deltaRotation, twistAxis, out swing, out twist);
+
+            // Twist角度を取得
+            float angle;
+            Vector3 axis;
+            twist.ToAngleAxis(out angle, out axis);
+
+            // 符号を正しく設定
+            if (Vector3.Dot(axis, twistAxis) < 0)
+                angle = -angle;
+
+            // -180～180度の範囲に正規化
+            return Mathf.DeltaAngle(0, angle);
+        }
+
+        // Swing-Twist分解（改善版）
+        private void SwingTwistDecomposition(Quaternion rotation, Vector3 twistAxis, out Quaternion swing, out Quaternion twist)
+        {
+            twistAxis.Normalize();
+
+            // 回転軸を取得
+            Vector3 r = new Vector3(rotation.x, rotation.y, rotation.z);
+
+            // Twist軸への投影
+            float dot = Vector3.Dot(r, twistAxis);
+            Vector3 twistPart = dot * twistAxis;
+
+            // Twist成分のクォータニオン
+            twist = new Quaternion(twistPart.x, twistPart.y, twistPart.z, rotation.w);
+
+            // 長さが0に近い場合は単位クォータニオンに
+            if (twist.x * twist.x + twist.y * twist.y + twist.z * twist.z + twist.w * twist.w < 0.01f)
+            {
+                twist = Quaternion.identity;
+            }
+            else
+            {
+                twist = Quaternion.Normalize(twist);
+            }
+
+            // Swing成分
+            swing = rotation * Quaternion.Inverse(twist);
+        }
+
+        public class ArmFixItem
+        {
+            public Transform Shoulder;
+            public Transform UpperArm;
+            public Transform Forearm;
+            public Transform Hand;
+
+            // 左腕かどうかの判定（初期化時に決定）
+            public bool IsLeftArm;
+
+            // Twist軸（ローカル空間）
+            public Vector3 UpperArmTwistAxis;
+            public Vector3 ForearmTwistAxis;
+
+            // 前回のTwist角度
+            public float LastTwistAngle = 0f;
+            
+            // 初期角度からの累積Twist角度
+            public float AccumulatedTwistFromInitial = 0f;
+
+            // 初期状態のHandの回転（T-Pose時など）
+            public Quaternion NeutralHandRotation;
+            
+            // T-ポーズ時の初期回転を保存
+            public Quaternion InitialUpperArmRotation;
+            public Quaternion InitialForearmRotation;
+            
+            // 基準Transform（胸またはルート）の初期回転を保存
+            public Quaternion InitialReferenceRotation;
+            
+            // 腕の初期回転を基準Transformからの相対回転として保存
+            public Quaternion InitialUpperArmRelativeToReference;
+            public Quaternion InitialForearmRelativeToReference;
+
+            public ArmFixItem(Transform shoulder, Transform upperArm, Transform forearm, Transform hand, Transform referenceTransform)
+            {
+                Shoulder = shoulder;
+                UpperArm = upperArm;
+                Forearm = forearm;
+                Hand = hand;
+
+                // 初期化時に肩から手への方向で左右を判定
+                Vector3 shoulderToHand = hand.position - shoulder.position;
+                IsLeftArm = shoulderToHand.x < 0;
+
+                // UpperArmのTwist軸（Forearm→UpperArm方向をUpperArmローカル空間で）
+                UpperArmTwistAxis = upperArm.InverseTransformDirection(forearm.position - upperArm.position).normalized;
+                // ForearmのTwist軸（Hand→Forearm方向をForearmローカル空間で）
+                ForearmTwistAxis = forearm.InverseTransformDirection(hand.position - forearm.position).normalized;
+
+                // 初期状態のHandの回転を保存
+                NeutralHandRotation = Quaternion.Inverse(forearm.rotation) * hand.rotation;
+                
+                // T-ポーズ時の絶対回転を保存
+                InitialUpperArmRotation = upperArm.rotation;
+                InitialForearmRotation = forearm.rotation;
+                
+                // 基準Transform（胸またはルート）の初期回転を保存
+                if (referenceTransform != null)
+                {
+                    InitialReferenceRotation = referenceTransform.rotation;
+                    
+                    // 腕の回転を基準Transformからの相対回転として保存
+                    InitialUpperArmRelativeToReference = Quaternion.Inverse(referenceTransform.rotation) * upperArm.rotation;
+                    InitialForearmRelativeToReference = Quaternion.Inverse(referenceTransform.rotation) * forearm.rotation;
+                }
+                else
+                {
+                    // 基準Transformがない場合は従来の方法を使用
+                    InitialReferenceRotation = Quaternion.identity;
+                    InitialUpperArmRelativeToReference = upperArm.rotation;
+                    InitialForearmRelativeToReference = forearm.rotation;
+                }
             }
         }
     }

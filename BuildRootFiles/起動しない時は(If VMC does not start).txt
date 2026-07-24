@@ -1,0 +1,34 @@
+バーチャルモーションキャプチャーのコントロールパネルが起動しない場合、
+WindowsのSmartScreenによってブロックされています。
+
+1. まずはRemoveZoneID.batをダブルクリックしてから、VirtualMotionCapture.exeを再度起動するか試してください。
+2. それでも起動しない場合はVirtualMotionCapture.batをダブルクリックして起動するか試してください。
+3. どちらでも起動しない場合は、Windowsのスタートメニューの設定で「評価ベースの保護」と検索し、アプリとファイルの確認をオフにしてから、VirtualMotionCapture.exeを再度起動するか試してください。
+
+---
+
+If the Virtual Motion Capture control panel does not start up, 
+it is being blocked by Windows SmartScreen.
+
+1. First, try double-clicking RemoveZoneID.bat and then restart VirtualMotionCapture.exe.
+2. If it still doesn't start, try double-clicking VirtualMotionCapture.bat to launch it.
+3. If neither method works, search for "reputation-based protection" in Windows Start menu settings, turn off "Check apps and files", and then try restarting VirtualMotionCapture.exe.
+
+---
+
+버추얼 모션 캡처의 컨트롤 패널이 시작되지 않는 경우,
+Windows SmartScreen에 의해 차단되었습니다.
+
+1. 먼저 RemoveZoneID.bat를 더블클릭한 후, VirtualMotionCapture.exe를 다시 시작해보세요.
+2. 그래도 시작되지 않으면 VirtualMotionCapture.bat를 더블클릭하여 시작해보세요.
+3. 둘 다 시작되지 않으면, Windows 시작 메뉴의 설정에서 "평판 기반 보호"를 검색하고, 앱 및 파일 확인을 끈 다음 VirtualMotionCapture.exe를 다시 시작해보세요.
+
+---
+
+如果Virtual Motion Capture控制面板无法启动，
+这是被Windows SmartScreen阻止了。
+
+1. 首先双击RemoveZoneID.bat，然后尝试重新启动VirtualMotionCapture.exe。
+2. 如果仍然无法启动，请尝试双击VirtualMotionCapture.bat来启动。
+3. 如果两种方法都无法启动，请在Windows开始菜单的设置中搜索"基于声誉的保护"，关闭"检查应用和文件"，然后尝试重新启动VirtualMotionCapture.exe。
+

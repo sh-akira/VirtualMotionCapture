@@ -319,6 +319,14 @@ namespace UnityMemoryMappedFile
             public int Buffering { get; set; }
         }
 
+        public class GetWristRotationFixSetting { }
+        public class SetWristRotationFixSetting
+        {
+            public int UpperArmWeight { get; set; }      // 1000倍した値 (0.05f -> 50)
+            public int ForearmWeight { get; set; }       // 1000倍した値 (0.45f -> 450)
+            public int MaxAccumulatedTwist { get; set; } // そのまま (300)
+        }
+
         public class GetResolutions { }
         public class ReturnResolutions
         {
@@ -589,6 +597,12 @@ namespace UnityMemoryMappedFile
         public class EnableHandleControllerAsTracker
         {
             public bool HandleControllerAsTracker { get; set; }
+        }
+
+        public class GetTrackerReassignmentWhenChestAvailable { }
+        public class EnableTrackerReassignmentWhenChestAvailable
+        {
+            public bool TrackerReassignmentWhenChestAvailable { get; set; }
         }
 
         public class GetLaunchSteamVROnStartup { }

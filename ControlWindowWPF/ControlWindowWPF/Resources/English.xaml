@@ -371,6 +371,7 @@
     <system:String x:Key="SettingWindow_ReceiveBonesEnable">Receive hand bone</system:String>
     <system:String x:Key="SettingWindow_VMCMod">VMC Mod (No warranty/no support)</system:String>
     <system:String x:Key="SettingWindow_VMCModSetting">Loaded MOD List</system:String>
+    <system:String x:Key="SettingWindow_TrackerReassignmentWhenChestAvailable">Use chest tracker if no pelvis</system:String>
 
     <!-- CalibrationSettingWindow -->
     <system:String x:Key="CalibrationSettingWindow_BodyHeight">Body Height</system:String>
@@ -380,6 +381,13 @@
     <system:String x:Key="CalibrationSettingWindow_OffsetY">Offset Y :</system:String>
     <system:String x:Key="CalibrationSettingWindow_OffsetZ">Offset Z :</system:String>
     <system:String x:Key="CalibrationSettingWindow_Notice">Please recalibrate after the change</system:String>
+
+    <!-- CalibrationSettingWindow - WristRotationFix -->
+    <system:String x:Key="CalibrationSettingWindow_WristRotationFix">Wrist Rotation Fix</system:String>
+    <system:String x:Key="CalibrationSettingWindow_UpperArmWeight">Upper Arm Weight :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_ForearmWeight">Forearm Weight :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_MaxAccumulatedTwist">Max Accumulated Twist :</system:String>
+
 
     <!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">Tracker assignment setting</system:String>

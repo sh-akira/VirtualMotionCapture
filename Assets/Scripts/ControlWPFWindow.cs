@@ -90,6 +90,11 @@ namespace VMC
 
         public ModManager modManager;
 
+        // コントロールパネル起動監視用の変数を追加
+        private bool showControlPanelMessage = false;
+        private float controlPanelStartTime = -1f; // -1で初期化（監視無効）
+        private const float CONTROL_PANEL_TIMEOUT = 10f; // 10秒
+
         private void Awake()
         {
             Application.targetFrameRate = 60;
@@ -98,12 +103,39 @@ namespace VMC
             pipeName = "VMCTest";
 #else
             //Debug.unityLogger.logEnabled = false;
-            pipeName = "VMCpipe" + Guid.NewGuid().ToString();
+
+            bool isRunWithPipeName = false;
+
+            var args = Environment.GetCommandLineArgs();
+            if (args.Length > 1)
+            {
+                for (int i = 1; i < args.Length - 1; i++)
+                {
+                    if (args[i].StartsWith("/pipeName") || args[i].StartsWith("-pipeName"))
+                    {
+                        // コマンドライン引数からパイプ名を取得
+                        pipeName = args[i + 1];
+                        isRunWithPipeName = true;
+                        break;
+                    }
+                }
+            }
+            
+            if (isRunWithPipeName == false)
+            {
+                // パイプ名をランダムに生成
+                pipeName = "VMCpipe" + Guid.NewGuid().ToString();
+            }
 #endif
 
 #if !UNITY_EDITOR
             //start control panel
-            ExecuteControlPanel();
+            if (isRunWithPipeName == false) 
+            {
+                ExecuteControlPanel();
+                // コントロールパネル起動監視開始
+                controlPanelStartTime = Time.time;
+            }
 #endif
 
             context = System.Threading.SynchronizationContext.Current;
@@ -510,6 +542,10 @@ namespace VMC
                     if (isFirstTimeExecute)
                     {
                         isFirstTimeExecute = false;
+                        // コントロールパネルが正常に起動したので監視を停止し、メッセージを非表示
+                        controlPanelStartTime = -1f;
+                        showControlPanelMessage = false;
+                        
                         CurrentWindowNum = SetWindowTitle();
                         //起動時は初期設定ロード
                         LoadSettings(null);
@@ -722,6 +758,18 @@ namespace VMC
                     await server.SendCommandAsync(new PipeCommands.SetLaunchSteamVROnStartup
                     {
                         Enable = CommonSettings.Current.LaunchSteamVROnStartup,
+                    }, e.RequestId);
+                }
+                else if (e.CommandType == typeof(PipeCommands.EnableTrackerReassignmentWhenChestAvailable))
+                {
+                    var d = (PipeCommands.EnableTrackerReassignmentWhenChestAvailable)e.Data;
+                    Settings.Current.TrackerReassignmentWhenChestAvailable = d.TrackerReassignmentWhenChestAvailable;
+                }
+                else if (e.CommandType == typeof(PipeCommands.GetTrackerReassignmentWhenChestAvailable))
+                {
+                    await server.SendCommandAsync(new PipeCommands.EnableTrackerReassignmentWhenChestAvailable
+                    {
+                        TrackerReassignmentWhenChestAvailable = Settings.Current.TrackerReassignmentWhenChestAvailable
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetQualitySettings))
@@ -2142,6 +2190,15 @@ namespace VMC
 
             Action action;
             if (UpdateActionQueue.TryDequeue(out action)) action();
+
+            // コントロールパネル起動監視
+            if (!showControlPanelMessage && controlPanelStartTime >= 0 && 
+                Time.time - controlPanelStartTime > CONTROL_PANEL_TIMEOUT && 
+                isFirstTimeExecute) // まだLoadCurrentSettingsが来ていない
+            {
+                showControlPanelMessage = true;
+                controlPanelStartTime = -1f; // 一度だけ表示（監視停止）
+            }
         }
 
         private int WindowX;
@@ -2178,6 +2235,31 @@ namespace VMC
             if (Input.GetMouseButtonUp((int)MouseButtons.Left) && isWindowDragging)
             {
                 isWindowDragging = false;
+            }
+        }
+
+        void OnGUI()
+        {
+            // コントロールパネル起動監視メッセージ表示（左上に4言語）
+            if (showControlPanelMessage)
+            {
+                var textStyle = new GUIStyle(GUI.skin.label)
+                {
+                    fontSize = 24,
+                    normal = { textColor = Color.yellow }
+                };
+
+                // 4言語のメッセージ
+                string message = "コントロールパネルの起動を待機しています。コントロールパネルが起動しない場合は、\n" +
+                                "同じフォルダの「起動しない時は(If VMC does not start).txt」を確認してください。\n\n" +
+                                "Waiting for control panel to start. If the control panel does not start,\n" +
+                                "Please check \"起動しない時は(If VMC does not start).txt\" file in the same folder.\n\n" +
+                                "컨트롤 패널의 시작을 기다리고 있습니다. 컨트롤 패널이 시작되지 않는 경우,\n" +
+                                "같은 폴더의 \"起動しない時は(If VMC does not start).txt\" 파일을 확인해주세요.\n\n" +
+                                "正在等待控制面板启动。如果控制面板未启动，\n" +
+                                "请检查同一文件夹中的\"起動しない時は(If VMC does not start).txt\"文件。";
+
+                GUI.Label(new Rect(10, 10, Screen.width - 20, Screen.height - 20), message, textStyle);
             }
         }
     }

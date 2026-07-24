@@ -562,6 +562,9 @@ namespace VMC
         public bool HandleControllerAsTracker;
 
         [OptionalField]
+        public bool TrackerReassignmentWhenChestAvailable;
+
+        [OptionalField]
         public int AntiAliasing;
 
         [OptionalField]
@@ -742,6 +745,13 @@ namespace VMC
         [OptionalField]
         public float PelvisOffsetAdjustZ;
 
+        [OptionalField]
+        public int WristRotationFix_UpperArmWeight = 200; // /1000
+        [OptionalField]
+        public int WristRotationFix_ForearmWeight = 570; // /1000
+        [OptionalField]
+        public int WristRotationFix_MaxAccumulatedTwist = 300;
+
 
         //初期値
         [OnDeserializing()]
@@ -842,6 +852,8 @@ namespace VMC
 
             HandleControllerAsTracker = false;
 
+            TrackerReassignmentWhenChestAvailable = false;
+
             AntiAliasing = 2;
 
             VirtualMotionTrackerEnable = false;
@@ -940,6 +952,10 @@ namespace VMC
             OverrideBodyHeight = 1.7f;
             PelvisOffsetAdjustY = 0;
             PelvisOffsetAdjustZ = 0;
+
+            WristRotationFix_UpperArmWeight = 200;
+            WristRotationFix_ForearmWeight = 570;
+            WristRotationFix_MaxAccumulatedTwist = 300;
         }
 
         /// <summary>
