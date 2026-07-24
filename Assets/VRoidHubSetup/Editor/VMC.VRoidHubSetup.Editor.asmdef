@@ -1,0 +1,16 @@
+{
+    "name": "VMC.VRoidHubSetup.Editor",
+    "rootNamespace": "VMC.EditorTools",
+    "references": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

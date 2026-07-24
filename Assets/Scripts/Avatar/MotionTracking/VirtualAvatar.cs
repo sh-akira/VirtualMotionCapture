@@ -49,6 +49,10 @@ namespace VMC
 
         public Dictionary<HumanBodyBones, bool> isPoseChanged;
 
+        //クローン生成時(=BuildHumanAvatarでアバターのTポーズ基準として使われた姿勢)のローカルTRS。
+        //モーション書き出し時にレスト姿勢へ戻すために使用する
+        private List<(Transform transform, Vector3 localPosition, Quaternion localRotation)> bindPose;
+
 
         public const HumanBodyBones HumanBodyBonesRoot = (HumanBodyBones)(-1);
         public static HumanBodyBones[] ReverseBodyBones = new HumanBodyBones[] {
@@ -149,6 +153,33 @@ namespace VMC
             animator.avatar = avatar;
 
             InitializeBoneTransformCache(true);
+
+            //この時点のクローンボーンのローカルTRSがアバターのレスト(Tポーズ)基準
+            CaptureBindPose();
+        }
+
+        private void CaptureBindPose()
+        {
+            bindPose = new List<(Transform, Vector3, Quaternion)>();
+            if (RootTransform == null) return;
+            foreach (var t in RootTransform.GetComponentsInChildren<Transform>(true))
+            {
+                bindPose.Add((t, t.localPosition, t.localRotation));
+            }
+        }
+
+        /// <summary>
+        /// クローンスケルトンを生成時のバインドポーズ(アバターのTポーズ基準)に戻す
+        /// </summary>
+        public void RestoreBindPose()
+        {
+            if (bindPose == null) return;
+            foreach (var (t, localPosition, localRotation) in bindPose)
+            {
+                if (t == null) continue;
+                t.localPosition = localPosition;
+                t.localRotation = localRotation;
+            }
         }
 
         private Dictionary<HumanBodyBones, (Transform cloneBone, Transform modelBone)> InitializeBoneTransformCache(bool force = false)
@@ -296,5 +327,6 @@ namespace VMC
         VRIK,
         mocopi,
         VMCProtocol,
+        MotionPlayback, //モーションファイル再生(最優先)
     }
 }

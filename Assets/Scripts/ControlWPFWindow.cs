@@ -40,6 +40,8 @@ namespace VMC
 
         public GameObject ExternalMotionSenderObject;
         private ExternalSender externalMotionSender;
+        private MotionPlayer motionPlayer;
+        private MotionRecorder motionRecorder;
 
         public GameObject ExternalMotionReceiverObject;
         public List<ExternalReceiverForVMC> externalMotionReceivers = new List<ExternalReceiverForVMC>();
@@ -147,6 +149,14 @@ namespace VMC
             server.Start(pipeName);
 
             externalMotionSender = ExternalMotionSenderObject.GetComponent<ExternalSender>();
+
+            //モーション再生・記録
+            var motionPlayerObject = new GameObject("MotionPlayer");
+            motionPlayerObject.transform.SetParent(transform, false);
+            motionPlayer = motionPlayerObject.AddComponent<MotionPlayer>();
+            var motionRecorderObject = new GameObject("MotionRecorder");
+            motionRecorderObject.transform.SetParent(transform, false);
+            motionRecorder = motionRecorderObject.AddComponent<MotionRecorder>();
         }
 
         void Start()
@@ -417,7 +427,8 @@ namespace VMC
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetFaceKeys))
                 {
-                    await server.SendCommandAsync(new PipeCommands.ReturnFaceKeys { Keys = faceController.BlendShapeClips.Select(d => d.Name).ToList() }, e.RequestId);
+                    //保存済み設定との互換性のため、プリセット表情はVRM0.xの名称(Joy, A, Blink_L等)でUIに渡す
+                    await server.SendCommandAsync(new PipeCommands.ReturnFaceKeys { Keys = faceController.BlendShapeClips.Select(d => VRM10CompatibleNames.GetVRM0CompatibleName(d)).Distinct().ToList() }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.SetFace))
                 {
@@ -886,6 +897,19 @@ namespace VMC
                         IsLoaded = modManager.IsModLoaded,
                     }, e.RequestId);
                 }
+                else if (e.CommandType == typeof(PipeCommands.VRoidSDK_CheckAvailable))
+                {
+                    //VRoid SDKが組み込まれているか(VMC_VROIDSDK)を常時コンパイルされる本ハンドラで返す。
+                    //SDK未同梱時はVRoidSDKConnector自体が除外されるため、可否判定はここで行う。
+                    await server.SendCommandAsync(new PipeCommands.VRoidSDK_ReturnAvailable
+                    {
+#if VMC_VROIDSDK
+                        Available = true,
+#else
+                        Available = false,
+#endif
+                    }, e.RequestId);
+                }
                 else if (e.CommandType == typeof(PipeCommands.GetModList))
                 {
                     await server.SendCommandAsync(new PipeCommands.ReturnModList
@@ -1055,39 +1079,113 @@ namespace VMC
             var vrm10Data = Vrm10Data.Parse(data);
 
             MigrationData migration = null;
+            GltfData migratedData = null;
             if (vrm10Data == null)
             {
-                await awaitCaller.Run(() => Vrm10Data.Migrate(data, out vrm10Data, out migration));
+                migratedData = await awaitCaller.Run(() => Vrm10Data.Migrate(data, out vrm10Data, out migration));
             }
 
-            if (vrm10Data == null)
-                return null;
-
-            if (migration != null)
+            try
             {
-                // VRM 0.x
-                vrmdata.Title = migration.OriginalMetaBeforeMigration.title;
-                vrmdata.Version = migration.OriginalMetaBeforeMigration.version;
-                vrmdata.Author = migration.OriginalMetaBeforeMigration.author;
-                vrmdata.ContactInformation = migration.OriginalMetaBeforeMigration.contactInformation;
-                vrmdata.Reference = migration.OriginalMetaBeforeMigration.reference;
-                vrmdata.AllowedUser = (UnityMemoryMappedFile.AllowedUser)migration.OriginalMetaBeforeMigration.allowedUser;
-                vrmdata.ViolentUssage = migration.OriginalMetaBeforeMigration.violentUsage ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
-                vrmdata.SexualUssage = migration.OriginalMetaBeforeMigration.sexualUsage ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
-                vrmdata.CommercialUssage = migration.OriginalMetaBeforeMigration.commercialUsage ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
-                vrmdata.OtherPermissionUrl = migration.OriginalMetaBeforeMigration.otherPermissionUrl;
-                vrmdata.LicenseType = (UnityMemoryMappedFile.LicenseType)migration.OriginalMetaBeforeMigration.licenseType;
-                vrmdata.OtherLicenseUrl = migration.OriginalMetaBeforeMigration.otherLicenseUrl;
+                if (vrm10Data == null)
+                    return null;
+
+                if (migration != null)
+                {
+                    // VRM 0.x (マイグレーション前のオリジナルのメタ情報を表示する)
+                    vrmdata.MetaVersion = 0;
+                    vrmdata.Title = migration.OriginalMetaBeforeMigration.title;
+                    vrmdata.Version = migration.OriginalMetaBeforeMigration.version;
+                    vrmdata.Author = migration.OriginalMetaBeforeMigration.author;
+                    vrmdata.ContactInformation = migration.OriginalMetaBeforeMigration.contactInformation;
+                    vrmdata.Reference = migration.OriginalMetaBeforeMigration.reference;
+                    vrmdata.AllowedUser = (UnityMemoryMappedFile.AllowedUser)migration.OriginalMetaBeforeMigration.allowedUser;
+                    vrmdata.ViolentUssage = migration.OriginalMetaBeforeMigration.violentUsage ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
+                    vrmdata.SexualUssage = migration.OriginalMetaBeforeMigration.sexualUsage ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
+                    vrmdata.CommercialUssage = migration.OriginalMetaBeforeMigration.commercialUsage ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
+                    vrmdata.OtherPermissionUrl = migration.OriginalMetaBeforeMigration.otherPermissionUrl;
+                    vrmdata.LicenseType = (UnityMemoryMappedFile.LicenseType)migration.OriginalMetaBeforeMigration.licenseType;
+                    vrmdata.OtherLicenseUrl = migration.OriginalMetaBeforeMigration.otherLicenseUrl;
+                }
+                else
+                {
+                    // VRM 1.0
+                    var meta = vrm10Data.VrmExtension.Meta;
+                    if (meta == null)
+                        return null;
+                    vrmdata.MetaVersion = 1;
+                    vrmdata.Title = meta.Name;
+                    vrmdata.Version = meta.Version;
+                    vrmdata.Author = meta.Authors != null ? string.Join(", ", meta.Authors) : null;
+                    vrmdata.ContactInformation = meta.ContactInformation;
+                    vrmdata.Reference = meta.References != null ? string.Join(", ", meta.References) : null;
+
+                    // Permission (AvatarPermissionTypeはAllowedUserと3値とも同順)
+                    vrmdata.AllowedUser = (UnityMemoryMappedFile.AllowedUser)meta.AvatarPermission;
+                    vrmdata.ViolentUssage = meta.AllowExcessivelyViolentUsage == true ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
+                    vrmdata.SexualUssage = meta.AllowExcessivelySexualUsage == true ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
+                    // 旧バージョンのコントロールパネル向けの近似値(personalNonProfit以外は商用利用可扱い)
+                    vrmdata.CommercialUssage = meta.CommercialUsage == UniGLTF.Extensions.VRMC_vrm.CommercialUsageType.personalNonProfit ? UnityMemoryMappedFile.UssageLicense.Disallow : UnityMemoryMappedFile.UssageLicense.Allow;
+                    vrmdata.CommercialUsageType = (int)meta.CommercialUsage;
+                    vrmdata.PoliticalOrReligiousUsage = meta.AllowPoliticalOrReligiousUsage == true ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
+                    vrmdata.AntisocialOrHateUsage = meta.AllowAntisocialOrHateUsage == true ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
+
+                    // Distribution License
+                    vrmdata.CreditNotation = (int)meta.CreditNotation;
+                    vrmdata.Redistribution = meta.AllowRedistribution == true ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
+                    vrmdata.ModificationType = (int)meta.Modification;
+                    vrmdata.CopyrightInformation = meta.CopyrightInformation;
+                    vrmdata.ThirdPartyLicenses = meta.ThirdPartyLicenses;
+                    vrmdata.LicenseUrl = meta.LicenseUrl;
+                    vrmdata.OtherLicenseUrl = meta.OtherLicenseUrl;
+                }
 
                 using var loader = new Vrm10Importer(vrm10Data);
-                vrmdata.ThumbnailPNGBytes = (await loader.LoadVrmThumbnailAsync()).EncodeToPNG();
+                var thumbnail = await loader.LoadVrmThumbnailAsync(awaitCaller);
+                if (thumbnail != null)
+                {
+                    vrmdata.ThumbnailPNGBytes = EncodeTextureToPNG(thumbnail);
+                }
             }
-            else
+            finally
             {
-                // TODO: VRM 1.x or later
+                migratedData?.Dispose();
             }
 
             return vrmdata;
+        }
+
+        /// <summary>
+        /// テクスチャをPNGバイト列に変換する。
+        /// UniVRM 0.131系のサムネイルはnon-readableで生成されEncodeToPNGが失敗するため、
+        /// 一度RenderTexture経由で読み取り可能なコピーを作ってからエンコードする。
+        /// </summary>
+        private static byte[] EncodeTextureToPNG(Texture2D source)
+        {
+            if (source == null) return null;
+            if (source.isReadable)
+            {
+                return source.EncodeToPNG();
+            }
+
+            var previousActive = RenderTexture.active;
+            var rt = RenderTexture.GetTemporary(source.width, source.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+            Texture2D readable = null;
+            try
+            {
+                Graphics.Blit(source, rt);
+                RenderTexture.active = rt;
+                readable = new Texture2D(source.width, source.height, TextureFormat.RGBA32, false);
+                readable.ReadPixels(new Rect(0, 0, source.width, source.height), 0, 0);
+                readable.Apply();
+                return readable.EncodeToPNG();
+            }
+            finally
+            {
+                RenderTexture.active = previousActive;
+                RenderTexture.ReleaseTemporary(rt);
+                if (readable != null) Destroy(readable);
+            }
         }
 
         public async Task ImportVRM(string path)
@@ -1096,44 +1194,34 @@ namespace VMC
 
             Settings.Current.VRMPath = path;
 
-            var vrm10Instance = await Vrm10.LoadPathAsync(path);
-            var runtimeGltfInstance = vrm10Instance.GetComponent<RuntimeGltfInstance>();
+            Vrm10Instance vrm10Instance = null;
+            try
+            {
+                // ControlRigGenerationOption.Generate: AnimatorはVRM0.x互換の正規化ボーン(Control Rig)にマップされるため、
+                // FinalIKやVMCProtocolのボーン送信は非正規化のVRM1.0モデルでも従来通り動作する
+                vrm10Instance = await Vrm10.LoadPathAsync(path,
+                    canLoadVrm0X: true,
+                    controlRigGenerationOption: ControlRigGenerationOption.Generate,
+                    showMeshes: false);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to load VRM: {path}\n{ex}");
+            }
 
+            if (vrm10Instance == null)
+            {
+                return;
+            }
+
+            // BlendShape(Expression)目線制御時の表情とのぶつかり防止は、UniVRM10のRuntimeが
+            // Expressionの適用と目線(LookAt)の合成・Override設定を一括処理するため追加対応不要
+
+            var runtimeGltfInstance = vrm10Instance.GetComponent<RuntimeGltfInstance>();
             runtimeGltfInstance.ShowMeshes();
 
             LoadNewModel(runtimeGltfInstance.Root);
             await server.SendCommandAsync(new PipeCommands.VRMLoadStatus { Valid = true });
-
-            // BlendShape目線制御時の表情とのぶつかりを防ぐ
-            if (vrm10Instance.Vrm.LookAt.LookAtType == UniGLTF.Extensions.VRMC_vrm.LookAtType.expression)
-            {
-            }
-#if false
-            using (GltfData data = new AutoGltfFileParser(path).Parse())
-            {
-                VRM.VRMData vrmData = new VRM.VRMData(data);
-                using (var context = new VRMImporterContext(vrmData))
-                {
-                    // ParseしたJSONをシーンオブジェクトに変換していく
-                    var runtimeGltfInstance = await context.LoadAsync(new RuntimeOnlyAwaitCaller());
-                    runtimeGltfInstance.ShowMeshes();
-
-                    // BlendShape目線制御時の表情とのぶつかりを防ぐ
-                    if (context.VRM.firstPerson.lookAtType == LookAtType.BlendShape)
-                    {
-                        var applyer = runtimeGltfInstance.Root.GetComponent<VRMLookAtBlendShapeApplyer>();
-                        applyer.enabled = false;
-
-                        var vmcapplyer = runtimeGltfInstance.Root.AddComponent<VMC_VRMLookAtBlendShapeApplyer>();
-                        vmcapplyer.OnImported(context);
-                        vmcapplyer.faceController = faceController;
-                    }
-
-                    LoadNewModel(runtimeGltfInstance.Root);
-                    await server.SendCommandAsync(new PipeCommands.VRMLoadStatus { Valid = true });
-                }
-            }
-#endif
         }
 
         public void LoadNewModel(GameObject model)
@@ -1455,6 +1543,27 @@ namespace VMC
                     case Functions.ShowPhotoWindow:
                         server?.SendCommandAsync(new PipeCommands.ShowPhotoWindow { });
                         break;
+                    case Functions.StartMotionRecording:
+                        motionRecorder?.StartRecording();
+                        break;
+                    case Functions.StopMotionRecording:
+                        motionRecorder?.StopRecording();
+                        break;
+                }
+            }
+            else if (action.MotionAction)
+            {
+                if (action.MotionPlayType == 0) //モーション再生
+                {
+                    motionPlayer?.PlayByPath(action.MotionFilePath);
+                }
+                else if (action.MotionPlayType == 1) //ポーズ適用
+                {
+                    motionPlayer?.ApplyPoseByPath(action.MotionFilePath, action.MotionFrame);
+                }
+                else //解除(停止)
+                {
+                    motionPlayer?.Stop();
                 }
             }
         }

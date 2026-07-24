@@ -201,8 +201,96 @@
     <system:String x:Key="LicenseType_CC_BY_ND">Creative Commons CC BY NDライセンス(CC_BY_ND)</system:String>
     <system:String x:Key="LicenseType_CC_BY_NC_ND">Creative Commons CC BY NC NDライセンス(CC_BY_NC_ND)</system:String>
     <system:String x:Key="LicenseType_Other">その他(Other)</system:String>
-    
-    
+
+    <!-- VRMImportWindow (VRM 1.0) -->
+    <system:String x:Key="VRMImportWindow_VRM10AdditionalLicense">VRM1.0 追加ライセンス情報</system:String>
+    <system:String x:Key="VRMImportWindow_PoliticalOrReligiousUsage">政治・宗教目的の利用</system:String>
+    <system:String x:Key="VRMImportWindow_AntisocialOrHateUsage">反社会的・憎悪表現の利用</system:String>
+    <system:String x:Key="VRMImportWindow_CreditNotation">クレジット表記</system:String>
+    <system:String x:Key="VRMImportWindow_Redistribution">再配布</system:String>
+    <system:String x:Key="VRMImportWindow_Modification">改変</system:String>
+    <system:String x:Key="VRMImportWindow_LicenseUrl">ライセンスURL</system:String>
+    <system:String x:Key="VRMImportWindow_CopyrightInformation">著作権情報</system:String>
+    <system:String x:Key="VRMImportWindow_ThirdPartyLicenses">サードパーティライセンス</system:String>
+    <system:String x:Key="CommercialUssage_PersonalNonProfit">個人の非営利のみ</system:String>
+    <system:String x:Key="CommercialUssage_PersonalProfit">個人の営利利用可</system:String>
+    <system:String x:Key="CommercialUssage_Corporation">法人利用可</system:String>
+    <system:String x:Key="CreditNotation_Required">必要</system:String>
+    <system:String x:Key="CreditNotation_Unnecessary">不要</system:String>
+    <system:String x:Key="Modification_Prohibited">改変禁止</system:String>
+    <system:String x:Key="Modification_AllowModification">改変可(再配布禁止)</system:String>
+    <system:String x:Key="Modification_AllowModificationRedistribution">改変・改変物の再配布可</system:String>
+
+    <!-- Motion -->
+    <system:String x:Key="MainWindow_Motion">モーション</system:String>
+    <system:String x:Key="MainWindow_Motion_ToolTip">モーションの再生や記録を行います</system:String>
+    <system:String x:Key="MainWindow_MotionPlayback">モーション再生</system:String>
+    <system:String x:Key="MainWindow_MotionPlayback_ToolTip">モーションファイル(VRMA/BVH)を読み込んで再生します</system:String>
+    <system:String x:Key="MainWindow_MotionRecord">モーション記録</system:String>
+    <system:String x:Key="MainWindow_MotionRecord_ToolTip">モーションを記録してVRMA/BVHファイルに保存します</system:String>
+    <system:String x:Key="MotionPlaybackWindow_Title">モーション再生</system:String>
+    <system:String x:Key="MotionPlaybackWindow_MotionFiles">モーションファイル</system:String>
+    <system:String x:Key="MotionPlaybackWindow_AddFile">追加</system:String>
+    <system:String x:Key="MotionPlaybackWindow_RemoveFile">削除</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ColumnName">名前</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ColumnLength">長さ</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ColumnFormat">形式</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ColumnShortcut">割当キー</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ShortcutButton">ショートカット設定</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ShortcutButton_ToolTip">選択中のモーションにショートカットキー(再生/ポーズ適用)を割り当てます</system:String>
+    <system:String x:Key="MotionPlaybackWindow_SelectMotionFirst">先にモーションを選択してください</system:String>
+    <system:String x:Key="MotionPlaybackWindow_Playback">再生コントロール</system:String>
+    <system:String x:Key="MotionPlaybackWindow_PlayButton">▶ 再生</system:String>
+    <system:String x:Key="MotionPlaybackWindow_PauseButton">一時停止</system:String>
+    <system:String x:Key="MotionPlaybackWindow_StopButton">■ 停止</system:String>
+    <system:String x:Key="MotionPlaybackWindow_PrevFrame_ToolTip">1フレーム戻る</system:String>
+    <system:String x:Key="MotionPlaybackWindow_NextFrame_ToolTip">1フレーム進む</system:String>
+    <system:String x:Key="MotionPlaybackWindow_RepeatOneShot">1ショット</system:String>
+    <system:String x:Key="MotionPlaybackWindow_RepeatOneFile">1ファイルループ</system:String>
+    <system:String x:Key="MotionPlaybackWindow_RepeatList">リストループ</system:String>
+    <system:String x:Key="MotionPlaybackWindow_LoadError">モーションの読み込みに失敗しました</system:String>
+    <system:String x:Key="MotionPlaybackWindow_RightFinger">右指</system:String>
+    <system:String x:Key="MotionPlaybackWindow_LeftFinger">左指</system:String>
+    <system:String x:Key="MotionPlaybackWindow_Eye">目ボーン</system:String>
+    <system:String x:Key="MotionRecordWindow_Title">モーション記録</system:String>
+    <system:String x:Key="MotionRecordWindow_RecordSetting">記録設定</system:String>
+    <system:String x:Key="MotionRecordWindow_Fps">フレームレート(fps)</system:String>
+    <system:String x:Key="MotionRecordWindow_Countdown">カウントダウン(秒)</system:String>
+    <system:String x:Key="MotionRecordWindow_VrmaSaveItems">VRMAに保存する項目</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveMotion">モーション</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveExpressionPreset">表情(プリセット)</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveExpressionCustom">表情(カスタム)</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveLookAt">視線</system:String>
+    <system:String x:Key="MotionRecordWindow_Record">記録</system:String>
+    <system:String x:Key="MotionRecordWindow_StartRecording">● 記録開始</system:String>
+    <system:String x:Key="MotionRecordWindow_StopRecording">■ 記録停止</system:String>
+    <system:String x:Key="MotionRecordWindow_CountdownStatus">開始まで</system:String>
+    <system:String x:Key="MotionRecordWindow_RecordingStatus">記録中</system:String>
+    <system:String x:Key="MotionRecordWindow_RecordedStatus">記録済み</system:String>
+    <system:String x:Key="MotionRecordWindow_CutEdit">カット編集</system:String>
+    <system:String x:Key="MotionRecordWindow_PreviewPosition">プレビュー位置</system:String>
+    <system:String x:Key="MotionRecordWindow_CutStart">開始位置</system:String>
+    <system:String x:Key="MotionRecordWindow_CutEnd">終了位置</system:String>
+    <system:String x:Key="MotionRecordWindow_PreviewPlay">プレビュー再生</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveVrma">VRMAで保存</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveBvh">BVHで保存</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveError">保存に失敗しました</system:String>
+    <system:String x:Key="MotionKeyAddWindowTitle">モーションショートカットキー追加</system:String>
+    <system:String x:Key="MotionKeyAddWindow_SelectAction">動作を選択</system:String>
+    <system:String x:Key="MotionKeyAddWindow_MotionFile">モーション</system:String>
+    <system:String x:Key="MotionKeyAddWindow_Frame">フレーム</system:String>
+    <system:String x:Key="MotionKeyAddWindow_FrameHint">再生画面でプレビュー中のフレームが入っています。変更したい場合は再生画面のシークバーやコマ送りで目的の姿勢まで動かしてから、この画面を開き直してください。</system:String>
+    <system:String x:Key="MotionKeyAddWindow_TypePlay">モーション再生</system:String>
+    <system:String x:Key="MotionKeyAddWindow_TypePose">ポーズ適用</system:String>
+    <system:String x:Key="MotionKeyAddWindow_TypeRelease">解除(停止)</system:String>
+    <system:String x:Key="MotionKeyAddWindow_MotionNotFoundError">モーションが選択されていません。先にモーション再生画面でモーションを読み込んでください。</system:String>
+    <system:String x:Key="MotionKeyAddWindow_FrameError">フレーム番号が不正です</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddMotion">モーション</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddMotion_ToolTip">モーション再生やポーズ適用のショートカットキーを追加します</system:String>
+    <system:String x:Key="Motion">モーション</system:String>
+    <system:String x:Key="Functions_StartMotionRecording">モーション記録開始</system:String>
+    <system:String x:Key="Functions_StopMotionRecording">モーション記録停止</system:String>
+
     <!-- SettingWindow -->
     <system:String x:Key="SettingWindowTitle">設定</system:String>
                           
@@ -550,6 +638,25 @@
     <system:String x:Key="VRoidHubWindow_Unnecessary">不要</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionDescription1">このモデルは使用時のライセンス表示が必須です。</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionDescription2">動画や配信で使用する際必ず明記する必要があります</system:String>
+    <!-- VRoidHub VRM1.0 license -->
+    <system:String x:Key="VRoidHubWindow_VRM10License">利用条件 (VRM1.0)</system:String>
+    <system:String x:Key="VRoidHub_VRM10_AvatarUser">アバターとしての利用(他者)</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Violence">暴力表現</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Sexuality">性的表現</system:String>
+    <system:String x:Key="VRoidHub_VRM10_PoliticalReligious">政治・宗教用途</system:String>
+    <system:String x:Key="VRoidHub_VRM10_AntisocialHate">反社会的・憎悪表現</system:String>
+    <system:String x:Key="VRoidHub_VRM10_PersonalCommercial">個人の商用利用</system:String>
+    <system:String x:Key="VRoidHub_VRM10_CorporateCommercial">法人の商用利用</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Redistribution">再配布</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Modification">改変</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Credit">クレジット表記</system:String>
+    <system:String x:Key="VRoidHub_License_ok">許可</system:String>
+    <system:String x:Key="VRoidHub_License_ng">不可</system:String>
+    <system:String x:Key="VRoidHub_License_need">必要</system:String>
+    <system:String x:Key="VRoidHub_License_noneed">不要</system:String>
+    <system:String x:Key="VRoidHub_License_profit">営利利用可</system:String>
+    <system:String x:Key="VRoidHub_License_nonprofit">非営利のみ</system:String>
+    <system:String x:Key="VRoidHub_License_notset">未設定</system:String>
     <system:String x:Key="VRoidHubWindow_OpenOnVRoidHub">VRoid Hubで開く</system:String>
     <system:String x:Key="VRoidHubWindow_LoadModel">同意して読み込む</system:String>
     <system:String x:Key="VRoidHubWindow_Loading">読込中です</system:String>

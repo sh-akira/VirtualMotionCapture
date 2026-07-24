@@ -1363,6 +1363,12 @@ namespace UnityMemoryMappedFile
         public float HandChangeTime { get; set; } = 0.1f;
         public float LipSyncMaxLevel { get; set; } = 1.0f;
 
+        // モーション再生アクション
+        public bool MotionAction { get; set; }
+        public int MotionPlayType { get; set; } // 0:再生 1:ポーズ適用 2:解除(停止)
+        public string MotionFilePath { get; set; }
+        public int MotionFrame { get; set; }
+
         public static void KeyActionsUpgrade(List<KeyAction> keyActions)
         {
             //古いバージョンで保存したVIVE/Oculus用のキーコンフィグをアップグレード
@@ -1435,6 +1441,8 @@ namespace UnityMemoryMappedFile
         PauseTracking = 10,
         ShowCalibrationWindow = 11,
         ShowPhotoWindow = 12,
+        StartMotionRecording = 13,
+        StopMotionRecording = 14,
     }
 
     public enum Hands
@@ -1490,6 +1498,19 @@ namespace UnityMemoryMappedFile
         // Distribution License
         public LicenseType LicenseType { get; set; }
         public string OtherLicenseUrl { get; set; }
+
+        // VRM 1.0 (VRMC_vrm meta)
+        // 古いバージョンの相手との通信互換性維持のため、新しいenumは追加せずint/既存enumで表現する
+        public int MetaVersion { get; set; } // 0:VRM0.x 1:VRM1.0
+        public string CopyrightInformation { get; set; }
+        public string ThirdPartyLicenses { get; set; }
+        public string LicenseUrl { get; set; }
+        public int CommercialUsageType { get; set; } // 0:personalNonProfit 1:personalProfit 2:corporation
+        public UssageLicense PoliticalOrReligiousUsage { get; set; }
+        public UssageLicense AntisocialOrHateUsage { get; set; }
+        public int CreditNotation { get; set; } // 0:required 1:unnecessary
+        public UssageLicense Redistribution { get; set; }
+        public int ModificationType { get; set; } // 0:prohibited 1:allowModification 2:allowModificationRedistribution
     }
 
     public enum AllowedUser

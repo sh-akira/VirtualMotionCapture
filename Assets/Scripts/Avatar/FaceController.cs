@@ -318,11 +318,11 @@ namespace VMC
             }
             var presetDictionary = AccumulateShapeKeys[presetName];
             presetDictionary.Clear();
-            //Mixしたい表情を合成する
+            //Mixしたい表情を合成する(VRM0名とVRM1名の両方で同じ表情が送られてくる場合があるため重複キーを許容する)
             for (int i = 0; i < presets.Length; i++)
             {
                 var presetKey = presets[i];
-                presetDictionary.Add(presetKey, values[i]);
+                presetDictionary[presetKey] = values[i];
             }
         }
 
@@ -337,11 +337,11 @@ namespace VMC
             }
             var presetDictionary = OverwriteShapeKeys[presetName];
             presetDictionary.Clear();
-            //上書きしたい表情を追加する
+            //上書きしたい表情を追加する(重複キーを許容する)
             for (int i = 0; i < presets.Length; i++)
             {
                 var presetKey = presets[i];
-                presetDictionary.Add(presetKey, values[i]);
+                presetDictionary[presetKey] = values[i];
             }
         }
 
@@ -392,8 +392,12 @@ namespace VMC
 
         private void InitializeProxy()
         {
-            var vrm10Instance = VRMmodel.GetComponent<Vrm10Instance>();
-            vrm10RuntimeExpression = vrm10Instance.Runtime.Expression;
+            var vrm10Instance = VRMmodel != null ? VRMmodel.GetComponent<Vrm10Instance>() : null;
+            vrm10RuntimeExpression = vrm10Instance != null ? vrm10Instance.Runtime.Expression : null;
+
+            //モデル入れ替え時に前のモデルのキーが残らないようにクリアする
+            BlendShapeKeyString.Clear();
+            KeyUpperCaseDictionary.Clear();
 
             //すべての表情の名称一覧を取得
             if (vrm10RuntimeExpression != null)
@@ -405,24 +409,20 @@ namespace VMC
                     KeyUpperCaseDictionary[clip.Name.ToUpper()] = clip.Name;
                 }
 
-                // VRM 0.x compatibility
-                BlendShapeKeyString.Add("Neutral", ExpressionKey.Neutral);
-                BlendShapeKeyString.Add("A", ExpressionKey.Aa);
-                BlendShapeKeyString.Add("I", ExpressionKey.Ih);
-                BlendShapeKeyString.Add("U", ExpressionKey.Ou);
-                BlendShapeKeyString.Add("E", ExpressionKey.Ee);
-                BlendShapeKeyString.Add("O", ExpressionKey.Oh);
-                BlendShapeKeyString.Add("Blink", ExpressionKey.Blink);
-                BlendShapeKeyString.Add("Joy", ExpressionKey.Happy);
-                BlendShapeKeyString.Add("Angry", ExpressionKey.Angry);
-                BlendShapeKeyString.Add("Sorrow", ExpressionKey.Sad);
-                BlendShapeKeyString.Add("Fun", ExpressionKey.Relaxed);
-                BlendShapeKeyString.Add("LookUp", ExpressionKey.LookUp);
-                BlendShapeKeyString.Add("LookDown", ExpressionKey.LookDown);
-                BlendShapeKeyString.Add("LookLeft", ExpressionKey.LookLeft);
-                BlendShapeKeyString.Add("LookRight", ExpressionKey.LookRight);
-                BlendShapeKeyString.Add("Blink_L", ExpressionKey.BlinkLeft);
-                BlendShapeKeyString.Add("Blink_R", ExpressionKey.BlinkRight);
+                // VRM 0.x互換の名称(Joy, A, Blink_L等)でも参照できるようにする
+                // (モデル側に同名のカスタム表情がある場合はそちらを優先)
+                foreach (var pair in VRM10CompatibleNames.PresetToVrm0Names)
+                {
+                    var vrm0Name = pair.Value;
+                    if (BlendShapeKeyString.ContainsKey(vrm0Name) == false)
+                    {
+                        BlendShapeKeyString[vrm0Name] = ExpressionKey.CreateFromPreset(pair.Key);
+                    }
+                    if (KeyUpperCaseDictionary.ContainsKey(vrm0Name.ToUpper()) == false)
+                    {
+                        KeyUpperCaseDictionary[vrm0Name.ToUpper()] = vrm0Name;
+                    }
+                }
             }
             SetFaceNeutral();
         }

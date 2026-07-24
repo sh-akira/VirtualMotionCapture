@@ -683,6 +683,58 @@ namespace VMC
         [OptionalField]
         public bool mocopi_CorrectHipBone;
 
+        //モーション再生
+        [OptionalField]
+        public List<string> MotionPlayback_MotionFiles;
+        [OptionalField]
+        public int MotionPlayback_RepeatMode;
+        [OptionalField]
+        public bool MotionPlayback_ApplyRootPosition;
+        [OptionalField]
+        public bool MotionPlayback_ApplyRootRotation;
+        [OptionalField]
+        public bool MotionPlayback_ApplySpine;
+        [OptionalField]
+        public bool MotionPlayback_ApplyChest;
+        [OptionalField]
+        public bool MotionPlayback_ApplyHead;
+        [OptionalField]
+        public bool MotionPlayback_ApplyLeftArm;
+        [OptionalField]
+        public bool MotionPlayback_ApplyRightArm;
+        [OptionalField]
+        public bool MotionPlayback_ApplyLeftHand;
+        [OptionalField]
+        public bool MotionPlayback_ApplyRightHand;
+        [OptionalField]
+        public bool MotionPlayback_ApplyLeftLeg;
+        [OptionalField]
+        public bool MotionPlayback_ApplyRightLeg;
+        [OptionalField]
+        public bool MotionPlayback_ApplyLeftFoot;
+        [OptionalField]
+        public bool MotionPlayback_ApplyRightFoot;
+        [OptionalField]
+        public bool MotionPlayback_ApplyLeftFinger;
+        [OptionalField]
+        public bool MotionPlayback_ApplyRightFinger;
+        [OptionalField]
+        public bool MotionPlayback_ApplyEye;
+
+        //モーション記録
+        [OptionalField]
+        public int MotionRecord_Fps;
+        [OptionalField]
+        public int MotionRecord_CountdownSeconds;
+        [OptionalField]
+        public bool MotionRecord_SaveMotion;
+        [OptionalField]
+        public bool MotionRecord_SaveExpressionPreset;
+        [OptionalField]
+        public bool MotionRecord_SaveExpressionCustom;
+        [OptionalField]
+        public bool MotionRecord_SaveLookAt;
+
 
         [OptionalField]
         public bool EnableOverrideBodyHeight;
@@ -869,6 +921,32 @@ namespace VMC
             mocopi_ApplyLeftFoot = true;
             mocopi_ApplyRightFoot = true;
             mocopi_CorrectHipBone = false;
+
+            MotionPlayback_MotionFiles = new List<string>();
+            MotionPlayback_RepeatMode = 0;
+            MotionPlayback_ApplyRootPosition = true;
+            MotionPlayback_ApplyRootRotation = true;
+            MotionPlayback_ApplySpine = true;
+            MotionPlayback_ApplyChest = true;
+            MotionPlayback_ApplyHead = true;
+            MotionPlayback_ApplyLeftArm = true;
+            MotionPlayback_ApplyRightArm = true;
+            MotionPlayback_ApplyLeftHand = true;
+            MotionPlayback_ApplyRightHand = true;
+            MotionPlayback_ApplyLeftLeg = true;
+            MotionPlayback_ApplyRightLeg = true;
+            MotionPlayback_ApplyLeftFoot = true;
+            MotionPlayback_ApplyRightFoot = true;
+            MotionPlayback_ApplyLeftFinger = true;
+            MotionPlayback_ApplyRightFinger = true;
+            MotionPlayback_ApplyEye = true;
+
+            MotionRecord_Fps = 30;
+            MotionRecord_CountdownSeconds = 3;
+            MotionRecord_SaveMotion = true;
+            MotionRecord_SaveExpressionPreset = true;
+            MotionRecord_SaveExpressionCustom = true;
+            MotionRecord_SaveLookAt = true;
 
             EnableOverrideBodyHeight = false;
             OverrideBodyHeight = 1.7f;

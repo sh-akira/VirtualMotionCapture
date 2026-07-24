@@ -463,7 +463,7 @@ namespace VMC
 
                         var doKeyActions = new List<KeyAction>();
                         //手の操作時は左手と右手は分けて処理しないと、右がおしっぱで左を離したときに戻らなくなる
-                        foreach (var downaction in Settings.Current.KeyActions?.OrderBy(d => d.KeyConfigs.Count()).Where(d => d.FaceAction == action.FaceAction && d.HandAction == action.HandAction && d.Hand == action.Hand && d.FunctionAction == action.FunctionAction))
+                        foreach (var downaction in Settings.Current.KeyActions?.OrderBy(d => d.KeyConfigs.Count()).Where(d => d.FaceAction == action.FaceAction && d.HandAction == action.HandAction && d.Hand == action.Hand && d.FunctionAction == action.FunctionAction && d.MotionAction == action.MotionAction))
                         {//キーの少ない順に実行して、同時押しと被ったとき同時押しを後から実行して上書きさせる
                          //if (action.KeyConfigs.Count == CurrentKeyConfigs.Count)
                          //{ //別々の機能を同時に押す場合もあるのでキーの数は見てはいけない

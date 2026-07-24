@@ -44,14 +44,11 @@ namespace VMC
         public GameObject CurrentModel = null;
         Camera currentCamera = null;
         FaceController faceController = null;
-        //VRMLookAtHead vrmLookAtHead = null;
         Vrm10Instance vrm10Instance = null;
         Transform headTransform = null;
 
         //仮想視線操作用
         GameObject lookTargetOSC;
-        Action beforeFaceApply;
-        bool setFaceApplyAction = false;
 
         //バッファ
         Vector3 pos;
@@ -63,9 +60,6 @@ namespace VMC
 
         //ボーン情報取得
         Animator animator = null;
-        //VRMのブレンドシェーププロキシ
-        //VRMBlendShapeProxy blendShapeProxy = null;
-        Vrm10RuntimeExpression vrm10RuntimeExpression = null;
 
         //ボーンENUM情報テーブル
         Dictionary<string, HumanBodyBones> HumanBodyBonesTable = new Dictionary<string, HumanBodyBones>();
@@ -156,14 +150,6 @@ namespace VMC
             VMCEvents.OnCameraChanged += (Camera currentCamera) =>
             {
                 this.currentCamera = currentCamera;
-            };
-
-            beforeFaceApply = () =>
-            {
-                if (vrm10Instance.Runtime.LookAt == null || lookTargetOSC == null) return;
-                //vrm10Instance.LookAtTarget = lookTargetOSC.transform;
-                //vrmLookAtHead.LookWorldPosition();
-                //vrm10Instance.LookAtTarget = null;
             };
 
             var modelRoot = new GameObject("ModelRoot").transform;
@@ -469,34 +455,30 @@ namespace VMC
 
                     if (enable)
                     {
-                        //ターゲットが存在しなければ作る
+                        //ターゲットが存在しなければ作る(頭ボーン配下のためモデル入れ替え時は一緒に破棄される)
                         if (lookTargetOSC == null)
                         {
                             lookTargetOSC = new GameObject();
                             lookTargetOSC.name = "lookTargetOSC";
-                            vrm10Instance.LookAtTarget = lookTargetOSC.transform;
                         }
-                        //位置を書き込む
-                        if (lookTargetOSC.transform != null)
-                        {
-                            lookTargetOSC.transform.parent = headTransform;
-                            lookTargetOSC.transform.localPosition = pos;
-                        }
+                        //位置を書き込む(頭からの相対位置)
+                        lookTargetOSC.transform.parent = headTransform;
+                        lookTargetOSC.transform.localPosition = pos;
 
-                        //視線に書き込む
-                        if (vrm10Instance != null && setFaceApplyAction == false)
+                        //視線に書き込む(UniVRM10のRuntimeが毎フレームLookAtTargetの方向を目線に反映する)
+                        if (vrm10Instance != null && vrm10Instance.LookAtTarget != lookTargetOSC.transform)
                         {
-                            faceController.BeforeApply += beforeFaceApply;
-                            setFaceApplyAction = true;
+                            vrm10Instance.LookAtTargetType = VRM10ObjectLookAt.LookAtTargetTypes.SpecifiedTransform;
+                            vrm10Instance.LookAtTarget = lookTargetOSC.transform;
                         }
                     }
                     else
                     {
-                        //視線を止める
-                        if (vrm10Instance != null && setFaceApplyAction == true)
+                        //視線を止めて正面に戻す
+                        if (vrm10Instance != null)
                         {
-                            faceController.BeforeApply -= beforeFaceApply;
-                            setFaceApplyAction = false;
+                            vrm10Instance.LookAtTarget = null;
+                            vrm10Instance.Runtime.LookAt.SetYawPitchManually(0f, 0f);
                         }
                     }
                 }

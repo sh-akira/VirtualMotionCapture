@@ -70,8 +70,8 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ext.nunit": {
-      "version": "1.0.6",
-      "depth": 1,
+      "version": "2.0.3",
+      "depth": 3,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
@@ -186,11 +186,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.test-framework": {
-      "version": "1.1.33",
-      "depth": 0,
+      "version": "1.4.6",
+      "depth": 2,
       "source": "registry",
       "dependencies": {
-        "com.unity.ext.nunit": "1.0.6",
+        "com.unity.ext.nunit": "2.0.3",
         "com.unity.modules.imgui": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0"
       },
@@ -206,8 +206,8 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.timeline": {
-      "version": "1.7.5",
-      "depth": 0,
+      "version": "1.7.6",
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.unity.modules.audio": "1.0.0",
@@ -269,20 +269,25 @@
       }
     },
     "com.vrmc.gltf": {
-      "version": "0.128.0",
+      "version": "0.131.0",
       "depth": 1,
       "source": "registry",
       "dependencies": {
-        "com.unity.modules.animation": "1.0.0"
+        "com.unity.modules.animation": "1.0.0",
+        "com.unity.modules.imgui": "1.0.0",
+        "com.unity.modules.imageconversion": "1.0.0",
+        "com.unity.test-framework": "1.4.6",
+        "com.unity.mathematics": "1.2.6"
       },
       "url": "https://package.openupm.com"
     },
     "com.vrmc.vrm": {
-      "version": "0.128.0",
+      "version": "0.131.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.vrmc.gltf": "0.128.0"
+        "com.unity.timeline": "1.7.6",
+        "com.vrmc.gltf": "0.131.0"
       },
       "url": "https://package.openupm.com"
     },
