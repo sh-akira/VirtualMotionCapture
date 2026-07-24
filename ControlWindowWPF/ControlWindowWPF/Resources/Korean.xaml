@@ -631,6 +631,25 @@
     <system:String x:Key="VRoidHubWindow_Unnecessary">불필요ㅛ</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionDescription1">이 모델은 사용시에 라이센스를 표시해야합니다</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionDescription2">영상, 생방송에 사용할 시 반드시 명기해야합니다</system:String>
+    <!-- VRoidHub VRM1.0 license -->
+    <system:String x:Key="VRoidHubWindow_VRM10License">이용 조건 (VRM1.0)</system:String>
+    <system:String x:Key="VRoidHub_VRM10_AvatarUser">아바타로서의 이용(타인)</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Violence">폭력 표현</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Sexuality">성적 표현</system:String>
+    <system:String x:Key="VRoidHub_VRM10_PoliticalReligious">정치·종교 용도</system:String>
+    <system:String x:Key="VRoidHub_VRM10_AntisocialHate">반사회적·혐오 표현</system:String>
+    <system:String x:Key="VRoidHub_VRM10_PersonalCommercial">개인 상업적 이용</system:String>
+    <system:String x:Key="VRoidHub_VRM10_CorporateCommercial">법인 상업적 이용</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Redistribution">재배포</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Modification">개변(수정)</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Credit">크레딧 표기</system:String>
+    <system:String x:Key="VRoidHub_License_ok">허가</system:String>
+    <system:String x:Key="VRoidHub_License_ng">불가</system:String>
+    <system:String x:Key="VRoidHub_License_need">필요</system:String>
+    <system:String x:Key="VRoidHub_License_noneed">불필요</system:String>
+    <system:String x:Key="VRoidHub_License_profit">영리 이용 가능</system:String>
+    <system:String x:Key="VRoidHub_License_nonprofit">비영리만</system:String>
+    <system:String x:Key="VRoidHub_License_notset">미설정</system:String>
     <system:String x:Key="VRoidHubWindow_OpenOnVRoidHub">VRoid Hub에서 열기</system:String>
     <system:String x:Key="VRoidHubWindow_LoadModel">동의하고 불러오기</system:String>
     <system:String x:Key="VRoidHubWindow_Loading">로딩중입니다</system:String>

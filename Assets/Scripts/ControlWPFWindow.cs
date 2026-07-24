@@ -849,6 +849,19 @@ namespace VMC
                         IsLoaded = modManager.IsModLoaded,
                     }, e.RequestId);
                 }
+                else if (e.CommandType == typeof(PipeCommands.VRoidSDK_CheckAvailable))
+                {
+                    //VRoid SDKが組み込まれているか(VMC_VROIDSDK)を常時コンパイルされる本ハンドラで返す。
+                    //SDK未同梱時はVRoidSDKConnector自体が除外されるため、可否判定はここで行う。
+                    await server.SendCommandAsync(new PipeCommands.VRoidSDK_ReturnAvailable
+                    {
+#if VMC_VROIDSDK
+                        Available = true,
+#else
+                        Available = false,
+#endif
+                    }, e.RequestId);
+                }
                 else if (e.CommandType == typeof(PipeCommands.GetModList))
                 {
                     await server.SendCommandAsync(new PipeCommands.ReturnModList

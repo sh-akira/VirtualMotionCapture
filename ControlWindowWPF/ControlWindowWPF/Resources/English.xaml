@@ -631,6 +631,25 @@
     <system:String x:Key="VRoidHubWindow_Unnecessary">Unnecessary</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionDescription1">When using this model, you need to display the license.</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionDescription2">Credit must be stated clearly.</system:String>
+    <!-- VRoidHub VRM1.0 license -->
+    <system:String x:Key="VRoidHubWindow_VRM10License">License (VRM1.0)</system:String>
+    <system:String x:Key="VRoidHub_VRM10_AvatarUser">Avatar use (others)</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Violence">Violent expression</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Sexuality">Sexual expression</system:String>
+    <system:String x:Key="VRoidHub_VRM10_PoliticalReligious">Political / Religious use</system:String>
+    <system:String x:Key="VRoidHub_VRM10_AntisocialHate">Antisocial / Hate use</system:String>
+    <system:String x:Key="VRoidHub_VRM10_PersonalCommercial">Personal commercial use</system:String>
+    <system:String x:Key="VRoidHub_VRM10_CorporateCommercial">Corporate commercial use</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Redistribution">Redistribution</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Modification">Modification</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Credit">Credit notation</system:String>
+    <system:String x:Key="VRoidHub_License_ok">Allowed</system:String>
+    <system:String x:Key="VRoidHub_License_ng">Not allowed</system:String>
+    <system:String x:Key="VRoidHub_License_need">Required</system:String>
+    <system:String x:Key="VRoidHub_License_noneed">Unnecessary</system:String>
+    <system:String x:Key="VRoidHub_License_profit">Profit allowed</system:String>
+    <system:String x:Key="VRoidHub_License_nonprofit">Non-profit only</system:String>
+    <system:String x:Key="VRoidHub_License_notset">Not set</system:String>
     <system:String x:Key="VRoidHubWindow_OpenOnVRoidHub">Open VRoid Hub page</system:String>
     <system:String x:Key="VRoidHubWindow_LoadModel">Agree and Import</system:String>
     <system:String x:Key="VRoidHubWindow_Loading">Now loading</system:String>

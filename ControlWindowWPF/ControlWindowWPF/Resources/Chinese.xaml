@@ -631,6 +631,25 @@
     <system:String x:Key="VRoidHubWindow_Unnecessary">不必须</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionDescription1">使用这个模型，你需要确认协议。</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionDescription2">来源必须标注清晰。</system:String>
+    <!-- VRoidHub VRM1.0 license -->
+    <system:String x:Key="VRoidHubWindow_VRM10License">使用条件 (VRM1.0)</system:String>
+    <system:String x:Key="VRoidHub_VRM10_AvatarUser">作为虚拟形象使用(他人)</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Violence">暴力表现</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Sexuality">性表现</system:String>
+    <system:String x:Key="VRoidHub_VRM10_PoliticalReligious">政治・宗教用途</system:String>
+    <system:String x:Key="VRoidHub_VRM10_AntisocialHate">反社会・仇恨表现</system:String>
+    <system:String x:Key="VRoidHub_VRM10_PersonalCommercial">个人商用</system:String>
+    <system:String x:Key="VRoidHub_VRM10_CorporateCommercial">法人商用</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Redistribution">再分发</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Modification">修改</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Credit">署名</system:String>
+    <system:String x:Key="VRoidHub_License_ok">允许</system:String>
+    <system:String x:Key="VRoidHub_License_ng">不可</system:String>
+    <system:String x:Key="VRoidHub_License_need">必须</system:String>
+    <system:String x:Key="VRoidHub_License_noneed">不需要</system:String>
+    <system:String x:Key="VRoidHub_License_profit">允许营利</system:String>
+    <system:String x:Key="VRoidHub_License_nonprofit">仅限非营利</system:String>
+    <system:String x:Key="VRoidHub_License_notset">未设置</system:String>
     <system:String x:Key="VRoidHubWindow_OpenOnVRoidHub">打开 VRoid Hub 页面</system:String>
     <system:String x:Key="VRoidHubWindow_LoadModel">同意并打开</system:String>
     <system:String x:Key="VRoidHubWindow_Loading">加载中</system:String>

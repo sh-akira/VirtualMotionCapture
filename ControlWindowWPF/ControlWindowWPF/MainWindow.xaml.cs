@@ -237,6 +237,18 @@ namespace VirtualMotionCaptureControlPanel
                     }
                 });
             }
+            //Unity側にVRoid SDKが組み込まれていない(SDK未同梱でクローンした等)場合はボタンを表示しない
+            if (VRoidHubWindow.IncludeVRoidHubWindow)
+            {
+                await Globals.Client?.SendCommandWaitAsync(new PipeCommands.VRoidSDK_CheckAvailable(), d =>
+                {
+                    var data = (PipeCommands.VRoidSDK_ReturnAvailable)d;
+                    if (data.Available == false)
+                    {
+                        VRoidHubWindow.IncludeVRoidHubWindow = false;
+                    }
+                });
+            }
             await GetLipSyncDevice();
             await Globals.Client.SendCommandAsync(new PipeCommands.LoadCurrentSettings());
         }
