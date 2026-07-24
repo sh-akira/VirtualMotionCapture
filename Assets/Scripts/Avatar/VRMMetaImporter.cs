@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using UniGLTF;
 using UnityEngine;
-using VRM;
 
 namespace VMC
 {

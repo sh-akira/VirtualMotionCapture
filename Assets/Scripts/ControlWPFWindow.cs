@@ -1,21 +1,18 @@
-﻿using RootMotion.FinalIK;
-using sh_akira;
+﻿using sh_akira;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityMemoryMappedFile;
-using Valve.VR;
 using VMCMod;
-using VRM;
 using static VMC.NativeMethods;
 using UniGLTF;
-using VRMShaders;
+using UniVRM10;
+
 #if UNITY_EDITOR   // エディタ上でしか動きません。
 using UnityEditor;
 #endif
@@ -68,7 +65,7 @@ namespace VMC
         private System.Threading.SynchronizationContext context = null;
 
         public Action<GameObject> AdditionalSettingAction = null;
-        public Action<UnityMemoryMappedFile.VRMData> VRMmetaLodedAction = null;
+        public Action<UnityMemoryMappedFile.VRMData> VRMmetaLoadedAction = null;
         public Action<string> VRMRemoteLoadedAction = null;
 
         public Action<GameObject> EyeTracking_TobiiCalibrationAction = null;
@@ -271,10 +268,10 @@ namespace VMC
                         modManager.ImportMods();
                     }
                 }
-                else if (e.CommandType == typeof(PipeCommands.LoadVRM))
+                else if (e.CommandType == typeof(PipeCommands.LoadVRMMeta))
                 {
-                    var d = (PipeCommands.LoadVRM)e.Data;
-                    await server.SendCommandAsync(new PipeCommands.ReturnLoadVRM { Data = LoadVRM(d.Path) }, e.RequestId);
+                    var d = (PipeCommands.LoadVRMMeta)e.Data;
+                    await server.SendCommandAsync(new PipeCommands.ReturnLoadVRMMeta { Data = await LoadVRMMetaAsync(d.Path) }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.LoadRemoteVRM))
                 {
@@ -287,7 +284,7 @@ namespace VMC
                     var t = ImportVRM(d.Path);
 
                     //メタ情報をOSC送信する
-                    VRMmetaLodedAction?.Invoke(LoadVRM(d.Path));
+                    VRMmetaLoadedAction?.Invoke(await LoadVRMMetaAsync(d.Path));
                 }
 
                 else if (e.CommandType == typeof(PipeCommands.SetLipSyncEnable))
@@ -420,7 +417,7 @@ namespace VMC
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetFaceKeys))
                 {
-                    await server.SendCommandAsync(new PipeCommands.ReturnFaceKeys { Keys = faceController.BlendShapeClips.Select(d => d.BlendShapeName).ToList() }, e.RequestId);
+                    await server.SendCommandAsync(new PipeCommands.ReturnFaceKeys { Keys = faceController.BlendShapeClips.Select(d => d.Name).ToList() }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.SetFace))
                 {
@@ -1039,7 +1036,7 @@ namespace VMC
 
         #region VRM
 
-        public UnityMemoryMappedFile.VRMData LoadVRM(string path)
+        public async Task<UnityMemoryMappedFile.VRMData> LoadVRMMetaAsync(string path)
         {
             if (string.IsNullOrEmpty(path) || File.Exists(path) == false)
             {
@@ -1049,48 +1046,45 @@ namespace VMC
             var vrmdata = new UnityMemoryMappedFile.VRMData();
             vrmdata.FilePath = path;
 
-            using (GltfData data = new AutoGltfFileParser(path).Parse())
+            IAwaitCaller awaitCaller = Application.isPlaying ? new RuntimeOnlyAwaitCaller() : new ImmediateCaller();
+
+            using var data = await awaitCaller.Run(() => { return new AutoGltfFileParser(path).Parse(); });
+            if (data == null)
+                return null;
+
+            var vrm10Data = Vrm10Data.Parse(data);
+
+            MigrationData migration = null;
+            if (vrm10Data == null)
             {
-                VRM.VRMData vrmData = new VRM.VRMData(data);
-                using (var context = new VRMImporterContext(vrmData))
-                {
+                await awaitCaller.Run(() => Vrm10Data.Migrate(data, out vrm10Data, out migration));
+            }
 
-                    // metaを取得
-                    var meta = context.ReadMeta(true);
+            if (vrm10Data == null)
+                return null;
 
-                    // サムネイル
-                    if (meta.Thumbnail != null)
-                    {
-                        vrmdata.ThumbnailPNGBytes = meta.Thumbnail.EncodeToPNG(); //Or SaveAsPng( memoryStream, texture.Width, texture.Height )
-                    }
+            if (migration != null)
+            {
+                // VRM 0.x
+                vrmdata.Title = migration.OriginalMetaBeforeMigration.title;
+                vrmdata.Version = migration.OriginalMetaBeforeMigration.version;
+                vrmdata.Author = migration.OriginalMetaBeforeMigration.author;
+                vrmdata.ContactInformation = migration.OriginalMetaBeforeMigration.contactInformation;
+                vrmdata.Reference = migration.OriginalMetaBeforeMigration.reference;
+                vrmdata.AllowedUser = (UnityMemoryMappedFile.AllowedUser)migration.OriginalMetaBeforeMigration.allowedUser;
+                vrmdata.ViolentUssage = migration.OriginalMetaBeforeMigration.violentUsage ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
+                vrmdata.SexualUssage = migration.OriginalMetaBeforeMigration.sexualUsage ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
+                vrmdata.CommercialUssage = migration.OriginalMetaBeforeMigration.commercialUsage ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
+                vrmdata.OtherPermissionUrl = migration.OriginalMetaBeforeMigration.otherPermissionUrl;
+                vrmdata.LicenseType = (UnityMemoryMappedFile.LicenseType)migration.OriginalMetaBeforeMigration.licenseType;
+                vrmdata.OtherLicenseUrl = migration.OriginalMetaBeforeMigration.otherLicenseUrl;
 
-                    // Info
-                    vrmdata.Title = meta.Title;
-                    vrmdata.Version = meta.Version;
-                    vrmdata.Author = meta.Author;
-                    vrmdata.ContactInformation = meta.ContactInformation;
-                    vrmdata.Reference = meta.Reference;
-
-                    // Permission
-                    vrmdata.AllowedUser = (UnityMemoryMappedFile.AllowedUser)meta.AllowedUser;
-                    vrmdata.ViolentUssage = (UnityMemoryMappedFile.UssageLicense)meta.ViolentUssage;
-                    vrmdata.SexualUssage = (UnityMemoryMappedFile.UssageLicense)meta.SexualUssage;
-                    vrmdata.CommercialUssage = (UnityMemoryMappedFile.UssageLicense)meta.CommercialUssage;
-                    vrmdata.OtherPermissionUrl = meta.OtherPermissionUrl;
-
-                    // Distribution License
-                    vrmdata.LicenseType = (UnityMemoryMappedFile.LicenseType)meta.LicenseType;
-                    vrmdata.OtherLicenseUrl = meta.OtherLicenseUrl;
-                    /*
-                    // ParseしたJSONをシーンオブジェクトに変換していく
-                    var now = Time.time;
-                    var go = await VRMImporter.LoadVrmAsync(context);
-
-                    var delta = Time.time - now;
-                    Debug.LogFormat("LoadVrmAsync {0:0.0} seconds", delta);
-                    //OnLoaded(go);
-                    */
-                }
+                using var loader = new Vrm10Importer(vrm10Data);
+                vrmdata.ThumbnailPNGBytes = (await loader.LoadVrmThumbnailAsync()).EncodeToPNG();
+            }
+            else
+            {
+                // TODO: VRM 1.x or later
             }
 
             return vrmdata;
@@ -1102,6 +1096,19 @@ namespace VMC
 
             Settings.Current.VRMPath = path;
 
+            var vrm10Instance = await Vrm10.LoadPathAsync(path);
+            var runtimeGltfInstance = vrm10Instance.GetComponent<RuntimeGltfInstance>();
+
+            runtimeGltfInstance.ShowMeshes();
+
+            LoadNewModel(runtimeGltfInstance.Root);
+            await server.SendCommandAsync(new PipeCommands.VRMLoadStatus { Valid = true });
+
+            // BlendShape目線制御時の表情とのぶつかりを防ぐ
+            if (vrm10Instance.Vrm.LookAt.LookAtType == UniGLTF.Extensions.VRMC_vrm.LookAtType.expression)
+            {
+            }
+#if false
             using (GltfData data = new AutoGltfFileParser(path).Parse())
             {
                 VRM.VRMData vrmData = new VRM.VRMData(data);
@@ -1126,6 +1133,7 @@ namespace VMC
                     await server.SendCommandAsync(new PipeCommands.VRMLoadStatus { Valid = true });
                 }
             }
+#endif
         }
 
         public void LoadNewModel(GameObject model)
@@ -1353,17 +1361,17 @@ namespace VMC
             Settings.Current.ClosingTime = time;
         }
 
-        private Dictionary<string, BlendShapePreset> BlendShapeNameDictionary = new Dictionary<string, BlendShapePreset>
+        private Dictionary<string, ExpressionPreset> BlendShapeNameDictionary = new Dictionary<string, ExpressionPreset>
     {
-        { "通常(NEUTRAL)", BlendShapePreset.Neutral },
-        { "喜(JOY)", BlendShapePreset.Joy },
-        { "怒(ANGRY)", BlendShapePreset.Angry },
-        { "哀(SORROW)", BlendShapePreset.Sorrow },
-        { "楽(FUN)", BlendShapePreset.Fun },
-        { "上見(LOOKUP)", BlendShapePreset.LookUp },
-        { "下見(LOOKDOWN)", BlendShapePreset.LookDown },
-        { "左見(LOOKLEFT)", BlendShapePreset.LookLeft },
-        { "右見(LOOKRIGHT)", BlendShapePreset.LookRight },
+        { "通常(NEUTRAL)", ExpressionPreset.neutral },
+        { "喜(JOY)", ExpressionPreset.happy },   // joy -> happy
+        { "怒(ANGRY)", ExpressionPreset.angry },
+        { "哀(SORROW)", ExpressionPreset.sad },  // sorrow -> sad
+        { "楽(FUN)", ExpressionPreset.relaxed }, // fun -> relaxed
+        { "上見(LOOKUP)", ExpressionPreset.lookUp },
+        { "下見(LOOKDOWN)", ExpressionPreset.lookDown },
+        { "左見(LOOKLEFT)", ExpressionPreset.lookLeft },
+        { "右見(LOOKRIGHT)", ExpressionPreset.lookRight },
     };
 
         void SetDefaultFace(string face)
@@ -1379,7 +1387,7 @@ namespace VMC
             }
             else
             {
-                faceController.DefaultFace = BlendShapePreset.Unknown;
+                faceController.DefaultFace = ExpressionPreset.custom;
                 faceController.FacePresetName = face;
             }
         }
@@ -1814,7 +1822,7 @@ namespace VMC
                 await ImportVRM(Settings.Current.VRMPath);
 
                 //メタ情報をOSC送信する
-                VRMmetaLodedAction?.Invoke(LoadVRM(Settings.Current.VRMPath));
+                VRMmetaLoadedAction?.Invoke(await LoadVRMMetaAsync(Settings.Current.VRMPath));
             }
 
             //SetResolutionは強制的にウインドウ枠を復活させるのでBorder設定の前にやっておく必要がある

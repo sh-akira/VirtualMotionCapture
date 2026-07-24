@@ -1,3 +1,4 @@
+using RootMotion.FinalIK;
 using sh_akira;
 using System;
 using System.Collections;
@@ -7,8 +8,6 @@ using System.Linq;
 using UnityEngine;
 using UnityMemoryMappedFile;
 using Valve.VR;
-using RootMotion.FinalIK;
-using VRM;
 
 namespace VMC
 {

@@ -42,9 +42,9 @@ namespace VirtualMotionCaptureControlPanel
 
             if (ofd.ShowDialog() == true)
             {
-                await Globals.Client.SendCommandWaitAsync(new PipeCommands.LoadVRM { Path = ofd.FileName }, d =>
+                await Globals.Client.SendCommandWaitAsync(new PipeCommands.LoadVRMMeta { Path = ofd.FileName }, d =>
                 {
-                    var ret = (PipeCommands.ReturnLoadVRM)d;
+                    var ret = (PipeCommands.ReturnLoadVRMMeta)d;
                     Dispatcher.Invoke(() => LoadMetaData(ret.Data));
                 });
                 if (Globals.CurrentCommonSettingsWPF.CurrentPathOnVRMFileDialog != System.IO.Path.GetDirectoryName(ofd.FileName))

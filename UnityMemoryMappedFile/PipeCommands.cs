@@ -35,7 +35,7 @@ namespace UnityMemoryMappedFile
             public bool IsBeta { get; set; }
         }
 
-        public class LoadVRM
+        public class LoadVRMMeta
         {
             public string Path { get; set; }
         }
@@ -45,7 +45,7 @@ namespace UnityMemoryMappedFile
             public string Path { get; set; }
         }
 
-        public class ReturnLoadVRM
+        public class ReturnLoadVRMMeta
         {
             public VRMData Data { get; set; }
         }

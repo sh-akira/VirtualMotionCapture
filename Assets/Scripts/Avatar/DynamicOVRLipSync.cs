@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
-using VRM;
+using UniVRM10;
 
 namespace VMC
 {
@@ -83,25 +83,25 @@ namespace VMC
                         OVRLipSync.Frame frame = GetCurrentPhonemeFrame();
                         if (frame != null)
                         {
-                            //あ OVRLipSync.Viseme.aa; BlendShapePreset.A;
-                            //い OVRLipSync.Viseme.ih; BlendShapePreset.I;
-                            //う OVRLipSync.Viseme.ou; BlendShapePreset.U;
-                            //え OVRLipSync.Viseme.E;  BlendShapePreset.E;
-                            //お OVRLipSync.Viseme.oh; BlendShapePreset.O;
-                            var presets = new BlendShapePreset[] {
-                            BlendShapePreset.A,
-                            BlendShapePreset.I,
-                            BlendShapePreset.U,
-                            BlendShapePreset.E,
-                            BlendShapePreset.O,
-                        };
+                            //あ OVRLipSync.Viseme.aa; ExpressionPreset.aa;
+                            //い OVRLipSync.Viseme.ih; ExpressionPreset.ih;
+                            //う OVRLipSync.Viseme.ou; ExpressionPreset.ou;
+                            //え OVRLipSync.Viseme.E;  ExpressionPreset.ee;
+                            //お OVRLipSync.Viseme.oh; ExpressionPreset.oh;
+                            var presets = new ExpressionPreset[] {
+                                ExpressionPreset.aa,
+                                ExpressionPreset.ih,
+                                ExpressionPreset.ou,
+                                ExpressionPreset.ee,
+                                ExpressionPreset.oh,
+                            };
                             var visemes = new float[] {
-                            frame.Visemes[(int)OVRLipSync.Viseme.aa],
-                            frame.Visemes[(int)OVRLipSync.Viseme.ih],
-                            frame.Visemes[(int)OVRLipSync.Viseme.ou],
-                            frame.Visemes[(int)OVRLipSync.Viseme.E],
-                            frame.Visemes[(int)OVRLipSync.Viseme.oh],
-                        };
+                                frame.Visemes[(int)OVRLipSync.Viseme.aa],
+                                frame.Visemes[(int)OVRLipSync.Viseme.ih],
+                                frame.Visemes[(int)OVRLipSync.Viseme.ou],
+                                frame.Visemes[(int)OVRLipSync.Viseme.E],
+                                frame.Visemes[(int)OVRLipSync.Viseme.oh],
+                            };
 
                             int maxindex = 0;
                             float maxvisemes = 0;

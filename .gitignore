@@ -47,6 +47,7 @@ Backup*
 Assets/ExternalPlugins/uOSC*
 Assets/ExternalPlugins/MidiJack*
 Assets/ExternalPlugins/EasyDeviceDiscoveryProtocol*
+FastSpringBone*csproj
 DepthFirstScheduler*csproj
 MeshUtility*csproj
 MToon*csproj
@@ -97,3 +98,4 @@ sysinfo.txt
 common.json
 Assets/_TerrainAutoUpgrade/
 .vsconfig
+/TrackerPositions.json

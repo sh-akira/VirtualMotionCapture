@@ -80,16 +80,16 @@ namespace VMC
             LookTarget.transform.parent = MonitorPosition.transform;
             LookTarget.transform.localRotation = Quaternion.identity;
             LookTarget.transform.localPosition = new Vector3(0, 0, 0f);
-            var vrmLookAtHead = currentModel.GetComponent<VRM.VRMLookAtHead>();
+            //var vrmLookAtHead = currentModel.GetComponent<VRM.VRMLookAtHead>();
             if (faceBeforeApply != null) faceController.BeforeApply -= faceBeforeApply;
             faceBeforeApply = () =>
             {
                 if (LookTarget == null) return;
-                if (vrmLookAtHead.Head == null) return;
+                //if (vrmLookAtHead.Head == null) return;
                 if (isValidPosition == false) return;
-                vrmLookAtHead.Target = LookTarget.transform;
-                vrmLookAtHead.LookWorldPosition();
-                vrmLookAtHead.Target = null;
+                //vrmLookAtHead.Target = LookTarget.transform;
+                //vrmLookAtHead.LookWorldPosition();
+                //vrmLookAtHead.Target = null;
             };
             faceController.BeforeApply += faceBeforeApply;
             StartPos = LookTarget.transform.localPosition;

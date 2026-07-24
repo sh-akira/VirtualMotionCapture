@@ -1,14 +1,12 @@
 ﻿//gpsnmeajp
-using RootMotion.FinalIK;
 using sh_akira;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using UnityMemoryMappedFile;
+using UniVRM10;
 using uOSC;
-using VRM;
 
 namespace VMC
 {
@@ -18,7 +16,8 @@ namespace VMC
         GameObject CurrentModel = null;
         ControlWPFWindow window = null;
         Animator animator = null;
-        VRMBlendShapeProxy blendShapeProxy = null;
+        //VRMBlendShapeProxy blendShapeProxy = null;
+        Vrm10RuntimeExpression vrm10RuntimeExpression = null;
         Camera currentCamera = null;
         UnityMemoryMappedFile.VRMData vrmdata = null;
         string remoteName = null;
@@ -64,7 +63,7 @@ namespace VMC
                 {
                     this.CurrentModel = CurrentModel;
                     animator = CurrentModel.GetComponent<Animator>();
-                    blendShapeProxy = CurrentModel.GetComponent<VRMBlendShapeProxy>();
+                    //blendShapeProxy = CurrentModel.GetComponent<VRMBlendShapeProxy>();
                 }
             };
 
@@ -73,7 +72,7 @@ namespace VMC
                 this.currentCamera = currentCamera;
             };
 
-            window.VRMmetaLodedAction += (UnityMemoryMappedFile.VRMData vrmdata) =>
+            window.VRMmetaLoadedAction += (UnityMemoryMappedFile.VRMData vrmdata) =>
             {
                 this.vrmdata = vrmdata;
                 this.remoteName = null;
@@ -424,10 +423,10 @@ namespace VMC
                 frameOfBone++;
 
                 //Blendsharp
-                if (blendShapeProxy == null)
+                if (vrm10RuntimeExpression == null)
                 {
-                    blendShapeProxy = CurrentModel.GetComponent<VRMBlendShapeProxy>();
-                    Debug.Log("ExternalSender: VRMBlendShapeProxy Updated");
+                    vrm10RuntimeExpression = CurrentModel.GetComponent<Vrm10Instance>().Runtime.Expression;
+                    Debug.Log("ExternalSender: Vrm10RuntimeExpression Updated");
                 }
 
                 if (frameOfBlendShape > periodBlendShape && periodBlendShape != 0)
@@ -435,9 +434,9 @@ namespace VMC
                     frameOfBlendShape = 1;
 
                     uOSC.Bundle blendShapeBundle = new uOSC.Bundle(uOSC.Timestamp.Immediate);
-                    if (blendShapeProxy != null)
+                    if (vrm10RuntimeExpression != null)
                     {
-                        foreach (var b in blendShapeProxy.GetValues())
+                        foreach (var b in vrm10RuntimeExpression.GetWeights())
                         {
                             blendShapeBundle.Add(new uOSC.Message("/VMC/Ext/Blend/Val",
                                 b.Key.ToString(),

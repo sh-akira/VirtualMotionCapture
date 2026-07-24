@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using VRM;
+using UniVRM10;
+//using VRM;
 
 namespace VMC
 {
@@ -9,7 +10,7 @@ namespace VMC
     {
         private GameObject VRMmodel;
 
-        private VRMBlendShapeProxy proxy;
+        private Vrm10RuntimeExpression vrm10RuntimeExpression;
 
         public bool EnableBlink = false;
         public bool ViveProEyeEnabled = false;
@@ -39,12 +40,12 @@ namespace VMC
 
         private bool IsSetting = false;
 
-        public List<BlendShapeClip> BlendShapeClips; //読み込んだモデルの表情のキー一覧
+        public IReadOnlyList<ExpressionKey> BlendShapeClips = new List<ExpressionKey>();    //読み込んだモデルの表情のキー一覧
 
         public System.Action BeforeApply;
 
-        private BlendShapePreset defaultFace = BlendShapePreset.Neutral;
-        public BlendShapePreset DefaultFace
+        private ExpressionPreset defaultFace = ExpressionPreset.neutral;
+        public ExpressionPreset DefaultFace
         {
             get { return defaultFace; }
             set
@@ -52,28 +53,28 @@ namespace VMC
                 if (defaultFace != value)
                 {
                     //前回の表情を消しておく
-                    if (proxy != null)
+                    if (vrm10RuntimeExpression != null)
                     {
-                        if (defaultFace != BlendShapePreset.Unknown)
+                        if (defaultFace != ExpressionPreset.custom)
                         {
                             SetFace(defaultFace, 0.0f, StopBlink);
                         }
                         else if (string.IsNullOrEmpty(FacePresetName) == false)
                         {
-                            SetFace(BlendShapeKey.CreateUnknown(FacePresetName), 0.0f, StopBlink);
+                            SetFace(ExpressionKey.CreateCustom(FacePresetName), 0.0f, StopBlink);
                         }
                     }
                     defaultFace = value;
                     //新しい表情を設定する
-                    if (proxy != null)
+                    if (vrm10RuntimeExpression != null)
                     {
-                        if (defaultFace != BlendShapePreset.Unknown)
+                        if (defaultFace != ExpressionPreset.custom)
                         {
                             SetFace(defaultFace, 1.0f, StopBlink);
                         }
                         else if (string.IsNullOrEmpty(FacePresetName) == false)
                         {
-                            SetFace(BlendShapeKey.CreateUnknown(FacePresetName), 1.0f, StopBlink);
+                            SetFace(ExpressionKey.CreateCustom(FacePresetName), 1.0f, StopBlink);
                         }
                     }
                 }
@@ -83,18 +84,18 @@ namespace VMC
 
         private AnimationController animationController;
 
-        private Dictionary<BlendShapeKey, float> CurrentShapeKeys;
-        private Dictionary<string, Dictionary<BlendShapeKey, float>> AccumulateShapeKeys = new Dictionary<string, Dictionary<BlendShapeKey, float>>();
-        private Dictionary<string, Dictionary<BlendShapeKey, float>> OverwriteShapeKeys = new Dictionary<string, Dictionary<BlendShapeKey, float>>();
-        private BlendShapeKey NeutralKey = BlendShapeKey.CreateFromPreset(BlendShapePreset.Neutral);
+        private Dictionary<ExpressionKey, float> CurrentShapeKeys;
+        private Dictionary<string, Dictionary<ExpressionKey, float>> AccumulateShapeKeys = new Dictionary<string, Dictionary<ExpressionKey, float>>();
+        private Dictionary<string, Dictionary<ExpressionKey, float>> OverwriteShapeKeys = new Dictionary<string, Dictionary<ExpressionKey, float>>();
+        private ExpressionKey NeutralKey = ExpressionKey.CreateFromPreset(ExpressionPreset.neutral);
 
-        private Dictionary<string, BlendShapeKey> BlendShapeKeyString = new Dictionary<string, BlendShapeKey>();
+        private Dictionary<string, ExpressionKey> BlendShapeKeyString = new Dictionary<string, ExpressionKey>();
         private Dictionary<string, string> KeyUpperCaseDictionary = new Dictionary<string, string>();
         public string GetCaseSensitiveKeyName(string upperCase)
         {
             if (KeyUpperCaseDictionary.Count == 0)
             {
-                foreach (var presetName in System.Enum.GetNames(typeof(BlendShapePreset)))
+                foreach (var presetName in System.Enum.GetNames(typeof(ExpressionPreset)))
                 {
                     KeyUpperCaseDictionary[presetName.ToUpper()] = presetName;
                 }
@@ -104,10 +105,10 @@ namespace VMC
 
         private void Start()
         {
-            var dict = new Dictionary<BlendShapeKey, float>();
+            var dict = new Dictionary<ExpressionKey, float>();
             foreach (var clip in BlendShapeClips)
             {
-                dict.Add(clip.Key, 0.0f);
+                dict.Add(clip, 0.0f);
             }
             CurrentShapeKeys = dict;
 
@@ -127,21 +128,21 @@ namespace VMC
         private void OnCurrentModelChanged(GameObject model)
         {
             VRMmodel = model;
-            proxy = null;
+            vrm10RuntimeExpression = null;
             InitializeProxy();
         }
 
         private void CreateAnimation()
         {
             if (animationController == null) animationController = new AnimationController();
-            if (proxy != null)
+            if (vrm10RuntimeExpression != null)
             {
                 animationController.ClearAnimations();
-                animationController.AddResetAction(() => MixPreset("Blink", BlendShapePreset.Blink, 0.0f));
+                animationController.AddResetAction(() => MixPreset("Blink", ExpressionPreset.blink, 0.0f));
                 animationController.AddWait(null, () => BlinkTimeMin + Random.value * (BlinkTimeMax - BlinkTimeMin));
-                animationController.AddAnimation(CloseAnimationTime, 0.0f, 1.0f, v => MixPreset("Blink", BlendShapePreset.Blink, v));
+                animationController.AddAnimation(CloseAnimationTime, 0.0f, 1.0f, v => MixPreset("Blink", ExpressionPreset.blink, v));
                 animationController.AddWait(ClosingTime);
-                animationController.AddAnimation(OpenAnimationTime, 1.0f, 0.0f, v => MixPreset("Blink", BlendShapePreset.Blink, v));
+                animationController.AddAnimation(OpenAnimationTime, 1.0f, 0.0f, v => MixPreset("Blink", ExpressionPreset.blink, v));
             }
         }
 
@@ -149,43 +150,43 @@ namespace VMC
         {
             if (ViveProEyeEnabled == false)
             {
-                MixPreset("Blink", BlendShapePreset.Blink, 0.0f);
+                MixPreset("Blink", ExpressionPreset.blink, 0.0f);
             }
             if (StopBlink)
             {
-                MixPreset("Blink_L", BlendShapePreset.Blink_L, 0.0f);
+                MixPreset("Blink_L", ExpressionPreset.blinkLeft, 0.0f);
             }
             else
             {
-                MixPreset("Blink_L", BlendShapePreset.Blink_L, value);
+                MixPreset("Blink_L", ExpressionPreset.blinkLeft, value);
             }
         }
         public void SetBlink_R(float value)
         {
             if (ViveProEyeEnabled == false)
             {
-                MixPreset("Blink", BlendShapePreset.Blink, 0.0f);
+                MixPreset("Blink", ExpressionPreset.blink, 0.0f);
             }
             if (StopBlink)
             {
-                MixPreset("Blink_R", BlendShapePreset.Blink_L, 0.0f);
+                MixPreset("Blink_R", ExpressionPreset.blinkLeft, 0.0f);
             }
             else
             {
-                MixPreset("Blink_R", BlendShapePreset.Blink_R, value);
+                MixPreset("Blink_R", ExpressionPreset.blinkRight, value);
             }
         }
 
         private void SetFaceNeutral()
         {
             //表情をデフォルトに戻す
-            if (proxy != null)
+            if (vrm10RuntimeExpression != null)
             {
-                var keys = new List<BlendShapeKey>();
+                var keys = new List<ExpressionKey>();
                 var values = new List<float>();
                 foreach (var clip in BlendShapeClips)
                 {
-                    var shapekey = clip.Key;
+                    var shapekey = clip;
                     if (shapekey.Equals(NeutralKey))
                     {
                         values.Add(1.0f);
@@ -212,23 +213,23 @@ namespace VMC
             IsSetting = false;
         }
 
-        public void SetFace(BlendShapePreset preset, float strength, bool stopBlink)
+        public void SetFace(ExpressionPreset preset, float strength, bool stopBlink)
         {
-            SetFace(BlendShapeKey.CreateFromPreset(preset), strength, stopBlink);
+            SetFace(ExpressionKey.CreateFromPreset(preset), strength, stopBlink);
         }
 
-        public void SetFace(BlendShapeKey key, float strength, bool stopBlink)
+        public void SetFace(ExpressionKey key, float strength, bool stopBlink)
         {
-            SetFace(new List<BlendShapeKey> { key }, new List<float> { strength }, stopBlink);
+            SetFace(new List<ExpressionKey> { key }, new List<float> { strength }, stopBlink);
         }
 
         public void SetFace(List<string> keys, List<float> strength, bool stopBlink)
         {
-            if (proxy != null)
+            if (vrm10RuntimeExpression != null)
             {
                 if (keys.Any(d => BlendShapeKeyString.ContainsKey(d) == false))
                 {
-                    var convertKeys = new List<BlendShapeKey>();
+                    var convertKeys = new List<ExpressionKey>();
                     var convertValues = new List<float>();
                     for (int i = 0; i < keys.Count; i++)
                     {
@@ -248,15 +249,15 @@ namespace VMC
             }
         }
 
-        public void SetFace(List<BlendShapeKey> keys, List<float> strength, bool stopBlink)
+        public void SetFace(List<ExpressionKey> keys, List<float> strength, bool stopBlink)
         {
-            if (proxy != null)
+            if (vrm10RuntimeExpression != null)
             {
                 StopBlink = stopBlink;
-                var dict = new Dictionary<BlendShapeKey, float>();
+                var dict = new Dictionary<ExpressionKey, float>();
                 foreach (var clip in BlendShapeClips)
                 {
-                    dict.Add(clip.Key, 0.0f);
+                    dict.Add(clip, 0.0f);
                 }
                 //dict[NeutralKey] = 1.0f;
                 for (int i = 0; i < keys.Count; i++)
@@ -268,17 +269,17 @@ namespace VMC
             }
         }
 
-        public void MixPreset(string presetName, BlendShapePreset preset, float value)
+        public void MixPreset(string presetName, ExpressionPreset preset, float value)
         {
             MixPresets(presetName, new[] { preset }, new[] { value });
         }
 
-        public void MixPresets(string presetName, BlendShapePreset[] presets, float[] values)
+        public void MixPresets(string presetName, ExpressionPreset[] presets, float[] values)
         {
-            MixPresets(presetName, presets.Select(d => BlendShapeKey.CreateFromPreset(d)).ToArray(), values);
+            MixPresets(presetName, presets.Select(d => ExpressionKey.CreateFromPreset(d)).ToArray(), values);
         }
 
-        public void MixPreset(string presetName, BlendShapeKey preset, float value)
+        public void MixPreset(string presetName, ExpressionKey preset, float value)
         {
             MixPresets(presetName, new[] { preset }, new[] { value });
         }
@@ -287,7 +288,7 @@ namespace VMC
         {
             if (keys.Any(d => BlendShapeKeyString.ContainsKey(d) == false))
             {
-                var convertKeys = new List<BlendShapeKey>();
+                var convertKeys = new List<ExpressionKey>();
                 var convertValues = new List<float>();
                 for (int i = 0; i < keys.Length; i++)
                 {
@@ -306,14 +307,14 @@ namespace VMC
             }
         }
 
-        public void MixPresets(string presetName, BlendShapeKey[] presets, float[] values)
+        public void MixPresets(string presetName, ExpressionKey[] presets, float[] values)
         {
-            if (proxy == null) return;
+            if (vrm10RuntimeExpression == null) return;
             if (CurrentShapeKeys == null) return;
 
             if (AccumulateShapeKeys.ContainsKey(presetName) == false)
             {
-                AccumulateShapeKeys.Add(presetName, new Dictionary<BlendShapeKey, float>());
+                AccumulateShapeKeys.Add(presetName, new Dictionary<ExpressionKey, float>());
             }
             var presetDictionary = AccumulateShapeKeys[presetName];
             presetDictionary.Clear();
@@ -325,14 +326,14 @@ namespace VMC
             }
         }
 
-        public void OverwritePresets(string presetName, BlendShapeKey[] presets, float[] values)
+        public void OverwritePresets(string presetName, ExpressionKey[] presets, float[] values)
         {
-            if (proxy == null) return;
+            if (vrm10RuntimeExpression == null) return;
             if (CurrentShapeKeys == null) return;
 
             if (OverwriteShapeKeys.ContainsKey(presetName) == false)
             {
-                OverwriteShapeKeys.Add(presetName, new Dictionary<BlendShapeKey, float>());
+                OverwriteShapeKeys.Add(presetName, new Dictionary<ExpressionKey, float>());
             }
             var presetDictionary = OverwriteShapeKeys[presetName];
             presetDictionary.Clear();
@@ -346,8 +347,8 @@ namespace VMC
 
         private void AccumulateBlendShapes()
         {
-            if (proxy == null) return;
-            var accumulatedValues = new Dictionary<BlendShapeKey, float>();
+            if (vrm10RuntimeExpression == null) return;
+            var accumulatedValues = new Dictionary<ExpressionKey, float>();
             //ベースの表情を設定する(使わない表情には全て0が入っている)
             foreach (var shapeKey in CurrentShapeKeys)
             {
@@ -385,34 +386,43 @@ namespace VMC
                 }
             }
 
-            //全ての表情をSetValuesで1度に反映させる
-            proxy.SetValues(accumulatedValues);
-
-            //SetValuesは内部でApplyまで行うためApply不要
+            //全ての表情をSetWeightsで1度に反映させる
+            vrm10RuntimeExpression.SetWeights(accumulatedValues);
         }
 
         private void InitializeProxy()
         {
-            proxy = VRMmodel.GetComponent<VRMBlendShapeProxy>();
+            var vrm10Instance = VRMmodel.GetComponent<Vrm10Instance>();
+            vrm10RuntimeExpression = vrm10Instance.Runtime.Expression;
+
             //すべての表情の名称一覧を取得
-            if (proxy != null)
+            if (vrm10RuntimeExpression != null)
             {
-                BlendShapeClips = proxy.BlendShapeAvatar.Clips;
+                BlendShapeClips = vrm10RuntimeExpression.ExpressionKeys;
                 foreach (var clip in BlendShapeClips)
                 {
-                    if (clip.Preset == BlendShapePreset.Unknown)
-                    {
-                        //非プリセット(Unknown)であれば、Unknown用の名前変数を参照する
-                        BlendShapeKeyString[clip.BlendShapeName] = clip.Key;
-                        KeyUpperCaseDictionary[clip.BlendShapeName.ToUpper()] = clip.BlendShapeName;
-                    }
-                    else
-                    {
-                        //プリセットであればENUM値をToStringした値を利用する
-                        BlendShapeKeyString[clip.Preset.ToString()] = clip.Key;
-                        KeyUpperCaseDictionary[clip.Preset.ToString().ToUpper()] = clip.Preset.ToString();
-                    }
+                    BlendShapeKeyString[clip.Name] = clip;
+                    KeyUpperCaseDictionary[clip.Name.ToUpper()] = clip.Name;
                 }
+
+                // VRM 0.x compatibility
+                BlendShapeKeyString.Add("Neutral", ExpressionKey.Neutral);
+                BlendShapeKeyString.Add("A", ExpressionKey.Aa);
+                BlendShapeKeyString.Add("I", ExpressionKey.Ih);
+                BlendShapeKeyString.Add("U", ExpressionKey.Ou);
+                BlendShapeKeyString.Add("E", ExpressionKey.Ee);
+                BlendShapeKeyString.Add("O", ExpressionKey.Oh);
+                BlendShapeKeyString.Add("Blink", ExpressionKey.Blink);
+                BlendShapeKeyString.Add("Joy", ExpressionKey.Happy);
+                BlendShapeKeyString.Add("Angry", ExpressionKey.Angry);
+                BlendShapeKeyString.Add("Sorrow", ExpressionKey.Sad);
+                BlendShapeKeyString.Add("Fun", ExpressionKey.Relaxed);
+                BlendShapeKeyString.Add("LookUp", ExpressionKey.LookUp);
+                BlendShapeKeyString.Add("LookDown", ExpressionKey.LookDown);
+                BlendShapeKeyString.Add("LookLeft", ExpressionKey.LookLeft);
+                BlendShapeKeyString.Add("LookRight", ExpressionKey.LookRight);
+                BlendShapeKeyString.Add("Blink_L", ExpressionKey.BlinkLeft);
+                BlendShapeKeyString.Add("Blink_R", ExpressionKey.BlinkRight);
             }
             SetFaceNeutral();
         }

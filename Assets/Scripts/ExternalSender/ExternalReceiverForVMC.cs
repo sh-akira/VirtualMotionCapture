@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityMemoryMappedFile;
-using VRM;
+using UniVRM10;
 
 namespace VMC
 {
@@ -44,7 +44,8 @@ namespace VMC
         public GameObject CurrentModel = null;
         Camera currentCamera = null;
         FaceController faceController = null;
-        VRMLookAtHead vrmLookAtHead = null;
+        //VRMLookAtHead vrmLookAtHead = null;
+        Vrm10Instance vrm10Instance = null;
         Transform headTransform = null;
 
         //仮想視線操作用
@@ -63,7 +64,8 @@ namespace VMC
         //ボーン情報取得
         Animator animator = null;
         //VRMのブレンドシェーププロキシ
-        VRMBlendShapeProxy blendShapeProxy = null;
+        //VRMBlendShapeProxy blendShapeProxy = null;
+        Vrm10RuntimeExpression vrm10RuntimeExpression = null;
 
         //ボーンENUM情報テーブル
         Dictionary<string, HumanBodyBones> HumanBodyBonesTable = new Dictionary<string, HumanBodyBones>();
@@ -158,10 +160,10 @@ namespace VMC
 
             beforeFaceApply = () =>
             {
-                if (vrmLookAtHead == null || lookTargetOSC == null) return;
-                vrmLookAtHead.Target = lookTargetOSC.transform;
-                vrmLookAtHead.LookWorldPosition();
-                vrmLookAtHead.Target = null;
+                if (vrm10Instance.Runtime.LookAt == null || lookTargetOSC == null) return;
+                //vrm10Instance.LookAtTarget = lookTargetOSC.transform;
+                //vrmLookAtHead.LookWorldPosition();
+                //vrm10Instance.LookAtTarget = null;
             };
 
             var modelRoot = new GameObject("ModelRoot").transform;
@@ -192,7 +194,7 @@ namespace VMC
         {
             if (CurrentModel != null)
             {
-                vrmLookAtHead = CurrentModel.GetComponent<VRMLookAtHead>();
+                vrm10Instance = CurrentModel.GetComponent<Vrm10Instance>();
                 animator = CurrentModel.GetComponent<Animator>();
                 headTransform = null;
                 if (animator != null)
@@ -472,6 +474,7 @@ namespace VMC
                         {
                             lookTargetOSC = new GameObject();
                             lookTargetOSC.name = "lookTargetOSC";
+                            vrm10Instance.LookAtTarget = lookTargetOSC.transform;
                         }
                         //位置を書き込む
                         if (lookTargetOSC.transform != null)
@@ -481,7 +484,7 @@ namespace VMC
                         }
 
                         //視線に書き込む
-                        if (vrmLookAtHead != null && setFaceApplyAction == false)
+                        if (vrm10Instance != null && setFaceApplyAction == false)
                         {
                             faceController.BeforeApply += beforeFaceApply;
                             setFaceApplyAction = true;
@@ -490,7 +493,7 @@ namespace VMC
                     else
                     {
                         //視線を止める
-                        if (vrmLookAtHead != null && setFaceApplyAction == true)
+                        if (vrm10Instance != null && setFaceApplyAction == true)
                         {
                             faceController.BeforeApply -= beforeFaceApply;
                             setFaceApplyAction = false;

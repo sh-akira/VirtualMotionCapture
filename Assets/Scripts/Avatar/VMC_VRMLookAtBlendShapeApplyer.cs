@@ -1,10 +1,10 @@
 ﻿#pragma warning disable 0414, 0649
 using UnityEngine;
-using VRM;
+using UniVRM10;
 
 namespace VMC
 {
-    public class VMC_VRMLookAtBlendShapeApplyer : MonoBehaviour, IVRMComponent
+    public class VMC_VRMLookAtBlendShapeApplyer : MonoBehaviour
     {
         public bool DrawGizmo = true;
 
@@ -22,29 +22,29 @@ namespace VMC
 
         public FaceController faceController;
 
-        public void OnImported(VRMImporterContext context)
+        public void OnImported(VRM10ObjectLookAt vrm10ObjectLookAt)
         {
-            var gltfFirstPerson = context.VRM.firstPerson;
-            Horizontal.Apply(gltfFirstPerson.lookAtHorizontalOuter);
-            VerticalDown.Apply(gltfFirstPerson.lookAtVerticalDown);
-            VerticalUp.Apply(gltfFirstPerson.lookAtVerticalUp);
+            Horizontal = vrm10ObjectLookAt.HorizontalOuter;
+            VerticalDown = vrm10ObjectLookAt.VerticalDown;
+            VerticalUp = vrm10ObjectLookAt.VerticalUp;
         }
 
-        VRMLookAtHead m_head;
+        //VRMLookAtHead m_head;
 
         private void Start()
         {
-            m_head = GetComponent<VRMLookAtHead>();
+            Vrm10RuntimeLookAt lookAt = GetComponent<Vrm10Instance>().Runtime.LookAt;
+            //m_head = GetComponent<VRMLookAtHead>();
             if (faceController == null) faceController = GameObject.Find("AnimationController").GetComponent<FaceController>();
-            if (m_head == null)
+            //if (m_head == null)
             {
                 enabled = false;
                 return;
             }
-            m_head.YawPitchChanged += ApplyRotations;
+            //m_head.YawPitchChanged += ApplyRotations;
         }
 
-        private BlendShapeKey[] presets = new[] { BlendShapeKey.CreateFromPreset(BlendShapePreset.LookLeft), BlendShapeKey.CreateFromPreset(BlendShapePreset.LookRight), BlendShapeKey.CreateFromPreset(BlendShapePreset.LookUp), BlendShapeKey.CreateFromPreset(BlendShapePreset.LookDown) };
+        private ExpressionKey[] presets = new[] { ExpressionKey.LookLeft, ExpressionKey.LookRight, ExpressionKey.LookUp, ExpressionKey.LookDown };
         private float[] blendShapeValues = new float[4];
 
         void ApplyRotations(float yaw, float pitch)

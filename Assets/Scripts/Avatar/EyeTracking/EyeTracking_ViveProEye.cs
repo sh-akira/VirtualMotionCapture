@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityMemoryMappedFile;
+using UniVRM10;
 using ViveSR.anipal.Eye;
 
 namespace VMC
@@ -88,16 +89,16 @@ namespace VMC
             LookTarget.transform.parent = MonitorPosition.transform;
             LookTarget.transform.localRotation = Quaternion.identity;
             LookTarget.transform.localPosition = new Vector3(0, 0, 1f); //すべて0地点にすると目が荒ぶる
-            var vrmLookAtHead = currentModel.GetComponent<VRM.VRMLookAtHead>();
+            var vrm10Instance = currentModel.GetComponent<Vrm10Instance>();
             if (faceBeforeApply != null) faceController.BeforeApply -= faceBeforeApply;
             faceBeforeApply = () =>
             {
                 if ((SRanipal_Eye_Framework.Status != SRanipal_Eye_Framework.FrameworkStatus.WORKING &&
                     SRanipal_Eye_Framework.Status != SRanipal_Eye_Framework.FrameworkStatus.NOT_SUPPORT) ||
                     SRanipal_Eye_Framework.Status == SRanipal_Eye_Framework.FrameworkStatus.NOT_SUPPORT || enabled == false) return;
-                vrmLookAtHead.Target = LookTarget.transform;
-                vrmLookAtHead.LookWorldPosition();
-                vrmLookAtHead.Target = null;
+                //vrm10Instance.LookAtTarget = LookTarget.transform;
+                //vrmLookAtHead.LookWorldPosition();
+                //vrm10Instance.LookAtTarget = null;
             };
             faceController.BeforeApply += faceBeforeApply;
             StartPos = LookTarget.transform.localPosition;
