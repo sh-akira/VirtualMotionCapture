@@ -185,7 +185,7 @@ namespace VMC
                 }
             };
 
-            midiCCWrapper.noteOnDelegateProxy += (MidiJack.MidiChannel channel, int note, float velocity) =>
+            midiCCWrapper.noteOnDelegateProxy += (MidiChannel channel, int note, float velocity) =>
             {
                 if (this.isActiveAndEnabled)
                 {
@@ -200,7 +200,7 @@ namespace VMC
                     }
                 }
             };
-            midiCCWrapper.noteOffDelegateProxy += (MidiJack.MidiChannel channel, int note) =>
+            midiCCWrapper.noteOffDelegateProxy += (MidiChannel channel, int note) =>
             {
                 if (this.isActiveAndEnabled)
                 {

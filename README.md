@@ -85,13 +85,13 @@ VMCProtocol (バーチャルモーションキャプチャープロトコル)に
 
 1. 本リポジトリをクローンします。
 2. Unity 2022.3.5f1 でプロジェクトを開きます。
-   - **UniVRM**（`com.vrmc.vrm` 0.131.0）は UPM / OpenUPM 経由で `Packages/manifest.json` から自動的に取得されます。
+   - **UniVRM**（`com.vrmc.vrm` 0.131.0）と **MIDI入力の Minis**（`jp.keijiro.minis`）は UPM / OpenUPM 経由で `Packages/manifest.json` から自動的に取得されます。
+   - MIDI入力は Minis（Unity Input System ベース）を使用します。プロジェクトの Active Input Handling は **Both**（`activeInputHandler: 2`）に設定済みで、初回に Input System を有効化するための再起動を求められる場合があります。
 3. サードパーティ製アセット／SDK は再配布できないため、リポジトリには含まれていません。必要に応じて各自でインポートし、`Assets/ExternalPlugins/` 以下に配置してください。
    - [Final IK](https://assetstore.unity.com/packages/tools/animation/final-ik-14290)（`RootMotion`）
    - [SteamVR Plugin](https://github.com/ValveSoftware/steamvr_unity_plugin/releases)（OpenVR XR プラグインを含む）
    - [Oculus Lipsync Unity Integration](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/)
    - [uOSC](https://github.com/hecomi/uOSC)
-   - [MidiJack](https://github.com/keijiro/MidiJack)
    - [EasyDeviceDiscoveryProtocolForUnity](https://github.com/gpsnmeajp/EasyDeviceDiscoveryProtocolForUnity)
    - [mocopi Receiver Plugin for Unity](https://www.sony.net/Products/mocopi-dev/)
    - アイトラッキング対応時: [VIVE SRanipal SDK](https://developer.vive.com/resources/vive-sense/eye-and-facial-tracking-sdk/)
