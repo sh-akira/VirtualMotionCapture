@@ -5,6 +5,7 @@
 [Bb]uilds/
 [Uu]ser[Ss]ettings/
 Logs/
+OpenVRInitError.txt
 Assets/AssetStoreTools*
 Assets/ExternalPlugins/RootMotion*
 Assets/ExternalPlugins/SteamVR*
