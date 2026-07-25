@@ -74,6 +74,29 @@ namespace VMC
         }
     }
 
+    /// <summary>
+    /// キャリブレーション実行時の1つのトラッカーの姿勢(トラッキング機器から報告される生のローカル姿勢)
+    /// </summary>
+    [Serializable]
+    public class CalibrationTrackerPose
+    {
+        public string Name;      //シリアル番号等のデバイス名(TrackingPointの識別子)
+        public Vector3 Position;
+        public Quaternion Rotation;
+    }
+
+    /// <summary>
+    /// キャリブレーション実行時のトラッカー姿勢一式。
+    /// 別のアバターを読み込んだ時にこの姿勢を再現してキャリブレーションを再実行することで、
+    /// 再度Tポーズを取らなくても同じ基準でキャリブレーションできる。
+    /// </summary>
+    [Serializable]
+    public class CalibrationSnapshot
+    {
+        public int CalibrateType;  //PipeCommands.CalibrateType (未知の値でも壊れないようint)
+        public List<CalibrationTrackerPose> Poses = new List<CalibrationTrackerPose>();
+    }
+
     [Serializable]
     public class LookTargetSettings
     {
@@ -752,6 +775,14 @@ namespace VMC
         [OptionalField]
         public int WristRotationFix_MaxAccumulatedTwist = 300;
 
+        //キャリブレーション自動再適用
+        //キャリブレーション実行時のトラッカー姿勢を記録しておき、別のアバターを読み込んだ時に
+        //同じトラッカー姿勢でキャリブレーションを再実行することで、再度Tポーズを取る手間を省く
+        [OptionalField]
+        public bool EnableAutoCalibrationOnModelLoad = true;
+        [OptionalField]
+        public CalibrationSnapshot LastCalibrationSnapshot = null;
+
 
         //初期値
         [OnDeserializing()]
@@ -956,6 +987,9 @@ namespace VMC
             WristRotationFix_UpperArmWeight = 200;
             WristRotationFix_ForearmWeight = 570;
             WristRotationFix_MaxAccumulatedTwist = 300;
+
+            EnableAutoCalibrationOnModelLoad = true;
+            LastCalibrationSnapshot = null;
         }
 
         /// <summary>

@@ -23,9 +23,33 @@ namespace VMC
         private Dictionary<string, TrackingPoint> ControllerTrackingPoints = new Dictionary<string, TrackingPoint>();
         private Dictionary<string, TrackingPoint> TrackerTrackingPoints = new Dictionary<string, TrackingPoint>();
 
+        /// <summary>
+        /// キャリブレーション再現用の姿勢上書き。
+        /// 設定されている間、対象のトラッキングポイントは実機の入力ではなくここで指定した姿勢で更新される。
+        /// (キャリブレーションは複数フレームにまたがるため、実機入力で上書きされないようにする)
+        /// </summary>
+        private Dictionary<string, (Vector3 position, Quaternion rotation)> overridePoses = null;
+
+        public void SetPoseOverride(Dictionary<string, (Vector3 position, Quaternion rotation)> poses)
+        {
+            overridePoses = poses;
+        }
+
+        public void ClearPoseOverride()
+        {
+            overridePoses = null;
+        }
+
         public TrackingPoint ApplyPoint(string name, ETrackedDeviceClass deviceClass, Vector3 position, Quaternion rotation, bool isOK)
         {
             //ignore "LIV Virtual Camera"
+
+            //キャリブレーション再現中は記録済みの姿勢で固定する
+            if (overridePoses != null && overridePoses.TryGetValue(name, out var overridePose))
+            {
+                position = overridePose.position;
+                rotation = overridePose.rotation;
+            }
 
             if (AllTrackingPoints.TryGetValue(name, out var trackingPoint) == false)
             {
@@ -152,9 +176,19 @@ namespace VMC
         /// <param name="position"></param>
         /// <param name="rotation"></param>
         /// <returns>移動していたらtrue</returns>
+        /// <summary>
+        /// 最後に適用されたローカル姿勢(トラッキング機器から報告された生の値)。
+        /// キャリブレーション時の姿勢を記録して後から再現するために保持する。
+        /// </summary>
+        public Vector3 LastLocalPosition { get; private set; }
+        public Quaternion LastLocalRotation { get; private set; } = Quaternion.identity;
+
         public bool SetPositionAndRotationLocal(Vector3 position, Quaternion rotation)
         {
             bool moved = false;
+
+            LastLocalPosition = position;
+            LastLocalRotation = rotation;
 
             if (Vector3.Distance(lastMovedPosition, position) > 0.1f)
             {
