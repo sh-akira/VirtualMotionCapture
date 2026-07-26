@@ -54,8 +54,10 @@ namespace VMC.Tests
             }
 
             //カメラは HandTrackerRoot の子で、この親はキャリブレーションで身長比のスケールと
-            //オフセットを持つ。送信(ワールド)と受信(ローカル)で座標系が食い違っていると
-            //親の変換が二重に掛かってカメラ距離がずれるので、あえて非単位の値を入れて検出する
+            //オフセットを持つ。/VMC/Ext/Cam はこの親から見たローカル座標で送受信する取り決めなので
+            //(受信側アバターのスケールへ写像するため)、送信と受信で座標系が食い違うと
+            //親の変換が二重に掛かる/掛からない形でカメラ距離がずれる。
+            //あえて非単位の値を入れて、その食い違いを検出できるようにする
             var trackerRoot = IKManager.Instance.HandTrackerRoot;
             var savedScale = trackerRoot.localScale;
             var savedPosition = trackerRoot.position;
@@ -83,9 +85,35 @@ namespace VMC.Tests
             var sentPosition = new Vector3((float)sentCamera.values[1], (float)sentCamera.values[2], (float)sentCamera.values[3]);
             var sentRotation = new Quaternion((float)sentCamera.values[4], (float)sentCamera.values[5], (float)sentCamera.values[6], (float)sentCamera.values[7]);
 
+            //送信直前のカメラ姿勢。往復後にここへ戻ってくるのが正しい
+            var beforePosition = cameraManager.ControlCamera.transform.position;
+            var beforeRotation = cameraManager.ControlCamera.transform.rotation;
+            var beforeLocalPosition = cameraManager.ControlCamera.transform.localPosition;
+            var beforeLocalRotation = cameraManager.ControlCamera.transform.localRotation;
+
+            //送信値がローカル座標であること(受信側の適用と同じ座標系か)
+            var sentLocalError = Vector3.Distance(sentPosition, beforeLocalPosition);
+            result.CheckThat("送信されたカメラ位置の座標系",
+                sentLocalError < 0.001f,
+                $"送信されたカメラ位置がローカル座標になっていません" +
+                $"(送信 {sentPosition} / ローカル {beforeLocalPosition} / ワールド {beforePosition})。" +
+                $"受信側は localPosition として適用するため、送信もローカル座標で揃える必要があります");
+
+            result.CheckThat("送信されたカメラ回転の座標系",
+                Quaternion.Angle(sentRotation, beforeLocalRotation) < 0.1f,
+                $"送信されたカメラ回転がローカル回転になっていません" +
+                $"(誤差 {Quaternion.Angle(sentRotation, beforeLocalRotation):F3}度)");
+
+            //テスト自体が意味を持つ条件の確認。ワールドとローカルが同じ値なら
+            //座標系の食い違いは検出できず、以降のチェックは素通りしてしまう
+            result.CheckThat("カメラ座標系テストの前提",
+                Vector3.Distance(beforePosition, beforeLocalPosition) > 0.01f,
+                $"HandTrackerRootの変換が効いておらず、ワールドとローカルが同値です" +
+                $"({beforePosition} / {beforeLocalPosition})。座標系の食い違いを検出できません");
+
             //受信側を別の画角・別の位置にしてから、送信内容を流し込む
             cameraManager.Test_SetCameraFOV(LocalFov);
-            cameraManager.FreeCamera.transform.position = sentPosition + new Vector3(1.5f, 0.8f, -1.2f);
+            cameraManager.FreeCamera.transform.position = beforePosition + new Vector3(1.5f, 0.8f, -1.2f);
             yield return context.Step(3);
             context.Inject(receiver, sentCamera);
             yield return context.Step(5);
@@ -95,22 +123,22 @@ namespace VMC.Tests
                 Mathf.Abs(appliedFov - SenderFov) < 0.01f,
                 $"受信した画角がカメラに反映されていません(実際 {appliedFov:F3} / 受信値 {sentFov:F3} / 受信前 {LocalFov})");
 
-            //位置と回転がワールド座標として一致すること。
-            //ずれる場合、送信(ワールド)と受信(ローカル)で座標系が食い違っていて
-            //HandTrackerRootのスケール・オフセットが二重に掛かっている
+            //VMC同士の往復ではカメラが送信直前と同じ場所に戻ること。
+            //ずれる場合、送信と受信で座標系が食い違っていて
+            //HandTrackerRootのスケール・オフセットが二重に掛かっている(または一度も掛かっていない)
             var appliedPosition = cameraManager.ControlCamera.transform.position;
             var appliedRotation = cameraManager.ControlCamera.transform.rotation;
-            var positionError = Vector3.Distance(sentPosition, appliedPosition);
-            var rotationError = Quaternion.Angle(sentRotation, appliedRotation);
+            var positionError = Vector3.Distance(beforePosition, appliedPosition);
+            var rotationError = Quaternion.Angle(beforeRotation, appliedRotation);
 
             result.CheckThat("受信したカメラ位置の反映",
                 positionError < 0.001f,
-                $"受信したカメラ位置がずれています(誤差 {positionError:F4}m / 送信 {sentPosition} → 実際 {appliedPosition})。" +
+                $"往復後のカメラ位置がずれています(誤差 {positionError:F4}m / 送信前 {beforePosition} → 実際 {appliedPosition})。" +
                 $"HandTrackerRoot(scale={trackerRoot.localScale} pos={trackerRoot.position})の変換が二重に掛かっていないか確認してください");
 
             result.CheckThat("受信したカメラ回転の反映",
                 rotationError < 0.1f,
-                $"受信したカメラ回転がずれています(誤差 {rotationError:F3}度)");
+                $"往復後のカメラ回転がずれています(誤差 {rotationError:F3}度)");
 
             trackerRoot.localScale = savedScale;
             trackerRoot.position = savedPosition;

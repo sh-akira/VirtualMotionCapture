@@ -171,7 +171,7 @@ VRM0.x→VRM1.0 と VRM1.0→VRM0.x の両方向が検証される。
 | --- | --- |
 | `/VMC/Ext/OK` `/VMC/Ext/T` `/VMC/Ext/Root/Pos` `/VMC/Ext/Bone/Pos` | SendCoverage(有無) + BasicVMCProtocol / BoneRoundTrip(値) |
 | `/VMC/Ext/Blend/Val` `/VMC/Ext/Blend/Apply` | SendCoverage + BasicVMCProtocol(値) |
-| `/VMC/Ext/Cam` | SendCoverage + ControlMessages(画角の値) |
+| `/VMC/Ext/Cam` | SendCoverage + ControlMessages(画角の値・座標系・往復) |
 | `/VMC/Ext/Hmd/Pos` `/Local` `/VMC/Ext/Con/Pos` `/Local` `/VMC/Ext/Tra/Pos` `/Local` | SendCoverage + BasicVMCProtocol(値) |
 | `/VMC/Ext/Rcv` `/VMC/Ext/Light` `/VMC/Ext/Setting/Color` `/VMC/Ext/Setting/Win` `/VMC/Ext/Config` `/VMC/Ext/Opt` `/VMC/Ext/VRM` | SendCoverage(有無) |
 | `/VMC/Ext/Con` `/VMC/Ext/Key` `/VMC/Ext/Midi/Note` `/VMC/Ext/Midi/CC/Val` `/VMC/Ext/Midi/CC/Bit` | SendCoverage(有無) |
@@ -198,6 +198,12 @@ VRM0.x→VRM1.0 と VRM1.0→VRM0.x の両方向が検証される。
   **受信側のコントロールパネルに表示される画角は自分の値のまま**になる
 - `Camera.fieldOfView` は**垂直**画角。送受信のウインドウ解像度(アスペクト比)が違うと
   同じ垂直画角でも水平方向の写る範囲が変わる。これはプロトコルの仕様上の制約で、コードの不具合ではない
+- `/VMC/Ext/Cam` の座標は `IKManager.HandTrackerRoot` から見た**ローカル座標**。
+  この親はキャリブレーションで身長比のスケールとオフセットを持つため、ローカルで受け取ることで
+  送られてきた座標が**受信側アバターのスケールへ写像される**(2021-03 の `58efc0a` で受信側をこの形にした)。
+  送信側も同じ座標系で送らないと、VMC同士でスケールが二重に掛かってカメラ距離がずれる。
+  ControlMessages シナリオは `HandTrackerRoot` にあえて非単位のスケール・オフセットを入れて
+  この食い違いを検出する(ワールドとローカルが同値だと検出できないので、前提自体もチェックしている)
 
 ## シナリオの追加方法
 
