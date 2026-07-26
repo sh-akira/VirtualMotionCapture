@@ -5,7 +5,7 @@
 # バーチャルモーションキャプチャー (VirtualMotionCapture)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Unity](https://img.shields.io/badge/Unity-2022.3.5f1-black?logo=unity&logoColor=white)](https://unity.com/)
+[![Unity](https://img.shields.io/badge/Unity-2022.3.76f1-black?logo=unity&logoColor=white)](https://unity.com/)
 [![VRM](https://img.shields.io/badge/VRM-1.0%20%2F%200.x-44cc11)](https://vrm.dev/)
 [![Website](https://img.shields.io/badge/Website-vmc.info-1e90ff)](https://vmc.info/)
 
@@ -78,13 +78,13 @@ VMCProtocol (バーチャルモーションキャプチャープロトコル)に
 
 ### 必要なもの
 
-- **Unity 2022.3.5f1**
+- **Unity 2022.3.76f1**
 - **Visual Studio 2022**（「.NET デスクトップ開発」ワークロード）
 
 ### 手順
 
 1. 本リポジトリをクローンします。
-2. Unity 2022.3.5f1 でプロジェクトを開きます。
+2. Unity 2022.3.76f1 でプロジェクトを開きます。
    - **UniVRM**（`com.vrmc.vrm` 0.131.0）と **MIDI入力の Minis**（`jp.keijiro.minis`）は UPM / OpenUPM 経由で `Packages/manifest.json` から自動的に取得されます。
    - MIDI入力は Minis（Unity Input System ベース）を使用します。プロジェクトの Active Input Handling は **Both**（`activeInputHandler: 2`）に設定済みで、初回に Input System を有効化するための再起動を求められる場合があります。
 3. サードパーティ製アセット／SDK は再配布できないため、リポジトリには含まれていません。必要に応じて各自でインポートし、`Assets/ExternalPlugins/` 以下に配置してください。
@@ -98,7 +98,7 @@ VMCProtocol (バーチャルモーションキャプチャープロトコル)に
    - アイトラッキング対応時: [Tobii Unity SDK](https://developer.tobii.com/pc-gaming/unity-sdk/)（インポート後、フォルダは移動しないでください）
    - VRoid Hub 連携時: VRoid SDK（[VRoid SDK for Unity](https://vroid.com/sdk)）
 
-   > アイトラッキングが不要な場合は、`Assets\Scripts\EyeTracking` フォルダと `LipTracking` フォルダを削除してください。
+   > アイトラッキングが不要な場合は、`Assets\Scripts\Avatar\EyeTracking` フォルダと `Assets\Scripts\Avatar\LipTracking` フォルダを削除してください。
 4. コントロールパネル（`ControlWindowWPF/ControlWindowWPF.sln`）を Visual Studio 2022 で開きます。
    - `VirtualMotionCaptureControlPanel` プロジェクトのプロパティを開き、デバッグのコマンドライン引数を `/pipeName VMCTest` に設定します。
    - Visual Studio でそのまま一度開始すると、exe が自動生成されます。開いたコントロールパネルは閉じて一度終了します。
