@@ -507,10 +507,15 @@ namespace VMC
                 }
                 if (currentCamera != null)
                 {
+                    //カメラはHandTrackerRootの子で、この親はキャリブレーションで身長比のスケールと
+                    //オフセットを持つ。受信側(ExternalReceiverForVMC)はカメラ姿勢をlocalPosition/
+                    //localRotationとして適用し、受信側アバターのスケールへ写像するため、
+                    //送信もローカル座標に揃える。(ワールドで送るとVMC同士でスケールが二重に掛かる)
+                    var cameraTransform = currentCamera.transform;
                     rootBundle.Add(new uOSC.Message("/VMC/Ext/Cam",
                         "Camera",
-                        currentCamera.transform.position.x, currentCamera.transform.position.y, currentCamera.transform.position.z,
-                        currentCamera.transform.rotation.x, currentCamera.transform.rotation.y, currentCamera.transform.rotation.z, currentCamera.transform.rotation.w,
+                        cameraTransform.localPosition.x, cameraTransform.localPosition.y, cameraTransform.localPosition.z,
+                        cameraTransform.localRotation.x, cameraTransform.localRotation.y, cameraTransform.localRotation.z, cameraTransform.localRotation.w,
                         currentCamera.fieldOfView));
                 }
             }

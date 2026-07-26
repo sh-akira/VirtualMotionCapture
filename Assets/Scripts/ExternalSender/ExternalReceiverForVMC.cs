@@ -434,13 +434,12 @@ namespace VMC
                     CameraManager.Current.FreeCamera.GetComponent<CameraMouseControl>().enabled = false;
 
                     //座標とFOVを適用
-                    //送信側は currentCamera.transform.position/rotation (ワールド)を送っているため、
-                    //ワールドとして適用する。カメラは HandTrackerRoot の子で、
-                    //HandTrackerRootはキャリブレーションで身長比のスケールとオフセットを持つため、
-                    //localPosition/localRotationに入れると受信側でもう一度それが掛かり、
-                    //カメラ距離がスケールの2乗ぶんずれる(=写る大きさが変わる)
-                    CameraManager.Current.FreeCamera.transform.position = pos;
-                    CameraManager.Current.FreeCamera.transform.rotation = rot;
+                    //カメラは HandTrackerRoot の子で、この親はキャリブレーションで
+                    //身長比のスケールとオフセットを持つ。ローカル座標として入れることで、
+                    //送られてきた座標が受信側アバターのスケールへ写像される。
+                    //(ワールドとして入れるとスケールぶん位置がずれる)
+                    CameraManager.Current.FreeCamera.transform.localPosition = pos;
+                    CameraManager.Current.FreeCamera.transform.localRotation = rot;
                     CameraManager.Current.ControlCamera.fieldOfView = fov;
                 } //ブレンドシェープ同期
                 else if (message.address == "/VMC/Ext/Blend/Val" && ApplyBlendShape
