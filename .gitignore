@@ -99,3 +99,6 @@ common.json
 Assets/_TerrainAutoUpgrade/
 .vsconfig
 /TrackerPositions.json
+
+#自動テスト用データ(テスト用VRM・ゴールデン・実行結果)
+TestData/
