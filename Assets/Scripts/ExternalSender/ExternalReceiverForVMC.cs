@@ -686,6 +686,16 @@ namespace VMC
             }
         }
 
+        /// <summary>
+        /// /VMC/Ext/Set/Calib/Exec 受信時の Invoke("EndCalibrate", 2f) から呼ばれる。
+        /// これが無いとキャリブレーションがCalibratingのまま終わらず、
+        /// MotionManagerがVRIK以外(VMCProtocol/mocopi/モーション再生)の適用を止め続けてしまう。
+        /// </summary>
+        private void EndCalibrate()
+        {
+            IKManager.Instance.EndCalibrate();
+        }
+
         SteamVR_Utils.RigidTransform SetTransform(ref Vector3 pos, ref Quaternion rot, ref uOSC.Message message)
         {
             pos.x = (float)message.values[1];
