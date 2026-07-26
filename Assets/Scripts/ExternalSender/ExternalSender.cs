@@ -462,6 +462,13 @@ namespace VMC
             if (frameOfCamera > periodCamera && periodCamera != 0)
             {
                 frameOfCamera = 1;
+                //OnCameraChangedはCameraManager.Start()でも発火するが、Start()同士の実行順は不定のため
+                //購読より先に発火するとカメラを知らないままになり、/VMC/Ext/Camが一切送信されなくなる。
+                //(その後の再発火はChangeCamera経由のみで、Settings.CameraTypeが未設定だと呼ばれない)
+                if (currentCamera == null && CameraManager.Current != null)
+                {
+                    currentCamera = CameraManager.Current.ControlCamera;
+                }
                 if (currentCamera != null)
                 {
                     rootBundle.Add(new uOSC.Message("/VMC/Ext/Cam",
