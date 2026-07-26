@@ -369,6 +369,8 @@
     <system:String x:Key="SettingWindow_VirtualMotionTrackerInstallSuccess">安装成功！重启 SteamVR 和 VirtualMotionCapture。点击 OK 并等待重启。</system:String>
     <system:String x:Key="SettingWindow_VMTContinue">是否继续安装 VMT？SteamVR 将会重启并且进行中的游戏将会被退出。</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderResponderEnable">允许设备检测应答</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSenderSendVRM1Expression">同时以VRM 1.0名称发送表情</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSenderUseNormalizedBone">发送标准化(ControlRig)骨骼(不推荐)</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiverRequesterEnable">自动检测设备</system:String>
     <system:String x:Key="SettingWindow_ReceiveBonesEnable">手骨接收</system:String>
     <system:String x:Key="SettingWindow_VMCMod">VMC Mod（不保证可用/不受支持）</system:String>
@@ -611,6 +613,7 @@
     <system:String x:Key="VMCProtocolReceiverSettingWindow_CorrectHipBone">修正腰骨</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_UseBonePosition">使用骨关节位置</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_IgnoreDefaultBone">不使用默认值骨</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_UseNormalizedBone">发送方发送标准化(ControlRig)骨骼</system:String>
 
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">取色器</system:String>

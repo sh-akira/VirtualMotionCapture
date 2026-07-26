@@ -149,6 +149,13 @@ namespace VMC
 
         public bool FixHandBone = true;
         public bool UseBonePosition = false;
+
+        /// <summary>
+        /// 送信元が正規化(ControlRig)ボーン姿勢を送ってくる場合にtrueにする。
+        /// 仕様の推奨はオリジナル(非正規化)ボーンなので既定はfalse。
+        /// </summary>
+        [OptionalField]
+        public bool UseNormalizedBone = false;
         [OptionalField]
         public bool CorrectHipBone = false;
         [OptionalField]
@@ -193,6 +200,7 @@ namespace VMC
 
             FixHandBone = true;
             IgnoreDefaultBone = true;
+            UseNormalizedBone = false;
 
             ApplyBlendShape = true;
             ApplyLookAt = true;
@@ -247,6 +255,7 @@ namespace VMC
             ApplySetting = setting.ApplySetting;
             ApplyControllerInput = setting.ApplyControllerInput;
             ApplyKeyboardInput = setting.ApplyKeyboardInput;
+            UseNormalizedBone = setting.UseNormalizedBone;
 
             return this;
         }
@@ -296,6 +305,7 @@ namespace VMC
                 ApplySetting = ApplySetting,
                 ApplyControllerInput = ApplyControllerInput,
                 ApplyKeyboardInput = ApplyKeyboardInput,
+                UseNormalizedBone = UseNormalizedBone,
             };
             return setting;
         }
@@ -548,6 +558,21 @@ namespace VMC
         public bool ExternalMotionReceiverRequesterEnable;
         [OptionalField]
         public string ExternalMotionSenderOptionString;
+
+        /// <summary>
+        /// 正規化(ControlRig)ボーン姿勢を送信する。
+        /// VMCProtocolの仕様ではオリジナル(非正規化)ボーンが推奨で、
+        /// 正規化ボーンの送信は「既定で無効のオプション」と定められているため既定はfalse。
+        /// </summary>
+        [OptionalField]
+        public bool ExternalMotionSenderUseNormalizedBone = false;
+
+        /// <summary>
+        /// 表情をVRM1.0形式の名称(happy/aa等)でも送信する。
+        /// 仕様ではVRM0.x形式の送信が必須で、VRM1.0形式はオプション。
+        /// </summary>
+        [OptionalField]
+        public bool ExternalMotionSenderSendVRM1Expression = false;
         [OptionalField]
         public List<string> MidiCCBlendShape;
         [OptionalField]
@@ -858,6 +883,9 @@ namespace VMC
             ExternalMotionSenderPeriodCamera = 1;
             ExternalMotionSenderPeriodDevices = 1;
             ExternalMotionSenderOptionString = "";
+            //仕様上、正規化ボーンの送信は「既定で無効のオプション」
+            ExternalMotionSenderUseNormalizedBone = false;
+            ExternalMotionSenderSendVRM1Expression = false;
             ExternalMotionSenderResponderEnable = false;
 
             ExternalMotionReceiverEnable = false;

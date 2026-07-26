@@ -225,6 +225,8 @@
                             <TextBox Text="" Grid.Column="1" VerticalAlignment="Center" Name="OptionStringTextbox"/>
                         </Grid>
                         <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionSenderResponderEnable}" Name="ExternalMotionSenderResponderEnableCheckBox" DockPanel.Dock="Top"/>
+                        <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionSenderSendVRM1Expression}" Name="ExternalMotionSenderSendVRM1ExpressionCheckBox" DockPanel.Dock="Top"/>
+                        <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionSenderUseNormalizedBone}" Name="ExternalMotionSenderUseNormalizedBoneCheckBox" DockPanel.Dock="Top"/>
                     </DockPanel>
                 </GroupBox>
                 <GroupBox>

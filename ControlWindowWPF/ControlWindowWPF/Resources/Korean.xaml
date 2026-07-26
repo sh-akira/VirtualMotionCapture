@@ -368,6 +368,8 @@
     <system:String x:Key="SettingWindow_VirtualMotionTrackerInstallSuccess">Success! Restart SteamVR and VirtualMotionCapture. Press OK and wait auto restart.</system:String>
     <system:String x:Key="SettingWindow_VMTContinue">Continue VMT setup? Game will be interrupted, and VR system will restart.</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderResponderEnable">Allow device detection response</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSenderSendVRM1Expression">VRM 1.0 이름으로도 표정 전송</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSenderUseNormalizedBone">정규화(ControlRig) 본 전송 (권장하지 않음)</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiverRequesterEnable">Auto device detection</system:String>
     <system:String x:Key="SettingWindow_ReceiveBonesEnable">손 본받는</system:String>
     <system:String x:Key="SettingWindow_VMCMod">VMC Mod (No warranty/no support)</system:String>
@@ -609,6 +611,7 @@
     <system:String x:Key="VMCProtocolReceiverSettingWindow_CorrectHipBone">Correct hip bone</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_UseBonePosition">Use bone position</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_IgnoreDefaultBone">Ignore default bones</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_UseNormalizedBone">송신측이 정규화(ControlRig) 본을 보냄</system:String>
 
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">색상선택</system:String>

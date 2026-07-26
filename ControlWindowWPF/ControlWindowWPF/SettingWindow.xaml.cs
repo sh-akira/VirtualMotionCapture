@@ -299,6 +299,8 @@ namespace VirtualMotionCaptureControlPanel
                     PeriodDevicesTextBox.Text = data.PeriodDevices.ToString();
                     OptionStringTextbox.Text = data.OptionString;
                     ExternalMotionSenderResponderEnableCheckBox.IsChecked = data.ResponderEnable;
+                    ExternalMotionSenderUseNormalizedBoneCheckBox.IsChecked = data.UseNormalizedBone;
+                    ExternalMotionSenderSendVRM1ExpressionCheckBox.IsChecked = data.SendVRM1Expression;
                 });
             });
 
@@ -720,7 +722,9 @@ namespace VirtualMotionCaptureControlPanel
                     PeriodCamera = PeriodCamera.Value,
                     PeriodDevices = PeriodDevices.Value,
                     OptionString = OptionStringTextbox.Text,
-                    ResponderEnable = ExternalMotionSenderResponderEnableCheckBox.IsChecked.Value
+                    ResponderEnable = ExternalMotionSenderResponderEnableCheckBox.IsChecked.Value,
+                    UseNormalizedBone = ExternalMotionSenderUseNormalizedBoneCheckBox.IsChecked.Value,
+                    SendVRM1Expression = ExternalMotionSenderSendVRM1ExpressionCheckBox.IsChecked.Value
                 });
             }
         }

@@ -575,7 +575,7 @@ namespace VMC
                 else if (e.CommandType == typeof(PipeCommands.ChangeExternalMotionSenderAddress))
                 {
                     var d = (PipeCommands.ChangeExternalMotionSenderAddress)e.Data;
-                    ChangeExternalMotionSenderAddress(d.address, d.port, d.PeriodStatus, d.PeriodRoot, d.PeriodBone, d.PeriodBlendShape, d.PeriodCamera, d.PeriodDevices, d.OptionString, d.ResponderEnable);
+                    ChangeExternalMotionSenderAddress(d.address, d.port, d.PeriodStatus, d.PeriodRoot, d.PeriodBone, d.PeriodBlendShape, d.PeriodCamera, d.PeriodDevices, d.OptionString, d.ResponderEnable, d.UseNormalizedBone, d.SendVRM1Expression);
 
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetExternalMotionSenderAddress))
@@ -591,7 +591,9 @@ namespace VMC
                         PeriodCamera = Settings.Current.ExternalMotionSenderPeriodCamera,
                         PeriodDevices = Settings.Current.ExternalMotionSenderPeriodDevices,
                         OptionString = Settings.Current.ExternalMotionSenderOptionString,
-                        ResponderEnable = Settings.Current.ExternalMotionSenderResponderEnable
+                        ResponderEnable = Settings.Current.ExternalMotionSenderResponderEnable,
+                        UseNormalizedBone = Settings.Current.ExternalMotionSenderUseNormalizedBone,
+                        SendVRM1Expression = Settings.Current.ExternalMotionSenderSendVRM1Expression
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.SetVMCProtocolReceiverSetting))
@@ -1190,6 +1192,35 @@ namespace VMC
             }
         }
 
+        /// <summary>
+        /// 現在のモデルのオリジナル(非正規化)ボーンと正規化ボーンの変換器。
+        /// VMCProtocolの送受信でのみ使用する(内部処理は正規化ボーンで統一)。
+        /// </summary>
+        public BonePostureConverter BonePostureConverter { get; private set; }
+
+        /// <summary>読み込み中のVRMファイルのハッシュ(/VMC/Ext/VRM の第3引数)</summary>
+        public string CurrentVRMHash { get; private set; }
+
+        /// <summary>VRMファイル内容のSHA-256(16進小文字)</summary>
+        private static string ComputeHash(byte[] bytes)
+        {
+            try
+            {
+                using (var sha = System.Security.Cryptography.SHA256.Create())
+                {
+                    var hash = sha.ComputeHash(bytes);
+                    var builder = new System.Text.StringBuilder(hash.Length * 2);
+                    foreach (var b in hash) builder.Append(b.ToString("x2"));
+                    return builder.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"Failed to compute VRM hash: {ex.Message}");
+                return "";
+            }
+        }
+
         public async Task ImportVRM(string path)
         {
             await server.SendCommandAsync(new PipeCommands.VRMLoadStatus { Valid = false });
@@ -1199,12 +1230,23 @@ namespace VMC
             Vrm10Instance vrm10Instance = null;
             try
             {
+                IAwaitCaller awaitCaller = Application.isPlaying ? new RuntimeOnlyAwaitCaller() : new ImmediateCaller();
+
+                //ファイルの読み込みは1回だけにして、ハッシュ計算とパースの両方に使い回す。
+                //(Vrm10.LoadPathAsync は内部で File.ReadAllBytes するので、
+                // ハッシュのために別途読むと同じファイルを2回読むことになる)
+                var bytes = await awaitCaller.Run(() => File.ReadAllBytes(path));
+
+                //モデルの同一性判定用ハッシュ(/VMC/Ext/VRM の第3引数)
+                CurrentVRMHash = await awaitCaller.Run(() => ComputeHash(bytes));
+
                 // ControlRigGenerationOption.Generate: AnimatorはVRM0.x互換の正規化ボーン(Control Rig)にマップされるため、
                 // FinalIKやVMCProtocolのボーン送信は非正規化のVRM1.0モデルでも従来通り動作する
-                vrm10Instance = await Vrm10.LoadPathAsync(path,
+                vrm10Instance = await Vrm10.LoadBytesAsync(bytes,
                     canLoadVrm0X: true,
                     controlRigGenerationOption: ControlRigGenerationOption.Generate,
-                    showMeshes: false);
+                    showMeshes: false,
+                    awaitCaller: awaitCaller);
             }
             catch (Exception ex)
             {
@@ -1218,6 +1260,11 @@ namespace VMC
 
             // BlendShape(Expression)目線制御時の表情とのぶつかり防止は、UniVRM10のRuntimeが
             // Expressionの適用と目線(LookAt)の合成・Override設定を一括処理するため追加対応不要
+
+            //VMCProtocolはオリジナル(非正規化)ボーン姿勢での送受信が推奨されているため、
+            //正規化(ControlRig)との変換に必要なレスト回転をここで記録する。
+            //VRIK等がボーンを動かす前(=Tポーズ)でなければ正しい値が取れないので、LoadNewModelより先に行う。
+            BonePostureConverter = BonePostureConverter.Capture(vrm10Instance);
 
             var runtimeGltfInstance = vrm10Instance.GetComponent<RuntimeGltfInstance>();
             runtimeGltfInstance.ShowMeshes();
@@ -1487,6 +1534,24 @@ namespace VMC
 
 
 
+        /// <summary>
+        /// 名前でショートカット(キーアクション)を呼び出す。
+        /// VMCProtocol V3.1 の /VMC/Ext/Set/Shortcut から使う。
+        /// </summary>
+        public void DoShortcutByName(string shortcutName)
+        {
+            if (string.IsNullOrEmpty(shortcutName)) return;
+            if (Settings.Current.KeyActions == null) return;
+
+            var action = Settings.Current.KeyActions.FirstOrDefault(d => d.Name == shortcutName);
+            if (action == null)
+            {
+                Debug.LogWarning($"Shortcut not found: {shortcutName}");
+                return;
+            }
+            DoKeyAction(action);
+        }
+
         public void DoKeyAction(KeyAction action)
         {
             if (action.HandAction)
@@ -1623,8 +1688,12 @@ namespace VMC
             ExternalMotionSenderObject.SetActive(enable);
         }
 
-        private void ChangeExternalMotionSenderAddress(string address, int port, int pstatus, int proot, int pbone, int pblendshape, int pcamera, int pdevices, string optionstring, bool responderEnable)
+        private void ChangeExternalMotionSenderAddress(string address, int port, int pstatus, int proot, int pbone, int pblendshape, int pcamera, int pdevices, string optionstring, bool responderEnable, bool useNormalizedBone, bool sendVRM1Expression)
         {
+            //VMCProtocolの仕様準拠オプション
+            Settings.Current.ExternalMotionSenderUseNormalizedBone = useNormalizedBone;
+            Settings.Current.ExternalMotionSenderSendVRM1Expression = sendVRM1Expression;
+
             Settings.Current.ExternalMotionSenderAddress = address;
             Settings.Current.ExternalMotionSenderPort = port;
             Settings.Current.ExternalMotionSenderPeriodStatus = pstatus;
@@ -2093,7 +2162,7 @@ namespace VMC
             ChangeLightColor(Settings.Current.LightColor.a, Settings.Current.LightColor.r, Settings.Current.LightColor.g, Settings.Current.LightColor.b);
 
             SetExternalMotionSenderEnable(Settings.Current.ExternalMotionSenderEnable);
-            ChangeExternalMotionSenderAddress(Settings.Current.ExternalMotionSenderAddress, Settings.Current.ExternalMotionSenderPort, Settings.Current.ExternalMotionSenderPeriodStatus, Settings.Current.ExternalMotionSenderPeriodRoot, Settings.Current.ExternalMotionSenderPeriodBone, Settings.Current.ExternalMotionSenderPeriodBlendShape, Settings.Current.ExternalMotionSenderPeriodCamera, Settings.Current.ExternalMotionSenderPeriodDevices, Settings.Current.ExternalMotionSenderOptionString, Settings.Current.ExternalMotionSenderResponderEnable);
+            ChangeExternalMotionSenderAddress(Settings.Current.ExternalMotionSenderAddress, Settings.Current.ExternalMotionSenderPort, Settings.Current.ExternalMotionSenderPeriodStatus, Settings.Current.ExternalMotionSenderPeriodRoot, Settings.Current.ExternalMotionSenderPeriodBone, Settings.Current.ExternalMotionSenderPeriodBlendShape, Settings.Current.ExternalMotionSenderPeriodCamera, Settings.Current.ExternalMotionSenderPeriodDevices, Settings.Current.ExternalMotionSenderOptionString, Settings.Current.ExternalMotionSenderResponderEnable, Settings.Current.ExternalMotionSenderUseNormalizedBone, Settings.Current.ExternalMotionSenderSendVRM1Expression);
 
             foreach(var receiver in externalMotionReceivers)
             {

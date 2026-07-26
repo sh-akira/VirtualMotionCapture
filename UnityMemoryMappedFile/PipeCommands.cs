@@ -440,7 +440,13 @@ namespace UnityMemoryMappedFile
             public int PeriodDevices { get; set; }
 
             public string OptionString { get; set; } //OK
-            public bool ResponderEnable { get; set; } 
+            public bool ResponderEnable { get; set; }
+
+            //VMCProtocolの仕様ではオリジナル(非正規化)ボーンの送信が推奨で、
+            //正規化(ControlRig)ボーンの送信は「既定で無効のオプション」
+            public bool UseNormalizedBone { get; set; }
+            //表情をVRM1.0形式の名称でも送る(VRM0.x形式の送信は必須なので常に行う)
+            public bool SendVRM1Expression { get; set; }
         }
 
         public class GetVMCProtocolReceiverSetting
@@ -489,6 +495,10 @@ namespace UnityMemoryMappedFile
             public bool ApplySetting { get; set; }
             public bool ApplyControllerInput { get; set; }
             public bool ApplyKeyboardInput { get; set; }
+
+            //送信元が正規化(ControlRig)ボーンを送ってくる場合に有効にする。
+            //仕様の推奨はオリジナル(非正規化)ボーンなので既定は無効
+            public bool UseNormalizedBone { get; set; }
         }
 
 

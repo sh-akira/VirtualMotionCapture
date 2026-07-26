@@ -527,26 +527,21 @@ namespace VMC
                 //キャリブレーション実行 V2.5
                 else if (message.address == "/VMC/Ext/Set/Calib/Exec" && (message.values[0] is int) && ApplyControl)
                 {
-                    PipeCommands.CalibrateType calibrateType = PipeCommands.CalibrateType.Ipose;
+                    //仕様の mode(0=通常, 1=MR通常, 2=MR床補正) は PipeCommands.CalibrateType の値と一致している。
+                    //VMCの拡張として 3=Ipose, 4=Tpose も受け付ける。
+                    //(/VMC/Ext/OK の calibration mode も同じ値で送信しているので、送受信で一貫する)
+                    var mode = (int)message.values[0];
+                    if (Enum.IsDefined(typeof(PipeCommands.CalibrateType), mode) == false) return; //未定義は無視
+                    var calibrateType = (PipeCommands.CalibrateType)mode;
+                    if (calibrateType == PipeCommands.CalibrateType.Invalid) return;
 
-                    switch ((int)message.values[0])
-                    {
-                        case 0:
-                            calibrateType = PipeCommands.CalibrateType.Ipose;
-                            break;
-                        case 1:
-                            calibrateType = PipeCommands.CalibrateType.Tpose;
-                            break;
-                        case 2:
-                            calibrateType = PipeCommands.CalibrateType.FixedHandWithGround;
-                            break;
-                        case 3:
-                            calibrateType = PipeCommands.CalibrateType.FixedHand;
-                            break;
-                        default: return; //無視
-                    }
                     StartCoroutine(IKManager.Instance.Calibrate(calibrateType));
                     Invoke("EndCalibrate", 2f);
+                }
+                //ショートカット呼び出し V3.1
+                else if (message.address == "/VMC/Ext/Set/Shortcut" && (message.values[0] is string) && ApplyControl)
+                {
+                    window.DoShortcutByName((string)message.values[0]);
                 }
                 //設定読み込み V2.5
                 else if (message.address == "/VMC/Ext/Set/Config" && (message.values[0] is string && ApplySetting))
@@ -885,8 +880,22 @@ namespace VMC
         private void BoneSynchronizeSingle(Transform t, ref HumanBodyBones bone, ref Vector3 pos, ref Quaternion rot)
         {
             if (receiverSetting.UseBonePosition) t.localPosition = pos;
-            t.localRotation = rot;
+            //VMCProtocolの仕様では受信するボーン姿勢はオリジナル(非正規化)。
+            //VMC内部は正規化ボーンで統一しているため、ここで正規化ローカル回転へ変換する。
+            //(送信元が正規化ボーンを送ってくる場合は UseNormalizedBone を有効にして変換を行わない)
+            t.localRotation = ConvertReceivedRotation(bone, rot);
             virtualAvatar.SetPoseChanged(bone);
+        }
+
+        private Quaternion ConvertReceivedRotation(HumanBodyBones bone, Quaternion receivedRotation)
+        {
+            if (bone == VirtualAvatar.HumanBodyBonesRoot) return receivedRotation;
+            if (receiverSetting != null && receiverSetting.UseNormalizedBone) return receivedRotation;
+
+            var converter = window != null ? window.BonePostureConverter : null;
+            if (converter == null || converter.IsIdentity) return receivedRotation;
+
+            return converter.ToNormalizedLocalRotation(bone, receivedRotation);
         }
         //ボーンENUM情報をキャッシュして高速化
         private bool HumanBodyBonesTryParse(ref string boneName, out HumanBodyBones bone)
