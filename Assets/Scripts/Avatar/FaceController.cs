@@ -95,9 +95,17 @@ namespace VMC
         {
             if (KeyUpperCaseDictionary.Count == 0)
             {
+                //VRM1.0のプリセット名(happy, aa, blinkLeft ...)
                 foreach (var presetName in System.Enum.GetNames(typeof(ExpressionPreset)))
                 {
                     KeyUpperCaseDictionary[presetName.ToUpper()] = presetName;
+                }
+                //VRM0.xのプリセット名(Joy, A, Blink_L ...)。
+                //この関数はv0.48より前の設定ファイルの移行で使われ、当時の表情名はVRM0.x形式なので
+                //こちらを後に登録して優先させる(BLINK等、大文字にすると衝突する名前がある)
+                foreach (var vrm0Name in VRM10CompatibleNames.PresetToVrm0Names.Values)
+                {
+                    KeyUpperCaseDictionary[vrm0Name.ToUpper()] = vrm0Name;
                 }
             }
             return KeyUpperCaseDictionary.ContainsKey(upperCase) ? KeyUpperCaseDictionary[upperCase] : upperCase;
