@@ -214,11 +214,27 @@ namespace VMC
                 }
             }
         }
+        /// <summary>このクラスが参照しうる引数の最大数(/VMC/Ext/Light の12個)</summary>
+        private const int MaxReferencedValueCount = 12;
+
         void ProcessMessage(uOSC.Message message)
         {
             //有効なとき以外処理しない
             if (this.isActiveAndEnabled)
             {
+                //引数が足りないメッセージ(他アプリの実装差や古い版、壊れたパケット)でも
+                //IndexOutOfRangeで受信処理ごと落ちないように、参照しうる長さまでnullで埋める。
+                //nullはどの型チェック(is float 等)にも一致しないので、該当ブランチは自然に無視される。
+                var originalValues = message.values;
+                if (message.values == null || message.values.Length < MaxReferencedValueCount)
+                {
+                    var padded = new object[MaxReferencedValueCount];
+                    if (message.values != null)
+                    {
+                        Array.Copy(message.values, padded, message.values.Length);
+                    }
+                    message.values = padded;
+                }
 
                 //仮想Hmd V2.3
                 if (message.address == "/VMC/Ext/Hmd/Pos" && ApplyTracker
@@ -540,10 +556,10 @@ namespace VMC
                 //スルー情報 V2.6
                 else if (message.address != null && message.address.StartsWith("/VMC/Thru/") && ApplyControl)
                 {
-                    //転送する
+                    //転送する(nullで埋める前の、受け取ったままの引数を送る)
                     if (externalSender.isActiveAndEnabled)
                     {
-                        externalSender.Send(message.address, message.values);
+                        externalSender.Send(message.address, originalValues ?? Array.Empty<object>());
                     }
                 }
                 //Directional Light V2.9
@@ -653,7 +669,8 @@ namespace VMC
                     )
                 {
                     int loaded = (int)message.values[0];
-                    if (message.values.Length > 2)
+                    //引数の数ではなく型で判定する(不足分はnullで埋められているため)
+                    if (message.values[1] is int && message.values[2] is int)
                     {
                         int calibrationState = (int)message.values[1];
                         int calibrationMode = (int)message.values[2];
