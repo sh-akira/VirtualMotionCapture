@@ -235,5 +235,22 @@ namespace VMC
                 StartUdpReceiver();
             }
         }
+
+        #region 自動テスト用フック
+
+        /// <summary>
+        /// UDP受信の代わりにフレームデータを直接流し込む。
+        /// (通常は MocopiUdpReceiver.OnReceiveFrameData から mocopiAvatar.UpdateSkeleton が呼ばれる)
+        /// </summary>
+        internal void UpdateSkeletonForTest(int frameId, int[] boneIds,
+            float[] rotationsX, float[] rotationsY, float[] rotationsZ, float[] rotationsW,
+            float[] positionsX, float[] positionsY, float[] positionsZ)
+        {
+            mocopiAvatar?.UpdateSkeleton(frameId, frameId / 30f, 0d, boneIds,
+                rotationsX, rotationsY, rotationsZ, rotationsW,
+                positionsX, positionsY, positionsZ);
+        }
+
+        #endregion
     }
 }

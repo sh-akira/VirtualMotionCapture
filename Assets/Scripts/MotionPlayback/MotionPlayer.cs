@@ -400,21 +400,29 @@ namespace VMC
         {
             try
             {
-                var entry = await LoadMotionAsync(path);
-                currentIndex = entries.IndexOf(entry);
-                var fps = entry.Info.FrameRate > 0 ? entry.Info.FrameRate : 30f;
-                currentTime = Mathf.Clamp(frame / fps, 0f, entry.Info.Length);
-                state = PlayState.PoseHold;
-                virtualAvatar.Enable = true;
-                //実体を読み込んでから適用する
-                await EnsureLoadedAsync(entry);
-                ApplyCurrentFrame();
-                SendStatus();
+                await ApplyPoseByPathAsync(path, frame);
             }
             catch (Exception ex)
             {
                 Debug.LogError($"Failed to apply pose: {path}\n{ex}");
             }
+        }
+
+        /// <summary>
+        /// ApplyPoseByPathの待機可能版(完了を待ちたい呼び出し元向け)
+        /// </summary>
+        public async Task ApplyPoseByPathAsync(string path, int frame)
+        {
+            var entry = await LoadMotionAsync(path);
+            currentIndex = entries.IndexOf(entry);
+            var fps = entry.Info.FrameRate > 0 ? entry.Info.FrameRate : 30f;
+            currentTime = Mathf.Clamp(frame / fps, 0f, entry.Info.Length);
+            state = PlayState.PoseHold;
+            virtualAvatar.Enable = true;
+            //実体を読み込んでから適用する
+            await EnsureLoadedAsync(entry);
+            ApplyCurrentFrame();
+            SendStatus();
         }
 
         private void OnCurrentModelChanged(GameObject model)
@@ -554,5 +562,16 @@ namespace VMC
                 State = (int)state,
             });
         }
+
+        #region 自動テスト用フック
+
+        /// <summary>登録済みモーションのフレーム数</summary>
+        internal int Test_GetFrameCount(string path)
+        {
+            var entry = entries.FirstOrDefault(m => m.FilePath == path);
+            return entry != null ? entry.Info.FrameCount : 0;
+        }
+
+        #endregion
     }
 }

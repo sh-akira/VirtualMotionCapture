@@ -39,6 +39,46 @@ namespace VMC
 
         public string selectedDevice = null;
 
+        /// <summary>
+        /// visemeの重みをしきい値・強調・最大値のみ・MaxLevelの順で加工して表情へ反映する。
+        /// マイク入力の取得とは切り離してある。
+        /// </summary>
+        private void ApplyVisemes(ExpressionPreset[] presets, float[] visemes)
+        {
+            if (faceController == null) return;
+
+            int maxindex = 0;
+            float maxvisemes = 0;
+            for (int i = 0; i < presets.Length; i++)
+            {
+                if (visemes[i] < WeightThreashold) visemes[i] = 0;
+                if (maxvisemes < visemes[i])
+                {
+                    maxindex = i;
+                    maxvisemes = visemes[i];
+                }
+            }
+
+            if (MaxWeightEmphasis)
+            {
+                visemes[maxindex] = Mathf.Clamp(visemes[maxindex] * 3, 0.0f, 1.0f);
+            }
+
+            if (MaxWeightEnable)
+            {
+                for (int i = 0; i < presets.Length; i++)
+                {
+                    if (i != maxindex) visemes[i] = 0.0f;
+                }
+            }
+
+            for (int i = 0; i < presets.Length; i++)
+            {
+                visemes[i] *= MaxLevel;
+            }
+            faceController.MixPresets(nameof(DynamicOVRLipSync), presets, visemes);
+        }
+
         public string[] GetMicrophoneDevices() => Microphone.devices;
         public void SetMicrophoneDevice(string device)
         {
@@ -103,36 +143,7 @@ namespace VMC
                                 frame.Visemes[(int)OVRLipSync.Viseme.oh],
                             };
 
-                            int maxindex = 0;
-                            float maxvisemes = 0;
-                            for (int i = 0; i < presets.Length; i++)
-                            {
-                                if (visemes[i] < WeightThreashold) visemes[i] = 0;
-                                if (maxvisemes < visemes[i])
-                                {
-                                    maxindex = i;
-                                    maxvisemes = visemes[i];
-                                }
-                            }
-
-                            if (MaxWeightEmphasis)
-                            {
-                                visemes[maxindex] = Mathf.Clamp(visemes[maxindex] * 3, 0.0f, 1.0f);
-                            }
-
-                            if (MaxWeightEnable)
-                            {
-                                for (int i = 0; i < presets.Length; i++)
-                                {
-                                    if (i != maxindex) visemes[i] = 0.0f;
-                                }
-                            }
-
-                            for (int i = 0; i < presets.Length; i++)
-                            {
-                                visemes[i] *= MaxLevel;
-                            }
-                            faceController.MixPresets(nameof(DynamicOVRLipSync), presets, visemes);
+                            ApplyVisemes(presets, visemes);
 
                             //Debug.Log("Visemes:" + string.Join(",", frame.Visemes.Select(d => d.ToString())));
                         }
@@ -278,5 +289,20 @@ namespace VMC
         {
             StopMicrophone();
         }
+
+        #region 自動テスト用フック
+
+        /// <summary>マイク入力の代わりにvisemeを直接与える。あ・い・う・え・お の順</summary>
+        internal void Test_ApplyVisemes(float aa, float ih, float ou, float ee, float oh)
+        {
+            var presets = new[]
+            {
+                ExpressionPreset.aa, ExpressionPreset.ih, ExpressionPreset.ou,
+                ExpressionPreset.ee, ExpressionPreset.oh,
+            };
+            ApplyVisemes(presets, new[] { aa, ih, ou, ee, oh });
+        }
+
+        #endregion
     }
 }

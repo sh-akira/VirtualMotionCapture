@@ -467,5 +467,20 @@ namespace VMC
 
             AccumulateBlendShapes();
         }
+
+        #region 自動テスト用フック
+
+        /// <summary>
+        /// 全ての入力源(加算・上書き)の表情をクリアする。
+        /// AccumulateShapeKeys/OverwriteShapeKeysは入力源ごとに値を保持し続けるため、
+        /// これを呼ばないと前のシナリオの表情が次のシナリオに残る。
+        /// </summary>
+        internal void Test_ClearAllMixes()
+        {
+            AccumulateShapeKeys.Clear();
+            OverwriteShapeKeys.Clear();
+        }
+
+        #endregion
     }
 }

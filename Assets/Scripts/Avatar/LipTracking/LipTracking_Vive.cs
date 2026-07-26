@@ -90,5 +90,29 @@ namespace VMC
                 }
             }
         }
+
+        #region 自動テスト用フック
+
+        /// <summary>
+        /// SRanipalのシェイプ名(LipShape_v2の名前)と重みを直接与えて、
+        /// 実機と同じマッピング経路で表情へ反映する。
+        /// </summary>
+        internal void Test_ApplyLipWeights(Dictionary<string, float> weightsByShapeName)
+        {
+            var keyvalues = new Dictionary<string, float>();
+            foreach (var pair in weightsByShapeName)
+            {
+                if (Enum.TryParse<LipShape_v2>(pair.Key, out var shape) == false) continue;
+                LipShapeNameToEnumMap[pair.Key] = shape;
+                if (LipShapeToStringKeyMap.ContainsKey(shape) == false) continue;
+                keyvalues[LipShapeToStringKeyMap[shape]] = pair.Value;
+            }
+            if (keyvalues.Any())
+            {
+                faceController.MixPresets(nameof(LipTracking_Vive), keyvalues.Keys.ToArray(), keyvalues.Values.ToArray());
+            }
+        }
+
+        #endregion
     }
 }

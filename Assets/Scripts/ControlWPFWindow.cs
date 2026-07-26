@@ -2333,5 +2333,22 @@ namespace VMC
                 GUI.Label(new Rect(10, 10, Screen.width - 20, Screen.height - 20), message, textStyle);
             }
         }
+
+        #region 自動テスト用フック
+
+        //自動テストハーネス(Assets/Tests)からのみ使用する。
+        //コントロールパネル(WPF)からのコマンド経由でしか呼べない処理を、テストから直接呼べるようにするためのもの。
+
+        internal GameObject Test_CurrentModel => CurrentModel;
+
+        internal void Test_AddVMCProtocolReceiver(VMCProtocolReceiverSettings setting) => AddVMCProtocolReceiver(setting);
+
+        internal void Test_SaveSettings(string path) => SaveSettings(path);
+
+        internal MotionPlayer Test_MotionPlayer => motionPlayer;
+
+        internal MotionRecorder Test_MotionRecorder => motionRecorder;
+
+        #endregion
     }
 }

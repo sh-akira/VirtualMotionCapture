@@ -192,5 +192,25 @@ namespace VMC
 
             return smoothedPoint;
         }
+
+        #region 自動テスト用フック
+
+        /// <summary>
+        /// まぶたの開き具合(0=閉じ,1=開き)と視線方向を直接与えて、
+        /// 実機と同じ経路でまばたきと目線に反映する。
+        /// </summary>
+        internal void Test_ApplyEyeState(float leftOpenness, float rightOpenness, Vector3 gazeDirectionLocal)
+        {
+            EyeWeightings[EyeShape.Eye_Left_Blink] = 1 - leftOpenness;
+            EyeWeightings[EyeShape.Eye_Right_Blink] = 1 - rightOpenness;
+            UpdateEyeShapes(EyeWeightings);
+            if (LookTarget != null) LookTarget.transform.localPosition = Smoothify(gazeDirectionLocal);
+        }
+
+        /// <summary>LookTargetの現在位置(スムージング後)</summary>
+        internal Vector3 Test_LookTargetLocalPosition
+            => LookTarget != null ? LookTarget.transform.localPosition : Vector3.zero;
+
+        #endregion
     }
 }

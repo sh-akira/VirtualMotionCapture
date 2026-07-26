@@ -679,5 +679,18 @@ namespace VMC
                 Playing = previewPlaying,
             });
         }
+
+        #region 自動テスト用フック
+
+        internal RecordState Test_State => state;
+
+        internal int Test_RecordedFrameCount => recordedMuscles.Count;
+
+        internal float Test_RecordFps => recordFps;
+
+        internal void Test_SaveRecording(string path, int format, int startFrame, int endFrame)
+            => SaveRecording(path, format, startFrame, endFrame);
+
+        #endregion
     }
 }

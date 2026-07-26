@@ -275,6 +275,7 @@ namespace VMC
 
         public void Send(string address, params object[] values)
         {
+            SendHook?.Invoke(new Message(address, values));
             foreach (var uClient in uClients)
             {
                 uClient?.Send(address, values);
@@ -283,6 +284,7 @@ namespace VMC
 
         public void Send(Message message)
         {
+            SendHook?.Invoke(message);
             foreach (var uClient in uClients)
             {
                 uClient?.Send(message);
@@ -291,6 +293,7 @@ namespace VMC
 
         public void Send(Bundle bundle)
         {
+            SendHook?.Invoke(bundle);
             foreach (var uClient in uClients)
             {
                 uClient?.Send(bundle);
@@ -676,6 +679,16 @@ namespace VMC
                 uClient.enabled = true;
             }
         }
+
+        #region 自動テスト用フック
+
+        /// <summary>
+        /// 送信内容のキャプチャ用フック(通常の動作では誰も購読していない)
+        /// 引数はuOSC.MessageまたはuOSC.Bundle
+        /// </summary>
+        public static event Action<object> SendHook;
+
+        #endregion
     }
 
     [Serializable]

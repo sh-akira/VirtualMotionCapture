@@ -431,5 +431,11 @@ namespace VMC
 
             SetCameraMirrorEnable(Settings.Current.CameraMirrorEnable);
         }
+
+        #region 自動テスト用フック
+
+        internal void Test_SetCameraFOV(float fov) => SetCameraFOV(fov);
+
+        #endregion
     }
 }
