@@ -27,6 +27,9 @@ namespace UnityMemoryMappedFile
 
         public bool IsConnected = false;
 
+        /// <summary>Stop()済みか。破棄後のアクセサに触らないための番人</summary>
+        private volatile bool stopped = false;
+
         protected async void StartInternal(string pipeName, bool isServer)
         {
             currentPipeName = pipeName;
@@ -72,6 +75,8 @@ namespace UnityMemoryMappedFile
                         break;
                     }
                     System.Diagnostics.Debug.WriteLine($"MemoryMappedFileBase ReadThread DataReceived");
+                    //相手からデータが来た=生きているので、送信待ちの打ち切り状態を解除する
+                    peerNotResponding = false;
                     long position = 1;
                     //CommandType
                     var length = receiverAccessor.ReadInt32(position);
@@ -115,13 +120,17 @@ namespace UnityMemoryMappedFile
                 }
             }
             catch (NullReferenceException) { }
+            //Stop()と競合してアクセサが破棄された場合。
+            //ここで例外が外へ抜けると読み取りスレッドが死に、
+            //以降、相手からの完了フラグが二度とクリアされなくなって送信側が固まる。
+            catch (ObjectDisposedException) { }
         }
 
         protected ConcurrentDictionary<string, object> WaitReceivedDictionary = new ConcurrentDictionary<string, object>();
 
         private AsyncLock SendLock = new AsyncLock();
 
-        public async Task<string> SendCommandAsync(object command, string requestId = null, bool needWait = false)
+        public async Task<string> SendCommandAsync(object command, string requestId = null, bool needWait = false, int timeoutMs = DefaultSendTimeoutMs)
         {
             System.Diagnostics.Debug.WriteLine($"MemoryMappedFileBase SendCommandAsync WaitLock [{command.GetType().Name}]");
             return await Task.Run(async () =>
@@ -129,23 +138,66 @@ namespace UnityMemoryMappedFile
                 using (await SendLock.LockAsync())
                 {
                     System.Diagnostics.Debug.WriteLine($"MemoryMappedFileBase SendCommandAsync EnterLock [{command.GetType().Name}]");
-                    return SendCommand(command, requestId, needWait);
+                    return SendCommand(command, requestId, needWait, timeoutMs);
                 }
             });
         }
 
-        public string SendCommand(object command, string requestId = null, bool needWait = false)
+        /// <summary>
+        /// 相手が完了フラグをクリアするのを待つ上限(ミリ秒)。
+        /// 相手(コントロールパネル)が落ちている・応答しない場合に、
+        /// ここで無限に待つと同期呼び出し元(OnApplicationQuit等)ごと固まってしまう。
+        /// </summary>
+        public const int DefaultSendTimeoutMs = 3000;
+
+        /// <summary>相手が応答しないと判断した状態。以降の送信は即座に諦める(相手から受信すると解除)</summary>
+        private volatile bool peerNotResponding = false;
+
+        public string SendCommand(object command, string requestId = null, bool needWait = false, int timeoutMs = DefaultSendTimeoutMs)
+        {
+            try
+            {
+                return SendCommandInternal(command, requestId, needWait, timeoutMs);
+            }
+            catch (ObjectDisposedException)
+            {
+                //Stop()と競合してアクセサが破棄された。終了処理中なので送信を諦める
+                System.Diagnostics.Debug.WriteLine($"MemoryMappedFileBase SendCommand Disposed [{command.GetType().Name}]");
+                return null;
+            }
+            catch (NullReferenceException)
+            {
+                //Stop()と競合してアクセサがnullになった。同上
+                System.Diagnostics.Debug.WriteLine($"MemoryMappedFileBase SendCommand Closed [{command.GetType().Name}]");
+                return null;
+            }
+        }
+
+        private string SendCommandInternal(object command, string requestId, bool needWait, int timeoutMs)
         {
             System.Diagnostics.Debug.WriteLine($"MemoryMappedFileBase SendCommand Enter [{command.GetType().Name}]");
             if (IsConnected == false) return null;
+            if (stopped) return null;
+            //一度タイムアウトした相手には、毎回待たされないように即座に諦める
+            if (peerNotResponding) return null;
             if (string.IsNullOrEmpty(requestId)) requestId = Guid.NewGuid().ToString();
             var typeNameArray = Encoding.UTF8.GetBytes(command.GetType().Name);
             var requestIdArray = Encoding.UTF8.GetBytes(requestId);
             var dataArray = BinarySerializer.Serialize(command);
             System.Diagnostics.Debug.WriteLine($"MemoryMappedFileBase SendCommand StartWait [{command.GetType().Name}]");
-            while (senderAccessor.ReadByte(0) == 1) // Wait finish flag
+            var waitStartTick = Environment.TickCount;
+            while (senderAccessor != null && senderAccessor.ReadByte(0) == 1) // Wait finish flag
             {
                 if (readCts.Token.IsCancellationRequested) return null;
+                if (stopped) return null; //待っている間に終了処理が走った
+                //相手が受信していない場合に無限に待たない。
+                //待ち続けると、同期でSendCommandを呼ぶ箇所(OnApplicationQuit等)でアプリが固まる
+                if (unchecked(Environment.TickCount - waitStartTick) > timeoutMs)
+                {
+                    peerNotResponding = true;
+                    System.Diagnostics.Debug.WriteLine($"MemoryMappedFileBase SendCommand Timeout [{command.GetType().Name}]");
+                    return null;
+                }
                 Thread.Sleep(1);// await Task.Delay(1);
             }
             //Need to wait requestID before send (because sometime return data very fast)
@@ -195,16 +247,28 @@ namespace UnityMemoryMappedFile
 
         public void Stop()
         {
+            if (stopped) return;
+            stopped = true;
             IsConnected = false;
             readCts?.Cancel();
-            receiverAccessor?.Dispose();
-            senderAccessor?.Dispose();
-            receiver?.Dispose();
-            sender?.Dispose();
+
+            //参照を外してからDisposeする。
+            //読み書きスレッドは「nullチェック → アクセス」の順で触るため、
+            //Disposeしてからnullにすると、その隙間で
+            //ObjectDisposedException(Cannot access a closed accessor)が発生する。
+            var closingReceiverAccessor = receiverAccessor;
+            var closingSenderAccessor = senderAccessor;
+            var closingReceiver = receiver;
+            var closingSender = sender;
             receiverAccessor = null;
             senderAccessor = null;
             receiver = null;
             sender = null;
+
+            closingReceiverAccessor?.Dispose();
+            closingSenderAccessor?.Dispose();
+            closingReceiver?.Dispose();
+            closingSender?.Dispose();
         }
 
 

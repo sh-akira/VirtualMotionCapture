@@ -252,7 +252,9 @@ namespace VMC
         private void OnApplicationQuit()
         {
             // アプリが終了したらコントロールパネルも終了する。
-            server?.SendCommand(new PipeCommands.QuitApplication { });
+            // ここは同期呼び出しなので、相手が居ない/応答しないときに待つとアプリが固まる。
+            // 終了時に待つ意味は無いので短めに打ち切る。
+            server?.SendCommand(new PipeCommands.QuitApplication { }, timeoutMs: 200);
 
             server.ReceivedEvent -= Server_Received;
             server?.Dispose();
