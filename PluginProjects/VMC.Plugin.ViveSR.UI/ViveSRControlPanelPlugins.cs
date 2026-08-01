@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows;
 using VMC.ControlPanel.Plugin;
 
@@ -16,7 +16,7 @@ namespace VMC.Plugin.ViveSR.UI
             var name = language == "Japanese" || language == "Chinese" || language == "Korean" ? language : "English";
             return new ResourceDictionary
             {
-                Source = new Uri($"/VMC.Plugin.ViveSR.UI;component/Resources/{name}.xaml", UriKind.Relative)
+                Source = new Uri($"pack://application:,,,/VMC.Plugin.ViveSR.UI;component/Resources/{name}.xaml", UriKind.Absolute)
             };
         }
     }

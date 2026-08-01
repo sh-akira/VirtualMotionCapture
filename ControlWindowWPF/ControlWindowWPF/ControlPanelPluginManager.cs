@@ -52,6 +52,19 @@ namespace VirtualMotionCaptureControlPanel
 
             if (Directory.Exists(PluginsPath) == false) return;
 
+            //XAML(pack URI)の解決は名前でのアセンブリ読み込みを経由するため、
+            //Plugins/配下から読んだアセンブリを名前で引けるようにしておく。
+            //これが無いとプラグインのウインドウもリソース辞書も開けない。
+            //解決ハンドラの中でファイル走査をすると再入する恐れがあるので、先に一覧を作っておく
+            pluginAssemblyPaths.Clear();
+            foreach (var dll in Directory.GetFiles(PluginsPath, "*.dll", SearchOption.AllDirectories))
+            {
+                var name = Path.GetFileNameWithoutExtension(dll);
+                if (pluginAssemblyPaths.ContainsKey(name) == false) pluginAssemblyPaths[name] = dll;
+            }
+            AppDomain.CurrentDomain.AssemblyResolve -= ResolvePluginAssembly;
+            AppDomain.CurrentDomain.AssemblyResolve += ResolvePluginAssembly;
+
             foreach (var dllFile in Directory.GetFiles(PluginsPath, "*.dll", SearchOption.AllDirectories))
             {
                 LoadAssembly(dllFile);
@@ -60,6 +73,31 @@ namespace VirtualMotionCaptureControlPanel
             plugins.Sort((a, b) => a.Instance.SortOrder.CompareTo(b.Instance.SortOrder));
 
             ApplyLocalization(Globals.CurrentLanguage);
+        }
+
+        /// <summary>アセンブリ名 → Plugins/配下のDLLパス</summary>
+        private static readonly Dictionary<string, string> pluginAssemblyPaths = new Dictionary<string, string>();
+
+        private static Assembly ResolvePluginAssembly(object sender, ResolveEventArgs args)
+        {
+            var name = new AssemblyName(args.Name).Name;
+
+            //既に読み込み済みならそれを返す(LoadFromで読んだものは名前検索に引っかからない)
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                if (assembly.GetName().Name == name) return assembly;
+            }
+
+            if (pluginAssemblyPaths.TryGetValue(name, out var path) == false) return null;
+
+            try
+            {
+                return Assembly.LoadFrom(path);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         private static void LoadAssembly(string dllFile)

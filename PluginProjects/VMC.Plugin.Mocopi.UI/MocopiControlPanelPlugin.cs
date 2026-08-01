@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows;
 using VMC.ControlPanel.Plugin;
 
@@ -27,7 +27,7 @@ namespace VMC.Plugin.Mocopi.UI
             var name = language == "Japanese" || language == "Chinese" || language == "Korean" ? language : "English";
             return new ResourceDictionary
             {
-                Source = new Uri($"/VMC.Plugin.Mocopi.UI;component/Resources/{name}.xaml", UriKind.Relative)
+                Source = new Uri($"pack://application:,,,/VMC.Plugin.Mocopi.UI;component/Resources/{name}.xaml", UriKind.Absolute)
             };
         }
 
