@@ -13,7 +13,8 @@ namespace VMC
         private Vrm10RuntimeExpression vrm10RuntimeExpression;
 
         public bool EnableBlink = false;
-        public bool ViveProEyeEnabled = false;
+        //外部デバイス(アイトラッキングプラグイン等)がまぶたを制御している間は自動まばたきを抑制する
+        public bool ExternalEyelidControlEnabled = false;
 
         private bool stopBlink = false;
         public bool StopBlink
@@ -156,7 +157,7 @@ namespace VMC
 
         public void SetBlink_L(float value)
         {
-            if (ViveProEyeEnabled == false)
+            if (ExternalEyelidControlEnabled == false)
             {
                 MixPreset("Blink", ExpressionPreset.blink, 0.0f);
             }
@@ -171,7 +172,7 @@ namespace VMC
         }
         public void SetBlink_R(float value)
         {
-            if (ViveProEyeEnabled == false)
+            if (ExternalEyelidControlEnabled == false)
             {
                 MixPreset("Blink", ExpressionPreset.blink, 0.0f);
             }
@@ -444,7 +445,7 @@ namespace VMC
 
             if (IsSetting == false)
             {
-                if (EnableBlink && ViveProEyeEnabled == false)
+                if (EnableBlink && ExternalEyelidControlEnabled == false)
                 {
                     isReset = false;
                     if (StopBlink == false)

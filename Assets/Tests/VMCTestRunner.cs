@@ -153,7 +153,6 @@ namespace VMC.Tests
             new Scenario_BvhExport(),
             new Scenario_RenderingAndStability(),
             new Scenario_FaceHardwareInputs(),
-            new Scenario_MocopiReceive(),
             new Scenario_VMTSend(),
         };
 

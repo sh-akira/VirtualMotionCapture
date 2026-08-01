@@ -37,8 +37,8 @@ Assets/ExternalPlugins/UnityMemoryMappedFile/UnityMemoryMappedFile*
 Assets/VRoidSDK*
 Assets/Scenes/Example*
 Assets/Scenes/LoginExample*
-Assets/Tobii*
-Assets/ExternalPlugins/ViveSR*
+#プラグインが使う外部SDK(再配布不可のためリポジトリには含めない)
+ExternalSDK/
 tobii*
 SteamVR*csproj
 Backup*
@@ -65,7 +65,6 @@ Assets/Resources*
 Assets/Scripts/DMMVRConnectConnector*
 ControlWindowWPF/ControlWindowWPF/DMMVRConnectWindow*
 UnityMemoryMappedFile/PipeCommands_DMMVRConnect*
-Assets/ExternalPlugins/MocopiReceiver*
 *mocopi*csproj
 
 

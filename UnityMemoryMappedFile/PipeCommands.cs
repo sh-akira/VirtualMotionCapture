@@ -719,6 +719,13 @@ namespace UnityMemoryMappedFile
         {
             public string InstanceId { get; set; }
         }
+
+        //公式プラグイン(Plugins/配下)。ユーザーMod(Mods/配下)とは別系統
+        public class GetPluginList { }
+        public class ReturnPluginList
+        {
+            public List<PluginItem> PluginList { get; set; }
+        }
         public class ShowCalibrationWindow { }
         public class ShowPhotoWindow { }
 
@@ -737,6 +744,19 @@ namespace UnityMemoryMappedFile
             public bool DashboardOpened { get; set; }
         }
 
+    }
+
+    /// <summary>
+    /// Unity側で読み込まれている公式プラグインの情報。
+    /// コントロールパネル側は自身の ControlPanel/Plugins/ を走査して一覧を作るが、
+    /// 片側にしか入っていない事故を検出するためにこれと突き合わせる。
+    /// </summary>
+    public class PluginItem
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Version { get; set; }
+        public string AssemblyPath { get; set; }
     }
 
     public class ModItem

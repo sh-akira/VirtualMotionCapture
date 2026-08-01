@@ -325,7 +325,7 @@ namespace VMC
     public enum MotionSource
     {
         VRIK,
-        mocopi,
+        ExternalDevice, //外部デバイスプラグイン(mocopi等)
         VMCProtocol,
         MotionPlayback, //モーションファイル再生(最優先)
     }
