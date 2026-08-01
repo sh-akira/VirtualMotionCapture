@@ -1,4 +1,4 @@
-[Ll]ibrary/
+﻿[Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
 [Bb]uild/
@@ -37,9 +37,11 @@ Assets/ExternalPlugins/UnityMemoryMappedFile/UnityMemoryMappedFile*
 Assets/VRoidSDK*
 Assets/Scenes/Example*
 Assets/Scenes/LoginExample*
-#プラグインが使う外部SDK(再配布不可のためリポジトリには含めない)
-ExternalSDK/
-tobii*
+#プラグインが使う外部SDK(再配布不可のためリポジトリには含めない。置き場所の説明だけ残す)
+ExternalSDK/*
+!ExternalSDK/README.md
+#Tobii SDK同梱のネイティブDLL(リポジトリ直下のみ。プラグインの自前コードは対象外)
+/tobii_gameintegration_*.dll
 SteamVR*csproj
 Backup*
 Assets/ExternalPlugins/uOSC*
@@ -65,7 +67,8 @@ Assets/Resources*
 Assets/Scripts/DMMVRConnectConnector*
 ControlWindowWPF/ControlWindowWPF/DMMVRConnectWindow*
 UnityMemoryMappedFile/PipeCommands_DMMVRConnect*
-*mocopi*csproj
+#mocopi Receiver SDKに対してUnityが生成するcsproj(リポジトリ直下のみ)
+/com.sony.mocopi.receiver.csproj
 
 
 # Visual Studio cache directory
@@ -109,6 +112,5 @@ codesignkit/
 BuildRootFiles/ControlPanel/Plugins/
 PluginProjects/**/bin/
 PluginProjects/**/obj/
-PluginProjects/_moved_sources/
 ControlWindowWPF/VMC.ControlPanel.PluginAPI/bin/
 ControlWindowWPF/VMC.ControlPanel.PluginAPI/obj/
