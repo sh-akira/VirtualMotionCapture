@@ -344,6 +344,9 @@
     <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">传输间隔（每隔指定的帧一次）</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiver">VMC Protocol 接收</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">启用 OSC 动作接收</system:String>
+    <system:String x:Key="SettingWindow_ExternalDevices">外部设备</system:String>
+    <system:String x:Key="SettingWindow_NoExternalDevices">未安装外部设备插件。将插件放入 Plugins 文件夹后会显示在这里。</system:String>
+    <system:String x:Key="SettingWindow_ExternalDeviceUnitySideMissing">未找到 {0} 的主程序端插件。请检查 Plugins 文件夹。</system:String>
     <system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape</system:String>
     <system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">分配 MIDI CC 旋钮</system:String>
     <system:String x:Key="SettingWindow_MidiEnable">启用 MIDI 设备</system:String>
@@ -563,43 +566,8 @@
     <system:String x:Key="PhotoWindow_FolderSelect">请选择文件夹</system:String>
     <system:String x:Key="PhotoWindow_ContinuousCheckBox">连拍</system:String>
 
-    <!-- EyeTracking_TobiiSettingWindow -->
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeScale">眼动范围（负号为反向）</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeOffset">眼睛位置修正（0.01=1cm）</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_Horizontal">水平</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_Vertical">垂直</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_Calibration">位置校准</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_CalibrationDescription">模型校准完成后，面朝 Tobii 并注视屏幕正中心，然后点击校准按钮。</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_Close">关闭</system:String>
 
-    <!-- EyeTracking_ViveProEyeSettingWindow -->
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeScale">眼动范围（负号为反向）</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeOffset">眼睛位置修正（0.01=1cm）</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Horizontal">水平</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Vertical">垂直</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovements">使用眼皮移动</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovementsCheckBox">使用</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Close">关闭</system:String>
 
-    <!-- MotionCapture_mocopiSettingWindow -->
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_EnableCheckBox">使用</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_ApplyTarget">应用部位</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_Head">头</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_Chest">胸</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightArm">右臂</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftArm">左臂</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_Spine">腰</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightHand">右手</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftHand">左手</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightLeg">右腿</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftLeg">左腿</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightFoot">右脚</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftFoot">左脚</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RootPositionSynchronize">同步根位置</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RootRotationSynchronize">同步根角度</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_ResetCenter">重设当前位置为中心</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_mocopiOnly">仅使用 mocopi</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_WithVRDevice">与 VR 设备使用</system:String>
 
     <!-- VMCProtocolReceiverSettingWindow -->
     <system:String x:Key="VMCProtocolReceiverSettingWindow_All">全身</system:String>

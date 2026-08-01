@@ -12,8 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using UnityMemoryMappedFile;
+using VMC.ControlPanel.Plugin;
 
-namespace VirtualMotionCaptureControlPanel
+namespace VMC.Plugin.Tobii.UI
 {
     /// <summary>
     /// EyeTracking_TobiiSettingWindow.xaml の相互作用ロジック
@@ -29,7 +30,7 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEyeTracking_TobiiOffsets(), d =>
+            await PluginContext.Client?.SendCommandWaitAsync(new PipeCommands.GetEyeTracking_TobiiOffsets(), d =>
             {
                 var data = (PipeCommands.SetEyeTracking_TobiiOffsets )d;
                 Dispatcher.Invoke(() => SetEyeTracking_TobiiOffsets(data));
@@ -51,7 +52,7 @@ namespace VirtualMotionCaptureControlPanel
         {
             if (IsSetting) return;
             SetUITexts();
-            await Globals.Client?.SendCommandAsync(new PipeCommands.SetEyeTracking_TobiiOffsets 
+            await PluginContext.Client?.SendCommandAsync(new PipeCommands.SetEyeTracking_TobiiOffsets 
             {
                 ScaleHorizontal  = (float)EyeMoveScaleHorizontalSlider.Value,
                 ScaleVertical  = (float)EyeMoveScaleVerticalSlider.Value ,
@@ -70,7 +71,7 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void CalibrationButton_Click(object sender, RoutedEventArgs e)
         {
-            await Globals.Client?.SendCommandAsync(new PipeCommands.EyeTracking_TobiiCalibration());   
+            await PluginContext.Client?.SendCommandAsync(new PipeCommands.EyeTracking_TobiiCalibration());   
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)

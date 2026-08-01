@@ -12,8 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using UnityMemoryMappedFile;
+using VMC.ControlPanel.Plugin;
 
-namespace VirtualMotionCaptureControlPanel
+namespace VMC.Plugin.Mocopi.UI
 {
     /// <summary>
     /// MotionCapture_mocopiSettingWindow.xaml の相互作用ロジック
@@ -29,7 +30,7 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.mocopi_GetSetting(), d =>
+            await PluginContext.Client?.SendCommandWaitAsync(new PipeCommands.mocopi_GetSetting(), d =>
             {
                 var data = (PipeCommands.mocopi_SetSetting)d;
                 Dispatcher.Invoke(() => mocopi_SetSetting(data));
@@ -80,7 +81,7 @@ namespace VirtualMotionCaptureControlPanel
             var port = TextBoxTryParse(ReceivePortTextBox);
             if (port.HasValue)
             {
-                await Globals.Client?.SendCommandAsync(new PipeCommands.mocopi_SetSetting
+                await PluginContext.Client?.SendCommandAsync(new PipeCommands.mocopi_SetSetting
                 {
                     enable = UsemocopiCheckBox.IsChecked.Value,
                     port = port.Value,
@@ -121,7 +122,7 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void ResetCenterButton_Click(object sender, RoutedEventArgs e)
         {
-            await Globals.Client?.SendCommandAsync(new PipeCommands.mocopi_Recenter { });
+            await PluginContext.Client?.SendCommandAsync(new PipeCommands.mocopi_Recenter { });
         }
 
         private async void mocopiOnlyButton_Click(object sender, RoutedEventArgs e)

@@ -93,12 +93,11 @@ VMCProtocol (バーチャルモーションキャプチャープロトコル)に
    - [Oculus Lipsync Unity Integration](https://developer.oculus.com/downloads/package/oculus-lipsync-unity/)
    - [uOSC](https://github.com/hecomi/uOSC)
    - [EasyDeviceDiscoveryProtocolForUnity](https://github.com/gpsnmeajp/EasyDeviceDiscoveryProtocolForUnity)
-   - [mocopi Receiver Plugin for Unity](https://www.sony.net/Products/mocopi-dev/)
-   - アイトラッキング対応時: [VIVE SRanipal SDK](https://developer.vive.com/resources/vive-sense/eye-and-facial-tracking-sdk/)
-   - アイトラッキング対応時: [Tobii Unity SDK](https://developer.tobii.com/pc-gaming/unity-sdk/)（インポート後、フォルダは移動しないでください）
    - VRoid Hub 連携時: VRoid SDK（[VRoid SDK for Unity](https://vroid.com/sdk)）
 
-   > アイトラッキングが不要な場合は、`Assets\Scripts\Avatar\EyeTracking` フォルダと `Assets\Scripts\Avatar\LipTracking` フォルダを削除してください。
+   > **mocopi / VIVE / Tobii の SDK は本体のビルドには不要です。**
+   > これらはプラグインとして分離されているため、SDK が無くても本体はそのままビルドできます。
+   > 詳しくは [documents/plugins.md](documents/plugins.md) を参照してください。
 4. コントロールパネル（`ControlWindowWPF/ControlWindowWPF.sln`）を Visual Studio 2022 で開きます。
    - `VirtualMotionCaptureControlPanel` プロジェクトのプロパティを開き、デバッグのコマンドライン引数を `/pipeName VMCTest` に設定します。
    - Visual Studio でそのまま一度開始すると、exe が自動生成されます。開いたコントロールパネルは閉じて一度終了します。
@@ -110,8 +109,20 @@ VMCProtocol (バーチャルモーションキャプチャープロトコル)に
 
 1. 上記の通常デバッグ手順を完了します。
 2. Unity の Build Settings で `UnityBuild` フォルダに対してビルドします。
-3. `ControlWindowWPF` で **BETA** 構成のビルドを行います。
-4. `ControlWindowWPF/ControlWindowWPF/bin/BETA` に一式が生成されます。
+3. 外部デバイスのプラグインを同梱する場合は、`PluginProjects/VMCPlugins.sln` を Release でビルドします（[documents/plugins.md](documents/plugins.md)）。
+4. `ControlWindowWPF` で **BETA** 構成のビルドを行います。
+5. `ControlWindowWPF/ControlWindowWPF/bin/BETA` に一式が生成されます。
+
+### 外部デバイスのプラグイン
+
+mocopi 連携・VIVE Pro Eye / VIVE Facial Tracker（SRanipal）・Tobii アイトラッキングは、
+本体とは別ビルドのプラグインになっています。
+
+- 本体は SDK が無くてもビルド・動作します（設定画面の「外部デバイス」欄が空になるだけです）
+- プラグインは `Plugins/`（本体側）と `ControlPanel/Plugins/`（コントロールパネル側）に置きます
+- ユーザーが作る Mod（`Mods/`）とは別系統です
+
+作り方・仕組みは [documents/plugins.md](documents/plugins.md) を参照してください。
 
 > **VRoid SDK について**: VRoid SDK が無くてもビルドは通ります。`Assets/VRoidSDK/` に SDK を配置すると、エディタ拡張が自動的にスクリプト定義 `VMC_VROIDSDK` を有効化し、VRoid Hub 連携が組み込まれます（SDK 本体はリポジトリに含まれません）。
 

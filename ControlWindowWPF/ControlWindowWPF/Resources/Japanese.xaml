@@ -343,6 +343,9 @@
     <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">送信間隔(指定フレームに1回)</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiver">VMC Protocol 受信</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">OSCでモーション受信を有効にする</system:String>
+    <system:String x:Key="SettingWindow_ExternalDevices">外部デバイス</system:String>
+    <system:String x:Key="SettingWindow_NoExternalDevices">外部デバイスのプラグインが導入されていません。Plugins フォルダにプラグインを入れると、ここに表示されます。</system:String>
+    <system:String x:Key="SettingWindow_ExternalDeviceUnitySideMissing">{0} は本体側のプラグインが見つかりません。Plugins フォルダを確認してください。</system:String>
     <system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape割り当て</system:String>
     <system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">MIDI CCつまみ割り当て設定を開く</system:String>
     <system:String x:Key="SettingWindow_MidiEnable">MIDIデバイスを有効にする</system:String>
@@ -560,43 +563,8 @@
     <system:String x:Key="PhotoWindow_FolderSelect">フォルダーを選択してください。</system:String>
     <system:String x:Key="PhotoWindow_ContinuousCheckBox">連続撮影</system:String>
 
-    <!-- EyeTracking_TobiiSettingWindow -->
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeScale">目の移動範囲(マイナスで反転します)</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeOffset">目の位置オフセット(0.01=1cm)</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_Horizontal">左右方向</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_Vertical">上下方向</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_Calibration">キャリブレーション</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_CalibrationDescription">Tobii正面の頭の位置を取得するためモデルのキャリブレーション完了後にTobiiの前に移動してモニターの中心を見ながらキャリブレーションボタンを押してください</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_Close">閉じる</system:String>
 
-    <!-- EyeTracking_ViveProEyeSettingWindow -->
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeScale">目の移動範囲(マイナスで反転します)</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeOffset">目の位置オフセット(0.01=1cm)</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Horizontal">左右方向</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Vertical">上下方向</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovements">まぶたの動きを使う</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovementsCheckBox">使用する</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Close">閉じる</system:String>
 
-    <!-- MotionCapture_mocopiSettingWindow -->
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_EnableCheckBox">使用する</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_ApplyTarget">適用する部位</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_Head">頭</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_Chest">胸</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightArm">右腕</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftArm">左腕</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_Spine">腰</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightHand">右手</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftHand">左手</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightLeg">右脚</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftLeg">左脚</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightFoot">右足</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftFoot">左足</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RootPositionSynchronize">ルート位置の同期</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RootRotationSynchronize">ルート回転の同期</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_ResetCenter">現在位置を中心にする</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_mocopiOnly">mocopiのみ</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_WithVRDevice">VR機器と併用</system:String>
 
     <!-- VMCProtocolReceiverSettingWindow -->
     <system:String x:Key="VMCProtocolReceiverSettingWindow_All">全て</system:String>

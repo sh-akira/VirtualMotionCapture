@@ -12,8 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using UnityMemoryMappedFile;
+using VMC.ControlPanel.Plugin;
 
-namespace VirtualMotionCaptureControlPanel
+namespace VMC.Plugin.ViveSR.UI
 {
     /// <summary>
     /// EyeTracking_ViveProEyeSettingWindow.xaml の相互作用ロジック
@@ -29,12 +30,12 @@ namespace VirtualMotionCaptureControlPanel
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEyeTracking_ViveProEyeOffsets(), d =>
+            await PluginContext.Client?.SendCommandWaitAsync(new PipeCommands.GetEyeTracking_ViveProEyeOffsets(), d =>
             {
                 var data = (PipeCommands.SetEyeTracking_ViveProEyeOffsets)d;
                 Dispatcher.Invoke(() => SetEyeTracking_ViveProEyeOffsets(data));
             });
-            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEyeTracking_ViveProEyeUseEyelidMovements(), d =>
+            await PluginContext.Client?.SendCommandWaitAsync(new PipeCommands.GetEyeTracking_ViveProEyeUseEyelidMovements(), d =>
             {
                 var data = (PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements)d;
                 Dispatcher.Invoke(() =>
@@ -44,7 +45,7 @@ namespace VirtualMotionCaptureControlPanel
                     IsSetting = false;
                 });
             });
-            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetEyeTracking_ViveProEyeEnable(), d =>
+            await PluginContext.Client?.SendCommandWaitAsync(new PipeCommands.GetEyeTracking_ViveProEyeEnable(), d =>
             {
                 var data = (PipeCommands.SetEyeTracking_ViveProEyeEnable)d;
                 Dispatcher.Invoke(() =>
@@ -71,7 +72,7 @@ namespace VirtualMotionCaptureControlPanel
         {
             if (IsSetting) return;
             SetUITexts();
-            await Globals.Client?.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeOffsets
+            await PluginContext.Client?.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeOffsets
             {
                 ScaleHorizontal = (float)EyeMoveScaleHorizontalSlider.Value,
                 ScaleVertical = (float)EyeMoveScaleVerticalSlider.Value,
@@ -96,7 +97,7 @@ namespace VirtualMotionCaptureControlPanel
         private async void UseEyelidMovementsCheckBox_ValueChanged(object sender, RoutedEventArgs e)
         {
             if (IsSetting) return;
-            await Globals.Client?.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements
+            await PluginContext.Client?.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements
             {
                 Use = UseEyelidMovementsCheckBox.IsChecked.Value
             });
@@ -105,7 +106,7 @@ namespace VirtualMotionCaptureControlPanel
         private async void UseViveProEyeCheckBox_ValueChanged(object sender, RoutedEventArgs e)
         {
             if (IsSetting) return;
-            await Globals.Client?.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeEnable
+            await PluginContext.Client?.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeEnable
             {
                 enable = UseViveProEyeCheckBox.IsChecked.Value
             });

@@ -14,8 +14,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using UnityMemoryMappedFile;
+using VMC.ControlPanel.Plugin;
 
-namespace VirtualMotionCaptureControlPanel
+namespace VMC.Plugin.ViveSR.UI
 {
     /// <summary>
     /// LipTracking_ViveSettingWindow.xaml の相互作用ロジック
@@ -53,7 +54,7 @@ namespace VirtualMotionCaptureControlPanel
                     lipShapesToBlendShapeMap.Add(item.LipShape, item.BlendShape);
                 }
             }
-            await Globals.Client.SendCommandAsync(new PipeCommands.SetViveLipTrackingBlendShape { LipShapes = LipShapes, LipShapesToBlendShapeMap = lipShapesToBlendShapeMap });
+            await PluginContext.Client.SendCommandAsync(new PipeCommands.SetViveLipTrackingBlendShape { LipShapes = LipShapes, LipShapesToBlendShapeMap = lipShapesToBlendShapeMap });
             this.Close();
         }
 
@@ -65,14 +66,14 @@ namespace VirtualMotionCaptureControlPanel
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             BlendShapeItems.Clear();
-            await Globals.Client.SendCommandWaitAsync(new PipeCommands.GetFaceKeys(), d =>
+            await PluginContext.Client.SendCommandWaitAsync(new PipeCommands.GetFaceKeys(), d =>
             {
                 var ret = (PipeCommands.ReturnFaceKeys)d;
                 Dispatcher.Invoke(() => BlendShapeKeys = ret.Keys);
             });
             BlendShapeKeys?.Insert(0, null);
             await GetViveLipTrackingBlendShape();
-            await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetViveLipTrackingEnable(), d =>
+            await PluginContext.Client?.SendCommandWaitAsync(new PipeCommands.GetViveLipTrackingEnable(), d =>
             {
                 var data = (PipeCommands.SetViveLipTrackingEnable)d;
                 Dispatcher.Invoke(() =>
@@ -88,7 +89,7 @@ namespace VirtualMotionCaptureControlPanel
 
         private async Task GetViveLipTrackingBlendShape()
         {
-            await Globals.Client.SendCommandWaitAsync(new PipeCommands.GetViveLipTrackingBlendShape(), d =>
+            await PluginContext.Client.SendCommandWaitAsync(new PipeCommands.GetViveLipTrackingBlendShape(), d =>
             {
                 var ret = (PipeCommands.SetViveLipTrackingBlendShape)d;
                 Dispatcher.Invoke(() =>
@@ -105,7 +106,7 @@ namespace VirtualMotionCaptureControlPanel
         private async void UseViveLipTrackerCheckBox_ValueChanged(object sender, RoutedEventArgs e)
         {
             if (IsSetting) return;
-            await Globals.Client?.SendCommandAsync(new PipeCommands.SetViveLipTrackingEnable
+            await PluginContext.Client?.SendCommandAsync(new PipeCommands.SetViveLipTrackingEnable
             {
                 enable = UseViveLipTrackerCheckBox.IsChecked.Value
             });

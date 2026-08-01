@@ -1,0 +1,25 @@
+﻿<Project>
+  <!--
+    公式プラグインの共通設定。
+
+    プラグインは本体とは別にビルドして Plugins/ へ配布する。
+    Unity側プラグインは Unity が生成したアセンブリ(Library/ScriptAssemblies)と
+    再配布不可のSDK(ExternalSDK/)を参照するため、
+    「一度Unityでプロジェクトを開いてから」でないとビルドできない。
+  -->
+  <PropertyGroup>
+    <RepositoryRoot>$(MSBuildThisFileDirectory)..\</RepositoryRoot>
+    <ExternalSdkRoot>$(RepositoryRoot)ExternalSDK\</ExternalSdkRoot>
+    <UnityScriptAssemblies>$(RepositoryRoot)Library\ScriptAssemblies\</UnityScriptAssemblies>
+    <UnityManagedRoot>$(RepositoryRoot)UnityBuild\VirtualMotionCapture_Data\Managed\</UnityManagedRoot>
+    <UnityEditorRoot>C:\Program Files\Unity\Hub\Editor\2022.3.76f1\Editor\Data\</UnityEditorRoot>
+
+    <!-- 配布先。Unity側は Plugins/、コントロールパネル側は ControlPanel/Plugins/ -->
+    <PluginOutputRoot>$(RepositoryRoot)UnityBuild\Plugins\</PluginOutputRoot>
+    <ControlPanelPluginOutputRoot>$(RepositoryRoot)BuildRootFiles\ControlPanel\Plugins\</ControlPanelPluginOutputRoot>
+
+    <!-- 参照するDLL。共有DLLはUnity側にコピー済みのものを使う -->
+    <UnityMemoryMappedFileDll>$(RepositoryRoot)Assets\ExternalPlugins\UnityMemoryMappedFile\UnityMemoryMappedFile.dll</UnityMemoryMappedFileDll>
+    <ControlPanelPluginApiDll>$(RepositoryRoot)ControlWindowWPF\VMC.ControlPanel.PluginAPI\bin\Debug\VMC.ControlPanel.PluginAPI.dll</ControlPanelPluginApiDll>
+  </PropertyGroup>
+</Project>

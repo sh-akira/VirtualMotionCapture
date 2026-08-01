@@ -104,3 +104,11 @@ TestData/
 
 #コード署名ツール(証明書・KMS設定・署名済みバイナリのキャッシュを含むためpushしない)
 codesignkit/
+
+#プラグインのビルド成果物(SDKのネイティブDLLを含むため配布物には入れるがpushしない)
+BuildRootFiles/ControlPanel/Plugins/
+PluginProjects/**/bin/
+PluginProjects/**/obj/
+PluginProjects/_moved_sources/
+ControlWindowWPF/VMC.ControlPanel.PluginAPI/bin/
+ControlWindowWPF/VMC.ControlPanel.PluginAPI/obj/
