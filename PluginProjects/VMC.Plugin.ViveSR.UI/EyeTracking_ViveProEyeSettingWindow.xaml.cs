@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using UnityMemoryMappedFile;
+using VMC.Plugin.Commands;
 using VMC.ControlPanel.Plugin;
 
 namespace VMC.Plugin.ViveSR.UI
@@ -30,14 +31,14 @@ namespace VMC.Plugin.ViveSR.UI
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            await PluginContext.Client?.SendCommandWaitAsync(new PipeCommands.GetEyeTracking_ViveProEyeOffsets(), d =>
+            await PluginContext.Client?.SendCommandWaitAsync(new GetEyeTracking_ViveProEyeOffsets(), d =>
             {
-                var data = (PipeCommands.SetEyeTracking_ViveProEyeOffsets)d;
+                var data = (SetEyeTracking_ViveProEyeOffsets)d;
                 Dispatcher.Invoke(() => SetEyeTracking_ViveProEyeOffsets(data));
             });
-            await PluginContext.Client?.SendCommandWaitAsync(new PipeCommands.GetEyeTracking_ViveProEyeUseEyelidMovements(), d =>
+            await PluginContext.Client?.SendCommandWaitAsync(new GetEyeTracking_ViveProEyeUseEyelidMovements(), d =>
             {
-                var data = (PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements)d;
+                var data = (SetEyeTracking_ViveProEyeUseEyelidMovements)d;
                 Dispatcher.Invoke(() =>
                 {
                     IsSetting = true;
@@ -45,9 +46,9 @@ namespace VMC.Plugin.ViveSR.UI
                     IsSetting = false;
                 });
             });
-            await PluginContext.Client?.SendCommandWaitAsync(new PipeCommands.GetEyeTracking_ViveProEyeEnable(), d =>
+            await PluginContext.Client?.SendCommandWaitAsync(new GetEyeTracking_ViveProEyeEnable(), d =>
             {
-                var data = (PipeCommands.SetEyeTracking_ViveProEyeEnable)d;
+                var data = (SetEyeTracking_ViveProEyeEnable)d;
                 Dispatcher.Invoke(() =>
                 {
                     IsSetting = true;
@@ -57,7 +58,7 @@ namespace VMC.Plugin.ViveSR.UI
             });
         }
 
-        private void SetEyeTracking_ViveProEyeOffsets(PipeCommands.SetEyeTracking_ViveProEyeOffsets offsets)
+        private void SetEyeTracking_ViveProEyeOffsets(SetEyeTracking_ViveProEyeOffsets offsets)
         {
             IsSetting = true;
             EyeMoveScaleHorizontalSlider.Value = offsets.ScaleHorizontal;
@@ -72,7 +73,7 @@ namespace VMC.Plugin.ViveSR.UI
         {
             if (IsSetting) return;
             SetUITexts();
-            await PluginContext.Client?.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeOffsets
+            await PluginContext.Client?.SendCommandAsync(new SetEyeTracking_ViveProEyeOffsets
             {
                 ScaleHorizontal = (float)EyeMoveScaleHorizontalSlider.Value,
                 ScaleVertical = (float)EyeMoveScaleVerticalSlider.Value,
@@ -97,7 +98,7 @@ namespace VMC.Plugin.ViveSR.UI
         private async void UseEyelidMovementsCheckBox_ValueChanged(object sender, RoutedEventArgs e)
         {
             if (IsSetting) return;
-            await PluginContext.Client?.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements
+            await PluginContext.Client?.SendCommandAsync(new SetEyeTracking_ViveProEyeUseEyelidMovements
             {
                 Use = UseEyelidMovementsCheckBox.IsChecked.Value
             });
@@ -106,7 +107,7 @@ namespace VMC.Plugin.ViveSR.UI
         private async void UseViveProEyeCheckBox_ValueChanged(object sender, RoutedEventArgs e)
         {
             if (IsSetting) return;
-            await PluginContext.Client?.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeEnable
+            await PluginContext.Client?.SendCommandAsync(new SetEyeTracking_ViveProEyeEnable
             {
                 enable = UseViveProEyeCheckBox.IsChecked.Value
             });

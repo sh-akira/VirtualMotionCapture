@@ -88,6 +88,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\TobiiPipeCommands.cs">
+      <Link>Shared\TobiiPipeCommands.cs</Link>
+    </Compile>
     <Compile Include="TobiiPlugin.cs" />
     <!-- Tobii Unity SDK のソース(再配布不可のためリポジトリには含めない)。
          DemoScenes は不要なので含めない -->

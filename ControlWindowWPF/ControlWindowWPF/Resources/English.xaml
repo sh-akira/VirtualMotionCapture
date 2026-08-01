@@ -1,4 +1,4 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
                     xml:space="preserve">
@@ -653,4 +653,23 @@
     <system:String x:Key="FirewallManagerWindow_Description">Configure firewall settings for Virtual Motion Capture to connect with other apps. Would you like to continue?</system:String>
     <system:String x:Key="FirewallManagerWindow_DontShowAgain">Don't show this again</system:String>
 	
+    <!-- モーション適用部位(mocopi/VMCProtocol受信/モーション再生で共通) -->
+    <system:String x:Key="Common_Enable">Use</system:String>
+    <system:String x:Key="ApplyTarget_Header">Apply target</system:String>
+    <system:String x:Key="ApplyTarget_Head">Head</system:String>
+    <system:String x:Key="ApplyTarget_Chest">Chest</system:String>
+    <system:String x:Key="ApplyTarget_RightArm">Right Arm</system:String>
+    <system:String x:Key="ApplyTarget_LeftArm">Left Arm</system:String>
+    <system:String x:Key="ApplyTarget_Spine">Spine</system:String>
+    <system:String x:Key="ApplyTarget_RightHand">Right Hand</system:String>
+    <system:String x:Key="ApplyTarget_LeftHand">Left Hand</system:String>
+    <system:String x:Key="ApplyTarget_RightLeg">Right Leg</system:String>
+    <system:String x:Key="ApplyTarget_LeftLeg">Left Leg</system:String>
+    <system:String x:Key="ApplyTarget_RightFoot">Right Foot</system:String>
+    <system:String x:Key="ApplyTarget_LeftFoot">Left Foot</system:String>
+    <system:String x:Key="ApplyTarget_RootPosition">Root position synchronize</system:String>
+    <system:String x:Key="ApplyTarget_RootRotation">Root rotation synchronize</system:String>
+    <system:String x:Key="Common_ResetCenter">Re-center current position</system:String>
+    <system:String x:Key="ApplyTarget_WithVRDevice">with VR devices</system:String>
+
 </ResourceDictionary>

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using UnityMemoryMappedFile;
+using VMC.Plugin.Commands;
 using VMC.ControlPanel.Plugin;
 
 namespace VMC.Plugin.Mocopi.UI
@@ -30,14 +31,14 @@ namespace VMC.Plugin.Mocopi.UI
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            await PluginContext.Client?.SendCommandWaitAsync(new PipeCommands.mocopi_GetSetting(), d =>
+            await PluginContext.Client?.SendCommandWaitAsync(new mocopi_GetSetting(), d =>
             {
-                var data = (PipeCommands.mocopi_SetSetting)d;
+                var data = (mocopi_SetSetting)d;
                 Dispatcher.Invoke(() => mocopi_SetSetting(data));
             });
         }
 
-        private void mocopi_SetSetting(PipeCommands.mocopi_SetSetting setting)
+        private void mocopi_SetSetting(mocopi_SetSetting setting)
         {
             IsSetting = true;
             UsemocopiCheckBox.IsChecked = setting.enable;
@@ -81,7 +82,7 @@ namespace VMC.Plugin.Mocopi.UI
             var port = TextBoxTryParse(ReceivePortTextBox);
             if (port.HasValue)
             {
-                await PluginContext.Client?.SendCommandAsync(new PipeCommands.mocopi_SetSetting
+                await PluginContext.Client?.SendCommandAsync(new mocopi_SetSetting
                 {
                     enable = UsemocopiCheckBox.IsChecked.Value,
                     port = port.Value,
@@ -122,7 +123,7 @@ namespace VMC.Plugin.Mocopi.UI
 
         private async void ResetCenterButton_Click(object sender, RoutedEventArgs e)
         {
-            await PluginContext.Client?.SendCommandAsync(new PipeCommands.mocopi_Recenter { });
+            await PluginContext.Client?.SendCommandAsync(new mocopi_Recenter { });
         }
 
         private async void mocopiOnlyButton_Click(object sender, RoutedEventArgs e)

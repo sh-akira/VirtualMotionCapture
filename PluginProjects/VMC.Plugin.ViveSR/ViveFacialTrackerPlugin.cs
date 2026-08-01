@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityMemoryMappedFile;
+using VMC.Plugin.Commands;
 using ViveSR.anipal.Lip;
 using VMC.Plugin;
 
@@ -17,6 +18,7 @@ namespace VMC.Plugin.Vive
         public string Id => "ViveSR.Lip";
         public string DisplayName => "VIVE Facial Tracker";
         public string Version => "1.0.0";
+        public System.Collections.Generic.IEnumerable<System.Type> CommandTypes => ViveSRCommands.Types;
 
         private IPluginHost host;
         private IPluginSettings settings;
@@ -57,30 +59,30 @@ namespace VMC.Plugin.Vive
         {
             host.Ipc.Post(async () =>
             {
-                if (e.CommandType == typeof(PipeCommands.GetViveLipTrackingBlendShape))
+                if (e.CommandType == typeof(GetViveLipTrackingBlendShape))
                 {
-                    await host.Ipc.SendCommandAsync(new PipeCommands.SetViveLipTrackingBlendShape
+                    await host.Ipc.SendCommandAsync(new SetViveLipTrackingBlendShape
                     {
                         LipShapes = lipShapeNameToEnumMap.Keys.ToList(),
                         LipShapesToBlendShapeMap = GetLipShapeToBlendShapeStringMap(),
                     }, e.RequestId);
                 }
-                else if (e.CommandType == typeof(PipeCommands.SetViveLipTrackingBlendShape))
+                else if (e.CommandType == typeof(SetViveLipTrackingBlendShape))
                 {
-                    var d = (PipeCommands.SetViveLipTrackingBlendShape)e.Data;
+                    var d = (SetViveLipTrackingBlendShape)e.Data;
                     settings.Set("LipShapesToBlendShapeMap", d.LipShapesToBlendShapeMap);
                     SetLipShapeToBlendShapeStringMap(d.LipShapesToBlendShapeMap);
                 }
-                else if (e.CommandType == typeof(PipeCommands.GetViveLipTrackingEnable))
+                else if (e.CommandType == typeof(GetViveLipTrackingEnable))
                 {
-                    await host.Ipc.SendCommandAsync(new PipeCommands.SetViveLipTrackingEnable
+                    await host.Ipc.SendCommandAsync(new SetViveLipTrackingEnable
                     {
                         enable = isEnabled,
                     }, e.RequestId);
                 }
-                else if (e.CommandType == typeof(PipeCommands.SetViveLipTrackingEnable))
+                else if (e.CommandType == typeof(SetViveLipTrackingEnable))
                 {
-                    var d = (PipeCommands.SetViveLipTrackingEnable)e.Data;
+                    var d = (SetViveLipTrackingEnable)e.Data;
                     settings.Set("LipEnable", d.enable);
                     ApplyEnable();
                 }

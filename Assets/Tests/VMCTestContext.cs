@@ -177,7 +177,6 @@ namespace VMC.Tests
             Settings.Current.LastCalibrationSnapshot = null;
             //外部機器のUDPポートを掴まないようにする
             //(mocopiはプラグインへ移ったので、プラグイン設定領域の方を落とす)
-            Settings.Current.mocopi_Enable = false;
             if (Settings.Current.PluginSettings == null)
             {
                 Settings.Current.PluginSettings = new Dictionary<string, string>();

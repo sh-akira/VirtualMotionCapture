@@ -3,6 +3,7 @@ using Mocopi.Receiver.Core;
 using System;
 using UnityEngine;
 using UnityMemoryMappedFile;
+using VMC.Plugin.Commands;
 using VMC.Plugin;
 
 namespace VMC.Plugin.Mocopi
@@ -18,6 +19,7 @@ namespace VMC.Plugin.Mocopi
         public string Id => "mocopi";
         public string DisplayName => "mocopi";
         public string Version => "1.0.0";
+        public System.Collections.Generic.IEnumerable<System.Type> CommandTypes => MocopiCommands.Types;
 
         private IPluginHost host;
         private IPluginSettings settings;
@@ -65,9 +67,9 @@ namespace VMC.Plugin.Mocopi
             //通信スレッドから来るのでUnityのメインスレッドへ移す
             host.Ipc.Post(async () =>
             {
-                if (e.CommandType == typeof(PipeCommands.mocopi_GetSetting))
+                if (e.CommandType == typeof(mocopi_GetSetting))
                 {
-                    await host.Ipc.SendCommandAsync(new PipeCommands.mocopi_SetSetting
+                    await host.Ipc.SendCommandAsync(new mocopi_SetSetting
                     {
                         enable = enableReceive,
                         port = port,
@@ -87,18 +89,18 @@ namespace VMC.Plugin.Mocopi
                         CorrectHipBone = settings.Get("CorrectHipBone", false),
                     }, e.RequestId);
                 }
-                else if (e.CommandType == typeof(PipeCommands.mocopi_SetSetting))
+                else if (e.CommandType == typeof(mocopi_SetSetting))
                 {
-                    SetSetting((PipeCommands.mocopi_SetSetting)e.Data);
+                    SetSetting((mocopi_SetSetting)e.Data);
                 }
-                else if (e.CommandType == typeof(PipeCommands.mocopi_Recenter))
+                else if (e.CommandType == typeof(mocopi_Recenter))
                 {
                     motionSource.Recenter();
                 }
             });
         }
 
-        private void SetSetting(PipeCommands.mocopi_SetSetting setting)
+        private void SetSetting(mocopi_SetSetting setting)
         {
             settings.Set("ApplyHead", setting.ApplyHead);
             settings.Set("ApplyChest", setting.ApplyChest);

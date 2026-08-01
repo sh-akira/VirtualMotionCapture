@@ -84,6 +84,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\ViveSRPipeCommands.cs">
+      <Link>Shared\ViveSRPipeCommands.cs</Link>
+    </Compile>
     <Compile Include="ViveProEyePlugin.cs" />
     <Compile Include="ViveFacialTrackerPlugin.cs" />
     <!-- VIVE SRanipal SDK のソース(再配布不可のためリポジトリには含めない) -->

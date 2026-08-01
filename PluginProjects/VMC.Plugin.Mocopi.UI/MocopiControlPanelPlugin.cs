@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using VMC.ControlPanel.Plugin;
+using VMC.Plugin.Commands;
 
 namespace VMC.Plugin.Mocopi.UI
 {
@@ -13,6 +14,7 @@ namespace VMC.Plugin.Mocopi.UI
         public string Id => "mocopi";
 
         public string Version => "1.0.0";
+        public System.Collections.Generic.IEnumerable<System.Type> CommandTypes => MocopiCommands.Types;
 
         //モーション系は100番台
         public int SortOrder => 100;

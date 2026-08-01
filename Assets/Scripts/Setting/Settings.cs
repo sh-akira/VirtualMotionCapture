@@ -496,32 +496,6 @@ namespace VMC
         public int ScreenRefreshRate = 0;
 
         //EyeTracking
-        [OptionalField]
-        public float EyeTracking_TobiiScaleHorizontal;
-        [OptionalField]
-        public float EyeTracking_TobiiScaleVertical;
-        [OptionalField]
-        public float EyeTracking_TobiiOffsetHorizontal;
-        [OptionalField]
-        public float EyeTracking_TobiiOffsetVertical;
-        [OptionalField]
-        public StoreTransform EyeTracking_TobiiPosition;
-        [OptionalField]
-        public float EyeTracking_TobiiCenterX;
-        [OptionalField]
-        public float EyeTracking_TobiiCenterY;
-        [OptionalField]
-        public float EyeTracking_ViveProEyeScaleHorizontal;
-        [OptionalField]
-        public float EyeTracking_ViveProEyeScaleVertical;
-        [OptionalField]
-        public float EyeTracking_ViveProEyeOffsetHorizontal;
-        [OptionalField]
-        public float EyeTracking_ViveProEyeOffsetVertical;
-        [OptionalField]
-        public bool EyeTracking_ViveProEyeUseEyelidMovements;
-        [OptionalField]
-        public bool EyeTracking_ViveProEyeEnable;
 
         //ExternalMotionSender
         [OptionalField]
@@ -577,10 +551,6 @@ namespace VMC
         public List<string> MidiCCBlendShape;
         [OptionalField]
         public bool MidiEnable;
-        [OptionalField]
-        public Dictionary<string, string> LipShapesToBlendShapeMap;
-        [OptionalField]
-        public bool LipTracking_ViveEnable;
 
         [OptionalField]
         public bool ExternalBonesReceiverEnable;
@@ -698,38 +668,6 @@ namespace VMC
         [OptionalField]
         public bool TurnOffAmbientLight;
 
-        [OptionalField]
-        public bool mocopi_Enable;
-        [OptionalField]
-        public int mocopi_Port;
-        [OptionalField]
-        public bool mocopi_ApplyRootPosition;
-        [OptionalField]
-        public bool mocopi_ApplyRootRotation;
-        [OptionalField]
-        public bool mocopi_ApplyChest;
-        [OptionalField]
-        public bool mocopi_ApplySpine;
-        [OptionalField]
-        public bool mocopi_ApplyHead;
-        [OptionalField]
-        public bool mocopi_ApplyLeftArm;
-        [OptionalField]
-        public bool mocopi_ApplyRightArm;
-        [OptionalField]
-        public bool mocopi_ApplyLeftHand;
-        [OptionalField]
-        public bool mocopi_ApplyRightHand;
-        [OptionalField]
-        public bool mocopi_ApplyLeftLeg;
-        [OptionalField]
-        public bool mocopi_ApplyRightLeg;
-        [OptionalField]
-        public bool mocopi_ApplyLeftFoot;
-        [OptionalField]
-        public bool mocopi_ApplyRightFoot;
-        [OptionalField]
-        public bool mocopi_CorrectHipBone;
 
         /// <summary>
         /// プラグイン(Plugins/配下)の設定。"プラグインID/キー" → JSON文字列。
@@ -871,12 +809,6 @@ namespace VMC
             ScreenHeight = 0;
             ScreenRefreshRate = 0;
 
-            EyeTracking_TobiiScaleHorizontal = 0.5f;
-            EyeTracking_TobiiScaleVertical = 0.2f;
-            EyeTracking_ViveProEyeScaleHorizontal = 2.0f;
-            EyeTracking_ViveProEyeScaleVertical = 1.5f;
-            EyeTracking_ViveProEyeUseEyelidMovements = false;
-            EyeTracking_ViveProEyeEnable = false;
 
             EnableSkeletal = true;
 
@@ -905,8 +837,6 @@ namespace VMC
             MidiCCBlendShape = new List<string>(Enumerable.Repeat(default(string), MidiCCWrapper.KNOBS));
             MidiEnable = false;
 
-            LipShapesToBlendShapeMap = new Dictionary<string, string>();
-            LipTracking_ViveEnable = false;
 
             TrackingFilterEnable = true;
             TrackingFilterHmdEnable = true;
@@ -971,22 +901,6 @@ namespace VMC
 
             VMCProtocolReceiverSettingsList = new List<VMCProtocolReceiverSettings>();
 
-            mocopi_Enable = true;
-            mocopi_Port = 12351;
-            mocopi_ApplyRootPosition = true;
-            mocopi_ApplyRootRotation = true;
-            mocopi_ApplyChest = true;
-            mocopi_ApplySpine = true;
-            mocopi_ApplyHead = true;
-            mocopi_ApplyLeftArm = true;
-            mocopi_ApplyRightArm = true;
-            mocopi_ApplyLeftHand = true;
-            mocopi_ApplyRightHand = true;
-            mocopi_ApplyLeftLeg = true;
-            mocopi_ApplyRightLeg = true;
-            mocopi_ApplyLeftFoot = true;
-            mocopi_ApplyRightFoot = true;
-            mocopi_CorrectHipBone = false;
 
             MotionPlayback_MotionFiles = new List<string>();
             MotionPlayback_RepeatMode = 0;

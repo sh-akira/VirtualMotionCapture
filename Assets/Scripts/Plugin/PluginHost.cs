@@ -113,7 +113,17 @@ namespace VMC
 
         public MotionSourceAvatarAdapter(VirtualAvatar virtualAvatar) => this.virtualAvatar = virtualAvatar;
 
-        public bool Enable { get => virtualAvatar.Enable; set => virtualAvatar.Enable = value; }
+        public bool Enable
+        {
+            get => virtualAvatar.Enable;
+            set
+            {
+                if (virtualAvatar.Enable == value) return;
+                virtualAvatar.Enable = value;
+                //全身が動くかどうかで挙動を変える箇所(カメラの注視点など)へ知らせる
+                MotionManager.Instance?.NotifyExternalDeviceMotionActiveChanged();
+            }
+        }
         public bool ApplyRootPosition { get => virtualAvatar.ApplyRootPosition; set => virtualAvatar.ApplyRootPosition = value; }
         public bool ApplyRootRotation { get => virtualAvatar.ApplyRootRotation; set => virtualAvatar.ApplyRootRotation = value; }
         public bool ApplySpine { get => virtualAvatar.ApplySpine; set => virtualAvatar.ApplySpine = value; }
@@ -135,6 +145,7 @@ namespace VMC
         {
             virtualAvatar.Enable = false;
             MotionManager.Instance?.RemoveVirtualAvatar(virtualAvatar);
+            MotionManager.Instance?.NotifyExternalDeviceMotionActiveChanged();
         }
     }
 

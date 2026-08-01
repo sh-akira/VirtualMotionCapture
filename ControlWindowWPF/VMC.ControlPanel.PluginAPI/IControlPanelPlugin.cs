@@ -39,6 +39,14 @@ namespace VMC.ControlPanel.Plugin
         string Version { get; }
 
         /// <summary>
+        /// このプラグインが本体とやりとりする独自コマンドの型。
+        /// 共有アセンブリには入っていないので、受信時の型解決に使えるよう
+        /// ControlPanelPluginManager が PipeCommands へ登録する。
+        /// 本体側プラグインと同じ名前・同じ名前空間の型にすること。
+        /// </summary>
+        System.Collections.Generic.IEnumerable<System.Type> CommandTypes { get; }
+
+        /// <summary>
         /// 「外部デバイス」欄での並び順。小さいほど先に表示される。
         /// モーション系100番台・表情系200番台、のように緩く決めておくと後から挿しやすい。
         /// </summary>

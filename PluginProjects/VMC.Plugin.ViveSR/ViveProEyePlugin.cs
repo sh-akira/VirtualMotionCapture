@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityMemoryMappedFile;
+using VMC.Plugin.Commands;
 using ViveSR.anipal.Eye;
 using VMC.Plugin;
 
@@ -17,6 +18,7 @@ namespace VMC.Plugin.Vive
         public string Id => "ViveSR.Eye";
         public string DisplayName => "VIVE Pro Eye";
         public string Version => "1.0.0";
+        public System.Collections.Generic.IEnumerable<System.Type> CommandTypes => ViveSRCommands.Types;
 
         private IPluginHost host;
         private IPluginSettings settings;
@@ -73,9 +75,9 @@ namespace VMC.Plugin.Vive
         {
             host.Ipc.Post(async () =>
             {
-                if (e.CommandType == typeof(PipeCommands.GetEyeTracking_ViveProEyeOffsets))
+                if (e.CommandType == typeof(GetEyeTracking_ViveProEyeOffsets))
                 {
-                    await host.Ipc.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeOffsets
+                    await host.Ipc.SendCommandAsync(new SetEyeTracking_ViveProEyeOffsets
                     {
                         OffsetHorizontal = offsetX,
                         OffsetVertical = offsetY,
@@ -83,38 +85,38 @@ namespace VMC.Plugin.Vive
                         ScaleVertical = scaleY,
                     }, e.RequestId);
                 }
-                else if (e.CommandType == typeof(PipeCommands.SetEyeTracking_ViveProEyeOffsets))
+                else if (e.CommandType == typeof(SetEyeTracking_ViveProEyeOffsets))
                 {
-                    var d = (PipeCommands.SetEyeTracking_ViveProEyeOffsets)e.Data;
+                    var d = (SetEyeTracking_ViveProEyeOffsets)e.Data;
                     settings.Set("EyeOffsetHorizontal", d.OffsetHorizontal);
                     settings.Set("EyeOffsetVertical", d.OffsetVertical);
                     settings.Set("EyeScaleHorizontal", d.ScaleHorizontal);
                     settings.Set("EyeScaleVertical", d.ScaleVertical);
                     ApplyOffsets();
                 }
-                else if (e.CommandType == typeof(PipeCommands.GetEyeTracking_ViveProEyeUseEyelidMovements))
+                else if (e.CommandType == typeof(GetEyeTracking_ViveProEyeUseEyelidMovements))
                 {
-                    await host.Ipc.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements
+                    await host.Ipc.SendCommandAsync(new SetEyeTracking_ViveProEyeUseEyelidMovements
                     {
                         Use = useEyelidMovements,
                     }, e.RequestId);
                 }
-                else if (e.CommandType == typeof(PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements))
+                else if (e.CommandType == typeof(SetEyeTracking_ViveProEyeUseEyelidMovements))
                 {
-                    var d = (PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements)e.Data;
+                    var d = (SetEyeTracking_ViveProEyeUseEyelidMovements)e.Data;
                     settings.Set("UseEyelidMovements", d.Use);
                     ApplyUseEyelidMovements();
                 }
-                else if (e.CommandType == typeof(PipeCommands.GetEyeTracking_ViveProEyeEnable))
+                else if (e.CommandType == typeof(GetEyeTracking_ViveProEyeEnable))
                 {
-                    await host.Ipc.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeEnable
+                    await host.Ipc.SendCommandAsync(new SetEyeTracking_ViveProEyeEnable
                     {
                         enable = isEnabled,
                     }, e.RequestId);
                 }
-                else if (e.CommandType == typeof(PipeCommands.SetEyeTracking_ViveProEyeEnable))
+                else if (e.CommandType == typeof(SetEyeTracking_ViveProEyeEnable))
                 {
-                    var d = (PipeCommands.SetEyeTracking_ViveProEyeEnable)e.Data;
+                    var d = (SetEyeTracking_ViveProEyeEnable)e.Data;
                     settings.Set("EyeEnable", d.enable);
                     ApplyEnable();
                 }

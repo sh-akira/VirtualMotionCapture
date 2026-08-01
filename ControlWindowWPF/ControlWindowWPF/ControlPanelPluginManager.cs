@@ -116,6 +116,9 @@ namespace VirtualMotionCaptureControlPanel
                         //同じIDが二重に入っている状態は事故なので、後勝ちにせず弾く
                         continue;
                     }
+                    //受信したコマンドを型解決できるよう、Initializeより前に登録しておく
+                    PipeCommands.RegisterPluginCommandTypes(instance.CommandTypes);
+
                     instance.Initialize(Host);
                     plugins.Add(new LoadedPlugin { Instance = instance, AssemblyPath = dllFile });
                 }

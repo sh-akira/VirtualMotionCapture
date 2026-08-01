@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using UnityMemoryMappedFile;
+using VMC.Plugin.Commands;
 using VMC.ControlPanel.Plugin;
 
 namespace VMC.Plugin.ViveSR.UI
@@ -54,7 +55,7 @@ namespace VMC.Plugin.ViveSR.UI
                     lipShapesToBlendShapeMap.Add(item.LipShape, item.BlendShape);
                 }
             }
-            await PluginContext.Client.SendCommandAsync(new PipeCommands.SetViveLipTrackingBlendShape { LipShapes = LipShapes, LipShapesToBlendShapeMap = lipShapesToBlendShapeMap });
+            await PluginContext.Client.SendCommandAsync(new SetViveLipTrackingBlendShape { LipShapes = LipShapes, LipShapesToBlendShapeMap = lipShapesToBlendShapeMap });
             this.Close();
         }
 
@@ -73,9 +74,9 @@ namespace VMC.Plugin.ViveSR.UI
             });
             BlendShapeKeys?.Insert(0, null);
             await GetViveLipTrackingBlendShape();
-            await PluginContext.Client?.SendCommandWaitAsync(new PipeCommands.GetViveLipTrackingEnable(), d =>
+            await PluginContext.Client?.SendCommandWaitAsync(new GetViveLipTrackingEnable(), d =>
             {
-                var data = (PipeCommands.SetViveLipTrackingEnable)d;
+                var data = (SetViveLipTrackingEnable)d;
                 Dispatcher.Invoke(() =>
                 {
                     IsSetting = true;
@@ -89,9 +90,9 @@ namespace VMC.Plugin.ViveSR.UI
 
         private async Task GetViveLipTrackingBlendShape()
         {
-            await PluginContext.Client.SendCommandWaitAsync(new PipeCommands.GetViveLipTrackingBlendShape(), d =>
+            await PluginContext.Client.SendCommandWaitAsync(new GetViveLipTrackingBlendShape(), d =>
             {
-                var ret = (PipeCommands.SetViveLipTrackingBlendShape)d;
+                var ret = (SetViveLipTrackingBlendShape)d;
                 Dispatcher.Invoke(() =>
                 {
                     LipShapes = ret.LipShapes;
@@ -106,7 +107,7 @@ namespace VMC.Plugin.ViveSR.UI
         private async void UseViveLipTrackerCheckBox_ValueChanged(object sender, RoutedEventArgs e)
         {
             if (IsSetting) return;
-            await PluginContext.Client?.SendCommandAsync(new PipeCommands.SetViveLipTrackingEnable
+            await PluginContext.Client?.SendCommandAsync(new SetViveLipTrackingEnable
             {
                 enable = UseViveLipTrackerCheckBox.IsChecked.Value
             });

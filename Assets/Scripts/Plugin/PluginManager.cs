@@ -125,6 +125,9 @@ namespace VMC
                         continue;
                     }
 
+                    //受信したコマンドを型解決できるよう、Initializeより前に登録しておく
+                    UnityMemoryMappedFile.PipeCommands.RegisterPluginCommandTypes(plugin.CommandTypes);
+
                     plugin.Initialize(host);
 
                     loadedPlugins.Add(new LoadedPlugin

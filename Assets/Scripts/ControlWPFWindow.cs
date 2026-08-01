@@ -1850,8 +1850,11 @@ namespace VMC
             try
             {
                 path = Path.GetFullPath(path); //フルパスに変換
-                Settings.Current = Json.Serializer.Deserialize<Settings>(File.ReadAllText(path)); //設定を読み込み
-                PluginSettingsMigration.Migrate(Settings.Current); //旧本体機能の設定をプラグイン設定領域へ移す
+                var settingsJson = File.ReadAllText(path);
+                Settings.Current = Json.Serializer.Deserialize<Settings>(settingsJson); //設定を読み込み
+                //mocopi/VIVE/Tobiiが本体機能だった頃の設定をプラグインの設定領域へ移す
+                //(旧フィールドはSettingsから削除済みなので生JSONから拾う)
+                PluginSettingsMigration.Migrate(Settings.Current, settingsJson);
                 float divide = 0;
                 //腰情報を読み込む
                 if (float.TryParse(File.ReadAllText(Application.dataPath + "/../PelvisTrackerOffsetDivide.txt"), out divide))

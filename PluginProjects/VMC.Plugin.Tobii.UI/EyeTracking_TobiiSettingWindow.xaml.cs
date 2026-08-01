@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using UnityMemoryMappedFile;
+using VMC.Plugin.Commands;
 using VMC.ControlPanel.Plugin;
 
 namespace VMC.Plugin.Tobii.UI
@@ -30,14 +31,14 @@ namespace VMC.Plugin.Tobii.UI
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            await PluginContext.Client?.SendCommandWaitAsync(new PipeCommands.GetEyeTracking_TobiiOffsets(), d =>
+            await PluginContext.Client?.SendCommandWaitAsync(new GetEyeTracking_TobiiOffsets(), d =>
             {
-                var data = (PipeCommands.SetEyeTracking_TobiiOffsets )d;
+                var data = (SetEyeTracking_TobiiOffsets )d;
                 Dispatcher.Invoke(() => SetEyeTracking_TobiiOffsets(data));
             });
         }
 
-        private void SetEyeTracking_TobiiOffsets(PipeCommands.SetEyeTracking_TobiiOffsets offsets)
+        private void SetEyeTracking_TobiiOffsets(SetEyeTracking_TobiiOffsets offsets)
         {
             IsSetting = true;
             EyeMoveScaleHorizontalSlider.Value = offsets.ScaleHorizontal;
@@ -52,7 +53,7 @@ namespace VMC.Plugin.Tobii.UI
         {
             if (IsSetting) return;
             SetUITexts();
-            await PluginContext.Client?.SendCommandAsync(new PipeCommands.SetEyeTracking_TobiiOffsets 
+            await PluginContext.Client?.SendCommandAsync(new SetEyeTracking_TobiiOffsets 
             {
                 ScaleHorizontal  = (float)EyeMoveScaleHorizontalSlider.Value,
                 ScaleVertical  = (float)EyeMoveScaleVerticalSlider.Value ,
@@ -71,7 +72,7 @@ namespace VMC.Plugin.Tobii.UI
 
         private async void CalibrationButton_Click(object sender, RoutedEventArgs e)
         {
-            await PluginContext.Client?.SendCommandAsync(new PipeCommands.EyeTracking_TobiiCalibration());   
+            await PluginContext.Client?.SendCommandAsync(new EyeTracking_TobiiCalibration());   
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)

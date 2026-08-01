@@ -42,6 +42,19 @@ namespace VMC
             IKManager.Instance.RemoveOnPostUpdate(eventId);
         }
 
+        /// <summary>
+        /// 外部デバイスプラグイン(mocopi等)のモーションが今アバターへ適用されているか。
+        /// 全身が動くかどうかで挙動を変えたい箇所(カメラの注視点など)から参照する。
+        /// </summary>
+        public bool IsExternalDeviceMotionActive
+            => VirtualAvatars.Any(d => d.MotionSource == MotionSource.ExternalDevice && d.Enable);
+
+        /// <summary>IsExternalDeviceMotionActive が変わったときに呼ばれる</summary>
+        public event Action ExternalDeviceMotionActiveChanged;
+
+        /// <summary>外部デバイスの有効・無効が切り替わったことをプラグインから知らせる</summary>
+        public void NotifyExternalDeviceMotionActiveChanged() => ExternalDeviceMotionActiveChanged?.Invoke();
+
         public void AddVirtualAvatar(VirtualAvatar virtualAvatar)
         {
             if (VirtualAvatars.Contains(virtualAvatar) == false)

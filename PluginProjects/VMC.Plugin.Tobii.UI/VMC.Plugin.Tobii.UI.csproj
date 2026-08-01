@@ -40,6 +40,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TobiiControlPanelPlugin.cs" />
+    <Compile Include="..\Shared\TobiiPipeCommands.cs">
+      <Link>Shared\TobiiPipeCommands.cs</Link>
+    </Compile>
     <Compile Include="PluginContext.cs" />
     <Compile Include="EyeTracking_TobiiSettingWindow.xaml.cs">
       <DependentUpon>EyeTracking_TobiiSettingWindow.xaml</DependentUpon>

@@ -11,6 +11,32 @@ namespace UnityMemoryMappedFile
     {
         private static Dictionary<string, Type> commandTypeCache = new Dictionary<string, Type>();
 
+        /// <summary>
+        /// プラグインが追加したコマンドの型。
+        /// プラグインのコマンドは本体の共有アセンブリではなくプラグイン側のDLLに入っているため、
+        /// ここへ登録してもらって型解決の対象に加える。
+        /// </summary>
+        private static readonly List<Type> pluginCommandTypes = new List<Type>();
+
+        /// <summary>
+        /// プラグインのコマンド型を登録する。
+        /// 通信が始まる前(プラグインの読み込み時)に呼ぶこと。
+        /// 送受信は型の単純名で対応付けるため、本体側とコントロールパネル側で
+        /// 同じ名前・同じ名前空間の型を用意する必要がある。
+        /// </summary>
+        public static void RegisterPluginCommandTypes(IEnumerable<Type> types)
+        {
+            if (types == null) return;
+            foreach (var type in types)
+            {
+                if (type == null) continue;
+                if (pluginCommandTypes.Contains(type)) continue;
+                pluginCommandTypes.Add(type);
+            }
+            //名前解決の結果が変わるのでキャッシュを捨てる
+            commandTypeCache = new Dictionary<string, Type>();
+        }
+
         public static Type GetCommandType(string commandStr)
         {
             if (commandTypeCache.TryGetValue(commandStr,out Type value))
@@ -19,6 +45,14 @@ namespace UnityMemoryMappedFile
             }
             var commands = typeof(PipeCommands).GetNestedTypes(System.Reflection.BindingFlags.Public);
             foreach (var command in commands)
+            {
+                if (command.Name == commandStr)
+                {
+                    commandTypeCache[commandStr] = command;
+                    return command;
+                }
+            }
+            foreach (var command in pluginCommandTypes)
             {
                 if (command.Name == commandStr)
                 {
@@ -369,35 +403,6 @@ namespace UnityMemoryMappedFile
             public bool doSend { get; set; }
         }
 
-        public class GetEyeTracking_TobiiOffsets { }
-        public class SetEyeTracking_TobiiOffsets
-        {
-            public float ScaleHorizontal { get; set; }
-            public float ScaleVertical { get; set; }
-            public float OffsetHorizontal { get; set; }
-            public float OffsetVertical { get; set; }
-        }
-
-        public class EyeTracking_TobiiCalibration { }
-
-        public class GetEyeTracking_ViveProEyeOffsets { }
-        public class SetEyeTracking_ViveProEyeOffsets
-        {
-            public float ScaleHorizontal { get; set; }
-            public float ScaleVertical { get; set; }
-            public float OffsetHorizontal { get; set; }
-            public float OffsetVertical { get; set; }
-        }
-        public class GetEyeTracking_ViveProEyeUseEyelidMovements { }
-        public class SetEyeTracking_ViveProEyeUseEyelidMovements
-        {
-            public bool Use { get; set; }
-        }
-        public class GetEyeTracking_ViveProEyeEnable { }
-        public class SetEyeTracking_ViveProEyeEnable
-        {
-            public bool enable { get; set; }
-        }
 
         public class ImportCameraPlus
         {
@@ -626,18 +631,6 @@ namespace UnityMemoryMappedFile
         public class SetQualitySettings
         {
             public int antiAliasing { get; set; }
-        }
-
-        public class GetViveLipTrackingBlendShape { }
-        public class SetViveLipTrackingBlendShape
-        {
-            public List<string> LipShapes { get; set; }
-            public Dictionary<string, string> LipShapesToBlendShapeMap { get; set; }
-        }
-        public class GetViveLipTrackingEnable { }
-        public class SetViveLipTrackingEnable
-        {
-            public bool enable { get; set; }
         }
 
         public class GetAdvancedGraphicsOption { }

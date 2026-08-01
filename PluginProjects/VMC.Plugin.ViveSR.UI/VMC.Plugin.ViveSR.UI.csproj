@@ -40,6 +40,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ViveSRControlPanelPlugins.cs" />
+    <Compile Include="..\Shared\ViveSRPipeCommands.cs">
+      <Link>Shared\ViveSRPipeCommands.cs</Link>
+    </Compile>
     <Compile Include="PluginContext.cs" />
     <Compile Include="EyeTracking_ViveProEyeSettingWindow.xaml.cs">
       <DependentUpon>EyeTracking_ViveProEyeSettingWindow.xaml</DependentUpon>

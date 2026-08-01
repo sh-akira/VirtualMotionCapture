@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using VMC.ControlPanel.Plugin;
+using VMC.Plugin.Commands;
 
 namespace VMC.Plugin.ViveSR.UI
 {
@@ -26,6 +27,7 @@ namespace VMC.Plugin.ViveSR.UI
     {
         public string Id => "ViveSR.Eye";
         public string Version => "1.0.0";
+        public System.Collections.Generic.IEnumerable<System.Type> CommandTypes => ViveSRCommands.Types;
         //表情・視線系は200番台
         public int SortOrder => 200;
         public string TitleResourceKey => "Plugin_ViveSR.Eye_Title";
@@ -42,6 +44,7 @@ namespace VMC.Plugin.ViveSR.UI
     {
         public string Id => "ViveSR.Lip";
         public string Version => "1.0.0";
+        public System.Collections.Generic.IEnumerable<System.Type> CommandTypes => ViveSRCommands.Types;
         public int SortOrder => 210;
         public string TitleResourceKey => "Plugin_ViveSR.Lip_Title";
 

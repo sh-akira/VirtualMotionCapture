@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace VMC.Plugin
 {
     /// <summary>
@@ -25,6 +28,15 @@ namespace VMC.Plugin
 
         /// <summary>プラグインのバージョン</summary>
         string Version { get; }
+
+        /// <summary>
+        /// このプラグインがコントロールパネルとやりとりする独自コマンドの型。
+        /// 本体の共有アセンブリには入っていないので、受信時の型解決に使えるよう
+        /// PluginManager が PipeCommands へ登録する。
+        /// コントロールパネル側のプラグインと同じ名前・同じ名前空間の型にすること。
+        /// 独自コマンドが無ければ null か空でよい。
+        /// </summary>
+        IEnumerable<Type> CommandTypes { get; }
 
         /// <summary>
         /// 本体の初期化中(設定の読み込み・適用より前)に一度だけ呼ばれる。
