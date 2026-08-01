@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028492, g: 0.22571525, b: 0.3069259, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -260,7 +259,6 @@ MonoBehaviour:
   CloseAnimationTime: 0.06
   OpenAnimationTime: 0.03
   ClosingTime: 0.1
-  BlendShapeClips: []
   FacePresetName: 
 --- !u!4 &69806226
 Transform:
@@ -2536,7 +2534,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsBeta: 0
   IsPreRelease: 0
-  VersionString: v0.60f1r1b7
+  VersionString: v0.61f1r1b2
   LeftWristTransform: {fileID: 0}
   RightWristTransform: {fileID: 0}
   BackgroundRenderer: {fileID: 892957809}
