@@ -8,6 +8,7 @@ namespace VMC
         public class AnimationItem
         {
             public float Time { get; set; } //アニメーションにかける時間
+            public float StartTime { get; set; } //シーケンス先頭からこのアニメーションが始まるまでの時間
             public float StartValue { get; set; }
             public float EndValue { get; set; }
             public System.Action<float> SetAction { get; set; }
@@ -29,26 +30,19 @@ namespace VMC
 
         private bool isStart = false;
         private float startTime = 0.0f;
+        private int currentIndex = 0; //今実行中のアニメーションの位置
         public System.Action ResetAction { get; set; }
 
         public List<AnimationItem> AnimationItems = new List<AnimationItem>();
 
-        public Dictionary<float, AnimationItem> CurrentAnimationItems = new Dictionary<float, AnimationItem>(); //Key:開始時間
-
-
-        private AnimationItem EndLastItem = null;
-        private AnimationItem CurrentItem = null;
-
         private void InitializeAnimation()
         {
-            CurrentAnimationItems.Clear();
-            EndLastItem = null;
-            CurrentItem = null;
+            currentIndex = 0;
             var starttime = 0.0f;
             foreach (var item in AnimationItems)
             {
                 item.Initialize();
-                CurrentAnimationItems.Add(starttime, item);
+                item.StartTime = starttime;
                 starttime += item.Time == 0.0f ? 0.0001f : item.Time;
             }
         }
@@ -82,62 +76,57 @@ namespace VMC
         public void StopAnimations()
         {
             isStart = false;
-            lastitem = null;
+            currentIndex = 0;
         }
-
-        private AnimationItem lastitem = null;
 
         public bool Next()
         {
             if (isStart == false)
             {
                 isStart = true;
-                startTime = Time.time;
+                startTime = CurrentTime;
                 InitializeAnimation();
             }
 
-            var elapsedTime = Time.time - startTime;
-            var addTime = 0.0f;
-            foreach (var item in CurrentAnimationItems)
+            var elapsedTime = CurrentTime - startTime;
+
+            //処理落ちで飛び越したアニメーションは、順番に終了値を適用してから先へ進む。
+            //飛ばしたままにすると中間状態(まばたきなら目を閉じたまま)で固まってしまう
+            while (currentIndex < AnimationItems.Count)
             {
-                addTime = item.Key + item.Value.Time; //すべてのアニメーションの時間+今のアニメーション時間
-                if (addTime >= elapsedTime)
-                {//経過時間がまだアニメーションの終了時間に届いていない間(アニメーション中)
-                 //Debug.Log($"AnimationTime:{elapsedTime}");
-                    if (lastitem != null && EndLastItem != lastitem)
-                    {//前回のアニメーションが終わりまで行ってない場合があるので100％で実行
-                        lastitem.RunAction(lastitem.EndValue);
-                        EndLastItem = lastitem;
-                    }
-                    if (CurrentItem != item.Value)
-                    {
-                        if (lastitem != null)
-                        {//前回のアニメーションが終わりまで行ってない場合があるので100％で実行
-                            lastitem.RunAction(lastitem.EndValue);
-                            EndLastItem = lastitem;
-                        }
-                        //新しいアニメーションになったときには時間にかかわらずきちんと最初の値を使う
-                        item.Value.RunAction(item.Value.StartValue);
-                        CurrentItem = item.Value;
-                    }
-                    else
-                    {
-                        var currentTime = item.Value.Time + (elapsedTime - addTime);
-                        var setvalue = item.Value.StartValue + (item.Value.EndValue - item.Value.StartValue) * (currentTime / item.Value.Time);
-                        item.Value.RunAction(setvalue);
-                    }
-                    lastitem = item.Value;
-                    return true;
-                }
+                var skipItem = AnimationItems[currentIndex];
+                if (skipItem.StartTime + skipItem.Time >= elapsedTime) break;
+                skipItem.RunAction(skipItem.EndValue);
+                currentIndex++;
             }
 
-            //最後までアニメーションしたとき
-            if (lastitem != null)
-            {//最後のアニメーションが終わりまで行ってない場合があるので100％で実行
-                lastitem.RunAction(lastitem.EndValue);
+            //最後まで到達したとき。上のループですべてのアニメーションが終了値まで進んでいるので、
+            //どれだけ処理落ちしても最終状態(まばたきなら目を開いた状態)で終わる
+            if (currentIndex >= AnimationItems.Count)
+            {
+                isStart = false;
+                currentIndex = 0;
+                return false;
             }
-            isStart = false;
-            return false;
+
+            //処理落ちしていても、その時点の経過時間に対応する値を適用する
+            //(先頭の値に戻すと、飛び越した分だけアニメーションが巻き戻ってしまう)
+            var item = AnimationItems[currentIndex];
+            var rate = item.Time > 0.0f ? Mathf.Clamp01((elapsedTime - item.StartTime) / item.Time) : 1.0f;
+            item.RunAction(item.StartValue + (item.EndValue - item.StartValue) * rate);
+            return true;
         }
+
+        #region 自動テスト用フック
+
+        /// <summary>
+        /// 現在時刻の取得元。処理落ち(フレーム落ち)を決定論的に再現するために自動テストから差し替える。
+        /// 通常の動作ではnullで、Time.realtimeSinceStartupが使われる。
+        /// </summary>
+        internal static System.Func<float> TestTimeProvider = null;
+
+        private static float CurrentTime => TestTimeProvider != null ? TestTimeProvider() : Time.realtimeSinceStartup;
+
+        #endregion
     }
 }
