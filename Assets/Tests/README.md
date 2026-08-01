@@ -150,6 +150,7 @@ Editorを閉じずにコンパイルエラーだけ確認できる。
 | `ModelSwitch` | 別アバター(VRM0.x⇔VRM1.0)に差し替えたときの自動再キャリブレーションと追従・表情・視線の引き継ぎ | 両方 |
 | `MultipleReceivers` | 受信機を2つ使ったときの担当範囲の分離と独立性 | VRM0.x |
 | `FaceMixing` | ベース/加算/上書きの合成順序、クランプ、VRM0.x名での指定 | 両方 |
+| `BlinkFrameDrop` | 処理落ちでまばたきを飛び越しても目が開いた状態に戻るか | 両方 |
 | `KeyActions` | ショートカットキーによる表情・機能の実行と同時押しの優先 | VRM0.x |
 | `FaceHardwareInputs` | リップシンク(viseme)・リップトラッキング・アイトラッキングの反映 | 両方 |
 | `MocopiReceive` | mocopiのスケルトン受信とアバターへの適用 | VRM0.x |
@@ -244,6 +245,10 @@ public sealed class Scenario_Something : VMCTestScenario
 - `EyeTracking_ViveProEye.Test_ApplyEyeState` … まぶたの開き具合と視線方向を直接与える `internal` メソッド
 - `MocopiConnector.UpdateSkeletonForTest` … UDPの代わりにフレームデータを流し込む `internal` メソッド
 - `VMTClient.SendHook` … 送信内容のキャプチャ用の static event。通常は誰も購読していない
+- `AnimationController.TestTimeProvider` … 時計の差し替え用の static デリゲート。
+  通常は null で `Time.realtimeSinceStartup` が使われる。まばたきは全体で0.19秒しかなく、
+  処理落ちを実時間で再現できないため、`BlinkFrameDrop` はこれで疑似時計を与えて
+  「1フレームで0.333秒進んだ」状況を決定論的に作る
 
 ### ハードウェアが無くても検査できる範囲
 

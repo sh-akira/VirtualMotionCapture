@@ -148,6 +148,7 @@ namespace VMC.Tests
             new Scenario_Robustness(),
             new Scenario_KeyActions(),
             new Scenario_FaceMixing(),
+            new Scenario_BlinkFrameDrop(),
             new Scenario_MultipleReceivers(),
             new Scenario_BvhExport(),
             new Scenario_RenderingAndStability(),

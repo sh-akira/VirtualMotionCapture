@@ -187,6 +187,9 @@ namespace VMC.Tests
                 FaceController.Test_ClearAllMixes();
             }
 
+            //疑似時計を使うシナリオが途中で失敗しても次のシナリオへ持ち越さないようにする
+            AnimationController.TestTimeProvider = null;
+
             //設定ファイル読み込み時と同じく、各コンポーネントへ設定を配る。
             //MotionPlayerのVirtualAvatarのApply*フラグはここでしか更新されないため、
             //これを呼ばないとモーション再生でボーンも視線も一切適用されない
