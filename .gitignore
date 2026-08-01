@@ -102,3 +102,6 @@ Assets/_TerrainAutoUpgrade/
 
 #自動テスト用データ(テスト用VRM・ゴールデン・実行結果)
 TestData/
+
+#コード署名ツール(証明書・KMS設定・署名済みバイナリのキャッシュを含むためpushしない)
+codesignkit/
