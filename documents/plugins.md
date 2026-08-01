@@ -87,6 +87,21 @@ ControlPanel/Plugins/             コントロールパネル側プラグイン�
    `BuildRootFiles/ControlPanel/Plugins/`（コントロールパネル側）になります。
    どちらも配布物の xcopy 対象なので、この後コントロールパネルをビルドすれば同梱されます。
 
+## エディタ上での動作確認
+
+プラグインはビルド済みのDLLを実行時に読み込む仕組みなので、
+Unity エディタで実行しても**そのままでは読み込まれません**
+（エディタでは `Plugins/` はリポジトリ直下を指し、通常は空のためです）。
+
+エディタで動かして確認したい場合は、ビルドしたDLLを次の場所へコピーしてください。
+
+```
+<リポジトリ直下>/Plugins/mocopi/VMC.Plugin.Mocopi.dll   など
+```
+
+コントロールパネル側は `ControlWindowWPF/ControlWindowWPF/bin/Debug/ControlPanel/Plugins/`
+に入っていれば読み込まれます（`BuildRootFiles` からの xcopy で自動的に入ります）。
+
 ## 新しいプラグインを追加するには
 
 1. `PluginProjects/` に Unity側とコントロールパネル側の2プロジェクトを作ります
