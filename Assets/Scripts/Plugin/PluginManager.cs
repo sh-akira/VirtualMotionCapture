@@ -80,6 +80,10 @@ namespace VMC
 
         private void LoadPluginAssembly(string dllFile, IPluginHost host)
         {
+            //ネイティブDLLに Assembly.LoadFrom を試すと、例外を捕まえても
+            //Monoが "Could not load image ..." をコンソールへ出してしまうので先に弾く
+            if (NativeLibraryLoader.IsManagedAssembly(dllFile) == false) return;
+
             Type[] pluginTypes;
             try
             {

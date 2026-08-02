@@ -37,6 +37,9 @@ namespace VMC.Plugin
             var loaded = 0;
             foreach (var dll in Directory.GetFiles(directory, "*.dll", SearchOption.TopDirectoryOnly))
             {
+                //マネージドDLLをLoadLibraryしても意味が無いので飛ばす
+                if (IsManagedAssembly(dll)) continue;
+
                 try
                 {
                     if (LoadLibraryW(dll) != IntPtr.Zero) loaded++;
@@ -47,6 +50,53 @@ namespace VMC.Plugin
                 }
             }
             return loaded;
+        }
+
+        /// <summary>
+        /// .NETのアセンブリ(マネージドDLL)かどうかをPEヘッダから判定する。
+        ///
+        /// ネイティブDLLに Assembly.LoadFrom を試すと、例外を捕まえても
+        /// Monoが "Could not load image ..." をコンソールへ出してしまうため、
+        /// 読み込む前にこれで振り分ける。
+        /// </summary>
+        public static bool IsManagedAssembly(string path)
+        {
+            try
+            {
+                using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (var reader = new BinaryReader(stream))
+                {
+                    if (stream.Length < 0x40) return false;
+
+                    //DOSヘッダ(MZ)からPEヘッダの位置を得る
+                    if (reader.ReadUInt16() != 0x5A4D) return false;   //"MZ"
+                    stream.Position = 0x3C;
+                    var peOffset = reader.ReadUInt32();
+                    if (peOffset + 24 >= stream.Length) return false;
+
+                    stream.Position = peOffset;
+                    if (reader.ReadUInt32() != 0x00004550) return false; //"PE\0\0"
+
+                    //COFFヘッダ20バイトを飛ばしてオプショナルヘッダへ
+                    stream.Position = peOffset + 4 + 20;
+                    var magic = reader.ReadUInt16();
+                    int dataDirectoryOffset;
+                    if (magic == 0x10B) dataDirectoryOffset = 96;       //PE32
+                    else if (magic == 0x20B) dataDirectoryOffset = 112; //PE32+
+                    else return false;
+
+                    //データディレクトリの15番目(index 14)がCLIヘッダ。RVAが0でなければマネージド
+                    var cliHeaderPosition = peOffset + 4 + 20 + dataDirectoryOffset + (14 * 8);
+                    if (cliHeaderPosition + 8 > stream.Length) return false;
+                    stream.Position = cliHeaderPosition;
+                    return reader.ReadUInt32() != 0;
+                }
+            }
+            catch (Exception)
+            {
+                //読めないファイルはマネージドでないものとして扱う
+                return false;
+            }
         }
 
         /// <summary>
