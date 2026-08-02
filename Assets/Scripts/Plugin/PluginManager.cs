@@ -21,7 +21,11 @@ namespace VMC
     {
         public static PluginManager Instance { get; private set; }
 
-        private string PluginsPath;
+        /// <summary>
+        /// プラグインの置き場所。ビルド版ではexeの隣、エディタではリポジトリ直下を指す。
+        /// Awakeの実行順に依らず使えるよう都度求める。
+        /// </summary>
+        private static string PluginsPath => Path.GetFullPath(Application.dataPath + "/../Plugins/");
 
         private readonly List<LoadedPlugin> loadedPlugins = new List<LoadedPlugin>();
 
@@ -39,7 +43,6 @@ namespace VMC
         private void Awake()
         {
             Instance = this;
-            PluginsPath = Path.GetFullPath(Application.dataPath + "/../Plugins/");
         }
 
         /// <summary>

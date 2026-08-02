@@ -114,3 +114,6 @@ PluginProjects/**/bin/
 PluginProjects/**/obj/
 ControlWindowWPF/VMC.ControlPanel.PluginAPI/bin/
 ControlWindowWPF/VMC.ControlPanel.PluginAPI/obj/
+
+#エディタ実行用にプラグインをコピーする場所(ビルド成果物・SDKのネイティブDLLを含む)
+/Plugins/

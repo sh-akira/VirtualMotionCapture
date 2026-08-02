@@ -18,6 +18,14 @@
     <PluginOutputRoot>$(RepositoryRoot)UnityBuild\Plugins\</PluginOutputRoot>
     <ControlPanelPluginOutputRoot>$(RepositoryRoot)BuildRootFiles\ControlPanel\Plugins\</ControlPanelPluginOutputRoot>
 
+    <!--
+      エディタ実行用のコピー先。
+      エディタでは Application.dataPath + "/../Plugins/" がリポジトリ直下を指すため、
+      ここへ置いておくと再生ボタンだけでプラグインを読み込める。
+      (コントロールパネル側は BuildRootFiles からの xcopy で bin\Debug\ControlPanel\Plugins へ入る)
+    -->
+    <EditorPluginOutputRoot>$(RepositoryRoot)Plugins\</EditorPluginOutputRoot>
+
     <!-- 参照するDLL。共有DLLはUnity側にコピー済みのものを使う -->
     <UnityMemoryMappedFileDll>$(RepositoryRoot)Assets\ExternalPlugins\UnityMemoryMappedFile\UnityMemoryMappedFile.dll</UnityMemoryMappedFileDll>
     <ControlPanelPluginApiDll>$(RepositoryRoot)ControlWindowWPF\VMC.ControlPanel.PluginAPI\bin\Debug\VMC.ControlPanel.PluginAPI.dll</ControlPanelPluginApiDll>

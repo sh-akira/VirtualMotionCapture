@@ -89,18 +89,37 @@ ControlPanel/Plugins/             コントロールパネル側プラグイン�
 
 ## エディタ上での動作確認
 
-プラグインはビルド済みのDLLを実行時に読み込む仕組みなので、
-Unity エディタで実行しても**そのままでは読み込まれません**
-（エディタでは `Plugins/` はリポジトリ直下を指し、通常は空のためです）。
+プラグインはビルド済みのDLLを実行時に読み込む仕組みですが、
+コピー先は **プラグインをビルドすれば自動で用意されます**。
 
-エディタで動かして確認したい場合は、ビルドしたDLLを次の場所へコピーしてください。
+| | コピー先 | 誰が入れるか |
+| --- | --- | --- |
+| 本体側(エディタ実行) | `<リポジトリ直下>/Plugins/` | プラグインのビルド時に自動 |
+| 本体側(配布) | `UnityBuild/Plugins/` | プラグインのビルド時に自動 |
+| コントロールパネル側 | `ControlWindowWPF/ControlWindowWPF/bin/Debug/ControlPanel/Plugins/` | `BuildRootFiles` からの xcopy で自動 |
 
-```
-<リポジトリ直下>/Plugins/mocopi/VMC.Plugin.Mocopi.dll   など
-```
+エディタでは `Application.dataPath + "/../Plugins/"` がリポジトリ直下を指すため、
+`<リポジトリ直下>/Plugins/` に置いておけば再生ボタンだけで読み込まれます。
 
-コントロールパネル側は `ControlWindowWPF/ControlWindowWPF/bin/Debug/ControlPanel/Plugins/`
-に入っていれば読み込まれます（`BuildRootFiles` からの xcopy で自動的に入ります）。
+### 手順
+
+1. プラグインをビルドします。
+
+   ```bash
+   msbuild PluginProjects/VMCPlugins.sln /t:Build /p:Configuration=Release
+   ```
+
+2. コントロールパネルをビルドします（`ControlWindowWPF/ControlWindowWPF.sln`）。
+   デバッグのコマンドライン引数は `/pipeName VMCTest` にしておきます。
+3. Unity で `Assets/Scenes/VirtualMotionCapture` を開いて再生します。
+   Console に `[Plugin] ... を読み込みました` が出れば読み込み成功です。
+4. Visual Studio でコントロールパネルを開始して接続し、
+   設定画面の「外部デバイス」欄にボタンが並ぶことを確認します。
+
+プラグインを作り直したら、Unity の再生を止めてからビルドしてください
+（再生中はDLLがロックされてコピーに失敗します）。
+
+> `<リポジトリ直下>/Plugins/` は `.gitignore` 済みです。
 
 ## 新しいプラグインを追加するには
 

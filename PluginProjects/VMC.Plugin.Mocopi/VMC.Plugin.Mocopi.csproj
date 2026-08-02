@@ -103,5 +103,14 @@
     </ItemGroup>
     <Delete Files="@(FacadeToRemove)" />
   </Target>
+  <Target Name="CopyPluginToEditorFolder" AfterTargets="Build;CopyNativePluginFiles;RemoveFacadesFromPluginOutput">
+    <!-- エディタ実行でも読み込めるようリポジトリ直下の Plugins\ へ複製する -->
+    <ItemGroup>
+      <EditorPluginFile Include="$(OutputPath)**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(EditorPluginFile)"
+          DestinationFolder="$(EditorPluginOutputRoot)mocopi\%(RecursiveDir)"
+          SkipUnchangedFiles="true" />
+  </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
