@@ -10,6 +10,11 @@
     <AssemblyName>VMC.Plugin.Mocopi</AssemblyName>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!-- Visual Studio は構成の一覧を .csproj 自身のこの条件から作るため、
+       Directory.Build.props 側にしか書かないとビルドがすべてスキップされる。
+       中身の設定は Directory.Build.props が入れる -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\Shared\MocopiPipeCommands.cs">
       <Link>Shared\MocopiPipeCommands.cs</Link>
