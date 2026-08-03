@@ -114,6 +114,21 @@
     <Copy SourceFiles="@(NativePluginFile)" DestinationFolder="$(OutputPath)native\" SkipUnchangedFiles="true" />
   </Target>
 
+  <Target Name="CopyControlPanelPluginToEditorFolder" AfterTargets="Build"
+          Condition=" '$(PluginKind)' == 'ControlPanel' ">
+    <!-- VSからコントロールパネルを起動したときに読み込まれる場所へ複製する。
+         起動中はDLLを掴まれていてコピーできないので、その場合は警告のみで続行する -->
+    <ItemGroup>
+      <!-- 出力はDLLとPDBだけなのでサブフォルダは考えない -->
+      <ControlPanelEditorPluginFile Include="$(OutputPath)*.*" />
+      <ControlPanelEditorConfiguration Include="$(ControlPanelEditorConfigurations)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ControlPanelEditorPluginFile)"
+          DestinationFolder="$(ControlPanelBinRoot)%(ControlPanelEditorConfiguration.Identity)\ControlPanel\Plugins\$(PluginFolderName)\"
+          SkipUnchangedFiles="true"
+          ContinueOnError="WarnAndContinue" />
+  </Target>
+
   <Target Name="CopyPluginToEditorFolder"
           AfterTargets="Build;CopyNativePluginFiles;RemoveFacadesFromPluginOutput"
           Condition=" '$(PluginKind)' == 'Unity' ">
