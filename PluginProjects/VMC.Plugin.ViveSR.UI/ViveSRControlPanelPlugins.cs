@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows;
 using VMC.ControlPanel.Plugin;
@@ -29,7 +29,7 @@ namespace VMC.Plugin.ViveSR.UI
         public override string Id => "ViveSR.Eye";
         //表情・視線系は200番台
         public override int SortOrder => 200;
-        public override string TitleResourceKey => "Plugin_ViveSR.Eye_Title";
+        public override string TitleResourceKey => "ViveSR.Eye_Title";
 
         public override Window CreateSettingWindow(Window owner) => new EyeTracking_ViveProEyeSettingWindow();
     }
@@ -39,7 +39,7 @@ namespace VMC.Plugin.ViveSR.UI
     {
         public override string Id => "ViveSR.Lip";
         public override int SortOrder => 210;
-        public override string TitleResourceKey => "Plugin_ViveSR.Lip_Title";
+        public override string TitleResourceKey => "ViveSR.Lip_Title";
 
         public override Window CreateSettingWindow(Window owner) => new LipTracking_ViveSettingWindow();
     }

@@ -1,4 +1,4 @@
-using UnityMemoryMappedFile;
+﻿using UnityMemoryMappedFile;
 using VMC.ControlPanel.Plugin;
 
 namespace VMC.Plugin.Tobii.UI

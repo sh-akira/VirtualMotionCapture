@@ -142,13 +142,20 @@ ControlPanel/Plugins/             コントロールパネル側プラグイン�
 2. Unity側は `MonoBehaviour` を継承しつつ `IVMCPlugin` を実装します。
    初期化は `Awake` ではなく `Initialize(IPluginHost)` に書いてください
    （`AddComponent` の時点ではまだ `host` を受け取っていないため）。
-3. コントロールパネル側は `IControlPanelPlugin` を実装します。
-   表示名は `Plugin_<Id>_Title` のリソースキーで、プラグイン自身の
+3. コントロールパネル側は `ControlPanelPluginBase` を継承します
+   （`IControlPanelPlugin` の共通部分を実装済みです）。
+4. 設定ウインドウで使う文字列は、**すべてプラグイン自身の**
    `Resources/{Japanese,English,Chinese,Korean}.xaml` に持たせます。
-   本体のキーと衝突しないよう、プラグイン固有のキーには接頭辞を付けてください。
-4. 独自のコマンドが必要な場合は、共有アセンブリ（`UnityMemoryMappedFile`）に
-   `PipeCommands_<プラグイン名>.cs` を `partial class PipeCommands` として足します。
-   受信側の型解決が `PipeCommands` のネスト型を走査する実装のためです。
+   キー名は `<Id>_<意味>` とし、表示名は `<Id>_Title` にします。
+
+   本体の辞書のキーを参照しないでください。本体側でキー名が変わると
+   ラベルが空表示になり、単体配布したプラグインが将来の本体で壊れます
+   （`DynamicResource` はキーが無くても例外にならないため気付きにくい）。
+   逆に本体と同じキー名を定義してもいけません。プラグインの辞書は本体の後に
+   マージされるため、**本体の画面の文字列まで上書きしてしまいます**。
+5. 独自のコマンドが必要な場合は `PluginProjects/Shared/` に定義を置き、
+   Unity側とコントロールパネル側の両プロジェクトからリンクしてコンパイルします。
+   そのうえで `CommandTypes` で返すと `PipeCommands` へ登録され、受信時に型解決できます。
 
 ## 注意点
 

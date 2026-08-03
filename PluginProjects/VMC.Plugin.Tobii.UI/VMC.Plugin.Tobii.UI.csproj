@@ -13,12 +13,29 @@
       <Link>Shared\TobiiPipeCommands.cs</Link>
     </Compile>
     <Compile Include="TobiiControlPanelPlugin.cs" />
+    <Compile Include="PluginContext.cs" />
     <Compile Include="EyeTracking_TobiiSettingWindow.xaml.cs">
       <DependentUpon>EyeTracking_TobiiSettingWindow.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Include="EyeTracking_TobiiSettingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Japanese.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\English.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Chinese.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Korean.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

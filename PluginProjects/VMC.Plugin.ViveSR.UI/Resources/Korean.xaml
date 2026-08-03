@@ -1,15 +1,17 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
-    <system:String x:Key="Plugin_ViveSR.Eye_Title">VIVE Pro Eye/Focus 3&#xa;Droolon F1</system:String>
-    <system:String x:Key="Plugin_ViveSR.Lip_Title">VIVE Facial Tracker</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeScale">눈 이동범위(마이너스로 거꾸로합니다)</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeOffset">눈 위치 오프셋(0.01=1cm)</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Horizontal">좌우방향</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Vertical">상하방향</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovements">눈커풀의 움직임을 사용</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovementsCheckBox">사용한다</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Close">닫기</system:String>
+    <system:String x:Key="ViveSR_Close">닫기</system:String>
+    <system:String x:Key="ViveSR_Register">등록</system:String>
+    <system:String x:Key="ViveSR.Lip_Title">VIVE Facial Tracker</system:String>
+    <system:String x:Key="ViveSR_Vertical">상하방향</system:String>
+    <system:String x:Key="ViveSR.Eye_Title">VIVE Pro Eye/Focus 3&#xa;Droolon F1</system:String>
+    <system:String x:Key="ViveSR_Cancel">취소</system:String>
+    <system:String x:Key="ViveSR_Horizontal">좌우방향</system:String>
+    <system:String x:Key="ViveSR_EyeOffset">눈 위치 오프셋(0.01=1cm)</system:String>
+    <system:String x:Key="ViveSR_UseEyelidMovements">눈커풀의 움직임을 사용</system:String>
+    <system:String x:Key="ViveSR_EyeScale">눈 이동범위(마이너스로 거꾸로합니다)</system:String>
+    <system:String x:Key="ViveSR_UseEyelidMovementsCheckBox">사용한다</system:String>
 
 </ResourceDictionary>

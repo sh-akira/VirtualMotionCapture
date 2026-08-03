@@ -2,7 +2,28 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
-    <system:String x:Key="Plugin_mocopi_Title">mocopi (UDP)</system:String>
-    <system:String x:Key="Plugin_mocopi_Only">mocopi only</system:String>
+    <system:String x:Key="mocopi_LeftHand">Left Hand</system:String>
+    <system:String x:Key="mocopi_Apply">적용</system:String>
+    <system:String x:Key="mocopi_LeftLeg">Left Leg</system:String>
+    <system:String x:Key="mocopi_LeftFoot">Left Foot</system:String>
+    <system:String x:Key="mocopi_CorrectHipBone">Correct hip bone</system:String>
+    <system:String x:Key="mocopi_LeftArm">Left Arm</system:String>
+    <system:String x:Key="mocopi_RightLeg">Right Leg</system:String>
+    <system:String x:Key="mocopi_ApplyTarget">Apply target</system:String>
+    <system:String x:Key="mocopi_Spine">Spine</system:String>
+    <system:String x:Key="mocopi_Enable">사용한다</system:String>
+    <system:String x:Key="mocopi_ResetCenter">Re-center current position</system:String>
+    <system:String x:Key="mocopi_Port">Port :</system:String>
+    <system:String x:Key="mocopi_RightHand">Right Hand</system:String>
+    <system:String x:Key="mocopi_Title">mocopi (UDP)</system:String>
+    <system:String x:Key="mocopi_RootPosition">Root position synchronize</system:String>
+    <system:String x:Key="mocopi_Close">닫기</system:String>
+    <system:String x:Key="mocopi_RootRotation">Root rotation synchronize</system:String>
+    <system:String x:Key="mocopi_Chest">Chest</system:String>
+    <system:String x:Key="mocopi_WithVRDevice">with VR devices</system:String>
+    <system:String x:Key="mocopi_Only">mocopi only</system:String>
+    <system:String x:Key="mocopi_RightFoot">Right Foot</system:String>
+    <system:String x:Key="mocopi_RightArm">Right Arm</system:String>
+    <system:String x:Key="mocopi_Head">Head</system:String>
 
 </ResourceDictionary>

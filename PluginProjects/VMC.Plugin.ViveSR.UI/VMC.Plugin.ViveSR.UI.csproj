@@ -13,6 +13,7 @@
       <Link>Shared\ViveSRPipeCommands.cs</Link>
     </Compile>
     <Compile Include="ViveSRControlPanelPlugins.cs" />
+    <Compile Include="PluginContext.cs" />
     <Compile Include="EyeTracking_ViveProEyeSettingWindow.xaml.cs">
       <DependentUpon>EyeTracking_ViveProEyeSettingWindow.xaml</DependentUpon>
     </Compile>
@@ -26,6 +27,22 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="LipTracking_ViveSettingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Japanese.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\English.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Chinese.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Korean.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

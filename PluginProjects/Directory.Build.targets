@@ -90,24 +90,8 @@
       <HintPath>$(ControlPanelPluginApiDll)</HintPath>
       <Private>false</Private>
     </Reference>
-    <!-- 4言語のリソース辞書はどのプラグインも同じ構成 -->
-    <Page Include="Resources\Japanese.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Resources\English.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Resources\Chinese.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Resources\Korean.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="PluginContext.cs" />
+    <!-- リソース辞書やソースはVisual Studioから編集できるよう各csproj側に書く。
+         ここに書くとソリューションエクスプローラーに出てこない -->
   </ItemGroup>
 
   <!-- ===== 出力の後片付けと配置 ===== -->

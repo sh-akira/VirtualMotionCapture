@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows;
 using VMC.ControlPanel.Plugin;
@@ -16,7 +16,7 @@ namespace VMC.Plugin.Mocopi.UI
         public override string Version => "1.0.0";
         //モーション系は100番台
         public override int SortOrder => 100;
-        public override string TitleResourceKey => "Plugin_mocopi_Title";
+        public override string TitleResourceKey => "mocopi_Title";
         public override IEnumerable<Type> CommandTypes => MocopiCommands.Types;
         protected override string ResourceAssemblyName => "VMC.Plugin.Mocopi.UI";
 

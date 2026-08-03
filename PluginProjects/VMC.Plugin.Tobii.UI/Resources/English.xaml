@@ -1,14 +1,14 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
-    <system:String x:Key="Plugin_Tobii_Title">Tobii Eye Tracker 4C</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeScale">Eye movement range (inverted with minus)</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeOffset">Eye position offset (0.01=1cm)</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_Horizontal">Horizontal</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_Vertical">Vertical</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_Calibration">Calibration</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_CalibrationDescription">Move to the front of Tobii after model calibration is complete and press the calibration button while looking at the center of the monitor.</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_Close">Close</system:String>
+    <system:String x:Key="Tobii_Title">Tobii Eye Tracker 4C</system:String>
+    <system:String x:Key="Tobii_CalibrationDescription">Move to the front of Tobii after model calibration is complete and press the calibration button while looking at the center of the monitor.</system:String>
+    <system:String x:Key="Tobii_EyeOffset">Eye position offset (0.01=1cm)</system:String>
+    <system:String x:Key="Tobii_Close">Close</system:String>
+    <system:String x:Key="Tobii_EyeScale">Eye movement range (inverted with minus)</system:String>
+    <system:String x:Key="Tobii_Calibration">Calibration</system:String>
+    <system:String x:Key="Tobii_Vertical">Vertical</system:String>
+    <system:String x:Key="Tobii_Horizontal">Horizontal</system:String>
 
 </ResourceDictionary>

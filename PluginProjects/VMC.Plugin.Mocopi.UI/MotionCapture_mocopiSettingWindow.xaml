@@ -9,13 +9,13 @@
     <DockPanel>
         <GroupBox Header="mocopi (UDP)" DockPanel.Dock="Top">
             <StackPanel Orientation="Horizontal">
-                <CheckBox Content="{DynamicResource Common_Enable}" Name="UsemocopiCheckBox" VerticalAlignment="Center" VerticalContentAlignment="Bottom" Margin="0" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
-                <TextBlock Text="{DynamicResource VMCProtocolReceiverSettingWindow_Port}" Margin="20,0,0,0"/>
+                <CheckBox Content="{DynamicResource mocopi_Enable}" Name="UsemocopiCheckBox" VerticalAlignment="Center" VerticalContentAlignment="Bottom" Margin="0" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                <TextBlock Text="{DynamicResource mocopi_Port}" Margin="20,0,0,0"/>
                 <TextBox Text="12351" VerticalAlignment="Center" Name="ReceivePortTextBox" Width="50"/>
-                <Button Content="{DynamicResource SettingWindow_Apply}" DockPanel.Dock="Right" Name="PortApplyButton" Height="24" Click="PortApplyButton_Click"/>
+                <Button Content="{DynamicResource mocopi_Apply}" DockPanel.Dock="Right" Name="PortApplyButton" Height="24" Click="PortApplyButton_Click"/>
             </StackPanel>
         </GroupBox>
-        <GroupBox Header="{DynamicResource ApplyTarget_Header}" DockPanel.Dock="Top">
+        <GroupBox Header="{DynamicResource mocopi_ApplyTarget}" DockPanel.Dock="Top">
             <Grid Margin="5">
                 <StackPanel Orientation="Vertical">
                     <Grid>
@@ -57,31 +57,31 @@
                                 <ColumnDefinition Width="25"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <CheckBox Content="{DynamicResource ApplyTarget_Head}" Name="HeadCheckBox" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
-                            <CheckBox Content="{DynamicResource ApplyTarget_Chest}" Name="ChestCheckBox" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
-                            <CheckBox Content="{DynamicResource ApplyTarget_RightArm}" Name="RightArmCheckBox" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
-                            <CheckBox Content="{DynamicResource ApplyTarget_LeftArm}" Name="LeftArmCheckBox" Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
-                            <CheckBox Content="{DynamicResource ApplyTarget_Spine}" Name="SpineCheckBox" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
-                            <CheckBox Content="{DynamicResource ApplyTarget_RightHand}" Name="RightHandCheckBox" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
-                            <CheckBox Content="{DynamicResource ApplyTarget_LeftHand}" Name="LeftHandCheckBox" Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
-                            <CheckBox Content="{DynamicResource ApplyTarget_RightLeg}" Name="RightLegCheckBox" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
-                            <CheckBox Content="{DynamicResource ApplyTarget_LeftLeg}" Name="LeftLegCheckBox" Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
-                            <CheckBox Content="{DynamicResource ApplyTarget_RightFoot}" Name="RightFootCheckBox" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
-                            <CheckBox Content="{DynamicResource ApplyTarget_LeftFoot}" Name="LeftFootCheckBox" Grid.Row="6" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource mocopi_Head}" Name="HeadCheckBox" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource mocopi_Chest}" Name="ChestCheckBox" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource mocopi_RightArm}" Name="RightArmCheckBox" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource mocopi_LeftArm}" Name="LeftArmCheckBox" Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource mocopi_Spine}" Name="SpineCheckBox" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource mocopi_RightHand}" Name="RightHandCheckBox" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource mocopi_LeftHand}" Name="LeftHandCheckBox" Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource mocopi_RightLeg}" Name="RightLegCheckBox" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource mocopi_LeftLeg}" Name="LeftLegCheckBox" Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource mocopi_RightFoot}" Name="RightFootCheckBox" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource mocopi_LeftFoot}" Name="LeftFootCheckBox" Grid.Row="6" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
                         </Grid>
                     </Grid>
-                    <CheckBox Content="{DynamicResource ApplyTarget_RootPosition}" Name="RootPositionCheckBox" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
-                    <CheckBox Content="{DynamicResource ApplyTarget_RootRotation}" Name="RootRotationCheckBox" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                    <CheckBox Content="{DynamicResource mocopi_RootPosition}" Name="RootPositionCheckBox" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                    <CheckBox Content="{DynamicResource mocopi_RootRotation}" Name="RootRotationCheckBox" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,10,10,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
                 </StackPanel>
                 <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Right">
-                    <Button Content="{DynamicResource Plugin_mocopi_Only}" Name="mocopiOnlyButton" Click="mocopiOnlyButton_Click"/>
-                    <Button Content="{DynamicResource ApplyTarget_WithVRDevice}" Name="WithVRDeviceButton" Click="WithVRDeviceButton_Click"/>
+                    <Button Content="{DynamicResource mocopi_Only}" Name="mocopiOnlyButton" Click="mocopiOnlyButton_Click"/>
+                    <Button Content="{DynamicResource mocopi_WithVRDevice}" Name="WithVRDeviceButton" Click="WithVRDeviceButton_Click"/>
                 </StackPanel>
-                <CheckBox Content="{DynamicResource VMCProtocolReceiverSettingWindow_CorrectHipBone}" Name="CorrectHipBoneCheckBox" HorizontalAlignment="Right" VerticalAlignment="Bottom" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                <CheckBox Content="{DynamicResource mocopi_CorrectHipBone}" Name="CorrectHipBoneCheckBox" HorizontalAlignment="Right" VerticalAlignment="Bottom" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
             </Grid>
         </GroupBox>
-        <Button DockPanel.Dock="Right" Content="{DynamicResource SettingWindow_Close}" Width="100" Name="CloseButton" Click="CloseButton_Click"/>
-        <Button DockPanel.Dock="Left" Content="{DynamicResource Common_ResetCenter}" Padding="20,0" Name="ResetCenterButton" Click="ResetCenterButton_Click"/>
+        <Button DockPanel.Dock="Right" Content="{DynamicResource mocopi_Close}" Width="100" Name="CloseButton" Click="CloseButton_Click"/>
+        <Button DockPanel.Dock="Left" Content="{DynamicResource mocopi_ResetCenter}" Padding="20,0" Name="ResetCenterButton" Click="ResetCenterButton_Click"/>
         <Grid/>
     </DockPanel>
 </Window>

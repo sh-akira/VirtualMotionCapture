@@ -13,12 +13,29 @@
       <Link>Shared\MocopiPipeCommands.cs</Link>
     </Compile>
     <Compile Include="MocopiControlPanelPlugin.cs" />
+    <Compile Include="PluginContext.cs" />
     <Compile Include="MotionCapture_mocopiSettingWindow.xaml.cs">
       <DependentUpon>MotionCapture_mocopiSettingWindow.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Include="MotionCapture_mocopiSettingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Japanese.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\English.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Chinese.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Korean.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
