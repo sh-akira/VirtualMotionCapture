@@ -176,12 +176,14 @@ namespace VMC.Tests
             Settings.Current.EnableAutoCalibrationOnModelLoad = false;
             Settings.Current.LastCalibrationSnapshot = null;
             //外部機器のUDPポートを掴まないようにする
-            //(mocopiはプラグインへ移ったので、プラグイン設定領域の方を落とす)
+            //(mocopiはプラグインへ移ったので、プラグイン設定領域の方を落とす。
+            // mocopiプラグインは設定オブジェクトをまとめて "mocopi/Setting" へ入れるため、
+            // enable だけのJSONを置く。残りのメンバーはプラグイン側で既定値が入る)
             if (Settings.Current.PluginSettings == null)
             {
                 Settings.Current.PluginSettings = new Dictionary<string, string>();
             }
-            Settings.Current.PluginSettings["mocopi/Enable"] = "false";
+            Settings.Current.PluginSettings["mocopi/Setting"] = "{\"enable\":false}";
 
             if (FaceController != null)
             {
