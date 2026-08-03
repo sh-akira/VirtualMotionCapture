@@ -1,98 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <PluginKind>Unity</PluginKind>
+    <PluginFolderName>Tobii</PluginFolderName>
     <ProjectGuid>{B1C0F1E1-0003-4A00-9000-000000000003}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>VMC.Plugin.Tobii</RootNamespace>
+    <RootNamespace>VMC.Plugin.TobiiEye</RootNamespace>
     <AssemblyName>VMC.Plugin.Tobii</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <OutputPath>$(PluginOutputRoot)Tobii\</OutputPath>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE;UNITY_STANDALONE;UNITY_STANDALONE_WIN;UNITY_64</DefineConstants>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <WarningLevel>4</WarningLevel>
-    <!-- 参照先は本体に入っているので配布物には含めない -->
-    <AllowedReferenceRelatedFileExtensions>none</AllowedReferenceRelatedFileExtensions>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="UnityEngine">
-      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.AnimationModule">
-      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.AnimationModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <!-- Tobii SDK の一部が UnityEditor を参照するため(#if UNITY_EDITOR で囲まれている)
-         (実際には型を使っていないので出力DLLへの参照は入らない) -->
-    <Reference Include="UnityEditor">
-      <HintPath>$(UnityEditorRoot)Managed\UnityEditor.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.Physics2DModule">
-      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.Physics2DModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.PhysicsModule">
-      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.PhysicsModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.IMGUIModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.UIModule">
-      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.UIModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.TextRenderingModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.InputLegacyModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.VRModule">
-      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.VRModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.XRModule">
-      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.XRModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="VMC.PluginAPI">
-      <HintPath>$(UnityScriptAssemblies)VMC.PluginAPI.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="VMCMod">
-      <HintPath>$(UnityScriptAssemblies)VMCMod.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityMemoryMappedFile">
-      <HintPath>$(UnityMemoryMappedFileDll)</HintPath>
-      <Private>false</Private>
-    </Reference>
-  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <ItemGroup>
     <Compile Include="..\Shared\TobiiPipeCommands.cs">
       <Link>Shared\TobiiPipeCommands.cs</Link>
     </Compile>
     <Compile Include="TobiiPlugin.cs" />
     <!-- Tobii Unity SDK のソース(再配布不可のためリポジトリには含めない)。
-         DemoScenes は不要なので含めない -->
+         DemoScenes と Editor 拡張は不要なので含めない -->
     <Compile Include="$(ExternalSdkRoot)Tobii\Framework\**\*.cs" Exclude="$(ExternalSdkRoot)Tobii\Framework\Editor\**\*.cs">
       <Link>TobiiSDK\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Compile>
@@ -104,39 +26,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <!-- SDKのネイティブDLLは native\ サブフォルダへ同梱する。
-         マネージドDLLと混ぜないことで、読み込み側が中身を見て振り分ける必要が無くなる
-         (DllImportの探索パスに入らないため、実行時に NativeLibraryLoader が先読みする) -->
     <!-- VMCは64bit専用(StandaloneWindows64)なのでx86版は同梱しない。
          Tobii SDKは IntPtr.Size で x64/x86 を切り替えるため、64bitプロセスでは
          x86版のDLLは使われず、先読みしても Win32エラー193 になるだけ -->
     <NativePluginFile Include="$(ExternalSdkRoot)Tobii\Plugins\*.dll"
                       Exclude="$(ExternalSdkRoot)Tobii\Plugins\*_x86.dll" />
   </ItemGroup>
-  <Target Name="CopyNativePluginFiles" AfterTargets="Build">
-    <Copy SourceFiles="@(NativePluginFile)" DestinationFolder="$(OutputPath)native\" SkipUnchangedFiles="true" />
-  </Target>
-  <Target Name="RemoveFacadesFromPluginOutput" AfterTargets="Build">
-    <!-- コンパイルにはファサードが要るが、配布物に混ざると本体のものと衝突しかねないので消す -->
-    <ItemGroup>
-      <FacadeToRemove Include="$(OutputPath)System.*.dll" />
-      <FacadeToRemove Include="$(OutputPath)netstandard.dll" />
-      <FacadeToRemove Include="$(OutputPath)mscorlib.dll" />
-      <FacadeToRemove Include="$(OutputPath)*.pdb" />
-    </ItemGroup>
-    <Delete Files="@(FacadeToRemove)" />
-  </Target>
-  <Target Name="CopyPluginToEditorFolder" AfterTargets="Build;CopyNativePluginFiles;RemoveFacadesFromPluginOutput">
-    <!-- エディタ実行でも読み込めるようリポジトリ直下の Plugins\ へ複製する。
-         構成が変わったときに古いDLLが残るとネイティブ/マネージドの振り分けが崩れるので、
-         先に消してから入れ直す(Unityが掴んでいて消せない場合は次回ビルドで解消する) -->
-    <RemoveDir Directories="$(EditorPluginOutputRoot)Tobii" ContinueOnError="WarnAndContinue" />
-    <ItemGroup>
-      <EditorPluginFile Include="$(OutputPath)**\*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(EditorPluginFile)"
-          DestinationFolder="$(EditorPluginOutputRoot)Tobii\%(RecursiveDir)"
-          SkipUnchangedFiles="true" />
-  </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

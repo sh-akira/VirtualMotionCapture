@@ -30,4 +30,39 @@
     <UnityMemoryMappedFileDll>$(RepositoryRoot)Assets\ExternalPlugins\UnityMemoryMappedFile\UnityMemoryMappedFile.dll</UnityMemoryMappedFileDll>
     <ControlPanelPluginApiDll>$(RepositoryRoot)ControlWindowWPF\VMC.ControlPanel.PluginAPI\bin\Debug\VMC.ControlPanel.PluginAPI.dll</ControlPanelPluginApiDll>
   </PropertyGroup>
+
+  <!--
+    プラグイン共通の設定。PluginKind と PluginFolderName を各プロジェクトで指定すれば、
+    参照・出力先・コピー処理は Directory.Build.targets が面倒を見る。
+  -->
+  <PropertyGroup Condition=" '$(PluginKind)' == 'Unity' ">
+    <OutputPath>$(PluginOutputRoot)$(PluginFolderName)\</OutputPath>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <OutputType>Library</OutputType>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE;UNITY_STANDALONE;UNITY_STANDALONE_WIN;UNITY_64</DefineConstants>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <!-- 参照先は本体に入っているので配布物には含めない -->
+    <AllowedReferenceRelatedFileExtensions>none</AllowedReferenceRelatedFileExtensions>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(PluginKind)' == 'ControlPanel' ">
+    <OutputPath>$(ControlPanelPluginOutputRoot)$(PluginFolderName)\</OutputPath>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <OutputType>Library</OutputType>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(PluginKind)' != '' ">
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
 </Project>
