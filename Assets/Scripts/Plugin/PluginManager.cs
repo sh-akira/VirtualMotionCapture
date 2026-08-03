@@ -19,8 +19,6 @@ namespace VMC
     /// </summary>
     public class PluginManager : MonoBehaviour
     {
-        public static PluginManager Instance { get; private set; }
-
         /// <summary>
         /// プラグインの置き場所。ビルド版ではexeの隣、エディタではリポジトリ直下を指す。
         /// Awakeの実行順に依らず使えるよう都度求める。
@@ -38,11 +36,6 @@ namespace VMC
             public string Version;
             public string AssemblyPath;
             public IVMCPlugin Instance;
-        }
-
-        private void Awake()
-        {
-            Instance = this;
         }
 
         /// <summary>

@@ -11,12 +11,6 @@ namespace VMC.ControlPanel.Plugin
     {
         /// <summary>Unity側との通信クライアント</summary>
         MemoryMappedFileClient Client { get; }
-
-        /// <summary>現在の言語("Japanese" / "English" / "Chinese" / "Korean")</summary>
-        string CurrentLanguage { get; }
-
-        /// <summary>本体・プラグイン両方の辞書から文字列を引く</summary>
-        string GetLocalizedString(string key);
     }
 
     /// <summary>

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,7 +25,6 @@ namespace VirtualMotionCaptureControlPanel
         public class LoadedPlugin
         {
             public IControlPanelPlugin Instance;
-            public string AssemblyPath;
             /// <summary>Unity側にも同じIDのプラグインが入っているか</summary>
             public bool UnitySideAvailable;
         }
@@ -38,8 +37,6 @@ namespace VirtualMotionCaptureControlPanel
         private class ControlPanelHost : IControlPanelHost
         {
             public MemoryMappedFileClient Client => Globals.Client;
-            public string CurrentLanguage => Globals.CurrentLanguage;
-            public string GetLocalizedString(string key) => LanguageSelector.GetFromAll(key);
         }
 
         /// <summary>
@@ -56,8 +53,10 @@ namespace VirtualMotionCaptureControlPanel
             //Plugins/配下から読んだアセンブリを名前で引けるようにしておく。
             //これが無いとプラグインのウインドウもリソース辞書も開けない。
             //解決ハンドラの中でファイル走査をすると再入する恐れがあるので、先に一覧を作っておく
+            var dllFiles = Directory.GetFiles(PluginsPath, "*.dll", SearchOption.AllDirectories);
+
             pluginAssemblyPaths.Clear();
-            foreach (var dll in Directory.GetFiles(PluginsPath, "*.dll", SearchOption.AllDirectories))
+            foreach (var dll in dllFiles)
             {
                 var name = Path.GetFileNameWithoutExtension(dll);
                 if (pluginAssemblyPaths.ContainsKey(name) == false) pluginAssemblyPaths[name] = dll;
@@ -65,7 +64,7 @@ namespace VirtualMotionCaptureControlPanel
             AppDomain.CurrentDomain.AssemblyResolve -= ResolvePluginAssembly;
             AppDomain.CurrentDomain.AssemblyResolve += ResolvePluginAssembly;
 
-            foreach (var dllFile in Directory.GetFiles(PluginsPath, "*.dll", SearchOption.AllDirectories))
+            foreach (var dllFile in dllFiles)
             {
                 LoadAssembly(dllFile);
             }
@@ -120,7 +119,7 @@ namespace VirtualMotionCaptureControlPanel
                     PipeCommands.RegisterPluginCommandTypes(instance.CommandTypes);
 
                     instance.Initialize(Host);
-                    plugins.Add(new LoadedPlugin { Instance = instance, AssemblyPath = dllFile });
+                    plugins.Add(new LoadedPlugin { Instance = instance });
                 }
             }
             catch (BadImageFormatException)

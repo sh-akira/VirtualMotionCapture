@@ -32,30 +32,19 @@ namespace VMC
             }
         }
 
-        public bool Contains(string key) => Store.ContainsKey(prefix + key);
-
-        public void Remove(string key) => Store.Remove(prefix + key);
-
         public T Get<T>(string key, T defaultValue = default)
         {
-            return TryGet<T>(key, out var value) ? value : defaultValue;
-        }
-
-        public bool TryGet<T>(string key, out T value)
-        {
-            value = default;
-            if (Store.TryGetValue(prefix + key, out var json) == false) return false;
-            if (string.IsNullOrEmpty(json)) return false;
+            if (Store.TryGetValue(prefix + key, out var json) == false) return defaultValue;
+            if (string.IsNullOrEmpty(json)) return defaultValue;
             try
             {
-                value = sh_akira.Json.Serializer.Deserialize<T>(json);
-                return true;
+                return sh_akira.Json.Serializer.Deserialize<T>(json);
             }
             catch (Exception ex)
             {
                 //壊れた値で起動できなくなるのは避けたいので、既定値へフォールバックする
                 Debug.LogWarning($"[Plugin] 設定の読み込みに失敗しました: {prefix + key} ({ex.Message})");
-                return false;
+                return defaultValue;
             }
         }
 

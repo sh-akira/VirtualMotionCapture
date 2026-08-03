@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Windows;
 using VMC.ControlPanel.Plugin;
 using VMC.Plugin.Commands;
@@ -9,30 +10,22 @@ namespace VMC.Plugin.Mocopi.UI
     /// mocopi連携のコントロールパネル側プラグイン。
     /// 設定画面の「外部デバイス」欄にボタンとして並ぶ。
     /// </summary>
-    public class MocopiControlPanelPlugin : IControlPanelPlugin
+    public class MocopiControlPanelPlugin : ControlPanelPluginBase
     {
-        public string Id => "mocopi";
-
-        public string Version => "1.0.0";
-        public System.Collections.Generic.IEnumerable<System.Type> CommandTypes => MocopiCommands.Types;
-
+        public override string Id => "mocopi";
+        public override string Version => "1.0.0";
         //モーション系は100番台
-        public int SortOrder => 100;
+        public override int SortOrder => 100;
+        public override string TitleResourceKey => "Plugin_mocopi_Title";
+        public override IEnumerable<Type> CommandTypes => MocopiCommands.Types;
+        protected override string ResourceAssemblyName => "VMC.Plugin.Mocopi.UI";
 
-        public string TitleResourceKey => "Plugin_mocopi_Title";
-
-        public void Initialize(IControlPanelHost host) => PluginContext.Host = host;
-
-        public ResourceDictionary GetLocalization(string language)
+        public override void Initialize(IControlPanelHost host)
         {
-            //対応していない言語では英語にフォールバックする
-            var name = language == "Japanese" || language == "Chinese" || language == "Korean" ? language : "English";
-            return new ResourceDictionary
-            {
-                Source = new Uri($"pack://application:,,,/VMC.Plugin.Mocopi.UI;component/Resources/{name}.xaml", UriKind.Absolute)
-            };
+            base.Initialize(host);
+            PluginContext.Host = host;
         }
 
-        public Window CreateSettingWindow(Window owner) => new MotionCapture_mocopiSettingWindow();
+        public override Window CreateSettingWindow(Window owner) => new MotionCapture_mocopiSettingWindow();
     }
 }

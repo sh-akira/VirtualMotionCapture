@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Windows;
 using VMC.ControlPanel.Plugin;
 using VMC.Plugin.Commands;
@@ -9,50 +10,37 @@ namespace VMC.Plugin.ViveSR.UI
     /// SRanipal SDK を使う2機能は同じDLLに入っているが、デバイスとしては別物なので
     /// 「外部デバイス」欄には2つのボタンとして並べる。
     /// </summary>
-    internal static class ViveSRLocalization
+    public abstract class ViveSRControlPanelPluginBase : ControlPanelPluginBase
     {
-        public static ResourceDictionary Get(string language)
+        public override string Version => "1.0.0";
+        public override IEnumerable<Type> CommandTypes => ViveSRCommands.Types;
+        protected override string ResourceAssemblyName => "VMC.Plugin.ViveSR.UI";
+
+        public override void Initialize(IControlPanelHost host)
         {
-            //対応していない言語では英語にフォールバックする
-            var name = language == "Japanese" || language == "Chinese" || language == "Korean" ? language : "English";
-            return new ResourceDictionary
-            {
-                Source = new Uri($"pack://application:,,,/VMC.Plugin.ViveSR.UI;component/Resources/{name}.xaml", UriKind.Absolute)
-            };
+            base.Initialize(host);
+            PluginContext.Host = host;
         }
     }
 
     /// <summary>VIVE Pro Eye / Focus 3 / Droolon F1 のアイトラッキング</summary>
-    public class ViveProEyeControlPanelPlugin : IControlPanelPlugin
+    public class ViveProEyeControlPanelPlugin : ViveSRControlPanelPluginBase
     {
-        public string Id => "ViveSR.Eye";
-        public string Version => "1.0.0";
-        public System.Collections.Generic.IEnumerable<System.Type> CommandTypes => ViveSRCommands.Types;
+        public override string Id => "ViveSR.Eye";
         //表情・視線系は200番台
-        public int SortOrder => 200;
-        public string TitleResourceKey => "Plugin_ViveSR.Eye_Title";
+        public override int SortOrder => 200;
+        public override string TitleResourceKey => "Plugin_ViveSR.Eye_Title";
 
-        public void Initialize(IControlPanelHost host) => PluginContext.Host = host;
-
-        public ResourceDictionary GetLocalization(string language) => ViveSRLocalization.Get(language);
-
-        public Window CreateSettingWindow(Window owner) => new EyeTracking_ViveProEyeSettingWindow();
+        public override Window CreateSettingWindow(Window owner) => new EyeTracking_ViveProEyeSettingWindow();
     }
 
     /// <summary>VIVE Facial Tracker のリップトラッキング</summary>
-    public class ViveFacialTrackerControlPanelPlugin : IControlPanelPlugin
+    public class ViveFacialTrackerControlPanelPlugin : ViveSRControlPanelPluginBase
     {
-        public string Id => "ViveSR.Lip";
-        public string Version => "1.0.0";
-        public System.Collections.Generic.IEnumerable<System.Type> CommandTypes => ViveSRCommands.Types;
-        public int SortOrder => 210;
-        public string TitleResourceKey => "Plugin_ViveSR.Lip_Title";
+        public override string Id => "ViveSR.Lip";
+        public override int SortOrder => 210;
+        public override string TitleResourceKey => "Plugin_ViveSR.Lip_Title";
 
-        public void Initialize(IControlPanelHost host) => PluginContext.Host = host;
-
-        //同じ辞書を2回マージすることになるが、キーが同じなので実害は無い
-        public ResourceDictionary GetLocalization(string language) => ViveSRLocalization.Get(language);
-
-        public Window CreateSettingWindow(Window owner) => new LipTracking_ViveSettingWindow();
+        public override Window CreateSettingWindow(Window owner) => new LipTracking_ViveSettingWindow();
     }
 }

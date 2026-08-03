@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Windows;
 using VMC.ControlPanel.Plugin;
 using VMC.Plugin.Commands;
@@ -6,30 +7,22 @@ using VMC.Plugin.Commands;
 namespace VMC.Plugin.Tobii.UI
 {
     /// <summary>Tobii Eye Tracker のアイトラッキング(コントロールパネル側)</summary>
-    public class TobiiControlPanelPlugin : IControlPanelPlugin
+    public class TobiiControlPanelPlugin : ControlPanelPluginBase
     {
-        public string Id => "Tobii";
-
-        public string Version => "1.0.0";
-        public System.Collections.Generic.IEnumerable<System.Type> CommandTypes => TobiiCommands.Types;
-
+        public override string Id => "Tobii";
+        public override string Version => "1.0.0";
         //表情・視線系は200番台
-        public int SortOrder => 220;
+        public override int SortOrder => 220;
+        public override string TitleResourceKey => "Plugin_Tobii_Title";
+        public override IEnumerable<Type> CommandTypes => TobiiCommands.Types;
+        protected override string ResourceAssemblyName => "VMC.Plugin.Tobii.UI";
 
-        public string TitleResourceKey => "Plugin_Tobii_Title";
-
-        public void Initialize(IControlPanelHost host) => PluginContext.Host = host;
-
-        public ResourceDictionary GetLocalization(string language)
+        public override void Initialize(IControlPanelHost host)
         {
-            //対応していない言語では英語にフォールバックする
-            var name = language == "Japanese" || language == "Chinese" || language == "Korean" ? language : "English";
-            return new ResourceDictionary
-            {
-                Source = new Uri($"pack://application:,,,/VMC.Plugin.Tobii.UI;component/Resources/{name}.xaml", UriKind.Absolute)
-            };
+            base.Initialize(host);
+            PluginContext.Host = host;
         }
 
-        public Window CreateSettingWindow(Window owner) => new EyeTracking_TobiiSettingWindow();
+        public override Window CreateSettingWindow(Window owner) => new EyeTracking_TobiiSettingWindow();
     }
 }
