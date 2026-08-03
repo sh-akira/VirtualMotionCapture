@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <Import Project="..\Directory.Build.props" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -108,7 +107,11 @@
     <!-- SDKのネイティブDLLは native\ サブフォルダへ同梱する。
          マネージドDLLと混ぜないことで、読み込み側が中身を見て振り分ける必要が無くなる
          (DllImportの探索パスに入らないため、実行時に NativeLibraryLoader が先読みする) -->
-    <NativePluginFile Include="$(ExternalSdkRoot)Tobii\Plugins\*.dll" />
+    <!-- VMCは64bit専用(StandaloneWindows64)なのでx86版は同梱しない。
+         Tobii SDKは IntPtr.Size で x64/x86 を切り替えるため、64bitプロセスでは
+         x86版のDLLは使われず、先読みしても Win32エラー193 になるだけ -->
+    <NativePluginFile Include="$(ExternalSdkRoot)Tobii\Plugins\*.dll"
+                      Exclude="$(ExternalSdkRoot)Tobii\Plugins\*_x86.dll" />
   </ItemGroup>
   <Target Name="CopyNativePluginFiles" AfterTargets="Build">
     <Copy SourceFiles="@(NativePluginFile)" DestinationFolder="$(OutputPath)native\" SkipUnchangedFiles="true" />
