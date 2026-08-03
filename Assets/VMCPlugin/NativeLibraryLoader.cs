@@ -28,6 +28,9 @@ namespace VMC.Plugin
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool SetDllDirectoryW(string lpPathName);
 
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        private static extern uint GetDllDirectoryW(uint nBufferLength, System.Text.StringBuilder lpBuffer);
+
         /// <summary>
         /// プラグインフォルダ直下の native/ にあるネイティブDLLをすべて先読みする。
         /// native/ が無ければ何もしない(ネイティブDLLを使わないプラグイン)。
@@ -39,23 +42,48 @@ namespace VMC.Plugin
             var nativeDirectory = Path.Combine(pluginDirectory, NativeDirectoryName);
             if (Directory.Exists(nativeDirectory) == false) return 0;
 
-            //ネイティブDLL同士の依存を解決できるよう、検索パスにも追加しておく
+            //ネイティブDLL同士の依存を解決できるよう、検索パスにも追加しておく。
+            //プロセス全体に効く設定なので、先読みが終わったら必ず元へ戻す
+            //(先読みしたDLLの依存はLoadLibraryWの時点で解決済みなので、
+            // 戻した後の DllImport は同じモジュールを使える)
+            var previousDllDirectory = GetDllDirectory();
             SetDllDirectoryW(nativeDirectory);
-
-            var loaded = 0;
-            foreach (var dll in Directory.GetFiles(nativeDirectory, "*.dll", SearchOption.TopDirectoryOnly))
+            try
             {
-                if (LoadLibraryW(dll) != IntPtr.Zero)
+                var loaded = 0;
+                foreach (var dll in Directory.GetFiles(nativeDirectory, "*.dll", SearchOption.TopDirectoryOnly))
                 {
-                    loaded++;
+                    if (LoadLibraryW(dll) != IntPtr.Zero)
+                    {
+                        loaded++;
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[Plugin] ネイティブDLLを読み込めませんでした: {dll} " +
+                                         $"(Win32エラー {Marshal.GetLastWin32Error()})");
+                    }
                 }
-                else
-                {
-                    Debug.LogWarning($"[Plugin] ネイティブDLLを読み込めませんでした: {dll} " +
-                                     $"(Win32エラー {Marshal.GetLastWin32Error()})");
-                }
+                return loaded;
             }
-            return loaded;
+            finally
+            {
+                //nullを渡すと既定の探索順に戻る
+                SetDllDirectoryW(previousDllDirectory);
+            }
+        }
+
+        /// <summary>現在のDLL探索ディレクトリ。設定されていなければ null</summary>
+        private static string GetDllDirectory()
+        {
+            //終端のnull分を含めた必要サイズが返るので、2回呼んで取得する
+            var length = GetDllDirectoryW(0, null);
+            if (length == 0) return null;
+
+            var buffer = new System.Text.StringBuilder((int)length);
+            if (GetDllDirectoryW(length, buffer) == 0) return null;
+
+            var path = buffer.ToString();
+            return string.IsNullOrEmpty(path) ? null : path;
         }
     }
 }
