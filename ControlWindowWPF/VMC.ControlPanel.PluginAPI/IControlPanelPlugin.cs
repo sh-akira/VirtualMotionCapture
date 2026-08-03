@@ -47,9 +47,10 @@ namespace VMC.ControlPanel.Plugin
         int SortOrder { get; }
 
         /// <summary>
-        /// ボタンに表示する名前のリソースキー。
+        /// ボタンに表示する名前のリソースキー。"&lt;Id&gt;_Title" にする規約。
         /// GetLocalization が返す ResourceDictionary に含めておくこと。
-        /// キーの衝突を避けるため "Plugin_&lt;Id&gt;_" を前置する規約とする。
+        /// (プラグインの辞書は本体の後にマージされるので、本体とキーが衝突すると
+        ///  本体の画面の文字列まで上書きしてしまう。"&lt;Id&gt;_" を前置して避ける)
         /// </summary>
         string TitleResourceKey { get; }
 
