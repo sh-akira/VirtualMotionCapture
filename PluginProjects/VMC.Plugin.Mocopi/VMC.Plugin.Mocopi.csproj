@@ -104,7 +104,10 @@
     <Delete Files="@(FacadeToRemove)" />
   </Target>
   <Target Name="CopyPluginToEditorFolder" AfterTargets="Build;CopyNativePluginFiles;RemoveFacadesFromPluginOutput">
-    <!-- エディタ実行でも読み込めるようリポジトリ直下の Plugins\ へ複製する -->
+    <!-- エディタ実行でも読み込めるようリポジトリ直下の Plugins\ へ複製する。
+         構成が変わったときに古いDLLが残るとネイティブ/マネージドの振り分けが崩れるので、
+         先に消してから入れ直す(Unityが掴んでいて消せない場合は次回ビルドで解消する) -->
+    <RemoveDir Directories="$(EditorPluginOutputRoot)mocopi" ContinueOnError="WarnAndContinue" />
     <ItemGroup>
       <EditorPluginFile Include="$(OutputPath)**\*" />
     </ItemGroup>

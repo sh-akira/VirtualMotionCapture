@@ -66,7 +66,9 @@ namespace VMC
 
             foreach (var directory in directories)
             {
-                //ネイティブDLLはDllImportの探索パスに入らないため、先に絶対パスで読み込んでおく
+                //ネイティブDLLはDllImportの探索パスに入らないため、先に絶対パスで読み込んでおく。
+                //ネイティブDLLは native/ サブフォルダに置く決まりなので、
+                //ここで拾う直下の *.dll はマネージドDLLだけになる
                 NativeLibraryLoader.PreloadFrom(directory);
 
                 foreach (var dllFile in Directory.GetFiles(directory, "*.dll", SearchOption.TopDirectoryOnly))
@@ -80,10 +82,6 @@ namespace VMC
 
         private void LoadPluginAssembly(string dllFile, IPluginHost host)
         {
-            //ネイティブDLLに Assembly.LoadFrom を試すと、例外を捕まえても
-            //Monoが "Could not load image ..." をコンソールへ出してしまうので先に弾く
-            if (NativeLibraryLoader.IsManagedAssembly(dllFile) == false) return;
-
             Type[] pluginTypes;
             try
             {

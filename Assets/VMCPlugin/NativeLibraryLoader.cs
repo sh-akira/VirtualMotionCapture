@@ -6,15 +6,21 @@ using UnityEngine;
 namespace VMC.Plugin
 {
     /// <summary>
-    /// プラグインフォルダ内のネイティブDLLを読み込めるようにするヘルパ。
+    /// プラグインが同梱するネイティブDLLを読み込めるようにするヘルパー。
     ///
     /// Unity の DllImport はネイティブDLLを exe 直下や Plugins フォルダから探すため、
-    /// Plugins/&lt;プラグイン名&gt;/ に置いたDLLはそのままでは解決できない。
-    /// プラグインの Initialize から PreloadFrom を呼んで、先に絶対パスでロードしておく。
-    /// (一度プロセスにロードされていれば、以降の DllImport は同じモジュールを使う)
+    /// プラグインのフォルダに置いたDLLはそのままでは解決できない。
+    /// 先に絶対パスでプロセスへ読み込んでおけば、以降の DllImport は同じモジュールを使う。
+    ///
+    /// ネイティブDLLは Plugins/&lt;プラグイン名&gt;/native/ に置く決まりにしている。
+    /// マネージドDLLと同じ場所に混ぜないことで、
+    /// 「どちらなのかをファイルの中身から判別する」処理が不要になる。
     /// </summary>
     public static class NativeLibraryLoader
     {
+        /// <summary>ネイティブDLLを置くサブフォルダ名</summary>
+        public const string NativeDirectoryName = "native";
+
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern IntPtr LoadLibraryW(string lpFileName);
 
@@ -23,90 +29,33 @@ namespace VMC.Plugin
         private static extern bool SetDllDirectoryW(string lpPathName);
 
         /// <summary>
-        /// 指定ディレクトリ直下のネイティブDLLをすべて先読みする。
-        /// マネージドDLLが混ざっていても LoadLibrary が失敗するだけなので無視してよい。
+        /// プラグインフォルダ直下の native/ にあるネイティブDLLをすべて先読みする。
+        /// native/ が無ければ何もしない(ネイティブDLLを使わないプラグイン)。
         /// </summary>
+        /// <param name="pluginDirectory">プラグインのフォルダ(native/ の親)</param>
         /// <returns>読み込めたDLLの数</returns>
-        public static int PreloadFrom(string directory)
+        public static int PreloadFrom(string pluginDirectory)
         {
-            if (Directory.Exists(directory) == false) return 0;
+            var nativeDirectory = Path.Combine(pluginDirectory, NativeDirectoryName);
+            if (Directory.Exists(nativeDirectory) == false) return 0;
 
-            //依存DLL同士の解決のため、検索パスにも追加しておく
-            SetDllDirectoryW(directory);
+            //ネイティブDLL同士の依存を解決できるよう、検索パスにも追加しておく
+            SetDllDirectoryW(nativeDirectory);
 
             var loaded = 0;
-            foreach (var dll in Directory.GetFiles(directory, "*.dll", SearchOption.TopDirectoryOnly))
+            foreach (var dll in Directory.GetFiles(nativeDirectory, "*.dll", SearchOption.TopDirectoryOnly))
             {
-                //マネージドDLLをLoadLibraryしても意味が無いので飛ばす
-                if (IsManagedAssembly(dll)) continue;
-
-                try
+                if (LoadLibraryW(dll) != IntPtr.Zero)
                 {
-                    if (LoadLibraryW(dll) != IntPtr.Zero) loaded++;
+                    loaded++;
                 }
-                catch (Exception ex)
+                else
                 {
-                    Debug.LogWarning($"[Plugin] ネイティブDLLの先読みに失敗しました: {dll} ({ex.Message})");
+                    Debug.LogWarning($"[Plugin] ネイティブDLLを読み込めませんでした: {dll} " +
+                                     $"(Win32エラー {Marshal.GetLastWin32Error()})");
                 }
             }
             return loaded;
-        }
-
-        /// <summary>
-        /// .NETのアセンブリ(マネージドDLL)かどうかをPEヘッダから判定する。
-        ///
-        /// ネイティブDLLに Assembly.LoadFrom を試すと、例外を捕まえても
-        /// Monoが "Could not load image ..." をコンソールへ出してしまうため、
-        /// 読み込む前にこれで振り分ける。
-        /// </summary>
-        public static bool IsManagedAssembly(string path)
-        {
-            try
-            {
-                using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                using (var reader = new BinaryReader(stream))
-                {
-                    if (stream.Length < 0x40) return false;
-
-                    //DOSヘッダ(MZ)からPEヘッダの位置を得る
-                    if (reader.ReadUInt16() != 0x5A4D) return false;   //"MZ"
-                    stream.Position = 0x3C;
-                    var peOffset = reader.ReadUInt32();
-                    if (peOffset + 24 >= stream.Length) return false;
-
-                    stream.Position = peOffset;
-                    if (reader.ReadUInt32() != 0x00004550) return false; //"PE\0\0"
-
-                    //COFFヘッダ20バイトを飛ばしてオプショナルヘッダへ
-                    stream.Position = peOffset + 4 + 20;
-                    var magic = reader.ReadUInt16();
-                    int dataDirectoryOffset;
-                    if (magic == 0x10B) dataDirectoryOffset = 96;       //PE32
-                    else if (magic == 0x20B) dataDirectoryOffset = 112; //PE32+
-                    else return false;
-
-                    //データディレクトリの15番目(index 14)がCLIヘッダ。RVAが0でなければマネージド
-                    var cliHeaderPosition = peOffset + 4 + 20 + dataDirectoryOffset + (14 * 8);
-                    if (cliHeaderPosition + 8 > stream.Length) return false;
-                    stream.Position = cliHeaderPosition;
-                    return reader.ReadUInt32() != 0;
-                }
-            }
-            catch (Exception)
-            {
-                //読めないファイルはマネージドでないものとして扱う
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// 指定アセンブリが置かれているディレクトリを返す。
-        /// プラグインから自身のフォルダを知るために使う。
-        /// </summary>
-        public static string GetAssemblyDirectory(Type typeInAssembly)
-        {
-            var location = typeInAssembly.Assembly.Location;
-            return string.IsNullOrEmpty(location) ? null : Path.GetDirectoryName(location);
         }
     }
 }

@@ -25,14 +25,24 @@ Mod の仕組み（`Assets/VMCMOD/`）は今まで通りで、既存の Mod は�
 
 ```
 Plugins/                          本体側プラグイン（Unity）
-  mocopi/VMC.Plugin.Mocopi.dll
-  ViveSR/VMC.Plugin.ViveSR.dll  + SRanipalのネイティブDLL
-  Tobii/VMC.Plugin.Tobii.dll    + TobiiのネイティブDLL
+  mocopi/
+    VMC.Plugin.Mocopi.dll
+  ViveSR/
+    VMC.Plugin.ViveSR.dll
+    native/                       SRanipalのネイティブDLL
+  Tobii/
+    VMC.Plugin.Tobii.dll
+    native/                       TobiiのネイティブDLL
 ControlPanel/Plugins/             コントロールパネル側プラグイン（WPF）
   mocopi/VMC.Plugin.Mocopi.UI.dll
   ViveSR/VMC.Plugin.ViveSR.UI.dll
   Tobii/VMC.Plugin.Tobii.UI.dll
 ```
+
+**ネイティブDLLは必ず `native/` サブフォルダに置きます。** プラグインフォルダ直下は
+マネージドDLLだけという決まりにしてあるので、読み込み側はファイルの中身を見て
+振り分ける必要がなく、`native/` を `LoadLibrary`、直下を `Assembly.LoadFrom` と
+単純に処理できます。
 
 本体側とコントロールパネル側は同じ `Id` で対応付けます。片方しか入っていない場合は
 設定画面のボタンが無効になり、ツールチップで理由が表示されます。
@@ -139,8 +149,11 @@ ControlPanel/Plugins/             コントロールパネル側プラグイン�
 ## 注意点
 
 - **ネイティブDLL**: `Plugins/` 配下は `DllImport` の探索パスに入りません。
-  `NativeLibraryLoader.PreloadFrom` が読み込み前に絶対パスで先読みします
+  `NativeLibraryLoader.PreloadFrom` が `native/` 内のDLLを絶対パスで先読みします
   （`PluginManager` が自動で行うので、通常プラグイン側の対応は不要です）。
+  一度プロセスへ読み込まれていれば、以降の `DllImport` は同じモジュールを使います。
+  ネイティブDLLをフォルダ直下に置いてしまうと `Assembly.LoadFrom` の対象になり、
+  Mono が `Could not load image ...` をコンソールへ出すので注意してください。
 - **Tobii の EULA**: Tobii Unity SDK は EULA 同意マーカーを `Resources` から読みますが、
   プラグインDLLからは `Resources` を提供できないため、同意済みフラグを直接設定しています。
   Tobii プラグインを自前でビルド・配布する場合は、Tobii Unity SDK の EULA に同意した上で行ってください。

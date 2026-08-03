@@ -105,12 +105,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <!-- SDKのネイティブDLLをプラグインフォルダへ同梱する
-         (DllImportの探索パスに入らないため、実行時に NativeLibraryLoader で先読みする) -->
+    <!-- SDKのネイティブDLLは native\ サブフォルダへ同梱する。
+         マネージドDLLと混ぜないことで、読み込み側が中身を見て振り分ける必要が無くなる
+         (DllImportの探索パスに入らないため、実行時に NativeLibraryLoader が先読みする) -->
     <NativePluginFile Include="$(ExternalSdkRoot)Tobii\Plugins\*.dll" />
   </ItemGroup>
   <Target Name="CopyNativePluginFiles" AfterTargets="Build">
-    <Copy SourceFiles="@(NativePluginFile)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(NativePluginFile)" DestinationFolder="$(OutputPath)native\" SkipUnchangedFiles="true" />
   </Target>
   <Target Name="RemoveFacadesFromPluginOutput" AfterTargets="Build">
     <!-- コンパイルにはファサードが要るが、配布物に混ざると本体のものと衝突しかねないので消す -->
@@ -123,7 +124,10 @@
     <Delete Files="@(FacadeToRemove)" />
   </Target>
   <Target Name="CopyPluginToEditorFolder" AfterTargets="Build;CopyNativePluginFiles;RemoveFacadesFromPluginOutput">
-    <!-- エディタ実行でも読み込めるようリポジトリ直下の Plugins\ へ複製する -->
+    <!-- エディタ実行でも読み込めるようリポジトリ直下の Plugins\ へ複製する。
+         構成が変わったときに古いDLLが残るとネイティブ/マネージドの振り分けが崩れるので、
+         先に消してから入れ直す(Unityが掴んでいて消せない場合は次回ビルドで解消する) -->
+    <RemoveDir Directories="$(EditorPluginOutputRoot)Tobii" ContinueOnError="WarnAndContinue" />
     <ItemGroup>
       <EditorPluginFile Include="$(OutputPath)**\*" />
     </ItemGroup>
