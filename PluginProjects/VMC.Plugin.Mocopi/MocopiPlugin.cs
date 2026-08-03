@@ -29,7 +29,8 @@ namespace VMC.Plugin.Mocopi
         private MocopiAvatar mocopiAvatar;
         private GameObject currentModel;
 
-        private mocopi_SetSetting current = DefaultSetting();
+        //既定値は mocopi_SetSetting のコンストラクタが入れる
+        private mocopi_SetSetting current = new mocopi_SetSetting();
 
         public void Initialize(IPluginHost host)
         {
@@ -58,26 +59,6 @@ namespace VMC.Plugin.Mocopi
             StopUdpReceiver();
         }
 
-        private static mocopi_SetSetting DefaultSetting() => new mocopi_SetSetting
-        {
-            enable = true,
-            port = 12351,
-            ApplyRootPosition = true,
-            ApplyRootRotation = true,
-            ApplyChest = true,
-            ApplySpine = true,
-            ApplyHead = true,
-            ApplyLeftArm = true,
-            ApplyRightArm = true,
-            ApplyLeftHand = true,
-            ApplyRightHand = true,
-            ApplyLeftLeg = true,
-            ApplyRightLeg = true,
-            ApplyLeftFoot = true,
-            ApplyRightFoot = true,
-            CorrectHipBone = false,
-        };
-
         #region 設定
 
         private void OnReceived(object sender, DataReceivedEventArgs e)
@@ -105,7 +86,7 @@ namespace VMC.Plugin.Mocopi
         private void ApplySettings()
         {
             var previous = current;
-            current = settings.Get(SettingKey, DefaultSetting()) ?? DefaultSetting();
+            current = settings.Get(SettingKey, new mocopi_SetSetting()) ?? new mocopi_SetSetting();
 
             virtualAvatar.ApplyRootPosition = current.ApplyRootPosition;
             virtualAvatar.ApplyRootRotation = current.ApplyRootRotation;

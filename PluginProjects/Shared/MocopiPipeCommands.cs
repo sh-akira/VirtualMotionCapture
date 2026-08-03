@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace VMC.Plugin.Commands
 {
@@ -23,8 +24,41 @@ namespace VMC.Plugin.Commands
 
     public class mocopi_GetSetting { }
 
+    /// <summary>
+    /// mocopiの設定。この形のまま設定ファイルへも保存される。
+    ///
+    /// 直列化はメンバーが欠けていても例外にはならないが、そのままだと
+    /// bool は false、int は 0 になってしまう。あとからメンバーを増やしたときに
+    /// 既存ユーザーの設定が意図しない値にならないよう、
+    /// [OnDeserializing] で既定値を入れてから読み込ませる。
+    /// </summary>
     public class mocopi_SetSetting
     {
+        public mocopi_SetSetting() => SetDefaults();
+
+        [OnDeserializing]
+        private void OnDeserializing(StreamingContext context) => SetDefaults();
+
+        private void SetDefaults()
+        {
+            enable = true;
+            port = 12351;
+            ApplyRootPosition = true;
+            ApplyRootRotation = true;
+            ApplyChest = true;
+            ApplySpine = true;
+            ApplyHead = true;
+            ApplyLeftArm = true;
+            ApplyRightArm = true;
+            ApplyLeftHand = true;
+            ApplyRightHand = true;
+            ApplyLeftLeg = true;
+            ApplyRightLeg = true;
+            ApplyLeftFoot = true;
+            ApplyRightFoot = true;
+            CorrectHipBone = false;
+        }
+
         public bool enable { get; set; }
         public int port { get; set; }
 
