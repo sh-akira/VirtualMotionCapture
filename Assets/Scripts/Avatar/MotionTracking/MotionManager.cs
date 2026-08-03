@@ -30,6 +30,7 @@ namespace VMC
             if (controlWPFWindow == null) controlWPFWindow = GameObject.Find("ControlWPFWindow").GetComponent<ControlWPFWindow>();
             VMCEvents.OnCurrentModelChanged += OnCurrentModelChanged;
             VMCEvents.OnModelUnloading += OnModelUnloading;
+            VirtualAvatar.EnableChanged += OnVirtualAvatarEnableChanged;
         }
 
         private void Start()
@@ -40,6 +41,7 @@ namespace VMC
         private void OnDestroy()
         {
             IKManager.Instance.RemoveOnPostUpdate(eventId);
+            VirtualAvatar.EnableChanged -= OnVirtualAvatarEnableChanged;
         }
 
         /// <summary>
@@ -52,8 +54,11 @@ namespace VMC
         /// <summary>IsExternalDeviceMotionActive が変わったときに呼ばれる</summary>
         public event Action ExternalDeviceMotionActiveChanged;
 
-        /// <summary>外部デバイスの有効・無効が切り替わったことをプラグインから知らせる</summary>
-        public void NotifyExternalDeviceMotionActiveChanged() => ExternalDeviceMotionActiveChanged?.Invoke();
+        private void OnVirtualAvatarEnableChanged(VirtualAvatar virtualAvatar)
+        {
+            if (virtualAvatar.MotionSource != MotionSource.ExternalDevice) return;
+            ExternalDeviceMotionActiveChanged?.Invoke();
+        }
 
         public void AddVirtualAvatar(VirtualAvatar virtualAvatar)
         {

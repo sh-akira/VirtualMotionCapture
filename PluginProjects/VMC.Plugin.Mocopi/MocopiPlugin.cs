@@ -1,36 +1,35 @@
-﻿using Mocopi.Receiver;
+using Mocopi.Receiver;
 using Mocopi.Receiver.Core;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityMemoryMappedFile;
 using VMC.Plugin.Commands;
-using VMC.Plugin;
 
 namespace VMC.Plugin.Mocopi
 {
     /// <summary>
     /// mocopi連携。UDPで受け取ったスケルトンをアバターへ流し込む。
-    ///
-    /// 元は本体の MocopiConnector.cs だったものを、mocopi Receiver Plugin for Unity
-    /// への依存ごとプラグインへ切り出したもの。
     /// </summary>
     public class MocopiPlugin : MonoBehaviour, IVMCPlugin
     {
         public string Id => "mocopi";
         public string DisplayName => "mocopi";
         public string Version => "1.0.0";
-        public System.Collections.Generic.IEnumerable<System.Type> CommandTypes => MocopiCommands.Types;
+        public IEnumerable<Type> CommandTypes => MocopiCommands.Types;
+
+        /// <summary>設定はコマンドの形そのままで1つのキーへ保存する</summary>
+        private const string SettingKey = "Setting";
 
         private IPluginHost host;
         private IPluginSettings settings;
-        private IMotionSourceAvatar motionSource;
+        private VirtualAvatar virtualAvatar;
 
         private MocopiUdpReceiver udpReceiver;
         private MocopiAvatar mocopiAvatar;
         private GameObject currentModel;
 
-        private int port = 12351;
-        private bool enableReceive;
+        private mocopi_SetSetting current = DefaultSetting();
 
         public void Initialize(IPluginHost host)
         {
@@ -43,8 +42,7 @@ namespace VMC.Plugin.Mocopi
             host.Ipc.Received += OnReceived;
             host.SettingsApplied += ApplySettings;
 
-            motionSource = host.MotionSource.Create(transform);
-            motionSource.Enable = false;
+            virtualAvatar = host.MotionSource.Create(transform);
         }
 
         private void OnDestroy()
@@ -55,10 +53,30 @@ namespace VMC.Plugin.Mocopi
             {
                 host.Ipc.Received -= OnReceived;
                 host.SettingsApplied -= ApplySettings;
+                if (virtualAvatar != null) host.MotionSource.Remove(virtualAvatar);
             }
             StopUdpReceiver();
-            motionSource?.Remove();
         }
+
+        private static mocopi_SetSetting DefaultSetting() => new mocopi_SetSetting
+        {
+            enable = true,
+            port = 12351,
+            ApplyRootPosition = true,
+            ApplyRootRotation = true,
+            ApplyChest = true,
+            ApplySpine = true,
+            ApplyHead = true,
+            ApplyLeftArm = true,
+            ApplyRightArm = true,
+            ApplyLeftHand = true,
+            ApplyRightHand = true,
+            ApplyLeftLeg = true,
+            ApplyRightLeg = true,
+            ApplyLeftFoot = true,
+            ApplyRightFoot = true,
+            CorrectHipBone = false,
+        };
 
         #region 設定
 
@@ -69,88 +87,46 @@ namespace VMC.Plugin.Mocopi
             {
                 if (e.CommandType == typeof(mocopi_GetSetting))
                 {
-                    await host.Ipc.SendCommandAsync(new mocopi_SetSetting
-                    {
-                        enable = enableReceive,
-                        port = port,
-                        ApplyHead = settings.Get("ApplyHead", true),
-                        ApplyChest = settings.Get("ApplyChest", true),
-                        ApplyRightArm = settings.Get("ApplyRightArm", true),
-                        ApplyLeftArm = settings.Get("ApplyLeftArm", true),
-                        ApplySpine = settings.Get("ApplySpine", true),
-                        ApplyRightHand = settings.Get("ApplyRightHand", true),
-                        ApplyLeftHand = settings.Get("ApplyLeftHand", true),
-                        ApplyRightLeg = settings.Get("ApplyRightLeg", true),
-                        ApplyLeftLeg = settings.Get("ApplyLeftLeg", true),
-                        ApplyRightFoot = settings.Get("ApplyRightFoot", true),
-                        ApplyLeftFoot = settings.Get("ApplyLeftFoot", true),
-                        ApplyRootPosition = settings.Get("ApplyRootPosition", true),
-                        ApplyRootRotation = settings.Get("ApplyRootRotation", true),
-                        CorrectHipBone = settings.Get("CorrectHipBone", false),
-                    }, e.RequestId);
+                    await host.Ipc.SendCommandAsync(current, e.RequestId);
                 }
                 else if (e.CommandType == typeof(mocopi_SetSetting))
                 {
-                    SetSetting((mocopi_SetSetting)e.Data);
+                    settings.Set(SettingKey, (mocopi_SetSetting)e.Data);
+                    ApplySettings();
                 }
                 else if (e.CommandType == typeof(mocopi_Recenter))
                 {
-                    motionSource.Recenter();
+                    virtualAvatar.Recenter();
                 }
             });
-        }
-
-        private void SetSetting(mocopi_SetSetting setting)
-        {
-            settings.Set("ApplyHead", setting.ApplyHead);
-            settings.Set("ApplyChest", setting.ApplyChest);
-            settings.Set("ApplyRightArm", setting.ApplyRightArm);
-            settings.Set("ApplyLeftArm", setting.ApplyLeftArm);
-            settings.Set("ApplySpine", setting.ApplySpine);
-            settings.Set("ApplyRightHand", setting.ApplyRightHand);
-            settings.Set("ApplyLeftHand", setting.ApplyLeftHand);
-            settings.Set("ApplyRightLeg", setting.ApplyRightLeg);
-            settings.Set("ApplyLeftLeg", setting.ApplyLeftLeg);
-            settings.Set("ApplyRightFoot", setting.ApplyRightFoot);
-            settings.Set("ApplyLeftFoot", setting.ApplyLeftFoot);
-            settings.Set("ApplyRootPosition", setting.ApplyRootPosition);
-            settings.Set("ApplyRootRotation", setting.ApplyRootRotation);
-            settings.Set("CorrectHipBone", setting.CorrectHipBone);
-
-            settings.Set("Enable", setting.enable);
-            settings.Set("Port", setting.port);
-
-            //受信の開始・停止が要るかどうかは ApplySettings 側で判断する
-            ApplySettings();
         }
 
         /// <summary>保存済みの設定を自身へ反映する</summary>
         private void ApplySettings()
         {
-            motionSource.ApplyHead = settings.Get("ApplyHead", true);
-            motionSource.ApplyChest = settings.Get("ApplyChest", true);
-            motionSource.ApplyRightArm = settings.Get("ApplyRightArm", true);
-            motionSource.ApplyLeftArm = settings.Get("ApplyLeftArm", true);
-            motionSource.ApplySpine = settings.Get("ApplySpine", true);
-            motionSource.ApplyRightHand = settings.Get("ApplyRightHand", true);
-            motionSource.ApplyLeftHand = settings.Get("ApplyLeftHand", true);
-            motionSource.ApplyRightLeg = settings.Get("ApplyRightLeg", true);
-            motionSource.ApplyLeftLeg = settings.Get("ApplyLeftLeg", true);
-            motionSource.ApplyRightFoot = settings.Get("ApplyRightFoot", true);
-            motionSource.ApplyLeftFoot = settings.Get("ApplyLeftFoot", true);
-            motionSource.ApplyRootPosition = settings.Get("ApplyRootPosition", true);
-            motionSource.ApplyRootRotation = settings.Get("ApplyRootRotation", true);
-            motionSource.CorrectHipBone = settings.Get("CorrectHipBone", false);
+            var previous = current;
+            current = settings.Get(SettingKey, DefaultSetting()) ?? DefaultSetting();
 
-            var newEnable = settings.Get("Enable", true);
-            var newPort = settings.Get("Port", 12351);
+            virtualAvatar.ApplyRootPosition = current.ApplyRootPosition;
+            virtualAvatar.ApplyRootRotation = current.ApplyRootRotation;
+            virtualAvatar.ApplyChest = current.ApplyChest;
+            virtualAvatar.ApplySpine = current.ApplySpine;
+            virtualAvatar.ApplyHead = current.ApplyHead;
+            virtualAvatar.ApplyLeftArm = current.ApplyLeftArm;
+            virtualAvatar.ApplyRightArm = current.ApplyRightArm;
+            virtualAvatar.ApplyLeftHand = current.ApplyLeftHand;
+            virtualAvatar.ApplyRightHand = current.ApplyRightHand;
+            virtualAvatar.ApplyLeftLeg = current.ApplyLeftLeg;
+            virtualAvatar.ApplyRightLeg = current.ApplyRightLeg;
+            virtualAvatar.ApplyLeftFoot = current.ApplyLeftFoot;
+            virtualAvatar.ApplyRightFoot = current.ApplyRightFoot;
+            virtualAvatar.CorrectHipBone = current.CorrectHipBone;
 
-            if (enableReceive == newEnable && port == newPort) return;
+            //受信中に enable / port が変わった時だけ作り直す
+            if (udpReceiver != null && previous.enable == current.enable && previous.port == current.port) return;
 
             StopUdpReceiver();
-            enableReceive = newEnable;
-            port = newPort;
-            if (enableReceive) StartUdpReceiver();
+            if (current.enable) StartUdpReceiver();
         }
 
         #endregion
@@ -180,15 +156,12 @@ namespace VMC.Plugin.Mocopi
 
             if (mocopiAvatar != null) DestroyImmediate(mocopiAvatar);
             currentModel = null;
-            motionSource.Enable = false;
+            virtualAvatar.Enable = false;
         }
 
         private void StartUdpReceiver()
         {
-            if (udpReceiver == null)
-            {
-                udpReceiver = new MocopiUdpReceiver(port);
-            }
+            if (udpReceiver == null) udpReceiver = new MocopiUdpReceiver(current.port);
 
             if (mocopiAvatar != null)
             {
@@ -208,7 +181,7 @@ namespace VMC.Plugin.Mocopi
                 udpReceiver.OnReceiveFrameData -= mocopiAvatar.UpdateSkeleton;
                 udpReceiver.OnReceiveSkeletonDefinition -= InitializeSkeleton;
             }
-            motionSource.Enable = false;
+            virtualAvatar.Enable = false;
             udpReceiver = null;
         }
 
@@ -217,12 +190,12 @@ namespace VMC.Plugin.Mocopi
             float[] positionsX, float[] positionsY, float[] positionsZ)
         {
             //スケルトン定義が来て初めてボーン階層が出来るので、そこで有効化する
-            if (motionSource.Enable) return;
+            if (virtualAvatar.Enable) return;
 
             mocopiAvatar.InitializeSkeleton(boneIds, parentBoneIds,
                 rotationsX, rotationsY, rotationsZ, rotationsW,
                 positionsX, positionsY, positionsZ);
-            motionSource.Enable = true;
+            virtualAvatar.Enable = true;
         }
 
         #endregion

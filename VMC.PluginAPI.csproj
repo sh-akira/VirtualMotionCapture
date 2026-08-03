@@ -64,6 +64,7 @@
     <Compile Include="Assets\VMCPlugin\IPluginSettings.cs" />
     <Compile Include="Assets\VMCPlugin\IMotionSource.cs" />
     <Compile Include="Assets\VMCPlugin\NativeLibraryLoader.cs" />
+    <Compile Include="Assets\VMCPlugin\VirtualAvatar.cs" />
     <Compile Include="Assets\VMCPlugin\IVMCPlugin.cs" />
     <Compile Include="Assets\VMCPlugin\IPluginHost.cs" />
     <Compile Include="Assets\VMCPlugin\IPluginIpc.cs" />

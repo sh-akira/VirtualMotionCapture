@@ -9,10 +9,10 @@ namespace VMC.Plugin
     /// </summary>
     public interface IPluginHost
     {
-        /// <summary>表情・視線の制御(FaceController)</summary>
+        /// <summary>表情・視線の制御</summary>
         IFaceControl FaceControl { get; }
 
-        /// <summary>モーションソースの登録(MotionManager / VirtualAvatar)</summary>
+        /// <summary>モーションソースの登録</summary>
         IMotionSourceFactory MotionSource { get; }
 
         /// <summary>コントロールパネルとの通信</summary>
@@ -23,13 +23,6 @@ namespace VMC.Plugin
 
         /// <summary>プラグイン単位の設定領域を取得する</summary>
         IPluginSettings GetSettings(string pluginId);
-
-        /// <summary>プラグイン名を前置してログ出力する</summary>
-        void Log(string pluginId, string message);
-
-        void LogWarning(string pluginId, string message);
-
-        void LogError(string pluginId, string message);
 
         /// <summary>
         /// 本体の設定(プロファイル)が読み込まれ、各機能へ適用されるタイミング。

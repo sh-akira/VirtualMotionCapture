@@ -46,23 +46,26 @@ namespace VMC
 
         private static void MigrateMocopi(Settings s)
         {
-            const string id = "mocopi";
-            Set(s, id, "Enable", s.mocopi_Enable);
-            Set(s, id, "Port", s.mocopi_Port);
-            Set(s, id, "ApplyRootPosition", s.mocopi_ApplyRootPosition);
-            Set(s, id, "ApplyRootRotation", s.mocopi_ApplyRootRotation);
-            Set(s, id, "ApplyChest", s.mocopi_ApplyChest);
-            Set(s, id, "ApplySpine", s.mocopi_ApplySpine);
-            Set(s, id, "ApplyHead", s.mocopi_ApplyHead);
-            Set(s, id, "ApplyLeftArm", s.mocopi_ApplyLeftArm);
-            Set(s, id, "ApplyRightArm", s.mocopi_ApplyRightArm);
-            Set(s, id, "ApplyLeftHand", s.mocopi_ApplyLeftHand);
-            Set(s, id, "ApplyRightHand", s.mocopi_ApplyRightHand);
-            Set(s, id, "ApplyLeftLeg", s.mocopi_ApplyLeftLeg);
-            Set(s, id, "ApplyRightLeg", s.mocopi_ApplyRightLeg);
-            Set(s, id, "ApplyLeftFoot", s.mocopi_ApplyLeftFoot);
-            Set(s, id, "ApplyRightFoot", s.mocopi_ApplyRightFoot);
-            Set(s, id, "CorrectHipBone", s.mocopi_CorrectHipBone);
+            //mocopiプラグインは設定を mocopi_SetSetting の形そのままで1キーに保存する
+            Set(s, "mocopi", "Setting", new MocopiSetting
+            {
+                enable = s.mocopi_Enable,
+                port = s.mocopi_Port,
+                ApplyRootPosition = s.mocopi_ApplyRootPosition,
+                ApplyRootRotation = s.mocopi_ApplyRootRotation,
+                ApplyChest = s.mocopi_ApplyChest,
+                ApplySpine = s.mocopi_ApplySpine,
+                ApplyHead = s.mocopi_ApplyHead,
+                ApplyLeftArm = s.mocopi_ApplyLeftArm,
+                ApplyRightArm = s.mocopi_ApplyRightArm,
+                ApplyLeftHand = s.mocopi_ApplyLeftHand,
+                ApplyRightHand = s.mocopi_ApplyRightHand,
+                ApplyLeftLeg = s.mocopi_ApplyLeftLeg,
+                ApplyRightLeg = s.mocopi_ApplyRightLeg,
+                ApplyLeftFoot = s.mocopi_ApplyLeftFoot,
+                ApplyRightFoot = s.mocopi_ApplyRightFoot,
+                CorrectHipBone = s.mocopi_CorrectHipBone,
+            });
         }
 
         private static void MigrateViveSR(Settings s)
@@ -115,6 +118,31 @@ namespace VMC
         {
             public float px, py, pz;
             public float rx, ry, rz, rw;
+        }
+
+        /// <summary>
+        /// VMC.Plugin.Commands.mocopi_SetSetting と同じ形。
+        /// JSONはメンバー名で対応付けるので、名前を揃えておけば読み込める。
+        /// </summary>
+        [Serializable]
+        private class MocopiSetting
+        {
+            public bool enable { get; set; }
+            public int port { get; set; }
+            public bool ApplyRootPosition { get; set; }
+            public bool ApplyRootRotation { get; set; }
+            public bool ApplyChest { get; set; }
+            public bool ApplySpine { get; set; }
+            public bool ApplyHead { get; set; }
+            public bool ApplyLeftArm { get; set; }
+            public bool ApplyRightArm { get; set; }
+            public bool ApplyLeftHand { get; set; }
+            public bool ApplyRightHand { get; set; }
+            public bool ApplyLeftLeg { get; set; }
+            public bool ApplyRightLeg { get; set; }
+            public bool ApplyLeftFoot { get; set; }
+            public bool ApplyRightFoot { get; set; }
+            public bool CorrectHipBone { get; set; }
         }
     }
 }

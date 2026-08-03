@@ -7,6 +7,12 @@ using UnityEngine;
 
 namespace VMC
 {
+    /// <summary>
+    /// 1つのモーション入力源から受けた姿勢を、部位ごとの適用設定に従ってアバターへ流し込む。
+    ///
+    /// 外部デバイスプラグインが直接扱う型なので、本体(Assembly-CSharp)ではなく
+    /// VMC.PluginAPI 側に置いている(依存はUnityEngineのみ)。
+    /// </summary>
     [Serializable]
     public class VirtualAvatar
     {
@@ -39,7 +45,26 @@ namespace VMC
         public bool ApplyLeftFinger;
         public bool ApplyRightFinger;
 
-        public bool Enable = true;
+        private bool enable = true;
+
+        /// <summary>false の間はアバターへ反映されない</summary>
+        public bool Enable
+        {
+            get => enable;
+            set
+            {
+                if (enable == value) return;
+                enable = value;
+                EnableChanged?.Invoke(this);
+            }
+        }
+
+        /// <summary>
+        /// Enable が変わったときに呼ばれる。
+        /// 全身が動いているかどうかで挙動を変える箇所(カメラの注視点など)が使う。
+        /// </summary>
+        public static event Action<VirtualAvatar> EnableChanged;
+
         public bool IgnoreDefaultBone = true;
 
         public bool CorrectHipBone = false;

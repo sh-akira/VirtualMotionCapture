@@ -14,7 +14,6 @@ namespace VMC
     /// </summary>
     public class PluginHost : IPluginHost
     {
-        private readonly ControlWPFWindow controlWPFWindow;
         private readonly FaceControlAdapter faceControl;
         private readonly MotionSourceFactory motionSource;
         private readonly PluginIpc ipc;
@@ -23,7 +22,6 @@ namespace VMC
 
         public PluginHost(ControlWPFWindow controlWPFWindow, FaceController faceController)
         {
-            this.controlWPFWindow = controlWPFWindow;
             faceControl = new FaceControlAdapter(faceController);
             motionSource = new MotionSourceFactory();
             ipc = new PluginIpc(controlWPFWindow);
@@ -43,10 +41,6 @@ namespace VMC
         internal void RaiseSettingsApplied() => SettingsApplied?.Invoke();
 
         public IPluginSettings GetSettings(string pluginId) => new PluginSettingsStore(pluginId);
-
-        public void Log(string pluginId, string message) => Debug.Log($"[{pluginId}] {message}");
-        public void LogWarning(string pluginId, string message) => Debug.LogWarning($"[{pluginId}] {message}");
-        public void LogError(string pluginId, string message) => Debug.LogError($"[{pluginId}] {message}");
     }
 
     /// <summary>FaceController を IFaceControl として公開するアダプタ</summary>
@@ -58,13 +52,9 @@ namespace VMC
         public FaceControlAdapter(FaceController faceController)
         {
             this.faceController = faceController;
-            VMCEvents.OnCurrentModelChanged += OnCurrentModelChanged;
+            VMCEvents.OnCurrentModelChanged += model =>
+                vrm10Instance = model != null ? model.GetComponent<Vrm10Instance>() : null;
             VMCEvents.OnModelUnloading += _ => vrm10Instance = null;
-        }
-
-        private void OnCurrentModelChanged(GameObject model)
-        {
-            vrm10Instance = model != null ? model.GetComponent<Vrm10Instance>() : null;
         }
 
         public event Action BeforeApply
@@ -82,7 +72,7 @@ namespace VMC
         public void SetLookAtPosition(Vector3 worldPosition)
         {
             if (vrm10Instance == null) return;
-            //(LookAtTarget未使用時のみ有効。ボーン/Expressionどちらの目線タイプもRuntimeが処理する)
+            //LookAtTarget未使用時のみ有効。ボーン/Expressionどちらの目線タイプもRuntimeが処理する
             var lookAt = vrm10Instance.Runtime.LookAt;
             var (yaw, pitch) = lookAt.CalculateYawPitchFromLookAtPosition(worldPosition);
             lookAt.SetYawPitchManually(yaw, pitch);
@@ -95,57 +85,23 @@ namespace VMC
         }
     }
 
-    /// <summary>VirtualAvatar / MotionManager を IMotionSource として公開するアダプタ</summary>
+    /// <summary>VirtualAvatar の生成と MotionManager への登録を仲介する</summary>
     internal class MotionSourceFactory : IMotionSourceFactory
     {
-        public IMotionSourceAvatar Create(Transform boneParentTransform)
+        public VirtualAvatar Create(Transform boneParentTransform)
         {
-            var virtualAvatar = new VirtualAvatar(boneParentTransform, global::VMC.MotionSource.ExternalDevice);
-            virtualAvatar.Enable = false;
-            MotionManager.Instance.AddVirtualAvatar(virtualAvatar);
-            return new MotionSourceAvatarAdapter(virtualAvatar);
-        }
-    }
-
-    internal class MotionSourceAvatarAdapter : IMotionSourceAvatar
-    {
-        private readonly VirtualAvatar virtualAvatar;
-
-        public MotionSourceAvatarAdapter(VirtualAvatar virtualAvatar) => this.virtualAvatar = virtualAvatar;
-
-        public bool Enable
-        {
-            get => virtualAvatar.Enable;
-            set
+            var virtualAvatar = new VirtualAvatar(boneParentTransform, MotionSource.ExternalDevice)
             {
-                if (virtualAvatar.Enable == value) return;
-                virtualAvatar.Enable = value;
-                //全身が動くかどうかで挙動を変える箇所(カメラの注視点など)へ知らせる
-                MotionManager.Instance?.NotifyExternalDeviceMotionActiveChanged();
-            }
+                Enable = false,
+            };
+            MotionManager.Instance.AddVirtualAvatar(virtualAvatar);
+            return virtualAvatar;
         }
-        public bool ApplyRootPosition { get => virtualAvatar.ApplyRootPosition; set => virtualAvatar.ApplyRootPosition = value; }
-        public bool ApplyRootRotation { get => virtualAvatar.ApplyRootRotation; set => virtualAvatar.ApplyRootRotation = value; }
-        public bool ApplySpine { get => virtualAvatar.ApplySpine; set => virtualAvatar.ApplySpine = value; }
-        public bool ApplyChest { get => virtualAvatar.ApplyChest; set => virtualAvatar.ApplyChest = value; }
-        public bool ApplyHead { get => virtualAvatar.ApplyHead; set => virtualAvatar.ApplyHead = value; }
-        public bool ApplyLeftArm { get => virtualAvatar.ApplyLeftArm; set => virtualAvatar.ApplyLeftArm = value; }
-        public bool ApplyRightArm { get => virtualAvatar.ApplyRightArm; set => virtualAvatar.ApplyRightArm = value; }
-        public bool ApplyLeftHand { get => virtualAvatar.ApplyLeftHand; set => virtualAvatar.ApplyLeftHand = value; }
-        public bool ApplyRightHand { get => virtualAvatar.ApplyRightHand; set => virtualAvatar.ApplyRightHand = value; }
-        public bool ApplyLeftLeg { get => virtualAvatar.ApplyLeftLeg; set => virtualAvatar.ApplyLeftLeg = value; }
-        public bool ApplyRightLeg { get => virtualAvatar.ApplyRightLeg; set => virtualAvatar.ApplyRightLeg = value; }
-        public bool ApplyLeftFoot { get => virtualAvatar.ApplyLeftFoot; set => virtualAvatar.ApplyLeftFoot = value; }
-        public bool ApplyRightFoot { get => virtualAvatar.ApplyRightFoot; set => virtualAvatar.ApplyRightFoot = value; }
-        public bool CorrectHipBone { get => virtualAvatar.CorrectHipBone; set => virtualAvatar.CorrectHipBone = value; }
 
-        public void Recenter() => virtualAvatar.Recenter();
-
-        public void Remove()
+        public void Remove(VirtualAvatar virtualAvatar)
         {
             virtualAvatar.Enable = false;
             MotionManager.Instance?.RemoveVirtualAvatar(virtualAvatar);
-            MotionManager.Instance?.NotifyExternalDeviceMotionActiveChanged();
         }
     }
 

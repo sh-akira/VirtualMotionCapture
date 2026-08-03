@@ -82,7 +82,7 @@ namespace VMC.Plugin.TobiiEye
             }
             catch (Exception ex)
             {
-                host.LogWarning(Id, $"Tobii SDKのEULA同意フラグを設定できませんでした: {ex.Message}");
+                Debug.LogWarning($"[{Id}] Tobii SDKのEULA同意フラグを設定できませんでした: {ex.Message}");
             }
         }
 
