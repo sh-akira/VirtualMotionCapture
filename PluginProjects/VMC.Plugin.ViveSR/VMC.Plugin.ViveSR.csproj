@@ -14,13 +14,12 @@
     </Compile>
     <Compile Include="ViveProEyePlugin.cs" />
     <Compile Include="ViveFacialTrackerPlugin.cs" />
-    <!-- VIVE SRanipal SDK のソース(再配布不可のためリポジトリには含めない) -->
-    <Compile Include="$(ExternalSdkRoot)ViveSR\Scripts\**\*.cs">
-      <Link>ViveSRSDK\%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </Compile>
+    <!-- VIVE SRanipal SDK のソース
+         (SDK\README.md 参照。再配布不可のためリポジトリには含めない) -->
+    <Compile Include="SDK\ViveSR\Scripts\**\*.cs" />
   </ItemGroup>
   <ItemGroup>
-    <NativePluginFile Include="$(ExternalSdkRoot)ViveSR\Plugins\*.dll" />
+    <NativePluginFile Include="SDK\ViveSR\Plugins\*.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

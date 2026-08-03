@@ -13,24 +13,17 @@
       <Link>Shared\TobiiPipeCommands.cs</Link>
     </Compile>
     <Compile Include="TobiiPlugin.cs" />
-    <!-- Tobii Unity SDK のソース(再配布不可のためリポジトリには含めない)。
+    <!-- Tobii Unity SDK のソース(SDK\README.md 参照。再配布不可のためリポジトリには含めない)。
          DemoScenes と Editor 拡張は不要なので含めない -->
-    <Compile Include="$(ExternalSdkRoot)Tobii\Framework\**\*.cs" Exclude="$(ExternalSdkRoot)Tobii\Framework\Editor\**\*.cs">
-      <Link>TobiiSDK\%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </Compile>
-    <Compile Include="$(ExternalSdkRoot)Tobii\Plugins\SimpleJSON.cs">
-      <Link>TobiiSDK\SimpleJSON.cs</Link>
-    </Compile>
-    <Compile Include="$(ExternalSdkRoot)Tobii\Plugins\TobiiGameIntegrationApi.cs">
-      <Link>TobiiSDK\TobiiGameIntegrationApi.cs</Link>
-    </Compile>
+    <Compile Include="SDK\Tobii\Framework\**\*.cs" Exclude="SDK\Tobii\Framework\Editor\**\*.cs" />
+    <Compile Include="SDK\Tobii\Plugins\SimpleJSON.cs" />
+    <Compile Include="SDK\Tobii\Plugins\TobiiGameIntegrationApi.cs" />
   </ItemGroup>
   <ItemGroup>
     <!-- VMCは64bit専用(StandaloneWindows64)なのでx86版は同梱しない。
          Tobii SDKは IntPtr.Size で x64/x86 を切り替えるため、64bitプロセスでは
          x86版のDLLは使われず、先読みしても Win32エラー193 になるだけ -->
-    <NativePluginFile Include="$(ExternalSdkRoot)Tobii\Plugins\*.dll"
-                      Exclude="$(ExternalSdkRoot)Tobii\Plugins\*_x86.dll" />
+    <NativePluginFile Include="SDK\Tobii\Plugins\*.dll" Exclude="SDK\Tobii\Plugins\*_x86.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

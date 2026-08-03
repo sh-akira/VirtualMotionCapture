@@ -68,18 +68,22 @@ ControlPanel/Plugins/             コントロールパネル側プラグイン�
 
 プラグインのビルドには SDK が必要です。開発者が自分で入手して配置してください。
 
-1. 各SDKを `ExternalSDK/` 以下に置きます（このフォルダは `.gitignore` 済みです）。
+1. 各SDKを、使うプラグインのプロジェクト直下の `SDK/` へ置きます
+   （`SDK/` の中身は `.gitignore` 済みで、置き方の説明として `SDK/README.md` だけが入っています）。
 
    ```
-   ExternalSDK/
-     MocopiReceiver/     mocopi Receiver Plugin for Unity
-     ViveSR/             VIVE SRanipal SDK の ViveSR フォルダ
-     Tobii/              Tobii Unity SDK の Tobii フォルダ
+   PluginProjects/
+     VMC.Plugin.Mocopi/SDK/MocopiReceiver/   mocopi Receiver Plugin for Unity
+     VMC.Plugin.ViveSR/SDK/ViveSR/           VIVE SRanipal SDK の ViveSR フォルダ
+     VMC.Plugin.Tobii/SDK/Tobii/             Tobii Unity SDK の Tobii フォルダ
    ```
 
    - [mocopi Receiver Plugin for Unity](https://www.sony.net/Products/mocopi-dev/)
    - [VIVE SRanipal SDK](https://developer.vive.com/resources/vive-sense/eye-and-facial-tracking-sdk/)
    - [Tobii Unity SDK](https://developer.tobii.com/pc-gaming/unity-sdk/)
+
+   SDKはそれを使うプラグインの中だけに閉じているので、
+   1つのプラグインだけビルドしたい場合はそのSDKだけ用意すれば済みます。
 
 2. Unity で一度プロジェクトを開きます。プラグインは Unity が生成した
    `Library/ScriptAssemblies/VMC.PluginAPI.dll` を参照するため、これが先に必要です。

@@ -96,7 +96,9 @@ VMCProtocol (バーチャルモーションキャプチャープロトコル)に
    - VRoid Hub 連携時: VRoid SDK（[VRoid SDK for Unity](https://vroid.com/sdk)）
 
    > **mocopi / VIVE / Tobii の SDK は本体のビルドには不要です。**
-   > これらはプラグインとして分離されているため、SDK が無くても本体はそのままビルドできます。
+   > これらはプラグインとして分離されており、各SDKは使うプラグインのプロジェクト直下
+   > （`PluginProjects/VMC.Plugin.*/SDK/`）に置く形になっています。
+   > SDK が無くても本体はそのままビルドできます。
    > 詳しくは [documents/plugins.md](documents/plugins.md) を参照してください。
 4. コントロールパネル（`ControlWindowWPF/ControlWindowWPF.sln`）を Visual Studio 2022 で開きます。
    - `VirtualMotionCaptureControlPanel` プロジェクトのプロパティを開き、デバッグのコマンドライン引数を `/pipeName VMCTest` に設定します。

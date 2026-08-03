@@ -9,7 +9,6 @@
   -->
   <PropertyGroup>
     <RepositoryRoot>$(MSBuildThisFileDirectory)..\</RepositoryRoot>
-    <ExternalSdkRoot>$(RepositoryRoot)ExternalSDK\</ExternalSdkRoot>
     <UnityScriptAssemblies>$(RepositoryRoot)Library\ScriptAssemblies\</UnityScriptAssemblies>
     <UnityManagedRoot>$(RepositoryRoot)UnityBuild\VirtualMotionCapture_Data\Managed\</UnityManagedRoot>
     <UnityEditorRoot>C:\Program Files\Unity\Hub\Editor\2022.3.76f1\Editor\Data\</UnityEditorRoot>

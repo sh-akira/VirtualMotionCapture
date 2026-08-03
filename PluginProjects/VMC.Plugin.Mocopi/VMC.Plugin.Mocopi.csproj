@@ -15,10 +15,9 @@
       <Link>Shared\MocopiPipeCommands.cs</Link>
     </Compile>
     <Compile Include="MocopiPlugin.cs" />
-    <!-- mocopi Receiver Plugin for Unity のソース(再配布不可のためリポジトリには含めない) -->
-    <Compile Include="$(ExternalSdkRoot)MocopiReceiver\Runtime\**\*.cs">
-      <Link>MocopiReceiverSDK\%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </Compile>
+    <!-- mocopi Receiver Plugin for Unity のソース
+         (SDK\README.md 参照。再配布不可のためリポジトリには含めない) -->
+    <Compile Include="SDK\MocopiReceiver\Runtime\**\*.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -38,8 +38,8 @@ Assets/VRoidSDK*
 Assets/Scenes/Example*
 Assets/Scenes/LoginExample*
 #プラグインが使う外部SDK(再配布不可のためリポジトリには含めない。置き場所の説明だけ残す)
-ExternalSDK/*
-!ExternalSDK/README.md
+PluginProjects/*/SDK/*
+!PluginProjects/*/SDK/README.md
 #Tobii SDK同梱のネイティブDLL(リポジトリ直下のみ。プラグインの自前コードは対象外)
 /tobii_gameintegration_*.dll
 SteamVR*csproj
