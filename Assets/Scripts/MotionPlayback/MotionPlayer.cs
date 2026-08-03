@@ -175,6 +175,8 @@ namespace VMC
                 ApplyLeftFinger = Settings.Current.MotionPlayback_ApplyLeftFinger,
                 ApplyRightFinger = Settings.Current.MotionPlayback_ApplyRightFinger,
                 ApplyEye = Settings.Current.MotionPlayback_ApplyEye,
+                ApplyExpression = Settings.Current.MotionPlayback_ApplyExpression,
+                ApplyLookAt = Settings.Current.MotionPlayback_ApplyLookAt,
                 RecordFps = Settings.Current.MotionRecord_Fps,
                 RecordCountdown = Settings.Current.MotionRecord_CountdownSeconds,
                 RecordMotion = Settings.Current.MotionRecord_SaveMotion,
@@ -203,6 +205,8 @@ namespace VMC
             Settings.Current.MotionPlayback_ApplyLeftFinger = setting.ApplyLeftFinger;
             Settings.Current.MotionPlayback_ApplyRightFinger = setting.ApplyRightFinger;
             Settings.Current.MotionPlayback_ApplyEye = setting.ApplyEye;
+            Settings.Current.MotionPlayback_ApplyExpression = setting.ApplyExpression;
+            Settings.Current.MotionPlayback_ApplyLookAt = setting.ApplyLookAt;
             //記録設定はMotion_SetRecordSetting(MotionRecorder)で更新するためここでは適用しない
             //(再生・記録の両ウインドウを同時に開いた際に古い値で上書きされるのを防ぐ)
 
@@ -503,9 +507,12 @@ namespace VMC
             }
 
             //表情(VRMAのみ)
+            //適用オフの場合はモーションのみ再生し、表情はVMCProtocol受信等の他の入力に任せる
             if (faceController != null)
             {
-                var weights = motion.IsVrma ? motion.GetExpressionWeights().ToArray() : Array.Empty<KeyValuePair<ExpressionKey, float>>();
+                var weights = (motion.IsVrma && Settings.Current.MotionPlayback_ApplyExpression)
+                    ? motion.GetExpressionWeights().ToArray()
+                    : Array.Empty<KeyValuePair<ExpressionKey, float>>();
                 if (weights.Length > 0)
                 {
                     faceController.OverwritePresets(ExpressionPresetName, weights.Select(kv => kv.Key).ToArray(), weights.Select(kv => kv.Value).ToArray());
@@ -517,9 +524,9 @@ namespace VMC
                 }
             }
 
-            //視線(VRMAに視線情報がある場合のみ / ApplyEye設定に従う)
+            //視線(VRMAに視線情報がある場合のみ / 適用オフならVMCProtocol受信等の他の入力に任せる)
             //SetYawPitchManuallyはLookAtTargetType!=SpecifiedTransformのときのみ有効(アイトラッキングと同じ挙動)
-            if (currentVrm10Instance != null && motion.IsVrma && virtualAvatar != null && virtualAvatar.ApplyEye
+            if (currentVrm10Instance != null && motion.IsVrma && Settings.Current.MotionPlayback_ApplyLookAt
                 && motion.HasLookAt && motion.TryGetLookAtYawPitch(out var yaw, out var pitch))
             {
                 try

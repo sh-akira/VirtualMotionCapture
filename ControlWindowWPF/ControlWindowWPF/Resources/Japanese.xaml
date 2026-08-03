@@ -252,6 +252,8 @@
     <system:String x:Key="MotionPlaybackWindow_RightFinger">右指</system:String>
     <system:String x:Key="MotionPlaybackWindow_LeftFinger">左指</system:String>
     <system:String x:Key="MotionPlaybackWindow_Eye">目ボーン</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ApplyExpression">表情を適用</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ApplyLookAt">視線を適用</system:String>
     <system:String x:Key="MotionRecordWindow_Title">モーション記録</system:String>
     <system:String x:Key="MotionRecordWindow_RecordSetting">記録設定</system:String>
     <system:String x:Key="MotionRecordWindow_Fps">フレームレート(fps)</system:String>

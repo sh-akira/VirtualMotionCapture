@@ -253,6 +253,8 @@
     <system:String x:Key="MotionPlaybackWindow_RightFinger">R Fingers</system:String>
     <system:String x:Key="MotionPlaybackWindow_LeftFinger">L Fingers</system:String>
     <system:String x:Key="MotionPlaybackWindow_Eye">Eye bones</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ApplyExpression">Apply expressions</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ApplyLookAt">Apply LookAt</system:String>
     <system:String x:Key="MotionRecordWindow_Title">Motion Recording</system:String>
     <system:String x:Key="MotionRecordWindow_RecordSetting">Recording Settings</system:String>
     <system:String x:Key="MotionRecordWindow_Fps">Frame rate (fps)</system:String>

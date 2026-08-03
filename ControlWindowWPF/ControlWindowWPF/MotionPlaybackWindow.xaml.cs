@@ -169,6 +169,8 @@ namespace VirtualMotionCaptureControlPanel
             LeftFingerCheckBox.IsChecked = setting.ApplyLeftFinger;
             RightFingerCheckBox.IsChecked = setting.ApplyRightFinger;
             EyeCheckBox.IsChecked = setting.ApplyEye;
+            ExpressionCheckBox.IsChecked = setting.ApplyExpression;
+            LookAtCheckBox.IsChecked = setting.ApplyLookAt;
             IsSetting = false;
         }
 
@@ -194,6 +196,8 @@ namespace VirtualMotionCaptureControlPanel
             CurrentSetting.ApplyLeftFinger = LeftFingerCheckBox.IsChecked == true;
             CurrentSetting.ApplyRightFinger = RightFingerCheckBox.IsChecked == true;
             CurrentSetting.ApplyEye = EyeCheckBox.IsChecked == true;
+            CurrentSetting.ApplyExpression = ExpressionCheckBox.IsChecked == true;
+            CurrentSetting.ApplyLookAt = LookAtCheckBox.IsChecked == true;
 
             await Globals.Client.SendCommandAsync(CurrentSetting);
         }

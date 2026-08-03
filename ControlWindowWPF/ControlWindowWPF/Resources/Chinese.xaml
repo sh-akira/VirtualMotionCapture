@@ -253,6 +253,8 @@
     <system:String x:Key="MotionPlaybackWindow_RightFinger">右手指</system:String>
     <system:String x:Key="MotionPlaybackWindow_LeftFinger">左手指</system:String>
     <system:String x:Key="MotionPlaybackWindow_Eye">眼睛骨骼</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ApplyExpression">应用表情</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ApplyLookAt">应用视线</system:String>
     <system:String x:Key="MotionRecordWindow_Title">动作录制</system:String>
     <system:String x:Key="MotionRecordWindow_RecordSetting">录制设置</system:String>
     <system:String x:Key="MotionRecordWindow_Fps">帧率(fps)</system:String>

@@ -30,6 +30,9 @@ namespace UnityMemoryMappedFile
             public bool ApplyLeftFinger { get; set; }
             public bool ApplyRightFinger { get; set; }
             public bool ApplyEye { get; set; }
+            //VRMAに含まれる表情・視線を再生時に適用するか
+            public bool ApplyExpression { get; set; }
+            public bool ApplyLookAt { get; set; }
 
             // 記録設定
             public int RecordFps { get; set; }

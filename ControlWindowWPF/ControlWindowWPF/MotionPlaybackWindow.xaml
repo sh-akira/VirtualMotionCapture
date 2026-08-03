@@ -109,6 +109,11 @@
                         <CheckBox Content="{DynamicResource ApplyTarget_RootRotation}" Name="RootRotationCheckBox" Margin="15,0,0,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
                         <CheckBox Content="{DynamicResource MotionPlaybackWindow_Eye}" Name="EyeCheckBox" Margin="15,0,0,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
                     </StackPanel>
+                    <!-- VRMAに含まれる表情・視線の適用(オフにするとモーションのみ再生し、表情等は他の入力に任せられる) -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
+                        <CheckBox Content="{DynamicResource MotionPlaybackWindow_ApplyExpression}" Name="ExpressionCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                        <CheckBox Content="{DynamicResource MotionPlaybackWindow_ApplyLookAt}" Name="LookAtCheckBox" Margin="15,0,0,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
         </GroupBox>

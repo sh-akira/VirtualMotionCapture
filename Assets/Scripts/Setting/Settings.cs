@@ -775,6 +775,12 @@ namespace VMC
         public bool MotionPlayback_ApplyRightFinger;
         [OptionalField]
         public bool MotionPlayback_ApplyEye;
+        //VRMAに含まれる表情・視線を再生時に適用するか
+        //(オフにするとモーションのみ再生し、表情はVMCProtocol受信等の他の入力に任せられる)
+        [OptionalField]
+        public bool MotionPlayback_ApplyExpression;
+        [OptionalField]
+        public bool MotionPlayback_ApplyLookAt;
 
         //モーション記録
         [OptionalField]
@@ -1006,6 +1012,8 @@ namespace VMC
             MotionPlayback_ApplyLeftFinger = true;
             MotionPlayback_ApplyRightFinger = true;
             MotionPlayback_ApplyEye = true;
+            MotionPlayback_ApplyExpression = true;
+            MotionPlayback_ApplyLookAt = true;
 
             MotionRecord_Fps = 30;
             MotionRecord_CountdownSeconds = 3;

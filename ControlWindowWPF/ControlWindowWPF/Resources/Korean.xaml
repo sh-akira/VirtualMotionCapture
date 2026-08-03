@@ -253,6 +253,8 @@
     <system:String x:Key="MotionPlaybackWindow_RightFinger">오른손가락</system:String>
     <system:String x:Key="MotionPlaybackWindow_LeftFinger">왼손가락</system:String>
     <system:String x:Key="MotionPlaybackWindow_Eye">눈 본</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ApplyExpression">표정 적용</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ApplyLookAt">시선 적용</system:String>
     <system:String x:Key="MotionRecordWindow_Title">모션 기록</system:String>
     <system:String x:Key="MotionRecordWindow_RecordSetting">기록 설정</system:String>
     <system:String x:Key="MotionRecordWindow_Fps">프레임레이트(fps)</system:String>
