@@ -1045,7 +1045,7 @@ namespace VMC
             MotionPlayback_ApplyExpression = true;
             MotionPlayback_ApplyLookAt = true;
 
-            MotionRecord_Fps = 30;
+            MotionRecord_Fps = 60;
             MotionRecord_CountdownSeconds = 3;
             MotionRecord_SaveMotion = true;
             MotionRecord_SaveExpressionPreset = true;

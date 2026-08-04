@@ -31,7 +31,7 @@ namespace VMC
         private RecordState state = RecordState.Stopped;
         private float countdownRemain = 0f;
         private float recordStartTime = 0f;
-        private float recordFps = 30f;
+        private float recordFps = 60f;
 
         //記録データ
         private readonly List<float[]> recordedMuscles = new List<float[]>();

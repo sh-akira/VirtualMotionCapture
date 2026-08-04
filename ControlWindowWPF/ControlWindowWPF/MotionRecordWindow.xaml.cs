@@ -16,7 +16,7 @@ namespace VirtualMotionCaptureControlPanel
         private PipeCommands.Motion_SetRecordSetting CurrentSetting = null;
         private int recordState = 0; // 0:停止 1:カウントダウン 2:記録中 3:記録済み
         private int frameCount = 0;
-        private float recordedFps = 30f;
+        private float recordedFps = 60f;
 
         public MotionRecordWindow()
         {
@@ -64,7 +64,7 @@ namespace VirtualMotionCaptureControlPanel
         {
             recordState = d.State;
             frameCount = d.FrameCount;
-            recordedFps = d.Fps > 0 ? d.Fps : 30f;
+            recordedFps = d.Fps > 0 ? d.Fps : 60f;
 
             switch (d.State)
             {
