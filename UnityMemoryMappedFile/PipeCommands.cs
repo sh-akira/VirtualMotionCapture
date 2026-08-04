@@ -16,23 +16,28 @@ namespace UnityMemoryMappedFile
         /// プラグインのコマンドは本体の共有アセンブリではなくプラグイン側のDLLに入っているため、
         /// ここへ登録してもらって型解決の対象に加える。
         /// </summary>
-        private static readonly List<Type> pluginCommandTypes = new List<Type>();
+        private static List<Type> pluginCommandTypes = new List<Type>();
 
         /// <summary>
         /// プラグインのコマンド型を登録する。
-        /// 通信が始まる前(プラグインの読み込み時)に呼ぶこと。
         /// 送受信は型の単純名で対応付けるため、本体側とコントロールパネル側で
         /// 同じ名前・同じ名前空間の型を用意する必要がある。
         /// </summary>
         public static void RegisterPluginCommandTypes(IEnumerable<Type> types)
         {
             if (types == null) return;
+
+            //受信スレッドが走り出した後に呼ばれるので、その場で足さずに作り直して差し替える。
+            //参照の差し替えは原子的なので、受信側は新旧どちらかを最後まで見るだけで済む
+            var updated = new List<Type>(pluginCommandTypes);
             foreach (var type in types)
             {
                 if (type == null) continue;
-                if (pluginCommandTypes.Contains(type)) continue;
-                pluginCommandTypes.Add(type);
+                if (updated.Contains(type)) continue;
+                updated.Add(type);
             }
+            pluginCommandTypes = updated;
+
             //名前解決の結果が変わるのでキャッシュを捨てる
             commandTypeCache = new Dictionary<string, Type>();
         }
