@@ -42,6 +42,12 @@ namespace VMC.Plugin.TobiiEye
         private bool isFirst = true;
         private bool isValidPosition = false;
 
+        //Tobiiを使用するかどうか(既定オフ)。
+        //オフの間はTobii SDK(ネイティブDLL)を一切呼ばない。
+        //Unityエディタではネイティブライブラリがドメインリロードをまたいで生き残るため、
+        //無条件に呼ぶと再生を停止して再度開始した時にエディタごとクラッシュする。
+        private bool isEnabled = false;
+
         private Action faceBeforeApply;
 
         public void Initialize(IPluginHost host)
@@ -115,10 +121,34 @@ namespace VMC.Plugin.TobiiEye
                 {
                     Calibration(host.CurrentModel, fromSetting: false);
                 }
+                else if (e.CommandType == typeof(GetEyeTracking_TobiiEnable))
+                {
+                    await host.Ipc.SendCommandAsync(new SetEyeTracking_TobiiEnable
+                    {
+                        enable = isEnabled,
+                    }, e.RequestId);
+                }
+                else if (e.CommandType == typeof(SetEyeTracking_TobiiEnable))
+                {
+                    var d = (SetEyeTracking_TobiiEnable)e.Data;
+                    settings.Set("Enable", d.enable);
+                    ApplyEnable();
+                    //有効化した直後はモニタ位置が未設定なので、現在のモデルで復元しておく
+                    if (isEnabled) Calibration(host.CurrentModel, fromSetting: true);
+                }
             });
         }
 
-        private void ApplySettings() => ApplyOffsets();
+        private void ApplySettings()
+        {
+            ApplyOffsets();
+            ApplyEnable();
+        }
+
+        private void ApplyEnable()
+        {
+            isEnabled = settings.Get("Enable", false);
+        }
 
         private void ApplyOffsets()
         {
@@ -138,6 +168,7 @@ namespace VMC.Plugin.TobiiEye
         /// </summary>
         private void Calibration(GameObject currentModel, bool fromSetting)
         {
+            if (isEnabled == false) return;
             if (currentModel == null) return;
             if (TobiiAPI.IsConnected == false) return;
 
@@ -190,6 +221,7 @@ namespace VMC.Plugin.TobiiEye
 
         private void Update()
         {
+            if (isEnabled == false) return;
             if (TobiiAPI.IsConnected == false) return;
             if (lookTarget == null || monitorPosition == null) return;
 

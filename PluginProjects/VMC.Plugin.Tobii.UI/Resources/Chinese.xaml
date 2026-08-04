@@ -3,6 +3,7 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <system:String x:Key="Tobii_Title">Tobii Eye Tracker 4C</system:String>
+    <system:String x:Key="Tobii_UseTobiiCheckBox">使用</system:String>
     <system:String x:Key="Tobii_CalibrationDescription">模型校准完成后，面朝 Tobii 并注视屏幕正中心，然后点击校准按钮。</system:String>
     <system:String x:Key="Tobii_EyeOffset">眼睛位置修正（0.01=1cm）</system:String>
     <system:String x:Key="Tobii_Close">关闭</system:String>

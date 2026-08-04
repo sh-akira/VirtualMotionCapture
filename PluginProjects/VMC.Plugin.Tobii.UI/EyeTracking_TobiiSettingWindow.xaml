@@ -7,6 +7,11 @@
         mc:Ignorable="d"
         Title="Tobii Eye Tracker 4C" Width="400" SizeToContent="Height" Loaded="Window_Loaded">
     <DockPanel>
+        <GroupBox Header="Tobii Eye Tracker" DockPanel.Dock="Top">
+            <DockPanel>
+                <CheckBox Content="{DynamicResource Tobii_UseTobiiCheckBox}" Name="UseTobiiCheckBox" Checked="UseTobiiCheckBox_ValueChanged" Unchecked="UseTobiiCheckBox_ValueChanged"/>
+            </DockPanel>
+        </GroupBox>
         <GroupBox Header="{DynamicResource Tobii_EyeScale}" DockPanel.Dock="Top">
             <UniformGrid Rows="1" Columns="2">
                 <StackPanel>

@@ -14,7 +14,15 @@ namespace VMC.Plugin.Commands
             typeof(GetEyeTracking_TobiiOffsets),
             typeof(SetEyeTracking_TobiiOffsets),
             typeof(EyeTracking_TobiiCalibration),
+            typeof(GetEyeTracking_TobiiEnable),
+            typeof(SetEyeTracking_TobiiEnable),
         };
+    }
+
+    public class GetEyeTracking_TobiiEnable { }
+    public class SetEyeTracking_TobiiEnable
+    {
+        public bool enable { get; set; }
     }
 
     public class GetEyeTracking_TobiiOffsets { }

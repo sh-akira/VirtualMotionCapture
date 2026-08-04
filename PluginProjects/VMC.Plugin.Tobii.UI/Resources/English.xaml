@@ -3,6 +3,7 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <system:String x:Key="Tobii_Title">Tobii Eye Tracker 4C</system:String>
+    <system:String x:Key="Tobii_UseTobiiCheckBox">Use</system:String>
     <system:String x:Key="Tobii_CalibrationDescription">Move to the front of Tobii after model calibration is complete and press the calibration button while looking at the center of the monitor.</system:String>
     <system:String x:Key="Tobii_EyeOffset">Eye position offset (0.01=1cm)</system:String>
     <system:String x:Key="Tobii_Close">Close</system:String>

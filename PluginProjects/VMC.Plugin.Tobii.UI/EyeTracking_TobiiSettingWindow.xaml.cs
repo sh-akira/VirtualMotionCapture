@@ -36,6 +36,25 @@ namespace VMC.Plugin.Tobii.UI
                 var data = (SetEyeTracking_TobiiOffsets )d;
                 Dispatcher.Invoke(() => SetEyeTracking_TobiiOffsets(data));
             });
+            await PluginContext.Client?.SendCommandWaitAsync(new GetEyeTracking_TobiiEnable(), d =>
+            {
+                var data = (SetEyeTracking_TobiiEnable)d;
+                Dispatcher.Invoke(() =>
+                {
+                    IsSetting = true;
+                    UseTobiiCheckBox.IsChecked = data.enable;
+                    IsSetting = false;
+                });
+            });
+        }
+
+        private async void UseTobiiCheckBox_ValueChanged(object sender, RoutedEventArgs e)
+        {
+            if (IsSetting) return;
+            await PluginContext.Client?.SendCommandAsync(new SetEyeTracking_TobiiEnable
+            {
+                enable = UseTobiiCheckBox.IsChecked.Value
+            });
         }
 
         private void SetEyeTracking_TobiiOffsets(SetEyeTracking_TobiiOffsets offsets)
