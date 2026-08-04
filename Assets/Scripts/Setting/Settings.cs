@@ -662,6 +662,15 @@ namespace VMC
         public float PPS_Vignette_Roundness;
 
         [OptionalField]
+        public bool PPS_AO_Enable;
+        [OptionalField]
+        public bool PPS_AO_IsScalable;
+        [OptionalField]
+        public float PPS_AO_Intensity;
+        [OptionalField]
+        public float PPS_AO_Thickness;
+
+        [OptionalField]
         public bool PPS_CA_Enable;
         [OptionalField]
         public float PPS_CA_Intensity;
@@ -694,6 +703,15 @@ namespace VMC
         public float PPS_Vignette_Color_g;
         [OptionalField]
         public float PPS_Vignette_Color_b;
+
+        [OptionalField]
+        public float PPS_AO_Color_a;
+        [OptionalField]
+        public float PPS_AO_Color_r;
+        [OptionalField]
+        public float PPS_AO_Color_g;
+        [OptionalField]
+        public float PPS_AO_Color_b;
 
         [OptionalField]
         public bool TurnOffAmbientLight;
@@ -953,6 +971,11 @@ namespace VMC
             PPS_Vignette_Smoothness = 0.35f;
             PPS_Vignette_Roundness = 1f;
 
+            PPS_AO_Enable = false;
+            PPS_AO_IsScalable = false;
+            PPS_AO_Intensity = 0f;
+            PPS_AO_Thickness = 0f;
+
             PPS_CA_Enable = false;
             PPS_CA_Intensity = 1f;
             PPS_CA_FastMode = false;
@@ -971,6 +994,11 @@ namespace VMC
             PPS_Vignette_Color_r = 0f;
             PPS_Vignette_Color_g = 0f;
             PPS_Vignette_Color_b = 0f;
+
+            PPS_AO_Color_a = 0f;
+            PPS_AO_Color_r = 0f;
+            PPS_AO_Color_g = 0f;
+            PPS_AO_Color_b = 0f;
 
             TurnOffAmbientLight = false;
             ExternalBonesReceiverEnable = false;

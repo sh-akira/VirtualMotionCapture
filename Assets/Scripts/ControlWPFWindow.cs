@@ -783,6 +783,11 @@ namespace VMC
                     Settings.Current.PPS_Vignette_Smoothness = d.Vignette_Smoothness;
                     Settings.Current.PPS_Vignette_Roundness = d.Vignette_Roundness;
 
+                    Settings.Current.PPS_AO_Enable = d.AO_Enable;
+                    Settings.Current.PPS_AO_IsScalable = d.AO_IsScalable;
+                    Settings.Current.PPS_AO_Intensity = d.AO_Intensity;
+                    Settings.Current.PPS_AO_Thickness = d.AO_Thickness;
+
                     Settings.Current.PPS_CA_Enable = d.CA_Enable;
                     Settings.Current.PPS_CA_Intensity = d.CA_Intensity;
                     Settings.Current.PPS_CA_FastMode = d.CA_FastMode;
@@ -801,6 +806,11 @@ namespace VMC
                     Settings.Current.PPS_Vignette_Color_r = d.Vignette_Color_r;
                     Settings.Current.PPS_Vignette_Color_g = d.Vignette_Color_g;
                     Settings.Current.PPS_Vignette_Color_b = d.Vignette_Color_b;
+
+                    Settings.Current.PPS_AO_Color_a = d.AO_Color_a;
+                    Settings.Current.PPS_AO_Color_r = d.AO_Color_r;
+                    Settings.Current.PPS_AO_Color_g = d.AO_Color_g;
+                    Settings.Current.PPS_AO_Color_b = d.AO_Color_b;
 
                     Settings.Current.TurnOffAmbientLight = d.TurnOffAmbientLight;
 
@@ -971,6 +981,11 @@ namespace VMC
                 Vignette_Smoothness = Settings.Current.PPS_Vignette_Smoothness,
                 Vignette_Roundness = Settings.Current.PPS_Vignette_Roundness,
 
+                AO_Enable = Settings.Current.PPS_AO_Enable,
+                AO_IsScalable = Settings.Current.PPS_AO_IsScalable,
+                AO_Intensity = Settings.Current.PPS_AO_Intensity,
+                AO_Thickness = Settings.Current.PPS_AO_Thickness,
+
                 CA_Enable = Settings.Current.PPS_CA_Enable,
                 CA_Intensity = Settings.Current.PPS_CA_Intensity,
                 CA_FastMode = Settings.Current.PPS_CA_FastMode,
@@ -989,6 +1004,11 @@ namespace VMC
                 Vignette_Color_r = Settings.Current.PPS_Vignette_Color_r,
                 Vignette_Color_g = Settings.Current.PPS_Vignette_Color_g,
                 Vignette_Color_b = Settings.Current.PPS_Vignette_Color_b,
+
+                AO_Color_a = Settings.Current.PPS_AO_Color_a,
+                AO_Color_r = Settings.Current.PPS_AO_Color_r,
+                AO_Color_g = Settings.Current.PPS_AO_Color_g,
+                AO_Color_b = Settings.Current.PPS_AO_Color_b,
 
                 TurnOffAmbientLight = Settings.Current.TurnOffAmbientLight
             });

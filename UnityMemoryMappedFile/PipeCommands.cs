@@ -663,6 +663,11 @@ namespace UnityMemoryMappedFile
             public float Vignette_Smoothness { get; set; }
             public float Vignette_Roundness { get; set; }
 
+            public bool AO_Enable { get; set; }
+            public bool AO_IsScalable { get; set; }
+            public float AO_Intensity { get; set; }
+            public float AO_Thickness { get; set; }
+
             public bool CA_Enable { get; set; }
             public float CA_Intensity { get; set; }
             public bool CA_FastMode { get; set; }
@@ -681,6 +686,11 @@ namespace UnityMemoryMappedFile
             public float Vignette_Color_r { get; set; }
             public float Vignette_Color_g { get; set; }
             public float Vignette_Color_b { get; set; }
+
+            public float AO_Color_a { get; set; }
+            public float AO_Color_r { get; set; }
+            public float AO_Color_g { get; set; }
+            public float AO_Color_b { get; set; }
 
             public bool TurnOffAmbientLight { get; set; }
 
