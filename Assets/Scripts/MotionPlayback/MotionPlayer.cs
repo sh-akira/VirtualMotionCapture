@@ -29,6 +29,7 @@ namespace VMC
 
         private VirtualAvatar virtualAvatar;
         private Vrm10Instance currentVrm10Instance; //視線(LookAt)適用用
+        private bool lookAtApplied = false;         //モーションで視線を適用中か(適用をやめた時に1回だけ戻すため)
 
         //遅延読み込み: 起動時はメタ情報(Info)だけ保持し、実体(LoadedMotion)は初回再生時に生成する
         private class MotionEntry
@@ -207,6 +208,12 @@ namespace VMC
             Settings.Current.MotionPlayback_ApplyEye = setting.ApplyEye;
             Settings.Current.MotionPlayback_ApplyExpression = setting.ApplyExpression;
             Settings.Current.MotionPlayback_ApplyLookAt = setting.ApplyLookAt;
+
+            //一時停止中など毎フレームの適用処理が動いていない場合でも、
+            //適用をオフにした時点でモーションが動かした表情・視線を戻す
+            if (setting.ApplyLookAt == false) ResetLookAt();
+            if (setting.ApplyExpression == false) ClearExpressions();
+
             //記録設定はMotion_SetRecordSetting(MotionRecorder)で更新するためここでは適用しない
             //(再生・記録の両ウインドウを同時に開いた際に古い値で上書きされるのを防ぐ)
 
@@ -355,6 +362,7 @@ namespace VMC
             currentTime = 0f;
             virtualAvatar.Enable = false;
             ClearExpressions();
+            ResetLookAt();
             SendStatus();
         }
 
@@ -436,6 +444,7 @@ namespace VMC
 
         private void OnModelUnloading(GameObject model)
         {
+            ResetLookAt(); //モデル破棄前に視線の適用状態を解除しておく
             currentVrm10Instance = null;
             cloneHandler?.Dispose();
             cloneHandler = null;
@@ -532,11 +541,37 @@ namespace VMC
                 try
                 {
                     currentVrm10Instance.Runtime.LookAt.SetYawPitchManually(yaw, pitch);
+                    lookAtApplied = true;
                 }
                 catch (Exception ex)
                 {
                     Debug.LogWarning($"Failed to apply lookat: {ex.Message}");
                 }
+            }
+            else
+            {
+                //適用をやめた直後に、モーションで動かした視線が固定されたまま残らないように戻す
+                ResetLookAt();
+            }
+        }
+
+        /// <summary>
+        /// モーションで動かした視線を初期方向(正面)に戻す。
+        /// VMCProtocol受信やアイトラッキングが視線を制御している場合に競合しないよう、
+        /// モーションで視線を適用した後の1回だけ実行する。
+        /// </summary>
+        private void ResetLookAt()
+        {
+            if (lookAtApplied == false) return;
+            lookAtApplied = false;
+            if (currentVrm10Instance == null) return;
+            try
+            {
+                currentVrm10Instance.Runtime.LookAt.SetYawPitchManually(0f, 0f);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"Failed to reset lookat: {ex.Message}");
             }
         }
 
