@@ -76,6 +76,31 @@ namespace VMC
 
         public EasyDeviceDiscoveryProtocolManager easyDeviceDiscoveryProtocolManager;
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        static void SetDpiAwareness()
+        {
+            // From https://note.com/taqssoft/n/n69521402e39e
+#if UNITY_STANDALONE_WIN
+            try
+            {
+                // Windows 8.1 以降に対応
+                NativeMethods.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.Process_Per_Monitor_DPI_Aware);
+            }
+            catch
+            {
+                try
+                {
+                    // 古いWindows向けフォールバック（Vista以降）
+                    NativeMethods.SetProcessDPIAware();
+                }
+                catch
+                {
+                    Debug.LogWarning("DPI設定の適用に失敗しました。");
+                }
+            }
+#endif
+        }
+
         public ModManager modManager;
 
         //公式プラグイン(Plugins/配下)。ユーザーMod(Mods/配下)とは別系統
@@ -142,6 +167,11 @@ namespace VMC
 
             externalMotionSender = ExternalMotionSenderObject.GetComponent<ExternalSender>();
 
+#if !UNITY_EDITOR   // エディタ上では動きません。
+            var hwnd = GetUnityWindowHandle();
+            SetWindowLong(hwnd, GWL_STYLE, defaultWindowStyle | WS_CLIPCHILDREN);
+#endif
+  
             //モーション再生・記録
             var motionPlayerObject = new GameObject("MotionPlayer");
             motionPlayerObject.transform.SetParent(transform, false);
@@ -406,6 +436,9 @@ namespace VMC
                     LoadSettings(d.Path);
                     //イベントを登録(何度呼び出しても1回のみ)
                     RegisterEventCallBack();
+
+                    // ウィンドウ情報を反映
+                    SendWindowInfo();
                 }
                 else if (e.CommandType == typeof(PipeCommands.SaveSettings))
                 {
@@ -501,6 +534,9 @@ namespace VMC
                         //現在の設定を再適用する
                         ApplySettings();
                     }
+
+                    // ウィンドウ情報を反映
+                    SendWindowInfo();
                 }
                 else if (e.CommandType == typeof(PipeCommands.EnableExternalMotionSender))
                 {
@@ -865,6 +901,21 @@ namespace VMC
                 {
                     await server.SendCommandAsync(new PipeCommands.Alive { });
                 }
+                else if (e.CommandType == typeof(PipeCommands.GetUnityChildWindowEnable))
+                {
+                    await server.SendCommandAsync(new PipeCommands.SetUnityChildWindowEnable
+                    {
+                        enable = Settings.Current.UnityChildWindowEnable
+                    }, e.RequestId);
+                    SendWindowInfo();
+                }
+                else if (e.CommandType == typeof(PipeCommands.SetUnityChildWindowEnable))
+                {
+                    var d = (PipeCommands.SetUnityChildWindowEnable)e.Data;
+                    Settings.Current.UnityChildWindowEnable = d.enable;
+                    SendWindowInfo();
+                }
+
             }, null);
         }
 
@@ -1347,13 +1398,13 @@ namespace VMC
             }
             if (enable)
             {
-                SetWindowLong(hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE); //ウインドウ枠の削除
+                SetWindowLong(hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE | WS_CLIPCHILDREN); //ウインドウ枠の削除
                 SetUnityWindowFrameChanged();
                 WaitOneFrameAction(() => SetUnityWindowSize(clientrect.width, clientrect.height));
             }
             else
             {
-                SetWindowLong(hwnd, GWL_STYLE, defaultWindowStyle);
+                SetWindowLong(hwnd, GWL_STYLE, defaultWindowStyle | WS_CLIPCHILDREN);
                 SetUnityWindowFrameChanged();
                 WaitOneFrameAction(() => SetUnityWindowSize(clientrect.width + windowBorderWidth.Value, clientrect.height + windowBorderHeight.Value));
             }
@@ -2166,13 +2217,18 @@ namespace VMC
         private Vector2 OldMousePos;
         private bool isWindowDragging = false;
 
+        private DateTime lastWindowMoveTime = DateTime.MinValue;
+        private bool windowPositionSent = true;
+        private int lastWindowLeft = 0;
+        private int lastWindowTop = 0;
+
         void LateUpdate()
         {
+            var r = GetUnityWindowPosition();
             //Windowの移動操作
             //ドラッグ開始
             if (Input.GetMouseButtonDown((int)MouseButtons.Left) && Input.GetKey(KeyCode.LeftAlt) == false && Input.GetKey(KeyCode.RightAlt) == false)
             {
-                var r = GetUnityWindowPosition();
                 WindowX = r.left;
                 WindowY = r.top;
                 OldMousePos = GetWindowsMousePosition();
@@ -2196,6 +2252,34 @@ namespace VMC
             {
                 isWindowDragging = false;
             }
+
+            // 位置が変わったら時刻を記録し、送信済みフラグをリセット
+            if (r.left != lastWindowLeft || r.top != lastWindowTop)
+            {
+                lastWindowMoveTime = DateTime.Now;
+                windowPositionSent = false;
+                lastWindowLeft = r.left;
+                lastWindowTop = r.top;
+            }
+
+            // 指定ミリ秒間動きがなければ、まだ送信していなければ送信
+            if (!windowPositionSent && (DateTime.Now - lastWindowMoveTime).TotalMilliseconds >= 200)
+            {
+                SendWindowInfo();
+                windowPositionSent = true;
+            }
+        }
+
+        // 現在のウィンドウハンドル、子ウィンドウ有効可否を送信し、ウィンドウ情報の更新を促す
+        void SendWindowInfo() {
+            context.Post(async s =>
+            {
+                await server.SendCommandAsync(new PipeCommands.WindowInfo
+                {
+                    Hwnd = GetUnityWindowHandle(),
+                    Child = Settings.Current.UnityChildWindowEnable,
+                });
+            }, null);
         }
 
         void OnGUI()

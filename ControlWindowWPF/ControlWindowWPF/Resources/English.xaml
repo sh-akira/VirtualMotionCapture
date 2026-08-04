@@ -378,6 +378,8 @@
     <system:String x:Key="SettingWindow_ReceiveBonesEnable">Receive hand bone</system:String>
     <system:String x:Key="SettingWindow_VMCMod">VMC Mod (No warranty/no support)</system:String>
     <system:String x:Key="SettingWindow_VMCModSetting">Loaded MOD List</system:String>
+    <system:String x:Key="SettingWindow_Other">Other</system:String>
+    <system:String x:Key="SettingWindow_UnityChildWindow">Display Control Panel in Unity</system:String>
     <system:String x:Key="SettingWindow_TrackerReassignmentWhenChestAvailable">Use chest tracker if no pelvis</system:String>
 
     <!-- CalibrationSettingWindow -->

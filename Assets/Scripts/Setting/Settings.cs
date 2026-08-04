@@ -825,6 +825,9 @@ namespace VMC
         public float PelvisOffsetAdjustZ;
 
         [OptionalField]
+        public bool UnityChildWindowEnable;
+
+        [OptionalField]
         public int WristRotationFix_UpperArmWeight = 200; // /1000
         [OptionalField]
         public int WristRotationFix_ForearmWeight = 570; // /1000
@@ -838,7 +841,6 @@ namespace VMC
         public bool EnableAutoCalibrationOnModelLoad = true;
         [OptionalField]
         public CalibrationSnapshot LastCalibrationSnapshot = null;
-
 
         //初期値
         [OnDeserializing()]
@@ -1054,6 +1056,8 @@ namespace VMC
             OverrideBodyHeight = 1.7f;
             PelvisOffsetAdjustY = 0;
             PelvisOffsetAdjustZ = 0;
+
+            UnityChildWindowEnable = false;
 
             WristRotationFix_UpperArmWeight = 200;
             WristRotationFix_ForearmWeight = 570;
