@@ -11,7 +11,8 @@
     <RepositoryRoot>$(MSBuildThisFileDirectory)..\</RepositoryRoot>
     <UnityScriptAssemblies>$(RepositoryRoot)Library\ScriptAssemblies\</UnityScriptAssemblies>
     <UnityManagedRoot>$(RepositoryRoot)UnityBuild\VirtualMotionCapture_Data\Managed\</UnityManagedRoot>
-    <UnityEditorRoot>C:\Program Files\Unity\Hub\Editor\2022.3.76f1\Editor\Data\</UnityEditorRoot>
+    <!-- Unityのインストール先が違う場合は、環境変数か /p:UnityEditorRoot=... で上書きする -->
+    <UnityEditorRoot Condition=" '$(UnityEditorRoot)' == '' ">C:\Program Files\Unity\Hub\Editor\2022.3.76f1\Editor\Data\</UnityEditorRoot>
 
     <!-- 配布先。Unity側は Plugins/、コントロールパネル側は ControlPanel/Plugins/ -->
     <PluginOutputRoot>$(RepositoryRoot)UnityBuild\Plugins\</PluginOutputRoot>
