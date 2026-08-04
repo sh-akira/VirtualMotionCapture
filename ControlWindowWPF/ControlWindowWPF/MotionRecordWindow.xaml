@@ -17,7 +17,7 @@
                 </StackPanel>
                 <GroupBox Header="{DynamicResource MotionRecordWindow_VrmaSaveItems}" Margin="0,8,0,0">
                     <StackPanel Orientation="Horizontal" Margin="5">
-                        <CheckBox Content="{DynamicResource MotionRecordWindow_SaveMotion}" Name="SaveMotionCheckBox" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                        <CheckBox Content="{DynamicResource MotionRecordWindow_SaveMotion}" Name="SaveMotionCheckBox" Margin="0" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
                         <CheckBox Content="{DynamicResource MotionRecordWindow_SaveExpressionPreset}" Name="SaveExpressionPresetCheckBox" Margin="12,0,0,0" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
                         <CheckBox Content="{DynamicResource MotionRecordWindow_SaveExpressionCustom}" Name="SaveExpressionCustomCheckBox" Margin="12,0,0,0" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
                         <CheckBox Content="{DynamicResource MotionRecordWindow_SaveLookAt}" Name="SaveLookAtCheckBox" Margin="12,0,0,0" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
