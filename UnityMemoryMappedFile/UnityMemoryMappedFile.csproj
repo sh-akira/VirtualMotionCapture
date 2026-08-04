@@ -50,7 +50,6 @@
     <Compile Include="MemoryMappedFileClient.cs" />
     <Compile Include="PipeCommands.cs" />
     <Compile Include="PipeCommands_Motion.cs" />
-    <Compile Include="PipeCommands_mocopi.cs" />
     <Compile Include="PipeCommands_VRoidSDK.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

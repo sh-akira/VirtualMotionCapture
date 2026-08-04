@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PluginKind>ControlPanel</PluginKind>
+    <PluginFolderName>mocopi</PluginFolderName>
+    <ProjectGuid>{A1C0F1E1-0001-4A00-9000-000000000001}</ProjectGuid>
+    <RootNamespace>VMC.Plugin.Mocopi.UI</RootNamespace>
+    <AssemblyName>VMC.Plugin.Mocopi.UI</AssemblyName>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!-- Visual Studio は構成の一覧を .csproj 自身のこの条件から作るため、
+       Directory.Build.props 側にしか書かないとビルドがすべてスキップされる。
+       中身の設定は Directory.Build.props が入れる -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Shared\MocopiPipeCommands.cs">
+      <Link>Shared\MocopiPipeCommands.cs</Link>
+    </Compile>
+    <Compile Include="MocopiControlPanelPlugin.cs" />
+    <Compile Include="PluginContext.cs" />
+    <Compile Include="MotionCapture_mocopiSettingWindow.xaml.cs">
+      <DependentUpon>MotionCapture_mocopiSettingWindow.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="MotionCapture_mocopiSettingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Japanese.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\English.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Chinese.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Korean.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

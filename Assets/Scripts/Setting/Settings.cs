@@ -731,6 +731,13 @@ namespace VMC
         [OptionalField]
         public bool mocopi_CorrectHipBone;
 
+        /// <summary>
+        /// プラグイン(Plugins/配下)の設定。"プラグインID/キー" → JSON文字列。
+        /// プロファイル切り替えでプラグインの設定も一緒に切り替わるよう、ここに保存する。
+        /// </summary>
+        [OptionalField]
+        public Dictionary<string, string> PluginSettings;
+
         //モーション再生
         [OptionalField]
         public List<string> MotionPlayback_MotionFiles;

@@ -45,6 +45,13 @@ namespace VMC
             context = System.Threading.SynchronizationContext.Current;
             controlWPFWindow.server.ReceivedEvent += Server_Received;
 
+            //外部デバイス(mocopi等)で全身が動く時は注視点を腰に付ける必要があるので、
+            //切り替わったら付け直す
+            if (MotionManager.Instance != null)
+            {
+                MotionManager.Instance.ExternalDeviceMotionActiveChanged += () => SetCameraLookTarget();
+            }
+
             VMCEvents.OnCameraChanged?.Invoke(ControlCamera);
         }
         private void Server_Received(object sender, DataReceivedEventArgs e)
@@ -125,11 +132,6 @@ namespace VMC
                 else if (e.CommandType == typeof(PipeCommands.EndCalibrate))
                 {
                     SetCameraLookTarget();
-                }
-                else if (e.CommandType == typeof(PipeCommands.mocopi_SetSetting))
-                {
-                    var d = (PipeCommands.mocopi_SetSetting)e.Data;
-                    SetCameraLookTarget(d.enable);
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetVirtualWebCamConfig))
                 {
@@ -281,8 +283,11 @@ namespace VMC
             if (mirror != null) mirror.MirrorEnable = mirrorEnable;
         }
 
-        private void SetCameraLookTarget(bool? EnableHips = null)
+        private void SetCameraLookTarget()
         {
+            //全身が外部デバイスで動く時は、注視点をモデルのルートではなく腰に追従させる
+            var followHips = MotionManager.Instance != null && MotionManager.Instance.IsExternalDeviceMotionActive;
+
             if (animator != null)
             {
                 var spineTransform = animator.GetBoneTransform(HumanBodyBones.Spine);
@@ -291,7 +296,7 @@ namespace VMC
                 CurrentLookTarget = new GameObject("CameraLook");
                 CurrentLookTarget.transform.position = calcPosition;
                 CurrentLookTarget.transform.rotation = spineTransform.rotation;
-                CurrentLookTarget.transform.parent = (EnableHips.HasValue == false ? Settings.Current.mocopi_Enable : EnableHips.Value) ? animator.GetBoneTransform(HumanBodyBones.Hips) : CurrentModel.transform;
+                CurrentLookTarget.transform.parent = followHips ? animator.GetBoneTransform(HumanBodyBones.Hips) : CurrentModel.transform;
                 
                 var lookTarget = FrontCamera.GetComponent<CameraMouseControl>();
                 if (lookTarget != null)

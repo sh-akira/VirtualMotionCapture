@@ -17,7 +17,7 @@ using VirtualMotionCaptureControlPanel.Properties;
 namespace VirtualMotionCaptureControlPanel
 {
     /// <summary>
-    /// MotionCapture_mocopiSettingWindow.xaml の相互作用ロジック
+    /// VMCProtocolReceiverSettingWindow.xaml の相互作用ロジック
     /// </summary>
     public partial class VMCProtocolReceiverSettingWindow : Window
     {

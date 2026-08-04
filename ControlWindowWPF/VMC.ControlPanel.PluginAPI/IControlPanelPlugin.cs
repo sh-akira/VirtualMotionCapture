@@ -1,0 +1,71 @@
+using System.Windows;
+using UnityMemoryMappedFile;
+
+namespace VMC.ControlPanel.Plugin
+{
+    /// <summary>
+    /// プラグインからコントロールパネル本体の機能を使うための窓口。
+    /// プラグインが exe を直接参照しなくて済むようにするためのもの。
+    /// </summary>
+    public interface IControlPanelHost
+    {
+        /// <summary>Unity側との通信クライアント</summary>
+        MemoryMappedFileClient Client { get; }
+    }
+
+    /// <summary>
+    /// コントロールパネル側の公式プラグイン。
+    /// ControlPanel/Plugins/ 配下のDLLから、このインターフェースを実装したクラスが探される。
+    ///
+    /// 設定画面の「外部デバイス」欄にボタンとして並び、押すと CreateSettingWindow が
+    /// 返したウインドウが開く。設定画面そのものに項目を足すことはしない
+    /// (プラグインが増えても設定画面のレイアウトが崩れないようにするため)。
+    /// </summary>
+    public interface IControlPanelPlugin
+    {
+        /// <summary>
+        /// プラグインを一意に識別するID。Unity側プラグインの IVMCPlugin.Id と
+        /// 同じ文字列にすること(両方揃っているかの突き合わせに使う)。
+        /// </summary>
+        string Id { get; }
+
+        /// <summary>プラグインのバージョン</summary>
+        string Version { get; }
+
+        /// <summary>
+        /// このプラグインが本体とやりとりする独自コマンドの型。
+        /// 共有アセンブリには入っていないので、受信時の型解決に使えるよう
+        /// ControlPanelPluginManager が PipeCommands へ登録する。
+        /// 本体側プラグインと同じ名前・同じ名前空間の型にすること。
+        /// </summary>
+        System.Collections.Generic.IEnumerable<System.Type> CommandTypes { get; }
+
+        /// <summary>
+        /// 「外部デバイス」欄での並び順。小さいほど先に表示される。
+        /// モーション系100番台・表情系200番台、のように緩く決めておくと後から挿しやすい。
+        /// </summary>
+        int SortOrder { get; }
+
+        /// <summary>
+        /// ボタンに表示する名前のリソースキー。"&lt;Id&gt;_Title" にする規約。
+        /// GetLocalization が返す ResourceDictionary に含めておくこと。
+        /// (プラグインの辞書は本体の後にマージされるので、本体とキーが衝突すると
+        ///  本体の画面の文字列まで上書きしてしまう。"&lt;Id&gt;_" を前置して避ける)
+        /// </summary>
+        string TitleResourceKey { get; }
+
+        /// <summary>
+        /// 指定言語のリソース辞書を返す。language は "Japanese" / "English" /
+        /// "Chinese" / "Korean" のいずれか。対応しない言語では英語を返してよい。
+        /// </summary>
+        ResourceDictionary GetLocalization(string language);
+
+        /// <summary>
+        /// 読み込み直後に一度だけ呼ばれる。通信クライアント等はここで受け取る。
+        /// </summary>
+        void Initialize(IControlPanelHost host);
+
+        /// <summary>設定ウインドウを生成する。表示はコントロールパネル側が行う。</summary>
+        Window CreateSettingWindow(Window owner);
+    }
+}

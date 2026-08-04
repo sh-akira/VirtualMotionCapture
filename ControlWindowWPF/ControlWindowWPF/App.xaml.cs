@@ -17,6 +17,8 @@ namespace VirtualMotionCaptureControlPanel
         private void Application_Startup(object sender, StartupEventArgs e) {
             if (e.Args.Length == 0) return;
             CommandLineArgs = e.Args;
+            //プラグインのリソース辞書を言語切り替えより先に登録しておく
+            ControlPanelPluginManager.Load();
             LanguageSelector.SetAutoLanguage();
         }
     }

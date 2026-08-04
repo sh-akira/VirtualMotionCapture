@@ -11,6 +11,37 @@ namespace UnityMemoryMappedFile
     {
         private static Dictionary<string, Type> commandTypeCache = new Dictionary<string, Type>();
 
+        /// <summary>
+        /// プラグインが追加したコマンドの型。
+        /// プラグインのコマンドは本体の共有アセンブリではなくプラグイン側のDLLに入っているため、
+        /// ここへ登録してもらって型解決の対象に加える。
+        /// </summary>
+        private static List<Type> pluginCommandTypes = new List<Type>();
+
+        /// <summary>
+        /// プラグインのコマンド型を登録する。
+        /// 送受信は型の単純名で対応付けるため、本体側とコントロールパネル側で
+        /// 同じ名前・同じ名前空間の型を用意する必要がある。
+        /// </summary>
+        public static void RegisterPluginCommandTypes(IEnumerable<Type> types)
+        {
+            if (types == null) return;
+
+            //受信スレッドが走り出した後に呼ばれるので、その場で足さずに作り直して差し替える。
+            //参照の差し替えは原子的なので、受信側は新旧どちらかを最後まで見るだけで済む
+            var updated = new List<Type>(pluginCommandTypes);
+            foreach (var type in types)
+            {
+                if (type == null) continue;
+                if (updated.Contains(type)) continue;
+                updated.Add(type);
+            }
+            pluginCommandTypes = updated;
+
+            //名前解決の結果が変わるのでキャッシュを捨てる
+            commandTypeCache = new Dictionary<string, Type>();
+        }
+
         public static Type GetCommandType(string commandStr)
         {
             if (commandTypeCache.TryGetValue(commandStr,out Type value))
@@ -19,6 +50,14 @@ namespace UnityMemoryMappedFile
             }
             var commands = typeof(PipeCommands).GetNestedTypes(System.Reflection.BindingFlags.Public);
             foreach (var command in commands)
+            {
+                if (command.Name == commandStr)
+                {
+                    commandTypeCache[commandStr] = command;
+                    return command;
+                }
+            }
+            foreach (var command in pluginCommandTypes)
             {
                 if (command.Name == commandStr)
                 {
@@ -369,35 +408,6 @@ namespace UnityMemoryMappedFile
             public bool doSend { get; set; }
         }
 
-        public class GetEyeTracking_TobiiOffsets { }
-        public class SetEyeTracking_TobiiOffsets
-        {
-            public float ScaleHorizontal { get; set; }
-            public float ScaleVertical { get; set; }
-            public float OffsetHorizontal { get; set; }
-            public float OffsetVertical { get; set; }
-        }
-
-        public class EyeTracking_TobiiCalibration { }
-
-        public class GetEyeTracking_ViveProEyeOffsets { }
-        public class SetEyeTracking_ViveProEyeOffsets
-        {
-            public float ScaleHorizontal { get; set; }
-            public float ScaleVertical { get; set; }
-            public float OffsetHorizontal { get; set; }
-            public float OffsetVertical { get; set; }
-        }
-        public class GetEyeTracking_ViveProEyeUseEyelidMovements { }
-        public class SetEyeTracking_ViveProEyeUseEyelidMovements
-        {
-            public bool Use { get; set; }
-        }
-        public class GetEyeTracking_ViveProEyeEnable { }
-        public class SetEyeTracking_ViveProEyeEnable
-        {
-            public bool enable { get; set; }
-        }
 
         public class ImportCameraPlus
         {
@@ -628,18 +638,6 @@ namespace UnityMemoryMappedFile
             public int antiAliasing { get; set; }
         }
 
-        public class GetViveLipTrackingBlendShape { }
-        public class SetViveLipTrackingBlendShape
-        {
-            public List<string> LipShapes { get; set; }
-            public Dictionary<string, string> LipShapesToBlendShapeMap { get; set; }
-        }
-        public class GetViveLipTrackingEnable { }
-        public class SetViveLipTrackingEnable
-        {
-            public bool enable { get; set; }
-        }
-
         public class GetAdvancedGraphicsOption { }
         public class SetAdvancedGraphicsOption
         {
@@ -719,6 +717,13 @@ namespace UnityMemoryMappedFile
         {
             public string InstanceId { get; set; }
         }
+
+        //公式プラグイン(Plugins/配下)。ユーザーMod(Mods/配下)とは別系統
+        public class GetPluginList { }
+        public class ReturnPluginList
+        {
+            public List<PluginItem> PluginList { get; set; }
+        }
         public class ShowCalibrationWindow { }
         public class ShowPhotoWindow { }
 
@@ -737,6 +742,19 @@ namespace UnityMemoryMappedFile
             public bool DashboardOpened { get; set; }
         }
 
+    }
+
+    /// <summary>
+    /// Unity側で読み込まれている公式プラグインの情報。
+    /// コントロールパネル側は自身の ControlPanel/Plugins/ を走査して一覧を作るが、
+    /// 片側にしか入っていない事故を検出するためにこれと突き合わせる。
+    /// </summary>
+    public class PluginItem
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Version { get; set; }
+        public string AssemblyPath { get; set; }
     }
 
     public class ModItem

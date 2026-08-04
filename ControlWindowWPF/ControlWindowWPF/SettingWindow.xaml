@@ -100,21 +100,28 @@
                 </GroupBox>
             </StackPanel>
             <StackPanel Orientation="Vertical" Grid.Column="1">
-                <GroupBox Header="Motion Capture">
-                    <UniformGrid Columns="2">
-                        <Button Content="mocopi (UDP)" Name="MotionCapture_mocopiSettingButton" Click="MotionCapture_mocopiSettingButton_Click"/>
-                    </UniformGrid>
-                </GroupBox>
-                <GroupBox Header="Eye Tracking">
-                    <UniformGrid Columns="2">
-                        <Button Content="Tobii Eye Tracker 4C" Name="EyeTracking_TobiiSettingButton" Click="EyeTracking_TobiiSettingButton_Click"/>
-                        <Button Content="VIVE Pro Eye/Focus 3&#xa;Droolon F1" Name="EyeTracking_ViveProEyeSettingButton" Click="EyeTracking_ViveProEyeSettingButton_Click"/>
-                    </UniformGrid>
-                </GroupBox>
-                <GroupBox Header="Facial Tracking">
-                    <UniformGrid Columns="2">
-                        <Button Content="VIVE Facial Tracker" Name="LipTracking_ViveSettingButton" Click="LipTracking_ViveSettingButton_Click"/>
-                    </UniformGrid>
+                <GroupBox Header="{DynamicResource SettingWindow_ExternalDevices}">
+                    <StackPanel>
+                        <ItemsControl Name="ExternalDeviceList">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="2"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Content="{Binding Title}"
+                                            IsEnabled="{Binding IsAvailable}"
+                                            ToolTip="{Binding StatusText}"
+                                            Click="ExternalDeviceSettingButton_Click"
+                                            Tag="{Binding Id}"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Name="NoExternalDeviceText"
+                                   Text="{DynamicResource SettingWindow_NoExternalDevices}"
+                                   TextWrapping="Wrap" Margin="4" Opacity="0.7"/>
+                    </StackPanel>
                 </GroupBox>
                 <GroupBox Header="CameraPlus (BeatSaber MOD)">
                     <UniformGrid Columns="2">

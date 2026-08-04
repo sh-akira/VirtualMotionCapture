@@ -30,6 +30,7 @@ namespace VMC
             if (controlWPFWindow == null) controlWPFWindow = GameObject.Find("ControlWPFWindow").GetComponent<ControlWPFWindow>();
             VMCEvents.OnCurrentModelChanged += OnCurrentModelChanged;
             VMCEvents.OnModelUnloading += OnModelUnloading;
+            VirtualAvatar.EnableChanged += OnVirtualAvatarEnableChanged;
         }
 
         private void Start()
@@ -40,6 +41,23 @@ namespace VMC
         private void OnDestroy()
         {
             IKManager.Instance.RemoveOnPostUpdate(eventId);
+            VirtualAvatar.EnableChanged -= OnVirtualAvatarEnableChanged;
+        }
+
+        /// <summary>
+        /// 外部デバイスプラグイン(mocopi等)のモーションが今アバターへ適用されているか。
+        /// 全身が動くかどうかで挙動を変えたい箇所(カメラの注視点など)から参照する。
+        /// </summary>
+        public bool IsExternalDeviceMotionActive
+            => VirtualAvatars.Any(d => d.MotionSource == MotionSource.ExternalDevice && d.Enable);
+
+        /// <summary>IsExternalDeviceMotionActive が変わったときに呼ばれる</summary>
+        public event Action ExternalDeviceMotionActiveChanged;
+
+        private void OnVirtualAvatarEnableChanged(VirtualAvatar virtualAvatar)
+        {
+            if (virtualAvatar.MotionSource != MotionSource.ExternalDevice) return;
+            ExternalDeviceMotionActiveChanged?.Invoke();
         }
 
         public void AddVirtualAvatar(VirtualAvatar virtualAvatar)

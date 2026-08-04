@@ -70,18 +70,6 @@ namespace VMC
         public Action<UnityMemoryMappedFile.VRMData> VRMmetaLoadedAction = null;
         public Action<string> VRMRemoteLoadedAction = null;
 
-        public Action<GameObject> EyeTracking_TobiiCalibrationAction = null;
-        public Action<PipeCommands.SetEyeTracking_TobiiOffsets> SetEyeTracking_TobiiOffsetsAction = null;
-        public Action<PipeCommands.SetEyeTracking_ViveProEyeOffsets> SetEyeTracking_ViveProEyeOffsetsAction = null;
-        public Action<PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements> SetEyeTracking_ViveProEyeUseEyelidMovementsAction = null;
-        public Action<Dictionary<string, string>> SetLipShapeToBlendShapeStringMapAction = null;
-        public Func<List<string>> GetLipShapesStringListFunc = null;
-
-        public Behaviour EyeTracking_ViveProEyeComponent = null;
-        public Behaviour SRanipal_Eye_FrameworkComponent = null;
-        public Behaviour LipTracking_ViveComponent = null;
-        public Behaviour SRanipal_Lip_FrameworkComponent = null;
-
         public MIDICCBlendShape midiCCBlendShape;
 
         public string lastLoadedConfigPath = "";
@@ -89,6 +77,10 @@ namespace VMC
         public EasyDeviceDiscoveryProtocolManager easyDeviceDiscoveryProtocolManager;
 
         public ModManager modManager;
+
+        //公式プラグイン(Plugins/配下)。ユーザーMod(Mods/配下)とは別系統
+        private PluginManager pluginManager;
+        private PluginHost pluginHost;
 
         // コントロールパネル起動監視用の変数を追加
         private bool showControlPanelMessage = false;
@@ -157,6 +149,15 @@ namespace VMC
             var motionRecorderObject = new GameObject("MotionRecorder");
             motionRecorderObject.transform.SetParent(transform, false);
             motionRecorder = motionRecorderObject.AddComponent<MotionRecorder>();
+
+            //公式プラグインの読み込み。
+            //設定の読み込み・適用より前に済ませる必要があるためここで行う
+            //(ユーザーModはコントロールパネル接続後にModManagerが読み込む)
+            var pluginManagerObject = new GameObject("PluginManager");
+            pluginManagerObject.transform.SetParent(transform, false);
+            pluginManager = pluginManagerObject.AddComponent<PluginManager>();
+            pluginHost = new PluginHost(this, faceController);
+            pluginManager.LoadPlugins(pluginHost);
         }
 
         void Start()
@@ -480,65 +481,6 @@ namespace VMC
                         doSendTrackerMoved--;
                     }
                 }
-                else if (e.CommandType == typeof(PipeCommands.SetEyeTracking_TobiiOffsets))
-                {
-                    var d = (PipeCommands.SetEyeTracking_TobiiOffsets)e.Data;
-                    SetEyeTracking_TobiiOffsets(d);
-                }
-                else if (e.CommandType == typeof(PipeCommands.GetEyeTracking_TobiiOffsets))
-                {
-                    await server.SendCommandAsync(new PipeCommands.SetEyeTracking_TobiiOffsets
-                    {
-                        OffsetHorizontal = Settings.Current.EyeTracking_TobiiOffsetHorizontal,
-                        OffsetVertical = Settings.Current.EyeTracking_TobiiOffsetVertical,
-                        ScaleHorizontal = Settings.Current.EyeTracking_TobiiScaleHorizontal,
-                        ScaleVertical = Settings.Current.EyeTracking_TobiiScaleVertical
-                    }, e.RequestId);
-                }
-                else if (e.CommandType == typeof(PipeCommands.EyeTracking_TobiiCalibration))
-                {
-                    EyeTracking_TobiiCalibrationAction?.Invoke(CurrentModel);
-                }
-                else if (e.CommandType == typeof(PipeCommands.SetEyeTracking_ViveProEyeOffsets))
-                {
-                    var d = (PipeCommands.SetEyeTracking_ViveProEyeOffsets)e.Data;
-                    SetEyeTracking_ViveProEyeOffsets(d);
-                }
-                else if (e.CommandType == typeof(PipeCommands.GetEyeTracking_ViveProEyeOffsets))
-                {
-                    await server.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeOffsets
-                    {
-                        OffsetHorizontal = Settings.Current.EyeTracking_ViveProEyeOffsetHorizontal,
-                        OffsetVertical = Settings.Current.EyeTracking_ViveProEyeOffsetVertical,
-                        ScaleHorizontal = Settings.Current.EyeTracking_ViveProEyeScaleHorizontal,
-                        ScaleVertical = Settings.Current.EyeTracking_ViveProEyeScaleVertical
-                    }, e.RequestId);
-                }
-                else if (e.CommandType == typeof(PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements))
-                {
-                    var d = (PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements)e.Data;
-                    SetEyeTracking_ViveProEyeUseEyelidMovements(d);
-                }
-                else if (e.CommandType == typeof(PipeCommands.SetEyeTracking_ViveProEyeEnable))
-                {
-                    var d = (PipeCommands.SetEyeTracking_ViveProEyeEnable)e.Data;
-                    Settings.Current.EyeTracking_ViveProEyeEnable = d.enable;
-                    SetEyeTracking_ViveProEyeEnable(d.enable);
-                }
-                else if (e.CommandType == typeof(PipeCommands.GetEyeTracking_ViveProEyeUseEyelidMovements))
-                {
-                    await server.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements
-                    {
-                        Use = Settings.Current.EyeTracking_ViveProEyeUseEyelidMovements,
-                    }, e.RequestId);
-                }
-                else if (e.CommandType == typeof(PipeCommands.GetEyeTracking_ViveProEyeEnable))
-                {
-                    await server.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeEnable
-                    {
-                        enable = Settings.Current.EyeTracking_ViveProEyeEnable,
-                    }, e.RequestId);
-                }
                 else if (e.CommandType == typeof(PipeCommands.LoadCurrentSettings))
                 {
                     if (isFirstTimeExecute)
@@ -810,36 +752,6 @@ namespace VMC
                         result = ret,
                     }, e.RequestId);
                 }
-                else if (e.CommandType == typeof(PipeCommands.GetViveLipTrackingBlendShape))
-                {
-                    if (GetLipShapesStringListFunc != null)
-                    {
-                        await server.SendCommandAsync(new PipeCommands.SetViveLipTrackingBlendShape
-                        {
-                            LipShapes = GetLipShapesStringListFunc(),
-                            LipShapesToBlendShapeMap = Settings.Current.LipShapesToBlendShapeMap,
-                        }, e.RequestId);
-                    }
-                }
-                else if (e.CommandType == typeof(PipeCommands.GetViveLipTrackingEnable))
-                {
-                    await server.SendCommandAsync(new PipeCommands.SetViveLipTrackingEnable
-                    {
-                        enable = Settings.Current.LipTracking_ViveEnable,
-                    }, e.RequestId);
-                }
-                else if (e.CommandType == typeof(PipeCommands.SetViveLipTrackingEnable))
-                {
-                    var d = (PipeCommands.SetViveLipTrackingEnable)e.Data;
-                    Settings.Current.LipTracking_ViveEnable = d.enable;
-                    SetLipTracking_ViveEnable(d.enable);
-                }
-                else if (e.CommandType == typeof(PipeCommands.SetViveLipTrackingBlendShape))
-                {
-                    var d = (PipeCommands.SetViveLipTrackingBlendShape)e.Data;
-                    Settings.Current.LipShapesToBlendShapeMap = d.LipShapesToBlendShapeMap;
-                    SetLipShapeToBlendShapeStringMapAction?.Invoke(d.LipShapesToBlendShapeMap);
-                }
                 else if (e.CommandType == typeof(PipeCommands.GetAdvancedGraphicsOption))
                 {
                     LoadAdvancedGraphicsOption();
@@ -914,6 +826,13 @@ namespace VMC
 #endif
                     }, e.RequestId);
                 }
+                else if (e.CommandType == typeof(PipeCommands.GetPluginList))
+                {
+                    await server.SendCommandAsync(new PipeCommands.ReturnPluginList
+                    {
+                        PluginList = GetPluginList(),
+                    }, e.RequestId);
+                }
                 else if (e.CommandType == typeof(PipeCommands.GetModList))
                 {
                     await server.SendCommandAsync(new PipeCommands.ReturnModList
@@ -960,6 +879,26 @@ namespace VMC
             }
 
             return modList;
+        }
+
+        private List<PluginItem> GetPluginList()
+        {
+            var pluginList = new List<PluginItem>();
+
+            if (pluginManager == null) return pluginList;
+
+            foreach (var plugin in pluginManager.LoadedPlugins)
+            {
+                pluginList.Add(new PluginItem
+                {
+                    Id = plugin.Id,
+                    Name = plugin.DisplayName,
+                    Version = plugin.Version,
+                    AssemblyPath = plugin.AssemblyPath,
+                });
+            }
+
+            return pluginList;
         }
 
         public Transform MainDirectionalLightTransform;
@@ -1638,46 +1577,6 @@ namespace VMC
 
         #endregion
 
-        #region EyeTracking
-
-
-        private void SetEyeTracking_TobiiOffsets(PipeCommands.SetEyeTracking_TobiiOffsets offsets)
-        {
-            Settings.Current.EyeTracking_TobiiOffsetHorizontal = offsets.OffsetHorizontal;
-            Settings.Current.EyeTracking_TobiiOffsetVertical = offsets.OffsetVertical;
-            Settings.Current.EyeTracking_TobiiScaleHorizontal = offsets.ScaleHorizontal;
-            Settings.Current.EyeTracking_TobiiScaleVertical = offsets.ScaleVertical;
-            SetEyeTracking_TobiiOffsetsAction?.Invoke(offsets);
-        }
-
-        public void SetEyeTracking_TobiiPosition(Transform position, float centerX, float centerY)
-        {
-            Settings.Current.EyeTracking_TobiiPosition = StoreTransform.Create(position);
-            Settings.Current.EyeTracking_TobiiCenterX = centerX;
-            Settings.Current.EyeTracking_TobiiCenterY = centerY;
-        }
-
-        public Vector2 GetEyeTracking_TobiiLocalPosition(Transform saveto)
-        {
-            if (Settings.Current.EyeTracking_TobiiPosition != null) Settings.Current.EyeTracking_TobiiPosition.ToLocalTransform(saveto);
-            return new Vector2(Settings.Current.EyeTracking_TobiiCenterX, Settings.Current.EyeTracking_TobiiCenterY);
-        }
-        private void SetEyeTracking_ViveProEyeOffsets(PipeCommands.SetEyeTracking_ViveProEyeOffsets offsets)
-        {
-            Settings.Current.EyeTracking_ViveProEyeOffsetHorizontal = offsets.OffsetHorizontal;
-            Settings.Current.EyeTracking_ViveProEyeOffsetVertical = offsets.OffsetVertical;
-            Settings.Current.EyeTracking_ViveProEyeScaleHorizontal = offsets.ScaleHorizontal;
-            Settings.Current.EyeTracking_ViveProEyeScaleVertical = offsets.ScaleVertical;
-            SetEyeTracking_ViveProEyeOffsetsAction?.Invoke(offsets);
-        }
-        private void SetEyeTracking_ViveProEyeUseEyelidMovements(PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements useEyelidMovements)
-        {
-            Settings.Current.EyeTracking_ViveProEyeUseEyelidMovements = useEyelidMovements.Use;
-            SetEyeTracking_ViveProEyeUseEyelidMovementsAction?.Invoke(useEyelidMovements);
-        }
-
-
-        #endregion
 
         #region ExternalMotionSender
 
@@ -1952,6 +1851,8 @@ namespace VMC
             {
                 path = Path.GetFullPath(path); //フルパスに変換
                 Settings.Current = Json.Serializer.Deserialize<Settings>(File.ReadAllText(path)); //設定を読み込み
+                //mocopi/VIVE/Tobiiが本体機能だった頃の設定をプラグインの設定領域へ移す
+                PluginSettingsMigration.Migrate(Settings.Current);
                 float divide = 0;
                 //腰情報を読み込む
                 if (float.TryParse(File.ReadAllText(Application.dataPath + "/../PelvisTrackerOffsetDivide.txt"), out divide))
@@ -2178,28 +2079,6 @@ namespace VMC
             SetMidiCCBlendShape(Settings.Current.MidiCCBlendShape);
             SetMidiEnable(Settings.Current.MidiEnable);
 
-            SetEyeTracking_TobiiOffsetsAction?.Invoke(new PipeCommands.SetEyeTracking_TobiiOffsets
-            {
-                OffsetHorizontal = Settings.Current.EyeTracking_TobiiOffsetHorizontal,
-                OffsetVertical = Settings.Current.EyeTracking_TobiiOffsetVertical,
-                ScaleHorizontal = Settings.Current.EyeTracking_TobiiScaleHorizontal,
-                ScaleVertical = Settings.Current.EyeTracking_TobiiScaleVertical
-            });
-
-            SetEyeTracking_ViveProEyeOffsetsAction?.Invoke(new PipeCommands.SetEyeTracking_ViveProEyeOffsets
-            {
-                OffsetHorizontal = Settings.Current.EyeTracking_ViveProEyeOffsetHorizontal,
-                OffsetVertical = Settings.Current.EyeTracking_ViveProEyeOffsetVertical,
-                ScaleHorizontal = Settings.Current.EyeTracking_ViveProEyeScaleHorizontal,
-                ScaleVertical = Settings.Current.EyeTracking_ViveProEyeScaleVertical
-            });
-
-            SetEyeTracking_ViveProEyeUseEyelidMovementsAction?.Invoke(new PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements
-            {
-                Use = Settings.Current.EyeTracking_ViveProEyeUseEyelidMovements
-            });
-            SetEyeTracking_ViveProEyeEnable(Settings.Current.EyeTracking_ViveProEyeEnable);
-
             SetTrackingFilterEnable(Settings.Current.TrackingFilterEnable, Settings.Current.TrackingFilterHmdEnable, Settings.Current.TrackingFilterControllerEnable, Settings.Current.TrackingFilterTrackerEnable);
 
             SetModelModifierEnable(Settings.Current.FixKneeRotation, Settings.Current.FixElbowRotation);
@@ -2210,27 +2089,17 @@ namespace VMC
             });
             SetVMT(Settings.Current.VirtualMotionTrackerEnable, Settings.Current.VirtualMotionTrackerNo);
 
-            SetLipShapeToBlendShapeStringMapAction?.Invoke(Settings.Current.LipShapesToBlendShapeMap);
-            SetLipTracking_ViveEnable(Settings.Current.LipTracking_ViveEnable);
 
             LoadAdvancedGraphicsOption();
 
             AdditionalSettingAction?.Invoke(null);
 
+            //プラグインへ設定の適用を通知する
+            pluginHost?.RaiseSettingsApplied();
+
             await server.SendCommandAsync(new PipeCommands.SetWindowNum { Num = CurrentWindowNum });
         }
 
-        private void SetEyeTracking_ViveProEyeEnable(bool enable)
-        {
-            if (EyeTracking_ViveProEyeComponent != null) EyeTracking_ViveProEyeComponent.enabled = enable;
-            if (SRanipal_Eye_FrameworkComponent != null) SRanipal_Eye_FrameworkComponent.enabled = enable;
-        }
-
-        private void SetLipTracking_ViveEnable(bool enable)
-        {
-            if (LipTracking_ViveComponent != null) LipTracking_ViveComponent.enabled = enable;
-            if (SRanipal_Lip_FrameworkComponent != null) SRanipal_Lip_FrameworkComponent.enabled = enable;
-        }
 
         #endregion
 

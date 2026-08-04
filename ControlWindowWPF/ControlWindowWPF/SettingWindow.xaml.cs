@@ -247,6 +247,11 @@ namespace VirtualMotionCaptureControlPanel
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Globals.Client.ReceivedEvent += Client_Received;
+
+            //外部デバイス(公式プラグイン)の一覧を作る
+            await ControlPanelPluginManager.CheckUnitySideAsync();
+            UpdateExternalDeviceList();
+
             await Globals.Client?.SendCommandWaitAsync(new PipeCommands.GetTrackerSerialNumbers(), d =>
             {
                 var data = (PipeCommands.ReturnTrackerSerialNumbers)d;
@@ -564,19 +569,66 @@ namespace VirtualMotionCaptureControlPanel
             await Globals.Client?.SendCommandAsync(new PipeCommands.StatusStringChangedRequest { doSend = false });
         }
 
-        private void EyeTracking_TobiiSettingButton_Click(object sender, RoutedEventArgs e)
+        #region 外部デバイス(公式プラグイン)
+
+        /// <summary>
+        /// 「外部デバイス」欄に並べる1件分。
+        /// プラグインが増えても設定画面のレイアウトを触らずに済むよう、
+        /// ここでは起動用のボタンだけを並べ、設定項目はプラグインのウインドウが持つ。
+        /// </summary>
+        private class ExternalDeviceViewModel
         {
-            var win = new EyeTracking_TobiiSettingWindow();
-            win.Owner = this;
-            win.ShowDialog();
+            public string Id { get; set; }
+            public string Title { get; set; }
+            public bool IsAvailable { get; set; }
+            public string StatusText { get; set; }
         }
 
-        private void EyeTracking_ViveProEyeSettingButton_Click(object sender, RoutedEventArgs e)
+        private void UpdateExternalDeviceList()
         {
-            var win = new EyeTracking_ViveProEyeSettingWindow();
-            win.Owner = this;
-            win.ShowDialog();
+            var items = new List<ExternalDeviceViewModel>();
+
+            foreach (var plugin in ControlPanelPluginManager.Plugins)
+            {
+                var title = LanguageSelector.GetFromAll(plugin.Instance.TitleResourceKey) ?? plugin.Instance.Id;
+                items.Add(new ExternalDeviceViewModel
+                {
+                    Id = plugin.Instance.Id,
+                    Title = title,
+                    IsAvailable = plugin.UnitySideAvailable,
+                    StatusText = plugin.UnitySideAvailable
+                        ? $"{title} {plugin.Instance.Version}"
+                        : string.Format(LanguageSelector.Get("SettingWindow_ExternalDeviceUnitySideMissing") ?? "{0}", title),
+                });
+            }
+
+            ExternalDeviceList.ItemsSource = items;
+            NoExternalDeviceText.Visibility = items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         }
+
+        private void ExternalDeviceSettingButton_Click(object sender, RoutedEventArgs e)
+        {
+            var id = (sender as Button)?.Tag as string;
+            if (id == null) return;
+
+            var plugin = ControlPanelPluginManager.Plugins.FirstOrDefault(d => d.Instance.Id == id);
+            if (plugin == null) return;
+
+            try
+            {
+                var win = plugin.Instance.CreateSettingWindow(this);
+                if (win == null) return;
+                win.Owner = this;
+                win.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        #endregion
+
         [DataContract]
         private class CameraPlusConfig
         {
@@ -884,13 +936,6 @@ namespace VirtualMotionCaptureControlPanel
                 no = result
             });
         }
-        private void LipTracking_ViveSettingButton_Click(object sender, RoutedEventArgs e)
-        {
-            var win = new LipTracking_ViveSettingWindow();
-            win.Owner = this;
-            win.ShowDialog();
-        }
-
         private async void VMTInstallButton_Click(object sender, RoutedEventArgs e)
         {
             VirtualMotionTrackerEnableCheckBox.IsChecked = true; //インストールと同時にチェックを入れる
@@ -1093,12 +1138,6 @@ namespace VirtualMotionCaptureControlPanel
             win.Show();
         }
 
-        private void MotionCapture_mocopiSettingButton_Click(object sender, RoutedEventArgs e)
-        {
-            var win = new MotionCapture_mocopiSettingWindow();
-            win.Owner = this;
-            win.ShowDialog();
-        }
 
         private void CalibrationSettingButton_Click(object sender, RoutedEventArgs e)
         {

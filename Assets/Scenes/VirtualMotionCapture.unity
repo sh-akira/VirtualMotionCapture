@@ -161,67 +161,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &65266791
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 65266794}
-  - component: {fileID: 65266793}
-  - component: {fileID: 65266792}
-  m_Layer: 0
-  m_Name: LipTracking
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &65266792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 65266791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20b4e5c0c4847e8478b223793a2a5cd0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  faceController: {fileID: 69806225}
-  controlWPFWindow: {fileID: 1407685704}
---- !u!114 &65266793
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 65266791}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41f6d745d46210a49a0df9fe7d0d1102, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  EnableLip: 1
-  EnableLipVersion: 1
---- !u!4 &65266794
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 65266791}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 410353192}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &69806224
 GameObject:
   m_ObjectHideFlags: 0
@@ -253,7 +192,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EnableBlink: 0
-  ViveProEyeEnabled: 0
+  ExternalEyelidControlEnabled: 0
   BlinkTimeMin: 1
   BlinkTimeMax: 10
   CloseAnimationTime: 0.06
@@ -1045,104 +984,6 @@ MonoBehaviour:
   PositionFixedCamera: {fileID: 680324446}
   ControlCamera: {fileID: 1420234149}
   CurrentLookTarget: {fileID: 0}
---- !u!1 &326004791
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 326004793}
-  - component: {fileID: 326004792}
-  - component: {fileID: 326004794}
-  - component: {fileID: 326004795}
-  m_Layer: 0
-  m_Name: EyeTracking
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &326004792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 326004791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6fd25003140c0e47b39261ea2e0f470, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MonitorPosition: {fileID: 0}
-  LookTarget: {fileID: 0}
-  StartPos: {x: 0, y: 0, z: 0}
-  ScaleX: 0.5
-  ScaleY: 0.2
-  OffsetX: 0
-  OffsetY: 0
-  CenterX: 0.5
-  CenterY: 0.5
-  Smoothing: 0.7
-  controlWPFWindow: {fileID: 1407685704}
-  faceController: {fileID: 69806225}
---- !u!4 &326004793
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 326004791}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 410353192}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &326004794
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 326004791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fd512d95b6700d44a5763b8c74b228a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MonitorPosition: {fileID: 0}
-  LookTarget: {fileID: 0}
-  StartPos: {x: 0, y: 0, z: 0}
-  ScaleX: 2
-  ScaleY: 1.5
-  OffsetX: 0
-  OffsetY: 0
-  CenterX: 0.5
-  CenterY: 0.5
-  Smoothing: 0.7
-  controlWPFWindow: {fileID: 1407685704}
-  faceController: {fileID: 69806225}
-  UseEyelidMovements: 1
---- !u!114 &326004795
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 326004791}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47613961cde0a8b4aa4f79219b7e523c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  EnableEye: 1
-  EnableEyeDataCallback: 0
-  EnableEyeVersion: 0
 --- !u!1 &410353191
 GameObject:
   m_ObjectHideFlags: 0
@@ -1172,8 +1013,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 326004793}
-  - {fileID: 65266794}
   - {fileID: 483683250}
   - {fileID: 130023281}
   m_Father: {fileID: 0}
@@ -2254,52 +2093,6 @@ MonoBehaviour:
   Target: {fileID: 0}
   Offset: {x: 0, y: -0.5, z: 0}
   Distance: 2
---- !u!1 &1337845277
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1337845279}
-  - component: {fileID: 1337845278}
-  m_Layer: 0
-  m_Name: mocopiConnector
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1337845278
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1337845277}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da29c273a33a5a541b474ddd02e9f09d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Port: 12351
-  controlWPFWindow: {fileID: 1407685704}
---- !u!4 &1337845279
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1337845277}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1350735253}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1350735252
 GameObject:
   m_ObjectHideFlags: 0
@@ -2330,7 +2123,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1770264196}
-  - {fileID: 1337845279}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1376895155
@@ -2549,10 +2341,6 @@ MonoBehaviour:
   IsCriticalErrorCountOver: 0
   vmtClient: {fileID: 1995326176}
   postProcessingManager: {fileID: 795349838}
-  EyeTracking_ViveProEyeComponent: {fileID: 0}
-  SRanipal_Eye_FrameworkComponent: {fileID: 0}
-  LipTracking_ViveComponent: {fileID: 0}
-  SRanipal_Lip_FrameworkComponent: {fileID: 0}
   midiCCBlendShape: {fileID: 1440382163}
   lastLoadedConfigPath: 
   easyDeviceDiscoveryProtocolManager: {fileID: 1549762413}

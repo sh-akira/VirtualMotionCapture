@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PluginKind>ControlPanel</PluginKind>
+    <PluginFolderName>ViveSR</PluginFolderName>
+    <ProjectGuid>{A1C0F1E1-0002-4A00-9000-000000000002}</ProjectGuid>
+    <RootNamespace>VMC.Plugin.ViveSR.UI</RootNamespace>
+    <AssemblyName>VMC.Plugin.ViveSR.UI</AssemblyName>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!-- Visual Studio は構成の一覧を .csproj 自身のこの条件から作るため、
+       Directory.Build.props 側にしか書かないとビルドがすべてスキップされる。
+       中身の設定は Directory.Build.props が入れる -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Shared\ViveSRPipeCommands.cs">
+      <Link>Shared\ViveSRPipeCommands.cs</Link>
+    </Compile>
+    <Compile Include="ViveSRControlPanelPlugins.cs" />
+    <Compile Include="PluginContext.cs" />
+    <Compile Include="EyeTracking_ViveProEyeSettingWindow.xaml.cs">
+      <DependentUpon>EyeTracking_ViveProEyeSettingWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LipTracking_ViveSettingWindow.xaml.cs">
+      <DependentUpon>LipTracking_ViveSettingWindow.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="EyeTracking_ViveProEyeSettingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LipTracking_ViveSettingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Japanese.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\English.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Chinese.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Korean.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

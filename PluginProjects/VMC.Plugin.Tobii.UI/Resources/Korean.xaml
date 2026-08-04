@@ -1,0 +1,14 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <system:String x:Key="Tobii_Title">Tobii Eye Tracker 4C</system:String>
+    <system:String x:Key="Tobii_CalibrationDescription">Tobii 정면 머리의 위치를 얻기 위하여 모델의 캘리브레이션이 완료된 후에 Tobii의 앞으로 이동하여 모니터의 중심을 보면서 캘리브레이션 버튼을 눌러주세요</system:String>
+    <system:String x:Key="Tobii_EyeOffset">눈 위치 오프셋(0.01=1cm)</system:String>
+    <system:String x:Key="Tobii_Close">닫기</system:String>
+    <system:String x:Key="Tobii_EyeScale">눈 이동범위(마이너스로 거꾸로합니다)</system:String>
+    <system:String x:Key="Tobii_Calibration">캘리브레이션</system:String>
+    <system:String x:Key="Tobii_Vertical">상하방향</system:String>
+    <system:String x:Key="Tobii_Horizontal">좌우방향</system:String>
+
+</ResourceDictionary>
