@@ -126,10 +126,23 @@ namespace VirtualMotionCaptureControlPanel
             {
                 //ネイティブDLLなので無視してよい
             }
-            catch (Exception)
+            catch (ReflectionTypeLoadException ex)
+            {
+                //依存DLLが足りない場合はどの型で失敗したかが分からないと切り分けられない
+                var reasons = ex.LoaderExceptions.Select(x => x.Message).Distinct();
+                LogLoadFailure(dllFile, string.Join(" / ", reasons));
+            }
+            catch (Exception ex)
             {
                 //1つのプラグインが壊れていてもコントロールパネルは起動させる
+                LogLoadFailure(dllFile, ex.Message);
             }
+        }
+
+        /// <summary>読み込みに失敗した理由を残す。握り潰すと原因が追えなくなるため</summary>
+        private static void LogLoadFailure(string dllFile, string reason)
+        {
+            System.Diagnostics.Debug.WriteLine($"[Plugin] 読み込みに失敗しました: {dllFile} ({reason})");
         }
 
         /// <summary>
