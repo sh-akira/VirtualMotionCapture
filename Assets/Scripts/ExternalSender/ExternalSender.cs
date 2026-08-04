@@ -1,14 +1,12 @@
 ﻿//gpsnmeajp
-using RootMotion.FinalIK;
 using sh_akira;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using UnityMemoryMappedFile;
+using UniVRM10;
 using uOSC;
-using VRM;
 
 namespace VMC
 {
@@ -18,7 +16,10 @@ namespace VMC
         GameObject CurrentModel = null;
         ControlWPFWindow window = null;
         Animator animator = null;
-        VRMBlendShapeProxy blendShapeProxy = null;
+        //VRMBlendShapeProxy blendShapeProxy = null;
+        Vrm10RuntimeExpression vrm10RuntimeExpression = null;
+        //オリジナル(非正規化)ボーン姿勢の取得用。ControlRig生成時、animatorは正規化ボーンを返すため
+        Vrm10Instance vrm10Instance = null;
         Camera currentCamera = null;
         UnityMemoryMappedFile.VRMData vrmdata = null;
         string remoteName = null;
@@ -64,7 +65,9 @@ namespace VMC
                 {
                     this.CurrentModel = CurrentModel;
                     animator = CurrentModel.GetComponent<Animator>();
-                    blendShapeProxy = CurrentModel.GetComponent<VRMBlendShapeProxy>();
+                    //モデル入れ替え時に古いモデルのExpressionを参照し続けないように更新する
+                    vrm10Instance = CurrentModel.GetComponent<Vrm10Instance>();
+                    vrm10RuntimeExpression = vrm10Instance != null ? vrm10Instance.Runtime.Expression : null;
                 }
             };
 
@@ -73,7 +76,7 @@ namespace VMC
                 this.currentCamera = currentCamera;
             };
 
-            window.VRMmetaLodedAction += (UnityMemoryMappedFile.VRMData vrmdata) =>
+            window.VRMmetaLoadedAction += (UnityMemoryMappedFile.VRMData vrmdata) =>
             {
                 this.vrmdata = vrmdata;
                 this.remoteName = null;
@@ -184,7 +187,7 @@ namespace VMC
                 }
             };
 
-            midiCCWrapper.noteOnDelegateProxy += (MidiJack.MidiChannel channel, int note, float velocity) =>
+            midiCCWrapper.noteOnDelegateProxy += (MidiChannel channel, int note, float velocity) =>
             {
                 if (this.isActiveAndEnabled)
                 {
@@ -199,7 +202,7 @@ namespace VMC
                     }
                 }
             };
-            midiCCWrapper.noteOffDelegateProxy += (MidiJack.MidiChannel channel, int note) =>
+            midiCCWrapper.noteOffDelegateProxy += (MidiChannel channel, int note) =>
             {
                 if (this.isActiveAndEnabled)
                 {
@@ -272,6 +275,7 @@ namespace VMC
 
         public void Send(string address, params object[] values)
         {
+            SendHook?.Invoke(new Message(address, values));
             foreach (var uClient in uClients)
             {
                 uClient?.Send(address, values);
@@ -280,6 +284,7 @@ namespace VMC
 
         public void Send(Message message)
         {
+            SendHook?.Invoke(message);
             foreach (var uClient in uClients)
             {
                 uClient?.Send(message);
@@ -288,6 +293,7 @@ namespace VMC
 
         public void Send(Bundle bundle)
         {
+            SendHook?.Invoke(bundle);
             foreach (var uClient in uClients)
             {
                 uClient?.Send(bundle);
@@ -306,7 +312,11 @@ namespace VMC
                 //有効可否と、ポート番号の送信
                 if (externalReceiver != null)
                 {
-                    infoBundle.Add(new uOSC.Message("/VMC/Ext/Rcv", (int)(externalReceiver.isActiveAndEnabled ? 1 : 0), externalReceiver.receivePort));
+                    //V2.7: (int)enable (int)port (string)IP Address
+                    infoBundle.Add(new uOSC.Message("/VMC/Ext/Rcv",
+                        (int)(externalReceiver.isActiveAndEnabled ? 1 : 0),
+                        externalReceiver.receivePort,
+                        GetLocalIPAddress()));
                 }
 
                 //【イベント送信】DirectionalLight位置・色(DirectionalLight transform & color)
@@ -339,8 +349,10 @@ namespace VMC
                 //【イベント送信】VRM基本情報(VRM information) [独立送信](大きいため単独で送る)
                 if (vrmdata != null)
                 {
-                    //ファイルパス, キャラ名
-                    Send(new uOSC.Message("/VMC/Ext/VRM", vrmdata.FilePath, vrmdata.Title));
+                    //V2.7: (string)path (string)title (string)Hash
+                    //Hashはモデルの同一性を判別するためのもの。VMCではファイル内容のSHA-256(16進小文字)を使う
+                    Send(new uOSC.Message("/VMC/Ext/VRM", vrmdata.FilePath, vrmdata.Title,
+                        window != null ? window.CurrentVRMHash ?? "" : ""));
                 }
                 else if (string.IsNullOrEmpty(remoteName) == false)
                 {
@@ -394,12 +406,21 @@ namespace VMC
                     uOSC.Bundle boneBundle = new uOSC.Bundle(uOSC.Timestamp.Immediate);
                     int cnt = 0;//パケット分割カウンタ
 
+                    //VMCProtocolの仕様では、送信するボーン姿勢はControlRigが適用されていない
+                    //オリジナル(非正規化)ボーンが推奨。正規化ボーンの送信は既定で無効のオプション。
+                    //ControlRig生成時、animator.GetBoneTransform は正規化ボーンを返すので、
+                    //オリジナルを送るときは Vrm10Instance.Humanoid.GetBoneTransform を使う。
+                    var useNormalizedBone = Settings.Current.ExternalMotionSenderUseNormalizedBone;
+                    var humanoid = vrm10Instance != null ? vrm10Instance.Humanoid : null;
+
                     foreach (HumanBodyBones bone in Enum.GetValues(typeof(HumanBodyBones)))
                     {
                         if (bone == HumanBodyBones.LastBone)
                         { continue; }
 
-                        var Transform = animator.GetBoneTransform(bone);
+                        var Transform = useNormalizedBone || humanoid == null
+                            ? animator.GetBoneTransform(bone)
+                            : (humanoid.GetBoneTransform(bone) ?? animator.GetBoneTransform(bone));
                         if (Transform != null)
                         {
                             boneBundle.Add(new uOSC.Message("/VMC/Ext/Bone/Pos",
@@ -424,10 +445,14 @@ namespace VMC
                 frameOfBone++;
 
                 //Blendsharp
-                if (blendShapeProxy == null)
+                if (vrm10RuntimeExpression == null)
                 {
-                    blendShapeProxy = CurrentModel.GetComponent<VRMBlendShapeProxy>();
-                    Debug.Log("ExternalSender: VRMBlendShapeProxy Updated");
+                    vrm10Instance = CurrentModel.GetComponent<Vrm10Instance>();
+                    if (vrm10Instance != null)
+                    {
+                        vrm10RuntimeExpression = vrm10Instance.Runtime.Expression;
+                        Debug.Log("ExternalSender: Vrm10RuntimeExpression Updated");
+                    }
                 }
 
                 if (frameOfBlendShape > periodBlendShape && periodBlendShape != 0)
@@ -435,14 +460,32 @@ namespace VMC
                     frameOfBlendShape = 1;
 
                     uOSC.Bundle blendShapeBundle = new uOSC.Bundle(uOSC.Timestamp.Immediate);
-                    if (blendShapeProxy != null)
+                    if (vrm10RuntimeExpression != null)
                     {
-                        foreach (var b in blendShapeProxy.GetValues())
+                        //VMCProtocolの仕様上、VRM1.0モデル使用時もプリセット表情はVRM0.xの名称での送信が必須。
+                        //VRM1.0形式(happy/aa等)での送信はオプション(既定は無効)。
+                        //(LookAt等の適用後の値を送るためActualWeightsを使用)
+                        var sendVRM1 = Settings.Current.ExternalMotionSenderSendVRM1Expression;
+                        foreach (var b in vrm10RuntimeExpression.ActualWeights)
                         {
+                            var vrm0Name = VRM10CompatibleNames.GetVRM0CompatibleName(b.Key);
                             blendShapeBundle.Add(new uOSC.Message("/VMC/Ext/Blend/Val",
-                                b.Key.ToString(),
+                                vrm0Name,
                                 (float)b.Value
                                 ));
+
+                            if (sendVRM1)
+                            {
+                                //VRM1.0名がVRM0.x名と異なる場合のみ追加で送る(同名の重複送信を避ける)
+                                var vrm1Name = b.Key.Name;
+                                if (string.IsNullOrEmpty(vrm1Name) == false && vrm1Name != vrm0Name)
+                                {
+                                    blendShapeBundle.Add(new uOSC.Message("/VMC/Ext/Blend/Val",
+                                        vrm1Name,
+                                        (float)b.Value
+                                        ));
+                                }
+                            }
                         }
                         blendShapeBundle.Add(new uOSC.Message("/VMC/Ext/Blend/Apply"));
                     }
@@ -455,12 +498,24 @@ namespace VMC
             if (frameOfCamera > periodCamera && periodCamera != 0)
             {
                 frameOfCamera = 1;
+                //OnCameraChangedはCameraManager.Start()でも発火するが、Start()同士の実行順は不定のため
+                //購読より先に発火するとカメラを知らないままになり、/VMC/Ext/Camが一切送信されなくなる。
+                //(その後の再発火はChangeCamera経由のみで、Settings.CameraTypeが未設定だと呼ばれない)
+                if (currentCamera == null && CameraManager.Current != null)
+                {
+                    currentCamera = CameraManager.Current.ControlCamera;
+                }
                 if (currentCamera != null)
                 {
+                    //カメラはHandTrackerRootの子で、この親はキャリブレーションで身長比のスケールと
+                    //オフセットを持つ。受信側(ExternalReceiverForVMC)はカメラ姿勢をlocalPosition/
+                    //localRotationとして適用し、受信側アバターのスケールへ写像するため、
+                    //送信もローカル座標に揃える。(ワールドで送るとVMC同士でスケールが二重に掛かる)
+                    var cameraTransform = currentCamera.transform;
                     rootBundle.Add(new uOSC.Message("/VMC/Ext/Cam",
                         "Camera",
-                        currentCamera.transform.position.x, currentCamera.transform.position.y, currentCamera.transform.position.z,
-                        currentCamera.transform.rotation.x, currentCamera.transform.rotation.y, currentCamera.transform.rotation.z, currentCamera.transform.rotation.w,
+                        cameraTransform.localPosition.x, cameraTransform.localPosition.y, cameraTransform.localPosition.z,
+                        cameraTransform.localRotation.x, cameraTransform.localRotation.y, cameraTransform.localRotation.z, cameraTransform.localRotation.w,
                         currentCamera.fieldOfView));
                 }
             }
@@ -521,7 +576,13 @@ namespace VMC
                 }
                 if (window != null)
                 {
-                    rootBundle.Add(new uOSC.Message("/VMC/Ext/OK", (int)available, (int)IKManager.Instance.CalibrationState, (int)IKManager.Instance.LastCalibrateType));
+                    //V2.7: (int)loaded (int)calibration state (int)calibration mode (int)tracking status
+                    //tracking status は 正常=1 / 不可=0
+                    rootBundle.Add(new uOSC.Message("/VMC/Ext/OK",
+                        (int)available,
+                        (int)IKManager.Instance.CalibrationState,
+                        (int)IKManager.Instance.LastCalibrateType,
+                        (int)(IsTrackingOK() ? 1 : 0)));
                 }
                 rootBundle.Add(new uOSC.Message("/VMC/Ext/T", Time.time));
 
@@ -531,6 +592,61 @@ namespace VMC
             Send(rootBundle);
 
             //---End of frame---
+        }
+
+        /// <summary>
+        /// トラッキング状態(/VMC/Ext/OK の tracking status)。
+        /// 割り当てられている機器のいずれかがロストしていたら不可(0)とする。
+        /// </summary>
+        private bool IsTrackingOK()
+        {
+            if (TrackingPointManager.Instance == null) return false;
+            var any = false;
+            foreach (var trackingPoint in TrackingPointManager.Instance.GetTrackingPoints())
+            {
+                any = true;
+                if (trackingPoint.TrackingWatcher != null && trackingPoint.TrackingWatcher.ok == false) return false;
+            }
+            return any;
+        }
+
+        /// <summary>受信ポートを知らせるためのローカルIPアドレス(/VMC/Ext/Rcv 用)</summary>
+        private static string localIPAddress = null;
+        private static bool localIPAddressResolving = false;
+
+        /// <summary>
+        /// Dns.GetHostEntry はネットワーク状況によって数秒ブロックすることがあるため、
+        /// メインスレッドでは実行せずバックグラウンドで一度だけ解決する。
+        /// 解決するまでは空文字を返す(低頻度送信なので次回以降の送信に載る)。
+        /// </summary>
+        private static string GetLocalIPAddress()
+        {
+            if (localIPAddress != null) return localIPAddress;
+            if (localIPAddressResolving) return "";
+
+            localIPAddressResolving = true;
+            System.Threading.Tasks.Task.Run(() =>
+            {
+                var resolved = "";
+                try
+                {
+                    var host = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName());
+                    foreach (var address in host.AddressList)
+                    {
+                        if (address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                        {
+                            resolved = address.ToString();
+                            break;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"Failed to get local IP address: {ex.Message}");
+                }
+                localIPAddress = resolved;
+            });
+            return "";
         }
 
         public void ChangeOSCAddress(string address, int port)
@@ -568,6 +684,16 @@ namespace VMC
                 uClient.enabled = true;
             }
         }
+
+        #region 自動テスト用フック
+
+        /// <summary>
+        /// 送信内容のキャプチャ用フック(通常の動作では誰も購読していない)
+        /// 引数はuOSC.MessageまたはuOSC.Bundle
+        /// </summary>
+        public static event Action<object> SendHook;
+
+        #endregion
     }
 
     [Serializable]

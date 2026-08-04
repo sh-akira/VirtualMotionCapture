@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PluginKind>Unity</PluginKind>
+    <PluginFolderName>Tobii</PluginFolderName>
+    <ProjectGuid>{B1C0F1E1-0003-4A00-9000-000000000003}</ProjectGuid>
+    <RootNamespace>VMC.Plugin.TobiiEye</RootNamespace>
+    <AssemblyName>VMC.Plugin.Tobii</AssemblyName>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!-- Visual Studio は構成の一覧を .csproj 自身のこの条件から作るため、
+       Directory.Build.props 側にしか書かないとビルドがすべてスキップされる。
+       中身の設定は Directory.Build.props が入れる -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Shared\TobiiPipeCommands.cs">
+      <Link>Shared\TobiiPipeCommands.cs</Link>
+    </Compile>
+    <Compile Include="TobiiPlugin.cs" />
+    <!-- Tobii Unity SDK のソース(SDK\README.md 参照。再配布不可のためリポジトリには含めない)。
+         DemoScenes と Editor 拡張は不要なので含めない -->
+    <Compile Include="SDK\Tobii\Framework\**\*.cs" Exclude="SDK\Tobii\Framework\Editor\**\*.cs" />
+    <Compile Include="SDK\Tobii\Plugins\SimpleJSON.cs" />
+    <Compile Include="SDK\Tobii\Plugins\TobiiGameIntegrationApi.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- VMCは64bit専用(StandaloneWindows64)なのでx86版は同梱しない。
+         Tobii SDKは IntPtr.Size で x64/x86 を切り替えるため、64bitプロセスでは
+         x86版のDLLは使われず、先読みしても Win32エラー193 になるだけ -->
+    <NativePluginFile Include="SDK\Tobii\Plugins\*.dll" Exclude="SDK\Tobii\Plugins\*_x86.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

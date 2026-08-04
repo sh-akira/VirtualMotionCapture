@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PluginKind>ControlPanel</PluginKind>
+    <PluginFolderName>Tobii</PluginFolderName>
+    <ProjectGuid>{A1C0F1E1-0003-4A00-9000-000000000003}</ProjectGuid>
+    <RootNamespace>VMC.Plugin.Tobii.UI</RootNamespace>
+    <AssemblyName>VMC.Plugin.Tobii.UI</AssemblyName>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!-- Visual Studio は構成の一覧を .csproj 自身のこの条件から作るため、
+       Directory.Build.props 側にしか書かないとビルドがすべてスキップされる。
+       中身の設定は Directory.Build.props が入れる -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Shared\TobiiPipeCommands.cs">
+      <Link>Shared\TobiiPipeCommands.cs</Link>
+    </Compile>
+    <Compile Include="TobiiControlPanelPlugin.cs" />
+    <Compile Include="PluginContext.cs" />
+    <Compile Include="EyeTracking_TobiiSettingWindow.xaml.cs">
+      <DependentUpon>EyeTracking_TobiiSettingWindow.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="EyeTracking_TobiiSettingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Japanese.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\English.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Chinese.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Korean.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

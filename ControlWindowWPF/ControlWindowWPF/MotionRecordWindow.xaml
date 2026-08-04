@@ -1,0 +1,65 @@
+<Window x:Class="VirtualMotionCaptureControlPanel.MotionRecordWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
+        mc:Ignorable="d"
+        Title="{DynamicResource MotionRecordWindow_Title}" Width="480" SizeToContent="Height" Loaded="Window_Loaded" Closing="Window_Closing">
+    <DockPanel>
+        <GroupBox Header="{DynamicResource MotionRecordWindow_RecordSetting}" DockPanel.Dock="Top">
+            <StackPanel Orientation="Vertical" Margin="5">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{DynamicResource MotionRecordWindow_Fps}" VerticalAlignment="Center"/>
+                    <TextBox Name="FpsTextBox" Width="50" Margin="5,0,0,0" VerticalAlignment="Center" LostFocus="SettingTextBox_LostFocus"/>
+                    <TextBlock Text="{DynamicResource MotionRecordWindow_Countdown}" VerticalAlignment="Center" Margin="20,0,0,0"/>
+                    <TextBox Name="CountdownTextBox" Width="50" Margin="5,0,0,0" VerticalAlignment="Center" LostFocus="SettingTextBox_LostFocus"/>
+                </StackPanel>
+                <GroupBox Header="{DynamicResource MotionRecordWindow_VrmaSaveItems}" Margin="0,8,0,0">
+                    <StackPanel Orientation="Horizontal" Margin="5">
+                        <CheckBox Content="{DynamicResource MotionRecordWindow_SaveMotion}" Name="SaveMotionCheckBox" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                        <CheckBox Content="{DynamicResource MotionRecordWindow_SaveExpressionPreset}" Name="SaveExpressionPresetCheckBox" Margin="12,0,0,0" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                        <CheckBox Content="{DynamicResource MotionRecordWindow_SaveExpressionCustom}" Name="SaveExpressionCustomCheckBox" Margin="12,0,0,0" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                        <CheckBox Content="{DynamicResource MotionRecordWindow_SaveLookAt}" Name="SaveLookAtCheckBox" Margin="12,0,0,0" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="{DynamicResource MotionRecordWindow_Record}" DockPanel.Dock="Top">
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <Button Name="RecordButton" Content="{DynamicResource MotionRecordWindow_StartRecording}" Width="140" Height="36" Click="RecordButton_Click"/>
+                <TextBlock Name="RecordStatusTextBlock" Text="" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="16"/>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="{DynamicResource MotionRecordWindow_CutEdit}" DockPanel.Dock="Top" Name="CutEditGroupBox" IsEnabled="False">
+            <StackPanel Orientation="Vertical" Margin="5">
+                <DockPanel>
+                    <TextBlock Name="PreviewFrameTextBlock" DockPanel.Dock="Right" Text="0 / 0" MinWidth="80" TextAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBlock Text="{DynamicResource MotionRecordWindow_PreviewPosition}" DockPanel.Dock="Left" VerticalAlignment="Center" MinWidth="80"/>
+                    <Slider Name="PreviewSlider" Minimum="0" Maximum="1" SmallChange="1" IsSnapToTickEnabled="True" TickFrequency="1" VerticalAlignment="Center" ValueChanged="PreviewSlider_ValueChanged"/>
+                </DockPanel>
+                <DockPanel Margin="0,5,0,0">
+                    <TextBlock Name="StartFrameTextBlock" DockPanel.Dock="Right" Text="0" MinWidth="80" TextAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBlock Text="{DynamicResource MotionRecordWindow_CutStart}" DockPanel.Dock="Left" VerticalAlignment="Center" MinWidth="80"/>
+                    <Slider Name="StartFrameSlider" Minimum="0" Maximum="1" SmallChange="1" IsSnapToTickEnabled="True" TickFrequency="1" VerticalAlignment="Center" ValueChanged="StartFrameSlider_ValueChanged"/>
+                </DockPanel>
+                <DockPanel Margin="0,5,0,0">
+                    <TextBlock Name="EndFrameTextBlock" DockPanel.Dock="Right" Text="0" MinWidth="80" TextAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBlock Text="{DynamicResource MotionRecordWindow_CutEnd}" DockPanel.Dock="Left" VerticalAlignment="Center" MinWidth="80"/>
+                    <Slider Name="EndFrameSlider" Minimum="0" Maximum="1" SmallChange="1" IsSnapToTickEnabled="True" TickFrequency="1" VerticalAlignment="Center" ValueChanged="EndFrameSlider_ValueChanged"/>
+                </DockPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
+                    <Button Content="{DynamicResource MotionRecordWindow_PreviewPlay}" Width="110" Name="PreviewPlayButton" Click="PreviewPlayButton_Click"/>
+                    <Button Content="{DynamicResource MotionPlaybackWindow_PauseButton}" Width="90" Margin="5,0,0,0" Name="PreviewPauseButton" Click="PreviewPauseButton_Click"/>
+                    <Button Content="{DynamicResource MotionPlaybackWindow_StopButton}" Width="90" Margin="5,0,0,0" Name="PreviewStopButton" Click="PreviewStopButton_Click"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,3">
+                    <Button Content="{DynamicResource MotionRecordWindow_SaveVrma}" Width="140" Name="SaveVrmaButton" Click="SaveVrmaButton_Click"/>
+                    <Button Content="{DynamicResource MotionRecordWindow_SaveBvh}" Width="140" Margin="10,0,0,0" Name="SaveBvhButton" Click="SaveBvhButton_Click"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <Button DockPanel.Dock="Right" Content="{DynamicResource SettingWindow_Close}" Width="100" Name="CloseButton" Click="CloseButton_Click"/>
+        <Grid/>
+    </DockPanel>
+</Window>

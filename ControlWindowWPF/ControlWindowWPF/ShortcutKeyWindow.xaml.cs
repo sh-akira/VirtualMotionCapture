@@ -455,6 +455,18 @@ namespace VirtualMotionCaptureControlPanel
             await Globals.Client.SendCommandAsync(new PipeCommands.EndKeyConfig { });
         }
 
+        private async void MotionAddButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Globals.Client.SendCommandAsync(new PipeCommands.StartKeyConfig { });
+            var win = new MotionKeyAddWindow();
+            win.Owner = this;
+            if (win.ShowDialog() == true)
+            {
+                UpdateKeyList();
+            }
+            await Globals.Client.SendCommandAsync(new PipeCommands.EndKeyConfig { });
+        }
+
         private void UpdateKeyList()
         {
             KeysListItems.Clear();
@@ -475,6 +487,10 @@ namespace VirtualMotionCaptureControlPanel
                 if (key.FunctionAction)
                 {
                     typestr += LanguageSelector.Get("Function");
+                }
+                if (key.MotionAction)
+                {
+                    typestr += LanguageSelector.Get("Motion");
                 }
 
                 var keysstr = "";
@@ -760,6 +776,12 @@ namespace VirtualMotionCaptureControlPanel
                 else if (item.KeyAction.FunctionAction)
                 {
                     var win = new FunctionKeyAddWindow(item.KeyAction);
+                    win.Owner = this;
+                    edited = win.ShowDialog();
+                }
+                else if (item.KeyAction.MotionAction)
+                {
+                    var win = new MotionKeyAddWindow(item.KeyAction);
                     win.Owner = this;
                     edited = win.ShowDialog();
                 }

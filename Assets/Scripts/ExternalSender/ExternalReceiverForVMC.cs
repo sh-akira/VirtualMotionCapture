@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityMemoryMappedFile;
-using VRM;
+using UniVRM10;
 
 namespace VMC
 {
@@ -44,13 +44,11 @@ namespace VMC
         public GameObject CurrentModel = null;
         Camera currentCamera = null;
         FaceController faceController = null;
-        VRMLookAtHead vrmLookAtHead = null;
+        Vrm10Instance vrm10Instance = null;
         Transform headTransform = null;
 
         //仮想視線操作用
         GameObject lookTargetOSC;
-        Action beforeFaceApply;
-        bool setFaceApplyAction = false;
 
         //バッファ
         Vector3 pos;
@@ -62,8 +60,6 @@ namespace VMC
 
         //ボーン情報取得
         Animator animator = null;
-        //VRMのブレンドシェーププロキシ
-        VRMBlendShapeProxy blendShapeProxy = null;
 
         //ボーンENUM情報テーブル
         Dictionary<string, HumanBodyBones> HumanBodyBonesTable = new Dictionary<string, HumanBodyBones>();
@@ -156,14 +152,6 @@ namespace VMC
                 this.currentCamera = currentCamera;
             };
 
-            beforeFaceApply = () =>
-            {
-                if (vrmLookAtHead == null || lookTargetOSC == null) return;
-                vrmLookAtHead.Target = lookTargetOSC.transform;
-                vrmLookAtHead.LookWorldPosition();
-                vrmLookAtHead.Target = null;
-            };
-
             var modelRoot = new GameObject("ModelRoot").transform;
             modelRoot.SetParent(transform, false);
             virtualAvatar = new VirtualAvatar(modelRoot, MotionSource.VMCProtocol);
@@ -192,7 +180,7 @@ namespace VMC
         {
             if (CurrentModel != null)
             {
-                vrmLookAtHead = CurrentModel.GetComponent<VRMLookAtHead>();
+                vrm10Instance = CurrentModel.GetComponent<Vrm10Instance>();
                 animator = CurrentModel.GetComponent<Animator>();
                 headTransform = null;
                 if (animator != null)
@@ -226,11 +214,27 @@ namespace VMC
                 }
             }
         }
+        /// <summary>このクラスが参照しうる引数の最大数(/VMC/Ext/Light の12個)</summary>
+        private const int MaxReferencedValueCount = 12;
+
         void ProcessMessage(uOSC.Message message)
         {
             //有効なとき以外処理しない
             if (this.isActiveAndEnabled)
             {
+                //引数が足りないメッセージ(他アプリの実装差や古い版、壊れたパケット)でも
+                //IndexOutOfRangeで受信処理ごと落ちないように、参照しうる長さまでnullで埋める。
+                //nullはどの型チェック(is float 等)にも一致しないので、該当ブランチは自然に無視される。
+                var originalValues = message.values;
+                if (message.values == null || message.values.Length < MaxReferencedValueCount)
+                {
+                    var padded = new object[MaxReferencedValueCount];
+                    if (message.values != null)
+                    {
+                        Array.Copy(message.values, padded, message.values.Length);
+                    }
+                    message.values = padded;
+                }
 
                 //仮想Hmd V2.3
                 if (message.address == "/VMC/Ext/Hmd/Pos" && ApplyTracker
@@ -430,6 +434,10 @@ namespace VMC
                     CameraManager.Current.FreeCamera.GetComponent<CameraMouseControl>().enabled = false;
 
                     //座標とFOVを適用
+                    //カメラは HandTrackerRoot の子で、この親はキャリブレーションで
+                    //身長比のスケールとオフセットを持つ。ローカル座標として入れることで、
+                    //送られてきた座標が受信側アバターのスケールへ写像される。
+                    //(ワールドとして入れるとスケールぶん位置がずれる)
                     CameraManager.Current.FreeCamera.transform.localPosition = pos;
                     CameraManager.Current.FreeCamera.transform.localRotation = rot;
                     CameraManager.Current.ControlCamera.fieldOfView = fov;
@@ -467,33 +475,30 @@ namespace VMC
 
                     if (enable)
                     {
-                        //ターゲットが存在しなければ作る
+                        //ターゲットが存在しなければ作る(頭ボーン配下のためモデル入れ替え時は一緒に破棄される)
                         if (lookTargetOSC == null)
                         {
                             lookTargetOSC = new GameObject();
                             lookTargetOSC.name = "lookTargetOSC";
                         }
-                        //位置を書き込む
-                        if (lookTargetOSC.transform != null)
-                        {
-                            lookTargetOSC.transform.parent = headTransform;
-                            lookTargetOSC.transform.localPosition = pos;
-                        }
+                        //位置を書き込む(頭からの相対位置)
+                        lookTargetOSC.transform.parent = headTransform;
+                        lookTargetOSC.transform.localPosition = pos;
 
-                        //視線に書き込む
-                        if (vrmLookAtHead != null && setFaceApplyAction == false)
+                        //視線に書き込む(UniVRM10のRuntimeが毎フレームLookAtTargetの方向を目線に反映する)
+                        if (vrm10Instance != null && vrm10Instance.LookAtTarget != lookTargetOSC.transform)
                         {
-                            faceController.BeforeApply += beforeFaceApply;
-                            setFaceApplyAction = true;
+                            vrm10Instance.LookAtTargetType = VRM10ObjectLookAt.LookAtTargetTypes.SpecifiedTransform;
+                            vrm10Instance.LookAtTarget = lookTargetOSC.transform;
                         }
                     }
                     else
                     {
-                        //視線を止める
-                        if (vrmLookAtHead != null && setFaceApplyAction == true)
+                        //視線を止めて正面に戻す
+                        if (vrm10Instance != null)
                         {
-                            faceController.BeforeApply -= beforeFaceApply;
-                            setFaceApplyAction = false;
+                            vrm10Instance.LookAtTarget = null;
+                            vrm10Instance.Runtime.LookAt.SetYawPitchManually(0f, 0f);
                         }
                     }
                 }
@@ -521,26 +526,21 @@ namespace VMC
                 //キャリブレーション実行 V2.5
                 else if (message.address == "/VMC/Ext/Set/Calib/Exec" && (message.values[0] is int) && ApplyControl)
                 {
-                    PipeCommands.CalibrateType calibrateType = PipeCommands.CalibrateType.Ipose;
+                    //仕様の mode(0=通常, 1=MR通常, 2=MR床補正) は PipeCommands.CalibrateType の値と一致している。
+                    //VMCの拡張として 3=Ipose, 4=Tpose も受け付ける。
+                    //(/VMC/Ext/OK の calibration mode も同じ値で送信しているので、送受信で一貫する)
+                    var mode = (int)message.values[0];
+                    if (Enum.IsDefined(typeof(PipeCommands.CalibrateType), mode) == false) return; //未定義は無視
+                    var calibrateType = (PipeCommands.CalibrateType)mode;
+                    if (calibrateType == PipeCommands.CalibrateType.Invalid) return;
 
-                    switch ((int)message.values[0])
-                    {
-                        case 0:
-                            calibrateType = PipeCommands.CalibrateType.Ipose;
-                            break;
-                        case 1:
-                            calibrateType = PipeCommands.CalibrateType.Tpose;
-                            break;
-                        case 2:
-                            calibrateType = PipeCommands.CalibrateType.FixedHandWithGround;
-                            break;
-                        case 3:
-                            calibrateType = PipeCommands.CalibrateType.FixedHand;
-                            break;
-                        default: return; //無視
-                    }
                     StartCoroutine(IKManager.Instance.Calibrate(calibrateType));
                     Invoke("EndCalibrate", 2f);
+                }
+                //ショートカット呼び出し V3.1
+                else if (message.address == "/VMC/Ext/Set/Shortcut" && (message.values[0] is string) && ApplyControl)
+                {
+                    window.DoShortcutByName((string)message.values[0]);
                 }
                 //設定読み込み V2.5
                 else if (message.address == "/VMC/Ext/Set/Config" && (message.values[0] is string && ApplySetting))
@@ -555,10 +555,10 @@ namespace VMC
                 //スルー情報 V2.6
                 else if (message.address != null && message.address.StartsWith("/VMC/Thru/") && ApplyControl)
                 {
-                    //転送する
+                    //転送する(nullで埋める前の、受け取ったままの引数を送る)
                     if (externalSender.isActiveAndEnabled)
                     {
-                        externalSender.Send(message.address, message.values);
+                        externalSender.Send(message.address, originalValues ?? Array.Empty<object>());
                     }
                 }
                 //Directional Light V2.9
@@ -668,7 +668,8 @@ namespace VMC
                     )
                 {
                     int loaded = (int)message.values[0];
-                    if (message.values.Length > 2)
+                    //引数の数ではなく型で判定する(不足分はnullで埋められているため)
+                    if (message.values[1] is int && message.values[2] is int)
                     {
                         int calibrationState = (int)message.values[1];
                         int calibrationMode = (int)message.values[2];
@@ -682,6 +683,16 @@ namespace VMC
 
                 }
             }
+        }
+
+        /// <summary>
+        /// /VMC/Ext/Set/Calib/Exec 受信時の Invoke("EndCalibrate", 2f) から呼ばれる。
+        /// これが無いとキャリブレーションがCalibratingのまま終わらず、
+        /// MotionManagerがVRIK以外(VMCProtocol/mocopi/モーション再生)の適用を止め続けてしまう。
+        /// </summary>
+        private void EndCalibrate()
+        {
+            IKManager.Instance.EndCalibrate();
         }
 
         SteamVR_Utils.RigidTransform SetTransform(ref Vector3 pos, ref Quaternion rot, ref uOSC.Message message)
@@ -868,8 +879,22 @@ namespace VMC
         private void BoneSynchronizeSingle(Transform t, ref HumanBodyBones bone, ref Vector3 pos, ref Quaternion rot)
         {
             if (receiverSetting.UseBonePosition) t.localPosition = pos;
-            t.localRotation = rot;
+            //VMCProtocolの仕様では受信するボーン姿勢はオリジナル(非正規化)。
+            //VMC内部は正規化ボーンで統一しているため、ここで正規化ローカル回転へ変換する。
+            //(送信元が正規化ボーンを送ってくる場合は UseNormalizedBone を有効にして変換を行わない)
+            t.localRotation = ConvertReceivedRotation(bone, rot);
             virtualAvatar.SetPoseChanged(bone);
+        }
+
+        private Quaternion ConvertReceivedRotation(HumanBodyBones bone, Quaternion receivedRotation)
+        {
+            if (bone == VirtualAvatar.HumanBodyBonesRoot) return receivedRotation;
+            if (receiverSetting != null && receiverSetting.UseNormalizedBone) return receivedRotation;
+
+            var converter = window != null ? window.BonePostureConverter : null;
+            if (converter == null || converter.IsIdentity) return receivedRotation;
+
+            return converter.ToNormalizedLocalRotation(bone, receivedRotation);
         }
         //ボーンENUM情報をキャッシュして高速化
         private bool HumanBodyBonesTryParse(ref string boneName, out HumanBodyBones bone)

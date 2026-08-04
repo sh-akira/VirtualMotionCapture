@@ -11,6 +11,37 @@ namespace UnityMemoryMappedFile
     {
         private static Dictionary<string, Type> commandTypeCache = new Dictionary<string, Type>();
 
+        /// <summary>
+        /// プラグインが追加したコマンドの型。
+        /// プラグインのコマンドは本体の共有アセンブリではなくプラグイン側のDLLに入っているため、
+        /// ここへ登録してもらって型解決の対象に加える。
+        /// </summary>
+        private static List<Type> pluginCommandTypes = new List<Type>();
+
+        /// <summary>
+        /// プラグインのコマンド型を登録する。
+        /// 送受信は型の単純名で対応付けるため、本体側とコントロールパネル側で
+        /// 同じ名前・同じ名前空間の型を用意する必要がある。
+        /// </summary>
+        public static void RegisterPluginCommandTypes(IEnumerable<Type> types)
+        {
+            if (types == null) return;
+
+            //受信スレッドが走り出した後に呼ばれるので、その場で足さずに作り直して差し替える。
+            //参照の差し替えは原子的なので、受信側は新旧どちらかを最後まで見るだけで済む
+            var updated = new List<Type>(pluginCommandTypes);
+            foreach (var type in types)
+            {
+                if (type == null) continue;
+                if (updated.Contains(type)) continue;
+                updated.Add(type);
+            }
+            pluginCommandTypes = updated;
+
+            //名前解決の結果が変わるのでキャッシュを捨てる
+            commandTypeCache = new Dictionary<string, Type>();
+        }
+
         public static Type GetCommandType(string commandStr)
         {
             if (commandTypeCache.TryGetValue(commandStr,out Type value))
@@ -19,6 +50,14 @@ namespace UnityMemoryMappedFile
             }
             var commands = typeof(PipeCommands).GetNestedTypes(System.Reflection.BindingFlags.Public);
             foreach (var command in commands)
+            {
+                if (command.Name == commandStr)
+                {
+                    commandTypeCache[commandStr] = command;
+                    return command;
+                }
+            }
+            foreach (var command in pluginCommandTypes)
             {
                 if (command.Name == commandStr)
                 {
@@ -35,7 +74,7 @@ namespace UnityMemoryMappedFile
             public bool IsBeta { get; set; }
         }
 
-        public class LoadVRM
+        public class LoadVRMMeta
         {
             public string Path { get; set; }
         }
@@ -45,7 +84,7 @@ namespace UnityMemoryMappedFile
             public string Path { get; set; }
         }
 
-        public class ReturnLoadVRM
+        public class ReturnLoadVRMMeta
         {
             public VRMData Data { get; set; }
         }
@@ -319,6 +358,14 @@ namespace UnityMemoryMappedFile
             public int Buffering { get; set; }
         }
 
+        public class GetWristRotationFixSetting { }
+        public class SetWristRotationFixSetting
+        {
+            public int UpperArmWeight { get; set; }      // 1000倍した値 (0.05f -> 50)
+            public int ForearmWeight { get; set; }       // 1000倍した値 (0.45f -> 450)
+            public int MaxAccumulatedTwist { get; set; } // そのまま (300)
+        }
+
         public class GetResolutions { }
         public class ReturnResolutions
         {
@@ -361,35 +408,6 @@ namespace UnityMemoryMappedFile
             public bool doSend { get; set; }
         }
 
-        public class GetEyeTracking_TobiiOffsets { }
-        public class SetEyeTracking_TobiiOffsets
-        {
-            public float ScaleHorizontal { get; set; }
-            public float ScaleVertical { get; set; }
-            public float OffsetHorizontal { get; set; }
-            public float OffsetVertical { get; set; }
-        }
-
-        public class EyeTracking_TobiiCalibration { }
-
-        public class GetEyeTracking_ViveProEyeOffsets { }
-        public class SetEyeTracking_ViveProEyeOffsets
-        {
-            public float ScaleHorizontal { get; set; }
-            public float ScaleVertical { get; set; }
-            public float OffsetHorizontal { get; set; }
-            public float OffsetVertical { get; set; }
-        }
-        public class GetEyeTracking_ViveProEyeUseEyelidMovements { }
-        public class SetEyeTracking_ViveProEyeUseEyelidMovements
-        {
-            public bool Use { get; set; }
-        }
-        public class GetEyeTracking_ViveProEyeEnable { }
-        public class SetEyeTracking_ViveProEyeEnable
-        {
-            public bool enable { get; set; }
-        }
 
         public class ImportCameraPlus
         {
@@ -432,7 +450,13 @@ namespace UnityMemoryMappedFile
             public int PeriodDevices { get; set; }
 
             public string OptionString { get; set; } //OK
-            public bool ResponderEnable { get; set; } 
+            public bool ResponderEnable { get; set; }
+
+            //VMCProtocolの仕様ではオリジナル(非正規化)ボーンの送信が推奨で、
+            //正規化(ControlRig)ボーンの送信は「既定で無効のオプション」
+            public bool UseNormalizedBone { get; set; }
+            //表情をVRM1.0形式の名称でも送る(VRM0.x形式の送信は必須なので常に行う)
+            public bool SendVRM1Expression { get; set; }
         }
 
         public class GetVMCProtocolReceiverSetting
@@ -481,6 +505,10 @@ namespace UnityMemoryMappedFile
             public bool ApplySetting { get; set; }
             public bool ApplyControllerInput { get; set; }
             public bool ApplyKeyboardInput { get; set; }
+
+            //送信元が正規化(ControlRig)ボーンを送ってくる場合に有効にする。
+            //仕様の推奨はオリジナル(非正規化)ボーンなので既定は無効
+            public bool UseNormalizedBone { get; set; }
         }
 
 
@@ -591,6 +619,12 @@ namespace UnityMemoryMappedFile
             public bool HandleControllerAsTracker { get; set; }
         }
 
+        public class GetTrackerReassignmentWhenChestAvailable { }
+        public class EnableTrackerReassignmentWhenChestAvailable
+        {
+            public bool TrackerReassignmentWhenChestAvailable { get; set; }
+        }
+
         public class GetLaunchSteamVROnStartup { }
         public class SetLaunchSteamVROnStartup
         {
@@ -602,18 +636,6 @@ namespace UnityMemoryMappedFile
         public class SetQualitySettings
         {
             public int antiAliasing { get; set; }
-        }
-
-        public class GetViveLipTrackingBlendShape { }
-        public class SetViveLipTrackingBlendShape
-        {
-            public List<string> LipShapes { get; set; }
-            public Dictionary<string, string> LipShapesToBlendShapeMap { get; set; }
-        }
-        public class GetViveLipTrackingEnable { }
-        public class SetViveLipTrackingEnable
-        {
-            public bool enable { get; set; }
         }
 
         public class GetAdvancedGraphicsOption { }
@@ -641,6 +663,11 @@ namespace UnityMemoryMappedFile
             public float Vignette_Smoothness { get; set; }
             public float Vignette_Roundness { get; set; }
 
+            public bool AO_Enable { get; set; }
+            public bool AO_IsScalable { get; set; }
+            public float AO_Intensity { get; set; }
+            public float AO_Thickness { get; set; }
+
             public bool CA_Enable { get; set; }
             public float CA_Intensity { get; set; }
             public bool CA_FastMode { get; set; }
@@ -659,6 +686,11 @@ namespace UnityMemoryMappedFile
             public float Vignette_Color_r { get; set; }
             public float Vignette_Color_g { get; set; }
             public float Vignette_Color_b { get; set; }
+
+            public float AO_Color_a { get; set; }
+            public float AO_Color_r { get; set; }
+            public float AO_Color_g { get; set; }
+            public float AO_Color_b { get; set; }
 
             public bool TurnOffAmbientLight { get; set; }
 
@@ -695,6 +727,13 @@ namespace UnityMemoryMappedFile
         {
             public string InstanceId { get; set; }
         }
+
+        //公式プラグイン(Plugins/配下)。ユーザーMod(Mods/配下)とは別系統
+        public class GetPluginList { }
+        public class ReturnPluginList
+        {
+            public List<PluginItem> PluginList { get; set; }
+        }
         public class ShowCalibrationWindow { }
         public class ShowPhotoWindow { }
 
@@ -724,6 +763,19 @@ namespace UnityMemoryMappedFile
             public bool enable { get; set; }
         }
 
+    }
+
+    /// <summary>
+    /// Unity側で読み込まれている公式プラグインの情報。
+    /// コントロールパネル側は自身の ControlPanel/Plugins/ を走査して一覧を作るが、
+    /// 片側にしか入っていない事故を検出するためにこれと突き合わせる。
+    /// </summary>
+    public class PluginItem
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Version { get; set; }
+        public string AssemblyPath { get; set; }
     }
 
     public class ModItem
@@ -1360,6 +1412,12 @@ namespace UnityMemoryMappedFile
         public float HandChangeTime { get; set; } = 0.1f;
         public float LipSyncMaxLevel { get; set; } = 1.0f;
 
+        // モーション再生アクション
+        public bool MotionAction { get; set; }
+        public int MotionPlayType { get; set; } // 0:再生 1:ポーズ適用 2:解除(停止)
+        public string MotionFilePath { get; set; }
+        public int MotionFrame { get; set; }
+
         public static void KeyActionsUpgrade(List<KeyAction> keyActions)
         {
             //古いバージョンで保存したVIVE/Oculus用のキーコンフィグをアップグレード
@@ -1432,6 +1490,8 @@ namespace UnityMemoryMappedFile
         PauseTracking = 10,
         ShowCalibrationWindow = 11,
         ShowPhotoWindow = 12,
+        StartMotionRecording = 13,
+        StopMotionRecording = 14,
     }
 
     public enum Hands
@@ -1487,6 +1547,19 @@ namespace UnityMemoryMappedFile
         // Distribution License
         public LicenseType LicenseType { get; set; }
         public string OtherLicenseUrl { get; set; }
+
+        // VRM 1.0 (VRMC_vrm meta)
+        // 古いバージョンの相手との通信互換性維持のため、新しいenumは追加せずint/既存enumで表現する
+        public int MetaVersion { get; set; } // 0:VRM0.x 1:VRM1.0
+        public string CopyrightInformation { get; set; }
+        public string ThirdPartyLicenses { get; set; }
+        public string LicenseUrl { get; set; }
+        public int CommercialUsageType { get; set; } // 0:personalNonProfit 1:personalProfit 2:corporation
+        public UssageLicense PoliticalOrReligiousUsage { get; set; }
+        public UssageLicense AntisocialOrHateUsage { get; set; }
+        public int CreditNotation { get; set; } // 0:required 1:unnecessary
+        public UssageLicense Redistribution { get; set; }
+        public int ModificationType { get; set; } // 0:prohibited 1:allowModification 2:allowModificationRedistribution
     }
 
     public enum AllowedUser

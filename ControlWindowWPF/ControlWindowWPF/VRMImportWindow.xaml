@@ -57,8 +57,21 @@
                     </Grid>
                 </StackPanel>
                 <DockPanel Margin="15">
-                    <TextBlock DockPanel.Dock="Top" Text="{DynamicResource VRMImportWindow_PersonationPermission}" FontSize="18" />
-                    <Grid DockPanel.Dock="Top">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <!-- 同意して読み込み/同意しないボタン (スクロールの外・常に右下に表示) -->
+                        <UniformGrid Grid.Column="1" VerticalAlignment="Bottom" Rows="2" Width="200" Height="110">
+                            <Button Content="{DynamicResource VRMImportWindow_ImportButton}" Margin="10,10,10,5" Name="ImportButton" Click="ImportButton_Click" ToolTip="{DynamicResource VRMImportWindow_ImportButton_ToolTip}" IsEnabled="False"/>
+                            <Button Content="{DynamicResource VRMImportWindow_IgnoreButton}" Margin="10,5,10,10" Name="IgnoreButton" Click="IgnoreButton_Click" ToolTip="{DynamicResource VRMImportWindow_IgnoreButton_ToolTip}" IsEnabled="False"/>
+                        </UniformGrid>
+                        <!-- ライセンス表示全体 (小さいモニターではスクロールして表示) -->
+                        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{DynamicResource VRMImportWindow_PersonationPermission}" FontSize="18" />
+                    <Grid>
                         <Grid.Resources>
                             <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -218,6 +231,31 @@
                                                     <Setter Property="Text" Value="○"/>
                                                     <Setter Property="Foreground" Value="Green"/>
                                                 </DataTrigger>
+                                                <!-- VRM 1.0 -->
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding MetaVersion}" Value="1"/>
+                                                        <Condition Binding="{Binding CommercialUsageType}" Value="0"/>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Text" Value="×"/>
+                                                    <Setter Property="Foreground" Value="Red"/>
+                                                </MultiDataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding MetaVersion}" Value="1"/>
+                                                        <Condition Binding="{Binding CommercialUsageType}" Value="1"/>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Text" Value="△"/>
+                                                    <Setter Property="Foreground" Value="Orange"/>
+                                                </MultiDataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding MetaVersion}" Value="1"/>
+                                                        <Condition Binding="{Binding CommercialUsageType}" Value="2"/>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Text" Value="○"/>
+                                                    <Setter Property="Foreground" Value="Green"/>
+                                                </MultiDataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBlock.Style>
@@ -233,6 +271,28 @@
                                                 <DataTrigger Binding="{Binding CommercialUssage}" Value="1">
                                                     <Setter Property="Text" Value="{DynamicResource Allow}"/>
                                                 </DataTrigger>
+                                                <!-- VRM 1.0 -->
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding MetaVersion}" Value="1"/>
+                                                        <Condition Binding="{Binding CommercialUsageType}" Value="0"/>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Text" Value="{DynamicResource CommercialUssage_PersonalNonProfit}"/>
+                                                </MultiDataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding MetaVersion}" Value="1"/>
+                                                        <Condition Binding="{Binding CommercialUsageType}" Value="1"/>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Text" Value="{DynamicResource CommercialUssage_PersonalProfit}"/>
+                                                </MultiDataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding MetaVersion}" Value="1"/>
+                                                        <Condition Binding="{Binding CommercialUsageType}" Value="2"/>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Text" Value="{DynamicResource CommercialUssage_Corporation}"/>
+                                                </MultiDataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBlock.Style>
@@ -246,7 +306,7 @@
                             <RowDefinition  Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition />
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="20"/>
@@ -258,12 +318,27 @@
                         <TextBlock Grid.Row="0" Grid.Column="1" Text="{DynamicResource VRMImportWindow_PersonationOtherLicenseUrl}"/>
                         <TextBox Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" Text="{Binding OtherPermissionUrl}"/>
                         <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Text="{DynamicResource VRMImportWindow_LicenseRedistributionAndModification}" FontSize="18"/>
-                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{DynamicResource VRMImportWindow_LicenseType}"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{DynamicResource VRMImportWindow_LicenseType}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                    <Style.Triggers>
+                                        <!-- ライセンス種別はVRM0.xのみの項目のためVRM1.0では非表示 -->
+                                        <DataTrigger Binding="{Binding MetaVersion}" Value="1">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                         <TextBox Grid.Row="2" Grid.Column="3" >
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                     <Setter Property="Text" Value="{DynamicResource Unknown}"/>
                                     <Style.Triggers>
+                                        <!-- ライセンス種別はVRM0.xのみの項目のためVRM1.0では非表示 -->
+                                        <DataTrigger Binding="{Binding MetaVersion}" Value="1">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
                                         <DataTrigger Binding="{Binding LicenseType}" Value="0">
                                             <Setter Property="Text" Value="{DynamicResource LicenseType_RedistributionProhibited}"/>
                                         </DataTrigger>
@@ -297,10 +372,267 @@
                         </TextBox>
                         <TextBlock Grid.Row="3" Grid.Column="1" Text="{DynamicResource VRMImportWindow_OtherLicenseUrl}"/>
                         <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding OtherLicenseUrl}"/>
-                        <UniformGrid Grid.Row="1" Grid.Column="4" Grid.RowSpan="4" Rows="2" Width="200">
-                            <Button Content="{DynamicResource VRMImportWindow_ImportButton}" Margin="10,10,10,5" Name="ImportButton" Click="ImportButton_Click" ToolTip="{DynamicResource VRMImportWindow_ImportButton_ToolTip}" IsEnabled="False"/>
-                            <Button Content="{DynamicResource VRMImportWindow_IgnoreButton}" Margin="10,5,10,10" Name="IgnoreButton" Click="IgnoreButton_Click" ToolTip="{DynamicResource VRMImportWindow_IgnoreButton_ToolTip}" IsEnabled="False"/>
-                        </UniformGrid>
+                    </Grid>
+                    <!-- VRM 1.0 追加ライセンス表示 (MetaVersion==1のときのみ表示) -->
+                    <Grid Margin="0,5,0,0">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding MetaVersion}" Value="1">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="{DynamicResource VRMImportWindow_VRM10AdditionalLicense}" FontSize="18"/>
+                        <Grid Grid.Row="1">
+                            <Grid.Resources>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="TextAlignment" Value="Center"/>
+                                    <Setter Property="TextWrapping" Value="Wrap"/>
+                                    <Setter Property="FontSize" Value="16"/>
+                                </Style>
+                            </Grid.Resources>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource VRMImportWindow_PoliticalOrReligiousUsage}" Margin="0,10,0,10"/>
+                            <Border Margin="3" BorderBrush="DarkGray" BorderThickness="1" Grid.Row="1" Grid.Column="0">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock FontSize="64" FontFamily="Meiryo UI" FontWeight="ExtraBold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                <Setter Property="Text" Value="?"/>
+                                                <Setter Property="Foreground" Value="Black"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding PoliticalOrReligiousUsage}" Value="0">
+                                                        <Setter Property="Text" Value="×"/>
+                                                        <Setter Property="Foreground" Value="Red"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding PoliticalOrReligiousUsage}" Value="1">
+                                                        <Setter Property="Text" Value="○"/>
+                                                        <Setter Property="Foreground" Value="Green"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <TextBlock Margin="4,8">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                <Setter Property="Text" Value="{DynamicResource Unknown}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding PoliticalOrReligiousUsage}" Value="0">
+                                                        <Setter Property="Text" Value="{DynamicResource Disallow}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding PoliticalOrReligiousUsage}" Value="1">
+                                                        <Setter Property="Text" Value="{DynamicResource Allow}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{DynamicResource VRMImportWindow_AntisocialOrHateUsage}" Margin="0,10,0,10"/>
+                            <Border Margin="3" BorderBrush="DarkGray" BorderThickness="1" Grid.Row="1" Grid.Column="1">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock FontSize="64" FontFamily="Meiryo UI" FontWeight="ExtraBold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                <Setter Property="Text" Value="?"/>
+                                                <Setter Property="Foreground" Value="Black"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding AntisocialOrHateUsage}" Value="0">
+                                                        <Setter Property="Text" Value="×"/>
+                                                        <Setter Property="Foreground" Value="Red"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding AntisocialOrHateUsage}" Value="1">
+                                                        <Setter Property="Text" Value="○"/>
+                                                        <Setter Property="Foreground" Value="Green"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <TextBlock Margin="4,8">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                <Setter Property="Text" Value="{DynamicResource Unknown}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding AntisocialOrHateUsage}" Value="0">
+                                                        <Setter Property="Text" Value="{DynamicResource Disallow}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding AntisocialOrHateUsage}" Value="1">
+                                                        <Setter Property="Text" Value="{DynamicResource Allow}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="{DynamicResource VRMImportWindow_CreditNotation}" Margin="0,10,0,10"/>
+                            <Border Margin="3" BorderBrush="DarkGray" BorderThickness="1" Grid.Row="1" Grid.Column="2">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock FontSize="64" FontFamily="Meiryo UI" FontWeight="ExtraBold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                <Setter Property="Text" Value="?"/>
+                                                <Setter Property="Foreground" Value="Black"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding CreditNotation}" Value="0">
+                                                        <Setter Property="Text" Value="△"/>
+                                                        <Setter Property="Foreground" Value="Orange"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding CreditNotation}" Value="1">
+                                                        <Setter Property="Text" Value="○"/>
+                                                        <Setter Property="Foreground" Value="Green"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <TextBlock Margin="4,8">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                <Setter Property="Text" Value="{DynamicResource Unknown}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding CreditNotation}" Value="0">
+                                                        <Setter Property="Text" Value="{DynamicResource CreditNotation_Required}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding CreditNotation}" Value="1">
+                                                        <Setter Property="Text" Value="{DynamicResource CreditNotation_Unnecessary}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+                            <TextBlock Grid.Row="0" Grid.Column="3" Text="{DynamicResource VRMImportWindow_Redistribution}" Margin="0,10,0,10"/>
+                            <Border Margin="3" BorderBrush="DarkGray" BorderThickness="1" Grid.Row="1" Grid.Column="3">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock FontSize="64" FontFamily="Meiryo UI" FontWeight="ExtraBold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                <Setter Property="Text" Value="?"/>
+                                                <Setter Property="Foreground" Value="Black"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Redistribution}" Value="0">
+                                                        <Setter Property="Text" Value="×"/>
+                                                        <Setter Property="Foreground" Value="Red"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Redistribution}" Value="1">
+                                                        <Setter Property="Text" Value="○"/>
+                                                        <Setter Property="Foreground" Value="Green"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <TextBlock Margin="4,8">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                <Setter Property="Text" Value="{DynamicResource Unknown}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Redistribution}" Value="0">
+                                                        <Setter Property="Text" Value="{DynamicResource Disallow}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Redistribution}" Value="1">
+                                                        <Setter Property="Text" Value="{DynamicResource Allow}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+                            <TextBlock Grid.Row="0" Grid.Column="4" Text="{DynamicResource VRMImportWindow_Modification}" Margin="0,10,0,10"/>
+                            <Border Margin="3" BorderBrush="DarkGray" BorderThickness="1" Grid.Row="1" Grid.Column="4">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock FontSize="64" FontFamily="Meiryo UI" FontWeight="ExtraBold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                <Setter Property="Text" Value="?"/>
+                                                <Setter Property="Foreground" Value="Black"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ModificationType}" Value="0">
+                                                        <Setter Property="Text" Value="×"/>
+                                                        <Setter Property="Foreground" Value="Red"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ModificationType}" Value="1">
+                                                        <Setter Property="Text" Value="△"/>
+                                                        <Setter Property="Foreground" Value="Orange"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ModificationType}" Value="2">
+                                                        <Setter Property="Text" Value="○"/>
+                                                        <Setter Property="Foreground" Value="Green"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <TextBlock Margin="4,8">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                <Setter Property="Text" Value="{DynamicResource Unknown}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ModificationType}" Value="0">
+                                                        <Setter Property="Text" Value="{DynamicResource Modification_Prohibited}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ModificationType}" Value="1">
+                                                        <Setter Property="Text" Value="{DynamicResource Modification_AllowModification}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ModificationType}" Value="2">
+                                                        <Setter Property="Text" Value="{DynamicResource Modification_AllowModificationRedistribution}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                        <Grid Grid.Row="2" Margin="0,5,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{DynamicResource VRMImportWindow_LicenseUrl}"/>
+                            <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding LicenseUrl}"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{DynamicResource VRMImportWindow_CopyrightInformation}"/>
+                            <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding CopyrightInformation}"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{DynamicResource VRMImportWindow_ThirdPartyLicenses}" VerticalAlignment="Top" Margin="0,6,0,0"/>
+                            <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding ThirdPartyLicenses}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Height="64" VerticalAlignment="Top"/>
+                        </Grid>
+                    </Grid>
+                            </StackPanel>
+                        </ScrollViewer>
                     </Grid>
                 </DockPanel>
             </DockPanel>

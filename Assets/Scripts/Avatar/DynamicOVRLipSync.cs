@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
-using VRM;
+using UniVRM10;
 
 namespace VMC
 {
@@ -38,6 +38,46 @@ namespace VMC
         private bool micSelected = false;
 
         public string selectedDevice = null;
+
+        /// <summary>
+        /// visemeの重みをしきい値・強調・最大値のみ・MaxLevelの順で加工して表情へ反映する。
+        /// マイク入力の取得とは切り離してある。
+        /// </summary>
+        private void ApplyVisemes(ExpressionPreset[] presets, float[] visemes)
+        {
+            if (faceController == null) return;
+
+            int maxindex = 0;
+            float maxvisemes = 0;
+            for (int i = 0; i < presets.Length; i++)
+            {
+                if (visemes[i] < WeightThreashold) visemes[i] = 0;
+                if (maxvisemes < visemes[i])
+                {
+                    maxindex = i;
+                    maxvisemes = visemes[i];
+                }
+            }
+
+            if (MaxWeightEmphasis)
+            {
+                visemes[maxindex] = Mathf.Clamp(visemes[maxindex] * 3, 0.0f, 1.0f);
+            }
+
+            if (MaxWeightEnable)
+            {
+                for (int i = 0; i < presets.Length; i++)
+                {
+                    if (i != maxindex) visemes[i] = 0.0f;
+                }
+            }
+
+            for (int i = 0; i < presets.Length; i++)
+            {
+                visemes[i] *= MaxLevel;
+            }
+            faceController.MixPresets(nameof(DynamicOVRLipSync), presets, visemes);
+        }
 
         public string[] GetMicrophoneDevices() => Microphone.devices;
         public void SetMicrophoneDevice(string device)
@@ -83,56 +123,27 @@ namespace VMC
                         OVRLipSync.Frame frame = GetCurrentPhonemeFrame();
                         if (frame != null)
                         {
-                            //あ OVRLipSync.Viseme.aa; BlendShapePreset.A;
-                            //い OVRLipSync.Viseme.ih; BlendShapePreset.I;
-                            //う OVRLipSync.Viseme.ou; BlendShapePreset.U;
-                            //え OVRLipSync.Viseme.E;  BlendShapePreset.E;
-                            //お OVRLipSync.Viseme.oh; BlendShapePreset.O;
-                            var presets = new BlendShapePreset[] {
-                            BlendShapePreset.A,
-                            BlendShapePreset.I,
-                            BlendShapePreset.U,
-                            BlendShapePreset.E,
-                            BlendShapePreset.O,
-                        };
+                            //あ OVRLipSync.Viseme.aa; ExpressionPreset.aa;
+                            //い OVRLipSync.Viseme.ih; ExpressionPreset.ih;
+                            //う OVRLipSync.Viseme.ou; ExpressionPreset.ou;
+                            //え OVRLipSync.Viseme.E;  ExpressionPreset.ee;
+                            //お OVRLipSync.Viseme.oh; ExpressionPreset.oh;
+                            var presets = new ExpressionPreset[] {
+                                ExpressionPreset.aa,
+                                ExpressionPreset.ih,
+                                ExpressionPreset.ou,
+                                ExpressionPreset.ee,
+                                ExpressionPreset.oh,
+                            };
                             var visemes = new float[] {
-                            frame.Visemes[(int)OVRLipSync.Viseme.aa],
-                            frame.Visemes[(int)OVRLipSync.Viseme.ih],
-                            frame.Visemes[(int)OVRLipSync.Viseme.ou],
-                            frame.Visemes[(int)OVRLipSync.Viseme.E],
-                            frame.Visemes[(int)OVRLipSync.Viseme.oh],
-                        };
+                                frame.Visemes[(int)OVRLipSync.Viseme.aa],
+                                frame.Visemes[(int)OVRLipSync.Viseme.ih],
+                                frame.Visemes[(int)OVRLipSync.Viseme.ou],
+                                frame.Visemes[(int)OVRLipSync.Viseme.E],
+                                frame.Visemes[(int)OVRLipSync.Viseme.oh],
+                            };
 
-                            int maxindex = 0;
-                            float maxvisemes = 0;
-                            for (int i = 0; i < presets.Length; i++)
-                            {
-                                if (visemes[i] < WeightThreashold) visemes[i] = 0;
-                                if (maxvisemes < visemes[i])
-                                {
-                                    maxindex = i;
-                                    maxvisemes = visemes[i];
-                                }
-                            }
-
-                            if (MaxWeightEmphasis)
-                            {
-                                visemes[maxindex] = Mathf.Clamp(visemes[maxindex] * 3, 0.0f, 1.0f);
-                            }
-
-                            if (MaxWeightEnable)
-                            {
-                                for (int i = 0; i < presets.Length; i++)
-                                {
-                                    if (i != maxindex) visemes[i] = 0.0f;
-                                }
-                            }
-
-                            for (int i = 0; i < presets.Length; i++)
-                            {
-                                visemes[i] *= MaxLevel;
-                            }
-                            faceController.MixPresets(nameof(DynamicOVRLipSync), presets, visemes);
+                            ApplyVisemes(presets, visemes);
 
                             //Debug.Log("Visemes:" + string.Join(",", frame.Visemes.Select(d => d.ToString())));
                         }
@@ -278,5 +289,20 @@ namespace VMC
         {
             StopMicrophone();
         }
+
+        #region 自動テスト用フック
+
+        /// <summary>マイク入力の代わりにvisemeを直接与える。あ・い・う・え・お の順</summary>
+        internal void Test_ApplyVisemes(float aa, float ih, float ou, float ee, float oh)
+        {
+            var presets = new[]
+            {
+                ExpressionPreset.aa, ExpressionPreset.ih, ExpressionPreset.ou,
+                ExpressionPreset.ee, ExpressionPreset.oh,
+            };
+            ApplyVisemes(presets, new[] { aa, ih, ou, ee, oh });
+        }
+
+        #endregion
     }
 }

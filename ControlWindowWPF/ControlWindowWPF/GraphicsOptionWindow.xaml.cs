@@ -87,6 +87,15 @@ namespace VirtualMotionCaptureControlPanel
                 Vignette_Color_b = (float)((Vignette_Color_Button.Background as SolidColorBrush).Color.B / 255.0),
                 Vignette_Color_a = (float)((Vignette_Color_Button.Background as SolidColorBrush).Color.A / 255.0),
 
+                AO_Enable = AO_Enable_CheckBox?.IsChecked ?? false,
+                AO_IsScalable = AO_IsScalable_CheckBox?.IsChecked ?? false,
+                AO_Intensity = (float)(AO_Intensity_Slider?.Value ?? 0f),
+                AO_Thickness = (float)(AO_Thickness_Slider?.Value ?? 0f),
+                AO_Color_a = (float)((AO_Color_Button.Background as SolidColorBrush).Color.A / 255.0),
+                AO_Color_r = (float)((AO_Color_Button.Background as SolidColorBrush).Color.R / 255.0),
+                AO_Color_g = (float)((AO_Color_Button.Background as SolidColorBrush).Color.G / 255.0),
+                AO_Color_b = (float)((AO_Color_Button.Background as SolidColorBrush).Color.B / 255.0),
+
                 CA_Enable = CA_Enable_CheckBox?.IsChecked ?? false,
                 CA_Intensity = (float)(CA_Intensity_Slider?.Value ?? 0f),
                 CA_FastMode = CA_FastMode_CheckBox?.IsChecked ?? false,
@@ -192,6 +201,28 @@ namespace VirtualMotionCaptureControlPanel
                     Vignette_Color_Button.Background = new SolidColorBrush(c);
                 }
 
+                if (AO_Enable_CheckBox != null)
+                {
+                    AO_Enable_CheckBox.IsChecked = d.AO_Enable;
+                }
+                if (AO_IsScalable_CheckBox != null)
+                {
+                    AO_IsScalable_CheckBox.IsChecked = d.AO_IsScalable;
+                }
+                if (AO_Intensity_Slider != null)
+                {
+                    AO_Intensity_Slider.Value = d.AO_Intensity;
+                }
+                if (AO_Thickness_Slider != null)
+                {
+                    AO_Thickness_Slider.Value = d.AO_Thickness;
+                }
+                if (AO_Color_Button != null)
+                {
+                    Color c = Color.FromArgb((byte)(d.AO_Color_a * 255), (byte)(d.AO_Color_r * 255), (byte)(d.AO_Color_g * 255), (byte)(d.AO_Color_b * 255));
+                    AO_Color_Button.Background = new SolidColorBrush(c);
+                }
+
 
                 if (CA_Enable_CheckBox != null)
                 {
@@ -274,6 +305,23 @@ namespace VirtualMotionCaptureControlPanel
             ValueChanged();
         }
 
+        private void AO_Color_Button_Clicked(object sender, RoutedEventArgs e)
+        {
+            var win = new ColorPickerWindow();
+            win.SelectedColor = (AO_Color_Button.Background as SolidColorBrush).Color;
+            win.SelectedColorChangedEvent += ColorPickerWindow_SelectedColorChangedAO_Color_Button;
+            win.Owner = this;
+            win.ShowDialog();
+            win.SelectedColorChangedEvent -= ColorPickerWindow_SelectedColorChangedAO_Color_Button;
+
+        }
+
+        private void ColorPickerWindow_SelectedColorChangedAO_Color_Button(object sender, Color e)
+        {
+            AO_Color_Button.Background = new SolidColorBrush(e);
+            ValueChanged();
+        }
+
         private void Bloom_Reset_Clicked(object sender, RoutedEventArgs e)
         {
             Bloom_Intensity_Slider.Value = 2.7f;
@@ -311,6 +359,16 @@ namespace VirtualMotionCaptureControlPanel
             Vignette_Roundness_Slider.Value = 1f;
             Color c = Color.FromArgb(255,0,0,0);
             Vignette_Color_Button.Background = new SolidColorBrush(c);
+            ValueChanged();
+        }
+
+        private void AO_Reset_Clicked(object sender, RoutedEventArgs e)
+        {
+            AO_IsScalable_CheckBox.IsChecked = false;
+            AO_Intensity_Slider.Value = 0f;
+            AO_Thickness_Slider.Value = 0f;
+            Color c = Color.FromArgb(0, 0, 0, 255);
+            AO_Color_Button.Background = new SolidColorBrush(c);
             ValueChanged();
         }
 

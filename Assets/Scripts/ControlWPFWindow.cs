@@ -1,21 +1,18 @@
-﻿using RootMotion.FinalIK;
-using sh_akira;
+﻿using sh_akira;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityMemoryMappedFile;
-using Valve.VR;
 using VMCMod;
-using VRM;
 using static VMC.NativeMethods;
 using UniGLTF;
-using VRMShaders;
+using UniVRM10;
+
 #if UNITY_EDITOR   // エディタ上でしか動きません。
 using UnityEditor;
 #endif
@@ -43,6 +40,8 @@ namespace VMC
 
         public GameObject ExternalMotionSenderObject;
         private ExternalSender externalMotionSender;
+        private MotionPlayer motionPlayer;
+        private MotionRecorder motionRecorder;
 
         public GameObject ExternalMotionReceiverObject;
         public List<ExternalReceiverForVMC> externalMotionReceivers = new List<ExternalReceiverForVMC>();
@@ -68,28 +67,14 @@ namespace VMC
         private System.Threading.SynchronizationContext context = null;
 
         public Action<GameObject> AdditionalSettingAction = null;
-        public Action<UnityMemoryMappedFile.VRMData> VRMmetaLodedAction = null;
+        public Action<UnityMemoryMappedFile.VRMData> VRMmetaLoadedAction = null;
         public Action<string> VRMRemoteLoadedAction = null;
-
-        public Action<GameObject> EyeTracking_TobiiCalibrationAction = null;
-        public Action<PipeCommands.SetEyeTracking_TobiiOffsets> SetEyeTracking_TobiiOffsetsAction = null;
-        public Action<PipeCommands.SetEyeTracking_ViveProEyeOffsets> SetEyeTracking_ViveProEyeOffsetsAction = null;
-        public Action<PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements> SetEyeTracking_ViveProEyeUseEyelidMovementsAction = null;
-        public Action<Dictionary<string, string>> SetLipShapeToBlendShapeStringMapAction = null;
-        public Func<List<string>> GetLipShapesStringListFunc = null;
-
-        public Behaviour EyeTracking_ViveProEyeComponent = null;
-        public Behaviour SRanipal_Eye_FrameworkComponent = null;
-        public Behaviour LipTracking_ViveComponent = null;
-        public Behaviour SRanipal_Lip_FrameworkComponent = null;
 
         public MIDICCBlendShape midiCCBlendShape;
 
         public string lastLoadedConfigPath = "";
 
         public EasyDeviceDiscoveryProtocolManager easyDeviceDiscoveryProtocolManager;
-
-        public ModManager modManager;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void SetDpiAwareness()
@@ -116,6 +101,17 @@ namespace VMC
 #endif
         }
 
+        public ModManager modManager;
+
+        //公式プラグイン(Plugins/配下)。ユーザーMod(Mods/配下)とは別系統
+        private PluginManager pluginManager;
+        private PluginHost pluginHost;
+
+        // コントロールパネル起動監視用の変数を追加
+        private bool showControlPanelMessage = false;
+        private float controlPanelStartTime = -1f; // -1で初期化（監視無効）
+        private const float CONTROL_PANEL_TIMEOUT = 10f; // 10秒
+
         private void Awake()
         {
             Application.targetFrameRate = 60;
@@ -124,12 +120,39 @@ namespace VMC
             pipeName = "VMCTest";
 #else
             //Debug.unityLogger.logEnabled = false;
-            pipeName = "VMCpipe" + Guid.NewGuid().ToString();
+
+            bool isRunWithPipeName = false;
+
+            var args = Environment.GetCommandLineArgs();
+            if (args.Length > 1)
+            {
+                for (int i = 1; i < args.Length - 1; i++)
+                {
+                    if (args[i].StartsWith("/pipeName") || args[i].StartsWith("-pipeName"))
+                    {
+                        // コマンドライン引数からパイプ名を取得
+                        pipeName = args[i + 1];
+                        isRunWithPipeName = true;
+                        break;
+                    }
+                }
+            }
+            
+            if (isRunWithPipeName == false)
+            {
+                // パイプ名をランダムに生成
+                pipeName = "VMCpipe" + Guid.NewGuid().ToString();
+            }
 #endif
 
 #if !UNITY_EDITOR
             //start control panel
-            ExecuteControlPanel();
+            if (isRunWithPipeName == false) 
+            {
+                ExecuteControlPanel();
+                // コントロールパネル起動監視開始
+                controlPanelStartTime = Time.time;
+            }
 #endif
 
             context = System.Threading.SynchronizationContext.Current;
@@ -148,6 +171,23 @@ namespace VMC
             var hwnd = GetUnityWindowHandle();
             SetWindowLong(hwnd, GWL_STYLE, defaultWindowStyle | WS_CLIPCHILDREN);
 #endif
+  
+            //モーション再生・記録
+            var motionPlayerObject = new GameObject("MotionPlayer");
+            motionPlayerObject.transform.SetParent(transform, false);
+            motionPlayer = motionPlayerObject.AddComponent<MotionPlayer>();
+            var motionRecorderObject = new GameObject("MotionRecorder");
+            motionRecorderObject.transform.SetParent(transform, false);
+            motionRecorder = motionRecorderObject.AddComponent<MotionRecorder>();
+
+            //公式プラグインの読み込み。
+            //設定の読み込み・適用より前に済ませる必要があるためここで行う
+            //(ユーザーModはコントロールパネル接続後にModManagerが読み込む)
+            var pluginManagerObject = new GameObject("PluginManager");
+            pluginManagerObject.transform.SetParent(transform, false);
+            pluginManager = pluginManagerObject.AddComponent<PluginManager>();
+            pluginHost = new PluginHost(this, faceController);
+            pluginManager.LoadPlugins(pluginHost);
         }
 
         void Start()
@@ -243,7 +283,9 @@ namespace VMC
         private void OnApplicationQuit()
         {
             // アプリが終了したらコントロールパネルも終了する。
-            server?.SendCommand(new PipeCommands.QuitApplication { });
+            // ここは同期呼び出しなので、相手が居ない/応答しないときに待つとアプリが固まる。
+            // 終了時に待つ意味は無いので短めに打ち切る。
+            server?.SendCommand(new PipeCommands.QuitApplication { }, timeoutMs: 200);
 
             server.ReceivedEvent -= Server_Received;
             server?.Dispose();
@@ -269,10 +311,10 @@ namespace VMC
                         modManager.ImportMods();
                     }
                 }
-                else if (e.CommandType == typeof(PipeCommands.LoadVRM))
+                else if (e.CommandType == typeof(PipeCommands.LoadVRMMeta))
                 {
-                    var d = (PipeCommands.LoadVRM)e.Data;
-                    await server.SendCommandAsync(new PipeCommands.ReturnLoadVRM { Data = LoadVRM(d.Path) }, e.RequestId);
+                    var d = (PipeCommands.LoadVRMMeta)e.Data;
+                    await server.SendCommandAsync(new PipeCommands.ReturnLoadVRMMeta { Data = await LoadVRMMetaAsync(d.Path) }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.LoadRemoteVRM))
                 {
@@ -285,7 +327,7 @@ namespace VMC
                     var t = ImportVRM(d.Path);
 
                     //メタ情報をOSC送信する
-                    VRMmetaLodedAction?.Invoke(LoadVRM(d.Path));
+                    VRMmetaLoadedAction?.Invoke(await LoadVRMMetaAsync(d.Path));
                 }
 
                 else if (e.CommandType == typeof(PipeCommands.SetLipSyncEnable))
@@ -421,7 +463,8 @@ namespace VMC
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetFaceKeys))
                 {
-                    await server.SendCommandAsync(new PipeCommands.ReturnFaceKeys { Keys = faceController.BlendShapeClips.Select(d => d.BlendShapeName).ToList() }, e.RequestId);
+                    //保存済み設定との互換性のため、プリセット表情はVRM0.xの名称(Joy, A, Blink_L等)でUIに渡す
+                    await server.SendCommandAsync(new PipeCommands.ReturnFaceKeys { Keys = faceController.BlendShapeClips.Select(d => VRM10CompatibleNames.GetVRM0CompatibleName(d)).Distinct().ToList() }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.SetFace))
                 {
@@ -471,70 +514,15 @@ namespace VMC
                         doSendTrackerMoved--;
                     }
                 }
-                else if (e.CommandType == typeof(PipeCommands.SetEyeTracking_TobiiOffsets))
-                {
-                    var d = (PipeCommands.SetEyeTracking_TobiiOffsets)e.Data;
-                    SetEyeTracking_TobiiOffsets(d);
-                }
-                else if (e.CommandType == typeof(PipeCommands.GetEyeTracking_TobiiOffsets))
-                {
-                    await server.SendCommandAsync(new PipeCommands.SetEyeTracking_TobiiOffsets
-                    {
-                        OffsetHorizontal = Settings.Current.EyeTracking_TobiiOffsetHorizontal,
-                        OffsetVertical = Settings.Current.EyeTracking_TobiiOffsetVertical,
-                        ScaleHorizontal = Settings.Current.EyeTracking_TobiiScaleHorizontal,
-                        ScaleVertical = Settings.Current.EyeTracking_TobiiScaleVertical
-                    }, e.RequestId);
-                }
-                else if (e.CommandType == typeof(PipeCommands.EyeTracking_TobiiCalibration))
-                {
-                    EyeTracking_TobiiCalibrationAction?.Invoke(CurrentModel);
-                }
-                else if (e.CommandType == typeof(PipeCommands.SetEyeTracking_ViveProEyeOffsets))
-                {
-                    var d = (PipeCommands.SetEyeTracking_ViveProEyeOffsets)e.Data;
-                    SetEyeTracking_ViveProEyeOffsets(d);
-                }
-                else if (e.CommandType == typeof(PipeCommands.GetEyeTracking_ViveProEyeOffsets))
-                {
-                    await server.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeOffsets
-                    {
-                        OffsetHorizontal = Settings.Current.EyeTracking_ViveProEyeOffsetHorizontal,
-                        OffsetVertical = Settings.Current.EyeTracking_ViveProEyeOffsetVertical,
-                        ScaleHorizontal = Settings.Current.EyeTracking_ViveProEyeScaleHorizontal,
-                        ScaleVertical = Settings.Current.EyeTracking_ViveProEyeScaleVertical
-                    }, e.RequestId);
-                }
-                else if (e.CommandType == typeof(PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements))
-                {
-                    var d = (PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements)e.Data;
-                    SetEyeTracking_ViveProEyeUseEyelidMovements(d);
-                }
-                else if (e.CommandType == typeof(PipeCommands.SetEyeTracking_ViveProEyeEnable))
-                {
-                    var d = (PipeCommands.SetEyeTracking_ViveProEyeEnable)e.Data;
-                    Settings.Current.EyeTracking_ViveProEyeEnable = d.enable;
-                    SetEyeTracking_ViveProEyeEnable(d.enable);
-                }
-                else if (e.CommandType == typeof(PipeCommands.GetEyeTracking_ViveProEyeUseEyelidMovements))
-                {
-                    await server.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements
-                    {
-                        Use = Settings.Current.EyeTracking_ViveProEyeUseEyelidMovements,
-                    }, e.RequestId);
-                }
-                else if (e.CommandType == typeof(PipeCommands.GetEyeTracking_ViveProEyeEnable))
-                {
-                    await server.SendCommandAsync(new PipeCommands.SetEyeTracking_ViveProEyeEnable
-                    {
-                        enable = Settings.Current.EyeTracking_ViveProEyeEnable,
-                    }, e.RequestId);
-                }
                 else if (e.CommandType == typeof(PipeCommands.LoadCurrentSettings))
                 {
                     if (isFirstTimeExecute)
                     {
                         isFirstTimeExecute = false;
+                        // コントロールパネルが正常に起動したので監視を停止し、メッセージを非表示
+                        controlPanelStartTime = -1f;
+                        showControlPanelMessage = false;
+                        
                         CurrentWindowNum = SetWindowTitle();
                         //起動時は初期設定ロード
                         LoadSettings(null);
@@ -565,7 +553,7 @@ namespace VMC
                 else if (e.CommandType == typeof(PipeCommands.ChangeExternalMotionSenderAddress))
                 {
                     var d = (PipeCommands.ChangeExternalMotionSenderAddress)e.Data;
-                    ChangeExternalMotionSenderAddress(d.address, d.port, d.PeriodStatus, d.PeriodRoot, d.PeriodBone, d.PeriodBlendShape, d.PeriodCamera, d.PeriodDevices, d.OptionString, d.ResponderEnable);
+                    ChangeExternalMotionSenderAddress(d.address, d.port, d.PeriodStatus, d.PeriodRoot, d.PeriodBone, d.PeriodBlendShape, d.PeriodCamera, d.PeriodDevices, d.OptionString, d.ResponderEnable, d.UseNormalizedBone, d.SendVRM1Expression);
 
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetExternalMotionSenderAddress))
@@ -581,7 +569,9 @@ namespace VMC
                         PeriodCamera = Settings.Current.ExternalMotionSenderPeriodCamera,
                         PeriodDevices = Settings.Current.ExternalMotionSenderPeriodDevices,
                         OptionString = Settings.Current.ExternalMotionSenderOptionString,
-                        ResponderEnable = Settings.Current.ExternalMotionSenderResponderEnable
+                        ResponderEnable = Settings.Current.ExternalMotionSenderResponderEnable,
+                        UseNormalizedBone = Settings.Current.ExternalMotionSenderUseNormalizedBone,
+                        SendVRM1Expression = Settings.Current.ExternalMotionSenderSendVRM1Expression
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.SetVMCProtocolReceiverSetting))
@@ -752,6 +742,18 @@ namespace VMC
                         Enable = CommonSettings.Current.LaunchSteamVROnStartup,
                     }, e.RequestId);
                 }
+                else if (e.CommandType == typeof(PipeCommands.EnableTrackerReassignmentWhenChestAvailable))
+                {
+                    var d = (PipeCommands.EnableTrackerReassignmentWhenChestAvailable)e.Data;
+                    Settings.Current.TrackerReassignmentWhenChestAvailable = d.TrackerReassignmentWhenChestAvailable;
+                }
+                else if (e.CommandType == typeof(PipeCommands.GetTrackerReassignmentWhenChestAvailable))
+                {
+                    await server.SendCommandAsync(new PipeCommands.EnableTrackerReassignmentWhenChestAvailable
+                    {
+                        TrackerReassignmentWhenChestAvailable = Settings.Current.TrackerReassignmentWhenChestAvailable
+                    }, e.RequestId);
+                }
                 else if (e.CommandType == typeof(PipeCommands.GetQualitySettings))
                 {
                     await server.SendCommandAsync(new PipeCommands.SetQualitySettings
@@ -786,36 +788,6 @@ namespace VMC
                         result = ret,
                     }, e.RequestId);
                 }
-                else if (e.CommandType == typeof(PipeCommands.GetViveLipTrackingBlendShape))
-                {
-                    if (GetLipShapesStringListFunc != null)
-                    {
-                        await server.SendCommandAsync(new PipeCommands.SetViveLipTrackingBlendShape
-                        {
-                            LipShapes = GetLipShapesStringListFunc(),
-                            LipShapesToBlendShapeMap = Settings.Current.LipShapesToBlendShapeMap,
-                        }, e.RequestId);
-                    }
-                }
-                else if (e.CommandType == typeof(PipeCommands.GetViveLipTrackingEnable))
-                {
-                    await server.SendCommandAsync(new PipeCommands.SetViveLipTrackingEnable
-                    {
-                        enable = Settings.Current.LipTracking_ViveEnable,
-                    }, e.RequestId);
-                }
-                else if (e.CommandType == typeof(PipeCommands.SetViveLipTrackingEnable))
-                {
-                    var d = (PipeCommands.SetViveLipTrackingEnable)e.Data;
-                    Settings.Current.LipTracking_ViveEnable = d.enable;
-                    SetLipTracking_ViveEnable(d.enable);
-                }
-                else if (e.CommandType == typeof(PipeCommands.SetViveLipTrackingBlendShape))
-                {
-                    var d = (PipeCommands.SetViveLipTrackingBlendShape)e.Data;
-                    Settings.Current.LipShapesToBlendShapeMap = d.LipShapesToBlendShapeMap;
-                    SetLipShapeToBlendShapeStringMapAction?.Invoke(d.LipShapesToBlendShapeMap);
-                }
                 else if (e.CommandType == typeof(PipeCommands.GetAdvancedGraphicsOption))
                 {
                     LoadAdvancedGraphicsOption();
@@ -847,6 +819,11 @@ namespace VMC
                     Settings.Current.PPS_Vignette_Smoothness = d.Vignette_Smoothness;
                     Settings.Current.PPS_Vignette_Roundness = d.Vignette_Roundness;
 
+                    Settings.Current.PPS_AO_Enable = d.AO_Enable;
+                    Settings.Current.PPS_AO_IsScalable = d.AO_IsScalable;
+                    Settings.Current.PPS_AO_Intensity = d.AO_Intensity;
+                    Settings.Current.PPS_AO_Thickness = d.AO_Thickness;
+
                     Settings.Current.PPS_CA_Enable = d.CA_Enable;
                     Settings.Current.PPS_CA_Intensity = d.CA_Intensity;
                     Settings.Current.PPS_CA_FastMode = d.CA_FastMode;
@@ -866,6 +843,11 @@ namespace VMC
                     Settings.Current.PPS_Vignette_Color_g = d.Vignette_Color_g;
                     Settings.Current.PPS_Vignette_Color_b = d.Vignette_Color_b;
 
+                    Settings.Current.PPS_AO_Color_a = d.AO_Color_a;
+                    Settings.Current.PPS_AO_Color_r = d.AO_Color_r;
+                    Settings.Current.PPS_AO_Color_g = d.AO_Color_g;
+                    Settings.Current.PPS_AO_Color_b = d.AO_Color_b;
+
                     Settings.Current.TurnOffAmbientLight = d.TurnOffAmbientLight;
 
                     SetAdvancedGraphicsOption();
@@ -875,6 +857,26 @@ namespace VMC
                     await server.SendCommandAsync(new PipeCommands.ReturnModIsLoaded
                     {
                         IsLoaded = modManager.IsModLoaded,
+                    }, e.RequestId);
+                }
+                else if (e.CommandType == typeof(PipeCommands.VRoidSDK_CheckAvailable))
+                {
+                    //VRoid SDKが組み込まれているか(VMC_VROIDSDK)を常時コンパイルされる本ハンドラで返す。
+                    //SDK未同梱時はVRoidSDKConnector自体が除外されるため、可否判定はここで行う。
+                    await server.SendCommandAsync(new PipeCommands.VRoidSDK_ReturnAvailable
+                    {
+#if VMC_VROIDSDK
+                        Available = true,
+#else
+                        Available = false,
+#endif
+                    }, e.RequestId);
+                }
+                else if (e.CommandType == typeof(PipeCommands.GetPluginList))
+                {
+                    await server.SendCommandAsync(new PipeCommands.ReturnPluginList
+                    {
+                        PluginList = GetPluginList(),
                     }, e.RequestId);
                 }
                 else if (e.CommandType == typeof(PipeCommands.GetModList))
@@ -938,6 +940,26 @@ namespace VMC
             }
 
             return modList;
+        }
+
+        private List<PluginItem> GetPluginList()
+        {
+            var pluginList = new List<PluginItem>();
+
+            if (pluginManager == null) return pluginList;
+
+            foreach (var plugin in pluginManager.LoadedPlugins)
+            {
+                pluginList.Add(new PluginItem
+                {
+                    Id = plugin.Id,
+                    Name = plugin.DisplayName,
+                    Version = plugin.Version,
+                    AssemblyPath = plugin.AssemblyPath,
+                });
+            }
+
+            return pluginList;
         }
 
         public Transform MainDirectionalLightTransform;
@@ -1010,6 +1032,11 @@ namespace VMC
                 Vignette_Smoothness = Settings.Current.PPS_Vignette_Smoothness,
                 Vignette_Roundness = Settings.Current.PPS_Vignette_Roundness,
 
+                AO_Enable = Settings.Current.PPS_AO_Enable,
+                AO_IsScalable = Settings.Current.PPS_AO_IsScalable,
+                AO_Intensity = Settings.Current.PPS_AO_Intensity,
+                AO_Thickness = Settings.Current.PPS_AO_Thickness,
+
                 CA_Enable = Settings.Current.PPS_CA_Enable,
                 CA_Intensity = Settings.Current.PPS_CA_Intensity,
                 CA_FastMode = Settings.Current.PPS_CA_FastMode,
@@ -1029,6 +1056,11 @@ namespace VMC
                 Vignette_Color_g = Settings.Current.PPS_Vignette_Color_g,
                 Vignette_Color_b = Settings.Current.PPS_Vignette_Color_b,
 
+                AO_Color_a = Settings.Current.PPS_AO_Color_a,
+                AO_Color_r = Settings.Current.PPS_AO_Color_r,
+                AO_Color_g = Settings.Current.PPS_AO_Color_g,
+                AO_Color_b = Settings.Current.PPS_AO_Color_b,
+
                 TurnOffAmbientLight = Settings.Current.TurnOffAmbientLight
             });
         }
@@ -1042,7 +1074,7 @@ namespace VMC
 
         #region VRM
 
-        public UnityMemoryMappedFile.VRMData LoadVRM(string path)
+        public async Task<UnityMemoryMappedFile.VRMData> LoadVRMMetaAsync(string path)
         {
             if (string.IsNullOrEmpty(path) || File.Exists(path) == false)
             {
@@ -1052,51 +1084,151 @@ namespace VMC
             var vrmdata = new UnityMemoryMappedFile.VRMData();
             vrmdata.FilePath = path;
 
-            using (GltfData data = new AutoGltfFileParser(path).Parse())
+            IAwaitCaller awaitCaller = Application.isPlaying ? new RuntimeOnlyAwaitCaller() : new ImmediateCaller();
+
+            using var data = await awaitCaller.Run(() => { return new AutoGltfFileParser(path).Parse(); });
+            if (data == null)
+                return null;
+
+            var vrm10Data = Vrm10Data.Parse(data);
+
+            MigrationData migration = null;
+            GltfData migratedData = null;
+            if (vrm10Data == null)
             {
-                VRM.VRMData vrmData = new VRM.VRMData(data);
-                using (var context = new VRMImporterContext(vrmData))
+                migratedData = await awaitCaller.Run(() => Vrm10Data.Migrate(data, out vrm10Data, out migration));
+            }
+
+            try
+            {
+                if (vrm10Data == null)
+                    return null;
+
+                if (migration != null)
                 {
-
-                    // metaを取得
-                    var meta = context.ReadMeta(true);
-
-                    // サムネイル
-                    if (meta.Thumbnail != null)
-                    {
-                        vrmdata.ThumbnailPNGBytes = meta.Thumbnail.EncodeToPNG(); //Or SaveAsPng( memoryStream, texture.Width, texture.Height )
-                    }
-
-                    // Info
-                    vrmdata.Title = meta.Title;
+                    // VRM 0.x (マイグレーション前のオリジナルのメタ情報を表示する)
+                    vrmdata.MetaVersion = 0;
+                    vrmdata.Title = migration.OriginalMetaBeforeMigration.title;
+                    vrmdata.Version = migration.OriginalMetaBeforeMigration.version;
+                    vrmdata.Author = migration.OriginalMetaBeforeMigration.author;
+                    vrmdata.ContactInformation = migration.OriginalMetaBeforeMigration.contactInformation;
+                    vrmdata.Reference = migration.OriginalMetaBeforeMigration.reference;
+                    vrmdata.AllowedUser = (UnityMemoryMappedFile.AllowedUser)migration.OriginalMetaBeforeMigration.allowedUser;
+                    vrmdata.ViolentUssage = migration.OriginalMetaBeforeMigration.violentUsage ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
+                    vrmdata.SexualUssage = migration.OriginalMetaBeforeMigration.sexualUsage ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
+                    vrmdata.CommercialUssage = migration.OriginalMetaBeforeMigration.commercialUsage ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
+                    vrmdata.OtherPermissionUrl = migration.OriginalMetaBeforeMigration.otherPermissionUrl;
+                    vrmdata.LicenseType = (UnityMemoryMappedFile.LicenseType)migration.OriginalMetaBeforeMigration.licenseType;
+                    vrmdata.OtherLicenseUrl = migration.OriginalMetaBeforeMigration.otherLicenseUrl;
+                }
+                else
+                {
+                    // VRM 1.0
+                    var meta = vrm10Data.VrmExtension.Meta;
+                    if (meta == null)
+                        return null;
+                    vrmdata.MetaVersion = 1;
+                    vrmdata.Title = meta.Name;
                     vrmdata.Version = meta.Version;
-                    vrmdata.Author = meta.Author;
+                    vrmdata.Author = meta.Authors != null ? string.Join(", ", meta.Authors) : null;
                     vrmdata.ContactInformation = meta.ContactInformation;
-                    vrmdata.Reference = meta.Reference;
+                    vrmdata.Reference = meta.References != null ? string.Join(", ", meta.References) : null;
 
-                    // Permission
-                    vrmdata.AllowedUser = (UnityMemoryMappedFile.AllowedUser)meta.AllowedUser;
-                    vrmdata.ViolentUssage = (UnityMemoryMappedFile.UssageLicense)meta.ViolentUssage;
-                    vrmdata.SexualUssage = (UnityMemoryMappedFile.UssageLicense)meta.SexualUssage;
-                    vrmdata.CommercialUssage = (UnityMemoryMappedFile.UssageLicense)meta.CommercialUssage;
-                    vrmdata.OtherPermissionUrl = meta.OtherPermissionUrl;
+                    // Permission (AvatarPermissionTypeはAllowedUserと3値とも同順)
+                    vrmdata.AllowedUser = (UnityMemoryMappedFile.AllowedUser)meta.AvatarPermission;
+                    vrmdata.ViolentUssage = meta.AllowExcessivelyViolentUsage == true ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
+                    vrmdata.SexualUssage = meta.AllowExcessivelySexualUsage == true ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
+                    // 旧バージョンのコントロールパネル向けの近似値(personalNonProfit以外は商用利用可扱い)
+                    vrmdata.CommercialUssage = meta.CommercialUsage == UniGLTF.Extensions.VRMC_vrm.CommercialUsageType.personalNonProfit ? UnityMemoryMappedFile.UssageLicense.Disallow : UnityMemoryMappedFile.UssageLicense.Allow;
+                    vrmdata.CommercialUsageType = (int)meta.CommercialUsage;
+                    vrmdata.PoliticalOrReligiousUsage = meta.AllowPoliticalOrReligiousUsage == true ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
+                    vrmdata.AntisocialOrHateUsage = meta.AllowAntisocialOrHateUsage == true ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
 
                     // Distribution License
-                    vrmdata.LicenseType = (UnityMemoryMappedFile.LicenseType)meta.LicenseType;
+                    vrmdata.CreditNotation = (int)meta.CreditNotation;
+                    vrmdata.Redistribution = meta.AllowRedistribution == true ? UnityMemoryMappedFile.UssageLicense.Allow : UnityMemoryMappedFile.UssageLicense.Disallow;
+                    vrmdata.ModificationType = (int)meta.Modification;
+                    vrmdata.CopyrightInformation = meta.CopyrightInformation;
+                    vrmdata.ThirdPartyLicenses = meta.ThirdPartyLicenses;
+                    vrmdata.LicenseUrl = meta.LicenseUrl;
                     vrmdata.OtherLicenseUrl = meta.OtherLicenseUrl;
-                    /*
-                    // ParseしたJSONをシーンオブジェクトに変換していく
-                    var now = Time.time;
-                    var go = await VRMImporter.LoadVrmAsync(context);
-
-                    var delta = Time.time - now;
-                    Debug.LogFormat("LoadVrmAsync {0:0.0} seconds", delta);
-                    //OnLoaded(go);
-                    */
                 }
+
+                using var loader = new Vrm10Importer(vrm10Data);
+                var thumbnail = await loader.LoadVrmThumbnailAsync(awaitCaller);
+                if (thumbnail != null)
+                {
+                    vrmdata.ThumbnailPNGBytes = EncodeTextureToPNG(thumbnail);
+                }
+            }
+            finally
+            {
+                migratedData?.Dispose();
             }
 
             return vrmdata;
+        }
+
+        /// <summary>
+        /// テクスチャをPNGバイト列に変換する。
+        /// UniVRM 0.131系のサムネイルはnon-readableで生成されEncodeToPNGが失敗するため、
+        /// 一度RenderTexture経由で読み取り可能なコピーを作ってからエンコードする。
+        /// </summary>
+        private static byte[] EncodeTextureToPNG(Texture2D source)
+        {
+            if (source == null) return null;
+            if (source.isReadable)
+            {
+                return source.EncodeToPNG();
+            }
+
+            var previousActive = RenderTexture.active;
+            var rt = RenderTexture.GetTemporary(source.width, source.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+            Texture2D readable = null;
+            try
+            {
+                Graphics.Blit(source, rt);
+                RenderTexture.active = rt;
+                readable = new Texture2D(source.width, source.height, TextureFormat.RGBA32, false);
+                readable.ReadPixels(new Rect(0, 0, source.width, source.height), 0, 0);
+                readable.Apply();
+                return readable.EncodeToPNG();
+            }
+            finally
+            {
+                RenderTexture.active = previousActive;
+                RenderTexture.ReleaseTemporary(rt);
+                if (readable != null) Destroy(readable);
+            }
+        }
+
+        /// <summary>
+        /// 現在のモデルのオリジナル(非正規化)ボーンと正規化ボーンの変換器。
+        /// VMCProtocolの送受信でのみ使用する(内部処理は正規化ボーンで統一)。
+        /// </summary>
+        public BonePostureConverter BonePostureConverter { get; private set; }
+
+        /// <summary>読み込み中のVRMファイルのハッシュ(/VMC/Ext/VRM の第3引数)</summary>
+        public string CurrentVRMHash { get; private set; }
+
+        /// <summary>VRMファイル内容のSHA-256(16進小文字)</summary>
+        private static string ComputeHash(byte[] bytes)
+        {
+            try
+            {
+                using (var sha = System.Security.Cryptography.SHA256.Create())
+                {
+                    var hash = sha.ComputeHash(bytes);
+                    var builder = new System.Text.StringBuilder(hash.Length * 2);
+                    foreach (var b in hash) builder.Append(b.ToString("x2"));
+                    return builder.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"Failed to compute VRM hash: {ex.Message}");
+                return "";
+            }
         }
 
         public async Task ImportVRM(string path)
@@ -1105,30 +1237,50 @@ namespace VMC
 
             Settings.Current.VRMPath = path;
 
-            using (GltfData data = new AutoGltfFileParser(path).Parse())
+            Vrm10Instance vrm10Instance = null;
+            try
             {
-                VRM.VRMData vrmData = new VRM.VRMData(data);
-                using (var context = new VRMImporterContext(vrmData))
-                {
-                    // ParseしたJSONをシーンオブジェクトに変換していく
-                    var runtimeGltfInstance = await context.LoadAsync(new RuntimeOnlyAwaitCaller());
-                    runtimeGltfInstance.ShowMeshes();
+                IAwaitCaller awaitCaller = Application.isPlaying ? new RuntimeOnlyAwaitCaller() : new ImmediateCaller();
 
-                    // BlendShape目線制御時の表情とのぶつかりを防ぐ
-                    if (context.VRM.firstPerson.lookAtType == LookAtType.BlendShape)
-                    {
-                        var applyer = runtimeGltfInstance.Root.GetComponent<VRMLookAtBlendShapeApplyer>();
-                        applyer.enabled = false;
+                //ファイルの読み込みは1回だけにして、ハッシュ計算とパースの両方に使い回す。
+                //(Vrm10.LoadPathAsync は内部で File.ReadAllBytes するので、
+                // ハッシュのために別途読むと同じファイルを2回読むことになる)
+                var bytes = await awaitCaller.Run(() => File.ReadAllBytes(path));
 
-                        var vmcapplyer = runtimeGltfInstance.Root.AddComponent<VMC_VRMLookAtBlendShapeApplyer>();
-                        vmcapplyer.OnImported(context);
-                        vmcapplyer.faceController = faceController;
-                    }
+                //モデルの同一性判定用ハッシュ(/VMC/Ext/VRM の第3引数)
+                CurrentVRMHash = await awaitCaller.Run(() => ComputeHash(bytes));
 
-                    LoadNewModel(runtimeGltfInstance.Root);
-                    await server.SendCommandAsync(new PipeCommands.VRMLoadStatus { Valid = true });
-                }
+                // ControlRigGenerationOption.Generate: AnimatorはVRM0.x互換の正規化ボーン(Control Rig)にマップされるため、
+                // FinalIKやVMCProtocolのボーン送信は非正規化のVRM1.0モデルでも従来通り動作する
+                vrm10Instance = await Vrm10.LoadBytesAsync(bytes,
+                    canLoadVrm0X: true,
+                    controlRigGenerationOption: ControlRigGenerationOption.Generate,
+                    showMeshes: false,
+                    awaitCaller: awaitCaller);
             }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to load VRM: {path}\n{ex}");
+            }
+
+            if (vrm10Instance == null)
+            {
+                return;
+            }
+
+            // BlendShape(Expression)目線制御時の表情とのぶつかり防止は、UniVRM10のRuntimeが
+            // Expressionの適用と目線(LookAt)の合成・Override設定を一括処理するため追加対応不要
+
+            //VMCProtocolはオリジナル(非正規化)ボーン姿勢での送受信が推奨されているため、
+            //正規化(ControlRig)との変換に必要なレスト回転をここで記録する。
+            //VRIK等がボーンを動かす前(=Tポーズ)でなければ正しい値が取れないので、LoadNewModelより先に行う。
+            BonePostureConverter = BonePostureConverter.Capture(vrm10Instance);
+
+            var runtimeGltfInstance = vrm10Instance.GetComponent<RuntimeGltfInstance>();
+            runtimeGltfInstance.ShowMeshes();
+
+            LoadNewModel(runtimeGltfInstance.Root);
+            await server.SendCommandAsync(new PipeCommands.VRMLoadStatus { Valid = true });
         }
 
         public void LoadNewModel(GameObject model)
@@ -1356,17 +1508,17 @@ namespace VMC
             Settings.Current.ClosingTime = time;
         }
 
-        private Dictionary<string, BlendShapePreset> BlendShapeNameDictionary = new Dictionary<string, BlendShapePreset>
+        private Dictionary<string, ExpressionPreset> BlendShapeNameDictionary = new Dictionary<string, ExpressionPreset>
     {
-        { "通常(NEUTRAL)", BlendShapePreset.Neutral },
-        { "喜(JOY)", BlendShapePreset.Joy },
-        { "怒(ANGRY)", BlendShapePreset.Angry },
-        { "哀(SORROW)", BlendShapePreset.Sorrow },
-        { "楽(FUN)", BlendShapePreset.Fun },
-        { "上見(LOOKUP)", BlendShapePreset.LookUp },
-        { "下見(LOOKDOWN)", BlendShapePreset.LookDown },
-        { "左見(LOOKLEFT)", BlendShapePreset.LookLeft },
-        { "右見(LOOKRIGHT)", BlendShapePreset.LookRight },
+        { "通常(NEUTRAL)", ExpressionPreset.neutral },
+        { "喜(JOY)", ExpressionPreset.happy },   // joy -> happy
+        { "怒(ANGRY)", ExpressionPreset.angry },
+        { "哀(SORROW)", ExpressionPreset.sad },  // sorrow -> sad
+        { "楽(FUN)", ExpressionPreset.relaxed }, // fun -> relaxed
+        { "上見(LOOKUP)", ExpressionPreset.lookUp },
+        { "下見(LOOKDOWN)", ExpressionPreset.lookDown },
+        { "左見(LOOKLEFT)", ExpressionPreset.lookLeft },
+        { "右見(LOOKRIGHT)", ExpressionPreset.lookRight },
     };
 
         void SetDefaultFace(string face)
@@ -1382,7 +1534,7 @@ namespace VMC
             }
             else
             {
-                faceController.DefaultFace = BlendShapePreset.Unknown;
+                faceController.DefaultFace = ExpressionPreset.custom;
                 faceController.FacePresetName = face;
             }
         }
@@ -1391,6 +1543,24 @@ namespace VMC
         #region HandFaceControll
 
 
+
+        /// <summary>
+        /// 名前でショートカット(キーアクション)を呼び出す。
+        /// VMCProtocol V3.1 の /VMC/Ext/Set/Shortcut から使う。
+        /// </summary>
+        public void DoShortcutByName(string shortcutName)
+        {
+            if (string.IsNullOrEmpty(shortcutName)) return;
+            if (Settings.Current.KeyActions == null) return;
+
+            var action = Settings.Current.KeyActions.FirstOrDefault(d => d.Name == shortcutName);
+            if (action == null)
+            {
+                Debug.LogWarning($"Shortcut not found: {shortcutName}");
+                return;
+            }
+            DoKeyAction(action);
+        }
 
         public void DoKeyAction(KeyAction action)
         {
@@ -1450,6 +1620,27 @@ namespace VMC
                     case Functions.ShowPhotoWindow:
                         server?.SendCommandAsync(new PipeCommands.ShowPhotoWindow { });
                         break;
+                    case Functions.StartMotionRecording:
+                        motionRecorder?.StartRecording();
+                        break;
+                    case Functions.StopMotionRecording:
+                        motionRecorder?.StopRecording();
+                        break;
+                }
+            }
+            else if (action.MotionAction)
+            {
+                if (action.MotionPlayType == 0) //モーション再生
+                {
+                    motionPlayer?.PlayByPath(action.MotionFilePath);
+                }
+                else if (action.MotionPlayType == 1) //ポーズ適用
+                {
+                    motionPlayer?.ApplyPoseByPath(action.MotionFilePath, action.MotionFrame);
+                }
+                else //解除(停止)
+                {
+                    motionPlayer?.Stop();
                 }
             }
         }
@@ -1457,46 +1648,6 @@ namespace VMC
 
         #endregion
 
-        #region EyeTracking
-
-
-        private void SetEyeTracking_TobiiOffsets(PipeCommands.SetEyeTracking_TobiiOffsets offsets)
-        {
-            Settings.Current.EyeTracking_TobiiOffsetHorizontal = offsets.OffsetHorizontal;
-            Settings.Current.EyeTracking_TobiiOffsetVertical = offsets.OffsetVertical;
-            Settings.Current.EyeTracking_TobiiScaleHorizontal = offsets.ScaleHorizontal;
-            Settings.Current.EyeTracking_TobiiScaleVertical = offsets.ScaleVertical;
-            SetEyeTracking_TobiiOffsetsAction?.Invoke(offsets);
-        }
-
-        public void SetEyeTracking_TobiiPosition(Transform position, float centerX, float centerY)
-        {
-            Settings.Current.EyeTracking_TobiiPosition = StoreTransform.Create(position);
-            Settings.Current.EyeTracking_TobiiCenterX = centerX;
-            Settings.Current.EyeTracking_TobiiCenterY = centerY;
-        }
-
-        public Vector2 GetEyeTracking_TobiiLocalPosition(Transform saveto)
-        {
-            if (Settings.Current.EyeTracking_TobiiPosition != null) Settings.Current.EyeTracking_TobiiPosition.ToLocalTransform(saveto);
-            return new Vector2(Settings.Current.EyeTracking_TobiiCenterX, Settings.Current.EyeTracking_TobiiCenterY);
-        }
-        private void SetEyeTracking_ViveProEyeOffsets(PipeCommands.SetEyeTracking_ViveProEyeOffsets offsets)
-        {
-            Settings.Current.EyeTracking_ViveProEyeOffsetHorizontal = offsets.OffsetHorizontal;
-            Settings.Current.EyeTracking_ViveProEyeOffsetVertical = offsets.OffsetVertical;
-            Settings.Current.EyeTracking_ViveProEyeScaleHorizontal = offsets.ScaleHorizontal;
-            Settings.Current.EyeTracking_ViveProEyeScaleVertical = offsets.ScaleVertical;
-            SetEyeTracking_ViveProEyeOffsetsAction?.Invoke(offsets);
-        }
-        private void SetEyeTracking_ViveProEyeUseEyelidMovements(PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements useEyelidMovements)
-        {
-            Settings.Current.EyeTracking_ViveProEyeUseEyelidMovements = useEyelidMovements.Use;
-            SetEyeTracking_ViveProEyeUseEyelidMovementsAction?.Invoke(useEyelidMovements);
-        }
-
-
-        #endregion
 
         #region ExternalMotionSender
 
@@ -1507,8 +1658,12 @@ namespace VMC
             ExternalMotionSenderObject.SetActive(enable);
         }
 
-        private void ChangeExternalMotionSenderAddress(string address, int port, int pstatus, int proot, int pbone, int pblendshape, int pcamera, int pdevices, string optionstring, bool responderEnable)
+        private void ChangeExternalMotionSenderAddress(string address, int port, int pstatus, int proot, int pbone, int pblendshape, int pcamera, int pdevices, string optionstring, bool responderEnable, bool useNormalizedBone, bool sendVRM1Expression)
         {
+            //VMCProtocolの仕様準拠オプション
+            Settings.Current.ExternalMotionSenderUseNormalizedBone = useNormalizedBone;
+            Settings.Current.ExternalMotionSenderSendVRM1Expression = sendVRM1Expression;
+
             Settings.Current.ExternalMotionSenderAddress = address;
             Settings.Current.ExternalMotionSenderPort = port;
             Settings.Current.ExternalMotionSenderPeriodStatus = pstatus;
@@ -1767,6 +1922,8 @@ namespace VMC
             {
                 path = Path.GetFullPath(path); //フルパスに変換
                 Settings.Current = Json.Serializer.Deserialize<Settings>(File.ReadAllText(path)); //設定を読み込み
+                //mocopi/VIVE/Tobiiが本体機能だった頃の設定をプラグインの設定領域へ移す
+                PluginSettingsMigration.Migrate(Settings.Current);
                 float divide = 0;
                 //腰情報を読み込む
                 if (float.TryParse(File.ReadAllText(Application.dataPath + "/../PelvisTrackerOffsetDivide.txt"), out divide))
@@ -1817,7 +1974,7 @@ namespace VMC
                 await ImportVRM(Settings.Current.VRMPath);
 
                 //メタ情報をOSC送信する
-                VRMmetaLodedAction?.Invoke(LoadVRM(Settings.Current.VRMPath));
+                VRMmetaLoadedAction?.Invoke(await LoadVRMMetaAsync(Settings.Current.VRMPath));
             }
 
             //SetResolutionは強制的にウインドウ枠を復活させるのでBorder設定の前にやっておく必要がある
@@ -1977,7 +2134,7 @@ namespace VMC
             ChangeLightColor(Settings.Current.LightColor.a, Settings.Current.LightColor.r, Settings.Current.LightColor.g, Settings.Current.LightColor.b);
 
             SetExternalMotionSenderEnable(Settings.Current.ExternalMotionSenderEnable);
-            ChangeExternalMotionSenderAddress(Settings.Current.ExternalMotionSenderAddress, Settings.Current.ExternalMotionSenderPort, Settings.Current.ExternalMotionSenderPeriodStatus, Settings.Current.ExternalMotionSenderPeriodRoot, Settings.Current.ExternalMotionSenderPeriodBone, Settings.Current.ExternalMotionSenderPeriodBlendShape, Settings.Current.ExternalMotionSenderPeriodCamera, Settings.Current.ExternalMotionSenderPeriodDevices, Settings.Current.ExternalMotionSenderOptionString, Settings.Current.ExternalMotionSenderResponderEnable);
+            ChangeExternalMotionSenderAddress(Settings.Current.ExternalMotionSenderAddress, Settings.Current.ExternalMotionSenderPort, Settings.Current.ExternalMotionSenderPeriodStatus, Settings.Current.ExternalMotionSenderPeriodRoot, Settings.Current.ExternalMotionSenderPeriodBone, Settings.Current.ExternalMotionSenderPeriodBlendShape, Settings.Current.ExternalMotionSenderPeriodCamera, Settings.Current.ExternalMotionSenderPeriodDevices, Settings.Current.ExternalMotionSenderOptionString, Settings.Current.ExternalMotionSenderResponderEnable, Settings.Current.ExternalMotionSenderUseNormalizedBone, Settings.Current.ExternalMotionSenderSendVRM1Expression);
 
             foreach(var receiver in externalMotionReceivers)
             {
@@ -1993,28 +2150,6 @@ namespace VMC
             SetMidiCCBlendShape(Settings.Current.MidiCCBlendShape);
             SetMidiEnable(Settings.Current.MidiEnable);
 
-            SetEyeTracking_TobiiOffsetsAction?.Invoke(new PipeCommands.SetEyeTracking_TobiiOffsets
-            {
-                OffsetHorizontal = Settings.Current.EyeTracking_TobiiOffsetHorizontal,
-                OffsetVertical = Settings.Current.EyeTracking_TobiiOffsetVertical,
-                ScaleHorizontal = Settings.Current.EyeTracking_TobiiScaleHorizontal,
-                ScaleVertical = Settings.Current.EyeTracking_TobiiScaleVertical
-            });
-
-            SetEyeTracking_ViveProEyeOffsetsAction?.Invoke(new PipeCommands.SetEyeTracking_ViveProEyeOffsets
-            {
-                OffsetHorizontal = Settings.Current.EyeTracking_ViveProEyeOffsetHorizontal,
-                OffsetVertical = Settings.Current.EyeTracking_ViveProEyeOffsetVertical,
-                ScaleHorizontal = Settings.Current.EyeTracking_ViveProEyeScaleHorizontal,
-                ScaleVertical = Settings.Current.EyeTracking_ViveProEyeScaleVertical
-            });
-
-            SetEyeTracking_ViveProEyeUseEyelidMovementsAction?.Invoke(new PipeCommands.SetEyeTracking_ViveProEyeUseEyelidMovements
-            {
-                Use = Settings.Current.EyeTracking_ViveProEyeUseEyelidMovements
-            });
-            SetEyeTracking_ViveProEyeEnable(Settings.Current.EyeTracking_ViveProEyeEnable);
-
             SetTrackingFilterEnable(Settings.Current.TrackingFilterEnable, Settings.Current.TrackingFilterHmdEnable, Settings.Current.TrackingFilterControllerEnable, Settings.Current.TrackingFilterTrackerEnable);
 
             SetModelModifierEnable(Settings.Current.FixKneeRotation, Settings.Current.FixElbowRotation);
@@ -2025,27 +2160,17 @@ namespace VMC
             });
             SetVMT(Settings.Current.VirtualMotionTrackerEnable, Settings.Current.VirtualMotionTrackerNo);
 
-            SetLipShapeToBlendShapeStringMapAction?.Invoke(Settings.Current.LipShapesToBlendShapeMap);
-            SetLipTracking_ViveEnable(Settings.Current.LipTracking_ViveEnable);
 
             LoadAdvancedGraphicsOption();
 
             AdditionalSettingAction?.Invoke(null);
 
+            //プラグインへ設定の適用を通知する
+            pluginHost?.RaiseSettingsApplied();
+
             await server.SendCommandAsync(new PipeCommands.SetWindowNum { Num = CurrentWindowNum });
         }
 
-        private void SetEyeTracking_ViveProEyeEnable(bool enable)
-        {
-            if (EyeTracking_ViveProEyeComponent != null) EyeTracking_ViveProEyeComponent.enabled = enable;
-            if (SRanipal_Eye_FrameworkComponent != null) SRanipal_Eye_FrameworkComponent.enabled = enable;
-        }
-
-        private void SetLipTracking_ViveEnable(bool enable)
-        {
-            if (LipTracking_ViveComponent != null) LipTracking_ViveComponent.enabled = enable;
-            if (SRanipal_Lip_FrameworkComponent != null) SRanipal_Lip_FrameworkComponent.enabled = enable;
-        }
 
         #endregion
 
@@ -2076,6 +2201,15 @@ namespace VMC
 
             Action action;
             if (UpdateActionQueue.TryDequeue(out action)) action();
+
+            // コントロールパネル起動監視
+            if (!showControlPanelMessage && controlPanelStartTime >= 0 && 
+                Time.time - controlPanelStartTime > CONTROL_PANEL_TIMEOUT && 
+                isFirstTimeExecute) // まだLoadCurrentSettingsが来ていない
+            {
+                showControlPanelMessage = true;
+                controlPanelStartTime = -1f; // 一度だけ表示（監視停止）
+            }
         }
 
         private int WindowX;
@@ -2147,5 +2281,47 @@ namespace VMC
                 });
             }, null);
         }
+
+        void OnGUI()
+        {
+            // コントロールパネル起動監視メッセージ表示（左上に4言語）
+            if (showControlPanelMessage)
+            {
+                var textStyle = new GUIStyle(GUI.skin.label)
+                {
+                    fontSize = 24,
+                    normal = { textColor = Color.yellow }
+                };
+
+                // 4言語のメッセージ
+                string message = "コントロールパネルの起動を待機しています。コントロールパネルが起動しない場合は、\n" +
+                                "同じフォルダの「起動しない時は(If VMC does not start).txt」を確認してください。\n\n" +
+                                "Waiting for control panel to start. If the control panel does not start,\n" +
+                                "Please check \"起動しない時は(If VMC does not start).txt\" file in the same folder.\n\n" +
+                                "컨트롤 패널의 시작을 기다리고 있습니다. 컨트롤 패널이 시작되지 않는 경우,\n" +
+                                "같은 폴더의 \"起動しない時は(If VMC does not start).txt\" 파일을 확인해주세요.\n\n" +
+                                "正在等待控制面板启动。如果控制面板未启动，\n" +
+                                "请检查同一文件夹中的\"起動しない時は(If VMC does not start).txt\"文件。";
+
+                GUI.Label(new Rect(10, 10, Screen.width - 20, Screen.height - 20), message, textStyle);
+            }
+        }
+
+        #region 自動テスト用フック
+
+        //自動テストハーネス(Assets/Tests)からのみ使用する。
+        //コントロールパネル(WPF)からのコマンド経由でしか呼べない処理を、テストから直接呼べるようにするためのもの。
+
+        internal GameObject Test_CurrentModel => CurrentModel;
+
+        internal void Test_AddVMCProtocolReceiver(VMCProtocolReceiverSettings setting) => AddVMCProtocolReceiver(setting);
+
+        internal void Test_SaveSettings(string path) => SaveSettings(path);
+
+        internal MotionPlayer Test_MotionPlayer => motionPlayer;
+
+        internal MotionRecorder Test_MotionRecorder => motionRecorder;
+
+        #endregion
     }
 }

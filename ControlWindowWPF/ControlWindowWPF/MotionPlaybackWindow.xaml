@@ -1,0 +1,123 @@
+﻿<Window x:Class="VirtualMotionCaptureControlPanel.MotionPlaybackWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VirtualMotionCaptureControlPanel"
+        mc:Ignorable="d"
+        Title="{DynamicResource MotionPlaybackWindow_Title}" Width="580" SizeToContent="Height" Loaded="Window_Loaded" Closing="Window_Closing">
+    <DockPanel>
+        <GroupBox Header="{DynamicResource MotionPlaybackWindow_MotionFiles}" DockPanel.Dock="Top">
+            <DockPanel>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="0,5,0,0">
+                    <Button Content="{DynamicResource MotionPlaybackWindow_AddFile}" Width="100" Name="AddFileButton" Click="AddFileButton_Click"/>
+                    <Button Content="{DynamicResource MotionPlaybackWindow_RemoveFile}" Width="100" Margin="5,0,0,0" Name="RemoveFileButton" Click="RemoveFileButton_Click"/>
+                    <Button Content="{DynamicResource MotionPlaybackWindow_ShortcutButton}" Width="140" Margin="5,0,0,0" Name="ShortcutButton" Click="ShortcutButton_Click" ToolTip="{DynamicResource MotionPlaybackWindow_ShortcutButton_ToolTip}"/>
+                </StackPanel>
+                <DataGrid CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" SelectionMode="Single" IsReadOnly="True"
+                          Name="MotionsDataGrid" AutoGenerateColumns="False" Height="140" MouseDoubleClick="MotionsDataGrid_MouseDoubleClick">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="{DynamicResource MotionPlaybackWindow_ColumnName}" Binding="{Binding Name}" Width="*"/>
+                        <DataGridTextColumn Header="{DynamicResource MotionPlaybackWindow_ColumnLength}" Binding="{Binding LengthStr}" MinWidth="60"/>
+                        <DataGridTextColumn Header="FPS" Binding="{Binding FpsStr}" MinWidth="50"/>
+                        <DataGridTextColumn Header="{DynamicResource MotionPlaybackWindow_ColumnFormat}" Binding="{Binding FormatStr}" MinWidth="50"/>
+                        <DataGridTextColumn Header="{DynamicResource MotionPlaybackWindow_ColumnShortcut}" Binding="{Binding ShortcutStr}" MinWidth="120"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </GroupBox>
+        <GroupBox Header="{DynamicResource MotionPlaybackWindow_Playback}" DockPanel.Dock="Top">
+            <StackPanel Orientation="Vertical">
+                <DockPanel Margin="0,5,0,0">
+                    <TextBlock Name="TimeTextBlock" DockPanel.Dock="Right" Text="0.00 / 0.00" MinWidth="90" TextAlignment="Right" VerticalAlignment="Center"/>
+                    <Slider Name="SeekSlider" Minimum="0" Maximum="1" SmallChange="0.01" VerticalAlignment="Center" ValueChanged="SeekSlider_ValueChanged"/>
+                </DockPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
+                    <Button Content="|◀" Width="40" Name="PrevFrameButton" Click="PrevFrameButton_Click" ToolTip="{DynamicResource MotionPlaybackWindow_PrevFrame_ToolTip}"/>
+                    <Button Content="{DynamicResource MotionPlaybackWindow_PlayButton}" Width="80" Margin="5,0,0,0" Name="PlayButton" Click="PlayButton_Click"/>
+                    <Button Content="{DynamicResource MotionPlaybackWindow_PauseButton}" Width="80" Margin="5,0,0,0" Name="PauseButton" Click="PauseButton_Click"/>
+                    <Button Content="{DynamicResource MotionPlaybackWindow_StopButton}" Width="80" Margin="5,0,0,0" Name="StopButton" Click="StopButton_Click"/>
+                    <Button Content="▶|" Width="40" Margin="5,0,0,0" Name="NextFrameButton" Click="NextFrameButton_Click" ToolTip="{DynamicResource MotionPlaybackWindow_NextFrame_ToolTip}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,5">
+                    <RadioButton Content="{DynamicResource MotionPlaybackWindow_RepeatOneShot}" GroupName="Repeat" Name="RepeatOneShotRadioButton" Checked="OnRepeatChanged"/>
+                    <RadioButton Content="{DynamicResource MotionPlaybackWindow_RepeatOneFile}" GroupName="Repeat" Margin="15,0,0,0" Name="RepeatOneFileRadioButton" Checked="OnRepeatChanged"/>
+                    <RadioButton Content="{DynamicResource MotionPlaybackWindow_RepeatList}" GroupName="Repeat" Margin="15,0,0,0" Name="RepeatListRadioButton" Checked="OnRepeatChanged"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="{DynamicResource ApplyTarget_Header}" DockPanel.Dock="Top">
+            <Grid Margin="5">
+                <StackPanel Orientation="Vertical">
+                    <Grid>
+                        <Grid HorizontalAlignment="Center">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="90"/>
+                                <RowDefinition Height="100"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="25"/>
+                                <ColumnDefinition Width="25"/>
+                                <ColumnDefinition Width="25"/>
+                                <ColumnDefinition Width="25"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Ellipse Fill="#AED4FF" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Width="40" Height="40"/>
+
+                            <Border Background="#AED4FF" CornerRadius="8,0,8,8" Grid.Row="1" Grid.Column="0" Margin="10,5,0,5"/>
+                            <Border Background="#AED4FF" CornerRadius="0,0,0,0" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="5,5,5,0"/>
+                            <Border Background="#AED4FF" CornerRadius="0,8,8,8" Grid.Row="1" Grid.Column="3" Margin="0,5,10,5"/>
+
+                            <Border Background="#AED4FF" CornerRadius="0,0,8,8" Grid.Row="2" Grid.Column="1" Margin="5,0,5,0"/>
+                            <Border Background="#AED4FF" CornerRadius="0,0,8,8" Grid.Row="2" Grid.Column="2" Margin="5,0,5,0"/>
+                        </Grid>
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="60"/>
+                                <RowDefinition Height="20"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="25"/>
+                                <ColumnDefinition Width="25"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Content="{DynamicResource ApplyTarget_Head}" Name="HeadCheckBox" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource ApplyTarget_Chest}" Name="ChestCheckBox" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource ApplyTarget_RightArm}" Name="RightArmCheckBox" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource ApplyTarget_LeftArm}" Name="LeftArmCheckBox" Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource ApplyTarget_Spine}" Name="SpineCheckBox" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource ApplyTarget_RightHand}" Name="RightHandCheckBox" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource ApplyTarget_LeftHand}" Name="LeftHandCheckBox" Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource MotionPlaybackWindow_RightFinger}" Name="RightFingerCheckBox" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource MotionPlaybackWindow_LeftFinger}" Name="LeftFingerCheckBox" Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource ApplyTarget_RightLeg}" Name="RightLegCheckBox" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource ApplyTarget_LeftLeg}" Name="LeftLegCheckBox" Grid.Row="6" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource ApplyTarget_RightFoot}" Name="RightFootCheckBox" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                            <CheckBox Content="{DynamicResource ApplyTarget_LeftFoot}" Name="LeftFootCheckBox" Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                        </Grid>
+                    </Grid>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                        <CheckBox Content="{DynamicResource ApplyTarget_RootPosition}" Name="RootPositionCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                        <CheckBox Content="{DynamicResource ApplyTarget_RootRotation}" Name="RootRotationCheckBox" Margin="15,0,0,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                        <CheckBox Content="{DynamicResource MotionPlaybackWindow_Eye}" Name="EyeCheckBox" Margin="15,0,0,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                    </StackPanel>
+                    <!-- VRMAに含まれる表情・視線の適用(オフにするとモーションのみ再生し、表情等は他の入力に任せられる) -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
+                        <CheckBox Content="{DynamicResource MotionPlaybackWindow_ApplyExpression}" Name="ExpressionCheckBox" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                        <CheckBox Content="{DynamicResource MotionPlaybackWindow_ApplyLookAt}" Name="LookAtCheckBox" Margin="15,0,0,0" VerticalContentAlignment="Center" Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+        <Button DockPanel.Dock="Right" Content="{DynamicResource SettingWindow_Close}" Width="100" Name="CloseButton" Click="CloseButton_Click"/>
+        <Grid/>
+    </DockPanel>
+</Window>

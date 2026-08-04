@@ -1,3 +1,4 @@
+using RootMotion.FinalIK;
 using sh_akira;
 using System;
 using System.Collections;
@@ -7,8 +8,6 @@ using System.Linq;
 using UnityEngine;
 using UnityMemoryMappedFile;
 using Valve.VR;
-using RootMotion.FinalIK;
-using VRM;
 
 namespace VMC
 {
@@ -67,6 +66,7 @@ namespace VMC
             MotionManager.Instance.AddVirtualAvatar(virtualAvatar);
 
             VMCEvents.OnCurrentModelChanged += OnCurrentModelChanged;
+            VMCEvents.OnModelLoaded += OnModelLoaded;
             VMCEvents.OnModelUnloading += OnModelUnloading;
             controlWPFWindow.server.ReceivedEvent += Server_Received;
 
@@ -97,11 +97,198 @@ namespace VMC
                 CalibrationState = CalibrationState.Uncalibrated; //キャリブレーション状態を"未キャリブレーション"に設定
             }
         }
+        private void OnModelLoaded(GameObject model)
+        {
+            if (model == null) return;
+            if (Settings.Current.EnableAutoCalibrationOnModelLoad == false) return;
+
+            var snapshot = Settings.Current.LastCalibrationSnapshot;
+            if (snapshot == null || snapshot.Poses == null || snapshot.Poses.Count == 0) return;
+
+            if (autoCalibrateCoroutine != null) StopCoroutine(autoCalibrateCoroutine);
+            autoCalibrateCoroutine = StartCoroutine(WaitAndAutoCalibrate());
+        }
+
         private void OnModelUnloading(GameObject model)
         {
             FinalIKCalibrator.ClearGeneratedGameObjects();
             RemoveComponents();
         }
+
+        #region 自動再キャリブレーション
+
+        //自動再キャリブレーション実行中フラグ(この間はスナップショットを記録し直さない)
+        private bool isAutoCalibrating = false;
+        private Coroutine autoCalibrateCoroutine = null;
+
+        /// <summary>
+        /// トラッキング機器が認識されるのを待ってから自動再キャリブレーションを実行する。
+        /// (アプリ起動直後のモデル読み込みでは、まだトラッカーが認識されていないことがあるため)
+        /// </summary>
+        private IEnumerator WaitAndAutoCalibrate()
+        {
+            const float TimeoutSeconds = 30f;
+            var startTime = Time.realtimeSinceStartup;
+
+            while (CanAutoCalibrate() == false)
+            {
+                //ユーザーが手動でキャリブレーションを開始した場合は自動実行しない
+                if (CalibrationState != CalibrationState.Uncalibrated) yield break;
+                if (Time.realtimeSinceStartup - startTime > TimeoutSeconds)
+                {
+                    Debug.Log("[AutoCalib] Timed out waiting for trackers. Skip auto calibration.");
+                    yield break;
+                }
+                yield return new WaitForSeconds(0.5f);
+            }
+
+            if (CalibrationState != CalibrationState.Uncalibrated) yield break;
+
+            yield return AutoCalibrateFromSnapshot();
+            autoCalibrateCoroutine = null;
+        }
+
+        /// <summary>
+        /// キャリブレーションに使用したトラッカーの姿勢を記録する。
+        /// 記録するのはトラッキング機器から報告される生のローカル姿勢なので、アバターに依存しない。
+        /// </summary>
+        private void SaveCalibrationSnapshot(PipeCommands.CalibrateType calibrateType, params TrackingPoint[] trackingPoints)
+        {
+            var snapshot = new CalibrationSnapshot
+            {
+                CalibrateType = (int)calibrateType,
+                Poses = new List<CalibrationTrackerPose>(),
+            };
+
+            foreach (var trackingPoint in trackingPoints)
+            {
+                if (trackingPoint == null || string.IsNullOrEmpty(trackingPoint.Name)) continue;
+                if (snapshot.Poses.Any(d => d.Name == trackingPoint.Name)) continue; //同じデバイスを複数部位に割り当てている場合
+                snapshot.Poses.Add(new CalibrationTrackerPose
+                {
+                    Name = trackingPoint.Name,
+                    Position = trackingPoint.LastLocalPosition,
+                    Rotation = trackingPoint.LastLocalRotation,
+                });
+            }
+
+            Settings.Current.LastCalibrationSnapshot = snapshot.Poses.Count > 0 ? snapshot : null;
+        }
+
+        /// <summary>
+        /// 記録済みのキャリブレーション姿勢を再現できるか(必要なトラッカーが全て接続されているか)
+        /// </summary>
+        private bool CanAutoCalibrate()
+        {
+            var snapshot = Settings.Current.LastCalibrationSnapshot;
+            if (snapshot == null || snapshot.Poses == null || snapshot.Poses.Count == 0) return false;
+            if ((PipeCommands.CalibrateType)snapshot.CalibrateType == PipeCommands.CalibrateType.Invalid) return false;
+            if (TrackingPointManager.Instance == null) return false;
+
+            //記録時のトラッカーが1つでも見つからない場合は再現できない(接続待ち、または構成変更)
+            foreach (var pose in snapshot.Poses)
+            {
+                if (TrackingPointManager.Instance.TryGetTrackingPoint(pose.Name, out _) == false)
+                {
+                    return false;
+                }
+            }
+
+            //現在割り当てられているトラッカーが記録に含まれていない場合(記録後にトラッカーを追加した等)は、
+            //一部だけ実機の姿勢が混ざった状態でキャリブレーションされてしまうため自動実行しない
+            return AreAssignedTrackersCoveredBy(snapshot);
+        }
+
+        /// <summary>
+        /// 現在の設定で使用されるトラッカーが全て記録済みスナップショットに含まれているか
+        /// </summary>
+        private bool AreAssignedTrackersCoveredBy(CalibrationSnapshot snapshot)
+        {
+            var headTracker = GetTrackerTransformBySerialNumber(Settings.Current.Head, TargetType.Head);
+            if (headTracker == null) return false;
+            var headTransform = headTracker.TargetTransform;
+
+            var assigned = new[]
+            {
+                headTracker,
+                GetTrackerTransformBySerialNumber(Settings.Current.LeftHand, TargetType.LeftArm, headTransform),
+                GetTrackerTransformBySerialNumber(Settings.Current.RightHand, TargetType.RightArm, headTransform),
+                GetTrackerTransformBySerialNumber(Settings.Current.Pelvis, TargetType.Pelvis, headTransform),
+                GetTrackerTransformBySerialNumber(Settings.Current.LeftFoot, TargetType.LeftLeg, headTransform),
+                GetTrackerTransformBySerialNumber(Settings.Current.RightFoot, TargetType.RightLeg, headTransform),
+                GetTrackerTransformBySerialNumber(Settings.Current.LeftElbow, TargetType.LeftElbow, headTransform),
+                GetTrackerTransformBySerialNumber(Settings.Current.RightElbow, TargetType.RightElbow, headTransform),
+                GetTrackerTransformBySerialNumber(Settings.Current.LeftKnee, TargetType.LeftKnee, headTransform),
+                GetTrackerTransformBySerialNumber(Settings.Current.RightKnee, TargetType.RightKnee, headTransform),
+                GetTrackerTransformBySerialNumber(Settings.Current.Chest, TargetType.Chest, headTransform),
+            };
+
+            foreach (var trackingPoint in assigned)
+            {
+                if (trackingPoint == null) continue;
+                if (snapshot.Poses.Any(d => d.Name == trackingPoint.Name) == false) return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 記録済みのトラッカー姿勢を再現してキャリブレーションを自動実行する。
+        /// これにより別のアバターを読み込んだ時やアプリ再起動後もTポーズを取り直す必要がなくなる。
+        /// </summary>
+        public IEnumerator AutoCalibrateFromSnapshot()
+        {
+            if (isAutoCalibrating) yield break;
+            if (CanAutoCalibrate() == false) yield break;
+
+            var snapshot = Settings.Current.LastCalibrationSnapshot;
+            var calibrateType = (PipeCommands.CalibrateType)snapshot.CalibrateType;
+            var manager = TrackingPointManager.Instance;
+
+            isAutoCalibrating = true;
+            try
+            {
+                //キャリブレーション中に実機の入力で姿勢が動かないように、記録時の姿勢で固定する
+                var overridePoses = new Dictionary<string, (Vector3 position, Quaternion rotation)>();
+                foreach (var pose in snapshot.Poses)
+                {
+                    overridePoses[pose.Name] = (pose.Position, pose.Rotation);
+                }
+                manager.SetPoseOverride(overridePoses);
+
+                currentSelectCalibrateType = calibrateType;
+                ModelCalibrationInitialize(silent: true); //自動実行なのでキャリブレーション用カメラ等は表示しない
+
+                //トラッキングの更新(ApplyPoint)を通して固定姿勢が反映されるのを待つ。
+                //トラッキング入力が無い環境でも再現できるように、直接も適用しておく。
+                foreach (var pose in snapshot.Poses)
+                {
+                    if (manager.TryGetTrackingPoint(pose.Name, out var trackingPoint) && trackingPoint.TargetTransform != null)
+                    {
+                        trackingPoint.TargetTransform.localPosition = pose.Position;
+                        trackingPoint.TargetTransform.localRotation = pose.Rotation;
+                    }
+                }
+                //VRIKの再生成やトラッキング更新が落ち着くまで数フレーム待つ
+                for (int i = 0; i < 3; i++)
+                {
+                    yield return null;
+                }
+                yield return new WaitForEndOfFrame();
+
+                yield return Calibrate(calibrateType);
+
+                EndCalibrate();
+
+                Debug.Log($"[AutoCalib] Auto calibration finished. type={calibrateType}");
+            }
+            finally
+            {
+                manager.ClearPoseOverride();
+                isAutoCalibrating = false;
+            }
+        }
+
+        #endregion
 
         private void Server_Received(object sender, DataReceivedEventArgs e)
         {
@@ -216,7 +403,13 @@ namespace VMC
             }
         }
 
-        public void ModelCalibrationInitialize()
+        public void ModelCalibrationInitialize() => ModelCalibrationInitialize(false);
+
+        /// <summary>
+        /// キャリブレーションの準備を行う
+        /// </summary>
+        /// <param name="silent">trueの場合はキャリブレーション用カメラやトラッカー位置の表示を行わない(自動再キャリブレーション用)</param>
+        public void ModelCalibrationInitialize(bool silent)
         {
             CalibrationState = CalibrationState.WaitingForCalibrating; //キャリブレーション状態を"キャリブレーション待機中"に設定
 
@@ -243,13 +436,16 @@ namespace VMC
                 PelvisTrackerRoot.localPosition = Vector3.zero;
                 PelvisTrackerRoot.localScale = Vector3.one;
 
-                //トラッカー位置の表示
-                TrackingPointManager.Instance.SetTrackingPointPositionVisible(true);
-
-                if (CalibrationCamera != null)
+                if (silent == false)
                 {
-                    CalibrationCamera.Target = animator.GetBoneTransform(HumanBodyBones.Head);
-                    CalibrationCamera.gameObject.SetActive(true);
+                    //トラッカー位置の表示
+                    TrackingPointManager.Instance.SetTrackingPointPositionVisible(true);
+
+                    if (CalibrationCamera != null)
+                    {
+                        CalibrationCamera.Target = animator.GetBoneTransform(HumanBodyBones.Head);
+                        CalibrationCamera.gameObject.SetActive(true);
+                    }
                 }
             }
         }
@@ -796,7 +992,16 @@ namespace VMC
             }
             catch { }
 
-            if (bodyTracker == null && chestTracker != null)
+            //別のアバターを読み込んだ時に同じ姿勢でキャリブレーションをやり直せるように、
+            //このキャリブレーションで使用したトラッカーの姿勢を記録する(自動再キャリブレーション用)。
+            //自動再キャリブレーション自身による実行時は、記録済みの姿勢をそのまま使うため記録し直さない。
+            if (isAutoCalibrating == false)
+            {
+                SaveCalibrationSnapshot(calibrateType, headTracker, leftHandTracker, rightHandTracker, bodyTracker, leftFootTracker, rightFootTracker, leftElbowTracker, rightElbowTracker, leftKneeTracker, rightKneeTracker, chestTracker);
+            }
+
+            // 胸だけでも良い感じに動くことが分かったので、オプション対応に変更
+            if (Settings.Current.TrackerReassignmentWhenChestAvailable && bodyTracker == null && chestTracker != null)
             {
                 Debug.LogWarning("*No waist tracker. Reassign chest tracker to waist.");
                 bodyTracker = chestTracker;

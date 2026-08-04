@@ -103,6 +103,7 @@
                 <Button Content="{DynamicResource ShortcutKeyWindow_AddHandGesture}" Name="HandGestureAddButton" Click="HandGestureAddButton_Click" ToolTip="{DynamicResource ShortcutKeyWindow_AddHandGesture_ToolTip}"/>
                 <Button Content="{DynamicResource ShortcutKeyWindow_AddFacingExpression}" Name="FaceAddButton" Click="FaceAddButton_Click" ToolTip="{DynamicResource ShortcutKeyWindow_AddFacingExpression_ToolTip}"/>
                 <Button Content="{DynamicResource ShortcutKeyWindow_AddFunction}" Name="FunctionAddButton" Click="FunctionAddButton_Click" ToolTip="{DynamicResource ShortcutKeyWindow_AddFunction_ToolTip}"/>
+                <Button Content="{DynamicResource ShortcutKeyWindow_AddMotion}" Name="MotionAddButton" Click="MotionAddButton_Click" ToolTip="{DynamicResource ShortcutKeyWindow_AddMotion_ToolTip}"/>
             </UniformGrid>
             <GroupBox Header="{DynamicResource ShortcutKeyWindow_CustomName}">
                 <DockPanel>

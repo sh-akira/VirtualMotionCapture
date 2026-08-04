@@ -74,6 +74,29 @@ namespace VMC
         }
     }
 
+    /// <summary>
+    /// キャリブレーション実行時の1つのトラッカーの姿勢(トラッキング機器から報告される生のローカル姿勢)
+    /// </summary>
+    [Serializable]
+    public class CalibrationTrackerPose
+    {
+        public string Name;      //シリアル番号等のデバイス名(TrackingPointの識別子)
+        public Vector3 Position;
+        public Quaternion Rotation;
+    }
+
+    /// <summary>
+    /// キャリブレーション実行時のトラッカー姿勢一式。
+    /// 別のアバターを読み込んだ時にこの姿勢を再現してキャリブレーションを再実行することで、
+    /// 再度Tポーズを取らなくても同じ基準でキャリブレーションできる。
+    /// </summary>
+    [Serializable]
+    public class CalibrationSnapshot
+    {
+        public int CalibrateType;  //PipeCommands.CalibrateType (未知の値でも壊れないようint)
+        public List<CalibrationTrackerPose> Poses = new List<CalibrationTrackerPose>();
+    }
+
     [Serializable]
     public class LookTargetSettings
     {
@@ -126,6 +149,13 @@ namespace VMC
 
         public bool FixHandBone = true;
         public bool UseBonePosition = false;
+
+        /// <summary>
+        /// 送信元が正規化(ControlRig)ボーン姿勢を送ってくる場合にtrueにする。
+        /// 仕様の推奨はオリジナル(非正規化)ボーンなので既定はfalse。
+        /// </summary>
+        [OptionalField]
+        public bool UseNormalizedBone = false;
         [OptionalField]
         public bool CorrectHipBone = false;
         [OptionalField]
@@ -170,6 +200,7 @@ namespace VMC
 
             FixHandBone = true;
             IgnoreDefaultBone = true;
+            UseNormalizedBone = false;
 
             ApplyBlendShape = true;
             ApplyLookAt = true;
@@ -224,6 +255,7 @@ namespace VMC
             ApplySetting = setting.ApplySetting;
             ApplyControllerInput = setting.ApplyControllerInput;
             ApplyKeyboardInput = setting.ApplyKeyboardInput;
+            UseNormalizedBone = setting.UseNormalizedBone;
 
             return this;
         }
@@ -273,6 +305,7 @@ namespace VMC
                 ApplySetting = ApplySetting,
                 ApplyControllerInput = ApplyControllerInput,
                 ApplyKeyboardInput = ApplyKeyboardInput,
+                UseNormalizedBone = UseNormalizedBone,
             };
             return setting;
         }
@@ -525,6 +558,21 @@ namespace VMC
         public bool ExternalMotionReceiverRequesterEnable;
         [OptionalField]
         public string ExternalMotionSenderOptionString;
+
+        /// <summary>
+        /// 正規化(ControlRig)ボーン姿勢を送信する。
+        /// VMCProtocolの仕様ではオリジナル(非正規化)ボーンが推奨で、
+        /// 正規化ボーンの送信は「既定で無効のオプション」と定められているため既定はfalse。
+        /// </summary>
+        [OptionalField]
+        public bool ExternalMotionSenderUseNormalizedBone = false;
+
+        /// <summary>
+        /// 表情をVRM1.0形式の名称(happy/aa等)でも送信する。
+        /// 仕様ではVRM0.x形式の送信が必須で、VRM1.0形式はオプション。
+        /// </summary>
+        [OptionalField]
+        public bool ExternalMotionSenderSendVRM1Expression = false;
         [OptionalField]
         public List<string> MidiCCBlendShape;
         [OptionalField]
@@ -560,6 +608,9 @@ namespace VMC
 
         [OptionalField]
         public bool HandleControllerAsTracker;
+
+        [OptionalField]
+        public bool TrackerReassignmentWhenChestAvailable;
 
         [OptionalField]
         public int AntiAliasing;
@@ -611,6 +662,15 @@ namespace VMC
         public float PPS_Vignette_Roundness;
 
         [OptionalField]
+        public bool PPS_AO_Enable;
+        [OptionalField]
+        public bool PPS_AO_IsScalable;
+        [OptionalField]
+        public float PPS_AO_Intensity;
+        [OptionalField]
+        public float PPS_AO_Thickness;
+
+        [OptionalField]
         public bool PPS_CA_Enable;
         [OptionalField]
         public float PPS_CA_Intensity;
@@ -643,6 +703,15 @@ namespace VMC
         public float PPS_Vignette_Color_g;
         [OptionalField]
         public float PPS_Vignette_Color_b;
+
+        [OptionalField]
+        public float PPS_AO_Color_a;
+        [OptionalField]
+        public float PPS_AO_Color_r;
+        [OptionalField]
+        public float PPS_AO_Color_g;
+        [OptionalField]
+        public float PPS_AO_Color_b;
 
         [OptionalField]
         public bool TurnOffAmbientLight;
@@ -680,6 +749,71 @@ namespace VMC
         [OptionalField]
         public bool mocopi_CorrectHipBone;
 
+        /// <summary>
+        /// プラグイン(Plugins/配下)の設定。"プラグインID/キー" → JSON文字列。
+        /// プロファイル切り替えでプラグインの設定も一緒に切り替わるよう、ここに保存する。
+        /// </summary>
+        [OptionalField]
+        public Dictionary<string, string> PluginSettings;
+
+        //モーション再生
+        [OptionalField]
+        public List<string> MotionPlayback_MotionFiles;
+        [OptionalField]
+        public int MotionPlayback_RepeatMode;
+        [OptionalField]
+        public bool MotionPlayback_ApplyRootPosition;
+        [OptionalField]
+        public bool MotionPlayback_ApplyRootRotation;
+        [OptionalField]
+        public bool MotionPlayback_ApplySpine;
+        [OptionalField]
+        public bool MotionPlayback_ApplyChest;
+        [OptionalField]
+        public bool MotionPlayback_ApplyHead;
+        [OptionalField]
+        public bool MotionPlayback_ApplyLeftArm;
+        [OptionalField]
+        public bool MotionPlayback_ApplyRightArm;
+        [OptionalField]
+        public bool MotionPlayback_ApplyLeftHand;
+        [OptionalField]
+        public bool MotionPlayback_ApplyRightHand;
+        [OptionalField]
+        public bool MotionPlayback_ApplyLeftLeg;
+        [OptionalField]
+        public bool MotionPlayback_ApplyRightLeg;
+        [OptionalField]
+        public bool MotionPlayback_ApplyLeftFoot;
+        [OptionalField]
+        public bool MotionPlayback_ApplyRightFoot;
+        [OptionalField]
+        public bool MotionPlayback_ApplyLeftFinger;
+        [OptionalField]
+        public bool MotionPlayback_ApplyRightFinger;
+        [OptionalField]
+        public bool MotionPlayback_ApplyEye;
+        //VRMAに含まれる表情・視線を再生時に適用するか
+        //(オフにするとモーションのみ再生し、表情はVMCProtocol受信等の他の入力に任せられる)
+        [OptionalField]
+        public bool MotionPlayback_ApplyExpression;
+        [OptionalField]
+        public bool MotionPlayback_ApplyLookAt;
+
+        //モーション記録
+        [OptionalField]
+        public int MotionRecord_Fps;
+        [OptionalField]
+        public int MotionRecord_CountdownSeconds;
+        [OptionalField]
+        public bool MotionRecord_SaveMotion;
+        [OptionalField]
+        public bool MotionRecord_SaveExpressionPreset;
+        [OptionalField]
+        public bool MotionRecord_SaveExpressionCustom;
+        [OptionalField]
+        public bool MotionRecord_SaveLookAt;
+
 
         [OptionalField]
         public bool EnableOverrideBodyHeight;
@@ -692,6 +826,21 @@ namespace VMC
 
         [OptionalField]
         public bool UnityChildWindowEnable;
+
+        [OptionalField]
+        public int WristRotationFix_UpperArmWeight = 200; // /1000
+        [OptionalField]
+        public int WristRotationFix_ForearmWeight = 570; // /1000
+        [OptionalField]
+        public int WristRotationFix_MaxAccumulatedTwist = 300;
+
+        //キャリブレーション自動再適用
+        //キャリブレーション実行時のトラッカー姿勢を記録しておき、別のアバターを読み込んだ時に
+        //同じトラッカー姿勢でキャリブレーションを再実行することで、再度Tポーズを取る手間を省く
+        [OptionalField]
+        public bool EnableAutoCalibrationOnModelLoad = true;
+        [OptionalField]
+        public CalibrationSnapshot LastCalibrationSnapshot = null;
 
         //初期値
         [OnDeserializing()]
@@ -767,6 +916,9 @@ namespace VMC
             ExternalMotionSenderPeriodCamera = 1;
             ExternalMotionSenderPeriodDevices = 1;
             ExternalMotionSenderOptionString = "";
+            //仕様上、正規化ボーンの送信は「既定で無効のオプション」
+            ExternalMotionSenderUseNormalizedBone = false;
+            ExternalMotionSenderSendVRM1Expression = false;
             ExternalMotionSenderResponderEnable = false;
 
             ExternalMotionReceiverEnable = false;
@@ -791,6 +943,8 @@ namespace VMC
             FixElbowRotation = true;
 
             HandleControllerAsTracker = false;
+
+            TrackerReassignmentWhenChestAvailable = false;
 
             AntiAliasing = 2;
 
@@ -819,6 +973,11 @@ namespace VMC
             PPS_Vignette_Smoothness = 0.35f;
             PPS_Vignette_Roundness = 1f;
 
+            PPS_AO_Enable = false;
+            PPS_AO_IsScalable = false;
+            PPS_AO_Intensity = 0f;
+            PPS_AO_Thickness = 0f;
+
             PPS_CA_Enable = false;
             PPS_CA_Intensity = 1f;
             PPS_CA_FastMode = false;
@@ -837,6 +996,11 @@ namespace VMC
             PPS_Vignette_Color_r = 0f;
             PPS_Vignette_Color_g = 0f;
             PPS_Vignette_Color_b = 0f;
+
+            PPS_AO_Color_a = 0f;
+            PPS_AO_Color_r = 0f;
+            PPS_AO_Color_g = 0f;
+            PPS_AO_Color_b = 0f;
 
             TurnOffAmbientLight = false;
             ExternalBonesReceiverEnable = false;
@@ -860,12 +1024,47 @@ namespace VMC
             mocopi_ApplyRightFoot = true;
             mocopi_CorrectHipBone = false;
 
+            MotionPlayback_MotionFiles = new List<string>();
+            MotionPlayback_RepeatMode = 0;
+            MotionPlayback_ApplyRootPosition = true;
+            MotionPlayback_ApplyRootRotation = true;
+            MotionPlayback_ApplySpine = true;
+            MotionPlayback_ApplyChest = true;
+            MotionPlayback_ApplyHead = true;
+            MotionPlayback_ApplyLeftArm = true;
+            MotionPlayback_ApplyRightArm = true;
+            MotionPlayback_ApplyLeftHand = true;
+            MotionPlayback_ApplyRightHand = true;
+            MotionPlayback_ApplyLeftLeg = true;
+            MotionPlayback_ApplyRightLeg = true;
+            MotionPlayback_ApplyLeftFoot = true;
+            MotionPlayback_ApplyRightFoot = true;
+            MotionPlayback_ApplyLeftFinger = true;
+            MotionPlayback_ApplyRightFinger = true;
+            MotionPlayback_ApplyEye = true;
+            MotionPlayback_ApplyExpression = true;
+            MotionPlayback_ApplyLookAt = true;
+
+            MotionRecord_Fps = 30;
+            MotionRecord_CountdownSeconds = 3;
+            MotionRecord_SaveMotion = true;
+            MotionRecord_SaveExpressionPreset = true;
+            MotionRecord_SaveExpressionCustom = true;
+            MotionRecord_SaveLookAt = true;
+
             EnableOverrideBodyHeight = false;
             OverrideBodyHeight = 1.7f;
             PelvisOffsetAdjustY = 0;
             PelvisOffsetAdjustZ = 0;
 
             UnityChildWindowEnable = false;
+
+            WristRotationFix_UpperArmWeight = 200;
+            WristRotationFix_ForearmWeight = 570;
+            WristRotationFix_MaxAccumulatedTwist = 300;
+
+            EnableAutoCalibrationOnModelLoad = true;
+            LastCalibrationSnapshot = null;
         }
 
         /// <summary>

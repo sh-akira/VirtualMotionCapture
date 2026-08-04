@@ -67,7 +67,7 @@ namespace VMC
             };
             midiCCWrapper.knobUpdateBoolDelegate += async (int knobNo, bool value) =>
             {
-                MidiJack.MidiChannel channel = MidiJack.MidiChannel.Ch1; //仮でCh1
+                MidiChannel channel = MidiChannel.Ch1; //仮でCh1
                 Debug.Log("MidiCC:" + channel + "/" + knobNo + "/" + value);
 
                 var config = new KeyConfig();
@@ -88,7 +88,7 @@ namespace VMC
                 if (!doKeyConfig) CheckKey(config, value);
             };
 
-            midiCCWrapper.knobDelegateProxy += (MidiJack.MidiChannel channel, int knobNo, float value) =>
+            midiCCWrapper.knobDelegateProxy += (MidiChannel channel, int knobNo, float value) =>
             {
                 CheckKnobUpdated(channel, knobNo, value);
             };
@@ -147,14 +147,14 @@ namespace VMC
             }, null);
         }
 
-        private string MidiName(MidiJack.MidiChannel channel, int note)
+        private string MidiName(MidiChannel channel, int note)
         {
             return $"MIDI Ch{(int)channel + 1} {note}";
         }
 
         private float[] lastKnobUpdatedSendTime = new float[MidiCCWrapper.KNOBS];
 
-        private async void CheckKnobUpdated(MidiJack.MidiChannel channel, int knobNo, float value)
+        private async void CheckKnobUpdated(MidiChannel channel, int knobNo, float value)
         {
             if (doKeySend == false) return;
             if (lastKnobUpdatedSendTime[knobNo] + 3f < Time.realtimeSinceStartup)
@@ -463,7 +463,7 @@ namespace VMC
 
                         var doKeyActions = new List<KeyAction>();
                         //手の操作時は左手と右手は分けて処理しないと、右がおしっぱで左を離したときに戻らなくなる
-                        foreach (var downaction in Settings.Current.KeyActions?.OrderBy(d => d.KeyConfigs.Count()).Where(d => d.FaceAction == action.FaceAction && d.HandAction == action.HandAction && d.Hand == action.Hand && d.FunctionAction == action.FunctionAction))
+                        foreach (var downaction in Settings.Current.KeyActions?.OrderBy(d => d.KeyConfigs.Count()).Where(d => d.FaceAction == action.FaceAction && d.HandAction == action.HandAction && d.Hand == action.Hand && d.FunctionAction == action.FunctionAction && d.MotionAction == action.MotionAction))
                         {//キーの少ない順に実行して、同時押しと被ったとき同時押しを後から実行して上書きさせる
                          //if (action.KeyConfigs.Count == CurrentKeyConfigs.Count)
                          //{ //別々の機能を同時に押す場合もあるのでキーの数は見てはいけない

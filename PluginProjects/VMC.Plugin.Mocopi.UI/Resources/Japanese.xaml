@@ -1,0 +1,29 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <system:String x:Key="mocopi_LeftHand">左手</system:String>
+    <system:String x:Key="mocopi_Apply">適用</system:String>
+    <system:String x:Key="mocopi_LeftLeg">左脚</system:String>
+    <system:String x:Key="mocopi_LeftFoot">左足</system:String>
+    <system:String x:Key="mocopi_CorrectHipBone">腰のボーンを修正</system:String>
+    <system:String x:Key="mocopi_LeftArm">左腕</system:String>
+    <system:String x:Key="mocopi_RightLeg">右脚</system:String>
+    <system:String x:Key="mocopi_ApplyTarget">適用する部位</system:String>
+    <system:String x:Key="mocopi_Spine">腰</system:String>
+    <system:String x:Key="mocopi_Enable">使用する</system:String>
+    <system:String x:Key="mocopi_ResetCenter">現在位置を中心にする</system:String>
+    <system:String x:Key="mocopi_Port">ポート :</system:String>
+    <system:String x:Key="mocopi_RightHand">右手</system:String>
+    <system:String x:Key="mocopi_Title">mocopi (UDP)</system:String>
+    <system:String x:Key="mocopi_RootPosition">ルート位置の同期</system:String>
+    <system:String x:Key="mocopi_Close">閉じる</system:String>
+    <system:String x:Key="mocopi_RootRotation">ルート回転の同期</system:String>
+    <system:String x:Key="mocopi_Chest">胸</system:String>
+    <system:String x:Key="mocopi_WithVRDevice">VR機器と併用</system:String>
+    <system:String x:Key="mocopi_Only">mocopiのみ</system:String>
+    <system:String x:Key="mocopi_RightFoot">右足</system:String>
+    <system:String x:Key="mocopi_RightArm">右腕</system:String>
+    <system:String x:Key="mocopi_Head">頭</system:String>
+
+</ResourceDictionary>

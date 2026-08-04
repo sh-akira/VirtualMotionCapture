@@ -1,4 +1,5 @@
 ﻿//gpsnmeajp
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +20,12 @@ namespace VMC
         {
             client = GetComponent<uOscClient>();
             SendRoomMatrixTemporary(); //とりあえず起動時にぶん投げておく
+        }
+
+        private void SendToVmt(string address, params object[] values)
+        {
+            SendHook?.Invoke(address, values);
+            client.Send(address, values);
         }
 
         public int GetNo()
@@ -58,7 +65,7 @@ namespace VMC
 
             HmdMatrix34_t m = new HmdMatrix34_t();
             OpenVR.ChaperoneSetup.GetWorkingStandingZeroPoseToRawTrackingPose(ref m);
-            client.Send("/VMT/SetRoomMatrix/Temporary",
+            SendToVmt("/VMT/SetRoomMatrix/Temporary",
                 m.m0, m.m1, m.m2, m.m3,
                 m.m4, m.m5, m.m6, m.m7,
                 m.m8, m.m9, m.m10, m.m11);
@@ -76,7 +83,7 @@ namespace VMC
             if (target != null)
             {
                 //enable=1
-                client.Send("/VMT/Room/Unity", (int)vitrualTrackerNo, (int)(enable ? 1 : 0), (float)0f,
+                SendToVmt("/VMT/Room/Unity", (int)vitrualTrackerNo, (int)(enable ? 1 : 0), (float)0f,
                     (float)target.localPosition.x,
                     (float)target.localPosition.y,
                     (float)target.localPosition.z,
@@ -91,7 +98,7 @@ namespace VMC
         private void disable()
         {
             //無効化処理
-            client.Send("/VMT/Room/Unity", (int)vitrualTrackerNo, (int)0, (float)0f,
+            SendToVmt("/VMT/Room/Unity", (int)vitrualTrackerNo, (int)0, (float)0f,
                 (float)0f,
                 (float)0f,
                 (float)0f,
@@ -109,5 +116,12 @@ namespace VMC
                 disable();
             }
         }
+
+        #region 自動テスト用フック
+
+        /// <summary>送信内容のキャプチャ用フック(通常の動作では誰も購読していない)</summary>
+        public static event Action<string, object[]> SendHook;
+
+        #endregion
     }
 }

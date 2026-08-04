@@ -54,6 +54,12 @@
                         </Grid>
                     </StackPanel>
                 </TabItem>
+                <TabItem Header="{DynamicResource MainWindow_Motion}" ToolTip="{DynamicResource MainWindow_Motion_ToolTip}">
+                    <UniformGrid Rows="1" Columns="2">
+                        <Button Content="{DynamicResource MainWindow_MotionPlayback}" Name="MotionPlaybackButton" Click="MotionPlaybackButton_Click" ToolTip="{DynamicResource MainWindow_MotionPlayback_ToolTip}"/>
+                        <Button Content="{DynamicResource MainWindow_MotionRecord}" Name="MotionRecordButton" Click="MotionRecordButton_Click" ToolTip="{DynamicResource MainWindow_MotionRecord_ToolTip}"/>
+                    </UniformGrid>
+                </TabItem>
                 <TabItem Header="{DynamicResource MainWindow_Camera}">
                     <DockPanel>
                         <TextBlock Text="{DynamicResource MainWindow_CameraDescription}" Margin="0,-3,0,0" VerticalAlignment="Bottom" DockPanel.Dock="Bottom"/>

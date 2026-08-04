@@ -1,0 +1,146 @@
+﻿<Project>
+  <!--
+    プラグイン共通のビルド設定。
+    PluginKind を各プロジェクトで指定すると、必要な参照とコピー処理が入る。
+      Unity       : 本体側プラグイン(Plugins\<PluginFolderName>\ へ出力)
+      ControlPanel: コントロールパネル側プラグイン(ControlPanel\Plugins\<PluginFolderName>\ へ出力)
+  -->
+
+  <!-- ===== Unity側プラグイン ===== -->
+  <ItemGroup Condition=" '$(PluginKind)' == 'Unity' ">
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="UnityEngine">
+      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.AnimationModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.PhysicsModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.Physics2DModule">
+      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.Physics2DModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.UIModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.VRModule">
+      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.VRModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.XRModule">
+      <HintPath>$(UnityEditorRoot)Managed\UnityEngine\UnityEngine.XRModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <!-- SDKのソースに UnityEditor の using が残っている場合があるので参照だけ通す
+         (#if UNITY_EDITOR で囲まれており、実際には型を使わないので出力DLLへの参照は入らない) -->
+    <Reference Include="UnityEditor">
+      <HintPath>$(UnityEditorRoot)Managed\UnityEditor.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="VMC.PluginAPI">
+      <HintPath>$(UnityScriptAssemblies)VMC.PluginAPI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="VMCMod">
+      <HintPath>$(UnityScriptAssemblies)VMCMod.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityMemoryMappedFile">
+      <HintPath>$(UnityMemoryMappedFileDll)</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- ===== コントロールパネル側プラグイン ===== -->
+  <ItemGroup Condition=" '$(PluginKind)' == 'ControlPanel' ">
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="UnityMemoryMappedFile">
+      <HintPath>$(UnityMemoryMappedFileDll)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="VMC.ControlPanel.PluginAPI">
+      <HintPath>$(ControlPanelPluginApiDll)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <!-- リソース辞書やソースはVisual Studioから編集できるよう各csproj側に書く。
+         ここに書くとソリューションエクスプローラーに出てこない -->
+  </ItemGroup>
+
+  <!-- ===== 出力の後片付けと配置 ===== -->
+  <Target Name="RemoveFacadesFromPluginOutput" AfterTargets="Build" Condition=" '$(PluginKind)' == 'Unity' ">
+    <!-- コンパイルにはファサードが要るが、配布物に混ざると本体のものと衝突しかねないので消す -->
+    <ItemGroup>
+      <FacadeToRemove Include="$(OutputPath)System.*.dll" />
+      <FacadeToRemove Include="$(OutputPath)netstandard.dll" />
+      <FacadeToRemove Include="$(OutputPath)mscorlib.dll" />
+      <FacadeToRemove Include="$(OutputPath)*.pdb" />
+    </ItemGroup>
+    <Delete Files="@(FacadeToRemove)" />
+  </Target>
+
+  <Target Name="CopyNativePluginFiles" AfterTargets="Build"
+          Condition=" '$(PluginKind)' == 'Unity' AND '@(NativePluginFile)' != '' ">
+    <!-- SDKのネイティブDLLは native\ サブフォルダへ入れる。
+         マネージドDLLと混ぜないことで、読み込み側が中身を見て振り分ける必要が無くなる
+         (DllImportの探索パスに入らないため、実行時に NativeLibraryLoader が先読みする) -->
+    <Copy SourceFiles="@(NativePluginFile)" DestinationFolder="$(OutputPath)native\" SkipUnchangedFiles="true" />
+  </Target>
+
+  <Target Name="CopyControlPanelPluginToEditorFolder" AfterTargets="Build"
+          Condition=" '$(PluginKind)' == 'ControlPanel' ">
+    <!-- VSからコントロールパネルを起動したときに読み込まれる場所へ複製する。
+         起動中はDLLを掴まれていてコピーできないので、その場合は警告のみで続行する -->
+    <ItemGroup>
+      <!-- 出力はDLLとPDBだけなのでサブフォルダは考えない -->
+      <ControlPanelEditorPluginFile Include="$(OutputPath)*.*" />
+      <ControlPanelEditorConfiguration Include="$(ControlPanelEditorConfigurations)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ControlPanelEditorPluginFile)"
+          DestinationFolder="$(ControlPanelBinRoot)%(ControlPanelEditorConfiguration.Identity)\ControlPanel\Plugins\$(PluginFolderName)\"
+          SkipUnchangedFiles="true"
+          ContinueOnError="WarnAndContinue" />
+  </Target>
+
+  <Target Name="CopyPluginToEditorFolder"
+          AfterTargets="Build;CopyNativePluginFiles;RemoveFacadesFromPluginOutput"
+          Condition=" '$(PluginKind)' == 'Unity' ">
+    <!-- エディタ実行でも読み込めるようリポジトリ直下の Plugins\ へ複製する。
+         構成が変わったときに古いDLLが残ると振り分けが崩れるので先に消してから入れ直す
+         (Unityが掴んでいて消せない場合は警告のみで続行し、次回ビルドで解消する) -->
+    <RemoveDir Directories="$(EditorPluginOutputRoot)$(PluginFolderName)" ContinueOnError="WarnAndContinue" />
+    <ItemGroup>
+      <EditorPluginFile Include="$(OutputPath)**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(EditorPluginFile)"
+          DestinationFolder="$(EditorPluginOutputRoot)$(PluginFolderName)\%(RecursiveDir)"
+          SkipUnchangedFiles="true" />
+  </Target>
+</Project>

@@ -42,9 +42,9 @@ namespace VirtualMotionCaptureControlPanel
 
             if (ofd.ShowDialog() == true)
             {
-                await Globals.Client.SendCommandWaitAsync(new PipeCommands.LoadVRM { Path = ofd.FileName }, d =>
+                await Globals.Client.SendCommandWaitAsync(new PipeCommands.LoadVRMMeta { Path = ofd.FileName }, d =>
                 {
-                    var ret = (PipeCommands.ReturnLoadVRM)d;
+                    var ret = (PipeCommands.ReturnLoadVRMMeta)d;
                     Dispatcher.Invoke(() => LoadMetaData(ret.Data));
                 });
                 if (Globals.CurrentCommonSettingsWPF.CurrentPathOnVRMFileDialog != System.IO.Path.GetDirectoryName(ofd.FileName))
@@ -61,6 +61,10 @@ namespace VirtualMotionCaptureControlPanel
             {
                 CurrentMeta = meta;
                 this.DataContext = meta;
+                //VRM1.0は追加のライセンス項目を表示するためウインドウを広げる
+                //(小さいモニターでは画面の作業領域内に収め、あふれた分はライセンス表示側がスクロールする)
+                var maxHeight = SystemParameters.WorkArea.Height - 20;
+                this.Height = Math.Min(meta.MetaVersion == 1 ? 940 : 565, maxHeight);
                 ImportButton.IsEnabled = true;
                 IgnoreButton.IsEnabled = true;
                 if (meta.ThumbnailPNGBytes != null)

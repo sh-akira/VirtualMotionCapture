@@ -1,4 +1,4 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
                     xml:space="preserve">
@@ -203,6 +203,97 @@
     <system:String x:Key="LicenseType_CC_BY_NC_ND">Creative Commons CC BY NC ND License(CC_BY_NC_ND)</system:String>
     <system:String x:Key="LicenseType_Other">Other</system:String>
 
+    <!-- VRMImportWindow (VRM 1.0) -->
+    <system:String x:Key="VRMImportWindow_VRM10AdditionalLicense">VRM 1.0 Additional License Information</system:String>
+    <system:String x:Key="VRMImportWindow_PoliticalOrReligiousUsage">Political / Religious use</system:String>
+    <system:String x:Key="VRMImportWindow_AntisocialOrHateUsage">Antisocial / Hate use</system:String>
+    <system:String x:Key="VRMImportWindow_CreditNotation">Credit notation</system:String>
+    <system:String x:Key="VRMImportWindow_Redistribution">Redistribution</system:String>
+    <system:String x:Key="VRMImportWindow_Modification">Modification</system:String>
+    <system:String x:Key="VRMImportWindow_LicenseUrl">License URL</system:String>
+    <system:String x:Key="VRMImportWindow_CopyrightInformation">Copyright information</system:String>
+    <system:String x:Key="VRMImportWindow_ThirdPartyLicenses">Third party licenses</system:String>
+    <system:String x:Key="CommercialUssage_PersonalNonProfit">Personal non-profit only</system:String>
+    <system:String x:Key="CommercialUssage_PersonalProfit">Personal profit allowed</system:String>
+    <system:String x:Key="CommercialUssage_Corporation">Corporation allowed</system:String>
+    <system:String x:Key="CreditNotation_Required">Required</system:String>
+    <system:String x:Key="CreditNotation_Unnecessary">Unnecessary</system:String>
+    <system:String x:Key="Modification_Prohibited">Prohibited</system:String>
+    <system:String x:Key="Modification_AllowModification">Allowed (no redistribution)</system:String>
+    <system:String x:Key="Modification_AllowModificationRedistribution">Modification and redistribution allowed</system:String>
+
+    <!-- Motion -->
+    <system:String x:Key="MainWindow_Motion">Motion</system:String>
+    <system:String x:Key="MainWindow_Motion_ToolTip">Play and record motions</system:String>
+    <system:String x:Key="MainWindow_MotionPlayback">Motion Playback</system:String>
+    <system:String x:Key="MainWindow_MotionPlayback_ToolTip">Load and play motion files (VRMA/BVH)</system:String>
+    <system:String x:Key="MainWindow_MotionRecord">Motion Recording</system:String>
+    <system:String x:Key="MainWindow_MotionRecord_ToolTip">Record motion and save as VRMA/BVH file</system:String>
+    <system:String x:Key="MotionPlaybackWindow_Title">Motion Playback</system:String>
+    <system:String x:Key="MotionPlaybackWindow_MotionFiles">Motion Files</system:String>
+    <system:String x:Key="MotionPlaybackWindow_AddFile">Add</system:String>
+    <system:String x:Key="MotionPlaybackWindow_RemoveFile">Remove</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ColumnName">Name</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ColumnLength">Length</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ColumnFormat">Format</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ColumnShortcut">Shortcut</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ShortcutButton">Assign Shortcut</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ShortcutButton_ToolTip">Assign a shortcut key (play / apply pose) to the selected motion</system:String>
+    <system:String x:Key="MotionPlaybackWindow_SelectMotionFirst">Please select a motion first</system:String>
+    <system:String x:Key="MotionPlaybackWindow_Playback">Playback Control</system:String>
+    <system:String x:Key="MotionPlaybackWindow_PlayButton">▶ Play</system:String>
+    <system:String x:Key="MotionPlaybackWindow_PauseButton">Pause</system:String>
+    <system:String x:Key="MotionPlaybackWindow_StopButton">■ Stop</system:String>
+    <system:String x:Key="MotionPlaybackWindow_PrevFrame_ToolTip">Step back 1 frame</system:String>
+    <system:String x:Key="MotionPlaybackWindow_NextFrame_ToolTip">Step forward 1 frame</system:String>
+    <system:String x:Key="MotionPlaybackWindow_RepeatOneShot">One shot</system:String>
+    <system:String x:Key="MotionPlaybackWindow_RepeatOneFile">Loop one file</system:String>
+    <system:String x:Key="MotionPlaybackWindow_RepeatList">Loop list</system:String>
+    <system:String x:Key="MotionPlaybackWindow_LoadError">Failed to load motion</system:String>
+    <system:String x:Key="MotionPlaybackWindow_RightFinger">R Fingers</system:String>
+    <system:String x:Key="MotionPlaybackWindow_LeftFinger">L Fingers</system:String>
+    <system:String x:Key="MotionPlaybackWindow_Eye">Eye bones</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ApplyExpression">Apply expressions</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ApplyLookAt">Apply LookAt</system:String>
+    <system:String x:Key="MotionRecordWindow_Title">Motion Recording</system:String>
+    <system:String x:Key="MotionRecordWindow_RecordSetting">Recording Settings</system:String>
+    <system:String x:Key="MotionRecordWindow_Fps">Frame rate (fps)</system:String>
+    <system:String x:Key="MotionRecordWindow_Countdown">Countdown (sec)</system:String>
+    <system:String x:Key="MotionRecordWindow_VrmaSaveItems">Items to save in VRMA</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveMotion">Motion</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveExpressionPreset">Expressions (preset)</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveExpressionCustom">Expressions (custom)</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveLookAt">LookAt</system:String>
+    <system:String x:Key="MotionRecordWindow_Record">Recording</system:String>
+    <system:String x:Key="MotionRecordWindow_StartRecording">● Start Recording</system:String>
+    <system:String x:Key="MotionRecordWindow_StopRecording">■ Stop Recording</system:String>
+    <system:String x:Key="MotionRecordWindow_CountdownStatus">Starting in</system:String>
+    <system:String x:Key="MotionRecordWindow_RecordingStatus">Recording</system:String>
+    <system:String x:Key="MotionRecordWindow_RecordedStatus">Recorded</system:String>
+    <system:String x:Key="MotionRecordWindow_CutEdit">Cut Editing</system:String>
+    <system:String x:Key="MotionRecordWindow_PreviewPosition">Preview</system:String>
+    <system:String x:Key="MotionRecordWindow_CutStart">Start</system:String>
+    <system:String x:Key="MotionRecordWindow_CutEnd">End</system:String>
+    <system:String x:Key="MotionRecordWindow_PreviewPlay">Preview Play</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveVrma">Save as VRMA</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveBvh">Save as BVH</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveError">Failed to save</system:String>
+    <system:String x:Key="MotionKeyAddWindowTitle">Add Motion Shortcut Key</system:String>
+    <system:String x:Key="MotionKeyAddWindow_SelectAction">Select Action</system:String>
+    <system:String x:Key="MotionKeyAddWindow_MotionFile">Motion</system:String>
+    <system:String x:Key="MotionKeyAddWindow_Frame">Frame</system:String>
+    <system:String x:Key="MotionKeyAddWindow_FrameHint">The frame currently previewed in the Motion Playback window is filled in. To change it, scrub the seek bar / step frames in the playback window to the desired pose, then reopen this window.</system:String>
+    <system:String x:Key="MotionKeyAddWindow_TypePlay">Play motion</system:String>
+    <system:String x:Key="MotionKeyAddWindow_TypePose">Apply pose</system:String>
+    <system:String x:Key="MotionKeyAddWindow_TypeRelease">Release (stop)</system:String>
+    <system:String x:Key="MotionKeyAddWindow_MotionNotFoundError">No motion selected. Load a motion in the Motion Playback window first.</system:String>
+    <system:String x:Key="MotionKeyAddWindow_FrameError">Invalid frame number</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddMotion">Motion</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddMotion_ToolTip">Add a shortcut key for motion playback or pose apply</system:String>
+    <system:String x:Key="Motion">Motion</system:String>
+    <system:String x:Key="Functions_StartMotionRecording">Start motion recording</system:String>
+    <system:String x:Key="Functions_StopMotionRecording">Stop motion recording</system:String>
+
     <!-- SettingWindow -->
     <system:String x:Key="SettingWindowTitle">Settings</system:String>
 
@@ -255,6 +346,9 @@
     <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">Interval(once every specified frame)</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiver">VMC Protocol receiver</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">Enable OSC motion receiver</system:String>
+    <system:String x:Key="SettingWindow_ExternalDevices">External Devices</system:String>
+    <system:String x:Key="SettingWindow_NoExternalDevices">No external device plugins are installed. Put a plugin into the Plugins folder and it will appear here.</system:String>
+    <system:String x:Key="SettingWindow_ExternalDeviceUnitySideMissing">The application-side plugin for {0} was not found. Please check the Plugins folder.</system:String>
     <system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape</system:String>
     <system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">Knob to BlendShape setting</system:String>
     <system:String x:Key="SettingWindow_MidiEnable">Enable MIDI Device</system:String>
@@ -278,12 +372,15 @@
     <system:String x:Key="SettingWindow_VirtualMotionTrackerInstallSuccess">Success! Restart SteamVR and VirtualMotionCapture. Press OK and wait auto restart.</system:String>
     <system:String x:Key="SettingWindow_VMTContinue">Continue VMT setup? Game will be interrupted, and VR system will restart.</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderResponderEnable">Allow device detection response</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSenderSendVRM1Expression">Also send expressions with VRM 1.0 names</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSenderUseNormalizedBone">Send normalized (ControlRig) bones (not recommended)</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiverRequesterEnable">Auto device detection</system:String>
     <system:String x:Key="SettingWindow_ReceiveBonesEnable">Receive hand bone</system:String>
     <system:String x:Key="SettingWindow_VMCMod">VMC Mod (No warranty/no support)</system:String>
     <system:String x:Key="SettingWindow_VMCModSetting">Loaded MOD List</system:String>
-	<system:String x:Key="SettingWindow_Other">Other</system:String>
-	<system:String x:Key="SettingWindow_UnityChildWindow">Display Control Panel in Unity</system:String>
+    <system:String x:Key="SettingWindow_Other">Other</system:String>
+    <system:String x:Key="SettingWindow_UnityChildWindow">Display Control Panel in Unity</system:String>
+    <system:String x:Key="SettingWindow_TrackerReassignmentWhenChestAvailable">Use chest tracker if no pelvis</system:String>
 
     <!-- CalibrationSettingWindow -->
     <system:String x:Key="CalibrationSettingWindow_BodyHeight">Body Height</system:String>
@@ -293,6 +390,13 @@
     <system:String x:Key="CalibrationSettingWindow_OffsetY">Offset Y :</system:String>
     <system:String x:Key="CalibrationSettingWindow_OffsetZ">Offset Z :</system:String>
     <system:String x:Key="CalibrationSettingWindow_Notice">Please recalibrate after the change</system:String>
+
+    <!-- CalibrationSettingWindow - WristRotationFix -->
+    <system:String x:Key="CalibrationSettingWindow_WristRotationFix">Wrist Rotation Fix</system:String>
+    <system:String x:Key="CalibrationSettingWindow_UpperArmWeight">Upper Arm Weight :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_ForearmWeight">Forearm Weight :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_MaxAccumulatedTwist">Max Accumulated Twist :</system:String>
+
 
     <!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">Tracker assignment setting</system:String>
@@ -464,43 +568,8 @@
     <system:String x:Key="PhotoWindow_FolderSelect">Please select a folder.</system:String>
     <system:String x:Key="PhotoWindow_ContinuousCheckBox">Continuous</system:String>
 
-    <!-- EyeTracking_TobiiSettingWindow -->
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeScale">Eye movement range (inverted with minus)</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeOffset">Eye position offset (0.01=1cm)</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_Horizontal">Horizontal</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_Vertical">Vertical</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_Calibration">Calibration</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_CalibrationDescription">Move to the front of Tobii after model calibration is complete and press the calibration button while looking at the center of the monitor.</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_Close">Close</system:String>
 
-    <!-- EyeTracking_ViveProEyeSettingWindow -->
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeScale">Eye movement range (inverted with minus)</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeOffset">Eye position offset (0.01=1cm)</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Horizontal">Horizontal</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Vertical">Vertical</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovements">Use eyelid movements</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovementsCheckBox">Use</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Close">Close</system:String>
 
-    <!-- MotionCapture_mocopiSettingWindow -->
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_EnableCheckBox">Use</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_ApplyTarget">Apply target</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_Head">Head</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_Chest">Chest</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightArm">Right Arm</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftArm">Left Arm</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_Spine">Spine</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightHand">Right Hand</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftHand">Left Hand</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightLeg">Right Leg</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftLeg">Left Leg</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightFoot">Right Foot</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftFoot">Left Foot</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RootPositionSynchronize">Root position synchronize</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RootRotationSynchronize">Root rotation synchronize</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_ResetCenter">Re-center current position</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_mocopiOnly">mocopi only</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_WithVRDevice">with VR devices</system:String>
 
     <!-- VMCProtocolReceiverSettingWindow -->
     <system:String x:Key="VMCProtocolReceiverSettingWindow_All">All</system:String>
@@ -514,6 +583,7 @@
     <system:String x:Key="VMCProtocolReceiverSettingWindow_CorrectHipBone">Correct hip bone</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_UseBonePosition">Use bone position</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_IgnoreDefaultBone">Ignore default bones</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_UseNormalizedBone">Sender sends normalized (ControlRig) bones</system:String>
     
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">Color Picker</system:String>
@@ -544,6 +614,25 @@
     <system:String x:Key="VRoidHubWindow_Unnecessary">Unnecessary</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionDescription1">When using this model, you need to display the license.</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionDescription2">Credit must be stated clearly.</system:String>
+    <!-- VRoidHub VRM1.0 license -->
+    <system:String x:Key="VRoidHubWindow_VRM10License">License (VRM1.0)</system:String>
+    <system:String x:Key="VRoidHub_VRM10_AvatarUser">Avatar use (others)</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Violence">Violent expression</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Sexuality">Sexual expression</system:String>
+    <system:String x:Key="VRoidHub_VRM10_PoliticalReligious">Political / Religious use</system:String>
+    <system:String x:Key="VRoidHub_VRM10_AntisocialHate">Antisocial / Hate use</system:String>
+    <system:String x:Key="VRoidHub_VRM10_PersonalCommercial">Personal commercial use</system:String>
+    <system:String x:Key="VRoidHub_VRM10_CorporateCommercial">Corporate commercial use</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Redistribution">Redistribution</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Modification">Modification</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Credit">Credit notation</system:String>
+    <system:String x:Key="VRoidHub_License_ok">Allowed</system:String>
+    <system:String x:Key="VRoidHub_License_ng">Not allowed</system:String>
+    <system:String x:Key="VRoidHub_License_need">Required</system:String>
+    <system:String x:Key="VRoidHub_License_noneed">Unnecessary</system:String>
+    <system:String x:Key="VRoidHub_License_profit">Profit allowed</system:String>
+    <system:String x:Key="VRoidHub_License_nonprofit">Non-profit only</system:String>
+    <system:String x:Key="VRoidHub_License_notset">Not set</system:String>
     <system:String x:Key="VRoidHubWindow_OpenOnVRoidHub">Open VRoid Hub page</system:String>
     <system:String x:Key="VRoidHubWindow_LoadModel">Agree and Import</system:String>
     <system:String x:Key="VRoidHubWindow_Loading">Now loading</system:String>
@@ -568,4 +657,23 @@
     <system:String x:Key="FirewallManagerWindow_Description">Configure firewall settings for Virtual Motion Capture to connect with other apps. Would you like to continue?</system:String>
     <system:String x:Key="FirewallManagerWindow_DontShowAgain">Don't show this again</system:String>
 	
+    <!-- モーション適用部位(mocopi/VMCProtocol受信/モーション再生で共通) -->
+    <system:String x:Key="Common_Enable">Use</system:String>
+    <system:String x:Key="ApplyTarget_Header">Apply target</system:String>
+    <system:String x:Key="ApplyTarget_Head">Head</system:String>
+    <system:String x:Key="ApplyTarget_Chest">Chest</system:String>
+    <system:String x:Key="ApplyTarget_RightArm">Right Arm</system:String>
+    <system:String x:Key="ApplyTarget_LeftArm">Left Arm</system:String>
+    <system:String x:Key="ApplyTarget_Spine">Spine</system:String>
+    <system:String x:Key="ApplyTarget_RightHand">Right Hand</system:String>
+    <system:String x:Key="ApplyTarget_LeftHand">Left Hand</system:String>
+    <system:String x:Key="ApplyTarget_RightLeg">Right Leg</system:String>
+    <system:String x:Key="ApplyTarget_LeftLeg">Left Leg</system:String>
+    <system:String x:Key="ApplyTarget_RightFoot">Right Foot</system:String>
+    <system:String x:Key="ApplyTarget_LeftFoot">Left Foot</system:String>
+    <system:String x:Key="ApplyTarget_RootPosition">Root position synchronize</system:String>
+    <system:String x:Key="ApplyTarget_RootRotation">Root rotation synchronize</system:String>
+    <system:String x:Key="Common_ResetCenter">Re-center current position</system:String>
+    <system:String x:Key="ApplyTarget_WithVRDevice">with VR devices</system:String>
+
 </ResourceDictionary>

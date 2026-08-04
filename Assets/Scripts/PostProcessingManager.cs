@@ -113,6 +113,23 @@ namespace VMC
             vg.color.overrideState = true;
             vg.color.value = new Color(d.PPS_Vignette_Color_r, d.PPS_Vignette_Color_g, d.PPS_Vignette_Color_b, d.PPS_Vignette_Color_a);
 
+            var ao = sp.GetSetting<AmbientOcclusion>();
+            if (ao == null)
+            {
+                ao = sp.AddSettings<AmbientOcclusion>();
+            }
+            ao.active = true;
+            ao.enabled.overrideState = true;
+            ao.enabled.value = d.PPS_AO_Enable;
+            ao.mode.overrideState = true;
+            ao.mode.value = d.PPS_AO_IsScalable ? AmbientOcclusionMode.ScalableAmbientObscurance : AmbientOcclusionMode.MultiScaleVolumetricObscurance;
+            ao.intensity.overrideState = true;
+            ao.intensity.value = d.PPS_AO_Intensity;
+            ao.thicknessModifier.overrideState = true;
+            ao.thicknessModifier.value = d.PPS_AO_Thickness;
+            ao.color.overrideState = true;
+            ao.color.value = new Color(d.PPS_AO_Color_r, d.PPS_AO_Color_g, d.PPS_AO_Color_b, d.PPS_AO_Color_a);
+
             var ca = sp.GetSetting<ChromaticAberration>();
             if (ca == null)
             {

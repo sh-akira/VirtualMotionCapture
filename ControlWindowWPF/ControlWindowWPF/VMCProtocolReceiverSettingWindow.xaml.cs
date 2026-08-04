@@ -17,7 +17,7 @@ using VirtualMotionCaptureControlPanel.Properties;
 namespace VirtualMotionCaptureControlPanel
 {
     /// <summary>
-    /// MotionCapture_mocopiSettingWindow.xaml の相互作用ロジック
+    /// VMCProtocolReceiverSettingWindow.xaml の相互作用ロジック
     /// </summary>
     public partial class VMCProtocolReceiverSettingWindow : Window
     {
@@ -76,6 +76,7 @@ namespace VirtualMotionCaptureControlPanel
             UseBonePositionCheckBox.IsChecked = setting.UseBonePosition;
             CorrectHipBoneCheckBox.IsChecked = setting.CorrectHipBone;
             IgnoreDefaultBoneCheckBox.IsChecked = setting.IgnoreDefaultBone;
+            UseNormalizedBoneCheckBox.IsChecked = setting.UseNormalizedBone;
 
             BlendShapeCheckBox.IsChecked = setting.ApplyBlendShape;
             LookAtCheckBox.IsChecked = setting.ApplyLookAt;
@@ -153,6 +154,7 @@ namespace VirtualMotionCaptureControlPanel
                 UseBonePosition = UseBonePositionCheckBox.IsChecked.Value,
                 CorrectHipBone = CorrectHipBoneCheckBox.IsChecked.Value,
                 IgnoreDefaultBone = IgnoreDefaultBoneCheckBox.IsChecked.Value,
+                UseNormalizedBone = UseNormalizedBoneCheckBox.IsChecked.Value,
 
                 ApplyBlendShape = BlendShapeCheckBox.IsChecked.Value,
                 ApplyLookAt = LookAtCheckBox.IsChecked.Value,

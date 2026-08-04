@@ -1,10 +1,11 @@
-[Ll]ibrary/
+﻿[Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
 [Bb]uild/
 [Bb]uilds/
 [Uu]ser[Ss]ettings/
 Logs/
+OpenVRInitError.txt
 Assets/AssetStoreTools*
 Assets/ExternalPlugins/RootMotion*
 Assets/ExternalPlugins/SteamVR*
@@ -36,17 +37,17 @@ Assets/ExternalPlugins/UnityMemoryMappedFile/UnityMemoryMappedFile*
 Assets/VRoidSDK*
 Assets/Scenes/Example*
 Assets/Scenes/LoginExample*
-ControlWindowWPF/ControlWindowWPF/VRoidHubWindow*
-UnityMemoryMappedFile/PipeCommands_VRoidSDK*
-Assets/Scripts/VRoidSDKConnector*
-Assets/Tobii*
-Assets/ExternalPlugins/ViveSR*
-tobii*
+#プラグインが使う外部SDK(再配布不可のためリポジトリには含めない。置き場所の説明だけ残す)
+PluginProjects/*/SDK/*
+!PluginProjects/*/SDK/README.md
+#Tobii SDK同梱のネイティブDLL(リポジトリ直下のみ。プラグインの自前コードは対象外)
+/tobii_gameintegration_*.dll
 SteamVR*csproj
 Backup*
 Assets/ExternalPlugins/uOSC*
 Assets/ExternalPlugins/MidiJack*
 Assets/ExternalPlugins/EasyDeviceDiscoveryProtocol*
+FastSpringBone*csproj
 DepthFirstScheduler*csproj
 MeshUtility*csproj
 MToon*csproj
@@ -60,12 +61,14 @@ VRM*csproj
 VMCMOD*csproj
 Oculus*csproj
 DVRSDK*csproj
+VRoidSDK*csproj
+VMC.VRoidHubSetup*csproj
 Assets/Resources*
 Assets/Scripts/DMMVRConnectConnector*
 ControlWindowWPF/ControlWindowWPF/DMMVRConnectWindow*
 UnityMemoryMappedFile/PipeCommands_DMMVRConnect*
-Assets/ExternalPlugins/MocopiReceiver*
-*mocopi*csproj
+#mocopi Receiver SDKに対してUnityが生成するcsproj(リポジトリ直下のみ)
+/com.sony.mocopi.receiver.csproj
 
 
 # Visual Studio cache directory
@@ -97,3 +100,20 @@ sysinfo.txt
 common.json
 Assets/_TerrainAutoUpgrade/
 .vsconfig
+/TrackerPositions.json
+
+#自動テスト用データ(テスト用VRM・ゴールデン・実行結果)
+TestData/
+
+#コード署名ツール(証明書・KMS設定・署名済みバイナリのキャッシュを含むためpushしない)
+codesignkit/
+
+#プラグインのビルド成果物(SDKのネイティブDLLを含むため配布物には入れるがpushしない)
+BuildRootFiles/ControlPanel/Plugins/
+PluginProjects/**/bin/
+PluginProjects/**/obj/
+ControlWindowWPF/VMC.ControlPanel.PluginAPI/bin/
+ControlWindowWPF/VMC.ControlPanel.PluginAPI/obj/
+
+#エディタ実行用にプラグインをコピーする場所(ビルド成果物・SDKのネイティブDLLを含む)
+/Plugins/

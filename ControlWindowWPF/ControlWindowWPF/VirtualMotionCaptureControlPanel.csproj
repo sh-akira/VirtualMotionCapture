@@ -10,6 +10,7 @@
     <AssemblyName>VirtualMotionCaptureControlPanel</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -77,9 +78,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -114,12 +112,6 @@
     <Compile Include="DebugLogWindow.xaml.cs">
       <DependentUpon>DebugLogWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="EyeTracking_ViveProEyeSettingWindow.xaml.cs">
-      <DependentUpon>EyeTracking_ViveProEyeSettingWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="EyeTracking_TobiiSettingWindow.xaml.cs">
-      <DependentUpon>EyeTracking_TobiiSettingWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="FirewallManagerWindow.xaml.cs">
       <DependentUpon>FirewallManagerWindow.xaml</DependentUpon>
     </Compile>
@@ -143,10 +135,8 @@
       <DependentUpon>HandGestureControlKeyAddWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="JsonSerializer.cs" />
+    <Compile Include="ControlPanelPluginManager.cs" />
     <Compile Include="LanguageSelector.cs" />
-    <Compile Include="LipTracking_ViveSettingWindow.xaml.cs">
-      <DependentUpon>LipTracking_ViveSettingWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MidiCCBlendShapeSettingWIndow.xaml.cs">
       <DependentUpon>MidiCCBlendShapeSettingWIndow.xaml</DependentUpon>
     </Compile>
@@ -156,8 +146,14 @@
     <Compile Include="VMCProtocolReceiverSettingWindow.xaml.cs">
       <DependentUpon>VMCProtocolReceiverSettingWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MotionCapture_mocopiSettingWindow.xaml.cs">
-      <DependentUpon>MotionCapture_mocopiSettingWindow.xaml</DependentUpon>
+    <Compile Include="MotionPlaybackWindow.xaml.cs">
+      <DependentUpon>MotionPlaybackWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MotionRecordWindow.xaml.cs">
+      <DependentUpon>MotionRecordWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MotionKeyAddWindow.xaml.cs">
+      <DependentUpon>MotionKeyAddWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="PhotoWindow.xaml.cs">
       <DependentUpon>PhotoWindow.xaml</DependentUpon>
@@ -194,14 +190,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="EyeTracking_ViveProEyeSettingWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="EyeTracking_TobiiSettingWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="FirewallManagerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -227,10 +215,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="HandGestureControlKeyAddWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="LipTracking_ViveSettingWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -261,7 +245,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="MotionCapture_mocopiSettingWindow.xaml">
+    <Page Include="MotionPlaybackWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MotionRecordWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MotionKeyAddWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -324,7 +316,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -341,6 +332,10 @@
     <ProjectReference Include="..\..\UnityMemoryMappedFile\UnityMemoryMappedFile.csproj">
       <Project>{045efc7f-9cf6-4dce-83e1-3cac35d83383}</Project>
       <Name>UnityMemoryMappedFile</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VMC.ControlPanel.PluginAPI\VMC.ControlPanel.PluginAPI.csproj">
+      <Project>{8b1e4d2a-5f63-4c71-9a02-1d5e7c8b4a10}</Project>
+      <Name>VMC.ControlPanel.PluginAPI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

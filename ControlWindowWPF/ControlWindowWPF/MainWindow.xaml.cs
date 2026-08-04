@@ -273,6 +273,18 @@ namespace VirtualMotionCaptureControlPanel
                     }
                 });
             }
+            //Unity側にVRoid SDKが組み込まれていない(SDK未同梱でクローンした等)場合はボタンを表示しない
+            if (VRoidHubWindow.IncludeVRoidHubWindow)
+            {
+                await Globals.Client?.SendCommandWaitAsync(new PipeCommands.VRoidSDK_CheckAvailable(), d =>
+                {
+                    var data = (PipeCommands.VRoidSDK_ReturnAvailable)d;
+                    if (data.Available == false)
+                    {
+                        VRoidHubWindow.IncludeVRoidHubWindow = false;
+                    }
+                });
+            }
             await GetLipSyncDevice();
             await Globals.Client.SendCommandAsync(new PipeCommands.LoadCurrentSettings());
         }
@@ -680,6 +692,34 @@ namespace VirtualMotionCaptureControlPanel
             var win = new VRMImportWindow();
             win.Owner = this;
             win.ShowDialog();
+        }
+
+        private MotionPlaybackWindow motionPlaybackWindow = null;
+        private void MotionPlaybackButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (motionPlaybackWindow != null)
+            {
+                motionPlaybackWindow.Activate();
+                return;
+            }
+            motionPlaybackWindow = new MotionPlaybackWindow();
+            motionPlaybackWindow.Owner = this;
+            motionPlaybackWindow.Closed += (s, ev) => motionPlaybackWindow = null;
+            motionPlaybackWindow.Show();
+        }
+
+        private MotionRecordWindow motionRecordWindow = null;
+        private void MotionRecordButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (motionRecordWindow != null)
+            {
+                motionRecordWindow.Activate();
+                return;
+            }
+            motionRecordWindow = new MotionRecordWindow();
+            motionRecordWindow.Owner = this;
+            motionRecordWindow.Closed += (s, ev) => motionRecordWindow = null;
+            motionRecordWindow.Show();
         }
 
         private bool existCalibrationWindow = false;

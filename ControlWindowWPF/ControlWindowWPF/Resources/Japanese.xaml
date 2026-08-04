@@ -1,4 +1,4 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
@@ -201,8 +201,98 @@
     <system:String x:Key="LicenseType_CC_BY_ND">Creative Commons CC BY NDライセンス(CC_BY_ND)</system:String>
     <system:String x:Key="LicenseType_CC_BY_NC_ND">Creative Commons CC BY NC NDライセンス(CC_BY_NC_ND)</system:String>
     <system:String x:Key="LicenseType_Other">その他(Other)</system:String>
-    
-    
+
+    <!-- VRMImportWindow (VRM 1.0) -->
+    <system:String x:Key="VRMImportWindow_VRM10AdditionalLicense">VRM1.0 追加ライセンス情報</system:String>
+    <system:String x:Key="VRMImportWindow_PoliticalOrReligiousUsage">政治・宗教目的の利用</system:String>
+    <system:String x:Key="VRMImportWindow_AntisocialOrHateUsage">反社会的・憎悪表現の利用</system:String>
+    <system:String x:Key="VRMImportWindow_CreditNotation">クレジット表記</system:String>
+    <system:String x:Key="VRMImportWindow_Redistribution">再配布</system:String>
+    <system:String x:Key="VRMImportWindow_Modification">改変</system:String>
+    <system:String x:Key="VRMImportWindow_LicenseUrl">ライセンスURL</system:String>
+    <system:String x:Key="VRMImportWindow_CopyrightInformation">著作権情報</system:String>
+    <system:String x:Key="VRMImportWindow_ThirdPartyLicenses">サードパーティライセンス</system:String>
+    <system:String x:Key="CommercialUssage_PersonalNonProfit">個人の非営利のみ</system:String>
+    <system:String x:Key="CommercialUssage_PersonalProfit">個人の営利利用可</system:String>
+    <system:String x:Key="CommercialUssage_Corporation">法人利用可</system:String>
+    <system:String x:Key="CreditNotation_Required">必要</system:String>
+    <system:String x:Key="CreditNotation_Unnecessary">不要</system:String>
+    <system:String x:Key="Modification_Prohibited">改変禁止</system:String>
+    <system:String x:Key="Modification_AllowModification">改変可(再配布禁止)</system:String>
+    <system:String x:Key="Modification_AllowModificationRedistribution">改変・改変物の再配布可</system:String>
+
+    <!-- Motion -->
+    <system:String x:Key="MainWindow_Motion">モーション</system:String>
+    <system:String x:Key="MainWindow_Motion_ToolTip">モーションの再生や記録を行います</system:String>
+    <system:String x:Key="MainWindow_MotionPlayback">モーション再生</system:String>
+    <system:String x:Key="MainWindow_MotionPlayback_ToolTip">モーションファイル(VRMA/BVH)を読み込んで再生します</system:String>
+    <system:String x:Key="MainWindow_MotionRecord">モーション記録</system:String>
+    <system:String x:Key="MainWindow_MotionRecord_ToolTip">モーションを記録してVRMA/BVHファイルに保存します</system:String>
+    <system:String x:Key="MotionPlaybackWindow_Title">モーション再生</system:String>
+    <system:String x:Key="MotionPlaybackWindow_MotionFiles">モーションファイル</system:String>
+    <system:String x:Key="MotionPlaybackWindow_AddFile">追加</system:String>
+    <system:String x:Key="MotionPlaybackWindow_RemoveFile">削除</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ColumnName">名前</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ColumnLength">長さ</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ColumnFormat">形式</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ColumnShortcut">割当キー</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ShortcutButton">ショートカット設定</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ShortcutButton_ToolTip">選択中のモーションにショートカットキー(再生/ポーズ適用)を割り当てます</system:String>
+    <system:String x:Key="MotionPlaybackWindow_SelectMotionFirst">先にモーションを選択してください</system:String>
+    <system:String x:Key="MotionPlaybackWindow_Playback">再生コントロール</system:String>
+    <system:String x:Key="MotionPlaybackWindow_PlayButton">▶ 再生</system:String>
+    <system:String x:Key="MotionPlaybackWindow_PauseButton">一時停止</system:String>
+    <system:String x:Key="MotionPlaybackWindow_StopButton">■ 停止</system:String>
+    <system:String x:Key="MotionPlaybackWindow_PrevFrame_ToolTip">1フレーム戻る</system:String>
+    <system:String x:Key="MotionPlaybackWindow_NextFrame_ToolTip">1フレーム進む</system:String>
+    <system:String x:Key="MotionPlaybackWindow_RepeatOneShot">1ショット</system:String>
+    <system:String x:Key="MotionPlaybackWindow_RepeatOneFile">1ファイルループ</system:String>
+    <system:String x:Key="MotionPlaybackWindow_RepeatList">リストループ</system:String>
+    <system:String x:Key="MotionPlaybackWindow_LoadError">モーションの読み込みに失敗しました</system:String>
+    <system:String x:Key="MotionPlaybackWindow_RightFinger">右指</system:String>
+    <system:String x:Key="MotionPlaybackWindow_LeftFinger">左指</system:String>
+    <system:String x:Key="MotionPlaybackWindow_Eye">目ボーン</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ApplyExpression">表情を適用</system:String>
+    <system:String x:Key="MotionPlaybackWindow_ApplyLookAt">視線を適用</system:String>
+    <system:String x:Key="MotionRecordWindow_Title">モーション記録</system:String>
+    <system:String x:Key="MotionRecordWindow_RecordSetting">記録設定</system:String>
+    <system:String x:Key="MotionRecordWindow_Fps">フレームレート(fps)</system:String>
+    <system:String x:Key="MotionRecordWindow_Countdown">カウントダウン(秒)</system:String>
+    <system:String x:Key="MotionRecordWindow_VrmaSaveItems">VRMAに保存する項目</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveMotion">モーション</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveExpressionPreset">表情(プリセット)</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveExpressionCustom">表情(カスタム)</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveLookAt">視線</system:String>
+    <system:String x:Key="MotionRecordWindow_Record">記録</system:String>
+    <system:String x:Key="MotionRecordWindow_StartRecording">● 記録開始</system:String>
+    <system:String x:Key="MotionRecordWindow_StopRecording">■ 記録停止</system:String>
+    <system:String x:Key="MotionRecordWindow_CountdownStatus">開始まで</system:String>
+    <system:String x:Key="MotionRecordWindow_RecordingStatus">記録中</system:String>
+    <system:String x:Key="MotionRecordWindow_RecordedStatus">記録済み</system:String>
+    <system:String x:Key="MotionRecordWindow_CutEdit">カット編集</system:String>
+    <system:String x:Key="MotionRecordWindow_PreviewPosition">プレビュー位置</system:String>
+    <system:String x:Key="MotionRecordWindow_CutStart">開始位置</system:String>
+    <system:String x:Key="MotionRecordWindow_CutEnd">終了位置</system:String>
+    <system:String x:Key="MotionRecordWindow_PreviewPlay">プレビュー再生</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveVrma">VRMAで保存</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveBvh">BVHで保存</system:String>
+    <system:String x:Key="MotionRecordWindow_SaveError">保存に失敗しました</system:String>
+    <system:String x:Key="MotionKeyAddWindowTitle">モーションショートカットキー追加</system:String>
+    <system:String x:Key="MotionKeyAddWindow_SelectAction">動作を選択</system:String>
+    <system:String x:Key="MotionKeyAddWindow_MotionFile">モーション</system:String>
+    <system:String x:Key="MotionKeyAddWindow_Frame">フレーム</system:String>
+    <system:String x:Key="MotionKeyAddWindow_FrameHint">再生画面でプレビュー中のフレームが入っています。変更したい場合は再生画面のシークバーやコマ送りで目的の姿勢まで動かしてから、この画面を開き直してください。</system:String>
+    <system:String x:Key="MotionKeyAddWindow_TypePlay">モーション再生</system:String>
+    <system:String x:Key="MotionKeyAddWindow_TypePose">ポーズ適用</system:String>
+    <system:String x:Key="MotionKeyAddWindow_TypeRelease">解除(停止)</system:String>
+    <system:String x:Key="MotionKeyAddWindow_MotionNotFoundError">モーションが選択されていません。先にモーション再生画面でモーションを読み込んでください。</system:String>
+    <system:String x:Key="MotionKeyAddWindow_FrameError">フレーム番号が不正です</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddMotion">モーション</system:String>
+    <system:String x:Key="ShortcutKeyWindow_AddMotion_ToolTip">モーション再生やポーズ適用のショートカットキーを追加します</system:String>
+    <system:String x:Key="Motion">モーション</system:String>
+    <system:String x:Key="Functions_StartMotionRecording">モーション記録開始</system:String>
+    <system:String x:Key="Functions_StopMotionRecording">モーション記録停止</system:String>
+
     <!-- SettingWindow -->
     <system:String x:Key="SettingWindowTitle">設定</system:String>
                           
@@ -255,6 +345,9 @@
     <system:String x:Key="SettingWindow_ExternalMotionSenderTransmissionInterval">送信間隔(指定フレームに1回)</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiver">VMC Protocol 受信</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiverEnable">OSCでモーション受信を有効にする</system:String>
+    <system:String x:Key="SettingWindow_ExternalDevices">外部デバイス</system:String>
+    <system:String x:Key="SettingWindow_NoExternalDevices">外部デバイスのプラグインが導入されていません。Plugins フォルダにプラグインを入れると、ここに表示されます。</system:String>
+    <system:String x:Key="SettingWindow_ExternalDeviceUnitySideMissing">{0} は本体側のプラグインが見つかりません。Plugins フォルダを確認してください。</system:String>
     <system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape割り当て</system:String>
     <system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">MIDI CCつまみ割り当て設定を開く</system:String>
     <system:String x:Key="SettingWindow_MidiEnable">MIDIデバイスを有効にする</system:String>
@@ -272,12 +365,15 @@
     <system:String x:Key="SettingWindow_LaunchSteamVROnStartup">起動時にSteamVRを自動起動する</system:String>
     <system:String x:Key="SettingWindow_QualitySettings">描画品質</system:String>
     <system:String x:Key="SettingWindow_AntiAliasing">アンチエイリアス</system:String>
+    <system:String x:Key="SettingWindow_TrackerReassignmentWhenChestAvailable">腰トラッカー無しで胸がある場合再割り当て</system:String>
     <system:String x:Key="SettingWindow_SendingIsOnlyFANBOX">モーション送信機能 / VMC ModはpixivFANBOX,Patreon先行配信版限定機能です</system:String>
     <system:String x:Key="SettingWindow_VirtualMotionTracker">Virtual Motion Tracker (VMT)</system:String>
     <system:String x:Key="SettingWindow_VirtualMotionTrackerEnable">有効</system:String>
     <system:String x:Key="SettingWindow_VirtualMotionTrackerInstallSuccess">成功しました。SteamVRとバーチャルモーションキャプチャーが自動で再起動されますので、OKを押してしばらくお待ちください。</system:String>
     <system:String x:Key="SettingWindow_VMTContinue">VMTのセットアップを実行しますか？ゲームが中断され、VRシステムは自動で再起動します。</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionSenderResponderEnable">デバイス探索要求への応答を許可</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSenderSendVRM1Expression">表情をVRM1.0形式の名称でも送信する</system:String>
+    <system:String x:Key="SettingWindow_ExternalMotionSenderUseNormalizedBone">正規化(ControlRig)ボーンを送信する(非推奨)</system:String>
     <system:String x:Key="SettingWindow_ExternalMotionReceiverRequesterEnable">自動デバイス探索を行う</system:String>
     <system:String x:Key="SettingWindow_ReceiveBonesEnable">手ボーン取得</system:String>
     <system:String x:Key="SettingWindow_VMCMod">VMC Mod (無保証/無サポート)</system:String>
@@ -293,6 +389,13 @@
     <system:String x:Key="CalibrationSettingWindow_OffsetY">Yオフセット :</system:String>
     <system:String x:Key="CalibrationSettingWindow_OffsetZ">Zオフセット :</system:String>
     <system:String x:Key="CalibrationSettingWindow_Notice">変更後は再キャリブレーションが必要です</system:String>
+
+    <!-- CalibrationSettingWindow - WristRotationFix -->
+    <system:String x:Key="CalibrationSettingWindow_WristRotationFix">手首回転補正</system:String>
+    <system:String x:Key="CalibrationSettingWindow_UpperArmWeight">上腕配分 :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_ForearmWeight">前腕配分 :</system:String>
+    <system:String x:Key="CalibrationSettingWindow_MaxAccumulatedTwist">最大累積回転 :</system:String>
+
 
     <!-- TrackerConfigWindow -->
     <system:String x:Key="TrackerConfigWindowTitle">トラッカー割り当て設定</system:String>
@@ -464,43 +567,8 @@
     <system:String x:Key="PhotoWindow_FolderSelect">フォルダーを選択してください。</system:String>
     <system:String x:Key="PhotoWindow_ContinuousCheckBox">連続撮影</system:String>
 
-    <!-- EyeTracking_TobiiSettingWindow -->
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeScale">目の移動範囲(マイナスで反転します)</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_EyeOffset">目の位置オフセット(0.01=1cm)</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_Horizontal">左右方向</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_Vertical">上下方向</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_Calibration">キャリブレーション</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_CalibrationDescription">Tobii正面の頭の位置を取得するためモデルのキャリブレーション完了後にTobiiの前に移動してモニターの中心を見ながらキャリブレーションボタンを押してください</system:String>
-    <system:String x:Key="EyeTracking_TobiiSettingWindow_Close">閉じる</system:String>
 
-    <!-- EyeTracking_ViveProEyeSettingWindow -->
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeScale">目の移動範囲(マイナスで反転します)</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_EyeOffset">目の位置オフセット(0.01=1cm)</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Horizontal">左右方向</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Vertical">上下方向</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovements">まぶたの動きを使う</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_UseEyelidMovementsCheckBox">使用する</system:String>
-    <system:String x:Key="EyeTracking_ViveProEyeSettingWindow_Close">閉じる</system:String>
 
-    <!-- MotionCapture_mocopiSettingWindow -->
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_EnableCheckBox">使用する</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_ApplyTarget">適用する部位</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_Head">頭</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_Chest">胸</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightArm">右腕</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftArm">左腕</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_Spine">腰</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightHand">右手</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftHand">左手</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightLeg">右脚</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftLeg">左脚</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RightFoot">右足</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_LeftFoot">左足</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RootPositionSynchronize">ルート位置の同期</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_RootRotationSynchronize">ルート回転の同期</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_ResetCenter">現在位置を中心にする</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_mocopiOnly">mocopiのみ</system:String>
-    <system:String x:Key="MotionCapture_mocopiSettingWindow_WithVRDevice">VR機器と併用</system:String>
 
     <!-- VMCProtocolReceiverSettingWindow -->
     <system:String x:Key="VMCProtocolReceiverSettingWindow_All">全て</system:String>
@@ -514,6 +582,7 @@
     <system:String x:Key="VMCProtocolReceiverSettingWindow_CorrectHipBone">腰のボーンを修正</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_UseBonePosition">ボーンの位置を使う</system:String>
     <system:String x:Key="VMCProtocolReceiverSettingWindow_IgnoreDefaultBone">デフォルト値のボーンを無視</system:String>
+    <system:String x:Key="VMCProtocolReceiverSettingWindow_UseNormalizedBone">送信元が正規化(ControlRig)ボーンを送る</system:String>
 
     <!-- PhotoWindow -->
     <system:String x:Key="ColorPickerWindowTitle">色選択</system:String>
@@ -544,6 +613,25 @@
     <system:String x:Key="VRoidHubWindow_Unnecessary">不要</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionDescription1">このモデルは使用時のライセンス表示が必須です。</system:String>
     <system:String x:Key="VRoidHubWindow_CreditCautionDescription2">動画や配信で使用する際必ず明記する必要があります</system:String>
+    <!-- VRoidHub VRM1.0 license -->
+    <system:String x:Key="VRoidHubWindow_VRM10License">利用条件 (VRM1.0)</system:String>
+    <system:String x:Key="VRoidHub_VRM10_AvatarUser">アバターとしての利用(他者)</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Violence">暴力表現</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Sexuality">性的表現</system:String>
+    <system:String x:Key="VRoidHub_VRM10_PoliticalReligious">政治・宗教用途</system:String>
+    <system:String x:Key="VRoidHub_VRM10_AntisocialHate">反社会的・憎悪表現</system:String>
+    <system:String x:Key="VRoidHub_VRM10_PersonalCommercial">個人の商用利用</system:String>
+    <system:String x:Key="VRoidHub_VRM10_CorporateCommercial">法人の商用利用</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Redistribution">再配布</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Modification">改変</system:String>
+    <system:String x:Key="VRoidHub_VRM10_Credit">クレジット表記</system:String>
+    <system:String x:Key="VRoidHub_License_ok">許可</system:String>
+    <system:String x:Key="VRoidHub_License_ng">不可</system:String>
+    <system:String x:Key="VRoidHub_License_need">必要</system:String>
+    <system:String x:Key="VRoidHub_License_noneed">不要</system:String>
+    <system:String x:Key="VRoidHub_License_profit">営利利用可</system:String>
+    <system:String x:Key="VRoidHub_License_nonprofit">非営利のみ</system:String>
+    <system:String x:Key="VRoidHub_License_notset">未設定</system:String>
     <system:String x:Key="VRoidHubWindow_OpenOnVRoidHub">VRoid Hubで開く</system:String>
     <system:String x:Key="VRoidHubWindow_LoadModel">同意して読み込む</system:String>
     <system:String x:Key="VRoidHubWindow_Loading">読込中です</system:String>
@@ -567,5 +655,24 @@
     <system:String x:Key="FirewallManagerWindow_Title">ファイアウォール設定</system:String>
     <system:String x:Key="FirewallManagerWindow_Description">バーチャルモーションキャプチャーが連携アプリと通信するためにファイアウォール設定を行います。よろしいですか？</system:String>
     <system:String x:Key="FirewallManagerWindow_DontShowAgain">次回以降表示しない</system:String>
+
+    <!-- モーション適用部位(mocopi/VMCProtocol受信/モーション再生で共通) -->
+    <system:String x:Key="Common_Enable">使用する</system:String>
+    <system:String x:Key="ApplyTarget_Header">適用する部位</system:String>
+    <system:String x:Key="ApplyTarget_Head">頭</system:String>
+    <system:String x:Key="ApplyTarget_Chest">胸</system:String>
+    <system:String x:Key="ApplyTarget_RightArm">右腕</system:String>
+    <system:String x:Key="ApplyTarget_LeftArm">左腕</system:String>
+    <system:String x:Key="ApplyTarget_Spine">腰</system:String>
+    <system:String x:Key="ApplyTarget_RightHand">右手</system:String>
+    <system:String x:Key="ApplyTarget_LeftHand">左手</system:String>
+    <system:String x:Key="ApplyTarget_RightLeg">右脚</system:String>
+    <system:String x:Key="ApplyTarget_LeftLeg">左脚</system:String>
+    <system:String x:Key="ApplyTarget_RightFoot">右足</system:String>
+    <system:String x:Key="ApplyTarget_LeftFoot">左足</system:String>
+    <system:String x:Key="ApplyTarget_RootPosition">ルート位置の同期</system:String>
+    <system:String x:Key="ApplyTarget_RootRotation">ルート回転の同期</system:String>
+    <system:String x:Key="Common_ResetCenter">現在位置を中心にする</system:String>
+    <system:String x:Key="ApplyTarget_WithVRDevice">VR機器と併用</system:String>
 
 </ResourceDictionary>
