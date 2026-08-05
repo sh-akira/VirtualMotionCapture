@@ -24,5 +24,10 @@
          (SDK\README.md 参照。再配布不可のためリポジトリには含めない) -->
     <Compile Include="SDK\MocopiReceiver\Runtime\**\*.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <!-- 受信したパケットの解釈に使う。無いと受信開始時に DllNotFoundException になる。
+         Windows向けは Plugins 直下の .dll のみ(配下の .bundle / .so / .a は他OS用) -->
+    <NativePluginFile Include="SDK\MocopiReceiver\Runtime\SonyMotionFormat\Plugins\*.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
