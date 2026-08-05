@@ -349,6 +349,8 @@
     <system:String x:Key="SettingWindow_ExternalDevices">外部设备</system:String>
     <system:String x:Key="SettingWindow_NoExternalDevices">未安装外部设备插件。将插件放入 Plugins 文件夹后会显示在这里。</system:String>
     <system:String x:Key="SettingWindow_ExternalDeviceUnitySideMissing">未找到 {0} 的主程序端插件。请检查 Plugins 文件夹。</system:String>
+    <system:String x:Key="SettingWindow_ExternalDeviceLoadFailed">已找到插件，但加载失败。请运行 VMC 文件夹中的 RemoveZoneID.bat，然后重新启动 VMC。</system:String>
+    <system:String x:Key="Common_PluginLoadFailed">插件加载失败:</system:String>
     <system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape</system:String>
     <system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">分配 MIDI CC 旋钮</system:String>
     <system:String x:Key="SettingWindow_MidiEnable">启用 MIDI 设备</system:String>

@@ -349,6 +349,8 @@
     <system:String x:Key="SettingWindow_ExternalDevices">External Devices</system:String>
     <system:String x:Key="SettingWindow_NoExternalDevices">No external device plugins are installed. Put a plugin into the Plugins folder and it will appear here.</system:String>
     <system:String x:Key="SettingWindow_ExternalDeviceUnitySideMissing">The application-side plugin for {0} was not found. Please check the Plugins folder.</system:String>
+    <system:String x:Key="SettingWindow_ExternalDeviceLoadFailed">Plugins were found but could not be loaded. Please run RemoveZoneID.bat in the VMC folder and restart VMC.</system:String>
+    <system:String x:Key="Common_PluginLoadFailed">Failed to load plugin:</system:String>
     <system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape</system:String>
     <system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">Knob to BlendShape setting</system:String>
     <system:String x:Key="SettingWindow_MidiEnable">Enable MIDI Device</system:String>

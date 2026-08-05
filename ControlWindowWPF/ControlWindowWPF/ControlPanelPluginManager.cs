@@ -139,9 +139,20 @@ namespace VirtualMotionCaptureControlPanel
             }
         }
 
+        /// <summary>読み込みに失敗したプラグイン。起動後にステータスバーへ出す</summary>
+        public class LoadError
+        {
+            public string DllFile;
+            public string Reason;
+        }
+
+        private static readonly List<LoadError> loadErrors = new List<LoadError>();
+        public static IReadOnlyList<LoadError> LoadErrors => loadErrors;
+
         /// <summary>読み込みに失敗した理由を残す。握り潰すと原因が追えなくなるため</summary>
         private static void LogLoadFailure(string dllFile, string reason)
         {
+            loadErrors.Add(new LoadError { DllFile = dllFile, Reason = reason });
             System.Diagnostics.Debug.WriteLine($"[Plugin] 読み込みに失敗しました: {dllFile} ({reason})");
         }
 

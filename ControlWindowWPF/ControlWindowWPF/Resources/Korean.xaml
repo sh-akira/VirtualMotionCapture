@@ -349,6 +349,8 @@
     <system:String x:Key="SettingWindow_ExternalDevices">외부 장치</system:String>
     <system:String x:Key="SettingWindow_NoExternalDevices">외부 장치 플러그인이 설치되어 있지 않습니다. Plugins 폴더에 플러그인을 넣으면 여기에 표시됩니다.</system:String>
     <system:String x:Key="SettingWindow_ExternalDeviceUnitySideMissing">{0}의 본체 측 플러그인을 찾을 수 없습니다. Plugins 폴더를 확인해 주세요.</system:String>
+    <system:String x:Key="SettingWindow_ExternalDeviceLoadFailed">플러그인을 찾았지만 불러오지 못했습니다. VMC 폴더에 있는 RemoveZoneID.bat를 실행한 후 VMC를 다시 시작해 주세요.</system:String>
+    <system:String x:Key="Common_PluginLoadFailed">플러그인을 불러오지 못했습니다:</system:String>
     <system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape</system:String>
     <system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">Knob to BlendShape setting</system:String>
     <system:String x:Key="SettingWindow_MidiEnable">Enable MIDI Device</system:String>

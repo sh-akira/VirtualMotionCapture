@@ -615,6 +615,15 @@ namespace VirtualMotionCaptureControlPanel
 
             ExternalDeviceList.ItemsSource = items;
             NoExternalDeviceText.Visibility = items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            if (items.Count == 0)
+            {
+                //DLLが置かれていないのか、置かれているのに読めなかったのかで案内が変わる。
+                //言語切り替えに追従させたいので Text を直接入れずキーを差し替える
+                NoExternalDeviceText.SetResourceReference(TextBlock.TextProperty,
+                    ControlPanelPluginManager.LoadErrors.Count == 0
+                        ? "SettingWindow_NoExternalDevices"
+                        : "SettingWindow_ExternalDeviceLoadFailed");
+            }
         }
 
         private void ExternalDeviceSettingButton_Click(object sender, RoutedEventArgs e)

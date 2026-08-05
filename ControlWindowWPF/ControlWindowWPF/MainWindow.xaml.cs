@@ -287,6 +287,9 @@ namespace VirtualMotionCaptureControlPanel
             }
             await GetLipSyncDevice();
             await Globals.Client.SendCommandAsync(new PipeCommands.LoadCurrentSettings());
+
+            //読み込み中の表示に上書きされないよう最後に出す
+            ShowPluginLoadErrors();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -311,6 +314,55 @@ namespace VirtualMotionCaptureControlPanel
                     MessageBox.Show(lastLog.condition, LanguageSelector.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
+        }
+
+        /// <summary>
+        /// ステータスバーへログを出す。Unity側からの LogNotify と、
+        /// コントロールパネル自身の不具合(プラグインの読み込み失敗)の両方で使う。
+        /// </summary>
+        private void ShowLogNotify(PipeCommands.LogNotify log)
+        {
+            switch (log.type)
+            {
+                case NotifyLogTypes.Error:
+                case NotifyLogTypes.Assert:
+                case NotifyLogTypes.Exception:
+                    UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 102, 102));
+                    UnityLogStatusTextBlock.Text = "[" + log.type.ToString() + ":" + log.errorCount + "] " + log.condition;
+                    break;
+                case NotifyLogTypes.Warning:
+                    UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 0));
+                    UnityLogStatusTextBlock.Text = "[" + log.type.ToString() + "] " + log.condition;
+                    return;
+                default:
+                    UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(238, 238, 238));
+                    UnityLogStatusTextBlock.Text = "[" + log.type.ToString() + "] " + log.condition;
+                    return;
+            }
+
+            lastLog = log;
+        }
+
+        /// <summary>
+        /// プラグインの読み込みに失敗していたらステータスバーへ出す。
+        /// 握り潰すと「外部デバイスが1つも出てこない」だけが症状になり原因が追えない。
+        /// ステータスバーをダブルクリックすれば詳細がクリップボードへコピーされる。
+        /// </summary>
+        private void ShowPluginLoadErrors()
+        {
+            var errors = ControlPanelPluginManager.LoadErrors;
+            if (errors.Count == 0) return;
+
+            var names = string.Join(", ", errors.Select(d => System.IO.Path.GetFileName(d.DllFile)));
+            var details = string.Join("\n", errors.Select(d => d.DllFile + "\n  " + d.Reason));
+
+            ShowLogNotify(new PipeCommands.LogNotify
+            {
+                type = NotifyLogTypes.Error,
+                errorCount = errors.Count,
+                condition = LanguageSelector.Get("Common_PluginLoadFailed") + " " + names,
+                stackTrace = details,
+            });
         }
 
         private void SilentChangeChecked(CheckBox checkBox, bool enable, RoutedEventHandler checkedHandler, RoutedEventHandler uncheckedHandler)
@@ -543,26 +595,7 @@ namespace VirtualMotionCaptureControlPanel
                 }
                 else if (e.CommandType == typeof(PipeCommands.LogNotify))
                 {
-                    var d = (PipeCommands.LogNotify)e.Data;
-
-                    switch (d.type) {
-                        case NotifyLogTypes.Error:
-                        case NotifyLogTypes.Assert:
-                        case NotifyLogTypes.Exception:
-                            UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 102, 102));
-                            UnityLogStatusTextBlock.Text = "[" + d.type.ToString() + ":" + d.errorCount + "] " + d.condition;
-                            break;
-                        case NotifyLogTypes.Warning:
-                            UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 0));
-                            UnityLogStatusTextBlock.Text = "[" + d.type.ToString() + "] " + d.condition;
-                            return;
-                        default:
-                            UnityLogStatusTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(238, 238, 238));
-                            UnityLogStatusTextBlock.Text = "[" + d.type.ToString() + "] " + d.condition;
-                            return;
-                    }
-
-                    lastLog = d;
+                    ShowLogNotify((PipeCommands.LogNotify)e.Data);
                 }
                 else if (e.CommandType == typeof(PipeCommands.ShowCalibrationWindow))
                 {

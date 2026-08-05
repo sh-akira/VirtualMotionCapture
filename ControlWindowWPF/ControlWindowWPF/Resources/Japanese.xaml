@@ -348,6 +348,8 @@
     <system:String x:Key="SettingWindow_ExternalDevices">外部デバイス</system:String>
     <system:String x:Key="SettingWindow_NoExternalDevices">外部デバイスのプラグインが導入されていません。Plugins フォルダにプラグインを入れると、ここに表示されます。</system:String>
     <system:String x:Key="SettingWindow_ExternalDeviceUnitySideMissing">{0} は本体側のプラグインが見つかりません。Plugins フォルダを確認してください。</system:String>
+    <system:String x:Key="SettingWindow_ExternalDeviceLoadFailed">プラグインが見つかりましたが、読み込みに失敗しました。VMCのフォルダにある RemoveZoneID.bat を実行してから、VMCを再起動してください。</system:String>
+    <system:String x:Key="Common_PluginLoadFailed">プラグインの読み込みに失敗しました:</system:String>
     <system:String x:Key="SettingWindow_MIDI_CC_BlendShape">MIDI CC BlendShape割り当て</system:String>
     <system:String x:Key="SettingWindow_MidiCCBlendShapeSetting">MIDI CCつまみ割り当て設定を開く</system:String>
     <system:String x:Key="SettingWindow_MidiEnable">MIDIデバイスを有効にする</system:String>
