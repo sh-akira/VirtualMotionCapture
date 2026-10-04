@@ -182,7 +182,6 @@
                 </GroupBox>
                 <GroupBox Header="{DynamicResource SettingWindow_ExternalMotionSender}" Name="FanboxExternalMotionSenderGroupBox">
                     <DockPanel>
-                        <Button Content="{DynamicResource SettingWindow_Apply}" Name="OSCApplyButton" Click="OSCApplyButton_Click" DockPanel.Dock="Right" Padding="10,5"/>
                         <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionSenderEnable}" Name="ExternalMotionSenderEnableCheckBox" Checked="ExternalMotionSenderCheckBox_Changed" Unchecked="ExternalMotionSenderCheckBox_Changed" DockPanel.Dock="Top"/>
                         <Grid DockPanel.Dock="Top">
                             <Grid.ColumnDefinitions>
@@ -196,6 +195,10 @@
                             <TextBlock Text=" Port:" Grid.Column="2"/>
                             <TextBox Text="39539" Grid.Column="3" VerticalAlignment="Center" Name="ExternalMotionSenderPortTextBox"/>
                         </Grid>
+                        <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionSenderUseNormalizedBone}" Name="ExternalMotionSenderUseNormalizedBoneCheckBox" DockPanel.Dock="Bottom"/>
+                        <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionSenderSendVRM1Expression}" Name="ExternalMotionSenderSendVRM1ExpressionCheckBox" DockPanel.Dock="Bottom"/>
+                        <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionSenderResponderEnable}" Name="ExternalMotionSenderResponderEnableCheckBox" DockPanel.Dock="Bottom"/>
+                        <Button Content="{DynamicResource SettingWindow_Apply}" Name="OSCApplyButton" Click="OSCApplyButton_Click" DockPanel.Dock="Right" Padding="10,5"/>
                         <GroupBox Header="{DynamicResource SettingWindow_ExternalMotionSenderTransmissionInterval}" DockPanel.Dock="Top">
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -231,9 +234,6 @@
                             <TextBlock Text="Option: " Grid.Column="0"/>
                             <TextBox Text="" Grid.Column="1" VerticalAlignment="Center" Name="OptionStringTextbox"/>
                         </Grid>
-                        <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionSenderResponderEnable}" Name="ExternalMotionSenderResponderEnableCheckBox" DockPanel.Dock="Top"/>
-                        <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionSenderSendVRM1Expression}" Name="ExternalMotionSenderSendVRM1ExpressionCheckBox" DockPanel.Dock="Top"/>
-                        <CheckBox Content="{DynamicResource SettingWindow_ExternalMotionSenderUseNormalizedBone}" Name="ExternalMotionSenderUseNormalizedBoneCheckBox" DockPanel.Dock="Top"/>
                     </DockPanel>
                 </GroupBox>
                 <GroupBox>

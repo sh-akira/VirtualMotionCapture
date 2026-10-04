@@ -6,7 +6,7 @@
     <system:String x:Key="ViveSR_Register">注册</system:String>
     <system:String x:Key="ViveSR.Lip_Title">VIVE Facial Tracker</system:String>
     <system:String x:Key="ViveSR_Vertical">垂直</system:String>
-    <system:String x:Key="ViveSR.Eye_Title">VIVE Pro Eye/Focus 3&#xa;Droolon F1</system:String>
+    <system:String x:Key="ViveSR.Eye_Title" xml:space="preserve">VIVE Pro Eye/Focus 3&#xa;Droolon F1</system:String>
     <system:String x:Key="ViveSR_Cancel">取消</system:String>
     <system:String x:Key="ViveSR_Horizontal">水平</system:String>
     <system:String x:Key="ViveSR_EyeOffset">眼睛位置修正（0.01=1cm）</system:String>

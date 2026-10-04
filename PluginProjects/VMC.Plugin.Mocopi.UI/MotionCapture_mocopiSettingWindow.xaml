@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VMC.Plugin.Mocopi.UI"
         mc:Ignorable="d"
-        Title="mocopi" Width="400" SizeToContent="Height" Loaded="Window_Loaded">
+        Title="mocopi" Width="440" SizeToContent="Height" Loaded="Window_Loaded">
     <DockPanel>
         <GroupBox Header="mocopi (UDP)" DockPanel.Dock="Top">
             <StackPanel Orientation="Horizontal">
@@ -17,7 +17,7 @@
         </GroupBox>
         <GroupBox Header="{DynamicResource mocopi_ApplyTarget}" DockPanel.Dock="Top">
             <Grid Margin="5">
-                <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Vertical" Margin="0,0,0,25">
                     <Grid>
                         <Grid HorizontalAlignment="Center">
                             <Grid.RowDefinitions>
